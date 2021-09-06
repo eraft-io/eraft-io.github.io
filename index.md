@@ -1,6 +1,6 @@
 ### welcome to eraft.cn!
 
-![logo](eraft_logo_150_100.svg)
+![logo](figures/eraft_logo_150_100.png)
 
 ## eraft
 Raft library implemented by C++, inspired by etcd golang version and pingcap tinykv
