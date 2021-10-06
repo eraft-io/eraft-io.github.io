@@ -1,6 +1,6 @@
 ### welcome to eraft.cn!
 
-<img src="https://github.com/eraft-io/eraft-io.github.io/raw/master/figures/eraft_logo_150_100.png" style="zoom:50%" />
+<img src="https://eraft.oss-cn-beijing.aliyuncs.com/eraft_logo_150_100.png?versionId=CAEQFBiBgMDVrtfV4hciIDA1YzUwYTg5NzU0NjRhMmJhYmE0NjYyNzQyMjc0MzQ1" style="zoom:50%" />
 
 ## eraft
 Raft library implemented by C++, inspired by etcd golang version and pingcap tinykv
