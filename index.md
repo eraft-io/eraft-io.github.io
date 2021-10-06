@@ -13,6 +13,10 @@ Another team of the same root is now working on a stable version called BW-Raft,
 
 ## Architecture
 
+![eraft base](https://eraft.oss-cn-beijing.aliyuncs.com/rockdb_kv.drawio.svg?versionId=CAEQFBiBgMC3xZbX4hciIGRhYmQ3YzJhNmQ5MjRlYTA5MWRjMTZmMGQ2MzdjYWNl)
+
+## Multi-raft base kv system architecture
+
 ![multi raft](https://eraft.oss-cn-beijing.aliyuncs.com/Multi-Raft.png?versionId=CAEQFBiBgID_rtfV4hciIDZiOTAwNTVhOGMwZDRlMjZhYmM0YzNkN2ZmZTQ2ZDY1)
 
 ## Features
