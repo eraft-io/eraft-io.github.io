@@ -35,6 +35,7 @@ Another team of the same root is now working on a stable version called BW-Raft,
 ## Blogs
 
 ## Contact Us
-https://groups.google.com/g/eraftio
+
+[https://groups.google.com/g/eraftio](https://groups.google.com/g/eraftio)
 
 [浙ICP备2021027321号](https://beian.miit.gov.cn)
