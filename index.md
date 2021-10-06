@@ -21,6 +21,16 @@ Another team of the same root is now working on a stable version called BW-Raft,
 
 ## Features
 
+### Leader election
+
+### Log replication
+
+### Membership changes
+
+### Leadership transfer extension
+
+### Raft scale out ~ Multi Raft Support
+
 
 ## Blogs
 
