@@ -10,7 +10,7 @@ Raft is a protocol with which a cluster of nodes can maintain a replicated state
 
 ## Architecture
 
-<img src="https://eraft.oss-cn-beijing.aliyuncs.com/Multi-Raft.png?versionId=CAEQFBiBgID_rtfV4hciIDZiOTAwNTVhOGMwZDRlMjZhYmM0YzNkN2ZmZTQ2ZDY1" style="zoom:80%" />
+<img src="https://eraft.oss-cn-beijing.aliyuncs.com/Multi-Raft.png?versionId=CAEQFBiBgID_rtfV4hciIDZiOTAwNTVhOGMwZDRlMjZhYmM0YzNkN2ZmZTQ2ZDY1"/>
 
 ## Features
 
