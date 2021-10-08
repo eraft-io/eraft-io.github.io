@@ -31,6 +31,16 @@ Another team of the same root is now working on a stable version called BW-Raft,
 
 ### Raft scale out ~ Multi Raft Support
 
+## CMU 15-445/645 Course Analysis
+
+|   ID   |   Course Name   |  Url    |
+| ---- | ---- | ---- |
+|   1   |   15-445/645-LEC3-001-存储设备   |   https://www.bilibili.com/video/BV1r64y1Y7af/   |
+|   2   |   15-445/645-LEC3-002-磁盘存储系统概述   |   https://www.bilibili.com/video/BV16Q4y1C7mb/   |
+|   3   |   15-445/645-LEC3-003-DataBase Storage I-数据库管理系统 vs OS 解读   |   https://www.bilibili.com/video/BV15f4y1P7TC/   |
+|   4   |   15-445/645-DataBase Storage I-LEC3-004-文件存储和数据库页面   |   https://www.bilibili.com/video/BV1zf4y1F7W5/   |
+
+
 
 ## Blogs
 
