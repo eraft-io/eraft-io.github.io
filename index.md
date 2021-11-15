@@ -18,3 +18,7 @@
 |   5   |   15-445/645-DataBase Storage I-LEC3-005-数据库堆文件   |   [https://www.bilibili.com/video/BV1or4y127ph/](https://www.bilibili.com/video/BV1or4y127ph/)   |
 |   6   |   CMU 15-445/645-LEC4-01-数据表示 |   [https://www.zhihu.com/zvideo/1435366167381168128](https://www.zhihu.com/zvideo/1435366167381168128)   |
 |   7   |  CMU 15-445/645 数据库-LEC4-02-工作负载 |   [https://www.zhihu.com/zvideo/1435366772677074944](https://www.zhihu.com/zvideo/1435366772677074944)   |
+
+
+## 参考
+[1] https://learncs.me/
