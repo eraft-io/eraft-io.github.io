@@ -9,24 +9,21 @@
 
 ### CMU 15-445/645 课程解读列表
 
-|   ID   |   Course Name   |  Url    |
-| ---- | ---- | ---- |
-|   1   |   15-445/645-DataBase Storage I-LEC3-001-存储设备   |  [https://www.bilibili.com/video/BV1r64y1Y7af/](https://www.bilibili.com/video/BV1r64y1Y7af/) |
-|   2   |15-445/645-DataBase Storage I-LEC3-002-磁盘存储系统概述   |   [https://www.bilibili.com/video/BV16Q4y1C7mb/](https://www.bilibili.com/video/BV16Q4y1C7mb/) |
-
-| 3     | 15-445/645-LEC3-003-DataBase Storage I-数据库管理系统 vs OS 解读 | [https://www.bilibili.com/video/BV15f4y1P7TC/(https://www.bilibili.com/video/BV15f4y1P7TC/)   |
-
-| 4     | 15-445/645-DataBase Storage I-LEC3-004-文件存储和数据库页面   |   [https://www.bilibili.com/video/BV1zf4y1F7W5/(https://www.bilibili.com/video/BV1zf4y1F7W5/)   |
-
-|   5   |15-445/645-DataBase Storage I-LEC3-005-数据库堆文件   |   [https://www.bilibili.com/video/BV1or4y127ph/](https://www.bilibili.com/video/BV1or4y127ph/)   |
-|   6   |   CMU 15-445/645-LEC4-01-数据表示 |   [https://www.zhihu.com/zvideo/1435366167381168128](https://www.zhihu.com/zvideo/1435366167381168128)   |
-|   7   |  CMU 15-445/645 数据库-LEC4-02-工作负载 |   [https://www.zhihu.com/zvideo/1435366772677074944](https://www.zhihu.com/zvideo/1435366772677074944)   |
-|   8   |  CMU 15-445/645 数据库-LEC4-03-存储模型 |   [https://www.zhihu.com/zvideo/1438210703048511488](https://www.zhihu.com/zvideo/1438210703048511488)   |
-|   9   |  CMU 15-445/645 数据库-LEC5-01-锁与闩锁 |   [https://www.zhihu.com/zvideo/1440815156519915520](https://www.zhihu.com/zvideo/1440815156519915520)  |
-|  10   | CMU 15-445/645 数据库-LEC5-02-BufferPool概念  | [https://www.zhihu.com/zvideo/1441886640976990208](https://www.zhihu.com/zvideo/1441886640976990208)   |
-|  11   | CMU 15-445/645 数据库-LEC6-01-数据结构  |   [https://www.zhihu.com/zvideo/1440257210513846272](https://www.zhihu.com/zvideo/1440257210513846272)   |
-|  12   |  CMU 15-445/645 数据库-LEC6-02-哈希表   |   [https://www.zhihu.com/zvideo/1441153726552076289](https://www.zhihu.com/zvideo/1441153726552076289)   |
-|  13   |  CMU 15-445/645 数据库-LEC6-03-哈希函数  |  [https://www.zhihu.com/zvideo/1442601114054758400](https://www.zhihu.com/zvideo/1442601114054758400)  |
+|   ID   |   Course Name |
+| ---- | ---- | 
+|   1   |   [DataBase Storage I-LEC3-001-存储设备](https://www.bilibili.com/video/BV1r64y1Y7af/)   |  
+|   2   |   [DataBase Storage I-LEC3-002-磁盘存储系统概述](https://www.bilibili.com/video/BV16Q4y1C7mb/) |
+|   3   |   [DataBase Storage I-数据库管理系统 vs OS](https://www.bilibili.com/video/BV15f4y1P7TC/) |
+|   4   |   [DataBase Storage I-LEC3-004-文件存储和数据库页面](https://www.bilibili.com/video/BV1zf4y1F7W5/) |
+|   5   |   [DataBase Storage I-LEC3-005-数据库堆文件](https://www.bilibili.com/video/BV1or4y127ph/)   | 
+|   6   |   [Database Storage II-LEC4-01-数据表示](https://www.zhihu.com/zvideo/1435366167381168128) |  
+|   7   |   [Database Storage II-LEC4-02-工作负载](https://www.zhihu.com/zvideo/1435366772677074944) | 
+|   8   |   [Database Storage II-LEC4-03-存储模型](https://www.zhihu.com/zvideo/1438210703048511488) | 
+|   9   |   [Buffer Pools-LEC5-01-锁与闩锁](https://www.zhihu.com/zvideo/1440815156519915520) |  
+|  10   |   [Buffer Pools-LEC5-02-BufferPool 概念](https://www.zhihu.com/zvideo/1441886640976990208)  |
+|  11   |   [Hash Tables-LEC6-01-数据结构](https://www.zhihu.com/zvideo/1440257210513846272)  |   
+|  12   |   [Hash Tables-LEC6-02-哈希表](https://www.zhihu.com/zvideo/1441153726552076289)   |  
+|  13   |   [Hash Tables-LEC6-03-哈希函数](https://www.zhihu.com/zvideo/1442601114054758400)  | 
 
 ## 参考
 [1] https://learncs.me/
