@@ -14,9 +14,9 @@
 |   1   |   15-445/645-DataBase Storage I-LEC3-001-存储设备   |  [https://www.bilibili.com/video/BV1r64y1Y7af/](https://www.bilibili.com/video/BV1r64y1Y7af/) |
 |   2   |15-445/645-DataBase Storage I-LEC3-002-磁盘存储系统概述   |   [https://www.bilibili.com/video/BV16Q4y1C7mb/](https://www.bilibili.com/video/BV16Q4y1C7mb/) |
 
-| 3     | 15-445/645-LEC3-003-DataBase Storage I-数据库管理系统 vs OS 解读 |[https://www.bilibili.com/video/BV15f4y1P7TC/](https://www.bilibili.com/video/BV15f4y1P7TC/)   |
+| 3     | 15-445/645-LEC3-003-DataBase Storage I-数据库管理系统 vs OS 解读 | [https://www.bilibili.com/video/BV15f4y1P7TC/(https://www.bilibili.com/video/BV15f4y1P7TC/)   |
 
-| 4     | 15-445/645-DataBase Storage I-LEC3-004-文件存储和数据库页面   |   [https://www.bilibili.com/video/BV1zf4y1F7W5/](https://www.bilibili.com/video/BV1zf4y1F7W5/)   |
+| 4     | 15-445/645-DataBase Storage I-LEC3-004-文件存储和数据库页面   |   [https://www.bilibili.com/video/BV1zf4y1F7W5/(https://www.bilibili.com/video/BV1zf4y1F7W5/)   |
 
 |   5   |15-445/645-DataBase Storage I-LEC3-005-数据库堆文件   |   [https://www.bilibili.com/video/BV1or4y127ph/](https://www.bilibili.com/video/BV1or4y127ph/)   |
 |   6   |   CMU 15-445/645-LEC4-01-数据表示 |   [https://www.zhihu.com/zvideo/1435366167381168128](https://www.zhihu.com/zvideo/1435366167381168128)   |
