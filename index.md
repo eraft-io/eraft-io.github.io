@@ -18,7 +18,11 @@
 |   5   |   15-445/645-DataBase Storage I-LEC3-005-数据库堆文件   |   [https://www.bilibili.com/video/BV1or4y127ph/](https://www.bilibili.com/video/BV1or4y127ph/)   |
 |   6   |   CMU 15-445/645-LEC4-01-数据表示 |   [https://www.zhihu.com/zvideo/1435366167381168128](https://www.zhihu.com/zvideo/1435366167381168128)   |
 |   7   |  CMU 15-445/645 数据库-LEC4-02-工作负载 |   [https://www.zhihu.com/zvideo/1435366772677074944](https://www.zhihu.com/zvideo/1435366772677074944)   |
-
-
+|   8   |  CMU 15-445/645 数据库-LEC4-03-存储模型 |   [https://www.zhihu.com/zvideo/1438210703048511488](https://www.zhihu.com/zvideo/1438210703048511488)   |
+|   9   |  CMU 15-445/645 数据库-LEC5-01-锁与闩锁 |   [https://www.zhihu.com/zvideo/1440815156519915520](https://www.zhihu.com/zvideo/1440815156519915520)  |
+|  10   | CMU 15-445/645 数据库-LEC5-02-BufferPool概念  | [https://www.zhihu.com/zvideo/1441886640976990208](https://www.zhihu.com/zvideo/1441886640976990208)   |
+|  11   | CMU 15-445/645 数据库-LEC6-01-数据结构  |   [https://www.zhihu.com/zvideo/1440257210513846272](https://www.zhihu.com/zvideo/1440257210513846272)   |
+|  12   |  CMU 15-445/645 数据库-LEC6-02-哈希表   |   [https://www.zhihu.com/zvideo/1441153726552076289](https://www.zhihu.com/zvideo/1441153726552076289)   |
+|  13   |  CMU 15-445/645 数据库-LEC6-03-哈希函数  |  [https://www.zhihu.com/zvideo/1442601114054758400](https://www.zhihu.com/zvideo/1442601114054758400)  |
 ## 参考
 [1] https://learncs.me/
