@@ -4,7 +4,7 @@
 ## 解读系列
 
 
-### CMU 15-445/645 课程解读列表
+### CMU 15-445/645 (数据库系统) 课程解读列表
 
 |   ID   |   Course Name |
 | ---- | ---- | 
@@ -22,5 +22,13 @@
 |      |   [Hash Tables-LEC6-02-哈希表](https://www.zhihu.com/zvideo/1441153726552076289)   |  
 |      |   [Hash Tables-LEC6-03-哈希函数](https://www.zhihu.com/zvideo/1442601114054758400)  | 
 
+### MIT 6.828 (操作系统) 课程解读系列
+
+|   ID   |   Course Name |
+| ---- | ---- | 
+|      |     |  
+
 ## 参考
 [1] https://learncs.me/
+[2] https://15445.courses.cs.cmu.edu/fall2019/schedule.html
+[3] https://pdos.csail.mit.edu/6.828/2020/schedule.html
