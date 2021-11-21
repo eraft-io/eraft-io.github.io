@@ -6,7 +6,7 @@
 
 ### CMU 15-445/645 (数据库系统) 课程解读列表
 
-|   ID   |   Course Name |
+|      |   Course Name |
 | ---- | ---- | 
 |      |   [DataBase Storage I-LEC3-001-存储设备](https://www.bilibili.com/video/BV1r64y1Y7af/)   |  
 |      |   [DataBase Storage I-LEC3-002-磁盘存储系统概述](https://www.bilibili.com/video/BV16Q4y1C7mb/) |
@@ -24,7 +24,7 @@
 
 ### MIT 6.828 (操作系统) 课程解读系列
 
-|   ID   |   Course Name |
+|      |   Course Name |
 | ---- | ---- | 
 |      |     |  
 
