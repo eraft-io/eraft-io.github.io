@@ -41,7 +41,9 @@ message RawGetResponse {
 
 
 - RawPut
+
 ```
+
 rpc RawPut(kvrpcpb.RawPutRequest) returns (kvrpcpb.RawPutResponse) {}
 
 message RawPutRequest {
@@ -57,10 +59,13 @@ message RawPutResponse {
     errorpb.Error region_error = 1;
     string error = 2;
 }
+
 ```
 
 - RawDelete
+
 ```
+
 rpc RawDelete(kvrpcpb.RawDeleteRequest) returns (kvrpcpb.RawDeleteResponse) {}
 
 message RawDeleteRequest {
@@ -73,10 +78,13 @@ message RawDeleteResponse {
     errorpb.Error region_error = 1;
     string error = 2;
 }
+
 ```
 
 - RawScan
+
 ```
+
 rpc RawScan(kvrpcpb.RawScanRequest) returns (kvrpcpb.RawScanResponse) {}
 
 message RawScanRequest {
@@ -94,10 +102,13 @@ message RawScanResponse {
     string error = 2;
     repeated KvPair kvs = 3;
 }
+
 ```
 
 - TransferLeader
+
 ```
+
 rpc TransferLeader(raft_cmdpb.TransferLeaderRequest) returns (raft_cmdpb.TransferLeaderResponse) {}
 
 message Peer {      
@@ -115,7 +126,9 @@ message TransferLeaderResponse {}
 ```
 
 - PeerConfChange
+
 ```
+
 rpc PeerConfChange(raft_cmdpb.ChangePeerRequest) returns (raft_cmdpb.ChangePeerResponse) {}
 
 message ChangePeerRequest {
@@ -127,6 +140,7 @@ message ChangePeerRequest {
 message ChangePeerResponse {
     metapb.Region region = 1;
 }
+
 ```
 
 **E-META**
