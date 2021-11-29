@@ -17,7 +17,10 @@
 **E-STORE**
 
 - RawGet
+
+
 ```
+
 rpc RawGet(kvrpcpb.RawGetRequest) returns (kvrpcpb.RawGetResponse) {}
 
 message RawGetRequest {
@@ -33,7 +36,9 @@ message RawGetResponse {
     // True if the requested key doesn't exist; another error will not be signalled.
     bool not_found = 4;
 }
+
 ```
+
 
 - RawPut
 ```
