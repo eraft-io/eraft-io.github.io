@@ -1,0 +1,9699 @@
+1
+00:00:03,640 --> 00:00:13,509
+[Music]
+[音乐]
+
+2
+00:00:14,760 --> 00:00:17,920
+hi guys let's get started again round
+嗨，伙计们，让我们再次开始
+
+3
+00:00:17,920 --> 00:00:21,850
+applause would you drop tables down all
+掌声，你们能把桌子放下
+
+4
+00:00:21,850 --> 00:00:26,070
+right how are you thank you okay yeah
+好吗，谢谢你们好吧
+
+5
+00:00:26,070 --> 00:00:28,480
+okay awesome all right before we get
+好吧好吧在我们开始之前真棒
+
+6
+00:00:28,480 --> 00:00:31,060
+started I want to go through some
+我想看看
+
+7
+00:00:31,060 --> 00:00:32,469
+comments and feedback we've had on the
+我们对课程的一些评论和反馈
+
+8
+00:00:32,469 --> 00:00:36,420
+course on the nose or bane of all the
+
+9
+00:00:36,420 --> 00:00:38,530
+places we could get feedback about the
+我们可以得到关于
+
+10
+00:00:38,530 --> 00:00:40,899
+course and that's YouTube so here's some
+课程的反馈的所有地方的鼻子或祸根，那就是 YouTube 所以这是
+
+11
+00:00:40,899 --> 00:00:42,429
+of the comments we've gotten so far on
+我们到目前为止
+
+12
+00:00:42,429 --> 00:00:44,469
+on YouTube and it's the sort of standard
+在 YouTube 上得到的一些评论，这是标准的
+
+13
+00:00:44,469 --> 00:00:46,210
+stuff right and he's the worst professor
+东西，他是我不知道的最糟糕的教授
+
+14
+00:00:46,210 --> 00:00:47,679
+I don't learn anything about databases
+学习任何关于数据库的知识
+
+15
+00:00:47,679 --> 00:00:48,909
+that's okay
+，没关系
+
+16
+00:00:48,909 --> 00:00:51,999
+he wasn't hoping I get cancer soon this
+他不希望我很快得癌症 这
+
+17
+00:00:51,999 --> 00:00:53,979
+guy says he all my friends go to see him
+家伙说他我所有的朋友都去看他
+
+18
+00:00:53,979 --> 00:00:55,179
+you they say this professor has the
+你他们说这个教授的
+
+19
+00:00:55,179 --> 00:00:56,679
+worst hygiene anybody on school
+卫生最差 学校里的任何人
+
+20
+00:00:56,679 --> 00:00:59,859
+he smells like old boiled eggs so that
+他都闻起来像老煮鸡蛋 所以这
+
+21
+00:00:59,859 --> 00:01:01,659
+is true I did I did you should have a
+是真的我做到了 我做了你应该有一个
+
+22
+00:01:01,659 --> 00:01:03,399
+hygiene problem and now you use like a
+卫生问题，现在你像
+
+23
+00:01:03,399 --> 00:01:05,379
+special shampoo but if it's overpowering
+特殊的洗发水一样使用，但如果它是压倒性的，
+
+24
+00:01:05,379 --> 00:01:07,420
+it was still an issue of let me know and
+它仍然是一个问题，让我知道，
+
+25
+00:01:07,420 --> 00:01:09,189
+we got feedback about you right yo DJ
+我们得到了关于你的反馈是对的哟 DJ
+
+26
+00:01:09,189 --> 00:01:11,320
+drop tables beets are so fresh that I
+drop桌甜菜太新鲜了，我
+
+27
+00:01:11,320 --> 00:01:12,579
+had to take my shirt off and not sure
+不得不把我的 脱掉衬衫 我不
+
+28
+00:01:12,579 --> 00:01:14,229
+what that means and they want us to
+知道那是什么意思，他们希望我们
+
+29
+00:01:14,229 --> 00:01:16,509
+feature you more look Norway this kind
+让你多看看挪威
+
+30
+00:01:16,509 --> 00:01:18,729
+of crap but there is actually one
+这种垃圾，但实际上
+
+31
+00:01:18,729 --> 00:01:20,530
+mistake I made last class that people
+我上节课犯了一个错误，人们
+
+32
+00:01:20,530 --> 00:01:23,140
+correctly pointed out and he when we
+正确指出了他，当
+
+33
+00:01:23,140 --> 00:01:25,539
+were talking on hash functions I asked
+我们谈论哈希函数时，我问
+
+34
+00:01:25,539 --> 00:01:28,630
+he named sha-256 and I think he named
+他命名为 sha-  256，我认为他命名为
+
+35
+00:01:28,630 --> 00:01:31,840
+md5 and I incorrectly said that sha-256
+md5，我错误地说 sha-256
+
+36
+00:01:31,840 --> 00:01:35,259
+is not a it's not a symmetrical meaning
+不是 a 这不是对称的意思，
+
+37
+00:01:35,259 --> 00:01:37,479
+you can't reverse it and this guy says
+你不能扭转它，这家伙说
+
+38
+00:01:37,479 --> 00:01:38,409
+take down the whole video but whatever
+取下整个视频，但无论如何，
+
+39
+00:01:38,409 --> 00:01:41,829
+um but my point still stands right so
+但我的观点仍然正确，所以
+
+40
+00:01:41,829 --> 00:01:45,399
+sha tsui g6 has cryptographic properties
+sha tsui  g6 具有加密属性
+
+41
+00:01:45,399 --> 00:01:47,350
+that we don't care about when we're
+，当我们在哈希表中进行操作时，我们并不关心这些属性，
+
+42
+00:01:47,350 --> 00:01:49,090
+doing our in our hash table so we would
+因此我们
+
+43
+00:01:49,090 --> 00:01:51,189
+never actually use that the X has X hash
+永远不会实际使用 X 具有 X 哈希
+
+44
+00:01:51,189 --> 00:01:52,719
+or the city has farm hash stuff that we
+或城市具有我们之前讨论过的农场哈希的东西，
+
+45
+00:01:52,719 --> 00:01:54,609
+talked about before that's the kind of
+这就是那种
+
+46
+00:01:54,609 --> 00:01:56,140
+hash function we don't use
+哈希 我们不使用的功能，
+
+47
+00:01:56,140 --> 00:01:58,950
+so in theory you could still use sha-256
+所以理论上你仍然可以使用 sha-256
+
+48
+00:01:58,950 --> 00:02:01,539
+it's not reversible but nobody does that
+它不可逆，但没有人这样做，
+
+49
+00:02:01,539 --> 00:02:04,119
+because it'd be too slow okay all right
+因为它太慢了好吧，
+
+50
+00:02:04,119 --> 00:02:06,460
+so the other things that can just
+所以其他事情可以
+
+51
+00:02:06,460 --> 00:02:07,479
+reminder for everyone what's on the
+提醒每个人
+
+52
+00:02:07,479 --> 00:02:10,870
+docket so next week on Friday project
+下周记录在案的内容 周五项目
+
+53
+00:02:10,870 --> 00:02:12,940
+one should be done that's due at
+一应该b 完成了，应该在午夜到期，
+
+54
+00:02:12,940 --> 00:02:14,020
+midnight
+
+55
+00:02:14,020 --> 00:02:15,820
+much we have already finished but again
+我们已经完成了，但是
+
+56
+00:02:15,820 --> 00:02:17,320
+post on Piazza if you have questions as
+如果您在进行过程中遇到问题，请再次在 Piazza 上发帖
+
+57
+00:02:17,320 --> 00:02:18,930
+you go along and we've been updating
+，我们一直在
+
+58
+00:02:18,930 --> 00:02:21,850
+slightly there's your pin post that
+略有更新，您的 pin 帖子
+
+59
+00:02:21,850 --> 00:02:24,190
+provide clarifications on Piazza that
+提供了 Piazza 上的说明，
+
+60
+00:02:24,190 --> 00:02:26,020
+help guide you along too if you have
+如果您有任何疑问，也可以帮助指导您
+
+61
+00:02:26,020 --> 00:02:28,690
+questions about different aspects of it
+关于它的不同方面
+
+62
+00:02:28,690 --> 00:02:30,430
+and then homework too we released on
+，然后也是我们本周周一发布的作业
+
+63
+00:02:30,430 --> 00:02:33,700
+Monday this week and that'll be due the
+，这将
+
+64
+00:02:33,700 --> 00:02:37,870
+following Monday after after the first
+在第一个项目到期后的下周一
+
+65
+00:02:37,870 --> 00:02:40,120
+project is due okay so any high-level
+到期，所以任何
+
+66
+00:02:40,120 --> 00:02:43,660
+questions about project one who here is
+关于这里
+
+67
+00:02:43,660 --> 00:02:45,040
+not tried to get it running on the local
+没有试图让它运行的项目的高级问题 在本地
+
+68
+00:02:45,040 --> 00:02:46,660
+machine or their development environment
+机器或他们的开发环境上，
+
+69
+00:02:46,660 --> 00:02:50,020
+I was at least try that okay good
+我至少尝试过，好吧，
+
+70
+00:02:50,020 --> 00:02:53,830
+awesome okay all right so recall from
+真棒，好吧，回忆一下
+
+71
+00:02:53,830 --> 00:02:55,930
+last class we started talking about
+上节课，我们开始谈论
+
+72
+00:02:55,930 --> 00:02:57,790
+different kind of data structures we
+我们
+
+73
+00:02:57,790 --> 00:02:59,260
+could have inside our database system
+可以在数据库系统中拥有的不同类型的数据结构
+
+74
+00:02:59,260 --> 00:03:00,850
+and we spent the entire lecture talking
+，我们整个讲座都在
+
+75
+00:03:00,850 --> 00:03:03,070
+about hash tables and we talked about
+谈论哈希 表，我们讨论
+
+76
+00:03:03,070 --> 00:03:05,140
+how hash table are - in general but
+了哈希表是如何 - 一般来说，但
+
+77
+00:03:05,140 --> 00:03:07,060
+especially hash tables can be used in a
+特别是哈希表可以
+
+78
+00:03:07,060 --> 00:03:08,260
+variety places inside the database
+在数据库系统内的各种地方
+
+79
+00:03:08,260 --> 00:03:10,060
+system like using it for internal
+使用，例如将其用于 int  ernal
+
+80
+00:03:10,060 --> 00:03:12,070
+metadata actually storing the underlying
+元数据实际上将底层
+
+81
+00:03:12,070 --> 00:03:14,380
+tables in our database and also
+表存储在我们的数据库中，还有
+
+82
+00:03:14,380 --> 00:03:15,880
+temporary data structures like you know
+临时数据结构，如您所知道的
+
+83
+00:03:15,880 --> 00:03:19,870
+building hash table to do a join so for
+构建哈希表以进行连接，因此
+
+84
+00:03:19,870 --> 00:03:23,230
+the first three uses of data structures
+
+85
+00:03:23,230 --> 00:03:25,450
+for a lot of these cases the the hash
+对于许多这些情况下数据结构的前三种用途，哈希
+
+86
+00:03:25,450 --> 00:03:27,070
+tables gonna be good enough right for
+表足够好
+
+87
+00:03:27,070 --> 00:03:29,230
+think of like internal the system it's
+想想就像在系统内部一样，大多数
+
+88
+00:03:29,230 --> 00:03:30,790
+not very often you need to be able to do
+时候你不需要能够进行
+
+89
+00:03:30,790 --> 00:03:32,380
+range queries most of the time you want
+范围查询，你
+
+90
+00:03:32,380 --> 00:03:33,850
+to say go give me a single key and give
+想说去给我一个单一的钥匙，给
+
+91
+00:03:33,850 --> 00:03:35,080
+me you know for giving key give me the
+我你知道给我的钥匙给我
+
+92
+00:03:35,080 --> 00:03:37,410
+value you're doing point query lookups
+你正在做的价值点 查询查找，
+
+93
+00:03:37,410 --> 00:03:39,430
+so the thing we want to talk about now
+所以我们现在要讨论的
+
+94
+00:03:39,430 --> 00:03:41,650
+though is table indexes and this is
+事情是表索引，这
+
+95
+00:03:41,650 --> 00:03:43,570
+where we we may want to actually run
+就是我们可能想要实际运行
+
+96
+00:03:43,570 --> 00:03:45,430
+queries that want to do range scans and
+想要进行范围扫描的查询的地方，
+
+97
+00:03:45,430 --> 00:03:46,900
+therefore hash tables are going to be
+因此哈希表对我们来说是
+
+98
+00:03:46,900 --> 00:03:49,870
+insufficient for us because you know
+不够的，因为你知道，
+
+99
+00:03:49,870 --> 00:03:52,150
+because you can only do single key
+因为你可以 只进行单键
+
+100
+00:03:52,150 --> 00:03:55,060
+lookups so everyone here should be
+查找，所以这里的每个人都应该
+
+101
+00:03:55,060 --> 00:03:57,760
+roughly aware of what a table index is
+大致了解表索引是什么，
+
+102
+00:03:57,760 --> 00:03:59,020
+but I just one provides some a more
+但我只是提供了一些更
+
+103
+00:03:59,020 --> 00:04:00,970
+formal definition so that we have a
+正式的定义，以便
+
+104
+00:04:00,970 --> 00:04:02,500
+basic understanding going throughout the
+我们对整个其余部分有一个基本的了解
+
+105
+00:04:02,500 --> 00:04:04,720
+rest of the lecture what we're talking
+讲讲我们正在谈论的
+
+106
+00:04:04,720 --> 00:04:08,380
+about so a table index is a essentially
+内容，因此表索引本质上是表
+
+107
+00:04:08,380 --> 00:04:11,500
+a replica of some subset of attributes
+中某些属性子集的副本，
+
+108
+00:04:11,500 --> 00:04:14,650
+in our tables and that we're storing in
+并且我们
+
+109
+00:04:14,650 --> 00:04:17,918
+a more efficient manner that allows us
+以更有效的方式进行存储，这使我们
+
+110
+00:04:17,918 --> 00:04:20,108
+to do efficient lookups to find the
+可以进行有效的查找以找到
+
+111
+00:04:20,108 --> 00:04:23,110
+thing that we're looking for so you know
+我们要查找的内容 寻找以便您知道
+
+112
+00:04:23,110 --> 00:04:24,580
+in the worst case scenario if we want to
+在最坏的情况下，如果我们想
+
+113
+00:04:24,580 --> 00:04:27,220
+find a particular key in our table you
+在我们的表中找到一个特定的键，您
+
+114
+00:04:27,220 --> 00:04:27,850
+just do a support
+只需对其进行支持
+
+115
+00:04:27,850 --> 00:04:30,220
+scan for that but the idea of putting
+扫描，但是将
+
+116
+00:04:30,220 --> 00:04:31,570
+into a table index we would have sit
+索引放入表中的想法我们将拥有
+
+117
+00:04:31,570 --> 00:04:33,370
+this auxiliary data structure that we
+这个我们可以遍历的辅助数据结构
+
+118
+00:04:33,370 --> 00:04:35,830
+can traverse or do a lookup into and
+或者进行查找并
+
+119
+00:04:35,830 --> 00:04:37,960
+find exactly what we want more quickly
+准确找到我们想要的内容，而
+
+120
+00:04:37,960 --> 00:04:41,200
+than having to ask when shal scam so the
+不是在 shal 诈骗时询问，所以
+
+121
+00:04:41,200 --> 00:04:42,760
+key thing to point out here is that the
+这里要指出的关键是
+
+122
+00:04:42,760 --> 00:04:44,800
+index is going to be a replica of the
+索引将是表的副本，
+
+123
+00:04:44,800 --> 00:04:46,660
+table so that means that has to be
+这意味着它必须
+
+124
+00:04:46,660 --> 00:04:48,760
+synchronized with the table meaning if
+与 表的意思是，如果
+
+125
+00:04:48,760 --> 00:04:51,700
+we modify a tuple in our table we want
+我们修改表中的元组，我们希望
+
+126
+00:04:51,700 --> 00:04:54,460
+that change be reflected in our in our
+该更改反映在我们的
+
+127
+00:04:54,460 --> 00:04:56,050
+index because we don't want any false
+索引中，因为我们不希望出现任何
+
+128
+00:04:56,050 --> 00:04:57,520
+negatives or false positives we don't
+漏报或误报 我们
+
+129
+00:04:57,520 --> 00:04:59,680
+want to add something to our table not
+不想向表中添加一些未
+
+130
+00:04:59,680 --> 00:05:01,420
+put in our index and then we do a lookup
+放入索引的内容 然后我们进行查找
+
+131
+00:05:01,420 --> 00:05:04,000
+to find that that that tuple and it's
+发现那个元组，它
+
+132
+00:05:04,000 --> 00:05:05,560
+not our index and come back with it with
+不是我们的索引，然后返回
+
+133
+00:05:05,560 --> 00:05:08,200
+a negative result right so the database
+一个否定的结果，所以数据库
+
+134
+00:05:08,200 --> 00:05:09,880
+system is would be responsible for
+系统将负责
+
+135
+00:05:09,880 --> 00:05:12,670
+maintaining these indexes and keeping
+维护这些索引并使
+
+136
+00:05:12,670 --> 00:05:14,280
+them completely synchronized with the
+它们
+
+137
+00:05:14,280 --> 00:05:17,860
+with the with the underlying table and
+与底层表完全同步，
+
+138
+00:05:17,860 --> 00:05:20,010
+this is completely transparent to you as
+这完全是 作为应用程序程序员对你来说是透明的
+
+139
+00:05:20,010 --> 00:05:23,230
+as the application programmer I don't
+我不
+
+140
+00:05:23,230 --> 00:05:25,150
+know when I insert I don't the say o
+知道我什么时候插入 我不说
+
+141
+00:05:25,150 --> 00:05:26,680
+insert in this table and all by the way
+在这个表中插入 顺便
+
+142
+00:05:26,680 --> 00:05:29,380
+update these other indexes the database
+更新这些其他索引 数据库
+
+143
+00:05:29,380 --> 00:05:30,700
+system at least have a sequel database
+系统至少有一个续集数据库
+
+144
+00:05:30,700 --> 00:05:32,440
+system would see the insert query and
+系统会看到插入 查询并
+
+145
+00:05:32,440 --> 00:05:34,450
+know that you not only don't need to
+知道您不仅不需要
+
+146
+00:05:34,450 --> 00:05:36,130
+update the table also to update any
+更新表也不需要更新任何
+
+147
+00:05:36,130 --> 00:05:39,760
+index as I have on that table so there's
+索引，因为我在该表上有
+
+148
+00:05:39,760 --> 00:05:42,030
+this trade-off now in our system between
+这样的权衡，所以我们的系统现在在
+
+149
+00:05:42,030 --> 00:05:44,230
+having a lots of indexes make queries go
+拥有大量索引之间进行权衡，使查询
+
+150
+00:05:44,230 --> 00:05:46,000
+faster and then the cost of maintaining
+速度更快，然后成本 维护
+
+151
+00:05:46,000 --> 00:05:47,650
+them and we'll see this as we go along
+它们，我们将在
+
+152
+00:05:47,650 --> 00:05:49,270
+today and we saw this actually with hash
+今天的过程中看到这一点，我们实际上在上次使用哈希
+
+153
+00:05:49,270 --> 00:05:50,860
+tables last time right
+表
+
+154
+00:05:50,860 --> 00:05:53,160
+inserting something into an index
+
+155
+00:05:53,160 --> 00:05:55,090
+sometimes will be really fast and
+
+156
+00:05:55,090 --> 00:05:56,170
+sometimes could be really expensive
+时看到了这一点 y 昂贵
+
+157
+00:05:56,170 --> 00:05:59,020
+depending on whether you know whatever
+取决于您是否知道
+
+158
+00:05:59,020 --> 00:06:00,910
+we want to insert a given key there's
+我们想要插入给定键的
+
+159
+00:06:00,910 --> 00:06:04,180
+something already there or not so again
+内容已经存在或不存在所以
+
+160
+00:06:04,180 --> 00:06:05,920
+when we have a query show up the
+当我们有查询显示时，
+
+161
+00:06:05,920 --> 00:06:07,990
+database system is responsible for
+数据库系统负责
+
+162
+00:06:07,990 --> 00:06:09,940
+figuring out what's the most efficient
+找出对我来说最有效的
+
+163
+00:06:09,940 --> 00:06:11,620
+access method for me to use for the
+访问方法是什么
+
+164
+00:06:11,620 --> 00:06:14,110
+system to use to answer the result of
+用于回答查询结果的系统
+
+165
+00:06:14,110 --> 00:06:16,060
+your query and again this is transparent
+，这
+
+166
+00:06:16,060 --> 00:06:17,470
+to use the application programmer I just
+对于使用应用程序程序员来说是透明的 我只是
+
+167
+00:06:17,470 --> 00:06:18,700
+write my select statement I don't
+编写我的选择语句 我
+
+168
+00:06:18,700 --> 00:06:21,160
+specify normally in some cases you can I
+在某些情况下通常不会指定您可以 我
+
+169
+00:06:21,160 --> 00:06:23,830
+don't specify normally exactly what
+通常不会准确指定
+
+170
+00:06:23,830 --> 00:06:26,380
+index I want to use the database system
+我想要使用的索引 数据库系统
+
+171
+00:06:26,380 --> 00:06:28,960
+can configure that out for me and again
+可以为我配置它并再次
+
+172
+00:06:28,960 --> 00:06:30,760
+going back to the very first lecture
+回到第一堂课
+
+173
+00:06:30,760 --> 00:06:33,010
+this is one of the the benefits or the
+这是关系模型的好处或
+
+174
+00:06:33,010 --> 00:06:35,140
+advantages of the relational model and
+优势之一，
+
+175
+00:06:35,140 --> 00:06:38,320
+it's clear language like sequel if I now
+如果我现在我的表，它就像续集一样清晰的语言
+
+176
+00:06:38,320 --> 00:06:40,270
+my table I are very much rely
+我非常依赖
+
+177
+00:06:40,270 --> 00:06:41,470
+application and then later
+应用程序和 然后
+
+178
+00:06:41,470 --> 00:06:43,540
+and decide to add to index I want to go
+稍后决定添加到索引我想
+
+179
+00:06:43,540 --> 00:06:45,100
+back and rewrite my secret and I'll use
+回去重写我的秘密，我将使用
+
+180
+00:06:45,100 --> 00:06:47,110
+that index the database system configure
+该索引数据库系统
+
+181
+00:06:47,110 --> 00:06:50,440
+that automatically for me in theory it
+自动为我配置，理论上它
+
+182
+00:06:50,440 --> 00:06:52,000
+doesn't always get it right so this
+并不总是得到 这是正确的，因此
+
+183
+00:06:52,000 --> 00:06:54,880
+particular step of actually taking a
+实际进行
+
+184
+00:06:54,880 --> 00:06:56,290
+query and picking out what indexes use
+查询并选择使用哪些索引的
+
+185
+00:06:56,290 --> 00:06:57,970
+this will falls under the umbrella of
+这一特定步骤将属于查询优化的范畴，
+
+186
+00:06:57,970 --> 00:07:00,550
+query optimization which is a super hard
+这是一个非常困难的
+
+187
+00:07:00,550 --> 00:07:02,680
+problem we'll cover it us in after the
+问题，我们将在期中考试后介绍给我们，
+
+188
+00:07:02,680 --> 00:07:05,770
+midterm but this is sort of it's like a
+但这有点像
+
+189
+00:07:05,770 --> 00:07:07,780
+optimization problem to decide you know
+优化问题来决定你知道
+
+190
+00:07:07,780 --> 00:07:09,730
+what's the best wave XT given query
+
+191
+00:07:09,730 --> 00:07:11,080
+amongst all these different choices I
+在所有这些不同的选择中给定查询的最佳 wave XT
+
+192
+00:07:11,080 --> 00:07:13,540
+have so we'll cover that later on in the
+所以我们将在本学期稍后介绍，
+
+193
+00:07:13,540 --> 00:07:15,670
+semester but for now just assume that we
+但现在假设我们
+
+194
+00:07:15,670 --> 00:07:17,380
+know what index we want to pick what we
+知道我们想要选择的索引，所以我们
+
+195
+00:07:17,380 --> 00:07:20,980
+do lookups so of course it's now as an
+要查找 当然，现在
+
+196
+00:07:20,980 --> 00:07:22,810
+always in computer science and databases
+在计算机科学和数据库中，它总是在
+
+197
+00:07:22,810 --> 00:07:25,300
+there's just trade-off between doing one
+做一
+
+198
+00:07:25,300 --> 00:07:26,650
+thing a lot versus doing it not at all
+件事和根本不做这件事之间进行权衡，
+
+199
+00:07:26,650 --> 00:07:29,170
+so if you have a lot of indexes that'll
+所以如果你有很多索引
+
+200
+00:07:29,170 --> 00:07:30,760
+make your queries certainly go faster
+肯定会让你的
+
+201
+00:07:30,760 --> 00:07:33,100
+did you look ups on them but now you
+查询更快，你有没有查过 在它们上，但现在你
+
+202
+00:07:33,100 --> 00:07:35,169
+have this additional cost of having to
+不得不
+
+203
+00:07:35,169 --> 00:07:36,430
+store those indexes and actually
+存储这些索引并实际
+
+204
+00:07:36,430 --> 00:07:38,620
+maintain them I said again indexes are
+维护它们的额外成本我再次说过索引
+
+205
+00:07:38,620 --> 00:07:40,090
+going to take up pages we're to store
+将占用我们将其
+
+206
+00:07:40,090 --> 00:07:41,260
+that in our buffer pool while the write
+存储在我们的缓冲池中的页面，而将其
+
+207
+00:07:41,260 --> 00:07:42,940
+that out the disk so that takes up space
+写出磁盘等等 at 占用空间，
+
+208
+00:07:42,940 --> 00:07:45,730
+but then now as I said when I do updates
+但现在正如我所说，当我
+
+209
+00:07:45,730 --> 00:07:47,800
+to my tables I have to go and also
+更新我的表时，我必须去
+
+210
+00:07:47,800 --> 00:07:49,900
+update my all my indexes to reflect
+更新我的所有索引以反映
+
+211
+00:07:49,900 --> 00:07:52,240
+those changes so if my table has a
+这些更改，所以如果我的表有
+
+212
+00:07:52,240 --> 00:07:54,850
+thousand indexes which would you know in
+一千个索引，你知道在
+
+213
+00:07:54,850 --> 00:07:56,530
+practice people do that kind of stuff if
+实践中人们会这样做吗 如果
+
+214
+00:07:56,530 --> 00:07:58,720
+I now do an insert I have to do a
+我现在进行插入，我必须
+
+215
+00:07:58,720 --> 00:08:01,000
+thousand updates to all those indexes
+对所有这些索引进行一千次更新，
+
+216
+00:08:01,000 --> 00:08:03,130
+and my update operation or insert
+并且在我修改了所有索引之前，不会认为我的更新操作或插入
+
+217
+00:08:03,130 --> 00:08:04,510
+operation isn't considered done until
+操作已完成，
+
+218
+00:08:04,510 --> 00:08:06,370
+I've modified all my indexes because
+因为
+
+219
+00:08:06,370 --> 00:08:09,340
+they have to be always synchronized so
+它们必须始终保持同步，所以
+
+220
+00:08:09,340 --> 00:08:11,320
+again we're not really gonna discuss how
+我们再次 我不会真正讨论
+
+221
+00:08:11,320 --> 00:08:13,390
+you decide what indexes to pick but this
+您如何决定选择哪些索引，但这
+
+222
+00:08:13,390 --> 00:08:15,160
+is another hard problem in databases as
+是数据库中的另一个难题，
+
+223
+00:08:15,160 --> 00:08:17,430
+well they have tools to do
+他们也有工具可以
+
+224
+00:08:17,430 --> 00:08:19,570
+recommendations for you to decide what
+为您提供建议，以决定
+
+225
+00:08:19,570 --> 00:08:21,669
+mixes when it pick or you pay a lot of
+在选择时混合什么，或者您
+
+226
+00:08:21,669 --> 00:08:25,200
+money for human DBAs to do this for you
+为人类 DBA 支付大量资金来执行此操作 对你
+
+227
+00:08:25,200 --> 00:08:27,910
+all right so the things we're talk about
+来说很好 所以我们今天谈论的事情
+
+228
+00:08:27,910 --> 00:08:30,490
+today is just an overview of what a B+
+只是对 B+ 树是什么的一个概述
+
+229
+00:08:30,490 --> 00:08:34,000
+tree is and then we'll do we'll spend
+然后我们会做 我们会花
+
+230
+00:08:34,000 --> 00:08:36,190
+some time to discussing like you know
+一些时间讨论就像你知道
+
+231
+00:08:36,190 --> 00:08:38,080
+one of the implementation details we
+我们必须关注的实现细节之一
+
+232
+00:08:38,080 --> 00:08:39,669
+have to be concerned of when we build
+当我们
+
+233
+00:08:39,669 --> 00:08:42,250
+out our index and then we'll finish up
+建立我们的 i  ndex 然后我们将结束
+
+234
+00:08:42,250 --> 00:08:44,770
+talking about some additional
+讨论
+
+235
+00:08:44,770 --> 00:08:46,180
+optimizations that real systems actually
+真实系统
+
+236
+00:08:46,180 --> 00:08:48,280
+do to actually make this thing be useful
+实际上所做的一些额外优化以使这个东西
+
+237
+00:08:48,280 --> 00:08:53,020
+in practice ok so the first thing we
+在实践中真正有用所以我们需要解决的第一件事
+
+238
+00:08:53,020 --> 00:08:55,150
+need we need to address
+
+239
+00:08:55,150 --> 00:08:58,390
+is this this what is it B plus tree and
+是这是什么 B 加上
+
+240
+00:08:58,390 --> 00:09:01,690
+how does that relate to a B tree so this
+树 这与 B 树有关，所以这
+
+241
+00:09:01,690 --> 00:09:03,760
+is sort of the downside of databases is
+是数据库的缺点，
+
+242
+00:09:03,760 --> 00:09:05,980
+that a lot of times the same word is
+因为很多时候同一个词被
+
+243
+00:09:05,980 --> 00:09:08,680
+used to reflect different things and be
+用来反映不同的事物，并且
+
+244
+00:09:08,680 --> 00:09:10,180
+quite confusing for someone we can try
+对于某些人来说很困惑，我们可以
+
+245
+00:09:10,180 --> 00:09:11,290
+to get started to understand what's the
+尝试开始了解这些词的
+
+246
+00:09:11,290 --> 00:09:13,150
+actual difference with these things so
+实际区别是什么 所以
+
+247
+00:09:13,150 --> 00:09:14,890
+first of all there's sort of this class
+首先有一类
+
+248
+00:09:14,890 --> 00:09:18,270
+of data structures called B trees and
+称为 B 树的数据结构，
+
+249
+00:09:18,270 --> 00:09:20,950
+then within that there is a specific
+然后在其中有一个特定的
+
+250
+00:09:20,950 --> 00:09:23,950
+data structure that is a B tree so
+数据结构是 B 树，所以
+
+251
+00:09:23,950 --> 00:09:26,080
+oftentimes people use that B+ tree and B
+人们经常交替使用 B+ 树和 B
+
+252
+00:09:26,080 --> 00:09:29,020
+tree interchangeably but if you go back
+树，但如果你
+
+253
+00:09:29,020 --> 00:09:30,430
+to the literature back in the 1970s
+回到文献中 早在 1970 年代，
+
+254
+00:09:30,430 --> 00:09:31,480
+these were actually distinct data
+这些实际上是不同的数据
+
+255
+00:09:31,480 --> 00:09:33,070
+structures and wikipedia has them as
+结构，而今天维基百科将它们作为
+
+256
+00:09:33,070 --> 00:09:35,650
+distinct data structures today so the
+不同的数据结构，所以
+
+257
+00:09:35,650 --> 00:09:40,210
+first B tree came out in 1971 the then
+第一个 B 树出现在 1971 年，
+
+258
+00:09:40,210 --> 00:09:42,640
+the B tree B+ tree came out two years
+然后 B 树 B+ 树出现了
+
+259
+00:09:42,640 --> 00:09:45,550
+later in 1973 there's no paper that
+两年 直到 1973 年，还没有论文
+
+260
+00:09:45,550 --> 00:09:48,190
+describes what the B+ tree is there's a
+描述什么是 B+ 树，但
+
+261
+00:09:48,190 --> 00:09:51,160
+1979 survey paper that says here's all
+1979 年的调查论文说，这里
+
+262
+00:09:51,160 --> 00:09:54,220
+that you know the B+ tree or B trees
+是您所知道的 B+ 树或 B 树
+
+263
+00:09:54,220 --> 00:09:56,500
+that are out there and oh by the way IBM
+的全部内容，哦，顺便说一下，IBM
+
+264
+00:09:56,500 --> 00:09:58,750
+invented the B+ tree in 1973 and
+在 1973 年发明了 B+ 树，
+
+265
+00:09:58,750 --> 00:09:59,980
+supposedly there's a tech report that
+据说还有 一份技术
+
+266
+00:09:59,980 --> 00:10:02,500
+says describes this but you can't easily
+报告描述了这一点，但你不能
+
+267
+00:10:02,500 --> 00:10:04,690
+find it on the internet and then during
+在互联网上轻易找到它，然后
+
+268
+00:10:04,690 --> 00:10:06,430
+the 70's and 80's was a bunch of these
+在 70 年代和 80 年代是一堆
+
+269
+00:10:06,430 --> 00:10:08,110
+other ones that are variants on this the
+其他的变种，
+
+270
+00:10:08,110 --> 00:10:10,990
+P star tree is variant on the B tree and
+P 星树是 B 树的变种，
+
+271
+00:10:10,990 --> 00:10:13,720
+then actually the B link tree is came
+然后实际上 B 链接树
+
+272
+00:10:13,720 --> 00:10:15,310
+out in 1981 and actually this was
+于 1981 年问世，实际上这是
+
+273
+00:10:15,310 --> 00:10:18,070
+invented here at CMU this is the paper
+在 CMU 发明的，这是
+
+274
+00:10:18,070 --> 00:10:19,990
+that describes it so this is written by
+描述它的论文，所以这是由
+
+275
+00:10:19,990 --> 00:10:22,300
+Phil Lehman that dude still works here
+Phil Lehman 写的，老兄仍然在这里工作，
+
+276
+00:10:22,300 --> 00:10:24,730
+he's in the dean's office so you if you
+他在院长办公室，所以如果你
+
+277
+00:10:24,730 --> 00:10:25,930
+loved this lecture you can go talk to
+喜欢这个讲座，你可以 去和
+
+278
+00:10:25,930 --> 00:10:27,310
+him he loves every time I see him I
+他谈谈他每次见到他
+
+279
+00:10:27,310 --> 00:10:28,810
+always like oh we discuss the peeling
+都喜欢我总是喜欢哦我们
+
+280
+00:10:28,810 --> 00:10:30,850
+tree in my class and he's like all that
+在课堂上讨论剥落的树他就像所有的
+
+281
+00:10:30,850 --> 00:10:33,040
+paper so right dope forty years later
+纸所以正确的涂料四十年后
+
+282
+00:10:33,040 --> 00:10:36,190
+it's it's still around so the reason why
+它仍然存在所以
+
+283
+00:10:36,190 --> 00:10:37,450
+I showed these these other these other
+我向这些其他人展示这些其他人的原因
+
+284
+00:10:37,450 --> 00:10:40,180
+trees it's because we're gonna focus on
+树是 因为我们将专注
+
+285
+00:10:40,180 --> 00:10:43,510
+the B+ tree but we're not gonna in a
+于 B+ 树 但我们不会在
+
+286
+00:10:43,510 --> 00:10:45,340
+modern system we're not gonna use it
+现代系统中 我们不会
+
+287
+00:10:45,340 --> 00:10:47,320
+exactly the way it's described in like
+完全按照 1970 年代描述的方式使用它
+
+288
+00:10:47,320 --> 00:10:49,540
+the 1970s we're actually gonna borrow
+我们实际上会
+
+289
+00:10:49,540 --> 00:10:51,760
+bits and pieces from all these other
+从所有这些其他
+
+290
+00:10:51,760 --> 00:10:53,920
+trees that existed before but now we're
+树中借用点点滴滴 以前存在，但现在我们
+
+291
+00:10:53,920 --> 00:10:56,590
+just gonna call that the B plus tree and
+只是将其称为 B 加树，
+
+292
+00:10:56,590 --> 00:10:58,510
+a lot of times you'll see in in database
+并且很多时候您会在数据库
+
+293
+00:10:58,510 --> 00:10:59,950
+systems they'll say we're using a B tree
+系统中看到他们会说我们正在使用 B 树
+
+294
+00:10:59,950 --> 00:11:01,950
+I can almost guarantee you or at least
+我几乎可以向您保证，或者至少
+
+295
+00:11:01,950 --> 00:11:04,780
+I've yet to see one assistant where they
+我' 我还没有看到一个助手
+
+296
+00:11:04,780 --> 00:11:06,820
+say they're using a B tree and it's not
+说他们正在使用 B 树，实际上它并不是
+
+297
+00:11:06,820 --> 00:11:08,740
+really actually a B+ tree like the
+真正的 B+ 树，就像
+
+298
+00:11:08,740 --> 00:11:09,850
+look at the Postgres source code a
+查看 Postgres 源代码一样，
+
+299
+00:11:09,850 --> 00:11:11,590
+person has documentation they talk about
+有人拥有他们谈论
+
+300
+00:11:11,590 --> 00:11:14,440
+using a b-tree but from from as much as
+使用 b 树的文档，但来自多达
+
+301
+00:11:14,440 --> 00:11:16,000
+I can tell looking at at what it's
+我可以告诉看它
+
+302
+00:11:16,000 --> 00:11:18,910
+actually doing it's really a B+ tree so
+实际上在做什么 它确实是一棵 B+ 树
+
+303
+00:11:18,910 --> 00:11:19,600
+again these words are used
+所以这些词可以互换使用
+
+304
+00:11:19,600 --> 00:11:21,280
+interchangeably I'll try to say always
+
+305
+00:11:21,280 --> 00:11:23,440
+B+ tree I'll pray for mention what a B
+
+306
+00:11:23,440 --> 00:11:25,510
+tree is later on but in practice this is
+
+307
+00:11:25,510 --> 00:11:26,620
+what we care about this is what we want
+我们关心这就是我们
+
+308
+00:11:26,620 --> 00:11:31,150
+to use in our system okay so a B+ tree
+想要在我们的系统中使用的东西，所以 B+ 树
+
+309
+00:11:31,150 --> 00:11:34,420
+is a self-balancing tree data structure
+是一棵自平衡树 数据结构，
+
+310
+00:11:34,420 --> 00:11:37,300
+so the B in in in in B+ tree or B tree
+所以 B in in in in B+ tree 或 B tree
+
+311
+00:11:37,300 --> 00:11:40,540
+means balanced and the idea is that it's
+意味着平衡，这个想法是它
+
+312
+00:11:40,540 --> 00:11:44,710
+gonna keep data we insert into our urns
+会保持我们插入到
+
+313
+00:11:44,710 --> 00:11:46,530
+our data structures in sorted order and
+我们的数据结构中的数据按排序顺序，
+
+314
+00:11:46,530 --> 00:11:48,970
+that's gonna allow us to do efficient
+这将允许我们沿着叶子进行有效的
+
+315
+00:11:48,970 --> 00:11:51,340
+searches rental scans along the leaf
+搜索租赁扫描
+
+316
+00:11:51,340 --> 00:11:53,380
+nodes assertions and Dilys image and we
+节点断言和 Dilys 图像，我们
+
+317
+00:11:53,380 --> 00:11:57,010
+can do all this in in log n again
+可以在 log n 中再次完成所有这些
+
+318
+00:11:57,010 --> 00:11:58,480
+contrasting this with the hash table the
+将其与
+
+319
+00:11:58,480 --> 00:12:00,370
+hash table in the best case scenario was
+哈希表对比 最好情况下的哈希表是
+
+320
+00:12:00,370 --> 00:12:04,660
+a 1 worst case scenario is o n in a B+
+1 最坏情况下的情况是在 B+
+
+321
+00:12:04,660 --> 00:12:07,240
+tree because it's balanced it's always
+树中，因为它是平衡的，它总是
+
+322
+00:12:07,240 --> 00:12:09,640
+gonna be log N and that means
+会被记录 N，这
+
+323
+00:12:09,640 --> 00:12:11,380
+essentially no matter that the distance
+基本上意味着无论
+
+324
+00:12:11,380 --> 00:12:13,780
+from the root to any any key in a leaf
+从根到叶节点中任何键的
+
+325
+00:12:13,780 --> 00:12:17,350
+node is always log n no matter how many
+距离始终为 log n，无论
+
+326
+00:12:17,350 --> 00:12:19,210
+times we delete and insert and change
+我们删除、插入和更改多少次
+
+327
+00:12:19,210 --> 00:12:22,420
+things around so the B plus tree came
+，因此 B 加树
+
+328
+00:12:22,420 --> 00:12:24,850
+out in the 1970s because they were
+在 1970 年代出现，因为它们 正在
+
+329
+00:12:24,850 --> 00:12:27,100
+trying to build a data structure that
+尝试构建一个数据结构，
+
+330
+00:12:27,100 --> 00:12:28,630
+would make it efficient to do you know
+它可以让你知道
+
+331
+00:12:28,630 --> 00:12:32,560
+index lookups on Horn Hardware where the
+在 Horn 硬件上的索引查找是有效的，其中
+
+332
+00:12:32,560 --> 00:12:34,210
+disk was super slow and memory memory
+磁盘超慢且
+
+333
+00:12:34,210 --> 00:12:37,870
+was limit limited so the B+ tree has
+内存有限，因此
+
+334
+00:12:37,870 --> 00:12:39,880
+this nice advantage of compared to like
+与 li 相比，B+ 树具有这个很好的优势
+
+335
+00:12:39,880 --> 00:12:41,770
+a B tree is that you can just scan along
+一个 B 树是你可以
+
+336
+00:12:41,770 --> 00:12:43,330
+the leaf nodes after you traverse to the
+在你遍历到底部后沿着叶节点扫描
+
+337
+00:12:43,330 --> 00:12:45,430
+bottom and you'll read everything in
+，你会以
+
+338
+00:12:45,430 --> 00:12:47,350
+special order or sweater doing so when
+特殊的顺序阅读所有内容或毛衣，所以
+
+339
+00:12:47,350 --> 00:12:48,550
+to scan along them you don't never have
+当你沿着它们扫描时，你通常不必
+
+340
+00:12:48,550 --> 00:12:54,310
+to go back up in general the again even
+返回 再次，
+
+341
+00:12:54,310 --> 00:12:55,780
+though this was designed in the the
+尽管它是在 1970 年代设计的，但
+
+342
+00:12:55,780 --> 00:12:58,750
+1970s it's still widely used today and
+它今天仍然被广泛使用，
+
+343
+00:12:58,750 --> 00:13:00,640
+actually even for faster discs and for
+实际上甚至用于更快的磁盘和
+
+344
+00:13:00,640 --> 00:13:02,170
+in-memory databases where there is no
+没有磁盘的内存数据库，
+
+345
+00:13:02,170 --> 00:13:04,810
+disk the B+ tree actually outperforms a
+B+ 树实际上胜过
+
+346
+00:13:04,810 --> 00:13:07,090
+lot of things and it's still very very
+很多事情，它仍然非常
+
+347
+00:13:07,090 --> 00:13:09,790
+useful so this is the original paper
+有用，所以这个 是原始论文
+
+348
+00:13:09,790 --> 00:13:11,710
+this is one that everyone cites the
+这是一篇每个人都引用了
+
+349
+00:13:11,710 --> 00:13:14,920
+ubiquitous B tree from 1979 and it's
+1979 年无处不在的 B 树的
+
+350
+00:13:14,920 --> 00:13:16,870
+here in this paper they describe or they
+论文，他们在这篇论文中描述或
+
+351
+00:13:16,870 --> 00:13:18,010
+mentioned that oh yeah there's this
+提到了哦，是的
+
+352
+00:13:18,010 --> 00:13:19,840
+thing called the P plus tree from IBM
+，IBM 有一种叫做 P 加树的东西
+
+353
+00:13:19,840 --> 00:13:21,820
+and it came out in 1973
+，它于 1973 年问世
+
+354
+00:13:21,820 --> 00:13:24,310
+and this is what normal people cite when
+，这就是 当
+
+355
+00:13:24,310 --> 00:13:25,960
+you want to cite a paper for for the be
+你想引用一篇论文时，普通人会
+
+356
+00:13:25,960 --> 00:13:28,690
+blustery so what are the properties are
+引用，那么什么是属性
+
+357
+00:13:28,690 --> 00:13:30,820
+going to be plus tree so it's considered
+将被加上树所以它被认为
+
+358
+00:13:30,820 --> 00:13:33,070
+an M way search tree meeting we can
+是一种 M 方式搜索树会议我们可以
+
+359
+00:13:33,070 --> 00:13:35,530
+within every node in our in our in our
+在我们的
+
+360
+00:13:35,530 --> 00:13:37,990
+tree it can have M different paths to up
+树中的每个节点内它可以有 M 条不同的路径
+
+361
+00:13:37,990 --> 00:13:40,180
+to other nodes or up to n paths not
+到其他节点或最多 n 条路径并不
+
+362
+00:13:40,180 --> 00:13:42,610
+always exactly M again it's perfectly
+总是完全 M 再次它是完全
+
+363
+00:13:42,610 --> 00:13:44,680
+balanced we're going to mean this is the
+平衡的，我们的意思是
+
+364
+00:13:44,680 --> 00:13:45,940
+data structure maintains the balance
+
+365
+00:13:45,940 --> 00:13:48,790
+over time as you as you modify the tree
+当你修改树时，数据结构会随着时间的推移保持平衡
+
+366
+00:13:48,790 --> 00:13:52,000
+and so by balance I mean that in the
+，所以我的意思是平衡 在
+
+367
+00:13:52,000 --> 00:13:54,340
+distance from one leaf node or any leaf
+从一个叶节点或任何叶节点到根的距离中，
+
+368
+00:13:54,340 --> 00:13:55,750
+node to the root is always going to be
+
+369
+00:13:55,750 --> 00:13:59,110
+log n it's always gonna do the same the
+它总是会做同样的
+
+370
+00:13:59,110 --> 00:14:00,400
+other thing is have to do is that we
+事情，另一件事是我们
+
+371
+00:14:00,400 --> 00:14:02,290
+have to maintain this this guarantee
+必须保持这一点，
+
+372
+00:14:02,290 --> 00:14:06,600
+that the each node is at least half full
+保证每个节点都在 至少半满，
+
+373
+00:14:06,600 --> 00:14:09,130
+so again if I for the number of keys I
+所以如果我的
+
+374
+00:14:09,130 --> 00:14:11,110
+can have in my node I have to have more
+节点中可以拥有的密钥数量我必须在我的树中
+
+375
+00:14:11,110 --> 00:14:13,660
+than half minus one half number passed
+传递一半以上的一半数字
+
+376
+00:14:13,660 --> 00:14:15,580
+in my in my tree and then I have to have
+，然后我必须
+
+377
+00:14:15,580 --> 00:14:17,980
+less than n minus 1 so n minus 1 would
+少于 n 减 1 所以 n 减 1 将
+
+378
+00:14:17,980 --> 00:14:19,930
+be a completely full node so I always
+是一个完全完整的节点，所以我总是
+
+379
+00:14:19,930 --> 00:14:22,030
+have to be at least half full and then
+必须至少半满，然后
+
+380
+00:14:22,030 --> 00:14:23,020
+we'll see this when we started doing
+当我们开始删除时我们会看到这一点，
+
+381
+00:14:23,020 --> 00:14:26,350
+deletes if I'm not then I have to start
+如果我不是，那么我必须开始
+
+382
+00:14:26,350 --> 00:14:28,090
+moving data around so that my note is
+移动数据，以便我的笔记
+
+383
+00:14:28,090 --> 00:14:30,490
+half full and again that's how they're
+一次又一次地半满 这就是他们将
+
+384
+00:14:30,490 --> 00:14:31,840
+gonna guarantee this first one that the
+如何保证第一个
+
+385
+00:14:31,840 --> 00:14:35,380
+distance is always always the same and
+距离永远是 总是相同的，
+
+386
+00:14:35,380 --> 00:14:36,790
+then the simple one is that every every
+然后简单的是
+
+387
+00:14:36,790 --> 00:14:38,080
+inner node which I'll describe in the
+，我将在下一张幻灯片中描述的每个内部节点，
+
+388
+00:14:38,080 --> 00:14:41,200
+next slide if you have K keys in stored
+如果您的节点中存储了 K 个密钥，
+
+389
+00:14:41,200 --> 00:14:43,120
+in your node and you can have up to n
+并且您最多可以拥有 n
+
+390
+00:14:43,120 --> 00:14:44,890
+minus 1 you have K keys you're gonna
+减 1，那么您将拥有 K 个密钥
+
+391
+00:14:44,890 --> 00:14:47,410
+have k plus 1 non no children job cabe
+have k plus 1 non no child job cabe
+
+392
+00:14:47,410 --> 00:14:49,870
+pass or pointers to k plus 1 pass are
+pass 或指向 k plus 1 pass 的
+
+393
+00:14:49,870 --> 00:14:52,720
+pointers to children below actually quit
+指针是指向下面的孩子的指针实际上退出
+
+394
+00:14:52,720 --> 00:14:54,370
+show hands who here has seen a B+ tree
+了这里已经看过 B+ 树的人之前很少看到 B+ 树
+
+395
+00:14:54,370 --> 00:14:57,610
+before very few good ok good
+好 好
+
+396
+00:14:57,610 --> 00:14:59,320
+again this is the best data structure
+再次好 这是数据库的最佳数据结构
+
+397
+00:14:59,320 --> 00:15:00,810
+for databases so this is why you're here
+所以这个 这就是你在这里的
+
+398
+00:15:00,810 --> 00:15:03,210
+alright so this is the basic B plus tree
+原因所以这是基本的 B 加
+
+399
+00:15:03,210 --> 00:15:06,460
+all right and the layout is that again
+树，布局是再次
+
+400
+00:15:06,460 --> 00:15:08,110
+along the bottom we have our leaf nodes
+沿着底部我们有我们的叶节点
+
+401
+00:15:08,110 --> 00:15:10,930
+and then any node that's not a leaf node
+，然后任何不是叶节点的节点都
+
+402
+00:15:10,930 --> 00:15:13,030
+is considered to internode now this tree
+被认为是节点间，现在这棵树
+
+403
+00:15:13,030 --> 00:15:14,680
+has a height of 2 I mean it has two
+有一个高度 共 2 我的意思是它有两个
+
+404
+00:15:14,680 --> 00:15:17,200
+levels so the inner node is also the
+级别 所以内部节点也是
+
+405
+00:15:17,200 --> 00:15:18,670
+root node alright there's always been
+根节点 好吧
+
+406
+00:15:18,670 --> 00:15:19,840
+one node at the top because that's how
+，顶部总是有一个节点，因为这就是
+
+407
+00:15:19,840 --> 00:15:23,230
+you enter into the tree and then down
+你进入树的方式，
+
+408
+00:15:23,230 --> 00:15:25,390
+here in the in the leaf nodes we're
+然后在叶节点中我们
+
+409
+00:15:25,390 --> 00:15:27,100
+actually gonna have sibling pointers so
+实际上会拥有 兄弟指针所以
+
+410
+00:15:27,100 --> 00:15:28,300
+this is something that came from the be
+这是来自fr的东西 om be
+
+411
+00:15:28,300 --> 00:15:31,600
+link tree so at any internode won't have
+链接树，所以在任何节点间都不会有
+
+412
+00:15:31,600 --> 00:15:33,250
+sibling pointers but any leaf node will
+兄弟指针，但任何叶节点都有，
+
+413
+00:15:33,250 --> 00:15:35,230
+so now I can traverse at the bottom and
+所以现在我可以在底部遍历并
+
+414
+00:15:35,230 --> 00:15:35,620
+scan
+扫描
+
+415
+00:15:35,620 --> 00:15:38,170
+and you know in any direction I want to
+，你知道在任何方向我都想
+
+416
+00:15:38,170 --> 00:15:39,820
+keep finding my neighbors get more
+继续找到我的邻居，
+
+417
+00:15:39,820 --> 00:15:43,410
+getting more datum so in the Internode's
+得到更多的数据，所以在 节点间的
+
+418
+00:15:43,410 --> 00:15:46,180
+it's gonna be this this combination of
+它将会是这个
+
+419
+00:15:46,180 --> 00:15:48,130
+keys and pointers and so for the
+键和指针的组合，所以对于
+
+420
+00:15:48,130 --> 00:15:49,810
+Internode's the pointer it's always
+节点间的指针它
+
+421
+00:15:49,810 --> 00:15:51,910
+going to be to another node or null that
+总是指向另一个节点或 null
+
+422
+00:15:51,910 --> 00:15:53,710
+there's nothing there and then the key
+那里什么都没有，然后键
+
+423
+00:15:53,710 --> 00:15:55,839
+is just the the whatever attributes
+就是
+
+424
+00:15:55,839 --> 00:15:57,730
+we're building our index on whatever
+我们正在构建索引的任何属性 无论
+
+425
+00:15:57,730 --> 00:16:00,130
+we're trying to store in this and then
+我们试图存储什么，
+
+426
+00:16:00,130 --> 00:16:03,360
+these keys are then used to determine
+然后这些键用于确定
+
+427
+00:16:03,360 --> 00:16:05,680
+which path you should go down as you
+当您开始搜索给定键时应该走哪条路径，
+
+428
+00:16:05,680 --> 00:16:08,290
+start doing a search for a given key so
+因此
+
+429
+00:16:08,290 --> 00:16:10,270
+in this case here for this first key
+在这种情况下，这里是第一个键
+
+430
+00:16:10,270 --> 00:16:12,820
+five so the path to the left of it going
+5，因此是向左的路径 朝着
+
+431
+00:16:12,820 --> 00:16:15,310
+this direction will be for any value any
+这个方向前进的任何值将是任何
+
+432
+00:16:15,310 --> 00:16:18,550
+keys that are less than five and then
+小于五个的键，然后
+
+433
+00:16:18,550 --> 00:16:20,200
+for the the one that comes after it
+对于它之后的键
+
+434
+00:16:20,200 --> 00:16:22,150
+would be implicitly anything less than
+将隐式小于
+
+435
+00:16:22,150 --> 00:16:24,490
+nine or greater than five so if I'm
+九或大于五，所以如果我
+
+436
+00:16:24,490 --> 00:16:26,050
+looking for something a value a key
+正在寻找某个值一个键
+
+437
+00:16:26,050 --> 00:16:27,880
+that's less than five I would look at
+日 在不到 5 点时，我会看看
+
+438
+00:16:27,880 --> 00:16:29,770
+this and say well I'm looking for key
+这个，然后说我正在寻找关键点
+
+439
+00:16:29,770 --> 00:16:32,110
+one one is less than five so I go down
+1 点不到 5，所以我沿着
+
+440
+00:16:32,110 --> 00:16:34,390
+this path and now I find my leaf node
+这条路走下去，现在我发现我的叶节点
+
+441
+00:16:34,390 --> 00:16:36,160
+not tonight and I try to you know find
+不在今晚，我试着让你知道找到我想要
+
+442
+00:16:36,160 --> 00:16:39,730
+the thing that I'm looking for the leaf
+的东西 '正在寻找叶
+
+443
+00:16:39,730 --> 00:16:43,089
+nodes the key value pairs are just in
+节点，键值对
+
+444
+00:16:43,089 --> 00:16:44,560
+just the key the same way they are up
+只是在键中，就像它们
+
+445
+00:16:44,560 --> 00:16:46,240
+above in the inter nodes but then the
+在节点间的上方一样，但是
+
+446
+00:16:46,240 --> 00:16:48,730
+value can differ we'll see this in a
+值可能会有所不同，我们将在一
+
+447
+00:16:48,730 --> 00:16:50,650
+second could either be a record ID to a
+秒钟内看到这可能是记录 ID 到
+
+448
+00:16:50,650 --> 00:16:53,500
+tuple it could be the actual tuple
+元组 它可能是实际的元组
+
+449
+00:16:53,500 --> 00:16:55,810
+itself it doesn't matter it's just that
+本身 无关紧要
+
+450
+00:16:55,810 --> 00:16:57,880
+the inner notes have pointers the leaf
+只是内部注释具有叶
+
+451
+00:16:57,880 --> 00:17:01,870
+nodes have had datum so again this is
+节点具有数据的指针 所以这
+
+452
+00:17:01,870 --> 00:17:03,790
+just a repeat what I said but then the
+只是重复我所说的但是然后
+
+453
+00:17:03,790 --> 00:17:05,559
+the way to think about it in each node
+在每个节点中考虑它的方式
+
+454
+00:17:05,559 --> 00:17:08,500
+it's a it's an array of key value pairs
+它是 a 它是一个键值对数组
+
+455
+00:17:08,500 --> 00:17:10,449
+and you're using the keys to determine
+，您正在使用键来
+
+456
+00:17:10,449 --> 00:17:11,770
+whether it's the if you're in the leaf
+确定它是否是您是否在叶
+
+457
+00:17:11,770 --> 00:17:13,630
+node whether it's a thing you want or if
+节点中，是否是您想要的东西，或者
+
+458
+00:17:13,630 --> 00:17:15,459
+you're interlude whether you go left or
+您是否在插播向左或
+
+459
+00:17:15,459 --> 00:17:15,839
+right
+向右，
+
+460
+00:17:15,839 --> 00:17:19,510
+so in general but not always the keys
+所以一般来说 并不总是键
+
+461
+00:17:19,510 --> 00:17:21,459
+are always in each node are always
+总是在每个节点中总是
+
+462
+00:17:21,459 --> 00:17:23,530
+sorted in whatever the the sorting order
+按照您的排序顺序进行排序
+
+463
+00:17:23,530 --> 00:17:25,030
+you want the collation you want for that
+想要你想要的那个节点的排序规则
+
+464
+00:17:25,030 --> 00:17:27,130
+node right so my example here we
+所以我在这里的例子我们
+
+465
+00:17:27,130 --> 00:17:29,140
+disordered you know we in a numerical
+把你知道我们按数字
+
+466
+00:17:29,140 --> 00:17:31,600
+order and so that's gonna allows when we
+顺序打乱了所以当我们
+
+467
+00:17:31,600 --> 00:17:33,730
+jump into a node potentially if
+跳入一个节点时可能会允许如果
+
+468
+00:17:33,730 --> 00:17:35,350
+depending how its implemented we can do
+取决于它的实现方式我们可以
+
+469
+00:17:35,350 --> 00:17:37,240
+binary search in each node and try to
+在每个节点中进行二分搜索并尝试
+
+470
+00:17:37,240 --> 00:17:38,260
+find the thing that we're looking for
+找到我们正在寻找的东西，
+
+471
+00:17:38,260 --> 00:17:40,090
+rather than just having you a linear
+而不仅仅是让您进行线性
+
+472
+00:17:40,090 --> 00:17:42,340
+search but sometimes when your search is
+搜索，但有时当您的搜索
+
+473
+00:17:42,340 --> 00:17:46,900
+good too so the contents of again of
+也很好时，
+
+474
+00:17:46,900 --> 00:17:48,940
+what these values are in
+这些值在
+
+475
+00:17:48,940 --> 00:17:50,560
+leaf nodes can vary depending on the
+叶节点中的内容可能会因数据库系统而异，
+
+476
+00:17:50,560 --> 00:17:52,630
+database system again it could be a
+这可能是一个
+
+477
+00:17:52,630 --> 00:17:53,980
+record IDs it could be it could be the
+记录 ID 它可能是
+
+478
+00:17:53,980 --> 00:17:55,600
+actual tuples themselves and we'll see
+实际的元组本身，我们将
+
+479
+00:17:55,600 --> 00:17:58,660
+some examples in a second all right so
+在一秒钟内看到一些示例，所以
+
+480
+00:17:58,660 --> 00:18:00,310
+let's actually look to see how this leaf
+让我们实际看看这个叶
+
+481
+00:18:00,310 --> 00:18:04,390
+nodes were actually implemented so again
+节点是如何实际实现的，所以
+
+482
+00:18:04,390 --> 00:18:05,680
+logically you just sort of think of it
+逻辑上你只是有点
+
+483
+00:18:05,680 --> 00:18:06,850
+like this that you have this this this
+像这样想 你有这个这个这个
+
+484
+00:18:06,850 --> 00:18:10,000
+this array and you alternate with key
+这个数组，你用
+
+485
+00:18:10,000 --> 00:18:11,560
+value pairs and this is typically how a
+键值对交替，这通常是
+
+486
+00:18:11,560 --> 00:18:14,290
+lot of textbook should show what a B+
+很多教科书应该如何展示B+
+
+487
+00:18:14,290 --> 00:18:16,300
+tree node looks like so the first thing
+树节点的样子，所以首先
+
+488
+00:18:16,300 --> 00:18:17,470
+to point is this since this is a leaf
+要指出的是这个，因为这是一个 叶
+
+489
+00:18:17,470 --> 00:18:19,570
+node we have pointers at the end at the
+节点 我们在数组开头的末尾有
+
+490
+00:18:19,570 --> 00:18:21,430
+end of the beginning of our array to our
+指向我们
+
+491
+00:18:21,430 --> 00:18:23,650
+siblings right and this would be a node
+兄弟姐妹的指针，这将是一个节点
+
+492
+00:18:23,650 --> 00:18:25,210
+ID or page ready to allow us to go in
+ID 或页面，准备好允许我们朝
+
+493
+00:18:25,210 --> 00:18:26,530
+either direction or if we're at the
+任一方向前进，或者如果我们在
+
+494
+00:18:26,530 --> 00:18:27,850
+right side of the tree or the left side
+右侧 树或树的
+
+495
+00:18:27,850 --> 00:18:31,090
+of the tree it would just be null again
+左侧它会再次为空
+
+496
+00:18:31,090 --> 00:18:33,940
+nobody actually stores no real data a
+没有人实际上不存储任何真实数据
+
+497
+00:18:33,940 --> 00:18:37,180
+system would store their their their
+系统会存储他们的
+
+498
+00:18:37,180 --> 00:18:38,890
+inner internal internals key value
+内部内部键值
+
+499
+00:18:38,890 --> 00:18:41,130
+arrays for a B+ tree leaf node like this
+数组，用于像这样的 B+ 树叶节点
+
+500
+00:18:41,130 --> 00:18:43,090
+and these years key value pairs and
+和这些年的键值对和
+
+501
+00:18:43,090 --> 00:18:44,620
+these user pointers typically it's
+这些用户 指针通常是
+
+502
+00:18:44,620 --> 00:18:47,080
+stored separately so just like in our
+单独存储的，所以就像在我们
+
+503
+00:18:47,080 --> 00:18:48,340
+slot of pages we would have a header
+的页面槽中一样，我们会有一个标头
+
+504
+00:18:48,340 --> 00:18:50,560
+that tells us some metadata about what's
+，它告诉我们一些关于页面中内容的元数据，
+
+505
+00:18:50,560 --> 00:18:52,330
+in our page so in this case here we
+因此在这种情况下，在这里我们
+
+506
+00:18:52,330 --> 00:18:53,680
+could say what level in the tree we are
+可以说树中的哪个级别我们
+
+507
+00:18:53,680 --> 00:18:55,750
+essentially how many steps away from the
+基本上离
+
+508
+00:18:55,750 --> 00:18:58,390
+from the root we are how many free slots
+从根开始，我们是
+
+509
+00:18:58,390 --> 00:19:00,880
+that we have remaining in our in our
+在我们的
+
+510
+00:19:00,880 --> 00:19:03,730
+node and then the next person and then
+节点中剩余多少空闲插槽，然后是下一个人，然后
+
+511
+00:19:03,730 --> 00:19:05,790
+now you see that we separated out the
+现在您看到我们
+
+512
+00:19:05,790 --> 00:19:09,190
+the keys and the values everything I
+将键和值分开了所有我
+
+513
+00:19:09,190 --> 00:19:10,150
+guess why you'd want to do something
+猜你为什么想要做类似的事情
+
+514
+00:19:10,150 --> 00:19:24,490
+like this yes he said so that for a
+这个 是的，他说，所以对于
+
+515
+00:19:24,490 --> 00:19:27,040
+given page on a B+ tree node that all
+B+ 树节点上的给定页面，
+
+516
+00:19:27,040 --> 00:19:29,560
+the keys can fit in one page and then
+所有键都可以放在一页中，
+
+517
+00:19:29,560 --> 00:19:31,570
+the values can fit another page know the
+然后值可以适合另一页
+
+518
+00:19:31,570 --> 00:19:33,190
+the keys and values are typically always
+知道键和值通常总是
+
+519
+00:19:33,190 --> 00:19:38,620
+stored in the same page yes exactly says
+存储在同一页中
+
+520
+00:19:38,620 --> 00:19:40,230
+they're not of the same size right
+
+521
+00:19:40,230 --> 00:19:42,250
+furthermore also too when if you're
+此外，如果您
+
+522
+00:19:42,250 --> 00:19:44,890
+doing binary search on this you want
+对此进行二分搜索，您希望
+
+523
+00:19:44,890 --> 00:19:46,840
+everything to fit in your CPU caches so
+所有内容都适合您的 CPU 缓存，
+
+524
+00:19:46,840 --> 00:19:48,430
+if you have if you're back here with all
+因此如果您回到这里，将所有
+
+525
+00:19:48,430 --> 00:19:50,320
+this intermixed in order to binary
+这些混合在一起进行二分
+
+526
+00:19:50,320 --> 00:19:51,670
+search I actually don't need the values
+搜索，我实际上也有同样的大小
+
+527
+00:19:51,670 --> 00:19:52,750
+at this point because I'm just trying to
+在这一点上不需要这些值，因为我只是想
+
+528
+00:19:52,750 --> 00:19:54,550
+find the key that I want so if you break
+找到我想要的键，所以如果你
+
+529
+00:19:54,550 --> 00:19:56,590
+it up right depending whether it's fixed
+根据它是固定
+
+530
+00:19:56,590 --> 00:19:58,900
+length or or vary length you can jump
+长度还是不同长度来正确分解它，你可以
+
+531
+00:19:58,900 --> 00:20:00,550
+through the keys much more efficiently
+更有效地跳过
+
+532
+00:20:00,550 --> 00:20:02,410
+the values typically are always fixed
+键值通常 总是固定
+
+533
+00:20:02,410 --> 00:20:02,860
+length
+长度的，
+
+534
+00:20:02,860 --> 00:20:04,150
+they're either like you know 32bit or
+它们就像你知道 32 位或
+
+535
+00:20:04,150 --> 00:20:07,600
+64bit record IDs if they're tuple that's
+64 位记录 ID，如果它们是
+
+536
+00:20:07,600 --> 00:20:09,610
+a little complicated but in general you
+有点复杂的元组，但总的来说，
+
+537
+00:20:09,610 --> 00:20:12,520
+you always want to separate them right
+你总是想把它们分开，
+
+538
+00:20:12,520 --> 00:20:13,480
+and again the way it works is just
+而且它的工作方式就是
+
+539
+00:20:13,480 --> 00:20:15,429
+whatever offset you are in in the key
+你所处的任何偏移量 钥匙
+
+540
+00:20:15,429 --> 00:20:17,200
+array corresponds to some offer that in
+阵列公司 响应值射线中的一些提议，
+
+541
+00:20:17,200 --> 00:20:19,780
+the in the value ray so if I find a key
+所以如果我找到一个
+
+542
+00:20:19,780 --> 00:20:21,340
+I'm looking for I'm gonna offset for
+我正在寻找的键，我会抵消
+
+543
+00:20:21,340 --> 00:20:23,020
+then I know just to jump to offset form
+然后我知道只是跳转到
+
+544
+00:20:23,020 --> 00:20:24,520
+the value ray and that finds the thing
+从值射线中抵消，然后
+
+545
+00:20:24,520 --> 00:20:27,640
+that I that I want so as I already said
+找到我想要的东西 所以正如我已经说过
+
+546
+00:20:27,640 --> 00:20:29,650
+the the values can vary depending on the
+的，这些值可能会因系统而异，
+
+547
+00:20:29,650 --> 00:20:31,690
+system some systems will destroy the
+某些系统会破坏
+
+548
+00:20:31,690 --> 00:20:33,370
+record ID this is PI the most common
+记录 ID 这是 PI 人们使用的最常见的
+
+549
+00:20:33,370 --> 00:20:34,990
+implementation that people use this is
+实现 这是
+
+550
+00:20:34,990 --> 00:20:37,179
+what Postgres does this is what all the
+Postgres 所做的 这是所有
+
+551
+00:20:37,179 --> 00:20:39,059
+other commercial database systems do
+其他商业数据库系统
+
+552
+00:20:39,059 --> 00:20:41,830
+what's more complicated and we can talk
+所做的 更复杂和 我们可以
+
+553
+00:20:41,830 --> 00:20:44,770
+about next class is what does it look
+讨论下一节课是
+
+554
+00:20:44,770 --> 00:20:45,970
+like when you actually stored the tuples
+当你将元组实际存储
+
+555
+00:20:45,970 --> 00:20:48,370
+in the data so think about this instead
+在数据中时它是什么样子的，所以考虑一下这个，而
+
+556
+00:20:48,370 --> 00:20:51,040
+of having a table heap with my tuples
+不是有一个包含我的元组的表堆
+
+557
+00:20:51,040 --> 00:20:53,590
+and then a B+ tree that stores my my
+，然后是一个存储我的主键的 B+ 树
+
+558
+00:20:53,590 --> 00:20:56,320
+primary key and so in the front to keep
+，所以在前面
+
+559
+00:20:56,320 --> 00:20:57,940
+in sync what if just they were to merge
+保持同步，如果它们合并
+
+560
+00:20:57,940 --> 00:21:00,940
+together and the the leaf nodes what's
+在一起，叶节点
+
+561
+00:21:00,940 --> 00:21:03,340
+actually the tables that the tuples you
+实际上是什么表，你知道的元组
+
+562
+00:21:03,340 --> 00:21:05,530
+know corresponding to a primary key so
+对应于主键，所以
+
+563
+00:21:05,530 --> 00:21:07,299
+now when I want to do traversal to find
+现在当我想要遍历以
+
+564
+00:21:07,299 --> 00:21:09,630
+out a particular key or particular tuple
+找出特定的键或特定的元组时
+
+565
+00:21:09,630 --> 00:21:11,620
+instead of having to do in the first
+厌烦在第一种
+
+566
+00:21:11,620 --> 00:21:13,480
+case I traverse the index get a record
+情况下我遍历索引获取记录
+
+567
+00:21:13,480 --> 00:21:14,770
+ID then do a lookup in the page table
+ID 然后在页表中查找
+
+568
+00:21:14,770 --> 00:21:16,540
+and find that and they go scan inside
+并找到它然后他们在
+
+569
+00:21:16,540 --> 00:21:18,250
+that that block to find that tuple that
+那个块中扫描以找到
+
+570
+00:21:18,250 --> 00:21:20,290
+I want what if as I do the traversal
+我想要的元组如果我做遍历
+
+571
+00:21:20,290 --> 00:21:22,210
+when I land in the leaf node there's
+当我到达叶节点时，
+
+572
+00:21:22,210 --> 00:21:25,390
+already the data that I want so my C Co
+已经有了我想要的数据，所以我的 C Co
+
+573
+00:21:25,390 --> 00:21:26,740
+and C code later probably most two
+和 C 代码稍后可能是最著名的两个
+
+574
+00:21:26,740 --> 00:21:28,390
+famous ones that do this in cases like
+在 Oracle 和续集服务器等情况下执行此操作的代码
+
+575
+00:21:28,390 --> 00:21:30,490
+Oracle and sequel server I think by
+我认为
+
+576
+00:21:30,490 --> 00:21:32,380
+default you get the one at the top but
+默认情况下您会得到顶部的一个
+
+577
+00:21:32,380 --> 00:21:34,030
+you can tell it to do this at the bottom
+可以告诉它在底部执行此操作，
+
+578
+00:21:34,030 --> 00:21:36,750
+now you get the specimen special flags
+现在您获得了样本特殊标志，
+
+579
+00:21:36,750 --> 00:21:40,240
+so now I want to distinguish since we
+所以现在我想区分，因为我们
+
+580
+00:21:40,240 --> 00:21:41,740
+understand the basics about B+ treating
+了解了 B+ 处理的基础知识，
+
+581
+00:21:41,740 --> 00:21:43,990
+let's distinguish it from the original B
+让我们将其与原始 B 树区分开来，
+
+582
+00:21:43,990 --> 00:21:46,809
+tree so the major difference is that in
+因此主要区别
+
+583
+00:21:46,809 --> 00:21:51,419
+the original B tree the values of the
+在于原始 B 树中的
+
+584
+00:21:51,419 --> 00:21:54,309
+stored in the index could be anywhere in
+存储在索引中的值可以
+
+585
+00:21:54,309 --> 00:21:57,370
+the tree I mean any internode could also
+在树中的任何位置我的意思是任何节点间也可以
+
+586
+00:21:57,370 --> 00:21:59,620
+have a value - like a record ID or they
+有一个值 - 比如记录 ID 或者
+
+587
+00:21:59,620 --> 00:22:02,460
+actually - for themselves in the B+ tree
+它们实际上 - 在 B+ 树中，
+
+588
+00:22:02,460 --> 00:22:06,669
+the values are only in the leaf nodes so
+这些值仅在叶节点中，所以有
+
+589
+00:22:06,669 --> 00:22:07,990
+what are the implications of this well
+什么含义 这口井
+
+590
+00:22:07,990 --> 00:22:11,230
+one in the B tree case I don't have any
+的 在 B 树的情况下，我没有任何
+
+591
+00:22:11,230 --> 00:22:13,870
+duplicate keys because I can guarantee
+重复的键，因为我可以
+
+592
+00:22:13,870 --> 00:22:15,640
+that each key will only appear once in
+保证每个键只会出现一次
+
+593
+00:22:15,640 --> 00:22:16,809
+my
+
+594
+00:22:16,809 --> 00:22:20,710
+in my in my tree in the B+ tree because
+
+595
+00:22:20,710 --> 00:22:22,299
+I have all this guideposts up above in
+
+596
+00:22:22,299 --> 00:22:23,620
+the inner nodes I'm basically
+
+597
+00:22:23,620 --> 00:22:26,220
+duplicating keys
+
+598
+00:22:26,220 --> 00:22:30,039
+furthermore if I delete a key in a B+
+此外，如果我删除 B+ 树中的一个键，基本上会进一步复制键，
+
+599
+00:22:30,039 --> 00:22:31,419
+tree I would remove it from the leap
+我会将它从叶节点的跳跃中删除，
+
+600
+00:22:31,419 --> 00:22:33,129
+from the leaf node but I may not
+但实际上我可能不会
+
+601
+00:22:33,129 --> 00:22:34,620
+actually remove from the inner nodes
+从内部节点中删除，这
+
+602
+00:22:34,620 --> 00:22:36,999
+depending whether our rebalance or not
+取决于我们的重新平衡是否在
+
+603
+00:22:36,999 --> 00:22:39,039
+right there I may not have a path going
+那里我可能没有路径
+
+604
+00:22:39,039 --> 00:22:42,190
+down to it I started by dealing from the
+向下 对于它，我从
+
+605
+00:22:42,190 --> 00:22:44,110
+leaf node I may keep it in the inner
+叶节点开始处理我可能会将它保留在内部
+
+606
+00:22:44,110 --> 00:22:45,519
+node because that's how I figure out
+节点中，因为这就是我如何确定
+
+607
+00:22:45,519 --> 00:22:46,899
+what path to go down if I'm looking for
+如果我正在寻找
+
+608
+00:22:46,899 --> 00:22:49,809
+other keys so Abbey tree is gonna be
+其他键的路径，所以修道院树会
+
+609
+00:22:49,809 --> 00:22:52,749
+more economical and how much storage
+更经济，以及有多少存储
+
+610
+00:22:52,749 --> 00:22:54,820
+space it occupies because it's not
+空间 它占用是因为它不是
+
+611
+00:22:54,820 --> 00:22:57,309
+duplicating keys but the downside is
+重复键，但缺点是
+
+612
+00:22:57,309 --> 00:22:59,470
+gonna be and this is why that nobody and
+会出现，这就是为什么没有人
+
+613
+00:22:59,470 --> 00:23:00,759
+end up actually using this in a real
+最终在真实
+
+614
+00:23:00,759 --> 00:23:03,490
+system is that it makes doing updates
+系统中实际使用它的原因是
+
+615
+00:23:03,490 --> 00:23:05,139
+more expensive when you have multiple
+当您有多个线程时，它会使更新变得更加昂贵，
+
+616
+00:23:05,139 --> 00:23:07,749
+threads because now you could be moving
+因为现在您可以将
+
+617
+00:23:07,749 --> 00:23:10,480
+things up and down right the tree you
+事情向上移动  在树的右下方，你
+
+618
+00:23:10,480 --> 00:23:12,309
+know I have an inner node I modify
+知道我有一个内部节点，我修改了
+
+619
+00:23:12,309 --> 00:23:13,869
+something and I made it propagate a
+一些东西，我让它
+
+620
+00:23:13,869 --> 00:23:15,690
+change below me and above me and
+在我下方和上方传播了一个变化，
+
+621
+00:23:15,690 --> 00:23:17,679
+therefore I have to take a latches on
+因此我必须在两个方向上都使用闩锁
+
+622
+00:23:17,679 --> 00:23:19,929
+both directions and that causes as we'll
+，这导致
+
+623
+00:23:19,929 --> 00:23:21,309
+see you next class or next next week
+我们下节课见 下周
+
+624
+00:23:21,309 --> 00:23:23,679
+that caused a lot of issues in a B+ tree
+这在 B+ 树中引起了很多问题
+
+625
+00:23:23,679 --> 00:23:25,990
+I only make changes to the leaf nodes I
+我只对叶节点进行更改 我
+
+626
+00:23:25,990 --> 00:23:27,399
+may have the propagate changes up above
+可能会在上面进行传播更改
+
+627
+00:23:27,399 --> 00:23:33,519
+but I only go in one direction yes yeah
+但我只朝一个方向前进 是的
+
+628
+00:23:33,519 --> 00:23:36,789
+so the question is can I repeat what I
+所以问题是我可以重复我
+
+629
+00:23:36,789 --> 00:23:38,409
+said about duplicates in a B+ tree so
+所说的关于重复的内容 在 B+ 树中，所以
+
+630
+00:23:38,409 --> 00:23:45,999
+going back to to this guy here so this
+回到这里的这个人，所以这
+
+631
+00:23:45,999 --> 00:23:49,149
+is the B+ tree so the keys that I have
+是 B+ 树，
+
+632
+00:23:49,149 --> 00:23:52,480
+that I'm trying to index are 1 3 6 7 9
+所以我想要索引的键是 1 3 6 7 9
+
+633
+00:23:52,480 --> 00:23:55,119
+13 but if you look in the in the the
+13 但是如果你查看
+
+634
+00:23:55,119 --> 00:23:57,970
+root node I have a 5 5 does not appear
+根节点我 有一个 5 5 没有
+
+635
+00:23:57,970 --> 00:24:00,820
+anywhere in the leaf node meaning hey
+出现在叶节点中的任何地方，这意味着嘿
+
+636
+00:24:00,820 --> 00:24:02,830
+probably got in this case area but had
+可能进入了这个案例区域但
+
+637
+00:24:02,830 --> 00:24:04,929
+gotten inserted and then it got deleted
+被插入然后被删除
+
+638
+00:24:04,929 --> 00:24:07,119
+but I didn't reach up will reorganize my
+但我没有达到将重新组织
+
+639
+00:24:07,119 --> 00:24:09,820
+my tree so I left it in in in the inner
+我的树所以我把它留在内部
+
+640
+00:24:09,820 --> 00:24:12,580
+node in a b-tree that'll never happen
+永远不会发生的 b 树中的节点
+
+641
+00:24:12,580 --> 00:24:15,669
+each key only appears once and any if it
+每个键只出现一次，如果它
+
+642
+00:24:15,669 --> 00:24:17,139
+appears in the tree then it appears in
+出现在树中，则任何一个 然后它出现在
+
+643
+00:24:17,139 --> 00:24:20,320
+our key set and exits
+我们的密钥集中并
+
+644
+00:24:20,320 --> 00:24:25,930
+a questioner semen is we leave in here
+退出提问者精液我们离开这里是
+
+645
+00:24:25,930 --> 00:24:28,300
+for searching purposes and it's still
+为了搜索目的它仍然
+
+646
+00:24:28,300 --> 00:24:30,130
+stored physically in our in our nodes
+物理存储在我们的节点中
+
+647
+00:24:30,130 --> 00:24:32,980
+but if I asked if I asked this tree
+但是如果我问我是否问过这棵树
+
+648
+00:24:32,980 --> 00:24:35,350
+do you have key five I would say no
+你有关键五我会说没有
+
+649
+00:24:35,350 --> 00:24:36,520
+because I always have to go to the leaf
+因为我 总是必须去叶子
+
+650
+00:24:36,520 --> 00:24:38,470
+node then I try to find five and I'm not
+节点然后我尝试找到五个但我
+
+651
+00:24:38,470 --> 00:24:41,170
+gonna find it so it still be there but
+不会找到它所以它仍然在那里但
+
+652
+00:24:41,170 --> 00:24:43,900
+it's it's not actually a real key yep
+它实际上不是一个真正的关键是的
+
+653
+00:24:43,900 --> 00:24:50,290
+yes okay so question is how do we do
+是的好吧所以问题是我们如何
+
+654
+00:24:50,290 --> 00:24:51,580
+with inserts when we felt on the leaves
+在我们感觉时使用插入 在叶子上，
+
+655
+00:24:51,580 --> 00:24:53,320
+we'll get that in a second yes that's
+我们会在一秒钟内得到它
+
+656
+00:24:53,320 --> 00:24:59,140
+the next topic this question is will
+
+657
+00:24:59,140 --> 00:25:00,580
+there not be any duplicates in the leaf
+
+658
+00:25:00,580 --> 00:25:05,410
+nodes yes and no so we'll see in a
+
+659
+00:25:05,410 --> 00:25:07,360
+second so this this would be considered
+
+660
+00:25:07,360 --> 00:25:10,060
+a unique index of unique tree where
+唯一的树，其中
+
+661
+00:25:10,060 --> 00:25:11,800
+they're unique keys you can't have keys
+它们是唯一的键 您不能拥有
+
+662
+00:25:11,800 --> 00:25:13,000
+that have non unique values we have to
+具有非唯一值的键，我们必须
+
+663
+00:25:13,000 --> 00:25:14,050
+handle that we'll get to that in a
+处理，我们将在一
+
+664
+00:25:14,050 --> 00:25:19,330
+second as well okay so I think the next
+秒钟内完成，所以我认为下一个
+
+665
+00:25:19,330 --> 00:25:20,830
+topic is what he was yes is how do we
+主题是他是什么是怎么做 我们
+
+666
+00:25:20,830 --> 00:25:23,650
+actually how to actually modify this
+实际上如何实际修改这个
+
+667
+00:25:23,650 --> 00:25:29,440
+absolutely yes inserts okay so the way
+绝对是的插入好的所以
+
+668
+00:25:29,440 --> 00:25:32,410
+we're gonna do an insert is that we want
+我们要做的方式 n insert 是我们
+
+669
+00:25:32,410 --> 00:25:34,210
+to find that we want to traverse down
+想要找到我们想要向下遍历
+
+670
+00:25:34,210 --> 00:25:37,120
+and figure out what leaf node we want to
+并找出我们想要将新密钥插入到哪个叶节点中，
+
+671
+00:25:37,120 --> 00:25:39,340
+insert our new key into so again we use
+因此我们再次使用
+
+672
+00:25:39,340 --> 00:25:41,350
+those guideposts on the Internet's aside
+互联网上的那些路标，
+
+673
+00:25:41,350 --> 00:25:43,150
+whether we go left or right depending on
+无论我们向左还是向右
+
+674
+00:25:43,150 --> 00:25:45,040
+whether a key is less than or greater
+取决于密钥是否 小于或
+
+675
+00:25:45,040 --> 00:25:47,620
+than what's stored in those key arrays
+大于存储在这些键数组中的内容
+
+676
+00:25:47,620 --> 00:25:49,630
+and then as we traverse down eventually
+，然后随着我们向下遍历，最终
+
+677
+00:25:49,630 --> 00:25:52,570
+we'll get to a leaf node and then the
+我们将到达叶节点，然后
+
+678
+00:25:52,570 --> 00:25:54,490
+leaf node is where we want to start a
+叶节点是我们想要开始
+
+679
+00:25:54,490 --> 00:25:56,020
+key and so if the leaf node has space
+键的位置，因此如果叶节点有空间，
+
+680
+00:25:56,020 --> 00:25:58,690
+then we just inserted in for keeping the
+那么我们只需 插入以保持
+
+681
+00:25:58,690 --> 00:26:00,970
+keys in sorted order maybe we should we
+键的排序顺序也许我们应该
+
+682
+00:26:00,970 --> 00:26:03,400
+sort them but there's enough space we
+对它们进行排序但有足够的空间我们
+
+683
+00:26:03,400 --> 00:26:05,500
+just insert it if there's not enough
+只需插入它如果没有足够的
+
+684
+00:26:05,500 --> 00:26:07,900
+space then we have to split the node
+空间然后我们必须拆分节点
+
+685
+00:26:07,900 --> 00:26:09,550
+let's put the leaf node we would we just
+让我们放置我们刚刚插入的叶节点
+
+686
+00:26:09,550 --> 00:26:11,620
+inserted into and so the way we're gonna
+等等 我们
+
+687
+00:26:11,620 --> 00:26:13,510
+do this we're just gonna take a halfway
+要做这个 我们只需要
+
+688
+00:26:13,510 --> 00:26:16,780
+point in our key space put all the keys
+在我们的键空间中取一个中间点 把
+
+689
+00:26:16,780 --> 00:26:18,700
+that are less than the halfway point and
+所有小于中间点
+
+690
+00:26:18,700 --> 00:26:20,620
+one one node all the keys that were
+的键和一个节点
+
+691
+00:26:20,620 --> 00:26:23,260
+above that in another node and then we
+放在另一个节点中高于中间点的所有键 然后我们
+
+692
+00:26:23,260 --> 00:26:26,740
+update our parent node to now include
+更新我们的父节点 节点现在
+
+693
+00:26:26,740 --> 00:26:29,800
+that that middle key and then we have an
+包括 中间键，然后我们有一个
+
+694
+00:26:29,800 --> 00:26:31,540
+additional pointer to our the new node
+额外的指针指向我们刚刚添加的新节点
+
+695
+00:26:31,540 --> 00:26:33,460
+we just added
+
+696
+00:26:33,460 --> 00:26:34,930
+and that may be happy to say all right
+，这可能很高兴说
+
+697
+00:26:34,930 --> 00:26:36,460
+well this is actually a recursive thing
+好吧，这实际上是一个递归的事情，
+
+698
+00:26:36,460 --> 00:26:38,500
+because if now my parent as I try to
+因为如果现在我的父级尝试
+
+699
+00:26:38,500 --> 00:26:40,210
+insert the new key in to the parent if
+将新键插入到父级中 如果
+
+700
+00:26:40,210 --> 00:26:42,220
+it doesn't have no space then we have to
+它没有空间，那么我们必须
+
+701
+00:26:42,220 --> 00:26:43,990
+split it and then propagate the changes
+拆分它，然后将更改
+
+702
+00:26:43,990 --> 00:26:46,990
+up above so for one insert we may have
+向上传播，因此对于一个插入，我们可能必须
+
+703
+00:26:46,990 --> 00:26:49,120
+to reorganize the in the entire tree and
+在整个树中重新组织，
+
+704
+00:26:49,120 --> 00:26:50,770
+this is what I was saying before like
+这就是我之前所说的，
+
+705
+00:26:50,770 --> 00:26:52,810
+like just like in the hash table if I
+就像在哈希中一样 表如果我
+
+706
+00:26:52,810 --> 00:26:54,610
+insert into it index or through the hash
+插入索引或通过哈希
+
+707
+00:26:54,610 --> 00:26:56,260
+table and nothing's there it's really
+表并且没有任何东西它真的
+
+708
+00:26:56,260 --> 00:26:58,180
+fast but if I have to scan a long long
+很快但是如果我必须扫描很
+
+709
+00:26:58,180 --> 00:26:59,830
+time to find the slot I can go into that
+长时间才能找到我可以进入的插槽
+
+710
+00:26:59,830 --> 00:27:01,960
+can be more expensive so sometimes we
+可能会更昂贵所以有时我们
+
+711
+00:27:01,960 --> 00:27:03,610
+would insert into our tree and it's
+会插入我们的树和 这
+
+712
+00:27:03,610 --> 00:27:05,050
+gonna be an expensive operation because
+将是一个昂贵的操作，因为
+
+713
+00:27:05,050 --> 00:27:06,460
+we're reorganizing the entire data
+我们正在重新组织整个数据
+
+714
+00:27:06,460 --> 00:27:08,620
+structure and other times it'll be super
+结构，其他时候它会非常
+
+715
+00:27:08,620 --> 00:27:11,340
+fast and we don't have to worry about it
+快，我们不必担心它，
+
+716
+00:27:11,340 --> 00:27:15,880
+all right so let's do a let's view a
+所以让我们来看看
+
+717
+00:27:15,880 --> 00:27:18,700
+demo of this so this is using this is a
+这个演示，所以这是使用 这是一个
+
+718
+00:27:18,700 --> 00:27:20,770
+you know rather than me doing animations
+你知道而不是我做的
+
+719
+00:27:20,770 --> 00:27:23,950
+in PowerPoint this is from a professor
+PowerPoint 中的动画 这是来自
+
+720
+00:27:23,950 --> 00:27:26,550
+at university San Francisco that has a
+旧金山大学的一位教授，他有
+
+721
+00:27:26,550 --> 00:27:28,930
+nice you know a little web-based
+一个不错的基于 Web 的
+
+722
+00:27:28,930 --> 00:27:36,760
+visualization we can use to carry yes
+可视化，我们可以使用它来
+
+723
+00:27:36,760 --> 00:27:47,920
+okay no out of type remotely alright so
+进行远程打字
+
+724
+00:27:47,920 --> 00:27:51,520
+we'll do a max degree of three so that
+
+725
+00:27:51,520 --> 00:27:55,030
+means that the the max number of nodes
+
+726
+00:27:55,030 --> 00:27:57,760
+we can have is two or started keys in
+我们可以拥有的最大节点数是两个，或者
+
+727
+00:27:57,760 --> 00:27:59,410
+our each node is two and can have at
+我们每个节点中的启动键是两个，并且最多可以有
+
+728
+00:27:59,410 --> 00:28:03,070
+most three paths going down so we insert
+三个向下的路径，所以我们插入
+
+729
+00:28:03,070 --> 00:28:05,860
+can ever see that you start to know if
+可以看到你开始知道
+
+730
+00:28:05,860 --> 00:28:12,760
+it's a physician mean yes so the degree
+它是否是医生的意思是，所以度数
+
+731
+00:28:12,760 --> 00:28:14,260
+says the number of paths coming out of
+说从它出来的路径数量，
+
+732
+00:28:14,260 --> 00:28:17,440
+it so degree of three means I have I
+所以三度意味着如果我是实习生，
+
+733
+00:28:17,440 --> 00:28:19,600
+have most three paths coming out of me
+我有最多三个路径从我
+
+734
+00:28:19,600 --> 00:28:21,940
+if I'm an intern ode and therefore I had
+那里出来，因此我
+
+735
+00:28:21,940 --> 00:28:24,840
+to store it I can store at most two keys
+必须存储它我最多可以存储两个键，
+
+736
+00:28:24,840 --> 00:28:28,570
+because again so good I mean going back
+因为再次如此好 我的意思是
+
+737
+00:28:28,570 --> 00:28:32,190
+to what we showed in the very beginning
+回到我们在最开始时展示的
+
+738
+00:28:32,880 --> 00:28:35,140
+Russian why do I said two three or why
+俄语 为什么我说两个三或者为什么
+
+739
+00:28:35,140 --> 00:28:41,770
+is it that way so again so this is say
+又是这样 所以这是说
+
+740
+00:28:41,770 --> 00:28:44,980
+this is that a this has a degree of four
+这是 a this 的度数是 4
+
+741
+00:28:44,980 --> 00:28:47,590
+so it's always the number
+所以它总是
+
+742
+00:28:47,590 --> 00:28:49,720
+passes is the number of keys plus one so
+通过的数字是数字 键加一所以
+
+743
+00:28:49,720 --> 00:28:52,450
+I be 2 1 2 3 keys and this guy has to
+我是 2 1 2 3 键，这家伙必须
+
+744
+00:28:52,450 --> 00:28:56,020
+have a right pointer and a left pointer
+h 有一个右指针和一个左指针
+
+745
+00:28:56,020 --> 00:28:57,850
+right and he has have a right pointer
+，他有一个右指针，
+
+746
+00:28:57,850 --> 00:28:59,200
+but that's shared and there's the one at
+但这是共享的，最后有一个，
+
+747
+00:28:59,200 --> 00:28:59,620
+the end
+
+748
+00:28:59,620 --> 00:29:01,570
+so this there's four paths coming out
+所以这有四个路径出来
+
+749
+00:29:01,570 --> 00:29:08,740
+for three he's okay alright so is there
+，三个他没问题，所以有
+
+750
+00:29:08,740 --> 00:29:11,309
+a way to make this looking better
+没有办法让它看起来更好，
+
+751
+00:29:11,309 --> 00:29:13,330
+well let's just keep going see how go so
+让我们 继续看怎么去所以
+
+752
+00:29:13,330 --> 00:29:15,070
+it's down over there so I've only
+它在那里所以我只
+
+753
+00:29:15,070 --> 00:29:19,210
+inserted and it's the demo I've only
+插入了它是演示我只
+
+754
+00:29:19,210 --> 00:29:24,399
+started two keys or one sorry one key so
+开始了两个键或一个抱歉一个键所以
+
+755
+00:29:24,399 --> 00:29:26,890
+right now it only has one entry in it so
+现在它只有一个条目所以
+
+756
+00:29:26,890 --> 00:29:35,200
+now I'll insert we insert six right so
+现在我将插入我们 再次正确插入六个
+
+757
+00:29:35,200 --> 00:29:37,240
+again it just it had space in that node
+它只是它在那个节点中有空间
+
+758
+00:29:37,240 --> 00:29:39,100
+so I was able to insert it and now I
+所以我能够插入它现在我
+
+759
+00:29:39,100 --> 00:29:42,070
+insert four and at this point it has to
+插入四个并且此时它必须
+
+760
+00:29:42,070 --> 00:29:43,779
+split because it can only you can only
+拆分因为它只能你只能
+
+761
+00:29:43,779 --> 00:29:48,580
+store it can only store two keys so it's
+存储它只能存储两个键所以它被
+
+762
+00:29:48,580 --> 00:29:51,970
+split in half put two over here
+拆分 一半
+
+763
+00:29:51,970 --> 00:29:54,429
+four and six six in its own node and
+在它自己的节点上放了两个 4 和 6 个 6
+
+764
+00:29:54,429 --> 00:29:56,049
+then they took the middle key for and
+然后他们把中间键 for
+
+765
+00:29:56,049 --> 00:29:58,149
+moved it up as the new root and again I
+并将其作为新的根向上移动，我再次
+
+766
+00:29:58,149 --> 00:30:00,929
+have pointers going down to both of them
+有指向它们两个的指针，
+
+767
+00:30:00,929 --> 00:30:05,440
+so now do it in certain v right back in
+所以现在在某些 v 右后执行
+
+768
+00:30:05,440 --> 00:30:06,789
+fit over there accommodate just fine
+适合那边容纳就好
+
+769
+00:30:06,789 --> 00:30:09,130
+it's not now insert five what should
+了 现在不是插入五个应该发生的
+
+770
+00:30:09,130 --> 00:30:11,890
+happen right it'll say well five is
+事情 没错，它会说 5
+
+771
+00:30:11,890 --> 00:30:14,590
+greater than 4 it's greater than equal
+大于 4 它大于
+
+772
+00:30:14,590 --> 00:30:15,970
+to 4 so I no need to go down this
+等于 4 所以我不需要沿着这个方向走，
+
+773
+00:30:15,970 --> 00:30:18,090
+direction but I can only sort
+但我只能排序
+
+774
+00:30:18,090 --> 00:30:23,320
+I can always I can only store two keys
+我总是可以我只能
+
+775
+00:30:23,320 --> 00:30:25,330
+in this node so I'm gonna have to split
+在这个节点中存储两个键，所以我要 拆分
+
+776
+00:30:25,330 --> 00:30:28,140
+this guy's and then rebalance everything
+这个人的然后重新平衡所有东西，
+
+777
+00:30:28,140 --> 00:30:31,029
+so hit enter right 4 goes down there
+所以点击右输入 4 在那里向下
+
+778
+00:30:31,029 --> 00:30:33,760
+puts 5 there right it's split then split
+放置 5 在那里它被拆分然后
+
+779
+00:30:33,760 --> 00:30:36,070
+the node put 4 in the middle over here 5
+拆分节点将 4 放在中间 5
+
+780
+00:30:36,070 --> 00:30:38,230
+and 6 over here and then put 5 up
+和 6 在这里然后放 5
+
+781
+00:30:38,230 --> 00:30:40,090
+because that was the middle key and now
+因为那是中间键和 现在
+
+782
+00:30:40,090 --> 00:30:43,270
+we have pointers going to this node the
+我们有指向这个节点的指针，
+
+783
+00:30:43,270 --> 00:30:45,029
+middle node here with 4 and that one 5
+这里的中间节点是 4，一个是 5，
+
+784
+00:30:45,029 --> 00:30:48,490
+right so again this is recursive as I
+所以这又是递归的，因为我
+
+785
+00:30:48,490 --> 00:30:50,529
+keep inserting more stuff and I keep
+一直在插入更多的东西，我一直在
+
+786
+00:30:50,529 --> 00:30:51,880
+splitting I keep splitting the changes
+拆分，我一直在拆分
+
+787
+00:30:51,880 --> 00:30:53,790
+up yes
+更改，是的，
+
+788
+00:30:53,790 --> 00:30:55,750
+so he says what if we have duplicate
+所以他说如果我们有重复的键怎么办
+
+789
+00:30:55,750 --> 00:30:57,940
+keys so actually I don't don't know
+所以实际上我不知道
+
+790
+00:30:57,940 --> 00:30:59,350
+whether this will matter so I just
+这是否重要所以我刚
+
+791
+00:30:59,350 --> 00:31:04,270
+earned a certain four yeah it did that
+赚了一定的四个是的它做到了
+
+792
+00:31:04,270 --> 00:31:07,990
+um so there's different way sorry how do
+嗯所以有不同的方式对不起
+
+793
+00:31:07,990 --> 00:31:13,110
+i the res the resolution is jacked mmm
+我如何解决分辨率被顶起 mmm
+
+794
+00:31:13,110 --> 00:31:18,280
+11 no how did I do that
+11 没有我是怎么做到的，
+
+795
+00:31:18,280 --> 00:31:25,840
+sorry there we go okay sorry
+对不起 我们没问题，
+
+796
+00:31:25,840 --> 00:31:30,310
+so this is just sort of a toy diagram in
+抱歉，这只是我的玩具
+
+797
+00:31:30,310 --> 00:31:33,160
+in in a real system you could store for
+图 在真实的系统中，您可以存储
+
+798
+00:31:33,160 --> 00:31:36,100
+together and just maintain multiple
+在一起，并且只需
+
+799
+00:31:36,100 --> 00:31:38,320
+entries for for all the unique values of
+为您具有相同键的所有唯一值维护多个条目，
+
+800
+00:31:38,320 --> 00:31:55,360
+that you have the same key so okay your
+所以好吧，您的
+
+801
+00:31:55,360 --> 00:31:57,460
+statement is if all my keys are the same
+声明是如果我的所有键都相同，
+
+802
+00:31:57,460 --> 00:32:00,070
+it's four four four four four four then
+它是四四四四四，那么
+
+803
+00:32:00,070 --> 00:32:01,810
+if I'm looking for an exact key value
+如果我是 寻找一个精确的键值
+
+804
+00:32:01,810 --> 00:32:04,780
+pair then it's law it's n because I do
+对然后它是法律它是 n 因为我做
+
+805
+00:32:04,780 --> 00:32:08,170
+its crunches can yes so yeah we can pop
+它的紧缩可以是的所以是的我们可以
+
+806
+00:32:08,170 --> 00:32:10,540
+up Postgres we can make a table has a
+弹出 Postgres 我们可以制作一个有
+
+807
+00:32:10,540 --> 00:32:13,240
+billion rows and for one column we set
+十亿行的表，对于一列我们
+
+808
+00:32:13,240 --> 00:32:16,030
+the value to one and we can call crate
+将值设置为一，我们可以调用 crate
+
+809
+00:32:16,030 --> 00:32:17,740
+you know every so every where every 1
+你知道每 10
+
+810
+00:32:17,740 --> 00:32:19,270
+billion row has the same value for that
+亿行的每一列都有相同的值，
+
+811
+00:32:19,270 --> 00:32:21,010
+one column and post guess will let us
+然后猜测会让
+
+812
+00:32:21,010 --> 00:32:23,740
+build an index on that on that it on
+我们在那个列上建立一个索引
+
+813
+00:32:23,740 --> 00:32:25,960
+that column it's a split in next to
+，接下来要建立一个拆分，
+
+814
+00:32:25,960 --> 00:32:28,000
+build because as you said they're all
+因为正如你所说的，他们都是
+
+815
+00:32:28,000 --> 00:32:32,020
+the same so input it so and so how to
+相同所以输入它如此如此如何
+
+816
+00:32:32,020 --> 00:32:34,960
+say this people will do stupid things in
+说这个人通常会做愚蠢的事情
+
+817
+00:32:34,960 --> 00:32:35,770
+general
+
+818
+00:32:35,770 --> 00:32:37,690
+don't be stupid and don't build indexes
+不要愚蠢并且不要
+
+819
+00:32:37,690 --> 00:32:40,600
+on things that you shouldn't use right
+在你不应该使用的
+
+820
+00:32:40,600 --> 00:32:41,860
+there's all the types of indexes we'll
+东西上建立索引我们会看到所有类型的索引
+
+821
+00:32:41,860 --> 00:32:43,510
+see so a hash table there's other things
+一个哈希表还有其他的东西，
+
+822
+00:32:43,510 --> 00:32:45,040
+like inverted indexes we could use that
+比如我们可以使用的倒排索引
+
+823
+00:32:45,040 --> 00:32:46,240
+could be better if you had a lot of
+如果你有很多重复的值，那可能会更好，
+
+824
+00:32:46,240 --> 00:32:48,580
+duplicate values but think of like email
+但想想像电子邮件
+
+825
+00:32:48,580 --> 00:32:50,950
+addresses or think of like phone numbers
+地址或电话号码
+
+826
+00:32:50,950 --> 00:32:52,930
+or things that work it's gonna be vastly
+或有用的东西，它会非常
+
+827
+00:32:52,930 --> 00:32:55,780
+diverse then we won't really have that
+多样化，那么我们就不会真的有这个
+
+828
+00:32:55,780 --> 00:32:58,210
+problem or primary key right primary key
+问题或主键右主键
+
+829
+00:32:58,210 --> 00:32:59,680
+has to be unique that would be great for
+必须 是独一无二的，这对
+
+830
+00:32:59,680 --> 00:33:02,710
+this alright so again so this is this
+这个很好所以再次所以这很
+
+831
+00:33:02,710 --> 00:33:04,920
+clear
+清楚
+
+832
+00:33:05,040 --> 00:33:10,870
+okay so let's go back so the new deletes
+所以让我们回去所以新的删除
+
+833
+00:33:10,870 --> 00:33:13,720
+now we have the opposite problem can
+现在我们有相反的问题可以
+
+834
+00:33:13,720 --> 00:33:16,720
+insert so if we got to full we run up
+插入所以如果我们已经满了
+
+835
+00:33:16,720 --> 00:33:19,270
+space we have to do that split if we
+我们就必须做那个分割如果 我们
+
+836
+00:33:19,270 --> 00:33:22,210
+delete then it may be the case we end up
+删除然后它可能是我们
+
+837
+00:33:22,210 --> 00:33:23,920
+being less than half full which would
+最终少于一半的情况，这将
+
+838
+00:33:23,920 --> 00:33:25,780
+violate the guarantees we have to have
+违反我们必须
+
+839
+00:33:25,780 --> 00:33:27,670
+in our B plus tree and then therefore we
+在我们的 B 加树中拥有的保证，因此我们
+
+840
+00:33:27,670 --> 00:33:28,960
+have to do the opposite of a split which
+必须做与拆分
+
+841
+00:33:28,960 --> 00:33:32,170
+is a merge so delete something again I
+相反的合并，所以再次删除一些东西 我
+
+842
+00:33:32,170 --> 00:33:33,880
+just do my traversal I go down the tree
+只是做我的遍历 我沿着树向下
+
+843
+00:33:33,880 --> 00:33:37,240
+try to find the the key that I want to
+尝试找到我想删除的键
+
+844
+00:33:37,240 --> 00:33:39,490
+delete I'll and I'm always gonna lay in
+
+845
+00:33:39,490 --> 00:33:41,650
+a leaf node if my leaf node after
+如果删除该键后我的叶节点
+
+846
+00:33:41,650 --> 00:33:44,680
+deleting that key is still at least half
+仍然至少是半
+
+847
+00:33:44,680 --> 00:33:46,930
+full then I'm done I just remove it
+满，我将始终放置在叶节点中 我完成了我只是删除它
+
+848
+00:33:46,930 --> 00:33:49,750
+maybe reorganize my my sort of key rays
+也许重新组织我的 有点关键光线，
+
+849
+00:33:49,750 --> 00:33:52,360
+but then that's it but if I'm less than
+但就是这样，但是如果我还不到
+
+850
+00:33:52,360 --> 00:33:55,120
+half full then now I have to figure out
+一半，那么现在我必须弄清楚
+
+851
+00:33:55,120 --> 00:33:59,830
+how to get rebalanced so the sort of one
+如何重新平衡，所以
+
+852
+00:33:59,830 --> 00:34:02,320
+easy trick we could do is look at our
+我们可以做的一个简单的技巧就是查看
+
+853
+00:34:02,320 --> 00:34:05,500
+siblings in other leaf nodes and that's
+其他叶节点中的兄弟姐妹，这就是
+
+854
+00:34:05,500 --> 00:34:07,210
+why we have those sibling pointers we
+为什么 我们有那些兄弟指针，我们
+
+855
+00:34:07,210 --> 00:34:08,649
+can look at them and try to steal one of
+可以查看它们并尝试窃取其中
+
+856
+00:34:08,649 --> 00:34:11,290
+their keys to make ourselves balanced
+一个密钥以使我们自己保持平衡
+
+857
+00:34:11,290 --> 00:34:13,540
+and long as long as that our sibling has
+，只要我们的兄弟姐妹
+
+858
+00:34:13,540 --> 00:34:16,449
+the same parent as us then it's okay for
+与我们拥有相同的父级，那么
+
+859
+00:34:16,449 --> 00:34:18,070
+us to steal this because that doesn't
+我们就可以窃取它，因为那
+
+860
+00:34:18,070 --> 00:34:22,000
+require any rebalancing up above so if
+不需要 上面的任何重新平衡，所以如果
+
+861
+00:34:22,000 --> 00:34:24,659
+we're not able to steal from our sibling
+我们不能从我们的兄弟姐妹那里偷东西，
+
+862
+00:34:24,659 --> 00:34:27,610
+then we have to merge I think we ought
+那么我们必须合并
+
+863
+00:34:27,610 --> 00:34:29,469
+to go take our take take one of our
+
+864
+00:34:29,469 --> 00:34:32,520
+siblings combine all our keys together
+
+865
+00:34:32,520 --> 00:34:35,260
+that may actually end up being too full
+
+866
+00:34:35,260 --> 00:34:37,149
+as well but then we could we could split
+但是然后我们可以拆分，
+
+867
+00:34:37,149 --> 00:34:38,679
+think that split that as buff as well
+认为拆分也作为增益效果
+
+868
+00:34:38,679 --> 00:34:39,699
+that's the same thing as just copying
+，这与仅复制
+
+869
+00:34:39,699 --> 00:34:42,460
+this but we would merge delete it delete
+此内容相同，但我们将合并删除它删除
+
+870
+00:34:42,460 --> 00:34:44,770
+a key up above and then now where
+上面的一个键，然后现在
+
+871
+00:34:44,770 --> 00:34:46,060
+everything's balanced again again just
+一切都再次平衡，
+
+872
+00:34:46,060 --> 00:34:48,010
+like in splits we're like I may have to
+就像在拆分中一样 我可能不得不
+
+873
+00:34:48,010 --> 00:34:49,780
+go propagate the change everywhere when
+去宣传 当
+
+874
+00:34:49,780 --> 00:34:51,580
+we merge and with deleting keys that our
+我们合并和删除键时，我们的
+
+875
+00:34:51,580 --> 00:34:53,080
+parent now may become less than half
+父级现在可能变得不到半
+
+876
+00:34:53,080 --> 00:34:55,210
+full and it has to merge and that for we
+满，它必须合并，因为
+
+877
+00:34:55,210 --> 00:34:56,350
+have to maybe restructure the entire
+我们可能必须重新构建整个
+
+878
+00:34:56,350 --> 00:35:02,080
+tree all right so let's go back and to
+树，所以让我们回到
+
+879
+00:35:02,080 --> 00:35:05,920
+our example here and do our demo because
+我们的例子并做我们的演示 因为
+
+880
+00:35:05,920 --> 00:35:07,860
+now I got to figure out how to get to
+现在我必须弄清楚如何
+
+881
+00:35:07,860 --> 00:35:11,220
+the top right corner
+到达右上角
+
+882
+00:35:14,359 --> 00:35:18,529
+so we just maintain the siblings in
+所以我们只是保持兄弟姐妹
+
+883
+00:35:18,529 --> 00:35:20,309
+correct he's question is to be
+正确他的问题是
+
+884
+00:35:20,309 --> 00:35:21,630
+maintained the siblings only in the leaf
+只在叶节点中维护兄弟姐妹
+
+885
+00:35:21,630 --> 00:35:25,710
+nodes yes all right so look to let's do
+是的好吧所以看看让我们
+
+886
+00:35:25,710 --> 00:35:28,289
+delete for I want September delete five
+删除因为我想要九月删除 五个
+
+887
+00:35:28,289 --> 00:35:31,319
+let me scroll down and then hit enter so
+让我向下滚动然后按回车所以
+
+888
+00:35:31,319 --> 00:35:34,170
+we can see this alright so just a
+我们可以看到这一切所以只是一个
+
+889
+00:35:34,170 --> 00:35:38,420
+traversal are those insert sorry
+遍历是那些插入狗屎对不起
+
+890
+00:35:39,410 --> 00:35:47,910
+delete five yeah that's insert as Polly
+删除五个是的插入为波莉
+
+891
+00:35:47,910 --> 00:35:51,089
+again sorry for the low resolution all
+再次对不起
+
+892
+00:35:51,089 --> 00:35:53,789
+right so it's deep v in this case here
+低分辨率所以它在这种情况下
+
+893
+00:35:53,789 --> 00:35:55,740
+it should find both him there's only
+它应该找到深v 他和他都只
+
+894
+00:35:55,740 --> 00:35:56,609
+found one of them so let's leave the
+找到了其中一个，所以让我们让
+
+895
+00:35:56,609 --> 00:36:01,440
+other one goes down that's fine again at
+另一个下降，此时再次没问题，
+
+896
+00:36:01,440 --> 00:36:03,779
+this point here both these nodes are
+这两个节点
+
+897
+00:36:03,779 --> 00:36:05,670
+still more than half full so that's fine
+仍然超过一半，所以没关系，
+
+898
+00:36:05,670 --> 00:36:08,099
+so now let's delete four and I suspect
+所以现在让我们删除四个，我怀疑
+
+899
+00:36:08,099 --> 00:36:11,910
+it will try to delete the one that's
+它是 我会尝试删除
+
+900
+00:36:11,910 --> 00:36:16,980
+farther on that side go down found that
+那一侧更远的那个向下
+
+901
+00:36:16,980 --> 00:36:19,500
+deletes that again that node is now half
+发现再次删除该节点现在是
+
+902
+00:36:19,500 --> 00:36:23,900
+empty I mean it has to have at least one
+半空我的意思是它必须至少有一个
+
+903
+00:36:23,900 --> 00:36:26,670
+and because it was empty a reamer it
+并且因为它是空的铰刀它
+
+904
+00:36:26,670 --> 00:36:29,579
+merged everything and decrease the
+合并了所有内容并降低
+
+905
+00:36:29,579 --> 00:36:37,740
+height of the tree yes this question is
+了树的高度 是的，这个问题是，
+
+906
+00:36:37,740 --> 00:36:39,630
+if only the leaf nodes have sibling
+如果只有叶节点有同级
+
+907
+00:36:39,630 --> 00:36:41,009
+pointers then how do you actually do
+指针，那么你如何实际
+
+908
+00:36:41,009 --> 00:36:44,970
+this merge so the way it works basically
+进行合并，所以它的工作方式基本上
+
+909
+00:36:44,970 --> 00:36:48,359
+think of the think of a thread going
+想到了一个线程下降的想法，
+
+910
+00:36:48,359 --> 00:36:51,420
+down it can maintain a stack of what
+它可以在它下降时维护
+
+911
+00:36:51,420 --> 00:36:53,339
+notes a visited as it goes down and
+一个访问过的笔记的堆栈，以及
+
+912
+00:36:53,339 --> 00:36:54,569
+we're actually gonna need to do this
+我们实际上需要这样做，
+
+913
+00:36:54,569 --> 00:36:56,369
+when we do what's called latch crabbing
+当我们在下降时进行所谓的闩锁捕获
+
+914
+00:36:56,369 --> 00:36:58,079
+or coupling as we go down and we take
+或耦合，我们将
+
+915
+00:36:58,079 --> 00:37:00,990
+latches to in case we need to reorganize
+闩锁带到以防万一我们需要重新组织
+
+916
+00:37:00,990 --> 00:37:02,970
+everything and so I have to know what I
+一切，所以我必须知道我
+
+917
+00:37:02,970 --> 00:37:05,519
+have to hold latches up you know at when
+必须保持闩锁你知道在 当
+
+918
+00:37:05,519 --> 00:37:06,839
+I go down somewhere I have to hold and
+我下到某个地方时，我必须抓住并
+
+919
+00:37:06,839 --> 00:37:08,549
+latch my parent in case I need
+锁住我的父母，以防我需要
+
+920
+00:37:08,549 --> 00:37:10,259
+reorganize whatever I'm doing down below
+重新组织我在下面所做的一切，
+
+921
+00:37:10,259 --> 00:37:12,059
+so I don't release it until I know I'm
+所以在我知道自己安全之前我不会释放它，所以我知道我
+
+922
+00:37:12,059 --> 00:37:17,779
+safe so I know how I got there yes
+是如何到达那里的，是的，
+
+923
+00:37:20,270 --> 00:37:23,000
+yeah his question is if there's two
+他的问题 是如果左边有两个
+
+924
+00:37:23,000 --> 00:37:24,110
+siblings to the left the right which one
+兄弟姐妹 ri
+
+925
+00:37:24,110 --> 00:37:24,650
+you choose
+您选择
+
+926
+00:37:24,650 --> 00:37:27,800
+it depends right typically you choose
+哪一个取决于正确的通常您选择
+
+927
+00:37:27,800 --> 00:37:30,010
+the one that has the same parent as you
+与您拥有相同父母的那个
+
+928
+00:37:30,010 --> 00:37:32,120
+okay I think you have two actually but
+好吧我认为您实际上有两个但是
+
+929
+00:37:32,120 --> 00:37:34,490
+if you're like if you were in the middle
+如果您喜欢如果您在中间
+
+930
+00:37:34,490 --> 00:37:36,020
+yeah these guys have the same parent so
+是的这些人有相同的父母所以
+
+931
+00:37:36,020 --> 00:37:38,480
+you say you want to reorganize this you
+您说您 想要重新组织这个 你
+
+932
+00:37:38,480 --> 00:37:39,380
+could choose to either left to right it
+可以选择从左到右
+
+933
+00:37:39,380 --> 00:37:41,120
+doesn't matter let's see what this one
+没关系 让我们看看这个
+
+934
+00:37:41,120 --> 00:37:44,480
+does so we so if we delete for that
+做了什么 所以如果我们删除它
+
+935
+00:37:44,480 --> 00:37:46,550
+should take it out of the middle and
+应该把它从中间
+
+936
+00:37:46,550 --> 00:37:48,530
+then now I delete two and it's gonna
+删除 然后现在我删除两个 它会
+
+937
+00:37:48,530 --> 00:37:53,080
+pick people up too right okay actually
+接人 太对了 好吧实际上
+
+938
+00:37:53,080 --> 00:37:55,670
+it's only has can only have one or two
+它只有 只能有一两个
+
+939
+00:37:55,670 --> 00:37:57,740
+or one or two so it might empty not
+或一两个 所以它可能是空的
+
+940
+00:37:57,740 --> 00:38:00,260
+clear but crease it agree to the tree
+不清楚 但折痕 它同意树
+
+941
+00:38:00,260 --> 00:38:02,270
+but like it doesn't matter it still be
+但好像没关系它仍然是
+
+942
+00:38:02,270 --> 00:38:04,090
+correct
+正确
+
+943
+00:38:04,090 --> 00:38:06,530
+and so this one also this this diagram
+的 所以这个也是这个图
+
+944
+00:38:06,530 --> 00:38:07,970
+shows the the sibling pointer is going
+显示 同级指针
+
+945
+00:38:07,970 --> 00:38:09,980
+in one way you can't have a go in both
+以一种方式前进 你不能在两个
+
+946
+00:38:09,980 --> 00:38:11,300
+directions you have to do extra work to
+方向上都去你必须做额外的工作
+
+947
+00:38:11,300 --> 00:38:12,800
+make that happen but like you can do
+来实现这一点但是
+
+948
+00:38:12,800 --> 00:38:14,660
+that a lot of times again for simplicity
+为了简单起见你可以再次这样做很多次
+
+949
+00:38:14,660 --> 00:38:15,980
+but you could just have a go in one
+但你可以进入 一个
+
+950
+00:38:15,980 --> 00:38:17,870
+direction but then you can't do you know
+方向，但你不能知道
+
+951
+00:38:17,870 --> 00:38:20,330
+order by in descending order and go the
+我的命令 n 降序并转到
+
+952
+00:38:20,330 --> 00:38:23,410
+other direction if you wanna do scans
+另一个方向，如果你想
+
+953
+00:38:23,980 --> 00:38:26,180
+right pretty straightforward of course
+正确地进行扫描非常简单当然
+
+954
+00:38:26,180 --> 00:38:28,610
+getting the the details of the deletes
+获得删除和插入的详细信息
+
+955
+00:38:28,610 --> 00:38:30,470
+and inserts doing that split merge is
+进行拆分合并
+
+956
+00:38:30,470 --> 00:38:32,510
+actually very difficult in practice and
+实际上非常困难，
+
+957
+00:38:32,510 --> 00:38:34,820
+we'll see in next week how to actually
+我们将在下周看到如何实际
+
+958
+00:38:34,820 --> 00:38:36,620
+make sure make sure that when we're
+确保 确保当我们
+
+959
+00:38:36,620 --> 00:38:39,230
+reorganizing the tree that we're threat
+重新组织树时，我们是
+
+960
+00:38:39,230 --> 00:38:40,880
+safely and we don't have any integrity
+安全的威胁，并且我们没有任何完整性
+
+961
+00:38:40,880 --> 00:38:46,090
+issues all right so the in practice the
+问题，所以在
+
+962
+00:38:46,090 --> 00:38:49,670
+the in in in the research shows that the
+实践中研究中的输入表明，
+
+963
+00:38:49,670 --> 00:38:51,620
+typical feel factor for a real tree on
+真实树的典型感觉因素是
+
+964
+00:38:51,620 --> 00:38:54,670
+real data is about 67 to 69 percent
+真实的 数据大约是 67% 到 69%，
+
+965
+00:38:54,670 --> 00:38:58,850
+meaning the the the amount of data are
+这意味着
+
+966
+00:38:58,850 --> 00:39:00,740
+storing in your nodes that's actually
+存储在您节点中的数据量
+
+967
+00:39:00,740 --> 00:39:02,810
+real is up to you know sixty-seven
+实际上是由您决定的
+
+968
+00:39:02,810 --> 00:39:04,550
+percent of his actually use useful datum
+，他的 67% 实际使用有用的数据，
+
+969
+00:39:04,550 --> 00:39:09,170
+so typical capacities you can have you
+因此您可以
+
+970
+00:39:09,170 --> 00:39:13,310
+know when for the 8 kilobyte pages with
+知道什么时候使用 8 KB 的典型容量
+
+971
+00:39:13,310 --> 00:39:16,100
+a this number of pages are at four
+具有此数量页面的页面分为四个
+
+972
+00:39:16,100 --> 00:39:19,010
+levels you can basically store 300,000
+级别，您基本上可以正确存储 300,000 个
+
+973
+00:39:19,010 --> 00:39:22,550
+key value pairs right so you can index
+键值对，因此您可以非常快速地索引
+
+974
+00:39:22,550 --> 00:39:26,420
+and get in log n time to any one of
+并记录
+
+975
+00:39:26,420 --> 00:39:31,700
+three 300 300 million keys very very
+三个 300 300 百万个键中的任何一个，
+
+976
+00:39:31,700 --> 00:39:33,280
+quickly
+
+977
+00:39:33,280 --> 00:39:34,990
+and most of the data is going to be
+并且大部分时间 数据将
+
+978
+00:39:34,990 --> 00:39:36,520
+stored on the leaf pages as you would
+按照您的预期存储在叶页面上，
+
+979
+00:39:36,520 --> 00:39:38,590
+expect right because guys as you add
+因为当您添加
+
+980
+00:39:38,590 --> 00:39:42,370
+more keys you start to fan out and most
+更多键时，您会开始扇出并且
+
+981
+00:39:42,370 --> 00:39:45,130
+of the data is gonna be stored in the in
+大部分数据都将存储在
+
+982
+00:39:45,130 --> 00:39:48,520
+those leaf nodes all right so let's talk
+这些叶节点中，所以让我们
+
+983
+00:39:48,520 --> 00:39:49,660
+about some other things you can do with
+谈谈一些 你可以用这些索引做的其他事情，
+
+984
+00:39:49,660 --> 00:39:55,210
+with with with these indexes so there is
+所以有
+
+985
+00:39:55,210 --> 00:39:57,100
+this concept of this notion of more to
+这个概念的更多
+
+986
+00:39:57,100 --> 00:39:59,740
+call clustered indexes and so I said in
+调用聚集索引的概念，所以我
+
+987
+00:39:59,740 --> 00:40:01,870
+the beginning that the table heap for a
+在开始时说数据库的表堆
+
+988
+00:40:01,870 --> 00:40:04,960
+database is unordered meaning we can
+是无序的，这意味着我们可以
+
+989
+00:40:04,960 --> 00:40:08,410
+insert tuples into any page in any order
+将元组插入到任何页面中
+
+990
+00:40:08,410 --> 00:40:10,000
+we don't the follow the you know the
+我们不遵循的任何顺序你知道
+
+991
+00:40:10,000 --> 00:40:11,110
+temporal order will how things have
+时间顺序将如何
+
+992
+00:40:11,110 --> 00:40:13,120
+inserted but there may be some times
+插入，但
+
+993
+00:40:13,120 --> 00:40:14,740
+where we actually want to have the data
+有时我们实际上希望
+
+994
+00:40:14,740 --> 00:40:16,600
+sorted in a certain way like for example
+以某种方式对数据进行排序，例如
+
+995
+00:40:16,600 --> 00:40:18,730
+like the primary key so these would be
+像主键一样，所以这些将被
+
+996
+00:40:18,730 --> 00:40:20,470
+called clustered indexes so you can
+调用 聚集索引，因此您可以
+
+997
+00:40:20,470 --> 00:40:22,510
+define an index when you create a table
+在创建表时定义索引，
+
+998
+00:40:22,510 --> 00:40:25,150
+you can define a what's called a
+您可以定义所谓的
+
+999
+00:40:25,150 --> 00:40:26,920
+clustered index and the data ISM will
+聚集索引，数据 ISM 将
+
+1000
+00:40:26,920 --> 00:40:28,870
+guarantee that the the physical layout
+保证
+
+1001
+00:40:28,870 --> 00:40:32,110
+of tuples on pages will match the order
+页面上元组的物理布局将匹配它们的顺序
+
+1002
+00:40:32,110 --> 00:40:33,790
+that that that they're sorted in the in
+
+1003
+00:40:33,790 --> 00:40:36,970
+the index so this is useful for certain
+在索引中排序，所以这对某些事情很有用，
+
+1004
+00:40:36,970 --> 00:40:38,890
+things like you know if I'm doing a lot
+比如你知道如果我在其中进行
+
+1005
+00:40:38,890 --> 00:40:40,450
+of lookups within is that range is the
+大量查找，
+
+1006
+00:40:40,450 --> 00:40:42,700
+primary key if I know my tuples are
+如果我知道我的元组
+
+1007
+00:40:42,700 --> 00:40:44,170
+stored on that print in the same order
+以与主键相同的顺序存储在该打印上，那么该范围
+
+1008
+00:40:44,170 --> 00:40:46,510
+that primary key now when I when I you
+是主键 现在，当我
+
+1009
+00:40:46,510 --> 00:40:48,310
+know traverses the leaf node within a
+知道在少量页面内遍历叶节点时
+
+1010
+00:40:48,310 --> 00:40:49,660
+small number of pages I can find all the
+，我可以
+
+1011
+00:40:49,660 --> 00:40:51,520
+data that I that I need if I'm not
+找到我需要的所有数据
+
+1012
+00:40:51,520 --> 00:40:53,860
+sorted on my I'm on the key I'm doing my
+
+1013
+00:40:53,860 --> 00:40:56,170
+lookup on then every single record idea
+
+1014
+00:40:56,170 --> 00:40:57,400
+I could have could point to another page
+我可以拥有的每一个记录想法都可以指向另一个页面
+
+1015
+00:40:57,400 --> 00:40:58,750
+and I could be doing a bunch of
+，我可以做一堆
+
+1016
+00:40:58,750 --> 00:41:00,280
+different random iOS to go read the data
+不同的随机 iOS 来读取
+
+1017
+00:41:00,280 --> 00:41:04,980
+that I want so not all databases
+我想要的数据，所以不是所有的数据库都
+
+1018
+00:41:04,980 --> 00:41:07,240
+imported census you get this by default
+导入了人口普查，默认情况下你会
+
+1019
+00:41:07,240 --> 00:41:09,820
+like my sequel by storing the tuples in
+像我的续集一样通过将元组存储在
+
+1020
+00:41:09,820 --> 00:41:12,340
+the leaf-nosed themselves it's it is a
+叶鼻本身它是一个
+
+1021
+00:41:12,340 --> 00:41:14,260
+clustered index so it's guaranteed to
+聚集索引，所以它保证
+
+1022
+00:41:14,260 --> 00:41:16,660
+have on the pages on disk the tuples are
+在磁盘上的页面上有元组
+
+1023
+00:41:16,660 --> 00:41:19,000
+sorted in the primary key order in case
+按主键顺序排序，以防
+
+1024
+00:41:19,000 --> 00:41:20,290
+to my sequel if you don't define a
+万一我的续集如果你没有定义一个
+
+1025
+00:41:20,290 --> 00:41:22,570
+primary key they'll make one for you
+主键他们会为 你
+
+1026
+00:41:22,570 --> 00:41:24,190
+right they'll have a synthetic like row
+对，他们会有一个像行 ID 这样的合成
+
+1027
+00:41:24,190 --> 00:41:26,590
+ID a record ID that's transparent to you
+记录 ID 是透明的 对你来说，
+
+1028
+00:41:26,590 --> 00:41:28,930
+but that's how they use to to figure out
+但这就是他们用来弄清楚
+
+1029
+00:41:28,930 --> 00:41:30,310
+you know what where your tuple is
+你知道你的元组
+
+1030
+00:41:30,310 --> 00:41:33,970
+actually located case of Postgres we can
+实际上在哪里的方式 Postgres 的情况下我们可以
+
+1031
+00:41:33,970 --> 00:41:36,700
+do a demo next time but they have
+做一个演示，但他们有
+
+1032
+00:41:36,700 --> 00:41:39,730
+clustered indexes you can define one you
+聚集索引你可以定义一个你
+
+1033
+00:41:39,730 --> 00:41:41,890
+say cluster my table on this index but
+说在这个索引上聚集我的表但是
+
+1034
+00:41:41,890 --> 00:41:43,180
+it won't actually maintain it in that
+它 实际上不会按照该
+
+1035
+00:41:43,180 --> 00:41:45,050
+order
+顺序
+
+1036
+00:41:45,050 --> 00:41:48,050
+does the sorting once stores on disk but
+进行排序，一旦存储在磁盘上，
+
+1037
+00:41:48,050 --> 00:41:50,000
+then over time it can get out of order
+就会进行排序，但随着时间的推移，它可能会乱序，
+
+1038
+00:41:50,000 --> 00:41:51,350
+because I won't do it for you
+因为我不会自动为您执行此操作
+
+1039
+00:41:51,350 --> 00:41:53,180
+automatically and when we talk about
+，当我们谈论
+
+1040
+00:41:53,180 --> 00:41:54,470
+multi version to encourage hole it'll
+多版本以鼓励漏洞时，它会
+
+1041
+00:41:54,470 --> 00:41:55,940
+become very clear why this is the case
+变成 非常清楚为什么他们会出现这种情况
+
+1042
+00:41:55,940 --> 00:41:59,960
+for them so let's talk well how we can
+，所以让我们好好谈谈我们如何
+
+1043
+00:41:59,960 --> 00:42:02,960
+do some lookups on the one our B plus
+对我们的 B 加处理进行一些查找，
+
+1044
+00:42:02,960 --> 00:42:05,450
+treatment so again because things are in
+因为事情已
+
+1045
+00:42:05,450 --> 00:42:07,660
+sorted order
+按顺序排列，
+
+1046
+00:42:07,660 --> 00:42:10,250
+you know we can do fast traversal to
+您知道我们可以快速遍历以
+
+1047
+00:42:10,250 --> 00:42:12,140
+find I think we're looking for but we
+找到我认为我们正在寻找 但是我们
+
+1048
+00:42:12,140 --> 00:42:14,090
+made one advantage you can do with a B+
+做了一个你可以用 B+
+
+1049
+00:42:14,090 --> 00:42:15,260
+tree that you can't do with a hash table
+树做而你不能用哈希表
+
+1050
+00:42:15,260 --> 00:42:18,260
+is that you don't need to have the exact
+做的优势是你不需要有确切的
+
+1051
+00:42:18,260 --> 00:42:21,020
+key in order to do a lookup you can have
+键来进行查找，你实际上可以有
+
+1052
+00:42:21,020 --> 00:42:23,450
+actually some part of the key so the
+键的一部分，所以
+
+1053
+00:42:23,450 --> 00:42:24,740
+save real simple simple table I have an
+保存真正简单的简单表我
+
+1054
+00:42:24,740 --> 00:42:27,770
+index on attribute ABC so I can do
+在属性 A 上有一个索引 BC 所以我可以做这样的
+
+1055
+00:42:27,770 --> 00:42:29,330
+lookups like this where a equals five
+查找，其中 a 等于 5
+
+1056
+00:42:29,330 --> 00:42:31,520
+and B equals three where I have I don't
+，B 等于 3 我
+
+1057
+00:42:31,520 --> 00:42:34,550
+have the C but I have a and B and I
+没有 C 但我有 a 和 B，我
+
+1058
+00:42:34,550 --> 00:42:36,170
+don't need to have the C and I can still
+不需要 C，我仍然
+
+1059
+00:42:36,170 --> 00:42:37,640
+find the things that I'm looking for you
+可以找到那些东西 我正在寻找你
+
+1060
+00:42:37,640 --> 00:42:39,410
+can't do that and a hash index because
+不能这样做和一个散列索引因为
+
+1061
+00:42:39,410 --> 00:42:41,270
+think what happened I would take this
+想想发生了什么我会用这
+
+1062
+00:42:41,270 --> 00:42:43,550
+five and three try to hash them together
+五个和三个尝试在
+
+1063
+00:42:43,550 --> 00:42:45,710
+without the C and that's gonna jump to
+没有 C 的情况下将它们散列在一起 这会跳到
+
+1064
+00:42:45,710 --> 00:42:47,600
+some random location that's not just not
+一些随机位置，这不仅仅是
+
+1065
+00:42:47,600 --> 00:42:49,940
+what I'm looking for you can also do
+我的位置 寻找你
+
+1066
+00:42:49,940 --> 00:42:51,590
+queries where you only have maybe the
+也可以在你只有
+
+1067
+00:42:51,590 --> 00:42:53,540
+middle guy right you don't have the
+中间人的情况下进行查询 你没有
+
+1068
+00:42:53,540 --> 00:42:54,650
+prefix you can hunt the subjects you
+前缀 你可以寻找主题 你
+
+1069
+00:42:54,650 --> 00:42:56,380
+just have the middle the middle key
+只有中间的中间
+
+1070
+00:42:56,380 --> 00:42:58,280
+again you can't do that in a hash table
+键 你不能在哈希表中
+
+1071
+00:42:58,280 --> 00:43:00,290
+so not all data is have to support this
+这样做所以不是全部 数据必须支持这一点
+
+1072
+00:43:00,290 --> 00:43:02,240
+pretty much everyone supports the prefix
+几乎每个人都支持前缀
+
+1073
+00:43:02,240 --> 00:43:05,720
+one where you have at least the keys in
+一个，其中您至少有按顺序排列的键，
+
+1074
+00:43:05,720 --> 00:43:07,280
+in the order as they're defined for the
+因为它们是为索引定义的，
+
+1075
+00:43:07,280 --> 00:43:10,070
+index not everyone can do this middle
+并不是每个人都可以在这里做这个中间
+
+1076
+00:43:10,070 --> 00:43:11,930
+one here actually I think maybe only
+的，实际上我认为也许只有
+
+1077
+00:43:11,930 --> 00:43:14,450
+Oracle a sequel server can do this so
+Oracle 一个续集服务器可以 这样做，
+
+1078
+00:43:14,450 --> 00:43:16,520
+that's a little more concrete example so
+这是一个更具体的例子，
+
+1079
+00:43:16,520 --> 00:43:19,330
+let's say we have an index that is
+假设我们有一个索引 它是
+
+1080
+00:43:19,330 --> 00:43:23,450
+defined on two to two columns or two
+在两到两列或两个属性上定义的，
+
+1081
+00:43:23,450 --> 00:43:25,190
+attributes so this would be called like
+因此这将被
+
+1082
+00:43:25,190 --> 00:43:27,080
+a composite key so instead of being on
+称为复合键，因此
+
+1083
+00:43:27,080 --> 00:43:28,730
+for one column it's actually two columns
+它实际上是将两列组合在一起而不是为一列打开，
+
+1084
+00:43:28,730 --> 00:43:30,890
+combined and the order of how we define
+并且我们定义索引的顺序
+
+1085
+00:43:30,890 --> 00:43:34,070
+our index will determine what kind of
+将决定
+
+1086
+00:43:34,070 --> 00:43:35,350
+queries we can do on them
+我们可以进行哪种查询
+
+1087
+00:43:35,350 --> 00:43:38,030
+so again if I'm trying to loop do look
+如果我尝试循环，请再次对它们进行操作
+
+1088
+00:43:38,030 --> 00:43:39,890
+up on eight say it's a trying to find
+查找 8 说这是在尝试找到
+
+1089
+00:43:39,890 --> 00:43:42,230
+key a B well in that case I have both
+键 a B，在这种情况下
+
+1090
+00:43:42,230 --> 00:43:44,240
+attributes that I've defined in my key
+，我在键中定义了两个属性，
+
+1091
+00:43:44,240 --> 00:43:45,830
+so now I can just do a straight
+所以现在我可以直接做
+
+1092
+00:43:45,830 --> 00:43:47,570
+comparison of look at the first key and
+比较看第一个键，
+
+1093
+00:43:47,570 --> 00:43:48,920
+then look at the second key and then
+然后看第二个键，然后
+
+1094
+00:43:48,920 --> 00:43:50,180
+determine whether I want to go left and
+确定我是否要向左和向右走，
+
+1095
+00:43:50,180 --> 00:43:51,950
+right so in this case here a is less
+所以在这种情况下，a
+
+1096
+00:43:51,950 --> 00:43:53,570
+than equal to a and B is less than
+小于等于 a 并且 B 小于
+
+1097
+00:43:53,570 --> 00:43:56,119
+equals C so I know to find the key and
+等于 C 所以我知道要找到 键，
+
+1098
+00:43:56,119 --> 00:43:58,550
+I'm looking for I go down this path do
+我正在寻找我沿着这条路走下去
+
+1099
+00:43:58,550 --> 00:44:00,020
+whatever search I want to do in my node
+在我的节点中做任何我想做的搜索
+
+1100
+00:44:00,020 --> 00:44:01,310
+and then I can find the entry that I
+然后我可以找到我想要的条目
+
+1101
+00:44:01,310 --> 00:44:04,940
+want let's say though now I want to do a
+让我们说虽然现在我想做一个
+
+1102
+00:44:04,940 --> 00:44:06,380
+prefix search where I only have the
+前缀搜索，我只有
+
+1103
+00:44:06,380 --> 00:44:08,240
+first element to my composite key but
+第一个元素 到我的复合键，但
+
+1104
+00:44:08,240 --> 00:44:10,820
+not the second one so again I can just
+不是第二个，所以我可以再
+
+1105
+00:44:10,820 --> 00:44:12,350
+look at the first key or first
+看看第一个键 或者首先
+
+1106
+00:44:12,350 --> 00:44:14,360
+activating the key a is less than equal
+激活键 a 小于
+
+1107
+00:44:14,360 --> 00:44:16,580
+to a so I know that the starting point
+等于 a 所以我
+
+1108
+00:44:16,580 --> 00:44:18,350
+for what I'm looking for it has to be
+知道我正在寻找它的起点
+
+1109
+00:44:18,350 --> 00:44:20,110
+down in this direction so I go down here
+必须在这个方向上所以我在这里
+
+1110
+00:44:20,110 --> 00:44:22,930
+but now I'm gonna do a sequential scan
+但现在我要进行顺序
+
+1111
+00:44:22,930 --> 00:44:25,760
+across my node and going across the the
+扫描 我的节点并穿过
+
+1112
+00:44:25,760 --> 00:44:28,310
+leaves to find all the entry I want up
+叶子找到我想要的所有条目，
+
+1113
+00:44:28,310 --> 00:44:30,920
+until I reach a key that is less than or
+直到我找到一个小于或
+
+1114
+00:44:30,920 --> 00:44:33,680
+equal to the you know my key a so in
+等于的密钥 你知道我的密钥 a 所以在
+
+1115
+00:44:33,680 --> 00:44:34,700
+this case as soon as I find one that
+这种情况下，一旦我找到一个
+
+1116
+00:44:34,700 --> 00:44:37,070
+starts to be I know my search is done
+开始成为我知道的 我的搜索已经完成
+
+1117
+00:44:37,070 --> 00:44:38,360
+and there's not gonna be anything else
+，
+
+1118
+00:44:38,360 --> 00:44:40,250
+remaining in the leaf nodes that would
+叶子节点中不会剩下任何
+
+1119
+00:44:40,250 --> 00:44:43,580
+satisfy my predicate so this one this
+可以满足我的谓词的东西，所以这个
+
+1120
+00:44:43,580 --> 00:44:45,590
+one's pretty easy or not easy but a lot
+这个很容易或不容易，但
+
+1121
+00:44:45,590 --> 00:44:47,630
+of data systems can support this one the
+很多数据系统都可以支持
+
+1122
+00:44:47,630 --> 00:44:50,780
+hard one is this where you only have you
+这个，难的是你只有这个 你
+
+1123
+00:44:50,780 --> 00:44:52,280
+only had the last element not the first
+只有最后一个元素而不是第一个元素，
+
+1124
+00:44:52,280 --> 00:44:55,520
+one so the way you actually end up
+所以你最终
+
+1125
+00:44:55,520 --> 00:44:58,070
+implementing this is you try to figure
+实现这个的方式是你尝试
+
+1126
+00:44:58,070 --> 00:45:00,530
+out at least in the top and in the root
+至少在顶部和
+
+1127
+00:45:00,530 --> 00:45:03,620
+node which which portions of the tree do
+根节点中找出我需要查看的树的哪些部分
+
+1128
+00:45:03,620 --> 00:45:04,850
+I need to look at it could be something
+可能是
+
+1129
+00:45:04,850 --> 00:45:06,680
+that there's something could be there so
+有一些东西可能在那里所以
+
+1130
+00:45:06,680 --> 00:45:09,590
+in this case here I know that no matter
+在这种情况下我知道 现在
+
+1131
+00:45:09,590 --> 00:45:12,260
+what I have for the first value it's
+无论我对第一个值有什么
+
+1132
+00:45:12,260 --> 00:45:15,320
+always gonna have to be less than C for
+，
+
+1133
+00:45:15,320 --> 00:45:16,670
+the second attribute that's the second
+对于第二个值的第二个属性，它总是必须小于 C，
+
+1134
+00:45:16,670 --> 00:45:18,260
+value so I don't need to look at this
+所以我不需要看
+
+1135
+00:45:18,260 --> 00:45:19,070
+guy over here
+这里的这个人，
+
+1136
+00:45:19,070 --> 00:45:20,660
+I only need to look at these other ones
+我只需要看这些其他的
+
+1137
+00:45:20,660 --> 00:45:22,820
+so essentially what you just do is you
+所以基本上你所做的就是你
+
+1138
+00:45:22,820 --> 00:45:25,100
+end up doing multiple index probes or
+最终做了多个索引探测或
+
+1139
+00:45:25,100 --> 00:45:27,830
+muscle traversals and substituting
+肌肉遍历，并用
+
+1140
+00:45:27,830 --> 00:45:29,300
+different values for the thing that you
+不同的值代替你没有看到的东西，
+
+1141
+00:45:29,300 --> 00:45:30,590
+don't have see we look at the top and
+我们看着顶部
+
+1142
+00:45:30,590 --> 00:45:32,630
+say well I know I have an A I have a B
+说我知道我有一个人工智能有一个 B
+
+1143
+00:45:32,630 --> 00:45:35,060
+and I have a C well there's nothing for
+和我 有一个 C 好吧，
+
+1144
+00:45:35,060 --> 00:45:36,380
+this C that would find over here so I
+这个 C 没有任何东西可以在这里找到，所以我
+
+1145
+00:45:36,380 --> 00:45:39,050
+can skip that so let me now do a lookup
+可以跳过它，所以现在让我
+
+1146
+00:45:39,050 --> 00:45:41,180
+in these guys and I substitute the star
+在这些人中进行查找，我用 A 替换星号
+
+1147
+00:45:41,180 --> 00:45:42,830
+with an A and each one of those is a
+，每个都是
+
+1148
+00:45:42,830 --> 00:45:44,930
+separate lookup and then you combine
+单独的查找，然后你组合
+
+1149
+00:45:44,930 --> 00:45:46,550
+them all together and produce the final
+它们放在一起并产生最终
+
+1150
+00:45:46,550 --> 00:45:50,180
+result so Oracle calls this skip scans I
+结果，因此 Oracle 称此为跳过扫描 我
+
+1151
+00:45:50,180 --> 00:45:53,410
+don't know what other systems column yes
+不知道其他系统列是
+
+1152
+00:46:06,509 --> 00:46:11,069
+yeah yes yes you're right that's wrong
+
+1153
+00:46:11,069 --> 00:46:14,710
+but yes so you would include that but
+
+1154
+00:46:14,710 --> 00:46:16,210
+it's each one of those use it separately
+
+1155
+00:46:16,210 --> 00:46:18,369
+to Russell okay and you're just feeling
+什么 拉塞尔还好，你只是
+
+1156
+00:46:18,369 --> 00:46:20,499
+in the values whereas like in this one
+感觉 值，而像
+
+1157
+00:46:20,499 --> 00:46:21,759
+here the main point I make is like this
+这里的这个，我提出的主要观点
+
+1158
+00:46:21,759 --> 00:46:23,380
+one he like for this one and the first
+是他喜欢这个，第
+
+1159
+00:46:23,380 --> 00:46:25,989
+one I had to do one traversal and then I
+一个我必须做一次遍历，然后我
+
+1160
+00:46:25,989 --> 00:46:27,400
+found the thing I was looking for this
+发现我正在寻找的这个
+
+1161
+00:46:27,400 --> 00:46:29,140
+one is you have to probe down multiple
+是你必须探索多个
+
+1162
+00:46:29,140 --> 00:46:30,880
+times and you fill in the values
+时间和你填写值
+
+1163
+00:46:30,880 --> 00:46:36,999
+thank you I'll fix that okay so let's
+谢谢我会解决这个问题所以让我们来看
+
+1164
+00:46:36,999 --> 00:46:39,099
+get to the good stuff so we know what a
+看好东西所以我们知道什么是
+
+1165
+00:46:39,099 --> 00:46:41,049
+B+ tree is now let's talk about actually
+B+ 树现在让我们谈谈
+
+1166
+00:46:41,049 --> 00:46:42,069
+how you want to build it it makes it
+你想如何构建它它使它
+
+1167
+00:46:42,069 --> 00:46:44,499
+this thing actually useful so there's
+真正有用所以有
+
+1168
+00:46:44,499 --> 00:46:47,469
+this great book which i think is free
+这本很棒的书，我认为是免费
+
+1169
+00:46:47,469 --> 00:46:49,719
+list if you google it it shows up free I
+列表，如果你用谷歌搜索它，它会免费显示我
+
+1170
+00:46:49,719 --> 00:46:50,700
+don't know whether that's true or not
+不知道这是否属实，
+
+1171
+00:46:50,700 --> 00:46:52,599
+there's great book written a few years
+几年前 Gertz graphy 写了一本很棒的书
+
+1172
+00:46:52,599 --> 00:46:55,210
+ago by Gertz graphy who's a famous
+，他是一位著名的
+
+1173
+00:46:55,210 --> 00:46:57,759
+database researcher he's gonna talk
+数据库研究员，他会
+
+1174
+00:46:57,759 --> 00:46:58,839
+about a lot of this stuff he's done for
+谈论很多 他后来为查询优化所做的这些事情
+
+1175
+00:46:58,839 --> 00:47:00,249
+query optimization later on but he
+，但
+
+1176
+00:47:00,249 --> 00:47:01,690
+basically he wrote this book is like all
+基本上他写这本书就像
+
+1177
+00:47:01,690 --> 00:47:03,609
+the modern techniques and peaks and
+所有现代技术以及
+
+1178
+00:47:03,609 --> 00:47:06,609
+optimizations you can do in a B+ tree in
+您可以在真实系统中的 B+ 树中进行的峰值和优化一样，
+
+1179
+00:47:06,609 --> 00:47:08,799
+a real system so we're gonna cover some
+因此我们将介绍其中
+
+1180
+00:47:08,799 --> 00:47:10,180
+of some of these things and actually
+的一些内容和 实际上
+
+1181
+00:47:10,180 --> 00:47:12,400
+it's a really light read and it was and
+这是一个非常轻的r  ead，它曾经和
+
+1182
+00:47:12,400 --> 00:47:14,799
+like it covers all the really important
+喜欢它涵盖了所有真正重要的
+
+1183
+00:47:14,799 --> 00:47:16,390
+topics and in a way that's easy to read
+主题，并且以一种易于阅读的方式涵盖了所有重要的主题，
+
+1184
+00:47:16,390 --> 00:47:18,910
+so which I had a hand notice Isis how to
+因此我有一个手头通知 Isis
+
+1185
+00:47:18,910 --> 00:47:20,859
+do merging how to hand over blank keys
+如何合并如何交出空白
+
+1186
+00:47:20,859 --> 00:47:22,239
+the non unique keys what they asked
+键和非唯一键他们询问的
+
+1187
+00:47:22,239 --> 00:47:23,799
+about and then internode search how to
+内容，然后是节点间 搜索如何
+
+1188
+00:47:23,799 --> 00:47:27,700
+do better searches inside the node so in
+在节点内进行更好的搜索，因此
+
+1189
+00:47:27,700 --> 00:47:31,420
+general the the you can think of a node
+通常您可以认为
+
+1190
+00:47:31,420 --> 00:47:33,219
+in our B plus tree it's just a like a
+我们 B 加树中的一个节点就像
+
+1191
+00:47:33,219 --> 00:47:35,799
+page in our table right so the size of
+我们表中的一个页面一样，因此该节点的大小
+
+1192
+00:47:35,799 --> 00:47:36,940
+the node could be the same as a page
+可以与中的页面
+
+1193
+00:47:36,940 --> 00:47:39,969
+size in practice though it doesn't have
+大小相同 实践虽然它
+
+1194
+00:47:39,969 --> 00:47:41,950
+to be and depending on what kind of
+不一定是并且取决于
+
+1195
+00:47:41,950 --> 00:47:43,479
+hardware we're storing our database on
+我们将数据库存储在什么样的硬件上
+
+1196
+00:47:43,479 --> 00:47:45,729
+we actually may want to have even larger
+我们实际上可能想要更大的
+
+1197
+00:47:45,729 --> 00:47:48,609
+page sizes are smaller page note sizes
+页面尺寸更小页面笔记尺寸
+
+1198
+00:47:48,609 --> 00:47:51,640
+are smaller know sizes so it turns out
+更小已知尺寸所以事实
+
+1199
+00:47:51,640 --> 00:47:53,200
+the research shows that the slower the
+证明研究表明 您拥有的磁盘越慢，
+
+1200
+00:47:53,200 --> 00:47:54,849
+disk you have you're just drawing your
+您只是
+
+1201
+00:47:54,849 --> 00:47:57,190
+index on your tree on the larger the
+在您想要的节点大小越大的树上绘制索引，
+
+1202
+00:47:57,190 --> 00:48:00,789
+node size you want and you know it
+并且您知道这
+
+1203
+00:48:00,789 --> 00:48:01,539
+should be obvious right
+应该是显而易见
+
+1204
+00:48:01,539 --> 00:48:04,239
+the for every disk i/o I do I'm bringing
+的对于我所做的每个磁盘 i/o 我带来的
+
+1205
+00:48:04,239 --> 00:48:06,789
+I can read the the nodes sequentially
+我可以阅读 节点按顺序排列它的
+
+1206
+00:48:06,789 --> 00:48:08,440
+all the pages for it
+所有页面，
+
+1207
+00:48:08,440 --> 00:48:10,030
+and that's gonna be much faster than you
+这就是 如果我的节点尺寸较小，
+
+1208
+00:48:10,030 --> 00:48:11,140
+went to random i/o two different
+则比随机输入/输出两个不同的
+
+1209
+00:48:11,140 --> 00:48:13,240
+different notes if my node is is a
+音符要快得多，
+
+1210
+00:48:13,240 --> 00:48:15,640
+smaller size so if you're in a spinning
+因此如果您在旋转中，则
+
+1211
+00:48:15,640 --> 00:48:17,530
+gets hard drive you have no sizes up to
+获得硬盘驱动器，您没有高达
+
+1212
+00:48:17,530 --> 00:48:18,880
+one megabyte that's usually a good
+1 兆字节的大小，这通常是一个很好的
+
+1213
+00:48:18,880 --> 00:48:22,060
+number SSDs roughly 10 kilobytes which
+数字 SSD 大约 10 千字节，
+
+1214
+00:48:22,060 --> 00:48:24,490
+roughly corresponds to the the node
+大致对应于
+
+1215
+00:48:24,490 --> 00:48:26,380
+sizes or page sizes that real database
+实际数据库系统使用的节点大小或页面大小，
+
+1216
+00:48:26,380 --> 00:48:28,119
+systems use but then if you're an emery
+但如果您是金刚砂
+
+1217
+00:48:28,119 --> 00:48:29,470
+database you actually want to go low as
+数据库，您实际上希望减少到
+
+1218
+00:48:29,470 --> 00:48:33,190
+512 bytes and so the this is another
+512 字节，因此这是另一个
+
+1219
+00:48:33,190 --> 00:48:34,960
+good example what we talked about how in
+很好的例子
+
+1220
+00:48:34,960 --> 00:48:37,930
+our buffer pool we could have one but
+。 缓冲池我们可以有一个，但
+
+1221
+00:48:37,930 --> 00:48:40,180
+for pulling our system for index pages
+为了索引页
+
+1222
+00:48:40,180 --> 00:48:42,460
+and one buffer pool set for four data
+和一个缓冲池设置为四个数据
+
+1223
+00:48:42,460 --> 00:48:44,020
+pages and we could set them to be
+页我们可以设置一个缓冲池，我们可以将它们设置为
+
+1224
+00:48:44,020 --> 00:48:45,910
+different sizes so I could set if I'm
+不同的大小，这样我就可以设置是否
+
+1225
+00:48:45,910 --> 00:48:47,200
+going to slow spinning this hard drive
+要减慢这个硬盘驱动器的旋转速度
+
+1226
+00:48:47,200 --> 00:48:49,359
+and I can have a buffer pool for my B+
+，我可以 我的 B+ 树页面有一个缓冲池，
+
+1227
+00:48:49,359 --> 00:48:52,119
+tree pages and have them be one megabyte
+并且它们是 1 兆字节，
+
+1228
+00:48:52,119 --> 00:48:53,829
+whereas my data pages I'll keep them at
+而我的数据页面我会将它们保持在
+
+1229
+00:48:53,829 --> 00:48:57,310
+8 kilobytes or 16 kilobytes the optimal
+8 KB 或 16 KB 最佳
+
+1230
+00:48:57,310 --> 00:48:58,750
+size can also vary depending what kind
+大小也可能因
+
+1231
+00:48:58,750 --> 00:49:00,310
+of operations or queries you're doing on
+您正在执行的操作或查询类型而异
+
+1232
+00:49:00,310 --> 00:49:02,800
+it so leaf node scans we're doing long
+我们正在做的叶节点扫描 长的
+
+1233
+00:49:02,800 --> 00:49:05,230
+frontal reads those are typically better
+正面读取通常
+
+1234
+00:49:05,230 --> 00:49:07,180
+to have larger node sizes because I can
+最好有更大的节点大小，因为我可以
+
+1235
+00:49:07,180 --> 00:49:09,280
+do more sequential i/o where if I'm
+做更多的顺序 i/o，如果我
+
+1236
+00:49:09,280 --> 00:49:10,390
+doing a lot of lookups a lot of
+做很多查找，很多
+
+1237
+00:49:10,390 --> 00:49:12,490
+traversal that's a lot of random i/o so
+遍历是很多随机 i/o
+
+1238
+00:49:12,490 --> 00:49:14,440
+therefore I want to have smaller node
+所以我想要有 更小的节点
+
+1239
+00:49:14,440 --> 00:49:18,880
+sizes so the next thing we can do is
+大小所以我们接下来可以做
+
+1240
+00:49:18,880 --> 00:49:20,680
+actually violate the very thing that
+的事情实际上违反
+
+1241
+00:49:20,680 --> 00:49:24,250
+said in the beginning about how the we
+了开始时所说的关于我们
+
+1242
+00:49:24,250 --> 00:49:27,490
+always have to merge anytime the anytime
+总是必须在
+
+1243
+00:49:27,490 --> 00:49:29,770
+we're less than half full and the demo I
+我们不到半满的时候随时合并的事情我
+
+1244
+00:49:29,770 --> 00:49:31,599
+did it was sort of simple it would do
+所做的演示有点简单
+
+1245
+00:49:31,599 --> 00:49:35,079
+exactly that but in practice you may
+会这样做，但在实践中，
+
+1246
+00:49:35,079 --> 00:49:36,579
+actually not want to do this immediately
+
+1247
+00:49:36,579 --> 00:49:39,849
+when you're less than half full because
+当你不到半满时，你实际上可能不想立即这样做，
+
+1248
+00:49:39,849 --> 00:49:42,010
+it's just like we saw in the hash table
+因为就像我们在哈希表中看到的那样，
+
+1249
+00:49:42,010 --> 00:49:44,050
+we do did Leitz with linear hashing at
+我们在最后用线性哈希做了 Leitz
+
+1250
+00:49:44,050 --> 00:49:44,470
+the end
+
+1251
+00:49:44,470 --> 00:49:46,839
+I'm a Compaq something I'm a merge
+我是康柏的东西 我是一个合并的
+
+1252
+00:49:46,839 --> 00:49:49,150
+something because I went less than half
+东西，因为我不到半
+
+1253
+00:49:49,150 --> 00:49:51,910
+full but then the next operation inserts
+满，但接下来的操作插入
+
+1254
+00:49:51,910 --> 00:49:53,980
+into that note and now I have to just
+到那个笔记中，现在我不得不
+
+1255
+00:49:53,980 --> 00:49:57,339
+split all over again so the the merging
+再次拆分，所以合并
+
+1256
+00:49:57,339 --> 00:50:00,040
+operation is expensive splits off the
+操作很昂贵，从
+
+1257
+00:50:00,040 --> 00:50:01,990
+top splits are also expensive but it
+顶部拆分的拆分也很昂贵，但它
+
+1258
+00:50:01,990 --> 00:50:03,339
+splits we have to do because we ran out
+拆分了 我们必须这样做，因为我们
+
+1259
+00:50:03,339 --> 00:50:05,410
+of space in our node the merge is weak
+在我们的节点中用完了空间合并很弱
+
+1260
+00:50:05,410 --> 00:50:07,480
+actually relax that that requirement and
+实际上放宽了那个要求而
+
+1261
+00:50:07,480 --> 00:50:10,869
+not merge things right away so it gets
+不是立即合并东西，所以
+
+1262
+00:50:10,869 --> 00:50:13,480
+slightly unbalanced over time and then
+随着时间的推移它会稍微不平衡然后
+
+1263
+00:50:13,480 --> 00:50:14,740
+in the background we can have like a
+在后台我们可以像
+
+1264
+00:50:14,740 --> 00:50:15,730
+garbage collector or something go
+垃圾收集器或其他东西
+
+1265
+00:50:15,730 --> 00:50:18,190
+through and do rebalancing or what's
+通过并进行重新平衡或什么
+
+1266
+00:50:18,190 --> 00:50:19,720
+often times the case people just rebuild
+通常情况下，人们只是
+
+1267
+00:50:19,720 --> 00:50:21,220
+the entire tree from scratch and that
+从头开始重建整个树并
+
+1268
+00:50:21,220 --> 00:50:22,660
+fixes all these issues
+解决了所有这些问题，
+
+1269
+00:50:22,660 --> 00:50:24,799
+so these a lot of times you see this in
+因此很多时候您会在
+
+1270
+00:50:24,799 --> 00:50:26,599
+you know high-end commercial enterprise
+您知道高端商业企业
+
+1271
+00:50:26,599 --> 00:50:28,760
+systems you know though they'll shut the
+系统中看到这一点，尽管他们会
+
+1272
+00:50:28,760 --> 00:50:30,109
+database down over the weekend because
+在周末关闭数据库，因为
+
+1273
+00:50:30,109 --> 00:50:31,279
+they're gonna rebuild all their indexes
+他们将重建他们所有的索引
+
+1274
+00:50:31,279 --> 00:50:32,210
+and that's essentially what they're
+，这基本上就是他们在
+
+1275
+00:50:32,210 --> 00:50:33,980
+doing there their rebalancing everything
+那里做的事情，他们重新平衡所有东西，
+
+1276
+00:50:33,980 --> 00:50:35,390
+because it wasn't always merging
+因为它并不总是
+
+1277
+00:50:35,390 --> 00:50:38,450
+correctly anytime you see like a bank
+正确合并，就像银行
+
+1278
+00:50:38,450 --> 00:50:40,460
+says they're down at 3 a.m. on on a
+说他们在周日凌晨 3 点关闭
+
+1279
+00:50:40,460 --> 00:50:42,680
+Sunday in the morning it's probably this
+一样 可能这
+
+1280
+00:50:42,680 --> 00:50:43,640
+is one of the things they're probably
+是他们可能做得很好的事情之一，
+
+1281
+00:50:43,640 --> 00:50:46,940
+doing all right so now we want talk
+所以现在我们想
+
+1282
+00:50:46,940 --> 00:50:48,789
+about how we actually want to handle
+谈谈我们实际上想要如何处理
+
+1283
+00:50:48,789 --> 00:50:51,440
+forever length keys so again everything
+永久长度的键，
+
+1284
+00:50:51,440 --> 00:50:53,119
+I've shown so far we assume that the key
+所以我到目前为止展示的所有内容我们 假设键
+
+1285
+00:50:53,119 --> 00:50:54,200
+is a fixed length and the value is
+是固定长度，值
+
+1286
+00:50:54,200 --> 00:50:56,059
+always fixed length and in practice the
+总是固定长度，实际上这些
+
+1287
+00:50:56,059 --> 00:50:58,490
+values will always be fixed like so
+值总是固定的，所以
+
+1288
+00:50:58,490 --> 00:50:59,480
+there's four different ways we can
+我们有四种不同的方法可以
+
+1289
+00:50:59,480 --> 00:51:01,760
+handle this so the first approach is
+处理这个问题，所以第一种方法是
+
+1290
+00:51:01,760 --> 00:51:03,980
+that rather than storing the key itself
+，而不是将键本身存储
+
+1291
+00:51:03,980 --> 00:51:08,240
+in the node we destroy a pointer to the
+在节点中，我们 销毁指向
+
+1292
+00:51:08,240 --> 00:51:10,609
+actual attribute or the tuple where we
+实际属性或元组的指针，我们可以在其中
+
+1293
+00:51:10,609 --> 00:51:12,109
+can do a lookup to find what the key
+进行查找以再次查找键的
+
+1294
+00:51:12,109 --> 00:51:15,109
+actually actually is so again if I have
+实际内容，
+
+1295
+00:51:15,109 --> 00:51:17,380
+you know if I have an attribute that's a
+如果我知道我是否有一个
+
+1296
+00:51:17,380 --> 00:51:20,510
+very very like bar char instead of
+非常类似于 bar char 的属性而不是
+
+1297
+00:51:20,510 --> 00:51:22,670
+storing that varchar' in the in the node
+将那个 varchar' 存储在 在节点中，
+
+1298
+00:51:22,670 --> 00:51:24,920
+I have its record ID and then when I
+我有它的记录 ID，然后当我
+
+1299
+00:51:24,920 --> 00:51:26,450
+want to figure out whether the key I'm
+想弄清楚我正在查找的键是否与
+
+1300
+00:51:26,450 --> 00:51:28,010
+doing a look-up on matches that key
+
+1301
+00:51:28,010 --> 00:51:29,960
+that's stored in that B tree I follow
+存储在 B 树中的键匹配时，我
+
+1302
+00:51:29,960 --> 00:51:32,059
+the record ID go get the page and go
+按照记录 ID 去获取页面并
+
+1303
+00:51:32,059 --> 00:51:33,170
+look at them with a real value actually
+查看 在他们那里有一个真正的值实际上
+
+1304
+00:51:33,170 --> 00:51:33,970
+yes
+是的，
+
+1305
+00:51:33,970 --> 00:51:38,240
+so this is obviously super slow it's
+所以这显然是超级慢的，这
+
+1306
+00:51:38,240 --> 00:51:39,799
+nice because if we're storing less data
+很好，因为如果我们存储的数据更少，
+
+1307
+00:51:39,799 --> 00:51:41,089
+because now we just tore the pointer
+因为现在我们只是撕掉了节点中的指针
+
+1308
+00:51:41,089 --> 00:51:42,829
+instead of the actual key in the in the
+而不是实际的键，
+
+1309
+00:51:42,829 --> 00:51:45,470
+in the in the node but it's expensive to
+但这样做很昂贵
+
+1310
+00:51:45,470 --> 00:51:47,000
+do that lookup you know as we're
+你和我们一样知道的那个查找
+
+1311
+00:51:47,000 --> 00:51:49,549
+traversing people tried this in the
+遍历人们在 1980 年代尝试了这个
+
+1312
+00:51:49,549 --> 00:51:51,589
+1980s for in memory databases because
+用于内存数据库，因为
+
+1313
+00:51:51,589 --> 00:51:54,410
+memory was really expensive but nobody
+内存非常昂贵，但
+
+1314
+00:51:54,410 --> 00:51:55,700
+actually does this anymore
+实际上没有人这样做了，
+
+1315
+00:51:55,700 --> 00:51:57,680
+everybody stores the keys always hole
+每个人都将密钥存储在洞中
+
+1316
+00:51:57,680 --> 00:52:00,680
+and then in the node the next you could
+，然后在节点中，你
+
+1317
+00:52:00,680 --> 00:52:02,510
+you have variable length nodes this is
+可以拥有可变长度的节点，这
+
+1318
+00:52:02,510 --> 00:52:05,089
+basically allows the the size of a node
+基本上允许大小 一个节点
+
+1319
+00:52:05,089 --> 00:52:07,089
+can vary based on what's stored in it
+可以根据其中存储的内容而有所不同，
+
+1320
+00:52:07,089 --> 00:52:09,140
+but we've said this is a bad idea
+但我们已经说过这是一个坏主意，
+
+1321
+00:52:09,140 --> 00:52:10,910
+because we want our page sizes to be
+因为我们希望
+
+1322
+00:52:10,910 --> 00:52:13,279
+always the same in our buffer pool and
+我们的缓冲池和磁盘中的页面大小始终相同，
+
+1323
+00:52:13,279 --> 00:52:15,140
+on disk so we don't have to worry about
+因此我们不必担心
+
+1324
+00:52:15,140 --> 00:52:17,210
+doing the thin backing problem to decide
+进行精简 支持问题来决定
+
+1325
+00:52:17,210 --> 00:52:18,650
+how about you know put you know fine
+你知道如何放置你知道
+
+1326
+00:52:18,650 --> 00:52:19,940
+free space to put in what we want to
+可以放入我们想要存储的内容的可用空间
+
+1327
+00:52:19,940 --> 00:52:22,839
+store so nobody does this one as well
+所以没有人也这样
+
+1328
+00:52:22,839 --> 00:52:25,789
+the next approach is do padding or
+做下一个方法是做填充或者
+
+1329
+00:52:25,789 --> 00:52:27,559
+basically we say you look at what the
+基本上我们说你看看
+
+1330
+00:52:27,559 --> 00:52:28,910
+attribute is and you're trying to index
+属性是什么，你是 尝试
+
+1331
+00:52:28,910 --> 00:52:30,859
+on and we say that whatever the max is
+索引，我们说无论最大值是多少，
+
+1332
+00:52:30,859 --> 00:52:33,200
+it could be no matter what key you give
+无论您给我们什么键，
+
+1333
+00:52:33,200 --> 00:52:35,180
+us we will Pat it out with either null
+我们都会用空位或您知道零位将其取出，
+
+1334
+00:52:35,180 --> 00:52:36,020
+bits or
+
+1335
+00:52:36,020 --> 00:52:39,050
+or you know zeros to make it always fit
+以使其始终
+
+1336
+00:52:39,050 --> 00:52:42,050
+exactly our our note size so everything
+完全适合我们的音符大小，因此一切
+
+1337
+00:52:42,050 --> 00:52:44,330
+is always nice and nicely aligned so
+始终 好的  并且很好地对齐，所以
+
+1338
+00:52:44,330 --> 00:52:46,100
+some systems actually actually do this
+有些系统实际上确实这样做了
+
+1339
+00:52:46,100 --> 00:52:47,690
+I think Postgres does this and we can
+我认为 Postgres 这样做，我们
+
+1340
+00:52:47,690 --> 00:52:50,390
+look at that next time but again you're
+下次可以看看，但是你又
+
+1341
+00:52:50,390 --> 00:52:53,660
+in the trade-off I'm wasting space in
+在权衡我浪费空间
+
+1342
+00:52:53,660 --> 00:52:55,970
+order to store things so this Y is also
+来存储东西所以这个 Y 也是
+
+1343
+00:52:55,970 --> 00:52:57,470
+- it's super important to make sure that
+- 它是 确保正确定义架构非常重要，
+
+1344
+00:52:57,470 --> 00:52:59,090
+you define your schema correctly
+
+1345
+00:52:59,090 --> 00:53:00,830
+like if I'm storing email addresses
+例如我存储的电子邮件地址
+
+1346
+00:53:00,830 --> 00:53:02,540
+which are you know maybe 32 characters
+可能是 32 个字符
+
+1347
+00:53:02,540 --> 00:53:04,940
+or 50 characters but I set the varchar'
+或 50 个字符，但
+
+1348
+00:53:04,940 --> 00:53:08,180
+size to be 1024 if I'm padding it out up
+如果我将其填充到 1024，我将 varchar 的大小设置
+
+1349
+00:53:08,180 --> 00:53:10,100
+to 1024 even though most of my emails
+为 1024 虽然我的大部分电子邮件
+
+1350
+00:53:10,100 --> 00:53:10,820
+aren't that big
+都没有那么大，
+
+1351
+00:53:10,820 --> 00:53:24,440
+then I'm wasting a lot of space yes that
+但我浪费了很多空间是的，
+
+1352
+00:53:24,440 --> 00:53:33,110
+me correct yeah so when you call Crate
+我是正确的，所以当你调用 Crate
+
+1353
+00:53:33,110 --> 00:53:35,570
+table you can define varchar' you define
+表时，你可以定义 varchar' 你定义
+
+1354
+00:53:35,570 --> 00:53:37,250
+the length in it you don't have to put
+它的长度，你不必把
+
+1355
+00:53:37,250 --> 00:53:38,840
+it in I and I I don't different systems
+它放进去 I 和 II 没有不同的系统
+
+1356
+00:53:38,840 --> 00:53:40,430
+to deal with different things but in
+来处理不同的事情，但在
+
+1357
+00:53:40,430 --> 00:53:41,480
+practice you always want to say this is
+实践中你总是想说这
+
+1358
+00:53:41,480 --> 00:53:42,920
+the max size of what I actually package
+是我实际打包
+
+1359
+00:53:42,920 --> 00:53:46,370
+min store right and then so varchar'
+min store 的最大大小，然后 varchar'
+
+1360
+00:53:46,370 --> 00:53:47,690
+supposed to be very length so even
+应该是很长的所以
+
+1361
+00:53:47,690 --> 00:53:51,290
+though I say the max size could be 32 if
+即使我说 最大大小可能是 32 如果
+
+1362
+00:53:51,290 --> 00:53:53,570
+you give it a 16 16 you know character
+你给它一个 16 16 你知道字符
+
+1363
+00:53:53,570 --> 00:53:55,610
+string it could in theory store that
+stri  ng它可以在理论上
+
+1364
+00:53:55,610 --> 00:53:58,340
+more compactly some systems are
+更紧凑地存储一些系统是
+
+1365
+00:53:58,340 --> 00:54:00,260
+different things I some systems actually
+不同的东西我一些系统实际上
+
+1366
+00:54:00,260 --> 00:54:03,620
+say it's a char and where it's always
+说它是一个字符并且它总是
+
+1367
+00:54:03,620 --> 00:54:05,390
+gonna be that size that's always padded
+会是那个总是填充的大小
+
+1368
+00:54:05,390 --> 00:54:06,740
+out they actually just still that store
+他们实际上只是将它
+
+1369
+00:54:06,740 --> 00:54:08,630
+that as a varchar' so logically you
+存储为一个varchar'所以逻辑上你
+
+1370
+00:54:08,630 --> 00:54:10,570
+don't know you don't care
+没有' 不知道你
+
+1371
+00:54:10,570 --> 00:54:12,170
+underneath the covers they can do
+不在乎他们可以做
+
+1372
+00:54:12,170 --> 00:54:14,090
+different things and my sequel was
+不同的事情，我的续集
+
+1373
+00:54:14,090 --> 00:54:15,590
+always the worst offenders so if you say
+总是最严重的冒犯者所以如果你说
+
+1374
+00:54:15,590 --> 00:54:17,180
+the max size of our string is like 16
+我们的字符串的最大大小是 16
+
+1375
+00:54:17,180 --> 00:54:19,700
+and you give it a 32 character string
+并且你给它一个 32 个字符的字符串
+
+1376
+00:54:19,700 --> 00:54:21,320
+it'll store it just truncates it
+它只会存储它
+
+1377
+00:54:21,320 --> 00:54:24,620
+silently for you all right so Postgres
+为你默默地截断它，所以 Postgres
+
+1378
+00:54:24,620 --> 00:54:25,520
+and all the sisters will throw an error
+和所有的姐妹都会抛出一个错误，
+
+1379
+00:54:25,520 --> 00:54:28,040
+but the database system should enforce
+但数据库系统应该对索引
+
+1380
+00:54:28,040 --> 00:54:28,640
+that correctly
+执行正确的
+
+1381
+00:54:28,640 --> 00:54:31,580
+same thing for index we like to build an
+相同的事情我们想建立一个
+
+1382
+00:54:31,580 --> 00:54:33,410
+index we have to be told you know here's
+索引我们必须告诉你知道这里
+
+1383
+00:54:33,410 --> 00:54:35,000
+the here's the attributes and our tables
+是这里的属性和我们的表
+
+1384
+00:54:35,000 --> 00:54:37,220
+your indexing so we know what their type
+你的索引，所以我们知道它们的类型
+
+1385
+00:54:37,220 --> 00:54:39,470
+is we know what their max sizes and we
+是什么我们知道它们的最大大小我们
+
+1386
+00:54:39,470 --> 00:54:44,690
+can pad out and as needed all right with
+可以根据需要填充，
+
+1387
+00:54:44,690 --> 00:54:47,480
+probably more commas is to use in an
+可能更多的逗号是在间接映射中使用，
+
+1388
+00:54:47,480 --> 00:54:49,790
+indirection map where
+其中
+
+1389
+00:54:49,790 --> 00:54:52,820
+store pointers for our keys inside of
+存储我们的键的指针 e
+
+1390
+00:54:52,820 --> 00:54:54,290
+our sort of key array but we're still
+我们的键数组，但我们仍然
+
+1391
+00:54:54,290 --> 00:54:55,700
+the pointers are just actually two
+是指针实际上只是
+
+1392
+00:54:55,700 --> 00:54:57,710
+offsets in our in our node themselves
+我们节点中的两个偏移量，
+
+1393
+00:54:57,710 --> 00:55:01,910
+rather than to some arbitrary page so it
+而不是指向某个任意页面，所以它
+
+1394
+00:55:01,910 --> 00:55:04,460
+would look like this so we have a sort
+看起来像这样，所以我们有
+
+1395
+00:55:04,460 --> 00:55:06,680
+of key map so again this is sorted these
+一种键映射，所以再次排序 这些
+
+1396
+00:55:06,680 --> 00:55:08,360
+are just pointers are all sets to down
+只是在这里设置的指针，
+
+1397
+00:55:08,360 --> 00:55:11,480
+here but these are sorted based on the
+但是这些是根据键的值排序的，
+
+1398
+00:55:11,480 --> 00:55:14,150
+values of the keys so to be very clear
+所以要非常
+
+1399
+00:55:14,150 --> 00:55:15,950
+the keys themselves not the keys
+清楚键本身不是键
+
+1400
+00:55:15,950 --> 00:55:17,720
+corresponding value but the actual
+对应的值，
+
+1401
+00:55:17,720 --> 00:55:19,700
+string that we're trying to store right
+而是我们试图正确存储的实际字符串
+
+1402
+00:55:19,700 --> 00:55:21,970
+and so just like in the slotted page
+等等 在元组的开槽页面
+
+1403
+00:55:21,970 --> 00:55:24,380
+layout for tuples we're going to grow
+布局中，我们将从头到尾增长
+
+1404
+00:55:24,380 --> 00:55:26,810
+from the end to the beginning and this
+，这
+
+1405
+00:55:26,810 --> 00:55:30,080
+side grows from the you know from from
+一边从你知道的从头到尾增长，
+
+1406
+00:55:30,080 --> 00:55:31,460
+beginning to the end and at some point
+并且在某些时候
+
+1407
+00:55:31,460 --> 00:55:33,500
+we get to full actually I think this has
+我们实际上已经满了，我认为这
+
+1408
+00:55:33,500 --> 00:55:34,700
+to be fixed size so we have to set a
+必须是固定大小 所以我们必须一次设置一个
+
+1409
+00:55:34,700 --> 00:55:37,010
+degree at a time so but if I if I don't
+学位，但是如果我没有
+
+1410
+00:55:37,010 --> 00:55:38,000
+run out of space for what I'm trying to
+用完我想要在这里存储的东西的空间，
+
+1411
+00:55:38,000 --> 00:55:39,530
+store here then I can have an overflow
+那么我可以有一个
+
+1412
+00:55:39,530 --> 00:55:42,860
+page that's that's chained to this so
+链接到这个的溢出页面，
+
+1413
+00:55:42,860 --> 00:55:45,320
+again this is just just a an offset to
+所以这只是
+
+1414
+00:55:45,320 --> 00:55:47,450
+whatever the key is so now if I'm doing
+如果我在做二进制，那么现在任何键的偏移量
+
+1415
+00:55:47,450 --> 00:55:49,310
+binary search as I'm jumping around this
+在我跳过这个
+
+1416
+00:55:49,310 --> 00:55:50,840
+array I jump down here to see what the
+数组的时候搜索 我跳到这里看看
+
+1417
+00:55:50,840 --> 00:55:54,770
+actual key value is so what's a really
+实际的键值是什么 所以
+
+1418
+00:55:54,770 --> 00:55:55,970
+simple optimization we can do to make
+我们可以做一个非常简单的优化来
+
+1419
+00:55:55,970 --> 00:56:08,140
+this go faster into that it statement is
+使它更快地进入它的陈述
+
+1420
+00:56:08,140 --> 00:56:10,250
+is it a statement or a question do we
+是它是一个陈述还是一个问题我们是否
+
+1421
+00:56:10,250 --> 00:56:12,410
+store this as an array or a linked list
+存储 这是一个数组或一个链表，
+
+1422
+00:56:12,410 --> 00:56:22,850
+it's always stores in a rack okay so his
+它总是存储在一个机架中，所以他的
+
+1423
+00:56:22,850 --> 00:56:25,160
+statement is I'm storing this as an
+声明是我将它存储为一个
+
+1424
+00:56:25,160 --> 00:56:26,930
+array or vector u vectors as a wrapper
+数组或向量 u 向量作为一个数组的包装器
+
+1425
+00:56:26,930 --> 00:56:29,570
+an array if I now do insertion or
+，如果我现在进行插入或
+
+1426
+00:56:29,570 --> 00:56:33,230
+deletion that's gonna take Oh N or yes
+删除，这将花费 Oh N 或 yes
+
+1427
+00:56:33,230 --> 00:56:36,380
+but again like this is this is just
+但同样是这样，这只是
+
+1428
+00:56:36,380 --> 00:56:39,080
+within the node itself so the size is
+在节点本身内，所以大小
+
+1429
+00:56:39,080 --> 00:56:43,730
+not that big right so you know fan out
+不是那么大，所以你知道扇
+
+1430
+00:56:43,730 --> 00:56:46,940
+of like maybe 32 so I have 32 elements I
+出可能是 32 个，所以我有 32 个元素我
+
+1431
+00:56:46,940 --> 00:56:49,340
+need I need to keep sorted I can do that
+需要我需要保持排序我可以
+
+1432
+00:56:49,340 --> 00:56:55,960
+in cash that's very fast so
+用现金完成，这非常快 所以
+
+1433
+00:57:07,260 --> 00:57:09,540
+correct okay so say I'm doing binary
+正确好吧所以说我在做二分
+
+1434
+00:57:09,540 --> 00:57:12,000
+search so in this case your binary
+搜索所以在这种情况下你的二分
+
+1435
+00:57:12,000 --> 00:57:14,609
+search is just you just do the linear
+搜索只是你只是做线性
+
+1436
+00:57:14,609 --> 00:57:16,380
+search so I've just fought scan along
+搜索所以我刚刚扫描
+
+1437
+00:57:16,380 --> 00:57:18,090
+and I want to see is there's the key I'm
+了我想看看有没有我
+
+1438
+00:57:18,090 --> 00:57:19,590
+looking for a match what what I have so
+正在寻找匹配的关键 我有什么，所以
+
+1439
+00:57:19,590 --> 00:57:21,270
+I have to follow this pointer but again
+我必须遵循这个指针，但
+
+1440
+00:57:21,270 --> 00:57:23,070
+it's just an offset it's in the same
+它又只是一个偏移量 在同一个
+
+1441
+00:57:23,070 --> 00:57:26,430
+page so it's gonna be your maybe 16 bits
+页面中，所以它可能是你的 16 位
+
+1442
+00:57:26,430 --> 00:57:28,800
+I follow that offset to jump to where
+我跟随那个偏移量跳转到
+
+1443
+00:57:28,800 --> 00:57:30,300
+this is and then I do might might
+这个位置然后我可能会
+
+1444
+00:57:30,300 --> 00:57:32,310
+comparison and if it doesn't match then
+比较，如果它不匹配然后
+
+1445
+00:57:32,310 --> 00:57:33,630
+I jump back and do the same in jump down
+我跳回并在跳下这里做同样的事情
+
+1446
+00:57:33,630 --> 00:57:35,550
+here and so just like in slotted pages
+等等 就像在开槽的页面
+
+1447
+00:57:35,550 --> 00:57:37,260
+where the two books want to be sorted in
+中，两本书希望
+
+1448
+00:57:37,260 --> 00:57:39,720
+the order as they're laid out in the
+按照它们在
+
+1449
+00:57:39,720 --> 00:57:41,130
+page and the same way that are sorted at
+页面中的排列顺序进行排序，并且在屠宰时排序的方式相同，
+
+1450
+00:57:41,130 --> 00:57:43,530
+the slaughter a this verbling theta at
+
+1451
+00:57:43,530 --> 00:57:44,880
+the button down here can mean any order
+这里按钮上的这个动词 theta 可以表示任何
+
+1452
+00:57:44,880 --> 00:57:46,530
+that at once I just know how to you know
+顺序 一旦我知道如何告诉你
+
+1453
+00:57:46,530 --> 00:57:50,300
+I know how to jump to it based on this
+我知道如何基于这个跳转到它
+
+1454
+00:57:51,170 --> 00:57:53,460
+his question is for non leaf nodes do
+他的问题是针对非叶节点
+
+1455
+00:57:53,460 --> 00:57:55,410
+you do the same thing yes it's and this
+你做同样的事情是的，这
+
+1456
+00:57:55,410 --> 00:57:58,910
+is for very well liked data and any note
+是非常喜欢的数据和任何注释
+
+1457
+00:57:58,910 --> 00:58:03,060
+so this is this is sort of micro
+所以这是排序 微
+
+1458
+00:58:03,060 --> 00:58:04,980
+optimization and going to disk is always
+优化和进入磁盘
+
+1459
+00:58:04,980 --> 00:58:07,140
+the most expensive thing but a really
+总是最昂贵的事情，但
+
+1460
+00:58:07,140 --> 00:58:08,010
+simple thing we could do is just
+我们可以做的一件非常简单的事情就是
+
+1461
+00:58:08,010 --> 00:58:10,589
+recognize that before since this is only
+认识到之前因为这通常只有
+
+1462
+00:58:10,589 --> 00:58:13,710
+16 bits in general I have a lot of space
+16 位我在这里有很多
+
+1463
+00:58:13,710 --> 00:58:15,869
+up here so maybe I just take the first
+空间所以也许我只需要第一个
+
+1464
+00:58:15,869 --> 00:58:19,200
+character of every string and just embed
+字符 每个字符串，然后将
+
+1465
+00:58:19,200 --> 00:58:21,599
+it inside upper here so now when I'm
+它嵌入到 upper here 中，所以 n 现在，当我
+
+1466
+00:58:21,599 --> 00:58:23,010
+skating along and trying to find the
+滑行并试图找到
+
+1467
+00:58:23,010 --> 00:58:23,640
+thing I'm looking for
+我要找的东西时，
+
+1468
+00:58:23,640 --> 00:58:26,220
+if my key doesn't match exactly you know
+如果我的密钥不完全匹配，您
+
+1469
+00:58:26,220 --> 00:58:27,540
+the first character that I know I don't
+知道我知道的第一个字符，我
+
+1470
+00:58:27,540 --> 00:58:30,270
+need to traverse down and find it again
+不需要向下遍历并再次找到它，
+
+1471
+00:58:30,270 --> 00:58:32,820
+this is like this is this is all going
+就像这样 这一切
+
+1472
+00:58:32,820 --> 00:58:34,410
+to be in memory this is like avoiding
+都将在内存中吗 这就像
+
+1473
+00:58:34,410 --> 00:58:37,230
+cache misses in making the binary search
+在进行二进制搜索时避免缓存未命中
+
+1474
+00:58:37,230 --> 00:58:38,220
+and making the search on this woman
+并使对这个女人的搜索
+
+1475
+00:58:38,220 --> 00:58:40,080
+faster okay this is a micro optimization
+更快 好吧这是一个微
+
+1476
+00:58:40,080 --> 00:58:41,700
+a voting disk is always the major thing
+优化 投票磁盘始终
+
+1477
+00:58:41,700 --> 00:58:42,990
+that we care about in this course but
+是我们在本课程中关心的主要事情但是
+
+1478
+00:58:42,990 --> 00:58:44,040
+this is a really simple trick that you
+这是一个非常简单的技巧，
+
+1479
+00:58:44,040 --> 00:58:51,180
+can do to speed this up yes again it
+你可以用它来加快速度
+
+1480
+00:58:51,180 --> 00:58:52,200
+looks like what if there's two persons
+
+1481
+00:58:52,200 --> 00:58:54,240
+that name is start the same letter again
+
+1482
+00:58:54,240 --> 00:58:55,980
+you'd have to depending what you're
+
+1483
+00:58:55,980 --> 00:58:59,790
+looking for you if you want to find
+
+1484
+00:58:59,790 --> 00:59:00,960
+exactly one you find the first one
+正是你找到的第一个
+
+1485
+00:59:00,960 --> 00:59:03,089
+you're done if you need to find anybody
+你已经完成 如果你需要找到任何人
+
+1486
+00:59:03,089 --> 00:59:06,619
+you have to go to both of them alright
+你必须去他们两个
+
+1487
+00:59:06,619 --> 00:59:08,700
+means same way here right for this one
+好吧 意思相同 对于这里的这个
+
+1488
+00:59:08,700 --> 00:59:09,869
+here I'd have to
+我必须
+
+1489
+00:59:09,869 --> 00:59:12,290
+I'd have to if I'm trying to find
+我必须如果我正在尝试 在
+
+1490
+00:59:12,290 --> 00:59:14,070
+everyone's different here but if there's
+这里找到每个人的不同但如果有
+
+1491
+00:59:14,070 --> 00:59:15,869
+like Paul and Prashant
+像 Paul 和 Prashant
+
+1492
+00:59:15,869 --> 00:59:17,910
+who's my PhD student I would scan down
+这样的我的博士 学生，我会在
+
+1493
+00:59:17,910 --> 00:59:19,650
+here find Prashant then actually go to
+这里扫一扫，找到 Prashant，然后实际上
+
+1494
+00:59:19,650 --> 00:59:20,670
+the next one just make sure that that
+去下一个，只要确保那个
+
+1495
+00:59:20,670 --> 00:59:22,319
+one doesn't have the same you know
+和你知道的不一样，
+
+1496
+00:59:22,319 --> 00:59:36,089
+doesn't have the same thing as well okay
+也没有同样的东西，好吧，
+
+1497
+00:59:36,089 --> 00:59:38,430
+so his coalitions
+所以他的联盟，
+
+1498
+00:59:38,430 --> 00:59:40,440
+so there's dip so I'm showing LexA
+所以有下降，所以我正在展示 LexA
+
+1499
+00:59:40,440 --> 00:59:41,999
+graphical ordering alphabetical ordering
+图形排序 字母
+
+1500
+00:59:41,999 --> 00:59:44,880
+for this they're in high-end database
+排序 他们在高端数据库
+
+1501
+00:59:44,880 --> 00:59:45,930
+systems you can actually define
+系统中 您实际上可以定义
+
+1502
+00:59:45,930 --> 00:59:49,230
+arbitrary sort orders everything still
+任意排序顺序 一切仍然
+
+1503
+00:59:49,230 --> 00:59:56,249
+works the same you're talking like
+有效 您所说的就像
+
+1504
+00:59:56,249 --> 00:59:57,749
+dictionary codes for not anytime I bad
+字典代码一样 不是任何时候 我不好
+
+1505
+00:59:57,749 --> 00:59:59,460
+you I could have different you know
+你 我可以有不同的你知道
+
+1506
+00:59:59,460 --> 01:00:01,019
+sorting based on whether it's you know
+排序基于 无论是你知道
+
+1507
+01:00:01,019 --> 01:00:03,420
+code or what language I'm using for that
+代码还是我使用的语言
+
+1508
+01:00:03,420 --> 01:00:04,769
+one you have to begin the data system
+，你必须开始数据系统
+
+1509
+01:00:04,769 --> 01:00:06,900
+would know this is how the sort order is
+会知道这是如何排序的，
+
+1510
+01:00:06,900 --> 01:00:08,880
+so what you know it would know what what
+所以你知道它会知道什么
+
+1511
+01:00:08,880 --> 01:00:11,150
+prefix if it wants to store up in here
+前缀，如果它想再次存储在这里
+
+1512
+01:00:11,150 --> 01:00:13,680
+again the high level high level ideas
+高层次的高级
+
+1513
+01:00:13,680 --> 01:00:28,230
+that's still the same yes sir he said so
+想法仍然是相同的 是的 先生 他说 所以
+
+1514
+01:00:28,230 --> 01:00:31,349
+he said if you have K keys you have at
+他说如果你有 K 个键 你
+
+1515
+01:00:31,349 --> 01:00:36,859
+most k plus one pointers to other things
+最多有 k 加上一个指向其他东西的指针
+
+1516
+01:00:41,900 --> 01:00:45,089
+not necessarily for simplicity yes you
+不一定为简单起见 是的 你
+
+1517
+01:00:45,089 --> 01:00:46,739
+just scan along the keys do linear
+只需沿着键扫描 做线性
+
+1518
+01:00:46,739 --> 01:00:56,849
+search so his statement is that the
+搜索 所以 他的说法是，
+
+1519
+01:00:56,849 --> 01:00:59,519
+really the complexity should be K times
+真正的复杂性应该是 K 倍
+
+1520
+01:00:59,519 --> 01:01:05,309
+log n yes the that back that's a
+log n 是的，那是一个
+
+1521
+01:01:05,309 --> 01:01:07,499
+constant we can throw out because the
+我们可以扔掉的常数，因为
+
+1522
+01:01:07,499 --> 01:01:09,960
+log n is the maximum number of page iOS
+log n 是我必须做的最大页面数 iOS
+
+1523
+01:01:09,960 --> 01:01:12,119
+I have to do to traverse that's always
+遍历它总是
+
+1524
+01:01:12,119 --> 01:01:13,980
+orders of magnitude faster than doing
+比做快几个数量级
+
+1525
+01:01:13,980 --> 01:01:16,499
+the cache line lookups here remember I
+这里的缓存行查找还记得我
+
+1526
+01:01:16,499 --> 01:01:17,670
+said in the very beginning here's less
+在开始时说的更少的
+
+1527
+01:01:17,670 --> 01:01:20,430
+storage hierarchy anything above memory
+存储层次结构我们不关心的任何高于内存的东西
+
+1528
+01:01:20,430 --> 01:01:22,829
+we don't care about we can throw away is
+我们可以扔掉是
+
+1529
+01:01:22,829 --> 01:01:25,470
+to disk IO is the real color we got to
+到磁盘 IO 是我们得到的真实颜色，以
+
+1530
+01:01:25,470 --> 01:01:26,810
+avoid that
+避免
+
+1531
+01:01:26,810 --> 01:01:30,090
+what we do by we'll get to that a second
+我们所做的事情我们会得到 到那一秒
+
+1532
+01:01:30,090 --> 01:01:34,260
+okay all right so now I'll get to the
+没关系，所以现在我还要讲
+
+1533
+01:01:34,260 --> 01:01:36,060
+other thing as well is how we handle non
+另一件事，那就是我们如何很好地处理
+
+1534
+01:01:36,060 --> 01:01:38,730
+non unique indexes well this is the same
+非唯一索引，这与
+
+1535
+01:01:38,730 --> 01:01:39,960
+thing we talked about in hash tables
+我们在哈希表中讨论的内容相同，
+
+1536
+01:01:39,960 --> 01:01:42,150
+there's two basic approaches you just
+有两种基本方法，您只需
+
+1537
+01:01:42,150 --> 01:01:46,260
+duplicate the keys and be mindful like
+复制键即可 注意就像
+
+1538
+01:01:46,260 --> 01:01:48,420
+in our example here the duplicate key
+在我们这里的例子中重复的键
+
+1539
+01:01:48,420 --> 01:01:50,910
+split over to another to another node we
+分裂到另一个节点到另一个节点我们
+
+1540
+01:01:50,910 --> 01:01:52,320
+have to be mindful that that could occur
+必须注意这可能发生
+
+1541
+01:01:52,320 --> 01:01:54,360
+and make sure we read everything we need
+并确保我们读取我们需要读取的所有
+
+1542
+01:01:54,360 --> 01:01:57,300
+to read or we destroy a value list where
+内容或者我们销毁
+
+1543
+01:01:57,300 --> 01:01:59,460
+we store the key once and we duplicate
+我们存储键一次的值列表然后我们复制 cate
+
+1544
+01:01:59,460 --> 01:02:02,490
+the value or have a separate space in
+the value 或在我们的节点中有一个单独的空间
+
+1545
+01:02:02,490 --> 01:02:03,810
+our node to store all the values for
+来存储
+
+1546
+01:02:03,810 --> 01:02:05,670
+that given key all right so it looks
+该给定键的所有值，所以它看起来
+
+1547
+01:02:05,670 --> 01:02:08,930
+like this so if i if i duplicate the key
+像这样，所以如果我复制该键，
+
+1548
+01:02:08,930 --> 01:02:11,040
+right i just have the key multiple times
+我只是多次拥有该键
+
+1549
+01:02:11,040 --> 01:02:12,750
+and again it's just like before the
+，就像之前一样
+
+1550
+01:02:12,750 --> 01:02:14,970
+offset points down to wherever the value
+偏移量指向值
+
+1551
+01:02:14,970 --> 01:02:17,850
+is and you know if i insert a new one
+所在的任何位置，你知道如果我插入一个新的，
+
+1552
+01:02:17,850 --> 01:02:20,430
+then i know i inserted here and certain
+那么我知道我插入了这里，某些
+
+1553
+01:02:20,430 --> 01:02:22,500
+new k1 i inserted here and move
+新的 k1 我插入了这里
+
+1554
+01:02:22,500 --> 01:02:24,090
+everything over and everything still
+并将所有内容移到
+
+1555
+01:02:24,090 --> 01:02:24,420
+works
+
+1556
+01:02:24,420 --> 01:02:26,670
+the value list since you just looks like
+了值列表中，因为你看起来像
+
+1557
+01:02:26,670 --> 01:02:28,800
+this i destroy the key once but then now
+这样，我销毁了 键一次但现在
+
+1558
+01:02:28,800 --> 01:02:30,960
+I also have a pointer an offset to
+我也有一个指向
+
+1559
+01:02:30,960 --> 01:02:33,300
+somewhere else in the node where I have
+节点中其他地方的偏移量的指针，在那里我有
+
+1560
+01:02:33,300 --> 01:02:35,790
+all the values that correspond to that
+所有对应的值，
+
+1561
+01:02:35,790 --> 01:02:38,490
+that giving key that's the first
+即第
+
+1562
+01:02:38,490 --> 01:02:39,900
+approach is more common I don't know who
+一种方法更常见的给出键的值我不知道
+
+1563
+01:02:39,900 --> 01:02:51,600
+actually does this one here yes so her
+实际上是谁在这里执行此操作是的 所以她的
+
+1564
+01:02:51,600 --> 01:02:54,090
+question is can I assume for that
+问题是我是否可以假设
+
+1565
+01:02:54,090 --> 01:02:56,130
+duplicate keys will always be in the
+重复的键总是在
+
+1566
+01:02:56,130 --> 01:02:59,880
+same node no so the example I showed
+同一个节点中，所以我
+
+1567
+01:02:59,880 --> 01:03:02,010
+from that demo it actually moved it over
+从那个演示中展示的例子实际上将它
+
+1568
+01:03:02,010 --> 01:03:05,970
+as a sibling key that's one way to do it
+作为一个兄弟键移动了，这是一种方法，
+
+1569
+01:03:05,970 --> 01:03:07,200
+all those systems actually would have an
+所有这些系统实际上都会有一个
+
+1570
+01:03:07,200 --> 01:03:10,560
+overflow chain that would say for that
+结束 流链会为
+
+1571
+01:03:10,560 --> 01:03:12,450
+given leaf node oh by the way here's
+给定的叶节点说哦顺便说一句，这里
+
+1572
+01:03:12,450 --> 01:03:14,190
+some other pages or other nodes down
+有一些其他页面或其他节点
+
+1573
+01:03:14,190 --> 01:03:16,200
+below you that have that you have the
+在您下方，它们具有与您所
+
+1574
+01:03:16,200 --> 01:03:17,280
+keys that correspond to what you know
+知道的实际存储的内容相对应的密钥
+
+1575
+01:03:17,280 --> 01:03:20,780
+what you're actually storing up above
+
+1576
+01:03:23,990 --> 01:03:26,070
+the question is if I'm searching for a
+问题是如果我 '正在寻找一个
+
+1577
+01:03:26,070 --> 01:03:27,330
+given key how would I know what key to
+给定的键我怎么知道要遵循什么键
+
+1578
+01:03:27,330 --> 01:03:31,400
+follow so going back to that example I
+所以回到那个例子我
+
+1579
+01:03:31,400 --> 01:03:33,690
+would I found looking for a greater than
+会发现我在寻找一个大于
+
+1580
+01:03:33,690 --> 01:03:36,450
+equal to four I had I have to go down on
+等于四的我必须
+
+1581
+01:03:36,450 --> 01:03:39,970
+the on this side and find the
+在这一边找到
+
+1582
+01:03:39,970 --> 01:03:42,280
+first entry point four four then I keep
+第一个条目 点四四然后我继续
+
+1583
+01:03:42,280 --> 01:03:43,900
+scanning along the leaf nodes until I
+沿着叶节点扫描，直到我
+
+1584
+01:03:43,900 --> 01:03:45,700
+find something that's not equal four and
+找到不等于四的东西
+
+1585
+01:03:45,700 --> 01:03:47,950
+then I know I've seen everything again
+然后我知道我已经再次看到所有内容
+
+1586
+01:03:47,950 --> 01:03:49,570
+the data system knows where the keys are
+数据系统知道键在哪里是
+
+1587
+01:03:49,570 --> 01:03:51,099
+unique or not so it knows whether it has
+唯一的所以它知道它是否
+
+1588
+01:03:51,099 --> 01:03:53,230
+to do that so it knows that oh this is a
+必须这样做 它知道哦，这是一个
+
+1589
+01:03:53,230 --> 01:03:55,840
+primary key or this is a unique index so
+主键，或者这是一个唯一索引，所以
+
+1590
+01:03:55,840 --> 01:03:57,220
+the thing I'm looking for should only
+我正在寻找的东西应该只
+
+1591
+01:03:57,220 --> 01:03:58,660
+pair once and therefore I just get to
+配对一次，因此我只需
+
+1592
+01:03:58,660 --> 01:03:59,710
+the one leaf node that it has what I
+找到一个叶节点，
+
+1593
+01:03:59,710 --> 01:04:02,140
+want if it's non unique then you have to
+如果它不是唯一的，那么你有我想要的
+
+1594
+01:04:02,140 --> 01:04:04,000
+account for that and either again you if
+考虑到这一点，如果是我，要么再一次
+
+1595
+01:04:04,000 --> 01:04:06,070
+it's if it's just duplicated across leaf
+如果它只是跨叶
+
+1596
+01:04:06,070 --> 01:04:08,380
+nodes I scan along siblings if it's an
+节点复制我沿着兄弟姐妹扫描如果它是
+
+1597
+01:04:08,380 --> 01:04:10,060
+overflow I just find that the first leaf
+溢出我只是发现第一个叶
+
+1598
+01:04:10,060 --> 01:04:14,790
+node and then scan down its chain yes
+节点然后向下扫描它的链是
+
+1599
+01:04:16,170 --> 01:04:18,580
+the question is the size is besides the
+的问题是大小是除了
+
+1600
+01:04:18,580 --> 01:04:20,290
+key always the same or do besides the
+密钥总是相同的还是除了
+
+1601
+01:04:20,290 --> 01:04:22,450
+key is not always the same or the values
+密钥并不总是 相同或值
+
+1602
+01:04:22,450 --> 01:04:24,609
+or this always Sam again I'll show this
+或总是再次 Sam
+
+1603
+01:04:24,609 --> 01:04:27,700
+next next class if the if the value is
+如果值
+
+1604
+01:04:27,700 --> 01:04:29,859
+just a record ID for a tuple always the
+只是元组的记录 ID 总是
+
+1605
+01:04:29,859 --> 01:04:31,840
+same see the 32 bits or 64 bits
+相同的，我将在下一个课程中展示如果它是实际的元组，请参阅 32 位或 64 位，
+
+1606
+01:04:31,840 --> 01:04:34,630
+depending on the system if it's the
+具体取决于系统
+
+1607
+01:04:34,630 --> 01:04:37,359
+actual tuple itself like in my sequel
+本身就像在我的续集中
+
+1608
+01:04:37,359 --> 01:04:39,010
+then you got a deal whatever flows that
+然后你得到了一个交易，无论哪种
+
+1609
+01:04:39,010 --> 01:04:40,780
+way and that that's more complicated
+方式流动，这更复杂
+
+1610
+01:04:40,780 --> 01:04:45,940
+we'll discuss that next class all right
+我们将再次讨论下一节课
+
+1611
+01:04:45,940 --> 01:04:47,260
+again we've already discussed this
+我们已经简要讨论过这个
+
+1612
+01:04:47,260 --> 01:04:48,609
+briefly but I'm gonna show that there's
+但我将展示有
+
+1613
+01:04:48,609 --> 01:04:49,839
+different ways to do searches within the
+不同的方式进行搜索
+
+1614
+01:04:49,839 --> 01:04:52,480
+node again I Traverse as I'm traversing
+我再次遍历节点，因为我正在
+
+1615
+01:04:52,480 --> 01:04:55,000
+the nodes are touring the tree I have to
+遍历节点正在遍历树我必须
+
+1616
+01:04:55,000 --> 01:04:57,460
+do a search on the key the key array to
+对键进行搜索，键数组才能
+
+1617
+01:04:57,460 --> 01:04:59,109
+find a thing I'm looking for to decide
+找到我正在寻找的东西，以确定
+
+1618
+01:04:59,109 --> 01:05:00,670
+whether you know there's a match that I
+您是否知道我想要的匹配项
+
+1619
+01:05:00,670 --> 01:05:01,960
+want or whether I need to go left or
+或 我需要向左或
+
+1620
+01:05:01,960 --> 01:05:02,140
+right
+向右
+
+1621
+01:05:02,140 --> 01:05:04,240
+so the most basic way to do this it's
+s  o 执行此操作的最基本方法它
+
+1622
+01:05:04,240 --> 01:05:05,800
+just a linear search so I'm trying to
+只是线性搜索，所以我试图
+
+1623
+01:05:05,800 --> 01:05:07,660
+find key eight I just start at the
+找到键 8 我只是从
+
+1624
+01:05:07,660 --> 01:05:09,790
+beginning of my sort of key array scan
+我的键阵列扫描的开头开始，
+
+1625
+01:05:09,790 --> 01:05:12,060
+along to I find one one and I'm done
+直到我找到一个键，然后我就完成
+
+1626
+01:05:12,060 --> 01:05:14,710
+right worst case scenario I have to look
+了最坏的情况
+
+1627
+01:05:14,710 --> 01:05:17,770
+at all K keys binary search if it's
+如果它已排序，我必须查看所有 K 个键的二分搜索，
+
+1628
+01:05:17,770 --> 01:05:19,900
+sorted then I just find the middle point
+然后我发现中间点
+
+1629
+01:05:19,900 --> 01:05:22,510
+jump to that figure out is that lesson
+跳转到该数字是该课程
+
+1630
+01:05:22,510 --> 01:05:24,670
+or less than or greater than the key I'm
+或小于或大于我正在寻找的密钥
+
+1631
+01:05:24,670 --> 01:05:26,230
+looking for or the one I am looking for
+或我正在寻找
+
+1632
+01:05:26,230 --> 01:05:28,150
+and that tells me whether I go left or
+的那个 告诉我
+
+1633
+01:05:28,150 --> 01:05:29,290
+right in this case here I'm looking for
+在这种情况下我是向左还是向右 我正在寻找
+
+1634
+01:05:29,290 --> 01:05:29,770
+eight
+8
+
+1635
+01:05:29,770 --> 01:05:31,839
+I'll Anil seven I know eight is greater
+我会 Anil 7 我知道 8
+
+1636
+01:05:31,839 --> 01:05:33,580
+than seven so I jump over here then I
+大于 7 所以我跳过这里然后我
+
+1637
+01:05:33,580 --> 01:05:35,320
+think the halfway point of that I get
+想我得到了
+
+1638
+01:05:35,320 --> 01:05:37,450
+nine then I go go go to this direction
+9 然后我去 朝这个方向走
+
+1639
+01:05:37,450 --> 01:05:39,990
+and I get eight and I find what I want
+，我得到 8 个，我找到了我想要的
+
+1640
+01:05:39,990 --> 01:05:42,099
+one thing though that is kind of cool
+一件事，尽管这很酷
+
+1641
+01:05:42,099 --> 01:05:44,349
+you can do if you know what the values
+，如果您知道
+
+1642
+01:05:44,349 --> 01:05:45,970
+actually look like for your keys
+键的实际值是什么样的，
+
+1643
+01:05:45,970 --> 01:05:48,220
+actually what the keys look like is that
+实际上键的样子是
+
+1644
+01:05:48,220 --> 01:05:49,960
+you can use an interpolation technique
+您可以使用插值
+
+1645
+01:05:49,960 --> 01:05:53,290
+where you can approximate the local
+您可以
+
+1646
+01:05:53,290 --> 01:05:55,960
+the key by doing some simple math to
+通过做一些简单的数学计算来近似本地密钥的技术
+
+1647
+01:05:55,960 --> 01:05:57,370
+figure out what your starting point
+ut
+
+1648
+01:05:57,370 --> 01:05:59,470
+should be for your linear search
+你的线性搜索的起点应该是什么，
+
+1649
+01:05:59,470 --> 01:06:01,150
+so rather in case of linear search you
+所以
+
+1650
+01:06:01,150 --> 01:06:02,560
+start for the beginning and good all the
+
+1651
+01:06:02,560 --> 01:06:05,920
+way to the end if I know that my keys or
+如果我知道我的键或者
+
+1652
+01:06:05,920 --> 01:06:08,620
+in this case integers and I know
+在这种情况下是整数并且我
+
+1653
+01:06:08,620 --> 01:06:10,690
+something about their distribution then
+知道它们的分布，那么在线性搜索的情况下，你从头开始一直到最后
+
+1654
+01:06:10,690 --> 01:06:12,460
+I can do a really simple you know it's
+我可以做一个非常简单的事情，你知道这是
+
+1655
+01:06:12,460 --> 01:06:14,590
+cool math and say well I know I have
+很酷的数学，而且我知道
+
+1656
+01:06:14,590 --> 01:06:18,940
+seven keys in my array and the max key
+我的数组中有七个键，最大键
+
+1657
+01:06:18,940 --> 01:06:21,490
+is 10 and I'm looking for 8 so if I take
+是 10，我正在寻找 8，所以如果我取
+
+1658
+01:06:21,490 --> 01:06:24,730
+10 minus 8 and get 2 and then seven keys
+10 减 8 并得到 2 和七个键
+
+1659
+01:06:24,730 --> 01:06:28,000
+- minus 2 and get five I know I can just
+- 减 2 得到 5 我知道我可以
+
+1660
+01:06:28,000 --> 01:06:30,100
+jump to the fifth position and that's at
+跳到第五个位置，这
+
+1661
+01:06:30,100 --> 01:06:31,330
+least a starting point for what I'm
+至少是我正在寻找的起点
+
+1662
+01:06:31,330 --> 01:06:33,820
+looking for so this one this this
+，所以这
+
+1663
+01:06:33,820 --> 01:06:35,500
+obviously works because they're always
+显然有效，因为如果有浮动，它们总是
+
+1664
+01:06:35,500 --> 01:06:37,810
+increasing the monotonic order right if
+增加单调顺序
+
+1665
+01:06:37,810 --> 01:06:39,100
+there floats this is hard to do if
+如果
+
+1666
+01:06:39,100 --> 01:06:40,090
+there's strings I don't think you can do
+有字符串，这很难做到我认为你不能这样做，
+
+1667
+01:06:40,090 --> 01:06:41,980
+this but this is another technique you
+但这是另一种技术，
+
+1668
+01:06:41,980 --> 01:06:43,990
+could do to make that that search go
+你可以使搜索
+
+1669
+01:06:43,990 --> 01:06:48,340
+faster this one I don't know how is calm
+更快
+
+1670
+01:06:48,340 --> 01:06:50,530
+how common it is the binary search I
+
+1671
+01:06:50,530 --> 01:06:52,210
+think what everyone does but again
+想想每个人都在做什么，但现在又要
+
+1672
+01:06:52,210 --> 01:06:53,680
+there's this trade-off now an ordinary
+进行权衡了 一个普通的
+
+1673
+01:06:53,680 --> 01:06:55,300
+binary search I had to make sure my keys
+二分搜索
+
+1674
+01:06:55,300 --> 01:06:57,400
+are in sorted order if I'm doing the
+，如果我在做
+
+1675
+01:06:57,400 --> 01:06:58,810
+linear search I don't have to do that so
+线性搜索，我必须确保我的键按排序顺序我不必这样做，
+
+1676
+01:06:58,810 --> 01:07:01,090
+therefore as I update the nodes I don't
+因此当我更新节点时，我不会
+
+1677
+01:07:01,090 --> 01:07:02,770
+pay that penalty of maintaining the sort
+因为维护排序顺序而付出代价
+
+1678
+01:07:02,770 --> 01:07:08,530
+order all right so let's finish up real
+好吧，让我们
+
+1679
+01:07:08,530 --> 01:07:09,850
+quickly to let some optimizations we can
+快速完成，让我们可以做一些优化
+
+1680
+01:07:09,850 --> 01:07:11,800
+do it to make it go better so these are
+，让它变得更好，所以这些是
+
+1681
+01:07:11,800 --> 01:07:14,290
+the kind of things that like again a
+
+1682
+01:07:14,290 --> 01:07:16,120
+real data system would actually do to
+真实数据系统实际上会做的事情，
+
+1683
+01:07:16,120 --> 01:07:19,960
+make B plus trees go faster so the first
+使 B 加树运行得更快，所以第一种
+
+1684
+01:07:19,960 --> 01:07:21,490
+type first who think we're told if
+类型优先 谁认为我们被告知是否
+
+1685
+01:07:21,490 --> 01:07:23,440
+equates to compress the datum so the
+等于压缩数据，所以
+
+1686
+01:07:23,440 --> 01:07:24,490
+first kind of question scheme we can do
+我们可以做的第一种问题方案
+
+1687
+01:07:24,490 --> 01:07:26,980
+is called prefix compression and this is
+称为前缀压缩，这是
+
+1688
+01:07:26,980 --> 01:07:28,720
+based on the observation that because
+基于观察结果，因为
+
+1689
+01:07:28,720 --> 01:07:29,980
+we're keeping the keys in sorted order
+我们将键按排序顺序保存，
+
+1690
+01:07:29,980 --> 01:07:33,370
+it's very likely and a lot of data sets
+因此很可能而且很多 数据集中
+
+1691
+01:07:33,370 --> 01:07:35,920
+the keys that are stored in a in a
+存储在
+
+1692
+01:07:35,920 --> 01:07:37,180
+single node are actually going to be
+单个节点中的键实际上
+
+1693
+01:07:37,180 --> 01:07:39,760
+very similar to each other all right
+彼此非常相似，
+
+1694
+01:07:39,760 --> 01:07:40,960
+because that's because we end up sorting
+因为那是因为我们最终对
+
+1695
+01:07:40,960 --> 01:07:42,940
+them right so in this case here I
+它们进行了正确排序，所以在这种情况下，
+
+1696
+01:07:42,940 --> 01:07:44,620
+haven't know that has three keys robbed
+我不知道有三个键被盗
+
+1697
+01:07:44,620 --> 01:07:47,230
+robbing and robot well all three of them
+抢劫和机器人井三者 他们中的
+
+1698
+01:07:47,230 --> 01:07:50,860
+share the same prefix are OB and so
+共享相同的前缀是 OB，因此，
+
+1699
+01:07:50,860 --> 01:07:52,870
+rather than me duplicating or storing
+而不是我为每个单独的键
+
+1700
+01:07:52,870 --> 01:07:55,150
+that redundant ro B over and over again
+一遍又一遍地复制或存储该冗余 ro B，
+
+1701
+01:07:55,150 --> 01:07:57,310
+for every single key what if I extract
+如果我将其
+
+1702
+01:07:57,310 --> 01:07:59,500
+that out to store the prefix once ro B
+提取出来以存储前缀一次 ro B
+
+1703
+01:07:59,500 --> 01:08:02,380
+and then for the room for the the keys I
+然后为钥匙的房间 我
+
+1704
+01:08:02,380 --> 01:08:03,820
+destroy the remaining parts of that's
+破坏了其余部分
+
+1705
+01:08:03,820 --> 01:08:05,600
+actually different
+实际上是不同的
+
+1706
+01:08:05,600 --> 01:08:07,880
+so this is very very common this is
+所以这是非常非常普遍的
+
+1707
+01:08:07,880 --> 01:08:09,410
+these are called sometimes previous
+这些有时被称为以前的
+
+1708
+01:08:09,410 --> 01:08:12,950
+professional Peter trees this is why you
+专业彼得树这就是为什么
+
+1709
+01:08:12,950 --> 01:08:15,560
+use in a lot of high-end or a lot of
+你在很多高端或很多
+
+1710
+01:08:15,560 --> 01:08:16,880
+large data sets they debate systems
+大型数据集中使用它们辩论系统
+
+1711
+01:08:16,880 --> 01:08:19,399
+because you know because there's so much
+因为你知道 因为有太多
+
+1712
+01:08:19,399 --> 01:08:21,800
+duplicate data so Facebook uses this for
+重复的数据，所以 Facebook 将它用于
+
+1713
+01:08:21,800 --> 01:08:23,390
+all their internal my sequel stuff and
+他们所有内部的我的续集内容，
+
+1714
+01:08:23,390 --> 01:08:24,589
+it makes a big difference for them as
+这对他们有很大的不同，因为
+
+1715
+01:08:24,589 --> 01:08:26,630
+they save a lot of space so this is sort
+他们节省了大量空间，所以这是
+
+1716
+01:08:26,630 --> 01:08:28,069
+of one way to do this those other
+一种方法来做到这一点，
+
+1717
+01:08:28,069 --> 01:08:30,589
+optimizations you can do like if again
+你可以做的其他优化，如果 再一次，
+
+1718
+01:08:30,589 --> 01:08:32,029
+if I'm doing a clustered index where I
+如果我正在做一个聚集索引，我
+
+1719
+01:08:32,029 --> 01:08:34,490
+know all my tuples the tuples are on on
+知道我所有的元组都在
+
+1720
+01:08:34,490 --> 01:08:36,740
+disk or on pages in the same way that
+磁盘或页面上，
+
+1721
+01:08:36,740 --> 01:08:39,620
+they're sorted in my index then it's
+它们在我的索引中的排序方式相同，那么
+
+1722
+01:08:39,620 --> 01:08:41,359
+very likely that tuples in the same node
+很可能同一个节点中的元组
+
+1723
+01:08:41,359 --> 01:08:43,700
+their record ID will have the same page
+它们的记录 ID 会  具有相同的页面
+
+1724
+01:08:43,700 --> 01:08:45,260
+ID because they're all going to land on
+ID，因为它们都将
+
+1725
+01:08:45,260 --> 01:08:47,060
+the same page so rather than storing
+位于同一页面上，因此与其为节点
+
+1726
+01:08:47,060 --> 01:08:48,500
+that page ID over and over again for
+
+1727
+01:08:48,500 --> 01:08:50,510
+every single for every single tuple in a
+中的每个元组的每个元组一遍又一遍地存储该页面 ID，不如
+
+1728
+01:08:50,510 --> 01:08:52,580
+in a node I destroy the page ID once and
+销毁一次页面 ID，
+
+1729
+01:08:52,580 --> 01:08:53,960
+then store their offset or slot
+然后存储它们 偏移量或槽
+
+1730
+01:08:53,960 --> 01:09:12,439
+separately right yes yes the question is
+分开 是的 是的 问题是
+
+1731
+01:09:12,439 --> 01:09:14,300
+how do we actually decide what to do
+我们如何真正决定做什么是
+
+1732
+01:09:14,300 --> 01:09:17,390
+right so you basically can say every
+正确的，所以你基本上可以在
+
+1733
+01:09:17,390 --> 01:09:19,520
+single time I insert I figure out what
+我每次插入时说我
+
+1734
+01:09:19,520 --> 01:09:20,630
+the common prefix is and that's what
+弄清楚公共前缀是什么，这就是
+
+1735
+01:09:20,630 --> 01:09:24,050
+I'll store you could say anytime I do
+我将存储的内容
+
+1736
+01:09:24,050 --> 01:09:25,939
+like a compaction or do like a real
+就像压缩或真正
+
+1737
+01:09:25,939 --> 01:09:28,910
+optimism then I decide what the best is
+乐观然后我决定什么是最好
+
+1738
+01:09:28,910 --> 01:09:32,510
+right that you know for the for my keys
+的，你知道什么是我的
+
+1739
+01:09:32,510 --> 01:09:34,430
+right then and there in practice also
+密钥，在实践中也
+
+1740
+01:09:34,430 --> 01:09:35,630
+think of it like in a lot of database
+认为它就像在很多数据库
+
+1741
+01:09:35,630 --> 01:09:39,380
+systems the the newer keys might get
+系统中一样，新的密钥可能会被
+
+1742
+01:09:39,380 --> 01:09:41,180
+inserted in always on the one side of
+插入 总是在
+
+1743
+01:09:41,180 --> 01:09:42,680
+the tree like this is always increasing
+树的一侧，像这样总是
+
+1744
+01:09:42,680 --> 01:09:46,790
+in value and so therefore the a lot a
+在增加价值，因此
+
+1745
+01:09:46,790 --> 01:09:48,109
+large portion of the tree on the other
+另一侧的树的很大一部分
+
+1746
+01:09:48,109 --> 01:09:51,109
+side is going to be static it's gonna be
+将是静态的，这将是
+
+1747
+01:09:51,109 --> 01:09:53,300
+you know mostly read-only so at that
+你所知道的大部分是只读的，所以
+
+1748
+01:09:53,300 --> 01:09:54,710
+point I can make it a hard decision like
+那时我 可以做一个艰难的决定 l  ike
+
+1749
+01:09:54,710 --> 01:09:56,690
+here's how I want to do compression or
+这就是我想如何进行压缩或
+
+1750
+01:09:56,690 --> 01:09:59,900
+compaction different trade-offs you do
+压实的不同权衡
+
+1751
+01:09:59,900 --> 01:10:04,480
+it online or offline yes
+你在线或离线进行是的
+
+1752
+01:10:07,330 --> 01:10:08,470
+so this question is what happens to
+所以这个问题是
+
+1753
+01:10:08,470 --> 01:10:11,500
+someone insert the words sad right and
+有人插入单词sad right并
+
+1754
+01:10:11,500 --> 01:10:13,120
+ends up in this node then yeah you have
+最终在这个节点中会发生什么，然后是的
+
+1755
+01:10:13,120 --> 01:10:14,080
+that you have to account for that you
+，你必须考虑 你
+
+1756
+01:10:14,080 --> 01:10:17,500
+have to maintain it on the fly correct
+必须即时维护它是正确的，
+
+1757
+01:10:17,500 --> 01:10:20,860
+yeah or you could say source mesh and
+或者你可以说源网格和
+
+1758
+01:10:20,860 --> 01:10:22,210
+distro metadata to say this prefix is
+发行版元数据说这个前缀
+
+1759
+01:10:22,210 --> 01:10:23,500
+only used for the first three keys not
+只用于前三个键而
+
+1760
+01:10:23,500 --> 01:10:26,830
+the other ones right there's the bunch
+不是其他键，有
+
+1761
+01:10:26,830 --> 01:10:30,610
+of tricks you can do so the the opposite
+很多技巧你可以这样做，
+
+1762
+01:10:30,610 --> 01:10:32,260
+of prefix compression is suffix
+相反 前缀压缩是后缀
+
+1763
+01:10:32,260 --> 01:10:35,410
+truncation and the basic idea here is
+截断，这里的基本思想
+
+1764
+01:10:35,410 --> 01:10:37,750
+that we can recognize that we don't
+是我们可以认识到我们
+
+1765
+01:10:37,750 --> 01:10:39,310
+maybe need to store the entire key in
+可能不需要将整个键存储在
+
+1766
+01:10:39,310 --> 01:10:43,360
+our inner nodes to figure out whether we
+我们的内部节点中来确定我们
+
+1767
+01:10:43,360 --> 01:10:45,040
+want to go left and right so in this
+是否要向左和向右移动，因此在这种
+
+1768
+01:10:45,040 --> 01:10:47,290
+case here we have ABCD up to K for one
+情况下，我们有 ABCD 一个键最多 K ，
+
+1769
+01:10:47,290 --> 01:10:50,680
+key and lMNO up to V for another key but
+另一个键 1MNO 最多 V 但
+
+1770
+01:10:50,680 --> 01:10:52,330
+if I'm just trying to see whether I want
+如果我只是想看看我是想
+
+1771
+01:10:52,330 --> 01:10:53,890
+to go left or right I can probably get
+向左还是向右走，我可能可以
+
+1772
+01:10:53,890 --> 01:10:55,540
+by just looking at the first you know in
+通过查看您在
+
+1773
+01:10:55,540 --> 01:10:57,340
+this case here first character so
+这种情况下知道的第一个字符来获得
+
+1774
+01:10:57,340 --> 01:10:59,440
+instead of storing the entire key in the
+而不是存储 节点间通道中的整个密钥
+
+1775
+01:10:59,440 --> 01:11:02,830
+internode aisle to store a uniquely
+以存储它的唯一
+
+1776
+01:11:02,830 --> 01:11:06,310
+distinguishing prefix of it and then
+区分前缀，然后
+
+1777
+01:11:06,310 --> 01:11:08,980
+throw away the remaining suffix so in
+丢弃剩余的后缀，因此在
+
+1778
+01:11:08,980 --> 01:11:10,540
+this case here I could distort L and a
+这种情况下，我可以在这里扭曲 L 和 a
+
+1779
+01:11:10,540 --> 01:11:12,130
+and L and that woulda been enough but
+和 L 就足够了，但
+
+1780
+01:11:12,130 --> 01:11:15,310
+I'm showing ABC L M nm right and again
+我一次又一次地显示 ABC LM nm
+
+1781
+01:11:15,310 --> 01:11:16,630
+down below I still have to store the
+在下面，我仍然需要存储
+
+1782
+01:11:16,630 --> 01:11:18,130
+entire key because I need to go be able
+整个钥匙，因为我需要去
+
+1783
+01:11:18,130 --> 01:11:19,840
+to have it be it'll say you know is the
+能够拥有它，因为它会说你知道这是
+
+1784
+01:11:19,840 --> 01:11:21,580
+key I'm looking for here but it might
+我在这里寻找的钥匙，但它可能
+
+1785
+01:11:21,580 --> 01:11:23,140
+and my inner guideposts I don't need to
+和我不需要的内在路标
+
+1786
+01:11:23,140 --> 01:11:25,960
+have this have the full key and of
+这有完整的密钥，
+
+1787
+01:11:25,960 --> 01:11:27,010
+course again you have to maintain this
+当然，
+
+1788
+01:11:27,010 --> 01:11:28,240
+if something and somebody insert
+如果某些东西和某人插入的
+
+1789
+01:11:28,240 --> 01:11:30,610
+something that would violate these this
+东西违反这些，
+
+1790
+01:11:30,610 --> 01:11:32,470
+we have to know we order it or we
+我们必须知道我们订购或
+
+1791
+01:11:32,470 --> 01:11:34,600
+organize it but in practice that you
+组织它，但实际上你
+
+1792
+01:11:34,600 --> 01:11:37,330
+know if the data is is not changing a
+知道数据是否没有改变
+
+1793
+01:11:37,330 --> 01:11:39,540
+lot then this could be another big win
+很多那么这可能是另一个巨大的
+
+1794
+01:11:39,540 --> 01:11:42,100
+so as far as you know prefix compression
+胜利，据你所知前缀压缩
+
+1795
+01:11:42,100 --> 01:11:44,200
+is more more common than the subjects
+比主题截断更常见
+
+1796
+01:11:44,200 --> 01:11:47,170
+truncation all right the last few things
+
+1797
+01:11:47,170 --> 01:11:48,490
+I want talk about is how to handle bulk
+我想谈谈的最后几件事是如何处理批量
+
+1798
+01:11:48,490 --> 01:11:52,210
+inserts and pointers whistling so in all
+插入和指针吹口哨所以在
+
+1799
+01:11:52,210 --> 01:11:54,280
+the examples I showed so far we assume
+我展示的所有示例中 到目前为止我们假设
+
+1800
+01:11:54,280 --> 01:11:56,050
+that we're incremental e building out
+我们是增量的 e 建立
+
+1801
+01:11:56,050 --> 01:11:58,480
+our index we're inserting keys one by
+我们的索引 我们正在一个一个地插入键，
+
+1802
+01:11:58,480 --> 01:12:01,570
+one but in a lot of cases you have all
+但在很多情况下，你提前拥有所有
+
+1803
+01:12:01,570 --> 01:12:03,910
+the keys ahead of time so it's a very
+的键，所以这
+
+1804
+01:12:03,910 --> 01:12:05,380
+common pattern that people do in
+是人们在数据库中做的一种非常常见的模式
+
+1805
+01:12:05,380 --> 01:12:07,390
+databases that say I want to bulk load a
+，说我想批量加载
+
+1806
+01:12:07,390 --> 01:12:09,190
+new data set now I've collected data
+现在一个新的数据集 我已经
+
+1807
+01:12:09,190 --> 01:12:10,480
+from some other source and I want to put
+从其他一些来源收集了数据，我想把
+
+1808
+01:12:10,480 --> 01:12:12,610
+it into my database a lot of times what
+它放入我的数据库很多次
+
+1809
+01:12:12,610 --> 01:12:14,250
+people do is they turn up all indexes
+人们所做的是他们打开所有索引
+
+1810
+01:12:14,250 --> 01:12:17,440
+bulk load the data insert it into the
+批量加载数据将其插入
+
+1811
+01:12:17,440 --> 01:12:18,700
+table and then they go back and add the
+表然后他们返回 并
+
+1812
+01:12:18,700 --> 01:12:20,650
+indexes right so that way you as you as
+正确添加索引，这样
+
+1813
+01:12:20,650 --> 01:12:21,250
+your insert
+您在
+
+1814
+01:12:21,250 --> 01:12:22,360
+the new data you're not trying to
+插入新数据时就不会试图
+
+1815
+01:12:22,360 --> 01:12:23,530
+maintain the index which which is
+维护昂贵的索引，
+
+1816
+01:12:23,530 --> 01:12:25,960
+expensive so in this case here if you
+因此在这种情况下，如果您
+
+1817
+01:12:25,960 --> 01:12:28,510
+have all the keys ahead of time a really
+提前拥有所有键，那么这是一个非常
+
+1818
+01:12:28,510 --> 01:12:30,640
+simple optimization to do to build the
+简单的优化 构建
+
+1819
+01:12:30,640 --> 01:12:33,340
+indexes rather than building it top-down
+索引而不是
+
+1820
+01:12:33,340 --> 01:12:35,110
+like we've done so far you actually
+像我们到目前为止所做的那样自上而下
+
+1821
+01:12:35,110 --> 01:12:37,360
+build it from the bottom up so let's say
+构建它实际上是从下往上构建它所以假设
+
+1822
+01:12:37,360 --> 01:12:39,520
+these are the keys I want to insert the
+这些是我想要插入的键，
+
+1823
+01:12:39,520 --> 01:12:40,960
+very first thing I do is just sort them
+我做的第一件事就是对它们进行排序，
+
+1824
+01:12:40,960 --> 01:12:44,410
+and we'll see in a few weeks we there's
+然后我们' 几周后我们就会看到
+
+1825
+01:12:44,410 --> 01:12:45,940
+an efficient algorithm we can use tech
+我们可以使用的有效算法 tec
+
+1826
+01:12:45,940 --> 01:12:49,600
+that can sort data in such a way that
+h 可以以这样一种方式对数据进行排序，即
+
+1827
+01:12:49,600 --> 01:12:51,640
+max is my maximize the amount of
+max 是
+
+1828
+01:12:51,640 --> 01:12:53,920
+sequential i/o we have to do so we can
+我们必须这样做的最大顺序 i/o 数量，这样我们就可以
+
+1829
+01:12:53,920 --> 01:12:55,330
+sort it and that lets me way more
+对它进行排序，这让我
+
+1830
+01:12:55,330 --> 01:12:56,560
+efficient than actually building the
+比实际
+
+1831
+01:12:56,560 --> 01:12:59,890
+index one by one and then we just lay it
+一个接一个地构建索引更有效，然后我们就可以了
+
+1832
+01:12:59,890 --> 01:13:01,810
+out along leaf nodes have everything
+它沿着叶节点
+
+1833
+01:13:01,810 --> 01:13:04,000
+filled out correctly and then going from
+正确填写所有内容，然后
+
+1834
+01:13:04,000 --> 01:13:05,680
+the bottom to the top we just fill in
+从底部到顶部我们只需
+
+1835
+01:13:05,680 --> 01:13:08,230
+the inter nodes and generate our
+填写内部节点并生成我们的
+
+1836
+01:13:08,230 --> 01:13:12,430
+pointers so again this is this is a
+指针，所以这又是一个
+
+1837
+01:13:12,430 --> 01:13:14,410
+pretty standard technique that any major
+非常标准的技术，
+
+1838
+01:13:14,410 --> 01:13:16,510
+data system we owe to support when you
+我们应该支持任何主要数据系统 你
+
+1839
+01:13:16,510 --> 01:13:17,650
+call create index and a large dataset
+调用 create index 和一个已经存在的大数据集
+
+1840
+01:13:17,650 --> 01:13:19,210
+that already exists and then once it's
+，然后
+
+1841
+01:13:19,210 --> 01:13:21,190
+already built once it's built then I can
+一旦它已经构建完成，那么我
+
+1842
+01:13:21,190 --> 01:13:22,870
+you know maintain our do any changes I
+可以知道维护我们做任何我
+
+1843
+01:13:22,870 --> 01:13:24,580
+want just like before there's no real
+想要的更改，就像在没有真正
+
+1844
+01:13:24,580 --> 01:13:26,260
+difference to it the day to day sim
+区别之前一样每天 sim
+
+1845
+01:13:26,260 --> 01:13:27,340
+doesn't know whether you did the
+不知道 无论您是使用
+
+1846
+01:13:27,340 --> 01:13:27,910
+bulkinsert
+批量插入
+
+1847
+01:13:27,910 --> 01:13:30,130
+versus the incremental build to build an
+还是增量构建来构建
+
+1848
+01:13:30,130 --> 01:13:32,800
+index everything's still the same in the
+索引，后面的一切都还是一样的，
+
+1849
+01:13:32,800 --> 01:13:40,360
+back yes so this question is what
+是的，所以这个问题是
+
+1850
+01:13:40,360 --> 01:13:41,590
+happens if you want to merge a small
+如果您想将一条
+
+1851
+01:13:41,590 --> 01:13:42,820
+people street into a large people street
+小街道合并到一条大街道会发生什么，
+
+1852
+01:13:42,820 --> 01:13:44,710
+let's take that offline and we have a
+让我们来看看 离线，我们有一篇
+
+1853
+01:13:44,710 --> 01:13:46,150
+paper that does something like this but
+论文做这样的事情，但
+
+1854
+01:13:46,150 --> 01:13:48,220
+I would say in general building index is
+我会说一般来说，
+
+1855
+01:13:48,220 --> 01:13:50,560
+very building indexes with bulk inserts
+构建索引非常快速地构建带有批量插入的索引
+
+1856
+01:13:50,560 --> 01:13:52,960
+very fast is a very very hard problem
+是一个非常困难的问题
+
+1857
+01:13:52,960 --> 01:13:56,680
+and it's at least in academia it's
+，至少在学术界它被
+
+1858
+01:13:56,680 --> 01:13:58,510
+underappreciated this is very very
+低估了，这是非常
+
+1859
+01:13:58,510 --> 01:14:00,400
+common so how do you do this to me this
+普遍的，所以怎么做 你对我这样
+
+1860
+01:14:00,400 --> 01:14:01,870
+as fast as possible is super important
+做 尽快
+
+1861
+01:14:01,870 --> 01:14:05,410
+so let's talk about efforts all right
+这样做非常重要 所以让我们谈谈努力吧
+
+1862
+01:14:05,410 --> 01:14:06,520
+the last thing I'll talk about is called
+我要谈论的最后一件事叫做
+
+1863
+01:14:06,520 --> 01:14:10,810
+pointers Quisling so again I talked
+指针 Quisling 所以我再次
+
+1864
+01:14:10,810 --> 01:14:12,790
+about how the way we figure out how to
+谈到了我们如何找出如何
+
+1865
+01:14:12,790 --> 01:14:14,710
+traverse the index is by having these
+遍历索引的方式 将这些
+
+1866
+01:14:14,710 --> 01:14:16,950
+pointers from one node to the next in
+从一个节点到下一个节点的指针
+
+1867
+01:14:16,950 --> 01:14:19,990
+actuality what we're storing is not you
+实际上我们存储的不是你
+
+1868
+01:14:19,990 --> 01:14:21,730
+know raw memory pointers we're storing
+知道原始内存指针我们存储的是
+
+1869
+01:14:21,730 --> 01:14:25,000
+page ids and whenever we want to do
+页面 id 每当我们想要
+
+1870
+01:14:25,000 --> 01:14:26,650
+traversal the same when I find key
+遍历时，当我找到
+
+1871
+01:14:26,650 --> 01:14:29,350
+greater than 3 we start here and we say
+大于 3 的键时，我们从这里开始，我们 说
+
+1872
+01:14:29,350 --> 01:14:30,760
+all I want to go to this this node down
+所有我想转到这个节点
+
+1873
+01:14:30,760 --> 01:14:32,440
+here well how do we actually get there
+这里我们如何
+
+1874
+01:14:32,440 --> 01:14:34,780
+well in the root node
+在根节点中真正到达那里
+
+1875
+01:14:34,780 --> 01:14:38,440
+I'm storing a page ID for this index and
+我正在为此索引存储页面ID，
+
+1876
+01:14:38,440 --> 01:14:39,730
+now I've got to go down to the buffer
+现在我必须进入缓冲
+
+1877
+01:14:39,730 --> 01:14:42,520
+pool and say hey I have page - if it's
+池并说嘿 我有页面 - 如果它
+
+1878
+01:14:42,520 --> 01:14:44,710
+in memory if it's not a memory go get it
+在 m 中 emory 如果它不是记忆，请
+
+1879
+01:14:44,710 --> 01:14:46,360
+for me I'll and and then give me back a
+为我获取它，然后给我一个
+
+1880
+01:14:46,360 --> 01:14:48,910
+pointer to it so then I go get now my
+指向它的指针，然后我现在获取
+
+1881
+01:14:48,910 --> 01:14:49,960
+pointer to it and now I can do my
+指向它的指针，现在我可以进行
+
+1882
+01:14:49,960 --> 01:14:51,790
+traversal same thing as I'm scanning
+遍历，就像我在
+
+1883
+01:14:51,790 --> 01:14:54,010
+along here I want to get to my sibling I
+这里扫描一样 我想找到我的兄弟姐妹 我
+
+1884
+01:14:54,010 --> 01:14:56,770
+this is my siblings page three because
+这是我兄弟姐妹的第三页 因为
+
+1885
+01:14:56,770 --> 01:14:58,270
+that's what's stored in my semi my node
+那是存储在我的半我节点中的内容
+
+1886
+01:14:58,270 --> 01:15:00,250
+I got to go down to the buffer pool and
+我必须进入缓冲池并
+
+1887
+01:15:00,250 --> 01:15:01,620
+say give me the pointer for page three
+说给我第三页的指针，
+
+1888
+01:15:01,620 --> 01:15:04,750
+so as I'm traversing I keep going back
+以便我遍历我继续前进
+
+1889
+01:15:04,750 --> 01:15:06,880
+to the buffer pool manager and saying do
+回到缓冲池管理器并说
+
+1890
+01:15:06,880 --> 01:15:10,330
+this conversion from page ID to two
+将页面 ID 转换为两个
+
+1891
+01:15:10,330 --> 01:15:13,530
+pointer and this is really expensive
+指针，这真的很昂贵，
+
+1892
+01:15:13,530 --> 01:15:16,600
+because I got it you know I had to
+因为我明白了，你知道我必须
+
+1893
+01:15:16,600 --> 01:15:18,040
+protect my hash table in my and my
+
+1894
+01:15:18,040 --> 01:15:20,170
+buffer pool with latches and therefore
+用闩锁保护我和我的缓冲池中的哈希表，因此
+
+1895
+01:15:20,170 --> 01:15:21,670
+I'm going to much the steps just to get
+我要 很多步骤只是为了获得
+
+1896
+01:15:21,670 --> 01:15:24,190
+this pointer so with pointers Quisling
+这个指针，所以使用指针 Quisling
+
+1897
+01:15:24,190 --> 01:15:26,350
+the idea is that if I know all my pages
+的想法是，如果我知道我的所有页面
+
+1898
+01:15:26,350 --> 01:15:29,110
+are pinned in memory meaning I know it's
+都固定在内存中，这意味着我知道它
+
+1899
+01:15:29,110 --> 01:15:31,270
+not going to be going to be Invicta well
+不会很好地成为 Invicta
+
+1900
+01:15:31,270 --> 01:15:35,080
+instead of storing the the page ID I'll
+而不是存储页面 ID 我
+
+1901
+01:15:35,080 --> 01:15:37,050
+just replace it with the page pointer
+只是 用页面指针替换它，
+
+1902
+01:15:37,050 --> 01:15:39,490
+because I know if it's pin it's never
+因为我知道如果它是固定的，它就永远
+
+1903
+01:15:39,490 --> 01:15:41,260
+gonna move to a different memory address
+不会移动 到不同的内存地址，
+
+1904
+01:15:41,260 --> 01:15:43,690
+so now when I do traversals
+所以现在当我进行遍历
+
+1905
+01:15:43,690 --> 01:15:45,310
+instead of doing that lookup to the
+而不是对缓冲池进行查找时，
+
+1906
+01:15:45,310 --> 01:15:46,840
+buffer pool I have exactly the page ID
+我拥有准确的页面 ID
+
+1907
+01:15:46,840 --> 01:15:48,490
+or pate the page pointer that I want and
+或我想要的页面指针，
+
+1908
+01:15:48,490 --> 01:15:50,080
+I can go get exactly the data that I
+我可以准确地获取我想要的数据，
+
+1909
+01:15:50,080 --> 01:15:51,970
+want and I don't have to go ask the the
+而我没有 当然现在必须去询问
+
+1910
+01:15:51,970 --> 01:15:53,980
+buffer pool of course now I'm gonna make
+缓冲池我要
+
+1911
+01:15:53,980 --> 01:15:56,380
+sure that when I pick this thing I write
+确保当我选择这个东西时我将
+
+1912
+01:15:56,380 --> 01:15:56,980
+it out the disk
+它写出磁盘
+
+1913
+01:15:56,980 --> 01:15:58,210
+I don't store the page pointer because
+我不存储页面指针因为
+
+1914
+01:15:58,210 --> 01:15:59,620
+when it comes back in that's gonna be
+当它回来时会
+
+1915
+01:15:59,620 --> 01:16:01,330
+completely different so you don't blow
+完全不同所以你 不要
+
+1916
+01:16:01,330 --> 01:16:02,950
+away the paging idea entirely it's just
+完全否定分页的想法它只是
+
+1917
+01:16:02,950 --> 01:16:04,270
+you have a little extra metadata say
+你有一些额外的元数据说
+
+1918
+01:16:04,270 --> 01:16:05,980
+here's the pointer you really want not
+这里是你真正想要的指针而
+
+1919
+01:16:05,980 --> 01:16:08,950
+the page number so you may say alright
+不是页码所以你可能会说好的
+
+1920
+01:16:08,950 --> 01:16:10,660
+when would we actually pay when would
+我们什么时候真正付钱什么时候
+
+1921
+01:16:10,660 --> 01:16:13,240
+actually would be pinning these pages in
+实际上将这些页面固定在
+
+1922
+01:16:13,240 --> 01:16:15,670
+memory well maybe not for the leaf nodes
+内存中 不是为了叶节点，
+
+1923
+01:16:15,670 --> 01:16:16,990
+but at least for the upper levels on the
+而是至少对于根的上层
+
+1924
+01:16:16,990 --> 01:16:18,880
+root and maybe the second level those
+，也许是第二层，这些
+
+1925
+01:16:18,880 --> 01:16:20,380
+things are gonna be super hot because
+东西会非常热，因为
+
+1926
+01:16:20,380 --> 01:16:21,550
+I'm always gonna have to go through them
+我总是必须通过它们
+
+1927
+01:16:21,550 --> 01:16:23,830
+to get down to the leaf nodes so maybe
+才能到达叶节点，所以
+
+1928
+01:16:23,830 --> 01:16:24,790
+it's not that big of a deal for me to
+也许不是这样 对我来说很重要
+
+1929
+01:16:24,790 --> 01:16:26,860
+pin those pages and they're gonna be
+固定这些页面
+
+1930
+01:16:26,860 --> 01:16:29,320
+relatively small compared to the size of
+，与整个树的大小相比，它们会相对较小
+
+1931
+01:16:29,320 --> 01:16:31,480
+the entire tree and then I can use this
+，然后我可以使用这个
+
+1932
+01:16:31,480 --> 01:16:32,800
+optimization site because I know my
+优化站点，因为我知道我的
+
+1933
+01:16:32,800 --> 01:16:35,710
+pointers are always gonna be valid so
+指针总是有效的，所以
+
+1934
+01:16:35,710 --> 01:16:36,760
+this one is actually very common
+这实际上是非常常见的
+
+1935
+01:16:36,760 --> 01:16:38,620
+pointers whistling is used in in pretty
+指针吹哨用于
+
+1936
+01:16:38,620 --> 01:16:43,680
+much every major system okay
+几乎每个主要系统
+
+1937
+01:16:43,699 --> 01:16:46,100
+all right so to finish up the beef
+都可以，所以完成牛肉
+
+1938
+01:16:46,100 --> 01:16:48,170
+industry is awesome hopefully I've
+行业非常棒，希望我已经
+
+1939
+01:16:48,170 --> 01:16:49,520
+convinced you that it's a good idea to
+说服你，将它用于你的你是个好主意，
+
+1940
+01:16:49,520 --> 01:16:52,969
+use this for your your for your you know
+因为你知道
+
+1941
+01:16:52,969 --> 01:16:54,250
+if you're building a database system
+如果你下节课要构建一个数据库系统，
+
+1942
+01:16:54,250 --> 01:16:56,600
+next class we'll see some some
+我们' 我会看到一些
+
+1943
+01:16:56,600 --> 01:16:58,969
+additional optimizations for this and
+额外的优化，
+
+1944
+01:16:58,969 --> 01:17:00,650
+maybe do some demos with Postgres on my
+也许会在我的续集中用 Postgres 做一些演示，
+
+1945
+01:17:00,650 --> 01:17:02,420
+sequel but then we'll also you talked
+但我们也会
+
+1946
+01:17:02,420 --> 01:17:03,800
+about two other types of tree based
+谈到另外两种基于树的
+
+1947
+01:17:03,800 --> 01:17:06,140
+indexes we may want to use tribes or
+索引，我们可能想使用部落或
+
+1948
+01:17:06,140 --> 01:17:07,820
+radix trees which are gonna look like be
+基数树，它们看起来像
+
+1949
+01:17:07,820 --> 01:17:09,020
+trees were slightly different because
+树 略有不同，
+
+1950
+01:17:09,020 --> 01:17:10,600
+that we're not store entire keys and
+因为我们不存储整个键和
+
+1951
+01:17:10,600 --> 01:17:58,000
+indexes don't know you can't
+索引不知道你不能
+
