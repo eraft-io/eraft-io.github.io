@@ -14,7 +14,9 @@
 **E-STORE**
 
 - RawGet
+
 ```
+
 rpc RawGet(kvrpcpb.RawGetRequest) returns (kvrpcpb.RawGetResponse) {}
 
 message RawGetRequest {
@@ -30,10 +32,13 @@ message RawGetResponse {
     // True if the requested key doesn't exist; another error will not be signalled.
     bool not_found = 4;
 }
+
 ```
 
 - RawPut
+
 ```
+
 rpc RawPut(kvrpcpb.RawPutRequest) returns (kvrpcpb.RawPutResponse) {}
 
 message RawPutRequest {
@@ -49,10 +54,13 @@ message RawPutResponse {
     errorpb.Error region_error = 1;
     string error = 2;
 }
+
 ```
 
 - RawDelete
+
 ```
+
 rpc RawDelete(kvrpcpb.RawDeleteRequest) returns (kvrpcpb.RawDeleteResponse) {}
 
 message RawDeleteRequest {
@@ -65,10 +73,13 @@ message RawDeleteResponse {
     errorpb.Error region_error = 1;
     string error = 2;
 }
+
 ```
 
 - RawScan
+
 ```
+
 rpc RawScan(kvrpcpb.RawScanRequest) returns (kvrpcpb.RawScanResponse) {}
 
 message RawScanRequest {
@@ -86,10 +97,13 @@ message RawScanResponse {
     string error = 2;
     repeated KvPair kvs = 3;
 }
+
 ```
 
 - TransferLeader
+
 ```
+
 rpc TransferLeader(raft_cmdpb.TransferLeaderRequest) returns (raft_cmdpb.TransferLeaderResponse) {}
 
 message Peer {      
@@ -107,7 +121,9 @@ message TransferLeaderResponse {}
 ```
 
 - PeerConfChange
+
 ```
+
 rpc PeerConfChange(raft_cmdpb.ChangePeerRequest) returns (raft_cmdpb.ChangePeerResponse) {}
 
 message ChangePeerRequest {
@@ -119,6 +135,7 @@ message ChangePeerRequest {
 message ChangePeerResponse {
     metapb.Region region = 1;
 }
+
 ```
 
 **E-META**
@@ -126,6 +143,7 @@ message ChangePeerResponse {
 - 获取 meta_server 所有节点
 
 ```
+
 //
 // E-KV 获取 META 集群所有节点地址，标出 leader 地址。
 //
@@ -152,8 +170,11 @@ message GetMembersResponse {
 }
 
 ```
+
 - 用户通过key请求E-meta查找key所在的region
+
 ```
+
 message GetRegionRequest {
     RequestHeader header = 1;
     bytes region_key = 2;
@@ -170,10 +191,13 @@ message GetRegionResponse {
 // 根据写入的 key 获取 region 成员信息，写 kv 的时候通过这个确认要写入的节点。
 //
 rpc GetRegion(GetRegionRequest) returns (GetRegionResponse) {}
+
 ```
+
 - 每个region的leader上报region信息给E-META
 
 ```
+
 rpc RegionHeartbeat(RegionHeartbeatRequest) returns (RegionHeartbeatResponse) {}
 
 message RegionHeartbeatRequest {
@@ -214,9 +238,13 @@ message RegionHeartbeatResponse {  //只需要ok就可以
     // Leader of the region at the moment of the corresponding request was made.
     metapb.Peer target_peer = 6;
 }
+
 ```
- - 用户请求分裂region
+
+- 用户请求分裂region
+
 ```
+
 message AskSplitRequest {
     RequestHeader header = 1;
     metapb.Region region = 2;
@@ -234,4 +262,5 @@ message AskSplitResponse {
 
 // 触发分裂
 rpc AskSplit(AskSplitRequest) returns (AskSplitResponse) {}
+
 ```
