@@ -1,6 +1,6 @@
 ### 架构概述
 
-![https://github.com/eraft-io/eraft-io.github.io/raw/master/figures/ekv.png](https://github.com/eraft-io/eraft-io.github.io/raw/master/figures/ekv.png)
+![https://github.com/eraft-io/eraft-io.github.io/raw/master/figures/ekv_1.png](https://github.com/eraft-io/eraft-io.github.io/raw/master/figures/ekv_1.png)
 
 ### 架构组件
 #### E-META
