@@ -26,7 +26,9 @@
 |      |   [Hash Tables-LEC6-04-静态哈希方案](https://www.zhihu.com/zvideo/1443706414753959936)  | 
 |      |   [Hash Tables-LEC6-04-罗宾汉哈希](https://www.zhihu.com/zvideo/1443998804417073152)  | 
 |      |   [Hash Tables-LEC6-04-布谷鸟哈希](https://www.zhihu.com/zvideo/1444371854048210944)  | 
-
+|      |   [Tree Indexes Part I-LEC7-01-B+树简介](https://www.zhihu.com/zvideo/1449819247724077056)  | 
+|      |   [Tree Indexes Part I-LEC7-02-B+树叶子节点](https://www.zhihu.com/zvideo/1450451803079274496)  | 
+|      |   [Tree Indexes Part I-LEC7-03-B+树插入](https://www.zhihu.com/zvideo/1451526175349104640)  | 
 
 ### MIT 6.828 (操作系统) 课程解读系列
 
