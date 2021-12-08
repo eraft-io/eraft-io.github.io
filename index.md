@@ -36,6 +36,18 @@
 | ---- | ---- | 
 |      |     |  
 
+### 项目开发
+
+![https://github.com/eraft-io/eraft-io.github.io/raw/master/ekv_1.png](https://github.com/eraft-io/eraft-io.github.io/raw/master/ekv_1.png)
+
+#### E-META
+主要存储一些集群 meta 数据，这个模块本身是一个只有一个 region 的 e-store，里面存储了当前集群的 region 信息，每个 store 节点的信息。每次 E-DB 接收到数据写入请求后会先访问 E-META 去找到数据所在的 store 节点，以及 peer 地址，然后再连接这个地址写数据进去。
+
+#### E-KV
+这个是具体存储数据的节点，最小部署 3 节点，它们可以组成一个或者多个 Raft Group 对 E-DB 提供高可用的存储服务，同时 E-STORE 会定期的上报 E-META 节点信息，看是否需要扩容分裂，E-STORE 具有自动分裂的能力。
+
+[点此查看详细设计](https://eraft.cn/ekv)
+
 ## 参考
 [1] [https://learncs.me](https://learncs.me)
 
