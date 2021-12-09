@@ -1,15 +1,12 @@
 ### 架构概述
 
-![https://github.com/eraft-io/eraft-io.github.io/raw/master/figures/E-DB.png](https://github.com/eraft-io/eraft-io.github.io/raw/master/figures/E-DB.png)
+![https://github.com/eraft-io/eraft-io.github.io/raw/master/ekv_1.png](https://github.com/eraft-io/eraft-io.github.io/raw/master/ekv_1.png)
 
 ### 架构组件
 #### E-META
 主要存储一些集群 meta 数据，这个模块本身是一个只有一个 region 的 e-store，里面存储了当前集群的 region 信息，每个 store 节点的信息。每次 E-DB 接收到数据写入请求后会先访问 E-META 去找到数据所在的 store 节点，以及 peer 地址，然后再连接这个地址写数据进去。
 
-#### E-DB
-这个模块是无状态的，它直接接收来自用户的请求包。并进行 redis 协议解析，同时通过 key 去 E-META 节点找对应的存储节点，将 Redis 不同类型的数据按一定的编码格式写到 E-STORE 节点、或者从节点中读出数据。
-
-#### E-STORE
+#### E-KV
 这个是具体存储数据的节点，最小部署 3 节点，它们可以组成一个或者多个 Raft Group 对 E-DB 提供高可用的存储服务，同时 E-STORE 会定期的上报 E-META 节点信息，看是否需要扩容分裂，E-STORE 具有自动分裂的能力。
 
 ### RPC 设计
@@ -17,7 +14,6 @@
 **E-STORE**
 
 - RawGet
-
 
 ```
 
@@ -38,7 +34,6 @@ message RawGetResponse {
 }
 
 ```
-
 
 - RawPut
 
@@ -145,39 +140,12 @@ message ChangePeerResponse {
 
 **E-META**
 
+- 获取 meta_server 所有节点
+
 ```
 
-message RequestHeader {
-    // cluster_id is the ID of the cluster which be sent to.
-    uint64 cluster_id = 1;
-}
-
-message ResponseHeader {
-    // cluster_id is the ID of the cluster which sent the response.
-    uint64 cluster_id = 1;
-    Error error = 2;
-}
-
-enum ErrorType {
-    OK = 0;
-    UNKNOWN = 1;
-    NOT_BOOTSTRAPPED = 2;
-    STORE_TOMBSTONE = 3;
-    ALREADY_BOOTSTRAPPED = 4;
-    INCOMPATIBLE_VERSION = 5;
-    REGION_NOT_FOUND = 6;
-}
-
-message Error {
-    ErrorType type = 1;
-    string message = 2;
-}
-
-//////////////////////////////////////////////////////////////////////////////////////////
-
-
 //
-// 获取 META 集群所有节点地址，标出 leader 地址。
+// E-KV 获取 META 集群所有节点地址，标出 leader 地址。
 //
 rpc GetMembers(GetMembersRequest) returns (GetMembersResponse) {}
 
@@ -201,76 +169,11 @@ message GetMembersResponse {
     Member leader = 3;
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////
+```
 
-message Store {
-    uint64 id = 1;
-    // Address to handle client requests (kv, cop, etc.)
-    string address = 2;
-    StoreState state = 3;
-}
+- 用户通过key请求E-meta查找key所在的region
 
-message GetAllStoresRequest {
-    RequestHeader header = 1;
-    // Do NOT return tombstone stores if set to true.
-    bool exclude_tombstone_stores = 2;
-}
-
-message GetAllStoresResponse {
-    ResponseHeader header = 1;
-
-    repeated metapb.Store stores = 2;
-}
-
-// 
-// 获取集群中所有 store 节点。
-//
-rpc GetAllStores(GetAllStoresRequest) returns (GetAllStoresResponse) {}
-
-//////////////////////////////////////////////////////////////////////////////////////////
-
-message GetStoreRequest {
-    RequestHeader header = 1;
-
-    uint64 store_id = 2;
-}
-
-message GetStoreResponse {
-    ResponseHeader header = 1;
-
-    metapb.Store store = 2;
-    StoreStats stats = 3;
-}
-
-//
-// 获取 Store 的详细信息，包括状态和机器状态信息，传入 store_id 返回 store 信息。
-//
-rpc GetStore(GetStoreRequest) returns (GetStoreResponse) {}
-
-//////////////////////////////////////////////////////////////////////////////////////////
-
-message PutStoreRequest {
-    RequestHeader header = 1;
-
-    metapb.Store store = 2;
-}
-
-message PutStoreResponse {
-    ResponseHeader header = 1;
-}
-
-//
-// store 节点启动注册自己信息接口
-//
-rpc PutStore(PutStoreRequest) returns (PutStoreResponse) {}
-
-//////////////////////////////////////////////////////////////////////////////////////////
-
-message Peer {      
-    uint64 id = 1;
-    uint64 store_id = 2;
-    string addr = 3;
-}
+```
 
 message GetRegionRequest {
     RequestHeader header = 1;
@@ -289,7 +192,58 @@ message GetRegionResponse {
 //
 rpc GetRegion(GetRegionRequest) returns (GetRegionResponse) {}
 
-//////////////////////////////////////////////////////////////////////////////////////////
+```
+
+- 每个region的leader上报region信息给E-META
+
+```
+
+rpc RegionHeartbeat(RegionHeartbeatRequest) returns (RegionHeartbeatResponse) {}
+
+message RegionHeartbeatRequest {
+    RequestHeader header = 1;
+    metapb.Region region = 2; // 要上报的region信息
+    // Leader Peer sending the heartbeat.
+    metapb.Peer leader = 3;   // region的leader信息
+    // Pending peers are the peers that the leader can't consider as
+    // working followers.
+    repeated metapb.Peer pending_peers = 5;
+    // Approximate region size.
+    uint64 approximate_size = 10;
+}
+
+message RegionHeartbeatResponse {  //只需要ok就可以
+    ResponseHeader header = 1;
+
+    // Notice, Scheduleeer only allows handling reported epoch >= current scheduler's.
+    // Leader peer reports region status with RegionHeartbeatRequest
+    // to scheduler regularly, scheduler will determine whether this region
+    // should do ChangePeer or not.
+    // E,g, max peer number is 3, region A, first only peer 1 in A.
+    // 1. Scheduler region state -> Peers (1), ConfVer (1).
+    // 2. Leader peer 1 reports region state to scheduler, scheduler finds the
+    // peer number is < 3, so first changes its current region
+    // state -> Peers (1, 2), ConfVer (1), and returns ChangePeer Adding 2.
+    // 3. Leader does ChangePeer, then reports Peers (1, 2), ConfVer (2),
+    // scheduler updates its state -> Peers (1, 2), ConfVer (2).
+    // 4. Leader may report old Peers (1), ConfVer (1) to scheduler before ConfChange
+    // finished, scheduler stills responses ChangePeer Adding 2, of course, we must
+    // guarantee the second ChangePeer can't be applied in TiKV.
+    ChangePeer change_peer = 2;
+    // Scheduler can return transfer_leader to let TiKV does leader transfer itself.
+    TransferLeader transfer_leader = 3;
+    // ID of the region
+    uint64 region_id = 4;
+    metapb.RegionEpoch region_epoch = 5;
+    // Leader of the region at the moment of the corresponding request was made.
+    metapb.Peer target_peer = 6;
+}
+
+```
+
+- 用户请求分裂region
+
+```
 
 message AskSplitRequest {
     RequestHeader header = 1;
@@ -310,22 +264,3 @@ message AskSplitResponse {
 rpc AskSplit(AskSplitRequest) returns (AskSplitResponse) {}
 
 ```
-
-### E-DB 支持命令列表
-
-- get
-- set
-- scan
-
-
-### 重要流程设计
-
-#### 启动流程
-
-#### 切主流程
-
-#### 分裂扩容流程
-
-#### 图数据
-
-[https://github.com/eraft-io/RedisGraph](https://github.com/eraft-io/RedisGraph)
