@@ -1,0 +1,6140 @@
+1
+00:00:03,640 --> 00:00:13,140
+[Music]
+
+2
+00:00:14,379 --> 00:00:23,480
+okay jump right into it so the schedule
+
+3
+00:00:23,480 --> 00:00:25,070
+for you guys
+
+4
+00:00:25,070 --> 00:00:27,499
+the major thing obviously two days from
+
+5
+00:00:27,499 --> 00:00:29,839
+now on Wednesday in this classroom we
+
+6
+00:00:29,839 --> 00:00:33,050
+will have the midterm exam study guy
+
+7
+00:00:33,050 --> 00:00:35,420
+who's been online since last week but
+
+8
+00:00:35,420 --> 00:00:36,710
+also the practice exam
+
+9
+00:00:36,710 --> 00:00:38,780
+I've also uploaded all the lectures all
+
+10
+00:00:38,780 --> 00:00:39,920
+the lecture notes and all the slides
+
+11
+00:00:39,920 --> 00:00:42,230
+from everything that's covered in exam
+
+12
+00:00:42,230 --> 00:00:45,070
+over this weekend and then there's
+
+13
+00:00:45,070 --> 00:00:48,489
+additional problems in the textbook
+
+14
+00:00:48,489 --> 00:00:50,390
+solutions for the odd ones are available
+
+15
+00:00:50,390 --> 00:00:53,300
+online so any high-level questions about
+
+16
+00:00:53,300 --> 00:00:57,920
+the midterm you need to bring your CMU
+
+17
+00:00:57,920 --> 00:00:59,300
+ID because it's a class of a hundred
+
+18
+00:00:59,300 --> 00:01:01,699
+people I don't know everyone I should
+
+19
+00:01:01,699 --> 00:01:03,350
+bring a calculator if you can't do logs
+
+20
+00:01:03,350 --> 00:01:06,310
+in your head and you're not have a one
+
+21
+00:01:06,310 --> 00:01:09,010
+one eight half I let me sheet of paper
+
+22
+00:01:09,010 --> 00:01:11,990
+double-sided with handwritten notes no
+
+23
+00:01:11,990 --> 00:01:13,790
+shrunk it down slideshows hunker down
+
+24
+00:01:13,790 --> 00:01:15,320
+let your notes know slowly shrunken down
+
+25
+00:01:15,320 --> 00:01:16,460
+textbook everything I'll be written by
+
+26
+00:01:16,460 --> 00:01:20,450
+hand you'll get more out of that way so
+
+27
+00:01:20,450 --> 00:01:23,439
+any question about any of these things
+
+28
+00:01:23,860 --> 00:01:27,619
+okay good and then project two will be
+
+29
+00:01:27,619 --> 00:01:32,030
+due on on Sunday at midnight as well I'd
+
+30
+00:01:32,030 --> 00:01:34,280
+like you I posted on Piazza what
+
+31
+00:01:34,280 --> 00:01:35,810
+questions things like that right and
+
+32
+00:01:35,810 --> 00:01:37,570
+then the tears are helping as needed
+
+33
+00:01:37,570 --> 00:01:41,149
+okay all right so we have a lot to
+
+34
+00:01:41,149 --> 00:01:42,350
+discuss today I don't think I'm gonna
+
+35
+00:01:42,350 --> 00:01:43,250
+get through all of it
+
+36
+00:01:43,250 --> 00:01:45,259
+so it might spill over to next week
+
+37
+00:01:45,259 --> 00:01:47,770
+after the exam
+
+38
+00:01:47,770 --> 00:01:51,259
+plot there and see what happens so today
+
+39
+00:01:51,259 --> 00:01:54,890
+we're talkin and query planning so the
+
+40
+00:01:54,890 --> 00:01:56,719
+high-level idea what we're trying to do
+
+41
+00:01:56,719 --> 00:01:59,659
+today is that given that sequel was
+
+42
+00:01:59,659 --> 00:02:03,109
+declarative meaning the the application
+
+43
+00:02:03,109 --> 00:02:05,149
+that sent us the query the query says
+
+44
+00:02:05,149 --> 00:02:07,090
+what answer they want us to compute
+
+45
+00:02:07,090 --> 00:02:09,440
+right select this from this table
+
+46
+00:02:09,440 --> 00:02:12,200
+produce all the employees that have this
+
+47
+00:02:12,200 --> 00:02:15,650
+particular attribute I and they and it's
+
+48
+00:02:15,650 --> 00:02:17,540
+not telling us how we actually supposed
+
+49
+00:02:17,540 --> 00:02:19,849
+to compute this right doesn't say do a
+
+50
+00:02:19,849 --> 00:02:20,640
+hash join
+
+51
+00:02:20,640 --> 00:02:22,319
+let's look join although you can do
+
+52
+00:02:22,319 --> 00:02:24,660
+hints like that but we can ignore that
+
+53
+00:02:24,660 --> 00:02:26,490
+for now right it's it's just them
+
+54
+00:02:26,490 --> 00:02:28,920
+telling us what answer they want and so
+
+55
+00:02:28,920 --> 00:02:31,020
+it's up for us now inside the database
+
+56
+00:02:31,020 --> 00:02:32,400
+system people actually building but they
+
+57
+00:02:32,400 --> 00:02:34,350
+have a system software it's our
+
+58
+00:02:34,350 --> 00:02:36,690
+responsibility to take that simple query
+
+59
+00:02:36,690 --> 00:02:39,690
+and figure out the the best way the most
+
+60
+00:02:39,690 --> 00:02:44,610
+efficient way to execute it and so if we
+
+61
+00:02:44,610 --> 00:02:47,520
+saw from from last week or the previous
+
+62
+00:02:47,520 --> 00:02:48,480
+weeks when we talked about joint
+
+63
+00:02:48,480 --> 00:02:50,100
+algorithms but they can be quite a big
+
+64
+00:02:50,100 --> 00:02:51,989
+difference in performance depending on
+
+65
+00:02:51,989 --> 00:02:53,310
+what album you choose
+
+66
+00:02:53,310 --> 00:02:55,680
+we had stupid mess of loop join would
+
+67
+00:02:55,680 --> 00:02:57,239
+take one point three hours for a table
+
+68
+00:02:57,239 --> 00:02:59,310
+of six megabytes but if you do it in the
+
+69
+00:02:59,310 --> 00:03:02,250
+hash join worst case scenario was 0.5
+
+70
+00:03:02,250 --> 00:03:06,900
+seconds so you know eight spits for this
+
+71
+00:03:06,900 --> 00:03:08,040
+one it's pretty obvious right we don't
+
+72
+00:03:08,040 --> 00:03:09,060
+wanna do the stupid thing we can figure
+
+73
+00:03:09,060 --> 00:03:10,470
+this out when we start getting more
+
+74
+00:03:10,470 --> 00:03:12,209
+complex queries more complex joining
+
+75
+00:03:12,209 --> 00:03:15,480
+these then figuring out how exactly go
+
+76
+00:03:15,480 --> 00:03:16,739
+from this to this it's not always
+
+77
+00:03:16,739 --> 00:03:19,769
+obvious and that's why in this new this
+
+78
+00:03:19,769 --> 00:03:21,660
+is what's going to separate the the high
+
+79
+00:03:21,660 --> 00:03:22,860
+end database systems that are very
+
+80
+00:03:22,860 --> 00:03:24,989
+expensive the oracles the db2 the
+
+81
+00:03:24,989 --> 00:03:27,180
+Teradata is the sequel servers versus
+
+82
+00:03:27,180 --> 00:03:29,640
+like the source ones are the free ones
+
+83
+00:03:29,640 --> 00:03:32,220
+Postgres is still very good but it's no
+
+84
+00:03:32,220 --> 00:03:35,010
+where the query optimizer is nowhere as
+
+85
+00:03:35,010 --> 00:03:37,860
+sophisticated as sequel servers report
+
+86
+00:03:37,860 --> 00:03:41,880
+example so the idea about query
+
+87
+00:03:41,880 --> 00:03:44,670
+optimizer goes back to the 1970s so I
+
+88
+00:03:44,670 --> 00:03:45,810
+don't think I've talked about system are
+
+89
+00:03:45,810 --> 00:03:47,489
+in this class a little bit but I said
+
+90
+00:03:47,489 --> 00:03:51,180
+why but back in you know in the 1970s
+
+91
+00:03:51,180 --> 00:03:52,890
+when Ted Cod and wrote the first paper
+
+92
+00:03:52,890 --> 00:03:54,870
+on the relational model there was
+
+93
+00:03:54,870 --> 00:03:56,760
+basically two people or two groups that
+
+94
+00:03:56,760 --> 00:03:57,600
+picked it up and try to actually
+
+95
+00:03:57,600 --> 00:03:59,700
+implement it because getting Ted Cod was
+
+96
+00:03:59,700 --> 00:04:01,680
+a theoretician it was a mathematician so
+
+97
+00:04:01,680 --> 00:04:03,120
+he didn't have to have it in software he
+
+98
+00:04:03,120 --> 00:04:04,350
+just proposed an idea
+
+99
+00:04:04,350 --> 00:04:06,269
+Haagen place the model said this is the
+
+100
+00:04:06,269 --> 00:04:08,610
+right way to actually build software and
+
+101
+00:04:08,610 --> 00:04:11,010
+then there was a group at IBM in San
+
+102
+00:04:11,010 --> 00:04:15,120
+Jose and then a group at UC Berkeley who
+
+103
+00:04:15,120 --> 00:04:16,350
+ended up taking that payment actually
+
+104
+00:04:16,350 --> 00:04:17,970
+built the you know the first two
+
+105
+00:04:17,970 --> 00:04:19,709
+relational data has been assessed at
+
+106
+00:04:19,709 --> 00:04:22,169
+least most famous ones no one at
+
+107
+00:04:22,169 --> 00:04:25,620
+Berkeley was called ingress that was you
+
+108
+00:04:25,620 --> 00:04:27,479
+know my post course is called Postgres
+
+109
+00:04:27,479 --> 00:04:29,910
+the same guy that made arrests also be
+
+110
+00:04:29,910 --> 00:04:30,449
+post-grad
+
+111
+00:04:30,449 --> 00:04:32,849
+because it's post immigrants that's what
+
+112
+00:04:32,849 --> 00:04:35,279
+the name comes from I think he was my
+
+113
+00:04:35,279 --> 00:04:37,759
+advisor when I was in graduate school
+
+114
+00:04:37,759 --> 00:04:42,809
+and then be the IBM guys they build this
+
+115
+00:04:42,809 --> 00:04:44,969
+thing called system art and the project
+
+116
+00:04:44,969 --> 00:04:46,439
+is actually fascinating because they got
+
+117
+00:04:46,439 --> 00:04:48,300
+like eight or nine people that all had
+
+118
+00:04:48,300 --> 00:04:50,279
+PhDs in math and computer science again
+
+119
+00:04:50,279 --> 00:04:51,569
+this is early computer science but there
+
+120
+00:04:51,569 --> 00:04:53,430
+wasn't many people that had graduate
+
+121
+00:04:53,430 --> 00:04:55,080
+degrees in computer science they put
+
+122
+00:04:55,080 --> 00:04:56,039
+them out of room says we're gonna build
+
+123
+00:04:56,039 --> 00:04:57,689
+a relational database system and then
+
+124
+00:04:57,689 --> 00:04:59,189
+every person of the P sheets are carved
+
+125
+00:04:59,189 --> 00:05:01,919
+off the room and part of the problem one
+
+126
+00:05:01,919 --> 00:05:03,300
+person who worked on the storage layer
+
+127
+00:05:03,300 --> 00:05:04,529
+one person worked on the execution
+
+128
+00:05:04,529 --> 00:05:06,240
+engine one person worked on concurrency
+
+129
+00:05:06,240 --> 00:05:08,639
+control and there was one people person
+
+130
+00:05:08,639 --> 00:05:10,169
+pass cylinder she kept query
+
+131
+00:05:10,169 --> 00:05:13,400
+optimization Krita curry optimizer and
+
+132
+00:05:13,400 --> 00:05:17,669
+so back then the idea that you could
+
+133
+00:05:17,669 --> 00:05:19,259
+have a database minute system take a
+
+134
+00:05:19,259 --> 00:05:22,469
+query a declarative language like sequel
+
+135
+00:05:22,469 --> 00:05:24,779
+get Ted Cod never actually proposed a
+
+136
+00:05:24,779 --> 00:05:26,339
+language initially with relational model
+
+137
+00:05:26,339 --> 00:05:28,409
+sequel came later on because it was
+
+138
+00:05:28,409 --> 00:05:30,779
+embedded by IBM the Berkeley guys had
+
+139
+00:05:30,779 --> 00:05:32,580
+this other thing called quelle which
+
+140
+00:05:32,580 --> 00:05:34,169
+looks a lot like sequel but the syntax
+
+141
+00:05:34,169 --> 00:05:34,860
+is different
+
+142
+00:05:34,860 --> 00:05:37,469
+Mike Stonebraker the guy wouldn't be
+
+143
+00:05:37,469 --> 00:05:38,879
+dressed would he claims Quayle was
+
+144
+00:05:38,879 --> 00:05:42,149
+superior to sequel I disagree but you
+
+145
+00:05:42,149 --> 00:05:44,520
+know nobody writes it well now so but in
+
+146
+00:05:44,520 --> 00:05:47,129
+the back then people argued that there's
+
+147
+00:05:47,129 --> 00:05:48,870
+no way of Dan basement systems gonna
+
+148
+00:05:48,870 --> 00:05:50,699
+take a high-level language like a sequel
+
+149
+00:05:50,699 --> 00:05:53,249
+or quell and generate a query plant as
+
+150
+00:05:53,249 --> 00:05:54,779
+efficient and what a human could do
+
+151
+00:05:54,779 --> 00:05:56,909
+right in my hand cuz that's what people
+
+152
+00:05:56,909 --> 00:05:58,319
+were doing before the rational model if
+
+153
+00:05:58,319 --> 00:06:00,029
+you were writing this these query plans
+
+154
+00:06:00,029 --> 00:06:01,439
+by hand like writing the for loops and
+
+155
+00:06:01,439 --> 00:06:05,219
+do joins and scans by hand and so in the
+
+156
+00:06:05,219 --> 00:06:06,810
+same way that he will argued when the
+
+157
+00:06:06,810 --> 00:06:10,589
+the C C language came out ATT he was
+
+158
+00:06:10,589 --> 00:06:13,020
+saying oh C's to high-level it's the
+
+159
+00:06:13,020 --> 00:06:14,399
+compiler is never gonna generate machine
+
+160
+00:06:14,399 --> 00:06:15,959
+code as efficient than what humans can
+
+161
+00:06:15,959 --> 00:06:17,580
+write today or a human humans could
+
+162
+00:06:17,580 --> 00:06:19,319
+write an assembly and of course now we
+
+163
+00:06:19,319 --> 00:06:20,999
+know nobody writes for the most part
+
+164
+00:06:20,999 --> 00:06:22,620
+assembly by hand everyone writes in
+
+165
+00:06:22,620 --> 00:06:24,629
+higher-level languages even higher than
+
+166
+00:06:24,629 --> 00:06:26,999
+C and compilers do a pretty good job in
+
+167
+00:06:26,999 --> 00:06:28,349
+those cases they can do even better than
+
+168
+00:06:28,349 --> 00:06:30,959
+what the average human can do this is
+
+169
+00:06:30,959 --> 00:06:32,879
+what I be improved back in the 1970s
+
+170
+00:06:32,879 --> 00:06:34,319
+that you could take a declared language
+
+171
+00:06:34,319 --> 00:06:36,870
+life sequel and have the query optimizer
+
+172
+00:06:36,870 --> 00:06:39,659
+or the planner generate a quit plan that
+
+173
+00:06:39,659 --> 00:06:42,019
+was
+
+174
+00:06:42,260 --> 00:06:44,270
+as good if not better than what a human
+
+175
+00:06:44,270 --> 00:06:45,710
+can actually do or at least the average
+
+176
+00:06:45,710 --> 00:06:49,100
+human right so well Tom's not about how
+
+177
+00:06:49,100 --> 00:06:52,100
+the system optimizer works but what I'll
+
+178
+00:06:52,100 --> 00:06:53,360
+say as we go along and talk about
+
+179
+00:06:53,360 --> 00:06:55,100
+different leading up to it actually how
+
+180
+00:06:55,100 --> 00:06:57,860
+we do the cost based search that IBM
+
+181
+00:06:57,860 --> 00:07:00,020
+demented invented back in the 1970s a
+
+182
+00:07:00,020 --> 00:07:02,090
+lot of the designing decisions and
+
+183
+00:07:02,090 --> 00:07:04,280
+assumptions that they made about what
+
+184
+00:07:04,280 --> 00:07:05,870
+the data looks like and what the query
+
+185
+00:07:05,870 --> 00:07:08,170
+plans look like to simplify the problem
+
+186
+00:07:08,170 --> 00:07:11,030
+to make it tractable are still actually
+
+187
+00:07:11,030 --> 00:07:13,970
+used in practice today all right and
+
+188
+00:07:13,970 --> 00:07:15,830
+I'll go through what those are as we go
+
+189
+00:07:15,830 --> 00:07:16,780
+along
+
+190
+00:07:16,780 --> 00:07:18,830
+so with query optimization there's
+
+191
+00:07:18,830 --> 00:07:20,270
+essentially two Pro approaches to doing
+
+192
+00:07:20,270 --> 00:07:22,610
+this and again this is also gets into
+
+193
+00:07:22,610 --> 00:07:26,150
+like what distinguishes the good up my
+
+194
+00:07:26,150 --> 00:07:30,080
+bad optimizers so the first approach is
+
+195
+00:07:30,080 --> 00:07:33,620
+use static rules or heuristics so the
+
+196
+00:07:33,620 --> 00:07:35,900
+idea here is that we can look at our
+
+197
+00:07:35,900 --> 00:07:38,420
+query plan and that matches a certain
+
+198
+00:07:38,420 --> 00:07:40,730
+pattern like a portion of the query time
+
+199
+00:07:40,730 --> 00:07:42,100
+matches a pattern that we know about
+
+200
+00:07:42,100 --> 00:07:44,930
+then we fire off a rule that I do some
+
+201
+00:07:44,930 --> 00:07:46,700
+kind of transformation or rewriting of
+
+202
+00:07:46,700 --> 00:07:49,190
+the query plan took to make it more
+
+203
+00:07:49,190 --> 00:07:52,670
+often more right maybe like an Eevee if
+
+204
+00:07:52,670 --> 00:07:55,490
+you defy stupid things where one equals
+
+205
+00:07:55,490 --> 00:07:58,010
+zero right then you can have a rule can
+
+206
+00:07:58,010 --> 00:08:02,810
+strip that out very easily so the
+
+207
+00:08:02,810 --> 00:08:04,370
+important thing I'm saying on these
+
+208
+00:08:04,370 --> 00:08:08,270
+rules that we may need to look at the
+
+209
+00:08:08,270 --> 00:08:09,950
+catalog the system kalam that tells us
+
+210
+00:08:09,950 --> 00:08:11,240
+what our database looks like what our
+
+211
+00:08:11,240 --> 00:08:12,830
+tables were packets that the catalog an
+
+212
+00:08:12,830 --> 00:08:14,150
+is the metadata about the data what
+
+213
+00:08:14,150 --> 00:08:15,830
+tables do I have what columns do they
+
+214
+00:08:15,830 --> 00:08:17,600
+have what attributes that they have so
+
+215
+00:08:17,600 --> 00:08:20,060
+forth so for these rules you may have
+
+216
+00:08:20,060 --> 00:08:21,620
+look at a catalog consult enough to
+
+217
+00:08:21,620 --> 00:08:23,470
+understand what you know what our
+
+218
+00:08:23,470 --> 00:08:25,420
+underlying tables that should look like
+
+219
+00:08:25,420 --> 00:08:28,430
+but we never actually have a woman
+
+220
+00:08:28,430 --> 00:08:31,910
+actual data itself right we can fire off
+
+221
+00:08:31,910 --> 00:08:33,169
+these rules without actually going to
+
+222
+00:08:33,169 --> 00:08:34,789
+the table say well what did what did it
+
+223
+00:08:34,789 --> 00:08:37,580
+put to be what am I to was actually
+
+224
+00:08:37,580 --> 00:08:43,220
+contained right be the alternative is
+
+225
+00:08:43,220 --> 00:08:45,980
+new costly search which is instead of
+
+226
+00:08:45,980 --> 00:08:48,590
+you know you don't look at the data this
+
+227
+00:08:48,590 --> 00:08:49,940
+one you are gonna have to look at the
+
+228
+00:08:49,940 --> 00:08:52,490
+data in some way see the idea what the
+
+229
+00:08:52,490 --> 00:08:54,380
+cost base search is that
+
+230
+00:08:54,380 --> 00:08:57,620
+gonna do a we're going to enumerate a
+
+231
+00:08:57,620 --> 00:08:58,850
+bunch of different plans and different
+
+232
+00:08:58,850 --> 00:09:01,640
+ways and ideally intelligent manner
+
+233
+00:09:01,640 --> 00:09:03,530
+around looking at redundant or stupid
+
+234
+00:09:03,530 --> 00:09:06,230
+things or with a numerator a bunch of
+
+235
+00:09:06,230 --> 00:09:07,970
+her plans for us that we could choose to
+
+236
+00:09:07,970 --> 00:09:10,160
+execute our single query and then we're
+
+237
+00:09:10,160 --> 00:09:12,080
+going to use some kind of cost model to
+
+238
+00:09:12,080 --> 00:09:13,010
+approximate
+
+239
+00:09:13,010 --> 00:09:15,560
+which one is the execution cost all
+
+240
+00:09:15,560 --> 00:09:17,810
+these different plans of course the idea
+
+241
+00:09:17,810 --> 00:09:19,070
+is that we want to always pick the one
+
+242
+00:09:19,070 --> 00:09:22,700
+that has the lowest cost so obviously
+
+243
+00:09:22,700 --> 00:09:24,920
+getting the bat that cost minor if you
+
+244
+00:09:24,920 --> 00:09:26,390
+have accurate estimations is super hard
+
+245
+00:09:26,390 --> 00:09:28,640
+we'll see why as we go along and then
+
+246
+00:09:28,640 --> 00:09:30,380
+also in the way you enumerate the plans
+
+247
+00:09:30,380 --> 00:09:32,840
+is difficult to it because as I said you
+
+248
+00:09:32,840 --> 00:09:35,330
+don't want to look at you have a finite
+
+249
+00:09:35,330 --> 00:09:36,590
+amount of time to look at about
+
+250
+00:09:36,590 --> 00:09:37,850
+different options and you don't want to
+
+251
+00:09:37,850 --> 00:09:40,190
+spend you know hours and hours doing a
+
+252
+00:09:40,190 --> 00:09:42,410
+branch of bound search or a query that
+
+253
+00:09:42,410 --> 00:09:45,530
+may take one second to run who it's
+
+254
+00:09:45,530 --> 00:09:47,540
+actually quite amazing how how how fast
+
+255
+00:09:47,540 --> 00:09:49,160
+these things can actually be like every
+
+256
+00:09:49,160 --> 00:09:50,270
+time in this class and we'll show some
+
+257
+00:09:50,270 --> 00:09:52,340
+demos later on every single time I open
+
+258
+00:09:52,340 --> 00:09:53,510
+up the quickly in the terminal I never
+
+259
+00:09:53,510 --> 00:09:54,740
+wrote a single query I hit enter
+
+260
+00:09:54,740 --> 00:09:56,480
+it was doing both of these things in
+
+261
+00:09:56,480 --> 00:09:59,630
+milliseconds now again for our queries
+
+262
+00:09:59,630 --> 00:10:02,300
+we look at they're pretty simple so it's
+
+263
+00:10:02,300 --> 00:10:02,990
+not that
+
+264
+00:10:02,990 --> 00:10:06,500
+mind blowing but even still you know you
+
+265
+00:10:06,500 --> 00:10:08,600
+you can't run anything forever and find
+
+266
+00:10:08,600 --> 00:10:10,970
+it you know the best possible plan are
+
+267
+00:10:10,970 --> 00:10:13,820
+you try to approximate it so the
+
+268
+00:10:13,820 --> 00:10:16,640
+pipeline for our query optimization path
+
+269
+00:10:16,640 --> 00:10:18,950
+it was looking at the following so the
+
+270
+00:10:18,950 --> 00:10:20,210
+very beginning we have an application
+
+271
+00:10:20,210 --> 00:10:21,830
+the application is connected to the
+
+272
+00:10:21,830 --> 00:10:23,660
+database system and then it's going to
+
+273
+00:10:23,660 --> 00:10:26,120
+send us a sequel query so the first
+
+274
+00:10:26,120 --> 00:10:27,800
+stage would go through our optimization
+
+275
+00:10:27,800 --> 00:10:30,700
+pipeline is called the sequel rewriter
+
+276
+00:10:30,700 --> 00:10:33,500
+so the idea here is that we're given
+
+277
+00:10:33,500 --> 00:10:36,170
+sequel we can have some some some some
+
+278
+00:10:36,170 --> 00:10:38,060
+transformation rules that allow us to
+
+279
+00:10:38,060 --> 00:10:40,720
+rewrite the sequel in certain ways so
+
+280
+00:10:40,720 --> 00:10:42,860
+sometimes this occurs for distributing
+
+281
+00:10:42,860 --> 00:10:45,290
+databases or if you have views like The
+
+282
+00:10:45,290 --> 00:10:46,910
+Hobbit ale is for a table name and this
+
+283
+00:10:46,910 --> 00:10:48,320
+thing can say oh I see this team when a
+
+284
+00:10:48,320 --> 00:10:49,910
+believer you write it to be something
+
+285
+00:10:49,910 --> 00:10:50,180
+else
+
+286
+00:10:50,180 --> 00:10:51,710
+let me annotate it with additional
+
+287
+00:10:51,710 --> 00:10:53,960
+information to say this particular table
+
+288
+00:10:53,960 --> 00:10:55,820
+can be found on this node over here or
+
+289
+00:10:55,820 --> 00:10:58,580
+this disk over here so this is optional
+
+290
+00:10:58,580 --> 00:11:01,640
+right this is not that common I don't
+
+291
+00:11:01,640 --> 00:11:03,110
+think most David students don't want to
+
+292
+00:11:03,110 --> 00:11:05,660
+operate directly on sequel but you know
+
+293
+00:11:05,660 --> 00:11:07,380
+this is something you could do to do so
+
+294
+00:11:07,380 --> 00:11:10,560
+traditional opposition here then we take
+
+295
+00:11:10,560 --> 00:11:11,730
+the sequel query that comes out of this
+
+296
+00:11:11,730 --> 00:11:13,140
+if we have it otherwise you go back
+
+297
+00:11:13,140 --> 00:11:14,580
+through the application and they passed
+
+298
+00:11:14,580 --> 00:11:17,010
+it through our Seco parser and this is
+
+299
+00:11:17,010 --> 00:11:18,690
+just getting the lexer token stuff you
+
+300
+00:11:18,690 --> 00:11:20,790
+can you read a pilot class there's
+
+301
+00:11:20,790 --> 00:11:22,350
+nothing there's no fancy stuff we're
+
+302
+00:11:22,350 --> 00:11:24,390
+doing here we're just converting a
+
+303
+00:11:24,390 --> 00:11:28,110
+sequel string into the activities syntax
+
+304
+00:11:28,110 --> 00:11:30,690
+tree so then now we see the syntax tree
+
+305
+00:11:30,690 --> 00:11:33,300
+into our binder and a binder is
+
+306
+00:11:33,300 --> 00:11:36,780
+responsible for converting the named
+
+307
+00:11:36,780 --> 00:11:38,970
+objects referenced in our sequel query
+
+308
+00:11:38,970 --> 00:11:41,700
+to some kind of internal identifier so
+
+309
+00:11:41,700 --> 00:11:42,930
+really dude is like consulting the
+
+310
+00:11:42,930 --> 00:11:45,210
+catalog so the sale I require it select
+
+311
+00:11:45,210 --> 00:11:47,610
+star from table food I don't want to
+
+312
+00:11:47,610 --> 00:11:48,960
+have the rest of my query plan and have
+
+313
+00:11:48,960 --> 00:11:51,840
+to operate on the string foo I go to the
+
+314
+00:11:51,840 --> 00:11:53,670
+catalog and say hey do you have a table
+
+315
+00:11:53,670 --> 00:11:55,830
+called foo if yes give me some internal
+
+316
+00:11:55,830 --> 00:11:57,990
+identify or to allow me to find it later
+
+317
+00:11:57,990 --> 00:12:00,720
+on or if it doesn't have it like it says
+
+318
+00:12:00,720 --> 00:12:03,390
+you know people who doesn't exist at
+
+319
+00:12:03,390 --> 00:12:04,610
+this point we could throw in air and say
+
+320
+00:12:04,610 --> 00:12:06,720
+you know you looking up a table we don't
+
+321
+00:12:06,720 --> 00:12:10,110
+have common we don't have so now that
+
+322
+00:12:10,110 --> 00:12:12,660
+the buyer is gonna admit is a logical
+
+323
+00:12:12,660 --> 00:12:15,000
+plan well explain look where do you tell
+
+324
+00:12:15,000 --> 00:12:16,410
+what this is in a second but the hyoid I
+
+325
+00:12:16,410 --> 00:12:18,840
+think what this is there's a logical
+
+326
+00:12:18,840 --> 00:12:20,280
+plan in the physical plan a logical plan
+
+327
+00:12:20,280 --> 00:12:22,290
+could say at a high level what the query
+
+328
+00:12:22,290 --> 00:12:24,660
+wants to do I want to scan this table
+
+329
+00:12:24,660 --> 00:12:26,910
+I'm our mediator from this table I'm
+
+330
+00:12:26,910 --> 00:12:28,680
+gonna join these two tables it doesn't
+
+331
+00:12:28,680 --> 00:12:30,120
+say how all you're actually going to do
+
+332
+00:12:30,120 --> 00:12:31,740
+that that's the physical plan actually
+
+333
+00:12:31,740 --> 00:12:33,270
+specification with the Oliver you're
+
+334
+00:12:33,270 --> 00:12:36,210
+using comes later on so the binders
+
+335
+00:12:36,210 --> 00:12:37,920
+without a logical plan it's basically a
+
+336
+00:12:37,920 --> 00:12:40,110
+conversion the converted form of the
+
+337
+00:12:40,110 --> 00:12:42,390
+Signet reading now of internal IDs and
+
+338
+00:12:42,390 --> 00:12:44,430
+we have someone in a relational algebra
+
+339
+00:12:44,430 --> 00:12:46,830
+approximation and then we can feed this
+
+340
+00:12:46,830 --> 00:12:49,740
+now into a tree grade item again this is
+
+341
+00:12:49,740 --> 00:12:51,870
+optional this actually is more common
+
+342
+00:12:51,870 --> 00:12:53,220
+than the sequel provider this one
+
+343
+00:12:53,220 --> 00:12:55,290
+actually most of some purpose because
+
+344
+00:12:55,290 --> 00:12:58,080
+these are the static rules so to do the
+
+345
+00:12:58,080 --> 00:12:59,850
+tree right rewriting we have to go to
+
+346
+00:12:59,850 --> 00:13:01,620
+the Cal attentively and ask them hey
+
+347
+00:13:01,620 --> 00:13:03,300
+what does our tables look like what are
+
+348
+00:13:03,300 --> 00:13:06,420
+our attributes look like um but yeah we
+
+349
+00:13:06,420 --> 00:13:07,950
+don't have to go to the cost Monica we
+
+350
+00:13:07,950 --> 00:13:10,050
+can do this as use your static world
+
+351
+00:13:10,050 --> 00:13:12,150
+that you want to do for every query no
+
+352
+00:13:12,150 --> 00:13:15,050
+matter what the actual data looks like
+
+353
+00:13:15,050 --> 00:13:17,700
+so then the tree writers gets picked up
+
+354
+00:13:17,700 --> 00:13:19,790
+still the same logical plan that
+
+355
+00:13:19,790 --> 00:13:22,070
+finder spit out so then now we feed this
+
+356
+00:13:22,070 --> 00:13:25,010
+into our first night I mean this is like
+
+357
+00:13:25,010 --> 00:13:26,360
+the black magic part this is where we're
+
+358
+00:13:26,360 --> 00:13:27,440
+actually gonna do the search to try to
+
+359
+00:13:27,440 --> 00:13:29,680
+use a cost model to figure out what the
+
+360
+00:13:29,680 --> 00:13:32,390
+best plan for us is so they've been
+
+361
+00:13:32,390 --> 00:13:34,040
+using a combination of schema
+
+362
+00:13:34,040 --> 00:13:36,020
+information that the Cal provides us as
+
+363
+00:13:36,020 --> 00:13:37,850
+well as some of these s these estimates
+
+364
+00:13:37,850 --> 00:13:40,850
+that our cost model could provide us all
+
+365
+00:13:40,850 --> 00:13:42,830
+right this query plan is going to take X
+
+366
+00:13:42,830 --> 00:13:44,270
+amount of times other party plans meant
+
+367
+00:13:44,270 --> 00:13:46,520
+a Y amount of time X is less than Y I
+
+368
+00:13:46,520 --> 00:13:49,310
+want to pick this other one well we'll
+
+369
+00:13:49,310 --> 00:13:51,710
+see as we go along this this cost model
+
+370
+00:13:51,710 --> 00:13:54,950
+is going to be a typically it's a
+
+371
+00:13:54,950 --> 00:13:57,320
+synthetic number that the database
+
+372
+00:13:57,320 --> 00:14:00,020
+hasn't computes internally it has no
+
+373
+00:14:00,020 --> 00:14:01,400
+need to be outside world
+
+374
+00:14:01,400 --> 00:14:03,560
+you can't take a cost not an expert say
+
+375
+00:14:03,560 --> 00:14:06,080
+oh that's really 27 that's me you know
+
+376
+00:14:06,080 --> 00:14:06,800
+20 minutes
+
+377
+00:14:06,800 --> 00:14:08,810
+it's just internal thing that solves
+
+378
+00:14:08,810 --> 00:14:11,030
+this 8 this query plan is better than
+
+379
+00:14:11,030 --> 00:14:13,150
+another so just used to compare
+
+380
+00:14:13,150 --> 00:14:15,440
+relatively inside big data system
+
+381
+00:14:15,440 --> 00:14:17,090
+between different plans and has no
+
+382
+00:14:17,090 --> 00:14:19,010
+bearing to the outside world so if you
+
+383
+00:14:19,010 --> 00:14:20,630
+think Postgres this cost model it spits
+
+384
+00:14:20,630 --> 00:14:22,400
+out a number my sequels cost I don't
+
+385
+00:14:22,400 --> 00:14:23,380
+spit out a number
+
+386
+00:14:23,380 --> 00:14:26,540
+you can't apples and oranges you can't
+
+387
+00:14:26,540 --> 00:14:29,950
+compare them some systems will try to
+
+388
+00:14:29,950 --> 00:14:32,000
+have the class amount of estimates B
+
+389
+00:14:32,000 --> 00:14:34,280
+term to the actual time but that that's
+
+390
+00:14:34,280 --> 00:14:36,950
+tricky and usually not reliable because
+
+391
+00:14:36,950 --> 00:14:40,670
+hardware changes and the environment
+
+392
+00:14:40,670 --> 00:14:43,130
+changes and so forth all right - now the
+
+393
+00:14:43,130 --> 00:14:44,330
+optimizer is going to spit out a
+
+394
+00:14:44,330 --> 00:14:46,490
+physical plan and the physical plan is
+
+395
+00:14:46,490 --> 00:14:47,660
+what our data system can actually
+
+396
+00:14:47,660 --> 00:14:49,610
+execute so when we talk about very
+
+397
+00:14:49,610 --> 00:14:51,620
+execution I show these plans like it's
+
+398
+00:14:51,620 --> 00:14:53,420
+the hash join that you know yeah doing
+
+399
+00:14:53,420 --> 00:14:55,160
+torrential scans right index scans
+
+400
+00:14:55,160 --> 00:14:56,780
+feeding the hash drawing their choppers
+
+401
+00:14:56,780 --> 00:14:58,880
+drawings do my hash aggregation or
+
+402
+00:14:58,880 --> 00:15:00,740
+sorting aggregation that specification
+
+403
+00:15:00,740 --> 00:15:03,800
+happens here so once we get outside the
+
+404
+00:15:03,800 --> 00:15:05,270
+optimizer then there's not really
+
+405
+00:15:05,270 --> 00:15:06,650
+anything else we have to do until none
+
+406
+00:15:06,650 --> 00:15:10,310
+of them is executed create fun so again
+
+407
+00:15:10,310 --> 00:15:11,780
+and a high level of this is how every
+
+408
+00:15:11,780 --> 00:15:12,800
+single database managed system
+
+409
+00:15:12,800 --> 00:15:14,960
+implements it some things like a super
+
+410
+00:15:14,960 --> 00:15:17,180
+driver which we write every writer you
+
+411
+00:15:17,180 --> 00:15:18,830
+don't necessarily have to have but the
+
+412
+00:15:18,830 --> 00:15:20,690
+parts of binder and optimizer is this
+
+413
+00:15:20,690 --> 00:15:25,460
+the standard package so just to
+
+414
+00:15:25,460 --> 00:15:26,900
+reiterate between the logic versus
+
+415
+00:15:26,900 --> 00:15:30,440
+physical again the the the way to think
+
+416
+00:15:30,440 --> 00:15:31,680
+about is that the
+
+417
+00:15:31,680 --> 00:15:34,619
+I'm gonna generate a logical plan that
+
+418
+00:15:34,619 --> 00:15:37,470
+is roughly equivalent to the the
+
+419
+00:15:37,470 --> 00:15:38,850
+relational algebra expressions within
+
+420
+00:15:38,850 --> 00:15:42,839
+our within our query it's not always a
+
+421
+00:15:42,839 --> 00:15:44,339
+one-to-one mapping but at a high level
+
+422
+00:15:44,339 --> 00:15:45,869
+you can think of it that way I want to
+
+423
+00:15:45,869 --> 00:15:47,369
+do a selection on this table I'm gonna
+
+424
+00:15:47,369 --> 00:15:48,720
+do a filter I wanna do a projection I
+
+425
+00:15:48,720 --> 00:15:50,910
+would do a join right those are all be
+
+426
+00:15:50,910 --> 00:15:52,559
+contained in a logical plan and all
+
+427
+00:15:52,559 --> 00:15:53,699
+those query plan trees that I showed
+
+428
+00:15:53,699 --> 00:15:55,170
+before way I sort of just had the
+
+429
+00:15:55,170 --> 00:15:57,360
+relational algebra symbols it didn't
+
+430
+00:15:57,360 --> 00:15:58,589
+annotate it and say what album I was
+
+431
+00:15:58,589 --> 00:15:59,819
+using and those have we considered
+
+432
+00:15:59,819 --> 00:16:03,480
+logical plans the physical operators the
+
+433
+00:16:03,480 --> 00:16:05,670
+physical plan that's where we actually
+
+434
+00:16:05,670 --> 00:16:08,399
+specifically define what execution
+
+435
+00:16:08,399 --> 00:16:10,199
+strategy we're going to use for those
+
+436
+00:16:10,199 --> 00:16:11,459
+different operators in our query plan
+
+437
+00:16:11,459 --> 00:16:14,249
+I'm gonna do an index scan using this
+
+438
+00:16:14,249 --> 00:16:16,860
+index in this order we're gonna feed my
+
+439
+00:16:16,860 --> 00:16:19,079
+output an index scan into a hash story
+
+440
+00:16:19,079 --> 00:16:22,230
+operator right it's all the low-level
+
+441
+00:16:22,230 --> 00:16:23,990
+details of how we actually execute it
+
+442
+00:16:23,990 --> 00:16:26,459
+and so that the bunch of different
+
+443
+00:16:26,459 --> 00:16:27,899
+metadata we have maintain attention a
+
+444
+00:16:27,899 --> 00:16:29,189
+physical plan that we don't be care
+
+445
+00:16:29,189 --> 00:16:31,529
+about at this point or this class but
+
+446
+00:16:31,529 --> 00:16:34,679
+like if I know I have a order by Apple
+
+447
+00:16:34,679 --> 00:16:37,620
+Bob and I give you a short version on
+
+448
+00:16:37,620 --> 00:16:40,050
+the same join key the same by the or by
+
+449
+00:16:40,050 --> 00:16:42,029
+key then I can annotate my physical
+
+450
+00:16:42,029 --> 00:16:43,980
+operators and my query plan to say this
+
+451
+00:16:43,980 --> 00:16:46,050
+data that I'm spitting out is o my way
+
+452
+00:16:46,050 --> 00:16:49,079
+is sorted based on this key so then you
+
+453
+00:16:49,079 --> 00:16:50,879
+can reason and that you can drop the
+
+454
+00:16:50,879 --> 00:16:56,639
+order by up a ball low V it's probably a
+
+455
+00:16:56,639 --> 00:16:58,670
+1:1 mapping from the relational algebra
+
+456
+00:16:58,670 --> 00:17:02,970
+to the to the logical plan not always
+
+457
+00:17:02,970 --> 00:17:06,480
+true but title it is but for the visual
+
+458
+00:17:06,480 --> 00:17:08,099
+plan we can't assume it's a 1:1 mapping
+
+459
+00:17:08,099 --> 00:17:09,859
+from the logic which is the physical
+
+460
+00:17:09,859 --> 00:17:14,010
+right again if I could have a join plus
+
+461
+00:17:14,010 --> 00:17:15,510
+an order by but if I do assert merge
+
+462
+00:17:15,510 --> 00:17:17,520
+join in my physical operator then I can
+
+463
+00:17:17,520 --> 00:17:19,859
+get rid of the order by operator up
+
+464
+00:17:19,859 --> 00:17:25,799
+above so the the way to think about this
+
+465
+00:17:25,799 --> 00:17:27,089
+is that the rewriting stuff we'll talk
+
+466
+00:17:27,089 --> 00:17:29,730
+about and then we get to the cost cost
+
+467
+00:17:29,730 --> 00:17:32,100
+based search those are all operating on
+
+468
+00:17:32,100 --> 00:17:36,630
+logical plans but the final is always e
+
+469
+00:17:36,630 --> 00:17:41,740
+needs to be a physical plan okay so
+
+470
+00:17:41,740 --> 00:17:43,760
+before we get into the nitty-gritty
+
+471
+00:17:43,760 --> 00:17:45,590
+details I mean to say that this is super
+
+472
+00:17:45,590 --> 00:17:47,570
+hard this is the hardest part about
+
+473
+00:17:47,570 --> 00:17:48,770
+database systems this is actually the
+
+474
+00:17:48,770 --> 00:17:51,590
+part I know the least amount this is why
+
+475
+00:17:51,590 --> 00:17:52,910
+I'm so fascinated and I always want to
+
+476
+00:17:52,910 --> 00:17:55,100
+try to do more because like I don't know
+
+477
+00:17:55,100 --> 00:17:58,040
+it I don't understand it if you can do
+
+478
+00:17:58,040 --> 00:17:59,720
+this if you if you're good at doing
+
+479
+00:17:59,720 --> 00:18:01,670
+query optimization you can get a job
+
+480
+00:18:01,670 --> 00:18:04,040
+immediately move people pay you some
+
+481
+00:18:04,040 --> 00:18:07,160
+money to do this because like as I said
+
+482
+00:18:07,160 --> 00:18:11,270
+IBM meta stuff in the 1970s there was a
+
+483
+00:18:11,270 --> 00:18:12,470
+lot of query optimization worked under
+
+484
+00:18:12,470 --> 00:18:15,200
+late eighties early early nineties but
+
+485
+00:18:15,200 --> 00:18:16,610
+now it's all like crusty old people
+
+486
+00:18:16,610 --> 00:18:20,750
+right we're all like retiring or moving
+
+487
+00:18:20,750 --> 00:18:23,960
+on you know what 21 year 21 year old
+
+488
+00:18:23,960 --> 00:18:26,660
+knows about per diem ization other than
+
+489
+00:18:26,660 --> 00:18:32,450
+my students right so that's the one
+
+490
+00:18:32,450 --> 00:18:33,950
+email I always get I should share that I
+
+491
+00:18:33,950 --> 00:18:35,420
+should show screenshots of this the
+
+492
+00:18:35,420 --> 00:18:37,010
+email I always get from from people
+
+493
+00:18:37,010 --> 00:18:39,350
+friends at Davis companies I'm not
+
+494
+00:18:39,350 --> 00:18:47,920
+wearing a mic maybe I pick up most of it
+
+495
+00:18:47,920 --> 00:18:52,190
+right right so if you can if you can do
+
+496
+00:18:52,190 --> 00:18:54,050
+this you'll get paid a lot of money
+
+497
+00:18:54,050 --> 00:18:56,060
+because it's like super hard and it's
+
+498
+00:18:56,060 --> 00:18:57,230
+hard to hire people to do this kind of
+
+499
+00:18:57,230 --> 00:18:58,040
+stuff
+
+500
+00:18:58,040 --> 00:18:59,780
+one day based company told me that if
+
+501
+00:18:59,780 --> 00:19:01,040
+they can find people that have a PL
+
+502
+00:19:01,040 --> 00:19:03,340
+background they can they can do this
+
+503
+00:19:03,340 --> 00:19:05,270
+another Davis company told me that they
+
+504
+00:19:05,270 --> 00:19:06,440
+have people that have backgrounds in
+
+505
+00:19:06,440 --> 00:19:09,020
+high energy physics can can do query
+
+506
+00:19:09,020 --> 00:19:10,970
+optimization so this is joke and
+
+507
+00:19:10,970 --> 00:19:12,890
+databases that says like people always
+
+508
+00:19:12,890 --> 00:19:14,900
+say Oh query optimization is as hard as
+
+509
+00:19:14,900 --> 00:19:17,690
+rocket science and the joke is that no
+
+510
+00:19:17,690 --> 00:19:19,580
+if you fail at doing query optimization
+
+511
+00:19:19,580 --> 00:19:21,920
+your backup career plan could do rocket
+
+512
+00:19:21,920 --> 00:19:23,120
+science because there's so even harder
+
+513
+00:19:23,120 --> 00:19:25,130
+than that right and this is what's gonna
+
+514
+00:19:25,130 --> 00:19:27,200
+separate the high end guys versus the
+
+515
+00:19:27,200 --> 00:19:28,790
+the open-source guys or the the the
+
+516
+00:19:28,790 --> 00:19:32,390
+smaller systems Oracle sequel server and
+
+517
+00:19:32,390 --> 00:19:35,090
+IBM and teradata and all the the the
+
+518
+00:19:35,090 --> 00:19:36,380
+enterprise systems around for a long
+
+519
+00:19:36,380 --> 00:19:37,940
+time they have spent millions and
+
+520
+00:19:37,940 --> 00:19:39,230
+millions of dollars have hired hundreds
+
+521
+00:19:39,230 --> 00:19:40,850
+to hundreds of people to work on these
+
+522
+00:19:40,850 --> 00:19:43,700
+things and they're quite sophisticated
+
+523
+00:19:43,700 --> 00:19:47,510
+and so if you know if you can do this
+
+524
+00:19:47,510 --> 00:19:52,720
+kind of stuff you'll you in demand so
+
+525
+00:19:52,720 --> 00:19:54,590
+another way you talk we're not gonna
+
+526
+00:19:54,590 --> 00:19:55,100
+talk about this
+
+527
+00:19:55,100 --> 00:19:57,470
+class is that you may say all right well
+
+528
+00:19:57,470 --> 00:19:59,090
+this is like super hard K machine
+
+529
+00:19:59,090 --> 00:20:01,030
+learning solve this so can a AI solve it
+
+530
+00:20:01,030 --> 00:20:05,030
+no but yes right so people have tried
+
+531
+00:20:05,030 --> 00:20:07,940
+applying machine learning PR try apply
+
+532
+00:20:07,940 --> 00:20:09,740
+machine learning now more recently and
+
+533
+00:20:09,740 --> 00:20:11,720
+seeing some promising results but it's
+
+534
+00:20:11,720 --> 00:20:14,690
+still not not no anywhere near what the
+
+535
+00:20:14,690 --> 00:20:16,460
+you know the commercial systems can do
+
+536
+00:20:16,460 --> 00:20:18,530
+IBM actually tried something similar
+
+537
+00:20:18,530 --> 00:20:20,270
+back in the early 2000s this thing
+
+538
+00:20:20,270 --> 00:20:23,000
+called leo the learning optimizer turns
+
+539
+00:20:23,000 --> 00:20:25,309
+out it was it sucked and everybody you
+
+540
+00:20:25,309 --> 00:20:27,409
+know they shifted in production but
+
+541
+00:20:27,409 --> 00:20:29,090
+every db2 DBA I've ever talked to says
+
+542
+00:20:29,090 --> 00:20:30,080
+the first thing they do when they
+
+543
+00:20:30,080 --> 00:20:32,030
+install db2 is turn off that learning
+
+544
+00:20:32,030 --> 00:20:33,320
+crap cuz it never worked make things
+
+545
+00:20:33,320 --> 00:20:37,700
+worse so just machine learning is is a
+
+546
+00:20:37,700 --> 00:20:39,440
+potential way to improve things but it's
+
+547
+00:20:39,440 --> 00:20:41,270
+not going to be you know a magic bullet
+
+548
+00:20:41,270 --> 00:20:44,419
+to solve everything so as I said this is
+
+549
+00:20:44,419 --> 00:20:45,470
+the one thing about data systems that
+
+550
+00:20:45,470 --> 00:20:47,390
+I'm most excited about and know the
+
+551
+00:20:47,390 --> 00:20:50,690
+least about last semester we covered in
+
+552
+00:20:50,690 --> 00:20:52,340
+the advanced class we did three lectures
+
+553
+00:20:52,340 --> 00:20:53,990
+on this I think I'm expanding that to
+
+554
+00:20:53,990 --> 00:20:55,429
+make four or five necks semester just
+
+555
+00:20:55,429 --> 00:20:57,230
+because like we build our own query
+
+556
+00:20:57,230 --> 00:20:59,720
+optimizer at CMU it's super hard for me
+
+557
+00:20:59,720 --> 00:21:02,840
+to get students come work on it but they
+
+558
+00:21:02,840 --> 00:21:04,820
+all get jobs immediately but like this
+
+559
+00:21:04,820 --> 00:21:06,890
+is this is something we'll call a cover
+
+560
+00:21:06,890 --> 00:21:12,049
+more in the advanced class so yeah I
+
+561
+00:21:12,049 --> 00:21:13,280
+don't know bad-mouthing any other
+
+562
+00:21:13,280 --> 00:21:15,530
+systems some systems are they'll create
+
+563
+00:21:15,530 --> 00:21:19,070
+optimized areas total crap you know
+
+564
+00:21:19,070 --> 00:21:22,520
+cover that later at all fine okay all
+
+565
+00:21:22,520 --> 00:21:24,289
+right so we have a lot to cover today
+
+566
+00:21:24,289 --> 00:21:25,159
+and like I said I don't think we're to
+
+567
+00:21:25,159 --> 00:21:26,809
+get through all of it so what this might
+
+568
+00:21:26,809 --> 00:21:28,490
+spill over into next week I don't know
+
+569
+00:21:28,490 --> 00:21:29,990
+why I just didn't break it up to two
+
+570
+00:21:29,990 --> 00:21:32,659
+semesters or to two lectures before this
+
+571
+00:21:32,659 --> 00:21:35,120
+but it is what it is so first we'll talk
+
+572
+00:21:35,120 --> 00:21:36,380
+about relational algebra equivalencies
+
+573
+00:21:36,380 --> 00:21:38,450
+the core underlying concept that's an
+
+574
+00:21:38,450 --> 00:21:39,770
+allow us to do manipulation and
+
+575
+00:21:39,770 --> 00:21:41,900
+transformations of our query plans to
+
+576
+00:21:41,900 --> 00:21:43,880
+find better alternatives then we'll talk
+
+577
+00:21:43,880 --> 00:21:46,309
+about how we do at cost estimation how
+
+578
+00:21:46,309 --> 00:21:48,200
+do we take a query plan and and in our
+
+579
+00:21:48,200 --> 00:21:50,539
+cost model and estimator we have to do
+
+580
+00:21:50,539 --> 00:21:52,280
+to execute it and then won't spend more
+
+581
+00:21:52,280 --> 00:21:53,780
+time talk about enumeration this is like
+
+582
+00:21:53,780 --> 00:21:55,220
+the search strategy define different
+
+583
+00:21:55,220 --> 00:21:56,750
+options for the cost base search model
+
+584
+00:21:56,750 --> 00:21:58,220
+and then we'll talk about how to handle
+
+585
+00:21:58,220 --> 00:22:00,590
+sub queries we oh we probably want to
+
+586
+00:22:00,590 --> 00:22:03,309
+get through half of this but that's okay
+
+587
+00:22:03,309 --> 00:22:06,409
+all right so as I said the core
+
+588
+00:22:06,409 --> 00:22:08,000
+underlying concept that we're going to
+
+589
+00:22:08,000 --> 00:22:08,960
+take
+
+590
+00:22:08,960 --> 00:22:11,690
+take advantage of when we do query
+
+591
+00:22:11,690 --> 00:22:13,670
+optimization is the fact that we
+
+592
+00:22:13,670 --> 00:22:15,620
+understand the high-level properties of
+
+593
+00:22:15,620 --> 00:22:18,260
+a relational algebra and therefore can
+
+594
+00:22:18,260 --> 00:22:20,840
+permute or transform the relational
+
+595
+00:22:20,840 --> 00:22:23,240
+algebra or a plan that's equivalent to
+
+596
+00:22:23,240 --> 00:22:24,500
+some relation Auto statement in
+
+597
+00:22:24,500 --> 00:22:26,900
+different ways and still produce the
+
+598
+00:22:26,900 --> 00:22:30,230
+same result so we're gonna say we have
+
+599
+00:22:30,230 --> 00:22:33,110
+two relational algebra expressions or
+
+600
+00:22:33,110 --> 00:22:36,830
+two query plans so to speak that if they
+
+601
+00:22:36,830 --> 00:22:39,500
+produce the same set of tuples then we
+
+602
+00:22:39,500 --> 00:22:40,580
+know that they're equivalent and
+
+603
+00:22:40,580 --> 00:22:42,470
+therefore it's it's it's it's valid for
+
+604
+00:22:42,470 --> 00:22:44,060
+me to transform my original relation
+
+605
+00:22:44,060 --> 00:22:46,150
+algebra expression into a new expression
+
+606
+00:22:46,150 --> 00:22:48,530
+so notice I'm here again I'm saying a
+
+607
+00:22:48,530 --> 00:22:50,410
+set of tuples because remember
+
+608
+00:22:50,410 --> 00:22:52,220
+relational algebra or the relational
+
+609
+00:22:52,220 --> 00:22:55,310
+model is unordered so I don't care and
+
+610
+00:22:55,310 --> 00:22:56,960
+let's have an order by statement or
+
+611
+00:22:56,960 --> 00:23:00,260
+order by clause I don't care that one
+
+612
+00:23:00,260 --> 00:23:01,880
+query plan produces tuples ordered this
+
+613
+00:23:01,880 --> 00:23:03,290
+way and another query plan produces
+
+614
+00:23:03,290 --> 00:23:04,310
+troopas order in this way
+
+615
+00:23:04,310 --> 00:23:07,040
+they're still equivalent and that means
+
+616
+00:23:07,040 --> 00:23:08,720
+there's me more options available to us
+
+617
+00:23:08,720 --> 00:23:10,430
+to figure out what is the wouldn't you
+
+618
+00:23:10,430 --> 00:23:11,660
+know what's a better query plan for us
+
+619
+00:23:11,660 --> 00:23:14,870
+to use so we can apply these sensitivity
+
+620
+00:23:14,870 --> 00:23:16,250
+of the Trinity and the committed hippedy
+
+621
+00:23:16,250 --> 00:23:18,410
+properties of relational algebra right
+
+622
+00:23:18,410 --> 00:23:20,560
+standard you know standard logic to
+
+623
+00:23:20,560 --> 00:23:22,940
+change the expression in different ways
+
+624
+00:23:22,940 --> 00:23:25,640
+move operators around to produce a more
+
+625
+00:23:25,640 --> 00:23:28,250
+efficient plan so this high level
+
+626
+00:23:28,250 --> 00:23:30,320
+technique is called query rewriting so
+
+627
+00:23:30,320 --> 00:23:31,610
+this is that rewriting step that I was
+
+628
+00:23:31,610 --> 00:23:33,290
+talking about before right after the
+
+629
+00:23:33,290 --> 00:23:37,070
+binder we can do a tree rewriter where
+
+630
+00:23:37,070 --> 00:23:38,620
+we can look at the relational algebra
+
+631
+00:23:38,620 --> 00:23:40,760
+representation of a logical plan and
+
+632
+00:23:40,760 --> 00:23:42,350
+then move things around to produce
+
+633
+00:23:42,350 --> 00:23:45,020
+something that's more efficient so let's
+
+634
+00:23:45,020 --> 00:23:47,030
+look a really simple example here let's
+
+635
+00:23:47,030 --> 00:23:48,830
+say I have two tables student and
+
+636
+00:23:48,830 --> 00:23:51,680
+enrolled and I want to do a join where I
+
+637
+00:23:51,680 --> 00:23:53,120
+between the two tables where I want to
+
+638
+00:23:53,120 --> 00:23:54,470
+get all the students that are enrolled
+
+639
+00:23:54,470 --> 00:23:57,970
+in the class where they got a great egg
+
+640
+00:23:57,970 --> 00:24:00,740
+so if I almost take a literal
+
+641
+00:24:00,740 --> 00:24:03,650
+translation of the seco statement I
+
+642
+00:24:03,650 --> 00:24:05,720
+would roughly come up with a relational
+
+643
+00:24:05,720 --> 00:24:07,910
+algebra statement like this do a join on
+
+644
+00:24:07,910 --> 00:24:10,610
+student enrolled then apply the the
+
+645
+00:24:10,610 --> 00:24:12,290
+filter on grade and then have the
+
+646
+00:24:12,290 --> 00:24:13,550
+projection where I just produce the
+
+647
+00:24:13,550 --> 00:24:15,580
+course ID and the name of the student
+
+648
+00:24:15,580 --> 00:24:19,040
+right so what's a really stable
+
+649
+00:24:19,040 --> 00:24:22,200
+optimization we can do for this
+
+650
+00:24:22,200 --> 00:24:26,650
+yes brain he said push the filter to be
+
+651
+00:24:26,650 --> 00:24:29,200
+inside and rolled right so he's exactly
+
+652
+00:24:29,200 --> 00:24:30,070
+right so this technique is called
+
+653
+00:24:30,070 --> 00:24:32,470
+predicate push down so the reason why
+
+654
+00:24:32,470 --> 00:24:34,270
+it's called he said push into I'll say
+
+655
+00:24:34,270 --> 00:24:36,550
+the typical term is pushed down because
+
+656
+00:24:36,550 --> 00:24:38,770
+you're pushing it down into the Cory
+
+657
+00:24:38,770 --> 00:24:40,900
+plan so let's say this is this is the
+
+658
+00:24:40,900 --> 00:24:44,200
+query plan tree and so when you take
+
+659
+00:24:44,200 --> 00:24:47,740
+this filter and have it be before the
+
+660
+00:24:47,740 --> 00:24:51,010
+join right cuz what are we doing here
+
+661
+00:24:51,010 --> 00:24:54,040
+well we want to reduce the amount of
+
+662
+00:24:54,040 --> 00:24:55,900
+work we have to do in our joint joint
+
+663
+00:24:55,900 --> 00:24:58,900
+operator so rather than having the
+
+664
+00:24:58,900 --> 00:25:00,490
+filter be above the join operator where
+
+665
+00:25:00,490 --> 00:25:02,410
+I'm just taking all the students and all
+
+666
+00:25:02,410 --> 00:25:03,940
+the enrolled records and in the doing
+
+667
+00:25:03,940 --> 00:25:06,040
+the joint on them then apply the filter
+
+668
+00:25:06,040 --> 00:25:08,140
+it's better for me to do the filter
+
+669
+00:25:08,140 --> 00:25:10,810
+early think again always think of in
+
+670
+00:25:10,810 --> 00:25:13,030
+extremes say my enroll table has a
+
+671
+00:25:13,030 --> 00:25:16,120
+billion tuples but only one student ever
+
+672
+00:25:16,120 --> 00:25:19,420
+got an A in any class then I would do a
+
+673
+00:25:19,420 --> 00:25:21,820
+joint on a billion tuples all only the
+
+674
+00:25:21,820 --> 00:25:23,980
+end up producing a single result as much
+
+675
+00:25:23,980 --> 00:25:26,620
+as my output but if I do my filter early
+
+676
+00:25:26,620 --> 00:25:28,630
+here and now I'm doing a joint on one
+
+677
+00:25:28,630 --> 00:25:29,950
+tuple because then this is this is more
+
+678
+00:25:29,950 --> 00:25:31,540
+expensive than this in general
+
+679
+00:25:31,540 --> 00:25:34,840
+I said this is the general idea what
+
+680
+00:25:34,840 --> 00:25:35,920
+we're trying to do here in query
+
+681
+00:25:35,920 --> 00:25:37,980
+optimization we're trying to identify
+
+682
+00:25:37,980 --> 00:25:40,540
+cases where we can end up doing less
+
+683
+00:25:40,540 --> 00:25:42,280
+work because that's what minute and of
+
+684
+00:25:42,280 --> 00:25:44,020
+the day that's what we want to do if you
+
+685
+00:25:44,020 --> 00:25:46,420
+do less work it's an have lower cost to
+
+686
+00:25:46,420 --> 00:25:48,850
+faster runtimes and require potential
+
+687
+00:25:48,850 --> 00:25:56,980
+less hardware yes this question is what
+
+688
+00:25:56,980 --> 00:25:59,470
+a query optimizer also be able to change
+
+689
+00:25:59,470 --> 00:26:01,600
+this or change change left in or yes
+
+690
+00:26:01,600 --> 00:26:04,030
+we'll get there but not yet so his
+
+691
+00:26:04,030 --> 00:26:06,460
+question is it might mice this is like a
+
+692
+00:26:06,460 --> 00:26:08,260
+super simple example like like I can do
+
+693
+00:26:08,260 --> 00:26:10,570
+this the heuristic I have a query plan I
+
+694
+00:26:10,570 --> 00:26:12,550
+always want to push down the predicate I
+
+695
+00:26:12,550 --> 00:26:13,690
+don't need to look at what the data
+
+696
+00:26:13,690 --> 00:26:15,700
+looks like to do what you're asking
+
+697
+00:26:15,700 --> 00:26:17,020
+should this be the inner versus the
+
+698
+00:26:17,020 --> 00:26:19,360
+outer I need to know how much data is
+
+699
+00:26:19,360 --> 00:26:20,740
+getting fed into this because again the
+
+700
+00:26:20,740 --> 00:26:21,970
+the smaller table should always be the
+
+701
+00:26:21,970 --> 00:26:24,000
+outer table that requires a cost model
+
+702
+00:26:24,000 --> 00:26:26,800
+we can do this we can do this push down
+
+703
+00:26:26,800 --> 00:26:32,760
+without ever looking at the data yes
+
+704
+00:26:33,730 --> 00:26:36,080
+right so question is what does a look at
+
+705
+00:26:36,080 --> 00:26:39,350
+in relation out it's just moving the the
+
+706
+00:26:39,350 --> 00:26:51,520
+grade-b inside of this right sitting and
+
+707
+00:26:59,230 --> 00:27:02,390
+join this so I mean there's a
+
+708
+00:27:02,390 --> 00:27:04,130
+parentheses so this is saying do the
+
+709
+00:27:04,130 --> 00:27:14,150
+filter only rule table back standpoint
+
+710
+00:27:14,150 --> 00:27:24,350
+yes yeah yes correct yes yes he died
+
+711
+00:27:24,350 --> 00:27:32,180
+great yeah good question okay first
+
+712
+00:27:32,180 --> 00:27:34,400
+question is can predicate pushdown ever
+
+713
+00:27:34,400 --> 00:27:39,890
+be bad yes so in this really simple
+
+714
+00:27:39,890 --> 00:27:42,440
+example here like doing that something
+
+715
+00:27:42,440 --> 00:27:43,780
+you know something that's easy to do
+
+716
+00:27:43,780 --> 00:27:46,550
+there are some predicates that can be
+
+717
+00:27:46,550 --> 00:27:49,040
+expensive to compute so now this is
+
+718
+00:27:49,040 --> 00:27:50,300
+where the end the data systems cost
+
+719
+00:27:50,300 --> 00:27:54,410
+model can try to say well so example so
+
+720
+00:27:54,410 --> 00:27:56,810
+sometimes there you could have will
+
+721
+00:27:56,810 --> 00:27:59,600
+cover this next class on Monday next
+
+722
+00:27:59,600 --> 00:28:00,680
+week but there's things called
+
+723
+00:28:00,680 --> 00:28:02,360
+user-defined functions so it's out of
+
+724
+00:28:02,360 --> 00:28:05,240
+having like a function you know it's an
+
+725
+00:28:05,240 --> 00:28:07,490
+expression either touch a constant or
+
+726
+00:28:07,490 --> 00:28:09,860
+another another naturally and a tuple I
+
+727
+00:28:09,860 --> 00:28:12,140
+can have it invoke a function that can
+
+728
+00:28:12,140 --> 00:28:14,630
+then be any arbitrary code like I can
+
+729
+00:28:14,630 --> 00:28:16,190
+have a user-defined function written in
+
+730
+00:28:16,190 --> 00:28:19,190
+C or Python and that Python code makes a
+
+731
+00:28:19,190 --> 00:28:21,260
+call out to a remote server does some
+
+732
+00:28:21,260 --> 00:28:23,360
+kind of computation maybe a pays in
+
+733
+00:28:23,360 --> 00:28:24,920
+Bitcoin for the micro transaction and it
+
+734
+00:28:24,920 --> 00:28:29,810
+comes back so if I know that for this
+
+735
+00:28:29,810 --> 00:28:32,510
+predicate here to do the join this is
+
+736
+00:28:32,510 --> 00:28:33,890
+super selective meaning there's not very
+
+737
+00:28:33,890 --> 00:28:36,800
+many tuples coming out of this it may I
+
+738
+00:28:36,800 --> 00:28:39,020
+may be oak better off applying this up
+
+739
+00:28:39,020 --> 00:28:41,570
+here because that this is you know
+
+740
+00:28:41,570 --> 00:28:43,580
+monetarily is more expensive than doing
+
+741
+00:28:43,580 --> 00:28:45,799
+this so you don't always want
+
+742
+00:28:45,799 --> 00:28:48,200
+to push this down but in general you oh
+
+743
+00:28:48,200 --> 00:28:51,710
+yes you do my microtransaction is a
+
+744
+00:28:51,710 --> 00:28:53,239
+far-fetched example you could do it but
+
+745
+00:28:53,239 --> 00:28:56,210
+like it's stupid you wouldn't want to do
+
+746
+00:28:56,210 --> 00:28:58,549
+that right but there's other things too
+
+747
+00:28:58,549 --> 00:29:00,080
+like if there's computing the hash or
+
+748
+00:29:00,080 --> 00:29:01,580
+something like that or some kind of
+
+749
+00:29:01,580 --> 00:29:03,679
+crypto stuff you may want to put that up
+
+750
+00:29:03,679 --> 00:29:06,559
+above here here but again the data ISM
+
+751
+00:29:06,559 --> 00:29:15,379
+can reason about that okay so let's go
+
+752
+00:29:15,379 --> 00:29:16,340
+through now a bunch of these different
+
+753
+00:29:16,340 --> 00:29:17,919
+operators to talk about what kind of
+
+754
+00:29:17,919 --> 00:29:22,279
+optimizations we can apply for the other
+
+755
+00:29:22,279 --> 00:29:24,049
+relational operators and our query plans
+
+756
+00:29:24,049 --> 00:29:25,759
+so we've already covered this one right
+
+757
+00:29:25,759 --> 00:29:27,919
+the predicate pushdown right the idea is
+
+758
+00:29:27,919 --> 00:29:29,239
+that we want to do filtering as early as
+
+759
+00:29:29,239 --> 00:29:31,279
+possible ignoring the cost of applying
+
+760
+00:29:31,279 --> 00:29:33,559
+the filter but that's gonna allow us to
+
+761
+00:29:33,559 --> 00:29:35,869
+throw away data more quickly in a disk
+
+762
+00:29:35,869 --> 00:29:37,279
+based system applying a filter sooner
+
+763
+00:29:37,279 --> 00:29:38,570
+sooner rather than later it's usually
+
+764
+00:29:38,570 --> 00:29:41,210
+better because then I'm not copying as
+
+765
+00:29:41,210 --> 00:29:43,009
+much data up you know up above and
+
+766
+00:29:43,009 --> 00:29:46,759
+polluting my memory you can also reorder
+
+767
+00:29:46,759 --> 00:29:49,039
+the predicates themselves so that the
+
+768
+00:29:49,039 --> 00:29:51,679
+more selective ones are applied first so
+
+769
+00:29:51,679 --> 00:29:53,690
+let's say my last example where I had
+
+770
+00:29:53,690 --> 00:29:55,489
+great you know someone has a grade
+
+771
+00:29:55,489 --> 00:29:57,559
+equals a but let's say I had another
+
+772
+00:29:57,559 --> 00:29:59,690
+predicate where age equals you know
+
+773
+00:29:59,690 --> 00:30:02,330
+great age greater than 99 so find me all
+
+774
+00:30:02,330 --> 00:30:03,950
+students at Carnegie Mellon that have
+
+775
+00:30:03,950 --> 00:30:05,210
+got an A in the class and are under
+
+776
+00:30:05,210 --> 00:30:07,700
+older than 99 years I don't think there
+
+777
+00:30:07,700 --> 00:30:09,649
+is anybody right so it's better off for
+
+778
+00:30:09,649 --> 00:30:11,899
+me to apply the the age predicate first
+
+779
+00:30:11,899 --> 00:30:13,609
+because that's gonna filter out way more
+
+780
+00:30:13,609 --> 00:30:16,970
+things before looking at the at the gray
+
+781
+00:30:16,970 --> 00:30:19,999
+predicate now you may say all right ways
+
+782
+00:30:19,999 --> 00:30:21,529
+in that just you know a slight
+
+783
+00:30:21,529 --> 00:30:23,480
+computational overhead yeah for dismay
+
+784
+00:30:23,480 --> 00:30:25,129
+system maybe doesn't matter that so much
+
+785
+00:30:25,129 --> 00:30:27,470
+but in in other systems like a memory
+
+786
+00:30:27,470 --> 00:30:33,609
+system then that can matter a lot yes
+
+787
+00:30:41,139 --> 00:30:47,480
+yes so so his statement is like for this
+
+788
+00:30:47,480 --> 00:30:48,889
+one I'm claiming that we're not looking
+
+789
+00:30:48,889 --> 00:30:50,179
+at selectively the data so you couldn't
+
+790
+00:30:50,179 --> 00:30:52,309
+actually do this one yeah that's true
+
+791
+00:30:52,309 --> 00:30:54,109
+yes for this one yes you're right but
+
+792
+00:30:54,109 --> 00:30:55,519
+pushing down you always want to do that
+
+793
+00:30:55,519 --> 00:30:57,610
+yes
+
+794
+00:30:57,610 --> 00:30:58,840
+breaking a predicate we better than
+
+795
+00:30:58,840 --> 00:31:00,550
+emerging it ladies like merging movie
+
+796
+00:31:00,550 --> 00:31:10,180
+night human scan of the data once and so
+
+797
+00:31:10,180 --> 00:31:12,250
+his question is why would be breaking it
+
+798
+00:31:12,250 --> 00:31:16,870
+up be better than just having to be all
+
+799
+00:31:16,870 --> 00:31:19,450
+at once again if the computational cost
+
+800
+00:31:19,450 --> 00:31:21,460
+of one of the predicates is more
+
+801
+00:31:21,460 --> 00:31:22,410
+expensive than another
+
+802
+00:31:22,410 --> 00:31:24,790
+maybe you want to break off that one and
+
+803
+00:31:24,790 --> 00:31:28,080
+have them be up above in the query plan
+
+804
+00:31:28,590 --> 00:31:40,390
+yes if it's a column store then maybe I
+
+805
+00:31:40,390 --> 00:31:42,370
+want to do a pass through the column
+
+806
+00:31:42,370 --> 00:31:44,800
+first toast everything out and then for
+
+807
+00:31:44,800 --> 00:31:45,790
+the things that match them to the next
+
+808
+00:31:45,790 --> 00:31:49,050
+one yes but that is the right example
+
+809
+00:31:49,050 --> 00:31:51,550
+and then for this one here again you can
+
+810
+00:31:51,550 --> 00:31:53,560
+simplify complex this is a simplify
+
+811
+00:31:53,560 --> 00:31:55,630
+complex predicate to be more easy to
+
+812
+00:31:55,630 --> 00:31:58,000
+compute this is a trivial example X x
+
+813
+00:31:58,000 --> 00:32:00,310
+equals y and y equals 3 well again
+
+814
+00:32:00,310 --> 00:32:02,050
+through through the transitivity calls
+
+815
+00:32:02,050 --> 00:32:04,540
+we know that x is just this is just x
+
+816
+00:32:04,540 --> 00:32:06,870
+equals 3 so we can rewrite it like this
+
+817
+00:32:06,870 --> 00:32:10,210
+so now what happens is that in when we
+
+818
+00:32:10,210 --> 00:32:12,400
+use going through a billion tuples we
+
+819
+00:32:12,400 --> 00:32:14,290
+can just look at each edge with x and y
+
+820
+00:32:14,290 --> 00:32:17,230
+check to see whether equivalent to a to
+
+821
+00:32:17,230 --> 00:32:19,210
+a constant which is way cheaper than
+
+822
+00:32:19,210 --> 00:32:21,880
+having to go get the reference of the y
+
+823
+00:32:21,880 --> 00:32:23,290
+attribute in the tuple and then copy it
+
+824
+00:32:23,290 --> 00:32:25,210
+you know to some register or some
+
+825
+00:32:25,210 --> 00:32:27,360
+variable and then doing the comparison
+
+826
+00:32:27,360 --> 00:32:29,590
+right this is like a micro optimization
+
+827
+00:32:29,590 --> 00:32:30,940
+that would mostly only matters for the
+
+828
+00:32:30,940 --> 00:32:34,690
+in memory guys all right for projections
+
+829
+00:32:34,690 --> 00:32:36,430
+we can also push them down as early as
+
+830
+00:32:36,430 --> 00:32:40,150
+possible and the idea here is that we
+
+831
+00:32:40,150 --> 00:32:42,130
+want to minimize the amount of data we
+
+832
+00:32:42,130 --> 00:32:44,560
+have to copy going you know from one
+
+833
+00:32:44,560 --> 00:32:46,540
+opera to the next and this mostly
+
+834
+00:32:46,540 --> 00:32:48,040
+matters in the rows store systems
+
+835
+00:32:48,040 --> 00:32:50,260
+because if the rows really wide and I'm
+
+836
+00:32:50,260 --> 00:32:51,970
+moving that entire tuple up from one
+
+837
+00:32:51,970 --> 00:32:54,880
+operative the next then if I can strip
+
+838
+00:32:54,880 --> 00:32:57,220
+out as much data that I don't need it
+
+839
+00:32:57,220 --> 00:32:59,470
+early as possible then I'm copying less
+
+840
+00:32:59,470 --> 00:33:02,470
+data from one step to the next right so
+
+841
+00:33:02,470 --> 00:33:05,080
+in say in this example here say the the
+
+842
+00:33:05,080 --> 00:33:08,410
+student table has a thousand columns but
+
+843
+00:33:08,410 --> 00:33:10,750
+my query only needs two attributes it
+
+844
+00:33:10,750 --> 00:33:11,200
+needs
+
+845
+00:33:11,200 --> 00:33:14,110
+and he's the student name so I can then
+
+846
+00:33:14,110 --> 00:33:17,890
+introduce now a projection in here
+
+847
+00:33:17,890 --> 00:33:20,410
+before I feed into my joint operator so
+
+848
+00:33:20,410 --> 00:33:22,810
+I strip out the nine hundred ninety
+
+849
+00:33:22,810 --> 00:33:24,580
+eight columns that I don't need and only
+
+850
+00:33:24,580 --> 00:33:27,850
+pass in the two that I do need right
+
+851
+00:33:27,850 --> 00:33:29,320
+this is very actually very common in
+
+852
+00:33:29,320 --> 00:33:31,300
+distributed databases because moving
+
+853
+00:33:31,300 --> 00:33:32,710
+data over the network is expensive and
+
+854
+00:33:32,710 --> 00:33:35,200
+slow so if I'm getting this is on one
+
+855
+00:33:35,200 --> 00:33:37,120
+node this is on another node and I'm
+
+856
+00:33:37,120 --> 00:33:38,890
+doing the join on the same node that I
+
+857
+00:33:38,890 --> 00:33:40,930
+rolled on then I want to strip out as
+
+858
+00:33:40,930 --> 00:33:43,030
+much as I can before I send that over
+
+859
+00:33:43,030 --> 00:33:47,980
+the network all right so everything I've
+
+860
+00:33:47,980 --> 00:33:50,010
+showed you here so far these are doing
+
+861
+00:33:50,010 --> 00:33:53,440
+applying optimizations on one in a
+
+862
+00:33:53,440 --> 00:33:55,000
+relational algebra operators relational
+
+863
+00:33:55,000 --> 00:33:57,100
+algebra expressions we can apply these
+
+864
+00:33:57,100 --> 00:34:00,190
+same optimizations for the underlying
+
+865
+00:34:00,190 --> 00:34:02,860
+predicate expressions themselves in our
+
+866
+00:34:02,860 --> 00:34:05,530
+queries so I'm going to show you a bunch
+
+867
+00:34:05,530 --> 00:34:07,810
+of examples of how different data
+
+868
+00:34:07,810 --> 00:34:11,260
+systems can rewrite query plans to
+
+869
+00:34:11,260 --> 00:34:14,520
+simplify them or avoid doing stupid work
+
+870
+00:34:14,520 --> 00:34:16,840
+and this comes from this great blog
+
+871
+00:34:16,840 --> 00:34:19,150
+article over a few years ago where
+
+872
+00:34:19,150 --> 00:34:21,460
+somebody lifted out all here's one of
+
+873
+00:34:21,460 --> 00:34:23,199
+different operations you can do that
+
+874
+00:34:23,199 --> 00:34:26,290
+doesn't require a cost model and we'll
+
+875
+00:34:26,290 --> 00:34:28,659
+we'll give a demo of some of some of his
+
+876
+00:34:28,659 --> 00:34:30,820
+comparisons but it's really nice because
+
+877
+00:34:30,820 --> 00:34:32,860
+he provides a there's a github
+
+878
+00:34:32,860 --> 00:34:35,168
+repository that has the sample database
+
+879
+00:34:35,168 --> 00:34:37,960
+he uses for his analysis and it works on
+
+880
+00:34:37,960 --> 00:34:40,120
+sequel Server db2 Oracle like working on
+
+881
+00:34:40,120 --> 00:34:41,168
+a bunch of different data systems you
+
+882
+00:34:41,168 --> 00:34:43,300
+can take the same database same queries
+
+883
+00:34:43,300 --> 00:34:45,610
+and see how the different optimizers can
+
+884
+00:34:45,610 --> 00:34:48,449
+can can rewrite things and fix things
+
+885
+00:34:48,449 --> 00:34:52,030
+okay so the first kind of thing we can
+
+886
+00:34:52,030 --> 00:34:55,600
+rewrite is to remove stupid predicates
+
+887
+00:34:55,600 --> 00:34:57,850
+or unnecessary predicates so in this
+
+888
+00:34:57,850 --> 00:35:00,130
+case here select star from table a where
+
+889
+00:35:00,130 --> 00:35:02,920
+one equals zero what is this value a
+
+890
+00:35:02,920 --> 00:35:06,130
+true false so what does that mean that
+
+891
+00:35:06,130 --> 00:35:07,360
+means for every single tuple I'm going
+
+892
+00:35:07,360 --> 00:35:10,180
+to scan on table a I'm gonna check oh is
+
+893
+00:35:10,180 --> 00:35:12,070
+the predicate false equal to true it
+
+894
+00:35:12,070 --> 00:35:14,470
+never will be equal to true so therefore
+
+895
+00:35:14,470 --> 00:35:18,490
+no tuple would match right so the data
+
+896
+00:35:18,490 --> 00:35:19,780
+easily recognize that I have an
+
+897
+00:35:19,780 --> 00:35:21,220
+impossible predicate where no tuple
+
+898
+00:35:21,220 --> 00:35:22,930
+could ever possibly match this it can
+
+899
+00:35:22,930 --> 00:35:24,770
+just actually skip the scan entirely
+
+900
+00:35:24,770 --> 00:35:27,260
+and just produce you back a an empty
+
+901
+00:35:27,260 --> 00:35:30,350
+result right away so you may say all
+
+902
+00:35:30,350 --> 00:35:31,340
+right well this is stupid Annie why
+
+903
+00:35:31,340 --> 00:35:32,720
+would anybody write one equals zero
+
+904
+00:35:32,720 --> 00:35:33,740
+nobody would actually do this number a
+
+905
+00:35:33,740 --> 00:35:36,290
+won't correct theory people you know
+
+906
+00:35:36,290 --> 00:35:37,610
+people shouldn't be that stupid but a
+
+907
+00:35:37,610 --> 00:35:41,060
+lot of times in applications the the
+
+908
+00:35:41,060 --> 00:35:42,680
+queries not gonna be constructed from a
+
+909
+00:35:42,680 --> 00:35:44,119
+single line of code you're not gonna
+
+910
+00:35:44,119 --> 00:35:46,640
+have a string variable in your in your
+
+911
+00:35:46,640 --> 00:35:48,800
+application code that you then just you
+
+912
+00:35:48,800 --> 00:35:50,480
+know immediately send off to to the
+
+913
+00:35:50,480 --> 00:35:52,760
+database server a lot of times these
+
+914
+00:35:52,760 --> 00:35:54,980
+sequel queries are constructed from like
+
+915
+00:35:54,980 --> 00:35:57,350
+dashboards and tools where people click
+
+916
+00:35:57,350 --> 00:35:58,640
+from different things adding different
+
+917
+00:35:58,640 --> 00:36:00,980
+options or composing the query so now a
+
+918
+00:36:00,980 --> 00:36:02,300
+buncha different libraries so that a
+
+919
+00:36:02,300 --> 00:36:03,800
+bunch of different functions are all to
+
+920
+00:36:03,800 --> 00:36:05,660
+be constructing a a sequel query so
+
+921
+00:36:05,660 --> 00:36:07,070
+there's not one single place you can
+
+922
+00:36:07,070 --> 00:36:09,320
+look in the code and see you know where
+
+923
+00:36:09,320 --> 00:36:11,900
+one equals zero it may come from some
+
+924
+00:36:11,900 --> 00:36:13,160
+other function from some other part of
+
+925
+00:36:13,160 --> 00:36:15,560
+your organization from code that you
+
+926
+00:36:15,560 --> 00:36:18,080
+didn't write so if the data can
+
+927
+00:36:18,080 --> 00:36:19,550
+recognize this that this is stupid and
+
+928
+00:36:19,550 --> 00:36:21,410
+not do this this is a huge win for us
+
+929
+00:36:21,410 --> 00:36:22,730
+because now we don't even have to look
+
+930
+00:36:22,730 --> 00:36:26,660
+at the data likewise you can do the
+
+931
+00:36:26,660 --> 00:36:27,680
+opposite you can have one where
+
+932
+00:36:27,680 --> 00:36:30,160
+everything's gonna match one equals one
+
+933
+00:36:30,160 --> 00:36:33,650
+right so in this case here every tuple
+
+934
+00:36:33,650 --> 00:36:35,810
+is gonna match but I don't want to
+
+935
+00:36:35,810 --> 00:36:37,220
+actually I don't want actually apply
+
+936
+00:36:37,220 --> 00:36:38,570
+this predicate and see whether they're
+
+937
+00:36:38,570 --> 00:36:41,090
+gonna match again if I have a billion
+
+938
+00:36:41,090 --> 00:36:43,160
+tuples I don't want to have to go
+
+939
+00:36:43,160 --> 00:36:44,720
+through every single tube oh and say hey
+
+940
+00:36:44,720 --> 00:36:46,310
+for this tuple does one equal one true
+
+941
+00:36:46,310 --> 00:36:47,810
+yes I'll put it next to but what does 1
+
+942
+00:36:47,810 --> 00:36:49,150
+equal 1 yeah it's true I'll put it right
+
+943
+00:36:49,150 --> 00:36:51,500
+instead I can say well I don't need to
+
+944
+00:36:51,500 --> 00:36:53,900
+do this 1 equals 1 at all and now I just
+
+945
+00:36:53,900 --> 00:36:55,940
+do a scruncho scan straight dump of the
+
+946
+00:36:55,940 --> 00:36:58,640
+table as the output and not worry about
+
+947
+00:36:58,640 --> 00:37:00,490
+applying any predicates
+
+948
+00:37:00,490 --> 00:37:02,600
+alright then that's cutting down on the
+
+949
+00:37:02,600 --> 00:37:05,660
+computational calls I think I says you
+
+950
+00:37:05,660 --> 00:37:06,830
+just rewrite it like select star from
+
+951
+00:37:06,830 --> 00:37:10,369
+egg alright so these are pretty simple
+
+952
+00:37:10,369 --> 00:37:11,780
+but we can do this for other things more
+
+953
+00:37:11,780 --> 00:37:14,420
+complex queries we do the same kind of
+
+954
+00:37:14,420 --> 00:37:17,510
+thing for joins so here now on my table
+
+955
+00:37:17,510 --> 00:37:20,119
+a this scheme is up there the primary
+
+956
+00:37:20,119 --> 00:37:22,730
+key is the ID column so here I'm doing a
+
+957
+00:37:22,730 --> 00:37:25,609
+self join where a as a 1 joined on a as
+
+958
+00:37:25,609 --> 00:37:30,410
+a 2 on a 1 to ID equals a to die ID so
+
+959
+00:37:30,410 --> 00:37:32,330
+what is this query actually saying it's
+
+960
+00:37:32,330 --> 00:37:35,840
+saying for every single tip on a check
+
+961
+00:37:35,840 --> 00:37:37,640
+to see whether it exists in a
+
+962
+00:37:37,640 --> 00:37:39,470
+and of course it's always gonna be true
+
+963
+00:37:39,470 --> 00:37:41,119
+because we know ID is the primary key so
+
+964
+00:37:41,119 --> 00:37:43,130
+do I exist in this other table the
+
+965
+00:37:43,130 --> 00:37:46,190
+answer is always gonna be yes so it can
+
+966
+00:37:46,190 --> 00:37:48,470
+identify that this predicate is entirely
+
+967
+00:37:48,470 --> 00:37:49,819
+wasteful with this join is entirely
+
+968
+00:37:49,819 --> 00:37:51,980
+wasteful and is rewrite it as select
+
+969
+00:37:51,980 --> 00:37:54,920
+star from egg and again relying on
+
+970
+00:37:54,920 --> 00:37:56,569
+relational algebra equivalencies we
+
+971
+00:37:56,569 --> 00:37:58,400
+would know that this is equivalent to
+
+972
+00:37:58,400 --> 00:38:05,509
+this yes because that his question is
+
+973
+00:38:05,509 --> 00:38:06,950
+wives conditioned on ID being the
+
+974
+00:38:06,950 --> 00:38:09,289
+primary key because you know it's unique
+
+975
+00:38:09,289 --> 00:38:11,329
+and you know it's not null so therefore
+
+976
+00:38:11,329 --> 00:38:16,249
+you can rewrite it if it is if it could
+
+977
+00:38:16,249 --> 00:38:19,519
+be null then null doesn't equal null so
+
+978
+00:38:19,519 --> 00:38:21,400
+therefore you wouldn't have a match
+
+979
+00:38:21,400 --> 00:38:24,859
+right no it's always no like no we can
+
+980
+00:38:24,859 --> 00:38:27,829
+over the turban I'll try this one
+
+981
+00:38:27,829 --> 00:38:30,619
+doesn't equal null actually the the
+
+982
+00:38:30,619 --> 00:38:33,190
+result of this one equal null is null
+
+983
+00:38:33,190 --> 00:38:34,369
+right
+
+984
+00:38:34,369 --> 00:38:37,549
+you unknown so your question is is no
+
+985
+00:38:37,549 --> 00:38:42,440
+equal to null unknown is no no I think
+
+986
+00:38:42,440 --> 00:38:45,920
+that one actually evaluate to true but
+
+987
+00:38:45,920 --> 00:38:47,480
+in this case here if it's no then it
+
+988
+00:38:47,480 --> 00:38:52,039
+won't work all right so what are more
+
+989
+00:38:52,039 --> 00:38:54,739
+complicated things we do so we can also
+
+990
+00:38:54,739 --> 00:38:56,599
+now ignore projections that are
+
+991
+00:38:56,599 --> 00:38:59,599
+unnecessary so in this one here this is
+
+992
+00:38:59,599 --> 00:39:01,279
+sort of a rewrite of the of the last
+
+993
+00:39:01,279 --> 00:39:03,259
+query the self join so this is a select
+
+994
+00:39:03,259 --> 00:39:05,900
+star from a and then in my where clause
+
+995
+00:39:05,900 --> 00:39:09,950
+I haven't exists where I just say this
+
+996
+00:39:09,950 --> 00:39:12,440
+basically says return true if there's
+
+997
+00:39:12,440 --> 00:39:14,900
+anything that matches any any result
+
+998
+00:39:14,900 --> 00:39:17,749
+inside the the inner query here so this
+
+999
+00:39:17,749 --> 00:39:21,190
+is saying if for every tuple in a
+
+1000
+00:39:21,190 --> 00:39:24,019
+produce the output if there exists a
+
+1001
+00:39:24,019 --> 00:39:26,539
+tuple where the a dot ID equals the a2
+
+1002
+00:39:26,539 --> 00:39:28,609
+to ID and against the primary key so
+
+1003
+00:39:28,609 --> 00:39:30,859
+it's always gonna match so inside of
+
+1004
+00:39:30,859 --> 00:39:32,599
+this we're materializing or have a
+
+1005
+00:39:32,599 --> 00:39:36,200
+projection on the vowel column but this
+
+1006
+00:39:36,200 --> 00:39:37,579
+is completely unnecessary right this is
+
+1007
+00:39:37,579 --> 00:39:39,140
+us having to do not only the waist will
+
+1008
+00:39:39,140 --> 00:39:41,749
+join but also copy this projection which
+
+1009
+00:39:41,749 --> 00:39:44,569
+is copy this attribute out it's part of
+
+1010
+00:39:44,569 --> 00:39:46,609
+projection and that's unnecessary as
+
+1011
+00:39:46,609 --> 00:39:49,940
+well right so in this case here we can
+
+1012
+00:39:49,940 --> 00:39:51,470
+just rewrite this
+
+1013
+00:39:51,470 --> 00:39:54,530
+entirely this part here it is entirely
+
+1014
+00:39:54,530 --> 00:39:59,089
+like a select are from a the last one is
+
+1015
+00:39:59,089 --> 00:40:01,790
+to emerging predicates so this one here
+
+1016
+00:40:01,790 --> 00:40:03,890
+we have select star from a where val
+
+1017
+00:40:03,890 --> 00:40:06,560
+between one and a hundred and bow
+
+1018
+00:40:06,560 --> 00:40:11,300
+between or val is between 50 and 150 so
+
+1019
+00:40:11,300 --> 00:40:12,470
+in this case here if you just think
+
+1020
+00:40:12,470 --> 00:40:14,480
+think of the number line this is
+
+1021
+00:40:14,480 --> 00:40:16,190
+completely redundant because if it's
+
+1022
+00:40:16,190 --> 00:40:19,460
+between 1 and 100 then it can also can
+
+1023
+00:40:19,460 --> 00:40:21,349
+be between 50 and 150 if it's between
+
+1024
+00:40:21,349 --> 00:40:24,410
+50-100 so for this one here I could
+
+1025
+00:40:24,410 --> 00:40:26,660
+rewrite this to be a single between
+
+1026
+00:40:26,660 --> 00:40:35,980
+cause we're 1 between 1 and 150 okay
+
+1027
+00:40:35,980 --> 00:40:38,510
+select so this is how you know this is
+
+1028
+00:40:38,510 --> 00:40:40,369
+sort of obvious to see how how you want
+
+1029
+00:40:40,369 --> 00:40:42,380
+to do this let's see whether who
+
+1030
+00:40:42,380 --> 00:40:45,890
+actually does it everybody loves demos
+
+1031
+00:40:45,890 --> 00:40:50,660
+right so as I said that blog article
+
+1032
+00:40:50,660 --> 00:40:54,650
+that I mentioned has has source code you
+
+1033
+00:40:54,650 --> 00:40:57,890
+can download and includes the the schema
+
+1034
+00:40:57,890 --> 00:41:00,050
+and insert statements for for a bunch of
+
+1035
+00:41:00,050 --> 00:41:02,240
+different 8 assistance so unfortunately
+
+1036
+00:41:02,240 --> 00:41:03,500
+I broke my sequel server installation
+
+1037
+00:41:03,500 --> 00:41:04,880
+yesterday so I can't get to work but
+
+1038
+00:41:04,880 --> 00:41:08,050
+I'll do a demo on Postgres my sequel
+
+1039
+00:41:08,050 --> 00:41:13,280
+oracle maria DB and in sequel light so
+
+1040
+00:41:13,280 --> 00:41:15,560
+again the the schema looks like this i'm
+
+1041
+00:41:15,560 --> 00:41:18,609
+not sorry
+
+1042
+00:41:24,430 --> 00:41:27,410
+right so the the sample data is we're
+
+1043
+00:41:27,410 --> 00:41:29,510
+gonna use its it's like a it's like a
+
+1044
+00:41:29,510 --> 00:41:32,030
+online video store but it's sort of like
+
+1045
+00:41:32,030 --> 00:41:33,319
+the IMDB stuff you looked at there's
+
+1046
+00:41:33,319 --> 00:41:35,119
+actors and then people are renting
+
+1047
+00:41:35,119 --> 00:41:37,490
+movies right but we're gonna focus on
+
+1048
+00:41:37,490 --> 00:41:39,589
+the actor table so again the nice thing
+
+1049
+00:41:39,589 --> 00:41:43,400
+about this is that the they provide for
+
+1050
+00:41:43,400 --> 00:41:45,380
+the same you know the same database for
+
+1051
+00:41:45,380 --> 00:41:48,319
+all these different for all all these
+
+1052
+00:41:48,319 --> 00:41:50,420
+different database servers right so
+
+1053
+00:41:50,420 --> 00:41:51,770
+again there's two hundred tuples in this
+
+1054
+00:41:51,770 --> 00:41:54,140
+and then we'll just go into to my sequel
+
+1055
+00:41:54,140 --> 00:41:55,609
+real quickly select star or sub count
+
+1056
+00:41:55,609 --> 00:42:00,440
+star from actor alright there's 200 in
+
+1057
+00:42:00,440 --> 00:42:02,750
+every single one okay
+
+1058
+00:42:02,750 --> 00:42:04,400
+so the first thing we want to try out is
+
+1059
+00:42:04,400 --> 00:42:06,349
+that impossible query where one equals
+
+1060
+00:42:06,349 --> 00:42:11,090
+zero so again what I'm doing here is for
+
+1061
+00:42:11,090 --> 00:42:13,250
+Postgres right this is Postgres you have
+
+1062
+00:42:13,250 --> 00:42:15,230
+explained keyword will spit up the query
+
+1063
+00:42:15,230 --> 00:42:17,000
+plan and then the impedance you put the
+
+1064
+00:42:17,000 --> 00:42:19,250
+aniline analyze modifier after explained
+
+1065
+00:42:19,250 --> 00:42:21,530
+that will actually run the query but
+
+1066
+00:42:21,530 --> 00:42:23,180
+then still show you either the query
+
+1067
+00:42:23,180 --> 00:42:26,450
+plan and what it actually did right so
+
+1068
+00:42:26,450 --> 00:42:29,119
+in this one here it says up above one
+
+1069
+00:42:29,119 --> 00:42:31,700
+time filter is false so it recognized
+
+1070
+00:42:31,700 --> 00:42:35,030
+that one equals zero is always going to
+
+1071
+00:42:35,030 --> 00:42:37,040
+evaluate to false so it applied the
+
+1072
+00:42:37,040 --> 00:42:38,300
+filter once installed that for the
+
+1073
+00:42:38,300 --> 00:42:40,280
+entire table no tuple is ever gonna
+
+1074
+00:42:40,280 --> 00:42:43,220
+match so it didn't actually didn't
+
+1075
+00:42:43,220 --> 00:42:45,800
+actually run and run read the data it
+
+1076
+00:42:45,800 --> 00:42:49,220
+said oh it's false it's nothing gives
+
+1077
+00:42:49,220 --> 00:42:52,790
+you back nothing right away so we can do
+
+1078
+00:42:52,790 --> 00:42:55,730
+this in my sequel so then my sequel
+
+1079
+00:42:55,730 --> 00:42:57,470
+explained is not as good like if you
+
+1080
+00:42:57,470 --> 00:43:00,170
+just do this then you get something like
+
+1081
+00:43:00,170 --> 00:43:02,480
+like this but if you do the for whatever
+
+1082
+00:43:02,480 --> 00:43:06,020
+reason the - or that /g then you can
+
+1083
+00:43:06,020 --> 00:43:08,570
+actually get a tree it is one of those
+
+1084
+00:43:08,570 --> 00:43:11,030
+but here you see the in the extra
+
+1085
+00:43:11,030 --> 00:43:12,530
+parameter they say have been possible
+
+1086
+00:43:12,530 --> 00:43:14,180
+where so I recognize that nothing's ever
+
+1087
+00:43:14,180 --> 00:43:16,160
+gonna match don't even bother applying
+
+1088
+00:43:16,160 --> 00:43:19,160
+that where clause it also has this
+
+1089
+00:43:19,160 --> 00:43:20,630
+little warning thing here which is
+
+1090
+00:43:20,630 --> 00:43:23,599
+annoying this is my sequel 5.7 I I don't
+
+1091
+00:43:23,599 --> 00:43:27,800
+know what it's been fixed in in my
+
+1092
+00:43:27,800 --> 00:43:32,359
+sequel 8 but you have to run show
+
+1093
+00:43:32,359 --> 00:43:34,490
+warnings and then it spits out like what
+
+1094
+00:43:34,490 --> 00:43:36,830
+actually happens so you see here in the
+
+1095
+00:43:36,830 --> 00:43:39,020
+where Clause they rewrote my 1 equals 0
+
+1096
+00:43:39,020 --> 00:43:40,849
+that is wrote that as 0 so everything
+
+1097
+00:43:40,849 --> 00:43:45,320
+evaluates to false right so now we'll
+
+1098
+00:43:45,320 --> 00:43:50,680
+try in and let's do Oracle
+
+1099
+00:43:59,130 --> 00:44:02,710
+so with Oracle the way it works is I say
+
+1100
+00:44:02,710 --> 00:44:04,750
+explain plan for and the syntax is
+
+1101
+00:44:04,750 --> 00:44:06,310
+always slightly different and it says
+
+1102
+00:44:06,310 --> 00:44:11,590
+explain which now I got to go now to
+
+1103
+00:44:11,590 --> 00:44:14,950
+another table it has the the plan that
+
+1104
+00:44:14,950 --> 00:44:18,640
+it got explained so the oil explained is
+
+1105
+00:44:18,640 --> 00:44:22,990
+actually is exactly betterment then sexy
+
+1106
+00:44:22,990 --> 00:44:24,340
+better than post quest post best one is
+
+1107
+00:44:24,340 --> 00:44:25,270
+very good this one is actually pretty
+
+1108
+00:44:25,270 --> 00:44:27,100
+good too because it shows you like you
+
+1109
+00:44:27,100 --> 00:44:29,230
+know computational time then I'm at Rose
+
+1110
+00:44:29,230 --> 00:44:30,850
+and data there accessing is actually
+
+1111
+00:44:30,850 --> 00:44:33,400
+really nice so what are they saying here
+
+1112
+00:44:33,400 --> 00:44:35,080
+all right so this says that it knows I'm
+
+1113
+00:44:35,080 --> 00:44:36,070
+doing select statement and it has a
+
+1114
+00:44:36,070 --> 00:44:38,170
+filter and it says how I'm gonna access
+
+1115
+00:44:38,170 --> 00:44:41,500
+the table right so the thing to point
+
+1116
+00:44:41,500 --> 00:44:43,330
+out though down here they have
+
+1117
+00:44:43,330 --> 00:44:45,610
+information with the predicate so they
+
+1118
+00:44:45,610 --> 00:44:50,310
+say we're filter null is not null so
+
+1119
+00:44:50,310 --> 00:44:52,810
+Oracle doesn't doesn't support boolean
+
+1120
+00:44:52,810 --> 00:44:55,000
+z' right so it has no way to say true or
+
+1121
+00:44:55,000 --> 00:44:58,720
+false so it rewrote my does 1 equals 0
+
+1122
+00:44:58,720 --> 00:45:01,720
+to be null is not null which is always
+
+1123
+00:45:01,720 --> 00:45:06,340
+false cuz null is null so this is their
+
+1124
+00:45:06,340 --> 00:45:07,720
+this is the way they're representing
+
+1125
+00:45:07,720 --> 00:45:09,610
+false so they rewrote now the query plan
+
+1126
+00:45:09,610 --> 00:45:10,870
+recognize that this thing that's false
+
+1127
+00:45:10,870 --> 00:45:12,460
+and therefore you don't actually have to
+
+1128
+00:45:12,460 --> 00:45:13,960
+run it
+
+1129
+00:45:13,960 --> 00:45:15,310
+let's just go back to post us real
+
+1130
+00:45:15,310 --> 00:45:17,830
+quickly and - well he was asking before
+
+1131
+00:45:17,830 --> 00:45:20,200
+right so I can say select right I can
+
+1132
+00:45:20,200 --> 00:45:21,160
+treat the data since like a calculator
+
+1133
+00:45:21,160 --> 00:45:24,070
+but I can say select norm right that's
+
+1134
+00:45:24,070 --> 00:45:27,000
+nothing but there's no equal null
+
+1135
+00:45:27,000 --> 00:45:31,570
+nothing it's no is no equal false no
+
+1136
+00:45:31,570 --> 00:45:34,060
+nothing right this is falsely equal to
+
+1137
+00:45:34,060 --> 00:45:38,380
+false true is true you know just so
+
+1138
+00:45:38,380 --> 00:45:40,000
+anything that any any time you say
+
+1139
+00:45:40,000 --> 00:45:41,050
+there's no equals something
+
+1140
+00:45:41,050 --> 00:45:43,300
+the answer is null the empty space is
+
+1141
+00:45:43,300 --> 00:45:45,520
+null the way to get around that is null
+
+1142
+00:45:45,520 --> 00:45:50,080
+is null then it's true so what Oracle is
+
+1143
+00:45:50,080 --> 00:45:56,880
+doing is no not no false ok
+
+1144
+00:45:57,550 --> 00:45:59,770
+all right so then last one would you
+
+1145
+00:45:59,770 --> 00:46:08,360
+seek a light again the syntax is always
+
+1146
+00:46:08,360 --> 00:46:10,610
+different they have explained query plan
+
+1147
+00:46:10,610 --> 00:46:13,730
+without before and then it produces this
+
+1148
+00:46:13,730 --> 00:46:15,020
+so this is not actually that helpful
+
+1149
+00:46:15,020 --> 00:46:17,060
+right this is just telling us that we're
+
+1150
+00:46:17,060 --> 00:46:19,130
+doing some kind of scan on the actor
+
+1151
+00:46:19,130 --> 00:46:22,130
+table so if we removed the query plan
+
+1152
+00:46:22,130 --> 00:46:24,440
+part then you get something that looks a
+
+1153
+00:46:24,440 --> 00:46:25,520
+lot different than when everybody else
+
+1154
+00:46:25,520 --> 00:46:27,830
+should now you get something that looks
+
+1155
+00:46:27,830 --> 00:46:28,940
+like assembly or some kind of machine
+
+1156
+00:46:28,940 --> 00:46:32,510
+code so without going to the details of
+
+1157
+00:46:32,510 --> 00:46:35,120
+wasting code light works is that they
+
+1158
+00:46:35,120 --> 00:46:38,150
+actually convert the logical plan or the
+
+1159
+00:46:38,150 --> 00:46:39,470
+physical plan that the optimizer spits
+
+1160
+00:46:39,470 --> 00:46:43,190
+out into a bunch of these op codes think
+
+1161
+00:46:43,190 --> 00:46:44,840
+of this is like the JVM bytecode and
+
+1162
+00:46:44,840 --> 00:46:47,420
+then they have an interpreter that can
+
+1163
+00:46:47,420 --> 00:46:48,740
+they'll get and now execute these
+
+1164
+00:46:48,740 --> 00:46:50,030
+bytecode so this is like this is
+
+1165
+00:46:50,030 --> 00:46:52,460
+literally the program to execute this
+
+1166
+00:46:52,460 --> 00:46:54,500
+particular query and so from what I can
+
+1167
+00:46:54,500 --> 00:46:57,800
+tell right they say where r1 is not you
+
+1168
+00:46:57,800 --> 00:46:59,330
+are - I'm not exactly what that means
+
+1169
+00:46:59,330 --> 00:47:03,830
+then you go to ten but in this case here
+
+1170
+00:47:03,830 --> 00:47:05,030
+it looks like they're actually doing
+
+1171
+00:47:05,030 --> 00:47:07,250
+doing the scan here so the best I can
+
+1172
+00:47:07,250 --> 00:47:08,780
+tell I'm not sure whether they're
+
+1173
+00:47:08,780 --> 00:47:11,510
+actually stripping this out actually no
+
+1174
+00:47:11,510 --> 00:47:14,090
+not equals this yeah
+
+1175
+00:47:14,090 --> 00:47:15,500
+it may be truncating it they're
+
+1176
+00:47:15,500 --> 00:47:16,790
+recognizing that I don't have to do a
+
+1177
+00:47:16,790 --> 00:47:20,030
+scan all right so everybody can handle
+
+1178
+00:47:20,030 --> 00:47:24,170
+this this is good so let's try now the
+
+1179
+00:47:24,170 --> 00:47:25,550
+useless predicate let's try the one
+
+1180
+00:47:25,550 --> 00:47:29,830
+equals one let's go back to Postgres
+
+1181
+00:47:29,860 --> 00:47:32,840
+well now it looks like it's telling us
+
+1182
+00:47:32,840 --> 00:47:35,720
+it's actually doing it well I said he
+
+1183
+00:47:35,720 --> 00:47:36,770
+should do it cuz it's one equals one
+
+1184
+00:47:36,770 --> 00:47:38,500
+right so this is just saying that I
+
+1185
+00:47:38,500 --> 00:47:40,490
+recognize that I can remove the filter
+
+1186
+00:47:40,490 --> 00:47:43,810
+and I just execute the query right away
+
+1187
+00:47:43,810 --> 00:47:50,560
+try the same thing in in my sequel
+
+1188
+00:47:52,550 --> 00:48:03,060
+no Annalise sorry right and this one it
+
+1189
+00:48:03,060 --> 00:48:04,920
+figured out that it can just throw away
+
+1190
+00:48:04,920 --> 00:48:06,390
+the filter entirely and just scan
+
+1191
+00:48:06,390 --> 00:48:08,190
+everything so that's good
+
+1192
+00:48:08,190 --> 00:48:19,680
+let's try Oracle explained and then go
+
+1193
+00:48:19,680 --> 00:48:22,830
+back to this right the filter is
+
+1194
+00:48:22,830 --> 00:48:24,420
+completely gone it just now it's just
+
+1195
+00:48:24,420 --> 00:48:27,840
+Swiss straights mental scan and then for
+
+1196
+00:48:27,840 --> 00:48:34,740
+sequel Lite this is not helpful so we'll
+
+1197
+00:48:34,740 --> 00:48:38,250
+remove that query plan part and then now
+
+1198
+00:48:38,250 --> 00:48:40,710
+you see that it's inside of this the for
+
+1199
+00:48:40,710 --> 00:48:43,050
+loop here where they're scanning over
+
+1200
+00:48:43,050 --> 00:48:45,740
+the table they've removed the predicate
+
+1201
+00:48:45,740 --> 00:48:47,600
+all right
+
+1202
+00:48:47,600 --> 00:48:49,530
+so let's look at an example where you
+
+1203
+00:48:49,530 --> 00:48:52,280
+have more compliment
+
+1204
+00:48:52,980 --> 00:48:54,540
+could look at the catalog and try to
+
+1205
+00:48:54,540 --> 00:48:56,300
+figure out what the right thing to do is
+
+1206
+00:48:56,300 --> 00:49:01,380
+so the schema for the the actor table is
+
+1207
+00:49:01,380 --> 00:49:03,990
+pretty straightforward right we just
+
+1208
+00:49:03,990 --> 00:49:06,030
+have an actor first name last name and
+
+1209
+00:49:06,030 --> 00:49:10,950
+last update okay so what we're gonna try
+
+1210
+00:49:10,950 --> 00:49:12,030
+to do here is we're going to try to have
+
+1211
+00:49:12,030 --> 00:49:16,200
+a query where we say the where the actor
+
+1212
+00:49:16,200 --> 00:49:21,090
+ID is null so we want to run this query
+
+1213
+00:49:21,090 --> 00:49:23,880
+and so what should happen here is that
+
+1214
+00:49:23,880 --> 00:49:25,680
+we would look in the catalog and say
+
+1215
+00:49:25,680 --> 00:49:28,040
+well the actor ID is the primary key and
+
+1216
+00:49:28,040 --> 00:49:32,940
+it can't be null so therefore I know
+
+1217
+00:49:32,940 --> 00:49:36,450
+that no tuple will match my predicate
+
+1218
+00:49:36,450 --> 00:49:37,860
+and therefore I can remove that that
+
+1219
+00:49:37,860 --> 00:49:39,090
+where clause or to just end of return
+
+1220
+00:49:39,090 --> 00:49:42,300
+back immediately the you know an empty
+
+1221
+00:49:42,300 --> 00:49:44,790
+set so this is an example where the
+
+1222
+00:49:44,790 --> 00:49:46,260
+rewriting phase those rules could look
+
+1223
+00:49:46,260 --> 00:49:48,060
+in the catalog and understand something
+
+1224
+00:49:48,060 --> 00:49:49,530
+about the table or the attributes that
+
+1225
+00:49:49,530 --> 00:49:51,630
+are being being you know it may be
+
+1226
+00:49:51,630 --> 00:49:53,670
+accessing the predicate and start
+
+1227
+00:49:53,670 --> 00:49:57,150
+throwing out crap that's useless so just
+
+1228
+00:49:57,150 --> 00:49:59,970
+to prove that that our table cannot
+
+1229
+00:49:59,970 --> 00:50:02,200
+support
+
+1230
+00:50:02,200 --> 00:50:04,510
+no attributes for the idea for the in
+
+1231
+00:50:04,510 --> 00:50:06,910
+the actor IDE if I try to insert a tuple
+
+1232
+00:50:06,910 --> 00:50:10,059
+with a null for the first column then it
+
+1233
+00:50:10,059 --> 00:50:10,510
+you know
+
+1234
+00:50:10,510 --> 00:50:11,680
+Postgres picked it out and says there's
+
+1235
+00:50:11,680 --> 00:50:14,140
+an error if I try to do the same thing
+
+1236
+00:50:14,140 --> 00:50:20,140
+in in Oracle Oracle flips out says that
+
+1237
+00:50:20,140 --> 00:50:21,970
+the actor IDE can't be null throws an
+
+1238
+00:50:21,970 --> 00:50:27,700
+error let's try this in my sequel my
+
+1239
+00:50:27,700 --> 00:50:29,109
+sigil does have default I think we gotta
+
+1240
+00:50:29,109 --> 00:50:31,539
+go current timestamp actually new
+
+1241
+00:50:31,539 --> 00:50:38,440
+default should work here let me insert
+
+1242
+00:50:38,440 --> 00:50:42,640
+it let's see whether that's actually in
+
+1243
+00:50:42,640 --> 00:50:45,000
+there
+
+1244
+00:50:45,000 --> 00:50:52,170
+we're lastname equals Pablo let me do it
+
+1245
+00:50:52,170 --> 00:50:54,940
+right cuz the way my secret works is the
+
+1246
+00:50:54,940 --> 00:50:57,640
+the the actor ID is an auto increment
+
+1247
+00:50:57,640 --> 00:51:01,750
+key so instead of in this version of my
+
+1248
+00:51:01,750 --> 00:51:05,650
+sequel instead of throwing an error if I
+
+1249
+00:51:05,650 --> 00:51:07,720
+try to insert null it says oh you're an
+
+1250
+00:51:07,720 --> 00:51:09,910
+auto increment key so go go ahead and
+
+1251
+00:51:09,910 --> 00:51:11,829
+let me just run that and replace the
+
+1252
+00:51:11,829 --> 00:51:13,240
+null with the next value whereas every
+
+1253
+00:51:13,240 --> 00:51:14,380
+other system will throw an error says
+
+1254
+00:51:14,380 --> 00:51:16,450
+you trying to insert null my sequel will
+
+1255
+00:51:16,450 --> 00:51:19,089
+let you do it alright but let's let's
+
+1256
+00:51:19,089 --> 00:51:20,049
+try to run our query so we know that
+
+1257
+00:51:20,049 --> 00:51:22,660
+that no attrex should actually null the
+
+1258
+00:51:22,660 --> 00:51:26,700
+no-no tuple should have a null actor ID
+
+1259
+00:51:26,700 --> 00:51:31,119
+so we try to run this query now where is
+
+1260
+00:51:31,119 --> 00:51:34,900
+null right
+
+1261
+00:51:34,900 --> 00:51:37,150
+Postgres that looks like it actually is
+
+1262
+00:51:37,150 --> 00:51:39,630
+going to run it
+
+1263
+00:51:42,099 --> 00:51:45,019
+now she did run it right applied the
+
+1264
+00:51:45,019 --> 00:51:47,589
+filter and remove two hundred tuples
+
+1265
+00:51:47,589 --> 00:51:49,819
+so Postgres was not you better recognize
+
+1266
+00:51:49,819 --> 00:51:53,269
+that no tuple with a new tube was at
+
+1267
+00:51:53,269 --> 00:51:54,890
+actor ID could ever be null and not
+
+1268
+00:51:54,890 --> 00:51:56,720
+actually run it and actually and still
+
+1269
+00:51:56,720 --> 00:52:06,079
+ran it let's try it in in my sequel my
+
+1270
+00:52:06,079 --> 00:52:06,950
+pc go figure it out
+
+1271
+00:52:06,950 --> 00:52:10,309
+impossible where and it can be like
+
+1272
+00:52:10,309 --> 00:52:14,359
+Amelie ignore it try it in sequel server
+
+1273
+00:52:14,359 --> 00:52:24,589
+or sorry in or Oracle explained and then
+
+1274
+00:52:24,589 --> 00:52:26,450
+there's our lovely null is not null
+
+1275
+00:52:26,450 --> 00:52:28,460
+there's our false so a recognize that
+
+1276
+00:52:28,460 --> 00:52:29,720
+this is this is never good actually
+
+1277
+00:52:29,720 --> 00:52:31,309
+gonna evaluate to true and get thrown
+
+1278
+00:52:31,309 --> 00:52:34,450
+away so post goes actually got it wrong
+
+1279
+00:52:34,450 --> 00:52:38,509
+my C gonna walk around it right all
+
+1280
+00:52:38,509 --> 00:52:39,680
+right two more examples
+
+1281
+00:52:39,680 --> 00:52:42,049
+let's do now that range query we have
+
+1282
+00:52:42,049 --> 00:52:48,259
+before where we want to say we want to
+
+1283
+00:52:48,259 --> 00:52:49,970
+get all the films that are where the
+
+1284
+00:52:49,970 --> 00:52:53,990
+film ID is between one and two and film
+
+1285
+00:52:53,990 --> 00:52:56,630
+ID between 199 and 200 so this is again
+
+1286
+00:52:56,630 --> 00:53:00,140
+another impossible we're right so
+
+1287
+00:53:00,140 --> 00:53:03,200
+nothing should come back we're on
+
+1288
+00:53:03,200 --> 00:53:08,180
+explain so my post guys couldn't figure
+
+1289
+00:53:08,180 --> 00:53:11,750
+it out right it's doing that lookup that
+
+1290
+00:53:11,750 --> 00:53:14,180
+that should never happen that would
+
+1291
+00:53:14,180 --> 00:53:20,089
+never produce any results in in my
+
+1292
+00:53:20,089 --> 00:53:22,450
+sequel
+
+1293
+00:53:24,390 --> 00:53:26,410
+this one I'm not sure about there's no
+
+1294
+00:53:26,410 --> 00:53:28,420
+matching no matching rolling Khan stable
+
+1295
+00:53:28,420 --> 00:53:29,980
+I think this means that they were able
+
+1296
+00:53:29,980 --> 00:53:36,310
+to figure it out that they yeah this one
+
+1297
+00:53:36,310 --> 00:53:38,980
+I'm not sure about this it has a warning
+
+1298
+00:53:38,980 --> 00:53:40,420
+though see what see whether he wrote it
+
+1299
+00:53:40,420 --> 00:53:49,210
+to this question isn't this a status
+
+1300
+00:53:49,210 --> 00:53:51,370
+fearless I build a problem and which is
+
+1301
+00:53:51,370 --> 00:53:56,560
+np-complete yes but like but for basic
+
+1302
+00:53:56,560 --> 00:53:58,150
+things I can I could identify that it's
+
+1303
+00:53:58,150 --> 00:54:00,130
+never going to you know produce anything
+
+1304
+00:54:00,130 --> 00:54:02,550
+and throw it away
+
+1305
+00:54:09,300 --> 00:54:12,160
+so this is this one or actual crisis no
+
+1306
+00:54:12,160 --> 00:54:15,550
+no no hope for this one you could have a
+
+1307
+00:54:15,550 --> 00:54:17,050
+rule you could write a heuristic that
+
+1308
+00:54:17,050 --> 00:54:20,320
+says if I have if I do all my lookups on
+
+1309
+00:54:20,320 --> 00:54:26,590
+on the on a given attribute right and I
+
+1310
+00:54:26,590 --> 00:54:28,660
+have a range here between 1 and 2
+
+1311
+00:54:28,660 --> 00:54:32,230
+inclusive and between 199 and 200 the
+
+1312
+00:54:32,230 --> 00:54:34,720
+sets don't intersect and it's
+
+1313
+00:54:34,720 --> 00:54:36,130
+conjunction where I had to have both of
+
+1314
+00:54:36,130 --> 00:54:37,780
+them I know it'll never match I can
+
+1315
+00:54:37,780 --> 00:54:41,280
+throw it away that's like that one
+
+1316
+00:54:41,280 --> 00:54:43,000
+that's not sad that's pretty
+
+1317
+00:54:43,000 --> 00:54:44,380
+straightforward all the parts are
+
+1318
+00:54:44,380 --> 00:54:47,340
+satisfiable you have to do with that yes
+
+1319
+00:54:47,340 --> 00:54:49,870
+all right so any questions about what
+
+1320
+00:54:49,870 --> 00:54:51,580
+I'm showing here I'm showing that you
+
+1321
+00:54:51,580 --> 00:54:53,260
+can just reason about what the query
+
+1322
+00:54:53,260 --> 00:54:55,390
+looks like without actually looking at
+
+1323
+00:54:55,390 --> 00:54:57,310
+the data without actually having to run
+
+1324
+00:54:57,310 --> 00:55:00,070
+anything and determine whether you know
+
+1325
+00:55:00,070 --> 00:55:04,320
+it's a ways to simplify the predicate
+
+1326
+00:55:06,600 --> 00:55:09,160
+will lead into now the discussion of a
+
+1327
+00:55:09,160 --> 00:55:13,110
+how are action committees estimates so
+
+1328
+00:55:13,110 --> 00:55:16,960
+the for these symbolic demos here this
+
+1329
+00:55:16,960 --> 00:55:19,510
+joins a pretty straightforward
+
+1330
+00:55:19,510 --> 00:55:21,460
+so we can you know easily maybe a reason
+
+1331
+00:55:21,460 --> 00:55:22,300
+about which one should be the inner
+
+1332
+00:55:22,300 --> 00:55:24,850
+versus the outer things go bad though
+
+1333
+00:55:24,850 --> 00:55:26,460
+when you start having a lot more joins
+
+1334
+00:55:26,460 --> 00:55:29,110
+because the complexity of the problem of
+
+1335
+00:55:29,110 --> 00:55:31,500
+making this decision is going to explode
+
+1336
+00:55:31,500 --> 00:55:35,950
+so the number of different ways we can
+
+1337
+00:55:35,950 --> 00:55:37,420
+do a join for
+
+1338
+00:55:37,420 --> 00:55:39,520
+for a query when we have n tables to
+
+1339
+00:55:39,520 --> 00:55:43,270
+join is gonna be four to the N so this
+
+1340
+00:55:43,270 --> 00:55:44,710
+clearly there's no way we can enumerate
+
+1341
+00:55:44,710 --> 00:55:46,990
+every single possible join ordering and
+
+1342
+00:55:46,990 --> 00:55:48,430
+for our query and try to figure out the
+
+1343
+00:55:48,430 --> 00:55:50,290
+best one alright you know it's a large
+
+1344
+00:55:50,290 --> 00:55:54,580
+number when it has a name right so we're
+
+1345
+00:55:54,580 --> 00:55:56,080
+gonna see how the data center is going
+
+1346
+00:55:56,080 --> 00:55:58,630
+to be able to strip down the the number
+
+1347
+00:55:58,630 --> 00:56:00,250
+of different combinations and plans that
+
+1348
+00:56:00,250 --> 00:56:01,330
+have to enumerate for these joint
+
+1349
+00:56:01,330 --> 00:56:04,150
+orderings and that's going to reduce the
+
+1350
+00:56:04,150 --> 00:56:06,520
+search base of the problem but before we
+
+1351
+00:56:06,520 --> 00:56:08,050
+get there we need to understand how
+
+1352
+00:56:08,050 --> 00:56:10,660
+we're actually gonna estimate how much
+
+1353
+00:56:10,660 --> 00:56:12,310
+work we're gonna do for these joins or
+
+1354
+00:56:12,310 --> 00:56:14,580
+these different scans
+
+1355
+00:56:14,580 --> 00:56:16,420
+so I've already said this a little bit
+
+1356
+00:56:16,420 --> 00:56:20,440
+before but the the cost model is gonna
+
+1357
+00:56:20,440 --> 00:56:22,780
+allow us to assess or an estimate how
+
+1358
+00:56:22,780 --> 00:56:24,160
+much work we think we're gonna have to
+
+1359
+00:56:24,160 --> 00:56:25,960
+do in our database system and again this
+
+1360
+00:56:25,960 --> 00:56:28,870
+is an internal synthetic number that is
+
+1361
+00:56:28,870 --> 00:56:30,700
+only allows us to compare the relative
+
+1362
+00:56:30,700 --> 00:56:32,380
+performance of different query plans and
+
+1363
+00:56:32,380 --> 00:56:34,480
+we within the same database system we
+
+1364
+00:56:34,480 --> 00:56:37,750
+can't compare across all of them so this
+
+1365
+00:56:37,750 --> 00:56:39,040
+could be a combination of a bunch of
+
+1366
+00:56:39,040 --> 00:56:40,330
+different things we've already seen that
+
+1367
+00:56:40,330 --> 00:56:42,550
+when we talk about joint algorithms that
+
+1368
+00:56:42,550 --> 00:56:44,350
+you want to do you want to base it on
+
+1369
+00:56:44,350 --> 00:56:47,320
+the number of disk I'm out of disk IO
+
+1370
+00:56:47,320 --> 00:56:49,270
+that I'm gonna have to do it all so you
+
+1371
+00:56:49,270 --> 00:56:50,710
+betta how much DRAM how much memory
+
+1372
+00:56:50,710 --> 00:56:51,790
+space you're gonna have to take up on
+
+1373
+00:56:51,790 --> 00:56:53,620
+your buffer pool as you're computing the
+
+1374
+00:56:53,620 --> 00:56:55,780
+the query if you're gonna distribute a
+
+1375
+00:56:55,780 --> 00:56:57,490
+database then the number of messages is
+
+1376
+00:56:57,490 --> 00:56:59,740
+also an important thing because the
+
+1377
+00:56:59,740 --> 00:57:03,250
+network IO is slow and inefficient so
+
+1378
+00:57:03,250 --> 00:57:06,840
+the the main takeaway for this is that
+
+1379
+00:57:06,840 --> 00:57:09,700
+the cost models that allow us to say is
+
+1380
+00:57:09,700 --> 00:57:12,070
+one plan better than another without
+
+1381
+00:57:12,070 --> 00:57:13,480
+actually having to run the query plan
+
+1382
+00:57:13,480 --> 00:57:14,560
+because that's the only way to get the
+
+1383
+00:57:14,560 --> 00:57:16,510
+actually the truth the true cost is
+
+1384
+00:57:16,510 --> 00:57:18,220
+actually run the query plan but you
+
+1385
+00:57:18,220 --> 00:57:19,660
+don't want to do that cuz if again I've
+
+1386
+00:57:19,660 --> 00:57:21,220
+had if I have 4dn different joint
+
+1387
+00:57:21,220 --> 00:57:21,820
+orderings
+
+1388
+00:57:21,820 --> 00:57:23,800
+I can't run for dit for to the N
+
+1389
+00:57:23,800 --> 00:57:25,570
+different query plans for one query
+
+1390
+00:57:25,570 --> 00:57:29,350
+because that'll take forever so a cost
+
+1391
+00:57:29,350 --> 00:57:31,590
+models that allow us to approximate this
+
+1392
+00:57:31,590 --> 00:57:34,060
+you know will giving up sacrificing
+
+1393
+00:57:34,060 --> 00:57:36,130
+accuracy of our estimates in exchange
+
+1394
+00:57:36,130 --> 00:57:39,130
+for efficiency now there's some database
+
+1395
+00:57:39,130 --> 00:57:41,740
+systems where they don't have a cost
+
+1396
+00:57:41,740 --> 00:57:43,030
+model they don't have a query optimizer
+
+1397
+00:57:43,030 --> 00:57:45,850
+they actually just fire off all queries
+
+1398
+00:57:45,850 --> 00:57:47,920
+and see which one ever comes back first
+
+1399
+00:57:47,920 --> 00:57:51,579
+and that's the one they pick
+
+1400
+00:57:51,579 --> 00:57:53,690
+so the only system that I know that does
+
+1401
+00:57:53,690 --> 00:57:56,510
+this is actually MongoDB right and it
+
+1402
+00:57:56,510 --> 00:57:57,740
+seems kind of stupid why would you do
+
+1403
+00:57:57,740 --> 00:57:59,390
+this why would you put a cost model well
+
+1404
+00:57:59,390 --> 00:58:01,250
+they weren't supporting joins back in
+
+1405
+00:58:01,250 --> 00:58:03,589
+the day and they needed a cost model
+
+1406
+00:58:03,589 --> 00:58:05,390
+they need a query optimizer
+
+1407
+00:58:05,390 --> 00:58:07,760
+so if I have to figure out what index to
+
+1408
+00:58:07,760 --> 00:58:09,140
+pick and just fire fall of Aquarius
+
+1409
+00:58:09,140 --> 00:58:10,250
+whichever one comes back first that's
+
+1410
+00:58:10,250 --> 00:58:12,799
+the one that's the fastest and then I
+
+1411
+00:58:12,799 --> 00:58:14,059
+just remember that every single time I
+
+1412
+00:58:14,059 --> 00:58:15,380
+see that same query over and over again
+
+1413
+00:58:15,380 --> 00:58:17,539
+and eventually you know they'll run the
+
+1414
+00:58:17,539 --> 00:58:20,180
+trial again and first as sort of
+
+1415
+00:58:20,180 --> 00:58:21,680
+simplistic as it is it actually works
+
+1416
+00:58:21,680 --> 00:58:24,920
+quite well for them this is where their
+
+1417
+00:58:24,920 --> 00:58:27,380
+rights doesn't matter right what is the
+
+1418
+00:58:27,380 --> 00:58:29,569
+right right is doing a like a index
+
+1419
+00:58:29,569 --> 00:58:31,849
+lookup to find something right and then
+
+1420
+00:58:31,849 --> 00:58:33,710
+you make the modification the index
+
+1421
+00:58:33,710 --> 00:58:34,730
+lookup is the more expensive part
+
+1422
+00:58:34,730 --> 00:58:35,960
+finding the data is more expensive than
+
+1423
+00:58:35,960 --> 00:58:38,809
+the actual right but yes if I'm updating
+
+1424
+00:58:38,809 --> 00:58:41,210
+the table and my index is now changing
+
+1425
+00:58:41,210 --> 00:58:44,180
+its distribution then what they would do
+
+1426
+00:58:44,180 --> 00:58:45,200
+is they would have to have a trigger to
+
+1427
+00:58:45,200 --> 00:58:46,880
+says well I've run the same query a
+
+1428
+00:58:46,880 --> 00:58:49,220
+thousand times let me refresh and rerun
+
+1429
+00:58:49,220 --> 00:58:51,650
+everything again or my table is my table
+
+1430
+00:58:51,650 --> 00:58:53,750
+in their world collection has changed
+
+1431
+00:58:53,750 --> 00:58:55,670
+I've updated by 10%
+
+1432
+00:58:55,670 --> 00:58:58,190
+let me just rerun that trial again it's
+
+1433
+00:58:58,190 --> 00:59:05,690
+just heuristics yes these questions are
+
+1434
+00:59:05,690 --> 00:59:06,980
+they running sequentially are they
+
+1435
+00:59:06,980 --> 00:59:11,839
+running one after another so like
+
+1436
+00:59:11,839 --> 00:59:13,789
+MongoDB is a distribute database as far
+
+1437
+00:59:13,789 --> 00:59:15,109
+as they know the way they do it is I
+
+1438
+00:59:15,109 --> 00:59:17,809
+have I have a query that need to run on
+
+1439
+00:59:17,809 --> 00:59:19,940
+a bunch of nodes and they have a
+
+1440
+00:59:19,940 --> 00:59:21,170
+different segments or partitions of the
+
+1441
+00:59:21,170 --> 00:59:23,180
+data and they all have the same indexes
+
+1442
+00:59:23,180 --> 00:59:25,279
+just based on different parts of the you
+
+1443
+00:59:25,279 --> 00:59:28,250
+know the the table so for this one I'll
+
+1444
+00:59:28,250 --> 00:59:29,510
+use this index this one I'll use that
+
+1445
+00:59:29,510 --> 00:59:31,010
+index and so forth and see which one
+
+1446
+00:59:31,010 --> 00:59:32,720
+actually is the fastest and then you see
+
+1447
+00:59:32,720 --> 00:59:34,220
+the same query again that you needed to
+
+1448
+00:59:34,220 --> 00:59:35,029
+strip it across all of these different
+
+1449
+00:59:35,029 --> 00:59:37,309
+nodes you just pick that same index so
+
+1450
+00:59:37,309 --> 00:59:38,680
+that was the fastest one for everyone
+
+1451
+00:59:38,680 --> 00:59:41,059
+again super simple but it works pretty
+
+1452
+00:59:41,059 --> 00:59:43,210
+well
+
+1453
+00:59:44,470 --> 00:59:47,180
+all right so the way we're going to be
+
+1454
+00:59:47,180 --> 00:59:49,339
+able to approximate the cost of
+
+1455
+00:59:49,339 --> 00:59:52,400
+executing a query is the this is by
+
+1456
+00:59:52,400 --> 00:59:54,230
+maintaining internal statistics about
+
+1457
+00:59:54,230 --> 00:59:56,809
+what our tables look like this has come
+
+1458
+00:59:56,809 --> 00:59:57,829
+up multiple times throughout the
+
+1459
+00:59:57,829 --> 00:59:59,210
+semester where I say oh the day says we
+
+1460
+00:59:59,210 --> 01:00:00,799
+can know something about the tables this
+
+1461
+01:00:00,799 --> 01:00:02,059
+is what I mean this is how they're
+
+1462
+01:00:02,059 --> 01:00:04,310
+actually able to do this so
+
+1463
+01:00:04,310 --> 01:00:07,100
+inside of the system catalog we're going
+
+1464
+01:00:07,100 --> 01:00:09,710
+to maintain metadata about what our
+
+1465
+01:00:09,710 --> 01:00:11,300
+indexes of what our tables look like
+
+1466
+01:00:11,300 --> 01:00:15,290
+what the values are in the tuples and
+
+1467
+01:00:15,290 --> 01:00:16,880
+then how we're actually gonna maintain
+
+1468
+01:00:16,880 --> 01:00:18,860
+this information is gonna vary based on
+
+1469
+01:00:18,860 --> 01:00:20,900
+the different systems so I said like
+
+1470
+01:00:20,900 --> 01:00:22,940
+getting a simple heuristic like if my
+
+1471
+01:00:22,940 --> 01:00:25,790
+table changes by 10% we collect my
+
+1472
+01:00:25,790 --> 01:00:28,220
+statistics other systems can say well
+
+1473
+01:00:28,220 --> 01:00:30,590
+while I run the query also look at look
+
+1474
+01:00:30,590 --> 01:00:32,300
+at the tape look at the data as I'm
+
+1475
+01:00:32,300 --> 01:00:34,730
+going along and then propagate you know
+
+1476
+01:00:34,730 --> 01:00:37,810
+information about what I see back to my
+
+1477
+01:00:37,810 --> 01:00:40,420
+back to my internal says sister catalog
+
+1478
+01:00:40,420 --> 01:00:43,820
+you can also run this manually so in
+
+1479
+01:00:43,820 --> 01:00:45,620
+again this they all vary in the
+
+1480
+01:00:45,620 --> 01:00:47,690
+different systems about what the syntax
+
+1481
+01:00:47,690 --> 01:00:50,270
+actually is but in general can analyze
+
+1482
+01:00:50,270 --> 01:00:52,010
+so the commonality of across all of them
+
+1483
+01:00:52,010 --> 01:00:54,260
+you call this analyze function and that
+
+1484
+01:00:54,260 --> 01:00:56,480
+kicks off a sequential scan that does
+
+1485
+01:00:56,480 --> 01:00:59,270
+looks at the date the data and again
+
+1486
+01:00:59,270 --> 01:01:00,830
+updates this internal information about
+
+1487
+01:01:00,830 --> 01:01:03,710
+what the distribution looks like and
+
+1488
+01:01:03,710 --> 01:01:05,270
+then you think it's you you could
+
+1489
+01:01:05,270 --> 01:01:06,920
+trigger this based on updates to the
+
+1490
+01:01:06,920 --> 01:01:08,960
+table or like a cron job that runs every
+
+1491
+01:01:08,960 --> 01:01:11,480
+day or so forth and we saw about multi
+
+1492
+01:01:11,480 --> 01:01:13,010
+version control let's talk about
+
+1493
+01:01:13,010 --> 01:01:14,870
+vacuuming think of that like a garbage
+
+1494
+01:01:14,870 --> 01:01:16,760
+collection and the JVM you can run
+
+1495
+01:01:16,760 --> 01:01:18,200
+analyze at the same time as well because
+
+1496
+01:01:18,200 --> 01:01:19,100
+when you're doing twitch will scans
+
+1497
+01:01:19,100 --> 01:01:20,870
+you're looking at everything and you can
+
+1498
+01:01:20,870 --> 01:01:25,310
+update these things alright so in the
+
+1499
+01:01:25,310 --> 01:01:26,840
+sake of time I'm going to cut it off
+
+1500
+01:01:26,840 --> 01:01:28,490
+here because now we're actually gonna
+
+1501
+01:01:28,490 --> 01:01:30,200
+get to the formulas of how you use the
+
+1502
+01:01:30,200 --> 01:01:34,670
+statistics to estimate these values well
+
+1503
+01:01:34,670 --> 01:01:37,160
+we'll pick up on this next week and then
+
+1504
+01:01:37,160 --> 01:01:38,120
+we'll get into actually how do you do
+
+1505
+01:01:38,120 --> 01:01:40,270
+the enumeration in the columns as well
+
+1506
+01:01:40,270 --> 01:01:45,800
+okay alright so again on Wednesday in
+
+1507
+01:01:45,800 --> 01:01:49,160
+class we're having the exam it's real is
+
+1508
+01:01:49,160 --> 01:01:50,990
+not a joke one year somebody was like oh
+
+1509
+01:01:50,990 --> 01:01:52,490
+I thought you were kidding no this is
+
+1510
+01:01:52,490 --> 01:01:54,040
+real
+
+1511
+01:01:54,040 --> 01:01:57,800
+bring your CMU ID bring your sheet of
+
+1512
+01:01:57,800 --> 01:01:59,060
+paper but notes and then bring a
+
+1513
+01:01:59,060 --> 01:02:01,130
+calculator and I'm having office hours
+
+1514
+01:02:01,130 --> 01:02:02,360
+neatly afterwards but if you need to
+
+1515
+01:02:02,360 --> 01:02:04,400
+talk to me and you know at a different
+
+1516
+01:02:04,400 --> 01:02:05,600
+time send me an email
+
+1517
+01:02:05,600 --> 01:02:08,150
+I'm happy to meet with anyone okay all
+
+1518
+01:02:08,150 --> 01:02:09,860
+right guys good luck and see you on
+
+1519
+01:02:09,860 --> 01:02:10,370
+Wednesday
+
+1520
+01:02:10,370 --> 01:02:12,270
+Oh
+
+1521
+01:02:12,270 --> 01:02:15,310
+cool to settle the case it means a nice
+
+1522
+01:02:15,310 --> 01:02:17,320
+little bits of broken bar goes in
+
+1523
+01:02:17,320 --> 01:02:19,510
+crushed up can let the cows in the demo
+
+1524
+01:02:19,510 --> 01:02:22,570
+I'll try he's with see knives in my
+
+1525
+01:02:22,570 --> 01:02:24,460
+system I'm blessed
+
+1526
+01:02:24,460 --> 01:02:31,930
+let's go get the next one get over good
+
+1527
+01:02:31,930 --> 01:02:33,970
+there will be Sun ricochet jelly hit the
+
+1528
+01:02:33,970 --> 01:02:36,130
+deli for a boat one naturally bless ya
+
+1529
+01:02:36,130 --> 01:02:37,780
+what rap is like a laser beam the boys
+
+1530
+01:02:37,780 --> 01:02:40,150
+in the bush say nice fella can't even
+
+1531
+01:02:40,150 --> 01:02:42,160
+wrap the bottle of us a nice sympathy
+
+1532
+01:02:42,160 --> 01:02:43,960
+goes don't feel like drinking that
+
+1533
+01:02:43,960 --> 01:02:46,089
+quality to you token can't drop cross he
+
+1534
+01:02:46,089 --> 01:02:47,829
+was alive and if the sake don't know
+
+1535
+01:02:47,829 --> 01:02:51,150
+your phone can tap a tank
+
