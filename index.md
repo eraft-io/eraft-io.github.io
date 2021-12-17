@@ -1,6 +1,6 @@
 ## ERaft
 
-我们是一个致力于解读国外优质计算机视频课程的组织，同时，我们也在设计和开发原创的分布式数据库系统  [https://github.com/eraft-io/eraft](https://github.com/eraft-io/eraft) , 创建这个小站点，准备以知乎小视频的方式给大家解读国外的优质计算机课程。
+我们是一个致力于解读国外优质计算机视频课程的组织，同时，我们也在设计和开发云原生分布式数据库系统  [https://github.com/eraft-io/eraft](https://github.com/eraft-io/eraft) , 创建这个小站点，准备以知乎小视频的方式给大家解读国外的优质计算机课程。
 
 ## 解读系列
 
