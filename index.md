@@ -2,9 +2,6 @@
 
 我们是一个致力于解读国外优质计算机视频课程的组织，同时，我们也在设计和开发云原生分布式数据库系统  [https://github.com/eraft-io/eraft](https://github.com/eraft-io/eraft) , 创建这个小站点，准备以知乎小视频的方式给大家解读国外的优质计算机课程。
 
-## 解读系列
-
-
 ### CMU 15-445/645 (数据库系统) 课程解读列表
 
 |      |   Course Name |
@@ -31,23 +28,24 @@
 |      |   [Tree Indexes Part I-LEC7-02-B+树叶子节点](https://www.zhihu.com/zvideo/1450451803079274496)  | 
 |      |   [Tree Indexes Part I-LEC7-03-B+树插入](https://www.zhihu.com/zvideo/1451526175349104640)  | 
 
-### MIT 6.828 (操作系统) 课程解读系列
 
-|      |   Course Name |
-| ---- | ---- | 
-|      |     |  
+### UHP-SQL
+UHP-SQL 是一个基于 [英特尔® 傲腾™ 持久内存 ](https://www.intel.cn/content/www/cn/zh/architecture-and-technology/optane-dc-persistent-memory.html) 设计的新型分布式关系型数据库系统。
 
-### 项目开发
+#### 架构
 
-![https://github.com/eraft-io/eraft-io.github.io/raw/master/ekv_1.png](https://github.com/eraft-io/eraft-io.github.io/raw/master/ekv_1.png)
+![UHP-SQL-v0.1.png](https://tva1.sinaimg.cn/large/006n3WWAly1gy0tvo3215j30qr0lydj1.jpg)
 
-#### E-META
-主要存储一些集群 meta 数据，这个模块本身是一个只有一个 region 的 e-store，里面存储了当前集群的 region 信息，每个 store 节点的信息。每次 E-DB 接收到数据写入请求后会先访问 E-META 去找到数据所在的 store 节点，以及 peer 地址，然后再连接这个地址写数据进去。
+#### 特性
 
-#### E-KV
-这个是具体存储数据的节点，最小部署 3 节点，它们可以组成一个或者多个 Raft Group 对 E-DB 提供高可用的存储服务，同时 E-STORE 会定期的上报 E-META 节点信息，看是否需要扩容分裂，E-STORE 具有自动分裂的能力。
+##### 超高性能
+持久化内存在性能上有天然的优势，使用 UHP-SQL 可以加速你的应用。在保证数据持久化的同时，获得超高性能的在线读写，以及查询分析能力。
 
-[点此查看详细设计](https://eraft.cn/ekv)
+##### 可扩展
+UHP-SQL 使用 eraft 协议实现了数据库横向扩展的能力，并基于云原生平台开发实现，可以实现一键启动云上持久化内存数据库实例，5分钟启动，并提供了 Web 控制端，快速上手使用。
+
+##### 支持 SQL
+UHP-SQL 兼容 MySQL 协议标准，你可以轻松的使用 mysql 客户端连接上 UHP-SQL 实例，可以低成本将应用从老的 MySQL 迁移过来。
 
 ## 参考
 [1] [https://learncs.me](https://learncs.me)
