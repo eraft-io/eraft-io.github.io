@@ -32,9 +32,9 @@
 ### UHP-SQL
 UHP-SQL 是一个基于 [英特尔® 傲腾™ 持久内存 ](https://www.intel.cn/content/www/cn/zh/architecture-and-technology/optane-dc-persistent-memory.html) 设计的新型分布式关系型数据库系统。
 
-#### 架构
+#### 项目详情
 
-![UHP-SQL-v0.1.png](https://tva1.sinaimg.cn/large/006n3WWAly1gy0tvo3215j30qr0lydj1.jpg)
+[UHP-SQL](https://github.com/eraft-io/UHP-SQL)
 
 #### 特性
 
