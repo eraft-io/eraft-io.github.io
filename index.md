@@ -1,3 +1,6 @@
+
+[首页](https://eraft.cn)  ｜  [博客](https://eraft.cn/blogs)   ｜   [数据库研究](https://eraft.cn/database_theory) 
+
 ## ERaft
 
 我们是一个致力于高性能分布式存储系统研究的组织，正在设计和开发云原生分布式数据库系统 [https://github.com/eraft-io/UHP-SQL](https://github.com/eraft-io/UHP-SQL)。
