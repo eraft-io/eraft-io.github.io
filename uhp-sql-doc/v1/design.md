@@ -1,6 +1,6 @@
 ### 总体架构
 
-![UHP-SQL v0.1](https://github.com/eraft-io/eraft-io.github.io/raw/master/figures/UHP-SQL-v0.1.png)
+![UHP-SQL v0.1](../../figures/UHP-SQL-v0.1.png)
 
 整个系统的架构如上图，主要分为两个大模块
 
