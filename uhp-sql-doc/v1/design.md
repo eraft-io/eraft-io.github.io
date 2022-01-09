@@ -1,6 +1,6 @@
 ### 总体架构
 
-![UHP-SQL-v0.1.png](https://tva1.sinaimg.cn/large/006n3WWAly1gy7kf4t1nwj30qr0lydj8.jpg)
+![UHP-SQL-v0.1.png](https://tva1.sinaimg.cn/large/006n3WWAly1gy7s2lzk4sj30qr0lydj8.jpg)
 
 整个系统的架构如上图，主要分为两个大模块
 
