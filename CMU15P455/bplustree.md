@@ -1,3 +1,5 @@
+[首页](https://eraft.cn)  ｜ [UHP-SQL 文档](https://eraft.cn/uhp_sql)  ｜   [博客](https://eraft.cn/blogs)   ｜   [数据库研究](https://eraft.cn/database_theory) 
+
 ### 数据库索引介绍
 数据库中数据在磁盘是按块存储的，当我们从一个数据量特别大的数据集中去查询修改数据的时候，如果没有任何辅助操作，这些操作的耗时是特别长的，甚至会导致数据库系统的不可用。
 
