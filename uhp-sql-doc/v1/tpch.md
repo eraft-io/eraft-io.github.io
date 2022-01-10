@@ -9,7 +9,7 @@ TPC-H 是 [TPC-事务处理性能委员会 Transaction ProcessingPerformance Cou
 - 有 8 张数据表
 - 箭头方向表示表之间的关系
 
-![tpch_data](../figures/tpch.png)
+![tpch_data](../../figures/tpch.png)
 
 详细的介绍读 [http://www.tpc.org/tpc_documents_current_versions/pdf/tpc-h_v2.17.1.pdf](http://www.tpc.org/tpc_documents_current_versions/pdf/tpc-h_v2.17.1.pdf)
 
