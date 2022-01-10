@@ -160,3 +160,233 @@ Time: 12.581s total (execution 12.581s / network 0.000s)
 
 ### UHP-SQL 对这 22 个 SQL 进行 parser 结果测试
 
+1. PASS
+
+```
+
+// l_shipdate <= '19981201' 这里数据库应该拿到日期先转换成 UNIX 时间戳，底层存储是 UNIX 时间戳来对比
+
+root@aa959a7b3842:/UHP-SQL/build/parser# ./parser_demo 'select
+l_returnflag,
+l_linestatus,
+sum(l_quantity) as sum_qty,
+sum(l_extendedprice) as sum_base_price,
+sum(l_extendedprice*(1-l_discount)) as sum_disc_price,
+sum(l_extendedprice*(1-l_discount)*(1+l_tax)) as sum_charge,
+avg(l_quantity) as avg_qty,
+avg(l_extendedprice) as avg_price,
+avg(l_discount) as avg_disc,
+count(*) as count_order
+from
+lineitem
+where
+l_shipdate <= '19981201'
+group by
+l_returnflag,
+l_linestatus
+order by
+l_returnflag,
+l_linestatus;'
+Parsed successfully!
+Number of statements: 1
+SelectStatement
+	Fields:
+		l_returnflag
+		l_linestatus
+		sum
+			l_quantity
+			Alias
+				sum_qty
+		sum
+			l_extendedprice
+			Alias
+				sum_base_price
+		sum
+			*
+				l_extendedprice
+				-
+					1
+					l_discount
+			Alias
+				sum_disc_price
+		sum
+			*
+				*
+					l_extendedprice
+					-
+						1
+						l_discount
+				+
+					1
+					l_tax
+			Alias
+				sum_charge
+		avg
+			l_quantity
+			Alias
+				avg_qty
+		avg
+			l_extendedprice
+			Alias
+				avg_price
+		avg
+			l_discount
+			Alias
+				avg_disc
+		count
+			*
+			Alias
+				count_order
+	Sources:
+		lineitem
+	Search Conditions:
+		<=
+			l_shipdate
+			19981201
+	GroupBy:
+		l_returnflag
+		l_linestatus
+	OrderBy:
+		l_returnflag
+		ascending
+		l_linestatus
+		ascending
+
+```
+
+2. PASS
+
+```
+root@aa959a7b3842:/UHP-SQL/build/parser# ./parser_demo 'select
+> s_acctbal,
+> s_name,
+> n_name,
+> p_partkey,
+> p_mfgr,
+> s_address,
+> s_phone,
+> s_comment
+> from
+> part,
+> supplier,
+> partsupp,
+> nation,
+> region
+> where
+> p_partkey = ps_partkey
+> and s_suppkey = ps_suppkey
+> and p_size = 25
+> and p_type like "TYPE"
+> and s_nationkey = n_nationkey
+> and n_regionkey = r_regionkey
+> and r_name = "REGION"
+> and ps_supplycost = (
+> select
+> min(ps_supplycost)
+> from
+> partsupp, supplier,
+> nation, region
+> where
+> p_partkey = ps_partkey
+> and s_suppkey = ps_suppkey
+> and s_nationkey = n_nationkey
+> and n_regionkey = r_regionkey
+> and r_name = "REGION"
+> )
+> order by
+> s_acctbal desc,
+> n_name,
+> s_name,
+> p_partkey;'
+Parsed successfully!
+Number of statements: 1
+SelectStatement
+	Fields:
+		s_acctbal
+		s_name
+		n_name
+		p_partkey
+		p_mfgr
+		s_address
+		s_phone
+		s_comment
+	Sources:
+		part
+		supplier
+		partsupp
+		nation
+		region
+	Search Conditions:
+		AND
+			AND
+				AND
+					AND
+						AND
+							AND
+								AND
+									=
+										p_partkey
+										ps_partkey
+									=
+										s_suppkey
+										ps_suppkey
+								=
+									p_size
+									25
+							LIKE
+								p_type
+								TYPE
+						=
+							s_nationkey
+							n_nationkey
+					=
+						n_regionkey
+						r_regionkey
+				=
+					r_name
+					REGION
+			=
+				ps_supplycost
+				SelectStatement
+					Fields:
+						min
+							ps_supplycost
+					Sources:
+						partsupp
+						supplier
+						nation
+						region
+					Search Conditions:
+						AND
+							AND
+								AND
+									AND
+										=
+											p_partkey
+											ps_partkey
+										=
+											s_suppkey
+											ps_suppkey
+									=
+										s_nationkey
+										n_nationkey
+								=
+									n_regionkey
+									r_regionkey
+							=
+								r_name
+								REGION
+	OrderBy:
+		s_acctbal
+		descending
+		n_name
+		ascending
+		s_name
+		ascending
+		p_partkey
+		ascending
+```
+
+3.
+
+
