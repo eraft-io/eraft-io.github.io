@@ -88,6 +88,11 @@ CREATE TABLE LINEITEM ( L_ORDERKEY    INTEGER NOT NULL,
                              L_COMMENT      VARCHAR(44) NOT NULL);
 ```
 
+安装 CockroachDB
+[https://www.cockroachlabs.com/docs/v21.2/install-cockroachdb-mac.html](https://www.cockroachlabs.com/docs/v21.2/install-cockroachdb-mac.html)
+
+[https://www.cockroachlabs.com/docs/v21.2/secure-a-cluster.html](https://www.cockroachlabs.com/docs/v21.2/secure-a-cluster.html)
+
 加载数据集到 cockroach
 
 ```
@@ -102,7 +107,7 @@ awk '{sub(/.{1}$/,"")}1' lineitem.tbl > newlineitem.tbl
 
 IMPORT INTO LINEITEM  (   l_orderkey,   l_partkey ,   l_suppkey,  l_linenumber,  l_quantity ,   l_extendedprice ,    l_discount,   l_tax ,   l_returnflag ,  l_linestatus ,   l_shipdate ,   l_commitdate,  l_receiptdate ,  l_shipinstruct ,   l_shipmode,  l_comment )
      DELIMITED DATA (
-       'http://127.0.0.1:8000/newlineitem.tbl'
+       'https://eraft.oss-cn-beijing.aliyuncs.com/newlineitem.tbl'
      ) WITH
       fields_terminated_by='|', fields_enclosed_by='"',
       fields_escaped_by='\';
