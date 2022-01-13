@@ -845,7 +845,7 @@ SelectStatement
 
 ```
 
-### Q10
+### Q10 PASS
 
 ```
 
@@ -932,7 +932,7 @@ SelectStatement
 
 ```
 
-### Q11
+### Q11 PASS
 
 ```
 didi@didideMacBook-Pro example % ./example 'select
@@ -1020,7 +1020,7 @@ SelectStatement
 
 ```
 
-### Q12
+### Q12 PASS
 
 ```
 didi@didideMacBook-Pro example % ./example 'select
@@ -1093,4 +1093,705 @@ SelectStatement
 	OrderBy:
 		l_shipmode
 		ascending
+```
+
+### Q13
+
+```
+
+didi@didideMacBook-Pro example % ./example 'select
+c_count, count(*) as custdist
+from (
+select
+count(o_orderkey) from
+customer left outer join orders on c_custkey = o_custkey
+and o_comment not like "%WORD1%WORD2%"
+group by c_custkey
+)as c_orders (c_custkey, c_count) group by
+c_count order by
+custdist desc, c_count desc;'
+Parsed successfully!
+Number of statements: 1
+SelectStatement
+	Fields:
+		c_count
+		count
+			*
+			Alias
+				custdist
+	Sources:
+		SelectStatement
+			Fields:
+				count
+					o_orderkey
+			Sources:
+				Join Table
+					Left
+						customer
+					Right
+						orders
+					Join Condition
+						AND
+							=
+								c_custkey
+								o_custkey
+							NOT LIKE
+								o_comment
+								%WORD1%WORD2%
+			GroupBy:
+				c_custkey
+			Alias
+				c_orders
+					c_custkey
+					c_count
+	GroupBy:
+		c_count
+	OrderBy:
+		custdist
+		descending
+		c_count
+		descending
+
+```
+
+### Q14
+
+```
+didi@didideMacBook-Pro example % ./example 'select
+100.00 * sum(case
+when p_type like "PROMO%"
+then l_extendedprice*(1-l_discount) else 0
+end) / sum(l_extendedprice * (1 - l_discount)) as promo_revenue from
+lineitem,
+part where
+l_partkey = p_partkey
+and l_shipdate >= "DATE1"
+and l_shipdate <  "DATE2";'
+Parsed successfully!
+Number of statements: 1
+SelectStatement
+	Fields:
+		/
+			*
+				100
+				sum
+					CASE
+						0
+			sum
+				*
+					l_extendedprice
+					-
+						1
+						l_discount
+			Alias
+				promo_revenue
+	Sources:
+		lineitem
+		part
+	Search Conditions:
+		AND
+			AND
+				=
+					l_partkey
+					p_partkey
+				>=
+					l_shipdate
+					DATE1
+			<
+				l_shipdate
+				DATE2
+
+```
+
+### Q15 NOT SUPPORT VIEW
+
+```
+
+create view revenue_1 (supplier_no, total_revenue) as select
+l_suppkey,
+sum(l_extendedprice * (1 - l_discount)) from
+lineitem where
+l_shipdate >= "DATE0"
+and l_shipdate < "DATE1"
+l_suppkey;
+
+select
+s_suppkey,
+s_name, s_address, s_phone, total_revenue
+from
+supplier,
+revenue_1 where
+s_suppkey = supplier_no
+and total_revenue = (
+    select
+max(total_revenue)
+from
+revenue_1
+) order by
+s_suppkey;
+
+```
+
+### Q16
+
+```
+didi@didideMacBook-Pro example % ./example 'select
+p_brand,
+p_type,
+p_size,
+count(distinct ps_suppkey) as supplier_cnt
+from
+partsupp,
+part
+where
+p_partkey = ps_partkey
+and p_brand <> "BRAND"
+and p_type not like "TYPE%"
+and p_size in ("SIZE1", "SIZE2", "SIZE3", "SIZE4", "SIZE5", "SIZE6", "SIZE7", "SIZE8") and ps_suppkey not in (
+select
+s_suppkey
+from
+supplier
+where
+s_comment like "%Customer%Complaints%")
+group by
+p_brand, p_type, p_size
+order by
+supplier_cnt desc,
+p_brand, p_type, p_size;'
+Parsed successfully!
+Number of statements: 1
+SelectStatement
+	Fields:
+		p_brand
+		p_type
+		p_size
+		count
+			ps_suppkey
+			Alias
+				supplier_cnt
+	Sources:
+		partsupp
+		part
+	Search Conditions:
+		AND
+			AND
+				AND
+					AND
+						=
+							p_partkey
+							ps_partkey
+						!=
+							p_brand
+							BRAND
+					NOT LIKE
+						p_type
+						TYPE%
+				IN
+					p_size
+					SIZE1
+					SIZE2
+					SIZE3
+					SIZE4
+					SIZE5
+					SIZE6
+					SIZE7
+					SIZE8
+			NOT
+				IN
+					ps_suppkey
+	GroupBy:
+		p_brand
+		p_type
+		p_size
+	OrderBy:
+		supplier_cnt
+		descending
+		p_brand
+		ascending
+		p_type
+		ascending
+		p_size
+		ascending
+
+```
+
+### Q17
+
+```
+
+didi@didideMacBook-Pro example % ./example 'select
+sum(l_extendedprice) / 7.0 as avg_yearly
+from
+lineitem,
+part where
+p_partkey = l_partkey
+and p_brand = "BRAND"
+and p_container = "CONTAINER" and l_quantity < (
+select
+0.2 * avg(l_quantity)
+from
+lineitem
+where
+l_partkey = p_partkey
+);'
+Parsed successfully!
+Number of statements: 1
+SelectStatement
+	Fields:
+		/
+			sum
+				l_extendedprice
+			7
+			Alias
+				avg_yearly
+	Sources:
+		lineitem
+		part
+	Search Conditions:
+		AND
+			AND
+				AND
+					=
+						p_partkey
+						l_partkey
+					=
+						p_brand
+						BRAND
+				=
+					p_container
+					CONTAINER
+			<
+				l_quantity
+				SelectStatement
+					Fields:
+						*
+							0.2
+							avg
+								l_quantity
+					Sources:
+						lineitem
+					Search Conditions:
+						=
+							l_partkey
+							p_partkey
+
+```
+
+### Q18
+
+```
+didi@didideMacBook-Pro example % ./example 'select
+c_name, c_custkey, o_orderkey, o_orderdate, o_totalprice, sum(l_quantity)
+from
+customer,
+orders,
+lineitem where
+o_orderkey in ( select
+l_orderkey from
+lineitem group by
+l_orderkey having
+sum(l_quantity) > 2.3
+)
+and c_custkey = o_custkey and o_orderkey = l_orderkey
+group by c_name,
+c_custkey, o_orderkey, o_orderdate, o_totalprice
+order by
+o_totalprice desc,
+o_orderdate;'
+Parsed successfully!
+Number of statements: 1
+SelectStatement
+	Fields:
+		c_name
+		c_custkey
+		o_orderkey
+		o_orderdate
+		o_totalprice
+		sum
+			l_quantity
+	Sources:
+		customer
+		orders
+		lineitem
+	Search Conditions:
+		AND
+			AND
+				IN
+					o_orderkey
+				=
+					c_custkey
+					o_custkey
+			=
+				o_orderkey
+				l_orderkey
+	GroupBy:
+		c_name
+		c_custkey
+		o_orderkey
+		o_orderdate
+		o_totalprice
+	OrderBy:
+		o_totalprice
+		descending
+		o_orderdate
+		ascending
+
+```
+
+### Q19
+
+```
+
+didi@didideMacBook-Pro example % ./example 'select
+sum(l_extendedprice * (1 - l_discount) ) as revenue
+from
+lineitem,
+part where
+(
+p_partkey = l_partkey
+and p_brand = "BRAND1"
+and p_container in ( "SM CASE", "SM BOX", "SM PACK", "SM PKG") and l_quantity >= 4.5 and l_quantity <= 4.5 + 10 and p_size between 1 and 5
+and l_shipmode in ("AIR", "AIR REG")
+and l_shipinstruct = "DELIVER IN PERSON"
+)
+or
+(
+p_partkey = l_partkey
+and p_brand = "BRAND2"
+and p_container in ("MED BAG", "MED BOX", "MED PKG", "MED PACK") and l_quantity >= 3.456 and l_quantity <= 4.56 + 10 and p_size between 1 and 10
+and l_shipmode in ("AIR", "AIR REG")
+and l_shipinstruct = "DELIVER IN PERSON"
+)
+or
+(
+p_partkey = l_partkey
+and p_brand = "BRAND3"
+and p_container in ( "LG CASE", "LG BOX", "LG PACK", "LG PKG") and l_quantity >= 3.45 and l_quantity <= 3.45 + 10 and p_size between 1 and 15
+and l_shipmode in ("AIR", "AIR REG")
+and l_shipinstruct = "DELIVER IN PERSON"
+);'
+Parsed successfully!
+Number of statements: 1
+SelectStatement
+	Fields:
+		sum
+			*
+				l_extendedprice
+				-
+					1
+					l_discount
+			Alias
+				revenue
+	Sources:
+		lineitem
+		part
+	Search Conditions:
+		OR
+			OR
+				AND
+					AND
+						AND
+							AND
+								AND
+									AND
+										AND
+											=
+												p_partkey
+												l_partkey
+											=
+												p_brand
+												BRAND1
+										IN
+											p_container
+											SM CASE
+											SM BOX
+											SM PACK
+											SM PKG
+									>=
+										l_quantity
+										4.5
+								<=
+									l_quantity
+									+
+										4.5
+										10
+							BETWEEN
+								p_size
+								1
+								5
+						IN
+							l_shipmode
+							AIR
+							AIR REG
+					=
+						l_shipinstruct
+						DELIVER IN PERSON
+				AND
+					AND
+						AND
+							AND
+								AND
+									AND
+										AND
+											=
+												p_partkey
+												l_partkey
+											=
+												p_brand
+												BRAND2
+										IN
+											p_container
+											MED BAG
+											MED BOX
+											MED PKG
+											MED PACK
+									>=
+										l_quantity
+										3.456
+								<=
+									l_quantity
+									+
+										4.56
+										10
+							BETWEEN
+								p_size
+								1
+								10
+						IN
+							l_shipmode
+							AIR
+							AIR REG
+					=
+						l_shipinstruct
+						DELIVER IN PERSON
+			AND
+				AND
+					AND
+						AND
+							AND
+								AND
+									AND
+										=
+											p_partkey
+											l_partkey
+										=
+											p_brand
+											BRAND3
+									IN
+										p_container
+										LG CASE
+										LG BOX
+										LG PACK
+										LG PKG
+								>=
+									l_quantity
+									3.45
+							<=
+								l_quantity
+								+
+									3.45
+									10
+						BETWEEN
+							p_size
+							1
+							15
+					IN
+						l_shipmode
+						AIR
+						AIR REG
+				=
+					l_shipinstruct
+					DELIVER IN PERSON
+
+```
+
+### Q20
+
+```
+didi@didideMacBook-Pro example % ./example 'select
+s_name,
+s_address from
+supplier, nation where
+s_suppkey in ( select
+ps_suppkey from
+partsupp where
+ps_partkey in ( select
+p_partkey from
+part where
+p_name like "%COLOR%")
+and ps_availqty > (
+    select
+0.5 * sum(l_quantity)
+from
+lineitem
+where
+l_partkey = ps_partkey
+and l_suppkey = ps_suppkey
+and l_shipdate >= "1202393"
+and l_shipdate < "1202343434"
+) )
+and s_nationkey = n_nationkey
+and n_name = "NATION"
+order by
+s_name;'
+Parsed successfully!
+Number of statements: 1
+SelectStatement
+	Fields:
+		s_name
+		s_address
+	Sources:
+		supplier
+		nation
+	Search Conditions:
+		AND
+			AND
+				IN
+					s_suppkey
+				=
+					s_nationkey
+					n_nationkey
+			=
+				n_name
+				NATION
+	OrderBy:
+		s_name
+		ascending
+
+```
+
+### Q21
+
+```
+didi@didideMacBook-Pro example % ./example 'select
+s_name,
+count(*) as numwait from
+supplier, lineitem l1, orders, nation
+where
+s_suppkey = l1.l_suppkey
+and o_orderkey = l1.l_orderkey
+and o_orderstatus = "F"
+and l1.l_receiptdate > l1.l_commitdate and exists (
+select
+*
+from
+lineitem l2
+where
+l2.l_orderkey = l1.l_orderkey
+and l2.l_suppkey <> l1.l_suppkey
+)
+and not exists (
+select
+*
+from
+lineitem l3
+where
+l3.l_orderkey = l1.l_orderkey
+and l3.l_suppkey <> l1.l_suppkey
+and l3.l_receiptdate > l3.l_commitdate
+)
+and s_nationkey = n_nationkey and n_name = "NATION"
+group by s_name
+order by
+numwait desc,
+s_name;'
+Parsed successfully!
+Number of statements: 1
+SelectStatement
+	Fields:
+		s_name
+		count
+			*
+			Alias
+				numwait
+	Sources:
+		supplier
+		lineitem
+			Alias
+				l1
+		orders
+		nation
+	Search Conditions:
+		AND
+			AND
+				AND
+					AND
+						AND
+							AND
+								AND
+									=
+										s_suppkey
+										l_suppkey
+											Table:
+												l1
+									=
+										o_orderkey
+										l_orderkey
+											Table:
+												l1
+								=
+									o_orderstatus
+									F
+							>
+								l_receiptdate
+									Table:
+										l1
+								l_commitdate
+									Table:
+										l1
+						EXISTS
+					NOT
+						EXISTS
+				=
+					s_nationkey
+					n_nationkey
+			=
+				n_name
+				NATION
+	GroupBy:
+		s_name
+	OrderBy:
+		numwait
+		descending
+		s_name
+		ascending
+
+```
+
+### Q22 NOT SUPPORT
+
+```
+
+select
+cntrycode,
+count(*) as numcust,
+sum(c_acctbal) as totacctbal from (
+select
+substring(c_phone from 1 for 2) as cntrycode, c_acctbal
+from
+customer
+where
+substring(c_phone from 1 for 2) in
+("1", "2", "3", "4", "5", "6", "7") and c_acctbal > (
+select
+avg(c_acctbal)
+from
+customer
+where
+c_acctbal > 0.00
+and substring (c_phone from 1 for 2) in ("1", "2", "3", "4", "5", "6", "7")
+)
+and not exists (
+select
+*
+from
+orders
+where
+o_custkey = c_custkey
+)
+) as custsale
+group by cntrycode
+order by cntrycode;
+
 ```
