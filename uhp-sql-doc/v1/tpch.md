@@ -99,7 +99,7 @@ CREATE TABLE LINEITEM ( L_ORDERKEY    INTEGER NOT NULL,
 
 ```
 
-// 生成
+// 生成 dbgen 仓库 https://github.com/electrum/tpch-dbgen
 ./dbgen -vf -s 1
 
 // 处理
