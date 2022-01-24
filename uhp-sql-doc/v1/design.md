@@ -22,3 +22,41 @@
 ##### MySQL Client Drivers
 
 针对不同语言的应用程序接入 UHP-SQL，我们维护了支持我们系统 MySQL 协议版本的客户端程序，修复 BUG，改进性能，并对 UHP-SQL 一些限制的语句在接入 Client 里面定制化。
+
+### SQL -> KV 编码
+
+如何从 SQL 编码到 kv 呢？要回答这个问题我们先来分析几个 SQL 语句：
+
+1.数据库元数据
+```
+CREATE DATABASE [dbname];
+SHOW DATABASES;
+```
+这两个 SQL 很简单，只需要把 database_ 前缀和 dbname 拼接成 key，value 就是 dbname，这样接可以支持这两个 SQL 了， SHOW DATABASES 就是去扫描 database_ 的 key 读取 value 编码返回。
+
+2.表元数据
+  
+```
+CREATE DATABASE default;
+CREATE TABLE classtab 
+( 
+Name VARCHAR(100), 
+Class VARCHAR(100), 
+Score INT, 
+PRIMARY KEY(Name)
+);
+```
+这个是 SQL 里面的建表语句，我们需要存储这个 Schema 到 KV 中，可以用 table_ 做前缀，key 里面包含数据库名和表名，value 里面包含字段名称以及字段类型信息。
+编码如下：
+
+```
+key -> table_default_classtab
+
+value -> Name^8$$Class^8$$Score^1
+         [colName1^col1TypeId$$...colNamen^colnTypeId]
+```
+
+
+
+
+
