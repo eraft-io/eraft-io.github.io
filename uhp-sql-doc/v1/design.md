@@ -56,7 +56,26 @@ value -> Name^8$$Class^8$$Score^1
          [colName1^col1TypeId$$...colNamen^colnTypeId]
 ```
 
+3.表数据信息
 
+```
+INSERT INTO classtab 
+(
+Name, 
+Class,
+Score
+) 
+VALUES 
+('Tom', 
+'B', 
+'98');
+```
 
+这是一条插入的 SQL 语句，我们把主键编码到 key 里面，value 存储行数据就可以。
 
+```
+key -> p_Tom
+
+value -> Tom$$A$$98 
+```
 
