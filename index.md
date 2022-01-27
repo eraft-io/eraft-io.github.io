@@ -11,7 +11,7 @@ UHP-SQL 是一个基于 [英特尔® 傲腾™ 持久内存 ](https://www.intel.
 
 ### 架构
 
-![UHP-SQL-v0.1.png](https://tva1.sinaimg.cn/large/006n3WWAly1gy0tvo3215j30qr0lydj1.jpg)
+![UHP-SQL-v0.1.png](figures/UHP-SQL-v0.1.png)
 
 ### 特性
 
