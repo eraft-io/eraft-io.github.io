@@ -1,3 +1,4 @@
+```
   616  wget https://cdn.mysql.com//Downloads/MySQL-8.0/mysql-8.0.28.tar.gz
   617  ls
   618  tar -zxvf mysql-8.0.28.tar.gz
@@ -28,3 +29,4 @@
   643  ./mysql-test-run
   657  ./bin/mysqld --no-defaults --user=root --initialize-insecure --basedir=/usr/local/mysql --datadir=/usr/local/mysql/data
   663  ./bin/mysqld --basedir=/usr/local/mysql --datadir=/usr/local/mysql/data --socket=/usr/local/mysql/mysql.sock --user=root
+```
