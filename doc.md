@@ -981,7 +981,3 @@ curl -L http://127.0.0.1:12380/3 -XDELETE
 (Extended Version)*
 -  codedump 网络日志 - etcd-raft 库分析
 
-
-----------
-本文首发于 GitChat，未经授权不得转载，转载需与 GitChat 联系。
-
