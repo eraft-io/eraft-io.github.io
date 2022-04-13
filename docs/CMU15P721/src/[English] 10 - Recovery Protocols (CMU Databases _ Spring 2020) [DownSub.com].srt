@@ -1,0 +1,7212 @@
+1
+00:00:01,300 --> 00:00:05,129
+[Music]
+
+2
+00:00:05,200 --> 00:00:05,930
+[Applause]
+
+3
+00:00:05,930 --> 00:00:08,630
+[Music]
+
+4
+00:00:08,630 --> 00:00:10,020
+[Applause]
+
+5
+00:00:10,020 --> 00:00:11,179
+[Music]
+
+6
+00:00:11,179 --> 00:00:14,549
+all right so today we're talking for
+
+7
+00:00:14,549 --> 00:00:16,859
+covering protocols and so there'll be
+
+8
+00:00:16,859 --> 00:00:20,189
+some you know in the interruption class
+
+9
+00:00:20,189 --> 00:00:22,789
+we talk about areas we talk about how to
+
+10
+00:00:22,789 --> 00:00:24,990
+we want to restore the days after a
+
+11
+00:00:24,990 --> 00:00:27,480
+crash and in a memory database we're
+
+12
+00:00:27,480 --> 00:00:28,470
+gonna do the exact same thing right
+
+13
+00:00:28,470 --> 00:00:31,740
+obviously that if we the database you
+
+14
+00:00:31,740 --> 00:00:34,110
+know pretend it's down and crashes we
+
+15
+00:00:34,110 --> 00:00:35,820
+won't want to be able to restart the
+
+16
+00:00:35,820 --> 00:00:38,070
+system and put the database back to the
+
+17
+00:00:38,070 --> 00:00:40,320
+correct state such that we guarantee the
+
+18
+00:00:40,320 --> 00:00:42,059
+asset ethnicity and durability
+
+19
+00:00:42,059 --> 00:00:43,739
+durability guarantees they would have an
+
+20
+00:00:43,739 --> 00:00:47,489
+asset system right so animosity means
+
+21
+00:00:47,489 --> 00:00:49,170
+that we can't have any partial
+
+22
+00:00:49,170 --> 00:00:52,020
+transactions consistency means that we
+
+23
+00:00:52,020 --> 00:00:53,550
+don't put the database and like a funky
+
+24
+00:00:53,550 --> 00:00:54,870
+state where like the data could be
+
+25
+00:00:54,870 --> 00:00:56,760
+actually incorrect and then durability
+
+26
+00:00:56,760 --> 00:00:58,109
+just means that you know if we write
+
+27
+00:00:58,109 --> 00:00:59,820
+changes to the database we tell to
+
+28
+00:00:59,820 --> 00:01:01,770
+commit a transaction the outside world
+
+29
+00:01:01,770 --> 00:01:03,270
+hears that that transaction is committed
+
+30
+00:01:03,270 --> 00:01:05,939
+when we come back then all our changes
+
+31
+00:01:05,939 --> 00:01:08,490
+are still there so every recovery
+
+32
+00:01:08,490 --> 00:01:10,290
+algorithms gonna have two parts there's
+
+33
+00:01:10,290 --> 00:01:12,240
+the part we're gonna do at runtime where
+
+34
+00:01:12,240 --> 00:01:14,100
+as we process transactions and they
+
+35
+00:01:14,100 --> 00:01:15,750
+update the database we're going to take
+
+36
+00:01:15,750 --> 00:01:17,520
+some extra steps to record some extra
+
+37
+00:01:17,520 --> 00:01:20,549
+information so that if we crash and come
+
+38
+00:01:20,549 --> 00:01:21,840
+back we can look at extra extra
+
+39
+00:01:21,840 --> 00:01:23,670
+information to figure out what was going
+
+40
+00:01:23,670 --> 00:01:25,409
+on in the system to put us back in the
+
+41
+00:01:25,409 --> 00:01:27,630
+correct State and then there's the
+
+42
+00:01:27,630 --> 00:01:29,939
+recovery protocol you actually do after
+
+43
+00:01:29,939 --> 00:01:31,229
+the crash or after a failure when you
+
+44
+00:01:31,229 --> 00:01:32,369
+look at all the information you've
+
+45
+00:01:32,369 --> 00:01:34,320
+collected that you generated in the
+
+46
+00:01:34,320 --> 00:01:36,270
+normal processing and then you figure
+
+47
+00:01:36,270 --> 00:01:37,740
+out all right what I need to do to go
+
+48
+00:01:37,740 --> 00:01:42,630
+back so we'll talk a little bit about we
+
+49
+00:01:42,630 --> 00:01:46,049
+spent time took my Mme database or
+
+50
+00:01:46,049 --> 00:01:47,759
+logging part of all the protocols the
+
+51
+00:01:47,759 --> 00:01:49,500
+paper I had you guys read was not in a
+
+52
+00:01:49,500 --> 00:01:51,240
+memory database and I'll explain why I
+
+53
+00:01:51,240 --> 00:01:54,600
+assigned it the there's actually not a
+
+54
+00:01:54,600 --> 00:01:57,659
+lot but not many papers about in-memory
+
+55
+00:01:57,659 --> 00:01:59,310
+database login recovery when you look
+
+56
+00:01:59,310 --> 00:02:01,290
+back at the early ones from the 1980s
+
+57
+00:02:01,290 --> 00:02:03,390
+they all make this big assumption that
+
+58
+00:02:03,390 --> 00:02:06,509
+the log or the database itself will be
+
+59
+00:02:06,509 --> 00:02:08,220
+backed by what is called non-volatile
+
+60
+00:02:08,220 --> 00:02:10,889
+memory or persistent memory back in the
+
+61
+00:02:10,889 --> 00:02:12,569
+1980s there's just mint battery-backed
+
+62
+00:02:12,569 --> 00:02:13,350
+of DRAM
+
+63
+00:02:13,350 --> 00:02:14,370
+so you have a little battery on the
+
+64
+00:02:14,370 --> 00:02:16,710
+motherboard that could be triggered any
+
+65
+00:02:16,710 --> 00:02:18,060
+time you recognize that the powers can
+
+66
+00:02:18,060 --> 00:02:20,160
+go down and they used the battery to
+
+67
+00:02:20,160 --> 00:02:21,690
+actually gracefully shut down the memory
+
+68
+00:02:21,690 --> 00:02:22,980
+read it out the disk and so when you
+
+69
+00:02:22,980 --> 00:02:25,290
+came back all your contents or D Ram was
+
+70
+00:02:25,290 --> 00:02:28,530
+still there so battery backed FD ran has
+
+71
+00:02:28,530 --> 00:02:30,330
+been around for a long time it's not
+
+72
+00:02:30,330 --> 00:02:33,420
+widely used because it takes up space on
+
+73
+00:02:33,420 --> 00:02:35,730
+the motherboard right they they're great
+
+74
+00:02:35,730 --> 00:02:37,110
+until you try to use them and they don't
+
+75
+00:02:37,110 --> 00:02:38,310
+work right because you have to make sure
+
+76
+00:02:38,310 --> 00:02:39,330
+the battery is always functioning
+
+77
+00:02:39,330 --> 00:02:42,630
+correctly so you don't see that too
+
+78
+00:02:42,630 --> 00:02:44,490
+often the wall if you certainly can't go
+
+79
+00:02:44,490 --> 00:02:46,350
+to Amazon and get a AWS instance that
+
+80
+00:02:46,350 --> 00:02:49,770
+has has this so the other kind of
+
+81
+00:02:49,770 --> 00:02:50,790
+persistent memory though instead of
+
+82
+00:02:50,790 --> 00:02:53,070
+betting battery back to DRAM is to do is
+
+83
+00:02:53,070 --> 00:02:54,270
+what it's called true non-volatile
+
+84
+00:02:54,270 --> 00:02:56,280
+memory or true persistent memory and so
+
+85
+00:02:56,280 --> 00:02:57,750
+for years and years and years every time
+
+86
+00:02:57,750 --> 00:03:00,180
+I taught this class I would say Oh novel
+
+87
+00:03:00,180 --> 00:03:01,920
+you know real novelty memories coming
+
+88
+00:03:01,920 --> 00:03:03,420
+out one year from now one year from now
+
+89
+00:03:03,420 --> 00:03:06,540
+and finally last year Intel stepped up
+
+90
+00:03:06,540 --> 00:03:08,460
+and released true non-volatile memory
+
+91
+00:03:08,460 --> 00:03:11,850
+called the op team and again the idea is
+
+92
+00:03:11,850 --> 00:03:13,530
+that it goes into a dim slot like you
+
+93
+00:03:13,530 --> 00:03:15,360
+normally would and with DRAM but this
+
+94
+00:03:15,360 --> 00:03:18,300
+has magic inside of it that says you
+
+95
+00:03:18,300 --> 00:03:20,790
+know if I if I lose power I still
+
+96
+00:03:20,790 --> 00:03:22,440
+maintain everything it's me slightly
+
+97
+00:03:22,440 --> 00:03:24,690
+slower than DRAM
+
+98
+00:03:24,690 --> 00:03:26,940
+but it's coming way faster than then
+
+99
+00:03:26,940 --> 00:03:28,740
+SSDs so we're not going to talk about
+
+100
+00:03:28,740 --> 00:03:30,840
+nvm stuff or pass it to memory right now
+
+101
+00:03:30,840 --> 00:03:32,760
+we'll cover this at the end of the
+
+102
+00:03:32,760 --> 00:03:35,940
+semester yes the question is it really
+
+103
+00:03:35,940 --> 00:03:40,940
+expensive with that what do you say oh
+
+104
+00:03:42,620 --> 00:03:46,340
+yes and no it's not like it's not like
+
+105
+00:03:46,340 --> 00:03:49,230
+outlandish it's like maybe a couple
+
+106
+00:03:49,230 --> 00:03:50,730
+thousand for like a hundred twenty eight
+
+107
+00:03:50,730 --> 00:03:52,320
+gigs or something like that I don't know
+
+108
+00:03:52,320 --> 00:03:53,460
+the exact prices I don't think until
+
+109
+00:03:53,460 --> 00:03:55,500
+polishes them you may be able to get
+
+110
+00:03:55,500 --> 00:03:57,930
+from OEM but yeah it's more so than DRAM
+
+111
+00:03:57,930 --> 00:04:00,900
+more up spensive than than SSDs but like
+
+112
+00:04:00,900 --> 00:04:02,520
+it has certain properties that you can't
+
+113
+00:04:02,520 --> 00:04:04,010
+get out of an SSD
+
+114
+00:04:04,010 --> 00:04:06,330
+you can also get it in a form factor
+
+115
+00:04:06,330 --> 00:04:08,940
+that goes down on the PCI Express so it
+
+116
+00:04:08,940 --> 00:04:10,590
+is that looks like a flash drive even
+
+117
+00:04:10,590 --> 00:04:12,060
+though it's a special basically it's not
+
+118
+00:04:12,060 --> 00:04:14,540
+NAND flash it's not DRAM it's a special
+
+119
+00:04:14,540 --> 00:04:16,260
+storage medium called phase change
+
+120
+00:04:16,260 --> 00:04:18,060
+memory you can get it in other form
+
+121
+00:04:18,060 --> 00:04:19,529
+factors and that one though the prices
+
+122
+00:04:19,529 --> 00:04:21,930
+are close to what SSDs are but for the
+
+123
+00:04:21,930 --> 00:04:24,020
+dim stuff it's more pricey
+
+124
+00:04:24,020 --> 00:04:27,000
+okay we'll cover this later in the
+
+125
+00:04:27,000 --> 00:04:27,930
+semester
+
+126
+00:04:27,930 --> 00:04:30,210
+the point of just to make is like if you
+
+127
+00:04:30,210 --> 00:04:32,580
+go read the early papers on logging
+
+128
+00:04:32,580 --> 00:04:34,770
+protocols for in memory databases they
+
+129
+00:04:34,770 --> 00:04:36,150
+all assume this but back then they
+
+130
+00:04:36,150 --> 00:04:38,250
+didn't really have it so we still have
+
+131
+00:04:38,250 --> 00:04:41,970
+to design our protocols using relying on
+
+132
+00:04:41,970 --> 00:04:45,690
+SSDs or spending just hard drives so the
+
+133
+00:04:45,690 --> 00:04:46,830
+good thing though for us in an
+
+134
+00:04:46,830 --> 00:04:48,510
+innovative base is that our recovery
+
+135
+00:04:48,510 --> 00:04:50,340
+protocol is gonna be slightly easier
+
+136
+00:04:50,340 --> 00:04:53,070
+than what we have to do in a dis
+
+137
+00:04:53,070 --> 00:04:54,810
+coordinate system and this is just due
+
+138
+00:04:54,810 --> 00:04:56,880
+to the fact that since the primaries are
+
+139
+00:04:56,880 --> 00:04:58,290
+the storage location of the database is
+
+140
+00:04:58,290 --> 00:05:01,140
+in memory when we crash or there's a
+
+141
+00:05:01,140 --> 00:05:04,350
+failure that memory is wiped so when we
+
+142
+00:05:04,350 --> 00:05:06,390
+come back all we need to do is just load
+
+143
+00:05:06,390 --> 00:05:08,370
+in the last checkpoint and replay the
+
+144
+00:05:08,370 --> 00:05:10,800
+law from disk and we don't have to worry
+
+145
+00:05:10,800 --> 00:05:13,470
+about any dirty pages from transactions
+
+146
+00:05:13,470 --> 00:05:15,900
+that may be linking around on disk that
+
+147
+00:05:15,900 --> 00:05:17,490
+we have to reverse as we would in a disk
+
+148
+00:05:17,490 --> 00:05:19,740
+coordinate system so we don't have to
+
+149
+00:05:19,740 --> 00:05:22,110
+track dirty pages right as we run like
+
+150
+00:05:22,110 --> 00:05:23,520
+if it turns actually make some changes
+
+151
+00:05:23,520 --> 00:05:25,380
+and then it doesn't commit and we crash
+
+152
+00:05:25,380 --> 00:05:27,660
+well all those memory pages get wiped so
+
+153
+00:05:27,660 --> 00:05:29,400
+that's fine all right so this means now
+
+154
+00:05:29,400 --> 00:05:30,960
+we don't have to store the undo records
+
+155
+00:05:30,960 --> 00:05:31,920
+to reverse these things because there's
+
+156
+00:05:31,920 --> 00:05:33,270
+nothing to reverse the only thing we
+
+157
+00:05:33,270 --> 00:05:35,190
+need to write out the disk is just redo
+
+158
+00:05:35,190 --> 00:05:37,560
+information the other big difference is
+
+159
+00:05:37,560 --> 00:05:39,510
+going to be that we're not gonna log any
+
+160
+00:05:39,510 --> 00:05:43,380
+changes that we make to indexes so in a
+
+161
+00:05:43,380 --> 00:05:46,290
+disk based system as I update my table
+
+162
+00:05:46,290 --> 00:05:48,420
+and that causes updates the indexes I'm
+
+163
+00:05:48,420 --> 00:05:49,760
+also going to create log records that
+
+164
+00:05:49,760 --> 00:05:53,550
+that record the changes to the index but
+
+165
+00:05:53,550 --> 00:05:55,380
+in memory database I don't do any of
+
+166
+00:05:55,380 --> 00:05:57,810
+that and so when I crash I have to load
+
+167
+00:05:57,810 --> 00:05:59,220
+the database back in from the checkpoint
+
+168
+00:05:59,220 --> 00:06:01,830
+file anyway so the disk is way more
+
+169
+00:06:01,830 --> 00:06:03,360
+expensive than doing the computation so
+
+170
+00:06:03,360 --> 00:06:05,310
+I'm just gonna rebuild the indexes on
+
+171
+00:06:05,310 --> 00:06:06,980
+the fly as I love the checkpoint in and
+
+172
+00:06:06,980 --> 00:06:10,100
+in a disk based system you don't do that
+
+173
+00:06:10,100 --> 00:06:12,780
+so we still have to deal with the fact
+
+174
+00:06:12,780 --> 00:06:15,270
+that disk is gonna be slow and so we
+
+175
+00:06:15,270 --> 00:06:16,320
+still wanna take advantage of all the
+
+176
+00:06:16,320 --> 00:06:17,670
+optimizations we would do in a
+
+177
+00:06:17,670 --> 00:06:19,800
+Discordian system like group commit
+
+178
+00:06:19,800 --> 00:06:22,740
+batching things doing specular lock
+
+179
+00:06:22,740 --> 00:06:24,920
+releases things like that all those
+
+180
+00:06:24,920 --> 00:06:26,760
+optimizations are still gonna apply for
+
+181
+00:06:26,760 --> 00:06:30,000
+us here even though we're in memory so
+
+182
+00:06:30,000 --> 00:06:31,950
+today I'm gonna talk about first about
+
+183
+00:06:31,950 --> 00:06:33,750
+different types of logging schemes and
+
+184
+00:06:33,750 --> 00:06:34,980
+again the paper you had you guys read
+
+185
+00:06:34,980 --> 00:06:36,990
+was for a disk or name system but it's
+
+186
+00:06:36,990 --> 00:06:38,610
+relying on multi versioning so I think
+
+187
+00:06:38,610 --> 00:06:41,340
+that's kind and we'll see how that works
+
+188
+00:06:41,340 --> 00:06:42,450
+and then we'll talk about checkpoint
+
+189
+00:06:42,450 --> 00:06:44,880
+protocols and these two here are what
+
+190
+00:06:44,880 --> 00:06:46,890
+you need for to guarantee your database
+
+191
+00:06:46,890 --> 00:06:48,180
+will actually this is all you really
+
+192
+00:06:48,180 --> 00:06:49,260
+need to guarantee your database is
+
+193
+00:06:49,260 --> 00:06:51,360
+durable this is a way to speed things up
+
+194
+00:06:51,360 --> 00:06:53,370
+after a crash and this is a way to speed
+
+195
+00:06:53,370 --> 00:06:54,930
+things up if you're gonna do a restart
+
+196
+00:06:54,930 --> 00:06:56,280
+and you know that it's gonna be
+
+197
+00:06:56,280 --> 00:06:57,390
+scheduled at a certain time
+
+198
+00:06:57,390 --> 00:06:59,160
+so there's one you have to absolutely
+
+199
+00:06:59,160 --> 00:07:00,990
+have to have this one is an optimization
+
+200
+00:07:00,990 --> 00:07:02,550
+to make this go faster and this is an
+
+201
+00:07:02,550 --> 00:07:03,780
+optimization to avoid having to do all
+
+202
+00:07:03,780 --> 00:07:05,150
+this okay
+
+203
+00:07:05,150 --> 00:07:09,690
+all right so at a high level there's two
+
+204
+00:07:09,690 --> 00:07:11,940
+types of logging schemes this physical
+
+205
+00:07:11,940 --> 00:07:13,770
+logging and logical logging physical
+
+206
+00:07:13,770 --> 00:07:16,380
+logging is like it taking a DIF as you
+
+207
+00:07:16,380 --> 00:07:18,390
+wouldn't in get the idea is that we're
+
+208
+00:07:18,390 --> 00:07:19,710
+gonna record the changes that we're
+
+209
+00:07:19,710 --> 00:07:23,280
+making to a record at the bite level if
+
+210
+00:07:23,280 --> 00:07:24,840
+you think of also an NBC C when we're
+
+211
+00:07:24,840 --> 00:07:26,580
+using a deathless tour I'm just
+
+212
+00:07:26,580 --> 00:07:28,350
+recording I here's the column that I
+
+213
+00:07:28,350 --> 00:07:32,820
+modified here's the new value right so
+
+214
+00:07:32,820 --> 00:07:34,620
+then after a crash we're essentially
+
+215
+00:07:34,620 --> 00:07:36,240
+good it's gonna replay these log records
+
+216
+00:07:36,240 --> 00:07:38,600
+and reapply the changes to the columns
+
+217
+00:07:38,600 --> 00:07:41,130
+the other approach is do logical logging
+
+218
+00:07:41,130 --> 00:07:43,110
+and this is where instead of storing and
+
+219
+00:07:43,110 --> 00:07:44,490
+the low-level bytes were modifying
+
+220
+00:07:44,490 --> 00:07:47,130
+within a tuple we're just going to store
+
+221
+00:07:47,130 --> 00:07:49,230
+the high-level operation that the cap
+
+222
+00:07:49,230 --> 00:07:52,470
+application invoked or are requested on
+
+223
+00:07:52,470 --> 00:07:55,290
+the davison to make that change so it
+
+224
+00:07:55,290 --> 00:07:56,550
+would be like recording the actual
+
+225
+00:07:56,550 --> 00:07:57,780
+sequel statements that they would send
+
+226
+00:07:57,780 --> 00:08:00,060
+us the answer update delete queries so
+
+227
+00:08:00,060 --> 00:08:01,890
+the idea here is if I have a database
+
+228
+00:08:01,890 --> 00:08:04,410
+but the table has a thousand tuples like
+
+229
+00:08:04,410 --> 00:08:06,200
+make it big maybe a billion tuples if
+
+230
+00:08:06,200 --> 00:08:08,700
+I'm doing physical logging with one
+
+231
+00:08:08,700 --> 00:08:10,560
+query that needs to update all 1 billion
+
+232
+00:08:10,560 --> 00:08:12,720
+tuples that I need 1 billion log records
+
+233
+00:08:12,720 --> 00:08:13,770
+the correspond to every single tuple
+
+234
+00:08:13,770 --> 00:08:15,780
+that I bought that I've modified but if
+
+235
+00:08:15,780 --> 00:08:17,760
+I'm doing logical logging then I only
+
+236
+00:08:17,760 --> 00:08:19,290
+need to record that single update
+
+237
+00:08:19,290 --> 00:08:21,600
+statement and that's enough for my
+
+238
+00:08:21,600 --> 00:08:24,030
+system after restart to really play that
+
+239
+00:08:24,030 --> 00:08:25,530
+update and put me back in the correct
+
+240
+00:08:25,530 --> 00:08:30,090
+State so logical logging is gonna say be
+
+241
+00:08:30,090 --> 00:08:32,159
+much smaller log files and potentially
+
+242
+00:08:32,159 --> 00:08:34,970
+much faster to commit at runtime but the
+
+243
+00:08:34,970 --> 00:08:37,409
+recovery processes could potentially be
+
+244
+00:08:37,409 --> 00:08:40,200
+more expensive because there's no magic
+
+245
+00:08:40,200 --> 00:08:41,970
+I can do to make this update go faster
+
+246
+00:08:41,970 --> 00:08:44,010
+during recovery so but if I have to
+
+247
+00:08:44,010 --> 00:08:45,330
+update a billion tuples and it takes an
+
+248
+00:08:45,330 --> 00:08:46,590
+hour the first time I run it
+
+249
+00:08:46,590 --> 00:08:49,260
+after I crash and restart and replayed
+
+250
+00:08:49,260 --> 00:08:51,240
+this update query it might take a you
+
+251
+00:08:51,240 --> 00:08:53,820
+know an hour again so my taking a
+
+252
+00:08:53,820 --> 00:08:55,100
+delayed amount of time it takes
+
+253
+00:08:55,100 --> 00:08:56,839
+for me for my database to come back
+
+254
+00:08:56,839 --> 00:09:00,290
+online so for this reason most systems
+
+255
+00:09:00,290 --> 00:09:01,430
+are going to choose physical blogging
+
+256
+00:09:01,430 --> 00:09:03,769
+and this is only used in certain
+
+257
+00:09:03,769 --> 00:09:08,360
+specialized systems okay now the
+
+258
+00:09:08,360 --> 00:09:10,459
+question is when do we actually Lush the
+
+259
+00:09:10,459 --> 00:09:11,720
+log records that our transaction
+
+260
+00:09:11,720 --> 00:09:14,209
+generates so the first approach is do
+
+261
+00:09:14,209 --> 00:09:16,819
+all at once meaning as it transaction
+
+262
+00:09:16,819 --> 00:09:18,649
+runs and they're making changes they're
+
+263
+00:09:18,649 --> 00:09:19,790
+executing queries that update the
+
+264
+00:09:19,790 --> 00:09:21,889
+database doesn't matter what it's
+
+265
+00:09:21,889 --> 00:09:23,870
+physical logging or logical logging I'm
+
+266
+00:09:23,870 --> 00:09:26,089
+just going to record in memory in this
+
+267
+00:09:26,089 --> 00:09:27,980
+log buffer for my transaction here's
+
+268
+00:09:27,980 --> 00:09:30,470
+here's all the log records and only when
+
+269
+00:09:30,470 --> 00:09:31,970
+the transaction says go ahead and commit
+
+270
+00:09:31,970 --> 00:09:34,670
+we pass our validation then we hand off
+
+271
+00:09:34,670 --> 00:09:36,290
+those log records to some our logger
+
+272
+00:09:36,290 --> 00:09:38,120
+thread who then flushes it out the disk
+
+273
+00:09:38,120 --> 00:09:41,569
+course we have to wait until all those
+
+274
+00:09:41,569 --> 00:09:42,920
+lawbreakers are written to disk before
+
+275
+00:09:42,920 --> 00:09:44,269
+we can tell the outside world that our
+
+276
+00:09:44,269 --> 00:09:46,160
+transaction committed so it could be a
+
+277
+00:09:46,160 --> 00:09:47,569
+you know updated billion tuples and
+
+278
+00:09:47,569 --> 00:09:49,190
+repairing wall records either right wait
+
+279
+00:09:49,190 --> 00:09:51,170
+for those 1 billion lower your blog
+
+280
+00:09:51,170 --> 00:09:53,720
+records to get written to disk the other
+
+281
+00:09:53,720 --> 00:09:55,699
+approach to do incremental flushing and
+
+282
+00:09:55,699 --> 00:09:58,550
+this is a sh transactions run and there
+
+283
+00:09:58,550 --> 00:09:59,930
+cumulating these these law of records
+
+284
+00:09:59,930 --> 00:10:02,870
+when they're when they're their local
+
+285
+00:10:02,870 --> 00:10:04,759
+log buffer gets full they could hand
+
+286
+00:10:04,759 --> 00:10:07,550
+that off to some some writer thread who
+
+287
+00:10:07,550 --> 00:10:08,899
+can then start writing about the disk
+
+288
+00:10:08,899 --> 00:10:10,970
+and then they get a new log buffer to
+
+289
+00:10:10,970 --> 00:10:13,040
+start filling up with new log records so
+
+290
+00:10:13,040 --> 00:10:16,160
+that means that if there's a crash now
+
+291
+00:10:16,160 --> 00:10:18,560
+in the log there may be log records from
+
+292
+00:10:18,560 --> 00:10:20,170
+transactions that did not commit yet
+
+293
+00:10:20,170 --> 00:10:21,920
+right because we're allowing things
+
+294
+00:10:21,920 --> 00:10:24,050
+getting written out before before
+
+295
+00:10:24,050 --> 00:10:26,779
+everything is finished so in this
+
+296
+00:10:26,779 --> 00:10:28,399
+approach here for the all at once
+
+297
+00:10:28,399 --> 00:10:30,410
+this makes recovery easier because I
+
+298
+00:10:30,410 --> 00:10:34,100
+know if I crash and come back I'm almost
+
+299
+00:10:34,100 --> 00:10:36,230
+never gonna see log records from
+
+300
+00:10:36,230 --> 00:10:38,870
+transactions that did not commit I may
+
+301
+00:10:38,870 --> 00:10:41,689
+see a transaction did commit and they
+
+302
+00:10:41,689 --> 00:10:43,310
+start writing out all their log records
+
+303
+00:10:43,310 --> 00:10:44,779
+but they but we crashed before we write
+
+304
+00:10:44,779 --> 00:10:46,160
+the rest of it and the commit message in
+
+305
+00:10:46,160 --> 00:10:47,720
+that case I certainly have to undo it
+
+306
+00:10:47,720 --> 00:10:49,610
+but most of the times I'll have all the
+
+307
+00:10:49,610 --> 00:10:52,220
+log records in the case of incremental
+
+308
+00:10:52,220 --> 00:10:54,350
+flushing I have to do some extra work to
+
+309
+00:10:54,350 --> 00:10:55,730
+go figure out here's a bunch of
+
+310
+00:10:55,730 --> 00:10:57,470
+transactions that that haven't finished
+
+311
+00:10:57,470 --> 00:11:00,170
+let me go ahead and make sure I don't we
+
+312
+00:11:00,170 --> 00:11:02,720
+apply their changes so this is not that
+
+313
+00:11:02,720 --> 00:11:04,309
+big of a deal because again we don't
+
+314
+00:11:04,309 --> 00:11:05,510
+write out any dirty pages
+
+315
+00:11:05,510 --> 00:11:07,130
+we're reloading from the check one
+
+316
+00:11:07,130 --> 00:11:08,240
+anyway it's just we have to do some
+
+317
+00:11:08,240 --> 00:11:08,720
+extra process
+
+318
+00:11:08,720 --> 00:11:09,889
+singing the Lord make sure we skip
+
+319
+00:11:09,889 --> 00:11:13,060
+things that should have committed yes
+
+320
+00:11:14,589 --> 00:11:26,360
+yes yes and those 5 billion things God
+
+321
+00:11:26,360 --> 00:11:36,050
+stood yes and cracked yes again there's
+
+322
+00:11:36,050 --> 00:11:40,220
+nothing to undo but updated what and
+
+323
+00:11:40,220 --> 00:11:43,430
+updated in memory pages we crash that
+
+324
+00:11:43,430 --> 00:11:46,069
+memories gone so when we when we come
+
+325
+00:11:46,069 --> 00:11:48,189
+back online we're loading the checkpoint
+
+326
+00:11:48,189 --> 00:11:52,730
+there's no dirty pages right it's just
+
+327
+00:11:52,730 --> 00:11:54,529
+in this case here like we'll talk about
+
+328
+00:11:54,529 --> 00:11:57,860
+replication next next class but like
+
+329
+00:11:57,860 --> 00:11:59,360
+it's sorta like when do I send the
+
+330
+00:11:59,360 --> 00:12:01,189
+outside world like a toy to a replica
+
+331
+00:12:01,189 --> 00:12:03,079
+hey here's here's all my money updates
+
+332
+00:12:03,079 --> 00:12:05,120
+for my transaction in this case also -
+
+333
+00:12:05,120 --> 00:12:06,829
+if I update 10 billion tuples I had to
+
+334
+00:12:06,829 --> 00:12:08,149
+have a log buffer that can handle 10
+
+335
+00:12:08,149 --> 00:12:10,339
+billion tuples and I may run out of
+
+336
+00:12:10,339 --> 00:12:12,259
+memory so for this reason most systems
+
+337
+00:12:12,259 --> 00:12:13,399
+are gonna do this approach but there are
+
+338
+00:12:13,399 --> 00:12:17,149
+some advantages to doing this all right
+
+339
+00:12:17,149 --> 00:12:18,439
+these are the standard techniques we
+
+340
+00:12:18,439 --> 00:12:20,779
+talked about before in the introduction
+
+341
+00:12:20,779 --> 00:12:22,759
+class it would still apply for us in a
+
+342
+00:12:22,759 --> 00:12:24,709
+in Murray system so we'll do group
+
+343
+00:12:24,709 --> 00:12:26,660
+commit it just means that we had this
+
+344
+00:12:26,660 --> 00:12:29,300
+this log buffer that we can fill in with
+
+345
+00:12:29,300 --> 00:12:30,889
+the blog records from different
+
+346
+00:12:30,889 --> 00:12:33,139
+transactions and that we can then flush
+
+347
+00:12:33,139 --> 00:12:34,250
+them out whenever that log buffer is
+
+348
+00:12:34,250 --> 00:12:36,019
+full and then have a log buffer another
+
+349
+00:12:36,019 --> 00:12:37,279
+log buffer start getting filled out by
+
+350
+00:12:37,279 --> 00:12:39,709
+other transactions and the idea here is
+
+351
+00:12:39,709 --> 00:12:41,569
+we when amortize the essent costs across
+
+352
+00:12:41,569 --> 00:12:43,399
+multiple transactions so if you're the
+
+353
+00:12:43,399 --> 00:12:45,290
+first guy getting out of this queue then
+
+354
+00:12:45,290 --> 00:12:46,730
+yes you wait the longest because it's
+
+355
+00:12:46,730 --> 00:12:48,350
+wait for the log buffer to get full but
+
+356
+00:12:48,350 --> 00:12:49,399
+if they're the last guy then you're
+
+357
+00:12:49,399 --> 00:12:51,019
+basically running with a dedicated F
+
+358
+00:12:51,019 --> 00:12:53,870
+sync all right so this is a really old
+
+359
+00:12:53,870 --> 00:12:56,120
+technique as I said it is used in pretty
+
+360
+00:12:56,120 --> 00:12:57,559
+much every system today it was
+
+361
+00:12:57,559 --> 00:12:59,089
+originally developed for this thing
+
+362
+00:12:59,089 --> 00:13:01,910
+called fast path which was a specialized
+
+363
+00:13:01,910 --> 00:13:05,149
+in memory engine for ibm's IMS from the
+
+364
+00:13:05,149 --> 00:13:07,490
+early 1980s but like I said everyone
+
+365
+00:13:07,490 --> 00:13:11,059
+pretty much does does this today the
+
+366
+00:13:11,059 --> 00:13:12,319
+other thing we can do now which is
+
+367
+00:13:12,319 --> 00:13:13,699
+related to the speculative lock release
+
+368
+00:13:13,699 --> 00:13:16,339
+or specular reads we saw under Hecate on
+
+369
+00:13:16,339 --> 00:13:19,429
+Andrew MVCC is that when in transaction
+
+370
+00:13:19,429 --> 00:13:21,889
+goes it goes ahead and commits we don't
+
+371
+00:13:21,889 --> 00:13:22,610
+have to wait
+
+372
+00:13:22,610 --> 00:13:25,549
+for the the updates to become durable on
+
+373
+00:13:25,549 --> 00:13:28,369
+disk before we release all our locks we
+
+374
+00:13:28,369 --> 00:13:29,869
+can let other transactions start
+
+375
+00:13:29,869 --> 00:13:31,959
+modifying the tuples that we've modified
+
+376
+00:13:31,959 --> 00:13:34,279
+assuming those log records will get will
+
+377
+00:13:34,279 --> 00:13:35,929
+get written out longer getting written
+
+378
+00:13:35,929 --> 00:13:37,579
+on some desk well they read things that
+
+379
+00:13:37,579 --> 00:13:39,739
+we modify to me before the lower has a
+
+380
+00:13:39,739 --> 00:13:42,739
+flush to disk and we have to keep track
+
+381
+00:13:42,739 --> 00:13:43,970
+of that we did these spec into reads
+
+382
+00:13:43,970 --> 00:13:45,139
+even though the transactions it's
+
+383
+00:13:45,139 --> 00:13:46,699
+logical is committed physically it
+
+384
+00:13:46,699 --> 00:13:48,290
+hasn't gotten made the disk gap so we
+
+385
+00:13:48,290 --> 00:13:49,610
+know that if any terms that can read
+
+386
+00:13:49,610 --> 00:13:51,410
+something that we wrote we do have they
+
+387
+00:13:51,410 --> 00:13:53,329
+have to get stalled until we actually
+
+388
+00:13:53,329 --> 00:13:55,069
+flush the disk so that means that my
+
+389
+00:13:55,069 --> 00:13:56,480
+read-only transaction then it reads an
+
+390
+00:13:56,480 --> 00:13:59,089
+update from from your transaction but
+
+391
+00:13:59,089 --> 00:14:00,259
+your transaction has been written the
+
+392
+00:14:00,259 --> 00:14:01,639
+diskette I have to wait for you to get
+
+393
+00:14:01,639 --> 00:14:05,119
+flushed before I can get committed again
+
+394
+00:14:05,119 --> 00:14:07,339
+this is a standard technique and NBCC
+
+395
+00:14:07,339 --> 00:14:09,319
+you know we would know this information
+
+396
+00:14:09,319 --> 00:14:10,939
+because we maintains and maintain the
+
+397
+00:14:10,939 --> 00:14:12,980
+state map that says there's transactions
+
+398
+00:14:12,980 --> 00:14:14,420
+log records have not been flushed yet so
+
+399
+00:14:14,420 --> 00:14:15,709
+therefore you can't commit right away if
+
+400
+00:14:15,709 --> 00:14:20,029
+you read something from them ok so I
+
+401
+00:14:20,029 --> 00:14:22,220
+sort of alluded this a little bit now in
+
+402
+00:14:22,220 --> 00:14:26,209
+this last couple slides where if we have
+
+403
+00:14:26,209 --> 00:14:29,059
+a multi version system then the the
+
+404
+00:14:29,059 --> 00:14:30,529
+Delta records we're going to generate
+
+405
+00:14:30,529 --> 00:14:33,860
+for MVCC are more or less the same thing
+
+406
+00:14:33,860 --> 00:14:37,549
+we're gonna generate for in our log it's
+
+407
+00:14:37,549 --> 00:14:39,319
+not exactly the same because depending
+
+408
+00:14:39,319 --> 00:14:40,579
+however doing orders the newest or
+
+409
+00:14:40,579 --> 00:14:42,259
+newest oldest right we could be
+
+410
+00:14:42,259 --> 00:14:44,209
+generating redo records or undo records
+
+411
+00:14:44,209 --> 00:14:46,879
+alright for our tuples are modifying
+
+412
+00:14:46,879 --> 00:14:51,199
+whereas the the database log file wants
+
+413
+00:14:51,199 --> 00:14:52,579
+to have redo records at least four in
+
+414
+00:14:52,579 --> 00:14:54,829
+memory database so the idea is that what
+
+415
+00:14:54,829 --> 00:14:57,439
+if we can combine all the metadata we're
+
+416
+00:14:57,439 --> 00:14:59,449
+generating for MVCC with all the
+
+417
+00:14:59,449 --> 00:15:02,179
+metadata or Jenny generating with the
+
+418
+00:15:02,179 --> 00:15:04,309
+log file and that way we're not
+
+419
+00:15:04,309 --> 00:15:07,610
+duplicating this effort so that was the
+
+420
+00:15:07,610 --> 00:15:09,799
+paper I had you guys read for today it
+
+421
+00:15:09,799 --> 00:15:12,470
+came out and just this year and or last
+
+422
+00:15:12,470 --> 00:15:14,720
+year and got to be 2019 so as I said
+
+423
+00:15:14,720 --> 00:15:17,629
+it's not a memory system but it's a
+
+424
+00:15:17,629 --> 00:15:19,189
+multi version system and I think it's a
+
+425
+00:15:19,189 --> 00:15:20,779
+good description of how you can
+
+426
+00:15:20,779 --> 00:15:22,850
+piggyback off of the MVCC metadata
+
+427
+00:15:22,850 --> 00:15:26,329
+you're generating to make logging may
+
+428
+00:15:26,329 --> 00:15:30,769
+work better so it's so this protocol is
+
+429
+00:15:30,769 --> 00:15:32,179
+gonna be a physical logging protocol
+
+430
+00:15:32,179 --> 00:15:35,990
+that's we rely on the database systems
+
+431
+00:15:35,990 --> 00:15:37,820
+I'm travel table which they call the
+
+432
+00:15:37,820 --> 00:15:39,830
+virgin store or the temp TBT so we're
+
+433
+00:15:39,830 --> 00:15:41,480
+gonna rely on that their time to have a
+
+434
+00:15:41,480 --> 00:15:45,529
+table to act almost as a recovery log so
+
+435
+00:15:45,529 --> 00:15:47,839
+what will happen is we'll start writing
+
+436
+00:15:47,839 --> 00:15:49,490
+out the changes we make to this version
+
+437
+00:15:49,490 --> 00:15:53,149
+store to a log file but they're only
+
+438
+00:15:53,149 --> 00:15:55,070
+going to contain essentially the redo
+
+439
+00:15:55,070 --> 00:15:57,050
+records of the versions we've generated
+
+440
+00:15:57,050 --> 00:15:59,360
+and then we'll meet when we crash to
+
+441
+00:15:59,360 --> 00:16:01,580
+come back all we need to do now is just
+
+442
+00:16:01,580 --> 00:16:04,790
+suck in this version store into disk are
+
+443
+00:16:04,790 --> 00:16:07,760
+starting alpha disk into memory and we
+
+444
+00:16:07,760 --> 00:16:09,970
+don't need to undo anything right away I
+
+445
+00:16:09,970 --> 00:16:12,709
+we just bring those pages back in then
+
+446
+00:16:12,709 --> 00:16:14,720
+the database is now at the state it was
+
+447
+00:16:14,720 --> 00:16:17,240
+at the moment of the crash and then we
+
+448
+00:16:17,240 --> 00:16:18,560
+just need to do some background extra
+
+449
+00:16:18,560 --> 00:16:20,089
+work to do this logical reverb to make
+
+450
+00:16:20,089 --> 00:16:21,380
+sure that we don't read things we don't
+
+451
+00:16:21,380 --> 00:16:24,500
+persist versions from transactions that
+
+452
+00:16:24,500 --> 00:16:25,820
+have knocked that did not commit at the
+
+453
+00:16:25,820 --> 00:16:28,130
+crash so the problem they were trying to
+
+454
+00:16:28,130 --> 00:16:29,209
+solve if they mention in the paper is
+
+455
+00:16:29,209 --> 00:16:32,779
+that they had certain customers running
+
+456
+00:16:32,779 --> 00:16:34,490
+on Azure in the cloud or sequel server
+
+457
+00:16:34,490 --> 00:16:36,980
+in the cloud where they would have these
+
+458
+00:16:36,980 --> 00:16:39,020
+really long transactions that when there
+
+459
+00:16:39,020 --> 00:16:41,750
+was a crash now I need to undo all the
+
+460
+00:16:41,750 --> 00:16:43,970
+changes so this 10 billion table update
+
+461
+00:16:43,970 --> 00:16:45,380
+we just mentioned like if I crashed
+
+462
+00:16:45,380 --> 00:16:47,660
+before I finished all updating all those
+
+463
+00:16:47,660 --> 00:16:50,000
+those tuples when I come back now I got
+
+464
+00:16:50,000 --> 00:16:51,950
+a under spent a long time undoing
+
+465
+00:16:51,950 --> 00:16:54,680
+everything so what they wanted to do is
+
+466
+00:16:54,680 --> 00:16:56,300
+have what they call constant time
+
+467
+00:16:56,300 --> 00:16:59,060
+recovery which was saying that the the
+
+468
+00:16:59,060 --> 00:17:00,410
+time it's gonna take for me to restore
+
+469
+00:17:00,410 --> 00:17:01,970
+the database back to the correct state
+
+470
+00:17:01,970 --> 00:17:04,400
+is only contingent on the size of the
+
+471
+00:17:04,400 --> 00:17:06,319
+log file because I just need to be able
+
+472
+00:17:06,319 --> 00:17:07,910
+to read that in the redo phase and I
+
+473
+00:17:07,910 --> 00:17:08,959
+don't don't worry about how much time
+
+474
+00:17:08,959 --> 00:17:10,640
+I'm gonna spend going reverse direction
+
+475
+00:17:10,640 --> 00:17:15,140
+to undo things that make sense so let's
+
+476
+00:17:15,140 --> 00:17:17,720
+go to my tables and then we'll see how
+
+477
+00:17:17,720 --> 00:17:20,150
+it works so again this is with sequel
+
+478
+00:17:20,150 --> 00:17:22,579
+server as your sequel was the name of
+
+479
+00:17:22,579 --> 00:17:24,679
+the cloud version of it but as I said
+
+480
+00:17:24,679 --> 00:17:27,920
+they for this feature they're putting
+
+481
+00:17:27,920 --> 00:17:30,590
+out in the the on-premise version which
+
+482
+00:17:30,590 --> 00:17:33,470
+includes the Linux one so they're doing
+
+483
+00:17:33,470 --> 00:17:36,500
+time travel version storage but they
+
+484
+00:17:36,500 --> 00:17:38,630
+just call it a version store and so the
+
+485
+00:17:38,630 --> 00:17:39,620
+idea here is that you have the main
+
+486
+00:17:39,620 --> 00:17:41,660
+table and this has the the latest
+
+487
+00:17:41,660 --> 00:17:43,580
+version and they're doing news to oldest
+
+488
+00:17:43,580 --> 00:17:45,380
+so this this version has a pointer now
+
+489
+00:17:45,380 --> 00:17:49,550
+to another tuple that's the the
+
+490
+00:17:49,550 --> 00:17:51,950
+the the you know the next oldest tuple
+
+491
+00:17:51,950 --> 00:17:53,090
+and then there's a virgin chain allowed
+
+492
+00:17:53,090 --> 00:17:54,710
+to go back in time to find previous
+
+493
+00:17:54,710 --> 00:17:56,450
+versions so now if what roads actually
+
+494
+00:17:56,450 --> 00:17:57,950
+comes along almost update this tuple
+
+495
+00:17:57,950 --> 00:18:00,620
+here we first make a copy of the current
+
+496
+00:18:00,620 --> 00:18:03,290
+version into our version store update
+
+497
+00:18:03,290 --> 00:18:05,030
+the pointer to connect the chain and
+
+498
+00:18:05,030 --> 00:18:07,700
+then we can overwrite the old version
+
+499
+00:18:07,700 --> 00:18:11,780
+with with our new one here right so the
+
+500
+00:18:11,780 --> 00:18:13,490
+idea here is that they want to leverage
+
+501
+00:18:13,490 --> 00:18:16,130
+this thing which is basically redo
+
+502
+00:18:16,130 --> 00:18:19,160
+information all right to to then allow
+
+503
+00:18:19,160 --> 00:18:20,330
+them to restore the state of the
+
+504
+00:18:20,330 --> 00:18:22,370
+database just by loading this thing back
+
+505
+00:18:22,370 --> 00:18:26,060
+in so there can be two variants of how
+
+506
+00:18:26,060 --> 00:18:27,740
+they're gonna do this persistent version
+
+507
+00:18:27,740 --> 00:18:30,590
+storm so the first one is that they're
+
+508
+00:18:30,590 --> 00:18:32,000
+gonna do in row versioning where this is
+
+509
+00:18:32,000 --> 00:18:32,990
+actually you're not going to use the
+
+510
+00:18:32,990 --> 00:18:34,040
+version store this is gonna look like
+
+511
+00:18:34,040 --> 00:18:37,130
+that cicada inlining where instead of
+
+512
+00:18:37,130 --> 00:18:39,200
+making a whole copy of the tuple and
+
+513
+00:18:39,200 --> 00:18:40,580
+putting to the version store they're
+
+514
+00:18:40,580 --> 00:18:42,770
+gonna pack it in the in this special
+
+515
+00:18:42,770 --> 00:18:45,560
+field inside the tuple of just the Delta
+
+516
+00:18:45,560 --> 00:18:47,870
+record of what got what was modified and
+
+517
+00:18:47,870 --> 00:18:50,060
+then that gets written out to the right
+
+518
+00:18:50,060 --> 00:18:51,500
+ahead log just as it would any other
+
+519
+00:18:51,500 --> 00:18:53,780
+tuple update and that's enough
+
+520
+00:18:53,780 --> 00:18:55,910
+information to recreate the database
+
+521
+00:18:55,910 --> 00:18:58,370
+State and I'll show this the next line
+
+522
+00:18:58,370 --> 00:19:00,830
+and then the for the off road versioning
+
+523
+00:19:00,830 --> 00:19:02,480
+which is actually using the time travel
+
+524
+00:19:02,480 --> 00:19:05,360
+table instead of having a time travel
+
+525
+00:19:05,360 --> 00:19:07,550
+table for every single logical table in
+
+526
+00:19:07,550 --> 00:19:09,410
+your database they're gonna have one
+
+527
+00:19:09,410 --> 00:19:11,750
+giant time travel table for every single
+
+528
+00:19:11,750 --> 00:19:14,300
+table this is way different I've never
+
+529
+00:19:14,300 --> 00:19:16,220
+seen this used before and so the way it
+
+530
+00:19:16,220 --> 00:19:19,370
+works is that the in here like instead
+
+531
+00:19:19,370 --> 00:19:21,910
+of having discrete columns or attributes
+
+532
+00:19:21,910 --> 00:19:24,560
+that represent the columns in the table
+
+533
+00:19:24,560 --> 00:19:27,020
+there's gonna have one column that and
+
+534
+00:19:27,020 --> 00:19:29,240
+then to store a blob or byte string of
+
+535
+00:19:29,240 --> 00:19:31,700
+the seer lies data for that tuple and
+
+536
+00:19:31,700 --> 00:19:34,190
+that way you can store any tables tuples
+
+537
+00:19:34,190 --> 00:19:37,280
+inside there because there's no we're
+
+538
+00:19:37,280 --> 00:19:38,990
+all we're sort of we're not doing any
+
+539
+00:19:38,990 --> 00:19:40,670
+processing on looking at the actual
+
+540
+00:19:40,670 --> 00:19:43,040
+columns in this right we're just almost
+
+541
+00:19:43,040 --> 00:19:46,100
+using it as a in-memory log then that
+
+542
+00:19:46,100 --> 00:19:48,980
+then gets flushed so they're also going
+
+543
+00:19:48,980 --> 00:19:51,530
+to modify the the data table data
+
+544
+00:19:51,530 --> 00:19:53,900
+structure itself so that you can do fast
+
+545
+00:19:53,900 --> 00:19:56,270
+and current inserts so that means that
+
+546
+00:19:56,270 --> 00:19:57,650
+they're going to partition the database
+
+547
+00:19:57,650 --> 00:20:00,140
+in memory so that our start of the table
+
+548
+00:20:00,140 --> 00:20:01,370
+in memory so that different threads
+
+549
+00:20:01,370 --> 00:20:02,560
+write to different regions
+
+550
+00:20:02,560 --> 00:20:06,550
+of the table and then this allows you to
+
+551
+00:20:06,550 --> 00:20:08,950
+you should write them out very very
+
+552
+00:20:08,950 --> 00:20:11,950
+quickly to the right ahead long and you
+
+553
+00:20:11,950 --> 00:20:13,210
+never came allowed to go back and update
+
+554
+00:20:13,210 --> 00:20:15,040
+any other tuple right it's only a pend
+
+555
+00:20:15,040 --> 00:20:17,140
+only and I can now you do central writes
+
+556
+00:20:17,140 --> 00:20:19,870
+out to the law which is efficient so
+
+557
+00:20:19,870 --> 00:20:21,460
+this is the in bro versioning this is
+
+558
+00:20:21,460 --> 00:20:22,330
+the same thing we talked about with
+
+559
+00:20:22,330 --> 00:20:25,480
+cicada basically they when I do it
+
+560
+00:20:25,480 --> 00:20:27,130
+updated this tuple instead of making
+
+561
+00:20:27,130 --> 00:20:28,750
+this copy of this old version and
+
+562
+00:20:28,750 --> 00:20:30,700
+putting it in time travel table those
+
+563
+00:20:30,700 --> 00:20:32,820
+embed Delta record inside of here and
+
+564
+00:20:32,820 --> 00:20:35,620
+then that just gets written out to write
+
+565
+00:20:35,620 --> 00:20:37,090
+a head loggers as you normally would
+
+566
+00:20:37,090 --> 00:20:39,880
+so an important distinction here about
+
+567
+00:20:39,880 --> 00:20:41,800
+why they can do this and why we can't do
+
+568
+00:20:41,800 --> 00:20:43,180
+this very easily an emery database
+
+569
+00:20:43,180 --> 00:20:45,010
+system is that in a disk oriented
+
+570
+00:20:45,010 --> 00:20:46,990
+database the tuples can be variable
+
+571
+00:20:46,990 --> 00:20:50,620
+length in a memory database we said we
+
+572
+00:20:50,620 --> 00:20:52,570
+had the primary location of a tuple has
+
+573
+00:20:52,570 --> 00:20:54,550
+to be fixed length so we either had to
+
+574
+00:20:54,550 --> 00:20:56,110
+allocate this Delta space for every
+
+575
+00:20:56,110 --> 00:20:57,400
+single to boy it can only be a certain
+
+576
+00:20:57,400 --> 00:20:59,800
+size if we're in memory but in a
+
+577
+00:20:59,800 --> 00:21:01,300
+displaced database I can leave this
+
+578
+00:21:01,300 --> 00:21:03,580
+thing empty and then if I decide to use
+
+579
+00:21:03,580 --> 00:21:05,050
+it when I started the new tuple then I
+
+580
+00:21:05,050 --> 00:21:07,300
+just grab a new slot in my page and can
+
+581
+00:21:07,300 --> 00:21:11,560
+write everything out right that that's
+
+582
+00:21:11,560 --> 00:21:13,000
+one important distinction between what
+
+583
+00:21:13,000 --> 00:21:14,770
+they're doing and what how do you do
+
+584
+00:21:14,770 --> 00:21:18,490
+this in in-memory database okay so let's
+
+585
+00:21:18,490 --> 00:21:19,480
+see how they're gonna do recovery so
+
+586
+00:21:19,480 --> 00:21:21,010
+this is almost looks like standard Aires
+
+587
+00:21:21,010 --> 00:21:24,970
+except that under Aires the the database
+
+588
+00:21:24,970 --> 00:21:26,200
+is not available until you complete the
+
+589
+00:21:26,200 --> 00:21:28,300
+undo phase in their world
+
+590
+00:21:28,300 --> 00:21:30,220
+it's a neatly available after the redo
+
+591
+00:21:30,220 --> 00:21:32,380
+phase because all they're doing is
+
+592
+00:21:32,380 --> 00:21:34,000
+they're loading back in that version
+
+593
+00:21:34,000 --> 00:21:36,970
+store and then all the versions the old
+
+594
+00:21:36,970 --> 00:21:39,580
+versions that are around are now are you
+
+595
+00:21:39,580 --> 00:21:42,280
+know are now available and then we just
+
+596
+00:21:42,280 --> 00:21:44,620
+piggyback of all that same version
+
+597
+00:21:44,620 --> 00:21:46,810
+detection or identification that we do
+
+598
+00:21:46,810 --> 00:21:49,390
+on our MVCC to identify which tuples are
+
+599
+00:21:49,390 --> 00:21:52,480
+actually visible to our transaction so
+
+600
+00:21:52,480 --> 00:21:53,920
+analysis phase again we just came
+
+601
+00:21:53,920 --> 00:21:55,540
+through the log up to the last
+
+602
+00:21:55,540 --> 00:21:56,440
+checkpoint to figure out what
+
+603
+00:21:56,440 --> 00:21:58,150
+transaction we're running and then in
+
+604
+00:21:58,150 --> 00:22:00,970
+the redo redo phase we're gonna replay
+
+605
+00:22:00,970 --> 00:22:02,350
+the right ahead log to put us back in
+
+606
+00:22:02,350 --> 00:22:03,520
+the correct State for the most main
+
+607
+00:22:03,520 --> 00:22:05,620
+table in the Virgen store but as I said
+
+608
+00:22:05,620 --> 00:22:07,600
+the verges store is only going to it's
+
+609
+00:22:07,600 --> 00:22:09,280
+going to go and contain versions from
+
+610
+00:22:09,280 --> 00:22:11,260
+from transactions that did not commit so
+
+611
+00:22:11,260 --> 00:22:12,790
+I was in the main table but because
+
+612
+00:22:12,790 --> 00:22:14,770
+we're MVCC we know what the timestamps
+
+613
+00:22:14,770 --> 00:22:15,750
+were for
+
+614
+00:22:15,750 --> 00:22:17,730
+versions and then when we come back
+
+615
+00:22:17,730 --> 00:22:19,560
+online start running rivers transactions
+
+616
+00:22:19,560 --> 00:22:20,850
+we would notice skip over things that
+
+617
+00:22:20,850 --> 00:22:22,560
+were uncommitted right cuz we're gonna
+
+618
+00:22:22,560 --> 00:22:24,360
+maintain this global state map that says
+
+619
+00:22:24,360 --> 00:22:25,440
+here's all the transactions that are
+
+620
+00:22:25,440 --> 00:22:28,100
+around and here's what their statuses
+
+621
+00:22:28,100 --> 00:22:31,170
+then in the undo phase we select
+
+622
+00:22:31,170 --> 00:22:34,740
+transactions to start execute and when
+
+623
+00:22:34,740 --> 00:22:36,630
+they find things that that are aborted
+
+624
+00:22:36,630 --> 00:22:38,190
+they can go ahead either clean them up
+
+625
+00:22:38,190 --> 00:22:39,570
+or there be a separate background
+
+626
+00:22:39,570 --> 00:22:43,250
+process to - to clean them up and yeah
+
+627
+00:22:43,250 --> 00:22:46,110
+asynchronously and they refer to this
+
+628
+00:22:46,110 --> 00:22:48,300
+thing as a logical work but from from my
+
+629
+00:22:48,300 --> 00:22:49,470
+purpose it just sounds like garbage
+
+630
+00:22:49,470 --> 00:22:51,330
+collection although it's the fact that
+
+631
+00:22:51,330 --> 00:22:52,770
+transactions can do slightly something
+
+632
+00:22:52,770 --> 00:22:54,240
+slightly different when they find a
+
+633
+00:22:54,240 --> 00:22:55,470
+board of versions is not exactly about
+
+634
+00:22:55,470 --> 00:22:58,020
+risk leptin say this is already what it
+
+635
+00:22:58,020 --> 00:22:59,310
+says so you had separate threads gonna
+
+636
+00:22:59,310 --> 00:23:00,960
+scan through the blocks find all the
+
+637
+00:23:00,960 --> 00:23:03,120
+criminal versions and then if you
+
+638
+00:23:03,120 --> 00:23:06,300
+recognize that the the latest version of
+
+639
+00:23:06,300 --> 00:23:09,450
+a tuple is in the version store then you
+
+640
+00:23:09,450 --> 00:23:11,520
+just move it back at you know bet into
+
+641
+00:23:11,520 --> 00:23:13,320
+the main table right again that's the
+
+642
+00:23:13,320 --> 00:23:15,030
+same thing we would see and regular GC
+
+643
+00:23:15,030 --> 00:23:16,920
+that we've already talked about the only
+
+644
+00:23:16,920 --> 00:23:18,510
+one optimization they do do that do do
+
+645
+00:23:18,510 --> 00:23:21,060
+that's slightly different is if a
+
+646
+00:23:21,060 --> 00:23:23,070
+transaction recognizes that oh in the
+
+647
+00:23:23,070 --> 00:23:25,020
+main table I see the current version the
+
+648
+00:23:25,020 --> 00:23:26,880
+master version of the tuple is from one
+
+649
+00:23:26,880 --> 00:23:29,100
+aboard of transaction then instead of
+
+650
+00:23:29,100 --> 00:23:30,930
+copying that out and make a new version
+
+651
+00:23:30,930 --> 00:23:32,610
+and then the time travel that is
+
+652
+00:23:32,610 --> 00:23:37,860
+completely overwrite it alright so again
+
+653
+00:23:37,860 --> 00:23:39,150
+like I said I think this is interesting
+
+654
+00:23:39,150 --> 00:23:41,340
+because this is although it's a disk
+
+655
+00:23:41,340 --> 00:23:42,900
+based system it's showing you how you
+
+656
+00:23:42,900 --> 00:23:46,590
+how you can use the MVCC metadata to do
+
+657
+00:23:46,590 --> 00:23:48,300
+a Tiferet have a logging scheme and
+
+658
+00:23:48,300 --> 00:23:51,420
+potentially get better performance any
+
+659
+00:23:51,420 --> 00:23:53,040
+questions about this there's this other
+
+660
+00:23:53,040 --> 00:23:54,900
+bit about the syslog where they would
+
+661
+00:23:54,900 --> 00:23:58,650
+store changes for non-virgin data
+
+662
+00:23:58,650 --> 00:24:00,660
+structures like page tables and people's
+
+663
+00:24:00,660 --> 00:24:03,360
+tree layouts that again we all we can
+
+664
+00:24:03,360 --> 00:24:04,980
+ignore all of that in an in-memory
+
+665
+00:24:04,980 --> 00:24:06,240
+system because we're not going to
+
+666
+00:24:06,240 --> 00:24:10,580
+maintain that information yes
+
+667
+00:24:16,200 --> 00:24:18,520
+yeah so he's screaming it and he's
+
+668
+00:24:18,520 --> 00:24:20,410
+correct like does this mean at runtime
+
+669
+00:24:20,410 --> 00:24:23,500
+if I need to go read an old version I
+
+670
+00:24:23,500 --> 00:24:25,920
+have to go to the the Virgin Storm and
+
+671
+00:24:25,920 --> 00:24:28,690
+everything just serialize is a blob do I
+
+672
+00:24:28,690 --> 00:24:30,340
+pay a penalty for having to read that
+
+673
+00:24:30,340 --> 00:24:32,620
+yes but I think they measure it it's
+
+674
+00:24:32,620 --> 00:24:33,280
+kind of small
+
+675
+00:24:33,280 --> 00:24:34,750
+it's anything with a delta record if the
+
+676
+00:24:34,750 --> 00:24:37,060
+inroad Delta record I have to replay it
+
+677
+00:24:37,060 --> 00:24:40,500
+and may pay computational cost for that
+
+678
+00:24:45,030 --> 00:24:48,040
+but it's not as it's not as free as like
+
+679
+00:24:48,040 --> 00:24:49,840
+going reading and having everything
+
+680
+00:24:49,840 --> 00:24:52,870
+there I agree with you yes yeah that's
+
+681
+00:24:52,870 --> 00:24:55,170
+why we use Delta story in our own system
+
+682
+00:24:55,170 --> 00:24:57,970
+my most transactions
+
+683
+00:24:57,970 --> 00:25:00,280
+I remember that if they say the paper
+
+684
+00:25:00,280 --> 00:25:01,690
+motions actually don't update all
+
+685
+00:25:01,690 --> 00:25:04,030
+columns its write the Delta story is the
+
+686
+00:25:04,030 --> 00:25:07,710
+end reversion is usually gonna be enough
+
+687
+00:25:07,710 --> 00:25:10,570
+so this idea what they're doing is not
+
+688
+00:25:10,570 --> 00:25:13,120
+new this is actually very similar to how
+
+689
+00:25:13,120 --> 00:25:14,920
+Postgres was originally designed back in
+
+690
+00:25:14,920 --> 00:25:17,560
+like nineteen eighty six again Postgres
+
+691
+00:25:17,560 --> 00:25:19,150
+if there's a paper called the design of
+
+692
+00:25:19,150 --> 00:25:22,630
+Postgres and star maker talks about how
+
+693
+00:25:22,630 --> 00:25:25,510
+oh well the the log is not really a log
+
+694
+00:25:25,510 --> 00:25:27,310
+file it's a log table and everything's
+
+695
+00:25:27,310 --> 00:25:28,990
+it's getting a pendant of that and that
+
+696
+00:25:28,990 --> 00:25:32,050
+gets flushed out so at a high level this
+
+697
+00:25:32,050 --> 00:25:34,120
+this is very similar and they claim the
+
+698
+00:25:34,120 --> 00:25:36,760
+difference here is that this paper is
+
+699
+00:25:36,760 --> 00:25:38,050
+about taking a system that was not
+
+700
+00:25:38,050 --> 00:25:40,540
+designed to be multi version in this way
+
+701
+00:25:40,540 --> 00:25:42,640
+and adding this after the fact whereas
+
+702
+00:25:42,640 --> 00:25:43,810
+Postgres was designed from the very
+
+703
+00:25:43,810 --> 00:25:48,040
+beginning to be like this again Postgres
+
+704
+00:25:48,040 --> 00:25:53,320
+is an MVC system okay alright so so
+
+705
+00:25:53,320 --> 00:25:57,850
+again this is a this is this is a
+
+706
+00:25:57,850 --> 00:25:59,500
+protocol that takes advantage of the
+
+707
+00:25:59,500 --> 00:26:02,350
+fact that we're multi versioned so now
+
+708
+00:26:02,350 --> 00:26:03,820
+let's look at another blogging protocol
+
+709
+00:26:03,820 --> 00:26:06,160
+that is for Mme databases that's more
+
+710
+00:26:06,160 --> 00:26:08,920
+about how you could architect the system
+
+711
+00:26:08,920 --> 00:26:12,160
+to be aware of what the happens to the
+
+712
+00:26:12,160 --> 00:26:13,480
+CPU is actually work and how they
+
+713
+00:26:13,480 --> 00:26:14,050
+operate
+
+714
+00:26:14,050 --> 00:26:18,610
+so silo is a a memory OTP embedded
+
+715
+00:26:18,610 --> 00:26:19,870
+database engine that was developed out
+
+716
+00:26:19,870 --> 00:26:21,330
+of Harvard by Eddie Kohler
+
+717
+00:26:21,330 --> 00:26:23,890
+so it's not gonna be multi version it's
+
+718
+00:26:23,890 --> 00:26:25,450
+gonna be a single version system that
+
+719
+00:26:25,450 --> 00:26:25,930
+uses
+
+720
+00:26:25,930 --> 00:26:27,940
+and they're gonna use an epoch based
+
+721
+00:26:27,940 --> 00:26:29,860
+garbage collection protocol to keep
+
+722
+00:26:29,860 --> 00:26:31,420
+track of when you actually commit
+
+723
+00:26:31,420 --> 00:26:32,680
+transactions and flush things out the
+
+724
+00:26:32,680 --> 00:26:35,110
+disk so this is silo it's the same
+
+725
+00:26:35,110 --> 00:26:36,370
+people that developed the Mastry they
+
+726
+00:26:36,370 --> 00:26:37,810
+wrote mash to you first and they built
+
+727
+00:26:37,810 --> 00:26:41,020
+silo around it so the paper this paper
+
+728
+00:26:41,020 --> 00:26:44,770
+here is a proposes they made physical
+
+729
+00:26:44,770 --> 00:26:47,700
+doggy technique called silo R that is
+
+730
+00:26:47,700 --> 00:26:50,320
+gone if try to paralyze as much as
+
+731
+00:26:50,320 --> 00:26:52,690
+possible all the logging checkpoint and
+
+732
+00:26:52,690 --> 00:26:55,120
+recovery processes so that we get the
+
+733
+00:26:55,120 --> 00:26:57,280
+best best performance and the way
+
+734
+00:26:57,280 --> 00:26:58,330
+they're going to do this is that they're
+
+735
+00:26:58,330 --> 00:26:59,800
+going to disaggregate the log across
+
+736
+00:26:59,800 --> 00:27:02,530
+multiple files of court in which could
+
+737
+00:27:02,530 --> 00:27:03,850
+be stored on multiple discs and allow
+
+738
+00:27:03,850 --> 00:27:05,380
+them to be read in in parallel at the
+
+739
+00:27:05,380 --> 00:27:08,230
+same time so the way the way this works
+
+740
+00:27:08,230 --> 00:27:10,690
+is that for every single CPU socket in
+
+741
+00:27:10,690 --> 00:27:12,340
+my system I'm gonna have a dedicated
+
+742
+00:27:12,340 --> 00:27:14,370
+longer thread and dedicated log file
+
+743
+00:27:14,370 --> 00:27:17,530
+right and the idea here is that we want
+
+744
+00:27:17,530 --> 00:27:19,420
+to localize all the memory rights we
+
+745
+00:27:19,420 --> 00:27:22,240
+have to do to that our local socket so
+
+746
+00:27:22,240 --> 00:27:23,620
+we're never going over shared memory to
+
+747
+00:27:23,620 --> 00:27:25,090
+another another socket or the
+
+748
+00:27:25,090 --> 00:27:26,920
+interconnect and then that way that log
+
+749
+00:27:26,920 --> 00:27:28,450
+thread can be just you know pumping data
+
+750
+00:27:28,450 --> 00:27:30,640
+out as fast as possible to the log file
+
+751
+00:27:30,640 --> 00:27:32,950
+so now as transactions run they're gonna
+
+752
+00:27:32,950 --> 00:27:35,650
+get a log buffer from their local logger
+
+753
+00:27:35,650 --> 00:27:37,690
+thread and then write out just redo
+
+754
+00:27:37,690 --> 00:27:39,820
+information because we're in memory we
+
+755
+00:27:39,820 --> 00:27:42,640
+don't them do any undo and in this case
+
+756
+00:27:42,640 --> 00:27:45,400
+here there they are to make it simple
+
+757
+00:27:45,400 --> 00:27:47,410
+assume that all the log records for a
+
+758
+00:27:47,410 --> 00:27:50,050
+transaction will be written out actually
+
+759
+00:27:50,050 --> 00:27:52,180
+in this case you can do incremental but
+
+760
+00:27:52,180 --> 00:27:53,650
+in most cases it could be done all at
+
+761
+00:27:53,650 --> 00:27:57,340
+once alright so again I've already saved
+
+762
+00:27:57,340 --> 00:27:58,960
+some of this so every logger thoughts
+
+763
+00:27:58,960 --> 00:28:00,820
+gonna pull log buffers we hand them out
+
+764
+00:28:00,820 --> 00:28:02,500
+to our local worker threads that are on
+
+765
+00:28:02,500 --> 00:28:04,450
+the same socket as us when my buffer
+
+766
+00:28:04,450 --> 00:28:06,010
+gets full I hand it back to my logo
+
+767
+00:28:06,010 --> 00:28:07,750
+thread the logger thread can then start
+
+768
+00:28:07,750 --> 00:28:10,450
+writing it out the disk which means you
+
+769
+00:28:10,450 --> 00:28:12,820
+can do incremental flushes and then the
+
+770
+00:28:12,820 --> 00:28:14,860
+worker thread tries to get a new log
+
+771
+00:28:14,860 --> 00:28:17,530
+buffer if there's no more log buffers
+
+772
+00:28:17,530 --> 00:28:19,180
+available then the worker thread has to
+
+773
+00:28:19,180 --> 00:28:20,740
+stall until the logger thread comes back
+
+774
+00:28:20,740 --> 00:28:24,010
+and says you know he flashed out enough
+
+775
+00:28:24,010 --> 00:28:28,120
+here's a new log thread or log buffer so
+
+776
+00:28:28,120 --> 00:28:29,470
+now what is gonna happen though is that
+
+777
+00:28:29,470 --> 00:28:33,670
+because now our our log file is broken
+
+778
+00:28:33,670 --> 00:28:35,200
+up across multiple files on different
+
+779
+00:28:35,200 --> 00:28:37,780
+disks it may be the case our transaction
+
+780
+00:28:37,780 --> 00:28:39,460
+might modify data
+
+781
+00:28:39,460 --> 00:28:41,289
+it's managed by different CPU sockets
+
+782
+00:28:41,289 --> 00:28:43,000
+and therefore the log records for that
+
+783
+00:28:43,000 --> 00:28:44,799
+transaction might be broken up across
+
+784
+00:28:44,799 --> 00:28:47,080
+different disks so I need a way to
+
+785
+00:28:47,080 --> 00:28:49,840
+coordinate all of them so that I don't
+
+786
+00:28:49,840 --> 00:28:51,940
+have you know if I touch 2 log files
+
+787
+00:28:51,940 --> 00:28:54,279
+Mitra's action commits the first log
+
+788
+00:28:54,279 --> 00:28:55,539
+file gets flushed but the second one
+
+789
+00:28:55,539 --> 00:28:57,220
+doesn't and then I tell the outside
+
+790
+00:28:57,220 --> 00:28:59,770
+world that I crashed and I come back and
+
+791
+00:28:59,770 --> 00:29:01,419
+now the you know half the updates from
+
+792
+00:29:01,419 --> 00:29:02,890
+the other log file never made it to disk
+
+793
+00:29:02,890 --> 00:29:04,960
+so you need a way to coordinate all of
+
+794
+00:29:04,960 --> 00:29:08,770
+them so that you know that all the
+
+795
+00:29:08,770 --> 00:29:10,120
+updates per transaction have been safely
+
+796
+00:29:10,120 --> 00:29:12,610
+flushed so this is what the epochs gonna
+
+797
+00:29:12,610 --> 00:29:15,039
+do for us so what's gonna happen is
+
+798
+00:29:15,039 --> 00:29:18,190
+every so often I all the log the this
+
+799
+00:29:18,190 --> 00:29:19,809
+epoch will get incremented and that
+
+800
+00:29:19,809 --> 00:29:22,570
+forces every log thread right out there
+
+801
+00:29:22,570 --> 00:29:23,950
+the current contents of the log buffer
+
+802
+00:29:23,950 --> 00:29:26,770
+and then we record what was the epoch
+
+803
+00:29:26,770 --> 00:29:28,960
+everyone wrote at and now we know that
+
+804
+00:29:28,960 --> 00:29:30,520
+any transaction that has been committed
+
+805
+00:29:30,520 --> 00:29:34,330
+and and and flush to disk prior to that
+
+806
+00:29:34,330 --> 00:29:35,980
+epoch is now durable and we can tell the
+
+807
+00:29:35,980 --> 00:29:37,110
+outside world that we've committed
+
+808
+00:29:37,110 --> 00:29:39,549
+they're gonna use this epoch in other
+
+809
+00:29:39,549 --> 00:29:41,020
+ways in the system to minimize again
+
+810
+00:29:41,020 --> 00:29:43,059
+coordination across different CPU
+
+811
+00:29:43,059 --> 00:29:45,070
+sockets but for our purposes here we can
+
+812
+00:29:45,070 --> 00:29:47,820
+just focus on how we do it for logging
+
+813
+00:29:47,820 --> 00:29:50,950
+so our log records contain the idea of
+
+814
+00:29:50,950 --> 00:29:52,990
+the transaction that modified a given
+
+815
+00:29:52,990 --> 00:29:56,500
+tuple and silos gonna be do serializable
+
+816
+00:29:56,500 --> 00:29:58,390
+a serializable isolation or so
+
+817
+00:29:58,390 --> 00:30:00,580
+sterilizable scheduling so that means
+
+818
+00:30:00,580 --> 00:30:03,880
+that the the transaction ID will be
+
+819
+00:30:03,880 --> 00:30:05,950
+enough to guarantee the ordering the
+
+820
+00:30:05,950 --> 00:30:07,570
+correct ordering of the updates to the
+
+821
+00:30:07,570 --> 00:30:10,720
+database so if we just replay the log in
+
+822
+00:30:10,720 --> 00:30:12,789
+the order of the transaction IDs then
+
+823
+00:30:12,789 --> 00:30:14,110
+that will put us back into the correct
+
+824
+00:30:14,110 --> 00:30:16,450
+State at lower isolation levels you
+
+825
+00:30:16,450 --> 00:30:18,610
+can't do this because I I may update
+
+826
+00:30:18,610 --> 00:30:19,779
+something and you may read something and
+
+827
+00:30:19,779 --> 00:30:21,820
+update something else and the unless we
+
+828
+00:30:21,820 --> 00:30:23,080
+have a log secrets number to order those
+
+829
+00:30:23,080 --> 00:30:24,580
+things we may come back and replay
+
+830
+00:30:24,580 --> 00:30:26,559
+things in a different order so if by
+
+831
+00:30:26,559 --> 00:30:27,669
+being sterilized what we can guarantee
+
+832
+00:30:27,669 --> 00:30:29,200
+that this is this will Porter back to
+
+833
+00:30:29,200 --> 00:30:32,490
+the correct state yes
+
+834
+00:30:36,900 --> 00:30:39,190
+it isn't the snapshot isolation to
+
+835
+00:30:39,190 --> 00:30:44,680
+guarantee that the yeah if your first
+
+836
+00:30:44,680 --> 00:30:46,240
+writer wins and that also solves that
+
+837
+00:30:46,240 --> 00:30:49,210
+too but the main takeaway is that the
+
+838
+00:30:49,210 --> 00:30:50,710
+transaction T is enough to guarantee the
+
+839
+00:30:50,710 --> 00:30:51,730
+ordering to put you back in the correct
+
+840
+00:30:51,730 --> 00:30:53,050
+state and you don't need a separate log
+
+841
+00:30:53,050 --> 00:30:54,790
+seamless number because with a log
+
+842
+00:30:54,790 --> 00:30:56,470
+seamless number if a 90 corny that
+
+843
+00:30:56,470 --> 00:30:58,930
+across multiple sockets then that's a
+
+844
+00:30:58,930 --> 00:31:02,320
+that's a bottleneck so the log file is
+
+845
+00:31:02,320 --> 00:31:03,700
+gonna be a triplet just the table the
+
+846
+00:31:03,700 --> 00:31:05,470
+key and the value that gets modified and
+
+847
+00:31:05,470 --> 00:31:07,240
+the value can just be the Delta record
+
+848
+00:31:07,240 --> 00:31:10,720
+by of what the change actually was so
+
+849
+00:31:10,720 --> 00:31:11,980
+again in fact if I'm doing simple query
+
+850
+00:31:11,980 --> 00:31:13,240
+to update all the people that are lame
+
+851
+00:31:13,240 --> 00:31:16,810
+than that myself then the law of record
+
+852
+00:31:16,810 --> 00:31:19,510
+would be will have a separate log record
+
+853
+00:31:19,510 --> 00:31:20,740
+for every single tuple that this thing
+
+854
+00:31:20,740 --> 00:31:23,860
+modified alright alright so here's the
+
+855
+00:31:23,860 --> 00:31:24,940
+high-level architecture of the system
+
+856
+00:31:24,940 --> 00:31:27,190
+and again the idea here is that I'm
+
+857
+00:31:27,190 --> 00:31:29,050
+going to expose to you or show you that
+
+858
+00:31:29,050 --> 00:31:32,200
+hey you know this is just physical
+
+859
+00:31:32,200 --> 00:31:33,460
+logging so there's nothing really novel
+
+860
+00:31:33,460 --> 00:31:35,620
+being done here it's how they organize
+
+861
+00:31:35,620 --> 00:31:37,420
+the system that I think is actually
+
+862
+00:31:37,420 --> 00:31:40,030
+quite interesting and is I don't see
+
+863
+00:31:40,030 --> 00:31:42,820
+that I haven't seen any other system so
+
+864
+00:31:42,820 --> 00:31:46,150
+again the transactions can update or to
+
+865
+00:31:46,150 --> 00:31:47,050
+their worker threads or can execute
+
+866
+00:31:47,050 --> 00:31:49,240
+transactions so they're only going to
+
+867
+00:31:49,240 --> 00:31:50,140
+execute these things that store
+
+868
+00:31:50,140 --> 00:31:51,430
+procedures they call them once not
+
+869
+00:31:51,430 --> 00:31:53,140
+transactions but the basic idea is that
+
+870
+00:31:53,140 --> 00:31:55,570
+we do a request like an RPC say execute
+
+871
+00:31:55,570 --> 00:31:57,970
+this transaction and all the program
+
+872
+00:31:57,970 --> 00:31:59,140
+logical when that transactions going to
+
+873
+00:31:59,140 --> 00:32:00,460
+do is embed inside the system so we
+
+874
+00:32:00,460 --> 00:32:01,360
+never go back to the clients
+
+875
+00:32:01,360 --> 00:32:03,700
+everything's done in in one invocation
+
+876
+00:32:03,700 --> 00:32:05,770
+so when a transaction starts running the
+
+877
+00:32:05,770 --> 00:32:07,210
+worker thread has to go to the logger
+
+878
+00:32:07,210 --> 00:32:10,180
+and get a log buffer and once it has
+
+879
+00:32:10,180 --> 00:32:12,250
+that I can start filling up the changes
+
+880
+00:32:12,250 --> 00:32:13,540
+that's that it starts making to the
+
+881
+00:32:13,540 --> 00:32:15,730
+database and at some point this log
+
+882
+00:32:15,730 --> 00:32:17,590
+buffer will get full so we hand it back
+
+883
+00:32:17,590 --> 00:32:19,090
+to the log of thread and say this
+
+884
+00:32:19,090 --> 00:32:21,190
+thing's full please flush it for us and
+
+885
+00:32:21,190 --> 00:32:22,840
+we'll go ahead and get another log
+
+886
+00:32:22,840 --> 00:32:27,850
+buffer so then now at this point here
+
+887
+00:32:27,850 --> 00:32:29,770
+say that transactions still running
+
+888
+00:32:29,770 --> 00:32:32,260
+this other epoch thread waits up and
+
+889
+00:32:32,260 --> 00:32:34,270
+says all right now the new epoch is 200
+
+890
+00:32:34,270 --> 00:32:36,790
+so that's gonna force all the longer
+
+891
+00:32:36,790 --> 00:32:38,260
+threads in the system to now flush
+
+892
+00:32:38,260 --> 00:32:39,730
+whatever buffers that they have
+
+893
+00:32:39,730 --> 00:32:41,860
+including any ones that that were handed
+
+894
+00:32:41,860 --> 00:32:44,230
+off before so now the worker thread has
+
+895
+00:32:44,230 --> 00:32:46,600
+to hand back the log buffer
+
+896
+00:32:46,600 --> 00:32:50,230
+you to the logging friend and then it
+
+897
+00:32:50,230 --> 00:32:52,059
+could keep on running it could say now
+
+898
+00:32:52,059 --> 00:32:53,350
+give me another log buffer start filling
+
+899
+00:32:53,350 --> 00:32:55,150
+up but in this case here there aren't
+
+900
+00:32:55,150 --> 00:32:57,340
+any more so it's gonna have to stall and
+
+901
+00:32:57,340 --> 00:33:00,429
+wait so now the log our thread can start
+
+902
+00:33:00,429 --> 00:33:02,289
+flushing things out the disk right and
+
+903
+00:33:02,289 --> 00:33:04,210
+as it flushes them it frees up log space
+
+904
+00:33:04,210 --> 00:33:05,950
+and then we can hand back the log
+
+905
+00:33:05,950 --> 00:33:08,070
+buffers and let this guy keep on running
+
+906
+00:33:08,070 --> 00:33:11,110
+so in the most simplest world assume
+
+907
+00:33:11,110 --> 00:33:12,220
+every transaction will be finished
+
+908
+00:33:12,220 --> 00:33:14,799
+within epoch if it's if it spans multi
+
+909
+00:33:14,799 --> 00:33:16,570
+pox then you basically have to keep
+
+910
+00:33:16,570 --> 00:33:18,039
+track of like this transaction was
+
+911
+00:33:18,039 --> 00:33:20,289
+around it spans multi pox so you can go
+
+912
+00:33:20,289 --> 00:33:21,789
+back further in the logs when I figure
+
+913
+00:33:21,789 --> 00:33:24,159
+out what actually happened to it but the
+
+914
+00:33:24,159 --> 00:33:26,559
+main idea here is that by having the
+
+915
+00:33:26,559 --> 00:33:27,880
+this backpack Schurman pressure
+
+916
+00:33:27,880 --> 00:33:30,280
+mechanism where if we run out of log
+
+917
+00:33:30,280 --> 00:33:32,169
+buffers we don't allocate more memory we
+
+918
+00:33:32,169 --> 00:33:34,240
+make this guy stall that prevents us
+
+919
+00:33:34,240 --> 00:33:35,740
+from generating log records faster than
+
+920
+00:33:35,740 --> 00:33:37,559
+we can actually write them out the disk
+
+921
+00:33:37,559 --> 00:33:39,640
+because otherwise the log buffer just
+
+922
+00:33:39,640 --> 00:33:41,890
+grow infinitely and we'll run run out of
+
+923
+00:33:41,890 --> 00:33:45,130
+space so let's talk about this
+
+924
+00:33:45,130 --> 00:33:48,179
+persistent EVOC thing actually does so
+
+925
+00:33:48,179 --> 00:33:50,650
+every worker every logger threads can
+
+926
+00:33:50,650 --> 00:33:53,260
+have the CERN file or records all the
+
+927
+00:33:53,260 --> 00:33:55,630
+the Delta records that transactions are
+
+928
+00:33:55,630 --> 00:33:57,309
+generating when they run but then there
+
+929
+00:33:57,309 --> 00:33:59,049
+could be a special log file where we
+
+930
+00:33:59,049 --> 00:34:03,250
+keep track of the highs epoch that all
+
+931
+00:34:03,250 --> 00:34:05,020
+the log for all log or threads have
+
+932
+00:34:05,020 --> 00:34:07,090
+flushed out successfully to disk now
+
+933
+00:34:07,090 --> 00:34:08,739
+everyone is flushing at the same time
+
+934
+00:34:08,739 --> 00:34:10,179
+when the position when the epoch
+
+935
+00:34:10,179 --> 00:34:13,350
+increments you tell everyone to flush
+
+936
+00:34:13,350 --> 00:34:15,790
+but then they may not all happen exactly
+
+937
+00:34:15,790 --> 00:34:18,070
+at the same speed and only when everyone
+
+938
+00:34:18,070 --> 00:34:19,929
+says alright I flushed it then you go
+
+939
+00:34:19,929 --> 00:34:21,989
+update and update the persistent epoch
+
+940
+00:34:21,989 --> 00:34:25,000
+now you don't need this for correctness
+
+941
+00:34:25,000 --> 00:34:27,280
+this is actually just an optimization so
+
+942
+00:34:27,280 --> 00:34:28,600
+that when you crash you come back you
+
+943
+00:34:28,600 --> 00:34:29,918
+can just look at this one file and say
+
+944
+00:34:29,918 --> 00:34:31,179
+all right what's the epoch I need to
+
+945
+00:34:31,179 --> 00:34:33,399
+start with otherwise you'd have to go
+
+946
+00:34:33,399 --> 00:34:35,139
+look at every every single file to
+
+947
+00:34:35,139 --> 00:34:37,270
+figure out what's the you know in the
+
+948
+00:34:37,270 --> 00:34:38,800
+intersection of the epoch across all of
+
+949
+00:34:38,800 --> 00:34:40,690
+them this is just an optimization it's a
+
+950
+00:34:40,690 --> 00:34:42,668
+nice to have and the overhead out of it
+
+951
+00:34:42,668 --> 00:34:45,369
+is it's somewhat small other than an F
+
+952
+00:34:45,369 --> 00:34:48,668
+sync okay so we know that if this thing
+
+953
+00:34:48,668 --> 00:34:50,800
+gets written out the disk then we know
+
+954
+00:34:50,800 --> 00:34:52,540
+that any transaction that executed in an
+
+955
+00:34:52,540 --> 00:34:54,668
+epoch that's less than less than or
+
+956
+00:34:54,668 --> 00:34:57,190
+equal to our position epoch we know is
+
+957
+00:34:57,190 --> 00:34:59,390
+durable
+
+958
+00:34:59,390 --> 00:35:01,370
+so it looks like that say we have now
+
+959
+00:35:01,370 --> 00:35:03,320
+three logo threads right and each each
+
+960
+00:35:03,320 --> 00:35:04,700
+you have their own log file that running
+
+961
+00:35:04,700 --> 00:35:06,170
+up to disk and each you have a bunch of
+
+962
+00:35:06,170 --> 00:35:07,460
+worker threads and again these guys are
+
+963
+00:35:07,460 --> 00:35:09,050
+just going and getting the log buffers
+
+964
+00:35:09,050 --> 00:35:12,140
+from the logger threads and then you
+
+965
+00:35:12,140 --> 00:35:14,450
+have this now the special precision
+
+966
+00:35:14,450 --> 00:35:16,490
+epoch thread that's going to update the
+
+967
+00:35:16,490 --> 00:35:19,580
+file on disk every so often now the
+
+968
+00:35:19,580 --> 00:35:22,160
+epoch changes so everyone has has then
+
+969
+00:35:22,160 --> 00:35:24,200
+flush out all the changes they have up
+
+970
+00:35:24,200 --> 00:35:26,840
+to that epoch once they all then confirm
+
+971
+00:35:26,840 --> 00:35:30,110
+with this epoch thread the precision T
+
+972
+00:35:30,110 --> 00:35:31,370
+black thread that they've written out to
+
+973
+00:35:31,370 --> 00:35:33,080
+disk then we're allowed to go ahead and
+
+974
+00:35:33,080 --> 00:35:35,810
+write out the person T Bach file so for
+
+975
+00:35:35,810 --> 00:35:37,370
+this one I like I said you don't need
+
+976
+00:35:37,370 --> 00:35:38,990
+this for correctness this is just not
+
+977
+00:35:38,990 --> 00:35:41,030
+position so I don't think you actually
+
+978
+00:35:41,030 --> 00:35:44,720
+need this to be another F sink like
+
+979
+00:35:44,720 --> 00:35:45,710
+these do what you want to ask them to
+
+980
+00:35:45,710 --> 00:35:47,030
+know that you have to make the disk I
+
+981
+00:35:47,030 --> 00:35:51,920
+think for this one if you crash in s
+
+982
+00:35:51,920 --> 00:35:54,320
+sink now you have to execute if you're
+
+983
+00:35:54,320 --> 00:35:55,430
+gonna you rely on this to figure out
+
+984
+00:35:55,430 --> 00:35:56,600
+what the intersection is of the epoch
+
+985
+00:35:56,600 --> 00:36:00,670
+across all them you have to F sink right
+
+986
+00:36:00,670 --> 00:36:02,750
+that just you could beat another five
+
+987
+00:36:02,750 --> 00:36:15,200
+milliseconds yes what what ages they're
+
+988
+00:36:15,200 --> 00:36:16,190
+not checkpoints these are just log
+
+989
+00:36:16,190 --> 00:36:20,900
+records three more sites okay the
+
+990
+00:36:20,900 --> 00:36:23,210
+checkpoints yes but yes that's what
+
+991
+00:36:23,210 --> 00:36:24,340
+checkpoint sauce yes
+
+992
+00:36:24,340 --> 00:36:26,960
+this is just again the architecture here
+
+993
+00:36:26,960 --> 00:36:29,270
+is how to do test arrogated log files
+
+994
+00:36:29,270 --> 00:36:31,910
+across multiple disks and do you just
+
+995
+00:36:31,910 --> 00:36:33,650
+have some centralized location that you
+
+996
+00:36:33,650 --> 00:36:35,930
+only update whenever this thing gets
+
+997
+00:36:35,930 --> 00:36:38,120
+changed in the size of paper they do
+
+998
+00:36:38,120 --> 00:36:41,120
+this for every 40 milliseconds so in a
+
+999
+00:36:41,120 --> 00:36:42,890
+real system this is problematic because
+
+1000
+00:36:42,890 --> 00:36:45,110
+if you need like sub-millisecond latency
+
+1001
+00:36:45,110 --> 00:36:46,640
+of your transactions you're not gonna be
+
+1002
+00:36:46,640 --> 00:36:47,690
+able get there with this you have to
+
+1003
+00:36:47,690 --> 00:36:50,510
+crank this thing down when I asked why
+
+1004
+00:36:50,510 --> 00:36:52,130
+they pick 40 milliseconds they said this
+
+1005
+00:36:52,130 --> 00:36:54,560
+seems like a decent number right so you
+
+1006
+00:36:54,560 --> 00:36:55,940
+could Ratchet it down so this thing is
+
+1007
+00:36:55,940 --> 00:36:57,290
+updated every 10 milliseconds or five
+
+1008
+00:36:57,290 --> 00:36:59,390
+milliseconds but now that you're
+
+1009
+00:36:59,390 --> 00:37:00,320
+flushing a lot and this thing is getting
+
+1010
+00:37:00,320 --> 00:37:02,180
+written out a lot and you now could
+
+1011
+00:37:02,180 --> 00:37:03,230
+potentially have transactions that span
+
+1012
+00:37:03,230 --> 00:37:06,740
+multiple epochs and you have to do more
+
+1013
+00:37:06,740 --> 00:37:09,640
+stuff and recover to handle this
+
+1014
+00:37:09,990 --> 00:37:12,180
+all right so now next slide we get to
+
+1015
+00:37:12,180 --> 00:37:14,940
+your question so well talk about
+
+1016
+00:37:14,940 --> 00:37:17,190
+checkpoints in a few more slides in more
+
+1017
+00:37:17,190 --> 00:37:19,770
+detail but as he said if you don't have
+
+1018
+00:37:19,770 --> 00:37:21,660
+checkpoints then these log files grow
+
+1019
+00:37:21,660 --> 00:37:24,630
+forever and when I crash them and
+
+1020
+00:37:24,630 --> 00:37:27,630
+restart I got to go back and potentially
+
+1021
+00:37:27,630 --> 00:37:30,300
+look at the entire log file so every so
+
+1022
+00:37:30,300 --> 00:37:31,440
+often they're gonna take a checkpoint
+
+1023
+00:37:31,440 --> 00:37:34,530
+and then when you when you have to
+
+1024
+00:37:34,530 --> 00:37:36,810
+recovery you load the last checkpoint in
+
+1025
+00:37:36,810 --> 00:37:38,849
+and that sort of bounds how much the log
+
+1026
+00:37:38,849 --> 00:37:40,530
+file you have to look at and they're
+
+1027
+00:37:40,530 --> 00:37:42,060
+gonna rebuild the indexes based on the
+
+1028
+00:37:42,060 --> 00:37:43,200
+checkpoint as I already said because
+
+1029
+00:37:43,200 --> 00:37:44,730
+we're not gonna make any log records for
+
+1030
+00:37:44,730 --> 00:37:47,190
+the indexes now what is gonna be
+
+1031
+00:37:47,190 --> 00:37:48,690
+different though than a disk based
+
+1032
+00:37:48,690 --> 00:37:50,040
+system which is super interesting is
+
+1033
+00:37:50,040 --> 00:37:52,160
+that when they do recovery
+
+1034
+00:37:52,160 --> 00:37:54,510
+instead of doing in the redo phase you
+
+1035
+00:37:54,510 --> 00:37:56,700
+saw with acetyl server where they start
+
+1036
+00:37:56,700 --> 00:37:58,800
+at some point in the past and they
+
+1037
+00:37:58,800 --> 00:38:00,660
+process log records going forward in
+
+1038
+00:38:00,660 --> 00:38:03,390
+time silo's guy actually can start at
+
+1039
+00:38:03,390 --> 00:38:05,790
+the end of the log file and go in
+
+1040
+00:38:05,790 --> 00:38:08,190
+reverse order and start playing blog
+
+1041
+00:38:08,190 --> 00:38:11,099
+records from from newest to oldest and
+
+1042
+00:38:11,099 --> 00:38:12,839
+again we can do this because we're in
+
+1043
+00:38:12,839 --> 00:38:14,849
+memory because we know that there's no
+
+1044
+00:38:14,849 --> 00:38:16,290
+dirty pages sitting around they got
+
+1045
+00:38:16,290 --> 00:38:17,730
+loaded in from the last checkpoint
+
+1046
+00:38:17,730 --> 00:38:21,420
+so as we replay the log we just need to
+
+1047
+00:38:21,420 --> 00:38:23,190
+know that what should be the final state
+
+1048
+00:38:23,190 --> 00:38:25,849
+of the of the database of a tuple in
+
+1049
+00:38:25,849 --> 00:38:27,900
+order for me to say the data this has
+
+1050
+00:38:27,900 --> 00:38:30,300
+but has been restored so if I have a
+
+1051
+00:38:30,300 --> 00:38:33,240
+tuple of been updated 20 times if I'm
+
+1052
+00:38:33,240 --> 00:38:34,650
+going to reverse order I don't need to
+
+1053
+00:38:34,650 --> 00:38:36,660
+replay that log record for all those 20
+
+1054
+00:38:36,660 --> 00:38:38,910
+updates I need to find the last update
+
+1055
+00:38:38,910 --> 00:38:44,430
+and apply that all right that's totally
+
+1056
+00:38:44,430 --> 00:38:46,109
+different then as you would do this in a
+
+1057
+00:38:46,109 --> 00:38:48,270
+discarding system because again dirty
+
+1058
+00:38:48,270 --> 00:38:50,099
+pages may have written a disk so at some
+
+1059
+00:38:50,099 --> 00:38:51,960
+point I need I need I have to replay
+
+1060
+00:38:51,960 --> 00:38:53,490
+everything and then undo everything that
+
+1061
+00:38:53,490 --> 00:38:56,280
+shouldn't be around right so what
+
+1062
+00:38:56,280 --> 00:38:58,580
+they're gonna keep track of the
+
+1063
+00:38:58,580 --> 00:39:01,080
+transaction IDs and every two board to
+
+1064
+00:39:01,080 --> 00:39:02,250
+keep track of what was the timestamp of
+
+1065
+00:39:02,250 --> 00:39:04,440
+when this tuple got updated so ever as
+
+1066
+00:39:04,440 --> 00:39:06,570
+I'm replaying the log immerse order if I
+
+1067
+00:39:06,570 --> 00:39:09,030
+find a log record that has a timestamp
+
+1068
+00:39:09,030 --> 00:39:12,089
+that's that's smaller than the current
+
+1069
+00:39:12,089 --> 00:39:14,700
+to post time Stan meaning was updated by
+
+1070
+00:39:14,700 --> 00:39:15,900
+transaction in the future that I
+
+1071
+00:39:15,900 --> 00:39:17,790
+replayed earlier in the log then I can
+
+1072
+00:39:17,790 --> 00:39:19,170
+just ignore that log record and I don't
+
+1073
+00:39:19,170 --> 00:39:22,230
+want to apply it so maybe the case if
+
+1074
+00:39:22,230 --> 00:39:23,770
+I'm only updating a small
+
+1075
+00:39:23,770 --> 00:39:27,130
+of tuples over and over again my log I
+
+1076
+00:39:27,130 --> 00:39:29,380
+may be able to realize that you know
+
+1077
+00:39:29,380 --> 00:39:32,710
+within you know maybe the first megabyte
+
+1078
+00:39:32,710 --> 00:39:34,990
+of a log record data I can ignore
+
+1079
+00:39:34,990 --> 00:39:37,870
+everything else after that I still want
+
+1080
+00:39:37,870 --> 00:39:39,400
+to look at it but I still don't the
+
+1081
+00:39:39,400 --> 00:39:43,510
+replay it yes question this won't work
+
+1082
+00:39:43,510 --> 00:39:48,010
+if it's not similar version if you don't
+
+1083
+00:39:48,010 --> 00:39:51,940
+need the old versions that I think this
+
+1084
+00:39:51,940 --> 00:39:55,330
+is okay and so you could say all right
+
+1085
+00:39:55,330 --> 00:39:59,400
+well if I don't need the old versions
+
+1086
+00:39:59,790 --> 00:40:05,710
+because well one is no transaction it's
+
+1087
+00:40:05,710 --> 00:40:07,900
+not like after a restart any transaction
+
+1088
+00:40:07,900 --> 00:40:10,240
+that was running prior to restart it's
+
+1089
+00:40:10,240 --> 00:40:11,770
+not magically reappear when you come
+
+1090
+00:40:11,770 --> 00:40:14,620
+back so there's no accurate run time
+
+1091
+00:40:14,620 --> 00:40:16,090
+transactions with timestamps that could
+
+1092
+00:40:16,090 --> 00:40:18,400
+possibly you read those things so I
+
+1093
+00:40:18,400 --> 00:40:20,020
+could just ignore them now if I'm trying
+
+1094
+00:40:20,020 --> 00:40:22,180
+to do audit logs or retain things new
+
+1095
+00:40:22,180 --> 00:40:23,800
+time-travel queries then yes I got to
+
+1096
+00:40:23,800 --> 00:40:25,150
+replay everything then yes this won't
+
+1097
+00:40:25,150 --> 00:40:27,400
+work I still need to redo it but if I
+
+1098
+00:40:27,400 --> 00:40:28,510
+don't care about its careful ways the
+
+1099
+00:40:28,510 --> 00:40:34,120
+latest version then this works the
+
+1100
+00:40:34,120 --> 00:40:36,820
+reason why most systems don't do this is
+
+1101
+00:40:36,820 --> 00:40:38,950
+that when you do replication which I'll
+
+1102
+00:40:38,950 --> 00:40:42,010
+talk about next class the replicas are
+
+1103
+00:40:42,010 --> 00:40:43,660
+essentially like in recovery mode never
+
+1104
+00:40:43,660 --> 00:40:46,900
+just replaying the log so if you do it
+
+1105
+00:40:46,900 --> 00:40:50,350
+from oldest to newest then the same
+
+1106
+00:40:50,350 --> 00:40:51,670
+mechanism you would do to do a blog
+
+1107
+00:40:51,670 --> 00:40:53,710
+replay is the same thing you can do for
+
+1108
+00:40:53,710 --> 00:40:56,170
+on the replicas if now I have a
+
+1109
+00:40:56,170 --> 00:40:58,090
+specialized recovery mode where I can go
+
+1110
+00:40:58,090 --> 00:41:00,460
+reverse order but only on the single
+
+1111
+00:41:00,460 --> 00:41:01,480
+node then I have to have basically
+
+1112
+00:41:01,480 --> 00:41:03,850
+re-implement this twice so the style is
+
+1113
+00:41:03,850 --> 00:41:04,930
+the only system I know that does this
+
+1114
+00:41:04,930 --> 00:41:07,060
+it's just it's interesting way to think
+
+1115
+00:41:07,060 --> 00:41:13,030
+about it though which I like okay this
+
+1116
+00:41:13,030 --> 00:41:13,900
+one way I think we've already talked
+
+1117
+00:41:13,900 --> 00:41:16,900
+about right so we go we go look in the
+
+1118
+00:41:16,900 --> 00:41:18,580
+persistent epoch file figure out what
+
+1119
+00:41:18,580 --> 00:41:20,530
+the most the most recent persistent
+
+1120
+00:41:20,530 --> 00:41:22,480
+epoch that was flushed to disk then as
+
+1121
+00:41:22,480 --> 00:41:25,210
+our transit our log of threads start
+
+1122
+00:41:25,210 --> 00:41:27,190
+replaying the log they just ignore
+
+1123
+00:41:27,190 --> 00:41:29,110
+anything that's greater than this new
+
+1124
+00:41:29,110 --> 00:41:31,600
+epoch and actually I already said this
+
+1125
+00:41:31,600 --> 00:41:32,950
+all before that because we're going
+
+1126
+00:41:32,950 --> 00:41:35,920
+newest to oldest if I recognize that the
+
+1127
+00:41:35,920 --> 00:41:37,359
+tuple has already been modify
+
+1128
+00:41:37,359 --> 00:41:39,489
+by transaction that came later in the
+
+1129
+00:41:39,489 --> 00:41:41,140
+log that I've already processed then I
+
+1130
+00:41:41,140 --> 00:41:42,579
+don't need to replay that log record
+
+1131
+00:41:42,579 --> 00:41:49,180
+okay okay so now we also get to check
+
+1132
+00:41:49,180 --> 00:41:50,859
+once in more detail as we already said
+
+1133
+00:41:50,859 --> 00:41:53,619
+the log file can grow forever so that
+
+1134
+00:41:53,619 --> 00:41:55,720
+means that I potentially at the replay
+
+1135
+00:41:55,720 --> 00:41:57,400
+the entire log every single time at the
+
+1136
+00:41:57,400 --> 00:42:00,190
+restart right if I have a one year's
+
+1137
+00:42:00,190 --> 00:42:02,410
+worth of log without a check point then
+
+1138
+00:42:02,410 --> 00:42:03,579
+I potentially take me one year to
+
+1139
+00:42:03,579 --> 00:42:05,200
+restore the database which is nonsense
+
+1140
+00:42:05,200 --> 00:42:08,529
+like nobody could do this so for an Mme
+
+1141
+00:42:08,529 --> 00:42:11,319
+checkpoint the different approaches
+
+1142
+00:42:11,319 --> 00:42:12,730
+we're going to choose are going to be
+
+1143
+00:42:12,730 --> 00:42:14,529
+tightly coupled with our control scheme
+
+1144
+00:42:14,529 --> 00:42:16,779
+and in some ways if we're focusing on a
+
+1145
+00:42:16,779 --> 00:42:19,559
+mostly version systems MVCC then
+
+1146
+00:42:19,559 --> 00:42:21,730
+checkpoints essentially can become easy
+
+1147
+00:42:21,730 --> 00:42:24,489
+if we depending on how you know what we
+
+1148
+00:42:24,489 --> 00:42:25,779
+want the consistency level to be in our
+
+1149
+00:42:25,779 --> 00:42:27,519
+checkpoint right because it could just
+
+1150
+00:42:27,519 --> 00:42:29,410
+be we just have a start a transaction
+
+1151
+00:42:29,410 --> 00:42:31,960
+that takes a snapshot scans through a
+
+1152
+00:42:31,960 --> 00:42:33,579
+table and we just write out all the
+
+1153
+00:42:33,579 --> 00:42:34,960
+versions of the tuple that were visible
+
+1154
+00:42:34,960 --> 00:42:37,150
+to our snapshot and anything that's not
+
+1155
+00:42:37,150 --> 00:42:38,739
+visible to us meaning it came in the
+
+1156
+00:42:38,739 --> 00:42:41,019
+future will let us we'll have the log
+
+1157
+00:42:41,019 --> 00:42:43,119
+records and we just replay those all
+
+1158
+00:42:43,119 --> 00:42:48,099
+right so there's a paper written by Dan
+
+1159
+00:42:48,099 --> 00:42:49,690
+Abadi who did some early work on calm
+
+1160
+00:42:49,690 --> 00:42:52,720
+source a few years ago in sigmod we
+
+1161
+00:42:52,720 --> 00:42:54,160
+basically lays out what are the ideal
+
+1162
+00:42:54,160 --> 00:42:56,259
+properties you'd want for a checkpoint a
+
+1163
+00:42:56,259 --> 00:42:57,849
+schema in memory database system and
+
+1164
+00:42:57,849 --> 00:42:59,589
+these sort of seem obvious but it's
+
+1165
+00:42:59,589 --> 00:43:00,849
+important to keep these back of our mind
+
+1166
+00:43:00,849 --> 00:43:02,859
+so obviously we don't want to slow down
+
+1167
+00:43:02,859 --> 00:43:04,299
+the regular transaction processing
+
+1168
+00:43:04,299 --> 00:43:06,249
+because it's not good if you know we can
+
+1169
+00:43:06,249 --> 00:43:07,660
+run really fast and also me take a
+
+1170
+00:43:07,660 --> 00:43:09,400
+checkpoint and now the speed of our
+
+1171
+00:43:09,400 --> 00:43:12,099
+system is cut in by half so the
+
+1172
+00:43:12,099 --> 00:43:13,539
+conventional wisdom for checkpoint
+
+1173
+00:43:13,539 --> 00:43:15,759
+schemes is that about a ten to fifteen
+
+1174
+00:43:15,759 --> 00:43:16,960
+percent overhead is considered
+
+1175
+00:43:16,960 --> 00:43:19,359
+acceptable so every city every so often
+
+1176
+00:43:19,359 --> 00:43:20,799
+if I'm taking a checkpoint if I get ten
+
+1177
+00:43:20,799 --> 00:43:23,319
+percent slower then people are okay with
+
+1178
+00:43:23,319 --> 00:43:27,369
+that likewise you don't want any sort of
+
+1179
+00:43:27,369 --> 00:43:29,380
+huge latency spikes meaning I don't want
+
+1180
+00:43:29,380 --> 00:43:31,809
+a blocking checking scheme I don't want
+
+1181
+00:43:31,809 --> 00:43:33,670
+to block the system or lock a table
+
+1182
+00:43:33,670 --> 00:43:35,410
+while I take the checkpoint I have all
+
+1183
+00:43:35,410 --> 00:43:36,940
+these transactions field behind this and
+
+1184
+00:43:36,940 --> 00:43:38,440
+then finally I release the lock and then
+
+1185
+00:43:38,440 --> 00:43:39,819
+they're allowed to run because that's
+
+1186
+00:43:39,819 --> 00:43:41,140
+gonna be a huge spike in our latency
+
+1187
+00:43:41,140 --> 00:43:42,549
+and people people would pay attention to
+
+1188
+00:43:42,549 --> 00:43:44,559
+this the last one also too is that we
+
+1189
+00:43:44,559 --> 00:43:45,849
+don't want to acquire any excessive
+
+1190
+00:43:45,849 --> 00:43:48,759
+memory overhead meaning ideally we don't
+
+1191
+00:43:48,759 --> 00:43:50,500
+have to take you know a complete copy
+
+1192
+00:43:50,500 --> 00:43:53,050
+the database in memory as we write down
+
+1193
+00:43:53,050 --> 00:43:55,000
+a checkpoint right we want to be able to
+
+1194
+00:43:55,000 --> 00:43:57,730
+minimize that overhead because that puts
+
+1195
+00:43:57,730 --> 00:44:00,250
+pressure on on our games and many
+
+1196
+00:44:00,250 --> 00:44:03,460
+bandwidth and our caches so we reduce
+
+1197
+00:44:03,460 --> 00:44:06,880
+this as much as possible so let's talk
+
+1198
+00:44:06,880 --> 00:44:07,780
+about the different properties you can
+
+1199
+00:44:07,780 --> 00:44:09,220
+have for a checkpoint for any memory
+
+1200
+00:44:09,220 --> 00:44:12,340
+database so this looks like this one
+
+1201
+00:44:12,340 --> 00:44:14,110
+here is this idea here is very similar
+
+1202
+00:44:14,110 --> 00:44:15,550
+to what we talked about for displaced
+
+1203
+00:44:15,550 --> 00:44:17,800
+systems last semester so you have this
+
+1204
+00:44:17,800 --> 00:44:19,480
+notion of fuzzy versus consistent
+
+1205
+00:44:19,480 --> 00:44:21,790
+checkpoints so consistent checkpoint is
+
+1206
+00:44:21,790 --> 00:44:24,400
+when the snapshot of the database that's
+
+1207
+00:44:24,400 --> 00:44:27,400
+written a disk only contains updates
+
+1208
+00:44:27,400 --> 00:44:29,890
+from transactions that committed again
+
+1209
+00:44:29,890 --> 00:44:31,330
+think it's just like under MVCC with
+
+1210
+00:44:31,330 --> 00:44:33,940
+snapshot isolation the the file I write
+
+1211
+00:44:33,940 --> 00:44:36,160
+to disk only contains the the updates
+
+1212
+00:44:36,160 --> 00:44:37,360
+from transactions that committed before
+
+1213
+00:44:37,360 --> 00:44:39,340
+the transaction started so now when I
+
+1214
+00:44:39,340 --> 00:44:41,080
+crash and restart when I load the
+
+1215
+00:44:41,080 --> 00:44:42,790
+checkpoint in I don't like to worry
+
+1216
+00:44:42,790 --> 00:44:45,190
+about as much as my checkpoint contain
+
+1217
+00:44:45,190 --> 00:44:46,990
+changes from uncommitted transactions it
+
+1218
+00:44:46,990 --> 00:44:48,160
+only contains changes for committed
+
+1219
+00:44:48,160 --> 00:44:50,380
+transactions so again this is easy to do
+
+1220
+00:44:50,380 --> 00:44:52,690
+with MVCC I've run run my query that
+
+1221
+00:44:52,690 --> 00:44:54,390
+scans the entire table and write it out
+
+1222
+00:44:54,390 --> 00:44:56,320
+the other approach to do fuzzy
+
+1223
+00:44:56,320 --> 00:44:57,880
+checkpoints well this is where the
+
+1224
+00:44:57,880 --> 00:45:00,160
+snapshot could contain updates from
+
+1225
+00:45:00,160 --> 00:45:02,470
+transactions that committed after my
+
+1226
+00:45:02,470 --> 00:45:05,260
+checkpoint started so my checkpoint
+
+1227
+00:45:05,260 --> 00:45:08,680
+starts running and I have a transaction
+
+1228
+00:45:08,680 --> 00:45:11,680
+that updates two to two tuples and say I
+
+1229
+00:45:11,680 --> 00:45:15,190
+scan through half the table then the
+
+1230
+00:45:15,190 --> 00:45:16,900
+transaction updates a tuple we've I've
+
+1231
+00:45:16,900 --> 00:45:18,400
+already passed through but a tuple I
+
+1232
+00:45:18,400 --> 00:45:19,510
+haven't passed through yet
+
+1233
+00:45:19,510 --> 00:45:21,430
+my checkpoint now contain half the
+
+1234
+00:45:21,430 --> 00:45:22,660
+updates of that transaction so now I
+
+1235
+00:45:22,660 --> 00:45:24,010
+have to do some extra stuff when I come
+
+1236
+00:45:24,010 --> 00:45:26,440
+back and recognize that oh there's an
+
+1237
+00:45:26,440 --> 00:45:28,270
+update that I may have missed because
+
+1238
+00:45:28,270 --> 00:45:29,710
+this guy was running one eyebrow when I
+
+1239
+00:45:29,710 --> 00:45:31,450
+was running and I make sure I find the
+
+1240
+00:45:31,450 --> 00:45:34,080
+log records to reapply things correctly
+
+1241
+00:45:34,080 --> 00:45:39,160
+so this is the easiest to do right with
+
+1242
+00:45:39,160 --> 00:45:42,070
+MVCC this one is potentially be faster
+
+1243
+00:45:42,070 --> 00:45:45,010
+and have less memory overhead because
+
+1244
+00:45:45,010 --> 00:45:45,820
+now I don't have to worry about
+
+1245
+00:45:45,820 --> 00:45:50,050
+maintaining old versions and pausing the
+
+1246
+00:45:50,050 --> 00:45:54,070
+garbage collector most I most systems
+
+1247
+00:45:54,070 --> 00:45:56,500
+choose this this one has advantages for
+
+1248
+00:45:56,500 --> 00:46:00,490
+storage overhead the next is how we're
+
+1249
+00:46:00,490 --> 00:46:03,400
+actually going to do that the the the
+
+1250
+00:46:03,400 --> 00:46:04,450
+checkpoint
+
+1251
+00:46:04,450 --> 00:46:06,160
+so as I already said a do-it-yourself
+
+1252
+00:46:06,160 --> 00:46:07,780
+implementation of this would be just a
+
+1253
+00:46:07,780 --> 00:46:10,120
+scrunchy scan on the table and write out
+
+1254
+00:46:10,120 --> 00:46:11,500
+every single tuple that I find that's
+
+1255
+00:46:11,500 --> 00:46:14,890
+visible to me all right another approach
+
+1256
+00:46:14,890 --> 00:46:19,330
+is to do an OS Fork so this idea is
+
+1257
+00:46:19,330 --> 00:46:20,740
+interesting because when Mme database
+
+1258
+00:46:20,740 --> 00:46:22,750
+when we call Fork in the operating
+
+1259
+00:46:22,750 --> 00:46:25,840
+system what happens right we have a
+
+1260
+00:46:25,840 --> 00:46:27,940
+child process what's in that child
+
+1261
+00:46:27,940 --> 00:46:31,450
+process memory it's exact same things
+
+1262
+00:46:31,450 --> 00:46:33,640
+the parent process all right
+
+1263
+00:46:33,640 --> 00:46:40,660
+yes question yes the way it works is
+
+1264
+00:46:40,660 --> 00:46:43,090
+there's copy-on-write so I call fork the
+
+1265
+00:46:43,090 --> 00:46:45,700
+child process now has mapped in it's in
+
+1266
+00:46:45,700 --> 00:46:47,710
+it's virtual memory table all the same
+
+1267
+00:46:47,710 --> 00:46:49,720
+pages is the parent process but if the
+
+1268
+00:46:49,720 --> 00:46:51,490
+parent process updates any of those
+
+1269
+00:46:51,490 --> 00:46:53,650
+pages or if I my child process updates
+
+1270
+00:46:53,650 --> 00:46:55,810
+into these pages then the OS will make a
+
+1271
+00:46:55,810 --> 00:46:59,110
+copy of it and and remap it for your
+
+1272
+00:46:59,110 --> 00:47:01,630
+process so as the parent process starts
+
+1273
+00:47:01,630 --> 00:47:03,970
+modifying the in memory that the
+
+1274
+00:47:03,970 --> 00:47:05,770
+database the child process won't see
+
+1275
+00:47:05,770 --> 00:47:09,790
+this so the only sort of well known data
+
+1276
+00:47:09,790 --> 00:47:11,020
+system that actually does this approach
+
+1277
+00:47:11,020 --> 00:47:13,300
+is Redis so this is the rent out Redis
+
+1278
+00:47:13,300 --> 00:47:15,010
+takes checkpoints and they can do this
+
+1279
+00:47:15,010 --> 00:47:17,260
+because they're single threaded single
+
+1280
+00:47:17,260 --> 00:47:18,820
+threaded engine so it is Paul's
+
+1281
+00:47:18,820 --> 00:47:21,700
+transactions do the fork and then now
+
+1282
+00:47:21,700 --> 00:47:23,320
+the child process can has a consistent
+
+1283
+00:47:23,320 --> 00:47:25,000
+snapshot that it can start writing out
+
+1284
+00:47:25,000 --> 00:47:29,500
+the disk right if you don't if you're
+
+1285
+00:47:29,500 --> 00:47:30,850
+gonna allow it if you're not gonna pause
+
+1286
+00:47:30,850 --> 00:47:33,400
+all transactions or updates while you do
+
+1287
+00:47:33,400 --> 00:47:35,590
+this then in the child process you now
+
+1288
+00:47:35,590 --> 00:47:37,930
+need to reconcile the database to remove
+
+1289
+00:47:37,930 --> 00:47:40,210
+any uncommitted changes from
+
+1290
+00:47:40,210 --> 00:47:41,320
+transactions that were running at the
+
+1291
+00:47:41,320 --> 00:47:44,170
+time you before you forked so hyper
+
+1292
+00:47:44,170 --> 00:47:46,060
+actually did this back in the day so
+
+1293
+00:47:46,060 --> 00:47:47,590
+this is the paper from 2011 this is the
+
+1294
+00:47:47,590 --> 00:47:49,630
+first version of hyper it was actually
+
+1295
+00:47:49,630 --> 00:47:51,040
+influenced by a system that I was
+
+1296
+00:47:51,040 --> 00:47:52,900
+working on or helped build a store which
+
+1297
+00:47:52,900 --> 00:47:54,790
+then became Polti be so they basically
+
+1298
+00:47:54,790 --> 00:47:57,040
+sort of built their own version of volte
+
+1299
+00:47:57,040 --> 00:47:59,170
+be but they also wanted to do analytical
+
+1300
+00:47:59,170 --> 00:48:01,720
+queries so they would do OS Fork and
+
+1301
+00:48:01,720 --> 00:48:03,250
+then on the child process they could run
+
+1302
+00:48:03,250 --> 00:48:05,140
+analytical queries without slowing down
+
+1303
+00:48:05,140 --> 00:48:08,590
+the the parent process who was running
+
+1304
+00:48:08,590 --> 00:48:10,570
+transactions and then they also could
+
+1305
+00:48:10,570 --> 00:48:12,100
+then take the child process and write
+
+1306
+00:48:12,100 --> 00:48:13,360
+out that check point to disk with the
+
+1307
+00:48:13,360 --> 00:48:16,410
+game and without slowing down the
+
+1308
+00:48:16,410 --> 00:48:18,540
+slow down the parent process execution
+
+1309
+00:48:18,540 --> 00:48:20,880
+but because now when they took the
+
+1310
+00:48:20,880 --> 00:48:23,310
+checkpoint but did the fork there might
+
+1311
+00:48:23,310 --> 00:48:24,600
+even some in-flight transactions that
+
+1312
+00:48:24,600 --> 00:48:27,270
+were running at the same time they men
+
+1313
+00:48:27,270 --> 00:48:28,890
+in the child process you need to look at
+
+1314
+00:48:28,890 --> 00:48:30,240
+the undo logs for those transactions
+
+1315
+00:48:30,240 --> 00:48:32,250
+which are in memory and make sure you
+
+1316
+00:48:32,250 --> 00:48:33,960
+reverse the database the reverse there's
+
+1317
+00:48:33,960 --> 00:48:35,130
+changes so that again you have a
+
+1318
+00:48:35,130 --> 00:48:37,830
+consistent snapshot and then after some
+
+1319
+00:48:37,830 --> 00:48:38,850
+period of time either when the
+
+1320
+00:48:38,850 --> 00:48:41,100
+checkpoint was written the disk or when
+
+1321
+00:48:41,100 --> 00:48:42,420
+you finished processing you analytical
+
+1322
+00:48:42,420 --> 00:48:44,070
+queries they would kill the child
+
+1323
+00:48:44,070 --> 00:48:45,630
+process all the memory gets cleaned up
+
+1324
+00:48:45,630 --> 00:48:47,990
+and then the parent would fork it again
+
+1325
+00:48:47,990 --> 00:48:50,820
+so again Redis is the only one that does
+
+1326
+00:48:50,820 --> 00:48:52,200
+this the it's easy to do because your
+
+1327
+00:48:52,200 --> 00:48:54,480
+single threaded I don't know of any
+
+1328
+00:48:54,480 --> 00:48:56,400
+other system other than hyper that has
+
+1329
+00:48:56,400 --> 00:48:58,590
+attempted this when we try to do this in
+
+1330
+00:48:58,590 --> 00:49:00,030
+each tool but we were based on the JVM
+
+1331
+00:49:00,030 --> 00:49:02,280
+if you read the manual for the JVM and
+
+1332
+00:49:02,280 --> 00:49:04,770
+says don't fork it we said screw that we
+
+1333
+00:49:04,770 --> 00:49:07,620
+forked it anyway but it has also the
+
+1334
+00:49:07,620 --> 00:49:08,820
+problems because like the carpet like
+
+1335
+00:49:08,820 --> 00:49:09,900
+you have a bunch of zombie threads
+
+1336
+00:49:09,900 --> 00:49:10,740
+because like the garbha collector
+
+1337
+00:49:10,740 --> 00:49:12,630
+doesn't get doesn't start keep running
+
+1338
+00:49:12,630 --> 00:49:13,740
+again other background things don't run
+
+1339
+00:49:13,740 --> 00:49:17,300
+so it would work but it was a bad idea
+
+1340
+00:49:17,300 --> 00:49:20,400
+okay the next issue is that what are we
+
+1341
+00:49:20,400 --> 00:49:21,450
+actually gonna store in our checkpoint
+
+1342
+00:49:21,450 --> 00:49:23,370
+ok the two approaches are do complete
+
+1343
+00:49:23,370 --> 00:49:24,540
+checkpoints the Delta checkpoints
+
+1344
+00:49:24,540 --> 00:49:26,040
+complete checkpoints just taking
+
+1345
+00:49:26,040 --> 00:49:27,780
+whatever it's in my snapshot on my a my
+
+1346
+00:49:27,780 --> 00:49:29,520
+on my table or my tables in my database
+
+1347
+00:49:29,520 --> 00:49:30,750
+and there's write that up in the
+
+1348
+00:49:30,750 --> 00:49:33,390
+mountain tirely out the disk the Delta
+
+1349
+00:49:33,390 --> 00:49:35,190
+checkpoint is where you try to recognize
+
+1350
+00:49:35,190 --> 00:49:36,510
+what what has changed since the last
+
+1351
+00:49:36,510 --> 00:49:39,090
+time I took a checkpoint and only write
+
+1352
+00:49:39,090 --> 00:49:41,360
+out those you know those updates
+
+1353
+00:49:41,360 --> 00:49:45,300
+so most systems do this right the only
+
+1354
+00:49:45,300 --> 00:49:46,260
+system that I know that does Delta
+
+1355
+00:49:46,260 --> 00:49:48,570
+checkpoints is hecatomb right because
+
+1356
+00:49:48,570 --> 00:49:50,220
+the issue is that with a complete
+
+1357
+00:49:50,220 --> 00:49:52,830
+checkpoint from a sort of a sort of
+
+1358
+00:49:52,830 --> 00:49:54,330
+administrative management standpoint I
+
+1359
+00:49:54,330 --> 00:49:57,060
+had this file now on disk I can say oh
+
+1360
+00:49:57,060 --> 00:49:59,070
+this is my checkpoint this is the exact
+
+1361
+00:49:59,070 --> 00:50:00,480
+snapshot of the database at this given
+
+1362
+00:50:00,480 --> 00:50:03,240
+time with the Delta checkpoint I need to
+
+1363
+00:50:03,240 --> 00:50:06,330
+retain a bunch of deltas because there
+
+1364
+00:50:06,330 --> 00:50:08,220
+may be some updates that were in this
+
+1365
+00:50:08,220 --> 00:50:10,140
+snapshot but not the next snapshot and
+
+1366
+00:50:10,140 --> 00:50:11,730
+in order for me to have make sure I put
+
+1367
+00:50:11,730 --> 00:50:13,050
+the database back into the correct state
+
+1368
+00:50:13,050 --> 00:50:14,220
+I need to have all of them
+
+1369
+00:50:14,220 --> 00:50:16,380
+so when hackaton does this they have a
+
+1370
+00:50:16,380 --> 00:50:17,880
+background thread that will start
+
+1371
+00:50:17,880 --> 00:50:19,260
+coalescing combining these dr
+
+1372
+00:50:19,260 --> 00:50:20,550
+checkpoints to make it basically one
+
+1373
+00:50:20,550 --> 00:50:23,580
+giant complete checkpoint but you need
+
+1374
+00:50:23,580 --> 00:50:26,010
+be mindful of this you know what the
+
+1375
+00:50:26,010 --> 00:50:27,540
+following is that you're what the file
+
+1376
+00:50:27,540 --> 00:50:28,570
+contains that you're looking at
+
+1377
+00:50:28,570 --> 00:50:31,030
+so this is easier to implement a waste
+
+1378
+00:50:31,030 --> 00:50:34,240
+more space but from it from from
+
+1379
+00:50:34,240 --> 00:50:35,590
+engineering and a mansion point this
+
+1380
+00:50:35,590 --> 00:50:37,810
+one's better one way to also to make
+
+1381
+00:50:37,810 --> 00:50:39,400
+this not have a huge storage overhead
+
+1382
+00:50:39,400 --> 00:50:41,200
+like if at my data base is one terabyte
+
+1383
+00:50:41,200 --> 00:50:43,360
+and then in the LAT since the last
+
+1384
+00:50:43,360 --> 00:50:45,640
+checkpoint update one megabyte this
+
+1385
+00:50:45,640 --> 00:50:47,170
+thing stores one megabyte this stores
+
+1386
+00:50:47,170 --> 00:50:49,180
+one terabyte over and over again if I
+
+1387
+00:50:49,180 --> 00:50:50,950
+store the data uncompressed on a file
+
+1388
+00:50:50,950 --> 00:50:53,380
+system that supports deduplication then
+
+1389
+00:50:53,380 --> 00:50:55,660
+the pages of memory that I write out are
+
+1390
+00:50:55,660 --> 00:50:56,890
+going to be duplicated over and over
+
+1391
+00:50:56,890 --> 00:50:58,750
+again and the file system could cut
+
+1392
+00:50:58,750 --> 00:51:00,730
+could could you know compress them down
+
+1393
+00:51:00,730 --> 00:51:03,640
+for me so you can rely on things outside
+
+1394
+00:51:03,640 --> 00:51:05,410
+that database to make this this thing
+
+1395
+00:51:05,410 --> 00:51:09,760
+actually tenable alright the last one is
+
+1396
+00:51:09,760 --> 00:51:11,050
+gonna be the frequency of how often
+
+1397
+00:51:11,050 --> 00:51:13,030
+we're going to take a checkpoint again
+
+1398
+00:51:13,030 --> 00:51:14,410
+we couldn't take a checkpoint all the
+
+1399
+00:51:14,410 --> 00:51:15,490
+time but that could slow down the
+
+1400
+00:51:15,490 --> 00:51:18,160
+regular transaction workload and so
+
+1401
+00:51:18,160 --> 00:51:19,690
+typically what you do is either say I'm
+
+1402
+00:51:19,690 --> 00:51:21,400
+gonna fire off the checkpoint at every
+
+1403
+00:51:21,400 --> 00:51:23,650
+at a fixed interval like every five
+
+1404
+00:51:23,650 --> 00:51:25,750
+minutes or I fire off a checkpoint after
+
+1405
+00:51:25,750 --> 00:51:27,070
+I've written a certain amount of data to
+
+1406
+00:51:27,070 --> 00:51:29,410
+my log file alright so in this case here
+
+1407
+00:51:29,410 --> 00:51:31,360
+like this one you can bound how much
+
+1408
+00:51:31,360 --> 00:51:32,290
+time he's gonna take for you to recover
+
+1409
+00:51:32,290 --> 00:51:34,630
+like say if I crash all my database we
+
+1410
+00:51:34,630 --> 00:51:36,580
+would come back in within five minutes
+
+1411
+00:51:36,580 --> 00:51:38,470
+so I can take a checkpoint every every
+
+1412
+00:51:38,470 --> 00:51:40,600
+four minutes so I know that when I crash
+
+1413
+00:51:40,600 --> 00:51:42,130
+I only have at most four minutes of log
+
+1414
+00:51:42,130 --> 00:51:43,570
+I need to replay to put me back in the
+
+1415
+00:51:43,570 --> 00:51:45,790
+correct State this one you can sort of
+
+1416
+00:51:45,790 --> 00:51:47,740
+do the math and figure out oh if I come
+
+1417
+00:51:47,740 --> 00:51:49,180
+you know if I can replay the log at one
+
+1418
+00:51:49,180 --> 00:51:52,330
+megabyte per second then if I set it so
+
+1419
+00:51:52,330 --> 00:51:54,670
+that you know I take a checkpoint after
+
+1420
+00:51:54,670 --> 00:51:58,060
+one hundred megabytes then I know I can
+
+1421
+00:51:58,060 --> 00:51:59,590
+recover in a hundred seconds so they're
+
+1422
+00:51:59,590 --> 00:52:00,760
+essentially the same thing it's just a
+
+1423
+00:52:00,760 --> 00:52:03,600
+different way to think about the problem
+
+1424
+00:52:03,600 --> 00:52:06,010
+and again some applications where you
+
+1425
+00:52:06,010 --> 00:52:08,050
+know some applications where you maybe
+
+1426
+00:52:08,050 --> 00:52:10,000
+don't care about things being super
+
+1427
+00:52:10,000 --> 00:52:11,680
+highly available within a single node
+
+1428
+00:52:11,680 --> 00:52:13,270
+they can use replicas to hide all this
+
+1429
+00:52:13,270 --> 00:52:15,700
+so maybe you take a checkpoint at you
+
+1430
+00:52:15,700 --> 00:52:17,500
+know at longer intervals or the longer
+
+1431
+00:52:17,500 --> 00:52:20,260
+fall fall fall buffer sizes and so that
+
+1432
+00:52:20,260 --> 00:52:21,730
+way if like if you have a replica if the
+
+1433
+00:52:21,730 --> 00:52:23,620
+master crashes you can the replicas can
+
+1434
+00:52:23,620 --> 00:52:24,880
+come up without having to recover the
+
+1435
+00:52:24,880 --> 00:52:28,720
+log will cover that on on Wednesday the
+
+1436
+00:52:28,720 --> 00:52:30,670
+other thing though we need to do which
+
+1437
+00:52:30,670 --> 00:52:33,790
+every system has to do is that if the
+
+1438
+00:52:33,790 --> 00:52:35,020
+data sent is told hey we're going to
+
+1439
+00:52:35,020 --> 00:52:36,910
+shutdown then we want to take a
+
+1440
+00:52:36,910 --> 00:52:38,470
+checkpoint at that moment of time we
+
+1441
+00:52:38,470 --> 00:52:40,150
+acquiesce or to stop all the worker
+
+1442
+00:52:40,150 --> 00:52:41,680
+threads let them finish whatever
+
+1443
+00:52:41,680 --> 00:52:42,250
+transactions
+
+1444
+00:52:42,250 --> 00:52:43,930
+running and then take a you know
+
+1445
+00:52:43,930 --> 00:52:45,610
+complete snapshot a CLE check one of the
+
+1446
+00:52:45,610 --> 00:52:47,860
+database right this is why you want to
+
+1447
+00:52:47,860 --> 00:52:49,060
+tell the name is hey I want to shut down
+
+1448
+00:52:49,060 --> 00:52:50,620
+don't just don't pass it you know you
+
+1449
+00:52:50,620 --> 00:52:53,800
+kill - 9 and do a hard cig term you want
+
+1450
+00:52:53,800 --> 00:52:54,700
+the database to be able to write things
+
+1451
+00:52:54,700 --> 00:52:55,750
+out gracefully
+
+1452
+00:52:55,750 --> 00:52:58,000
+right cuz otherwise it would if you do
+
+1453
+00:52:58,000 --> 00:52:59,170
+this then you don't have to replay the
+
+1454
+00:52:59,170 --> 00:53:00,700
+law because you know the database is in
+
+1455
+00:53:00,700 --> 00:53:05,710
+the correct state so this is just a
+
+1456
+00:53:05,710 --> 00:53:07,720
+quick summary of what other what some
+
+1457
+00:53:07,720 --> 00:53:10,330
+Mme DV systems actually do right as I
+
+1458
+00:53:10,330 --> 00:53:12,010
+said the systems in terms of what
+
+1459
+00:53:12,010 --> 00:53:13,480
+direction you in a store are going to do
+
+1460
+00:53:13,480 --> 00:53:16,060
+complete complete checkpoints only
+
+1461
+00:53:16,060 --> 00:53:19,290
+hackaton is doing the is doing the the
+
+1462
+00:53:19,290 --> 00:53:22,150
+Delta one and then what sort of
+
+1463
+00:53:22,150 --> 00:53:24,070
+interesting to is like some of the MVC
+
+1464
+00:53:24,070 --> 00:53:28,150
+systems like packet on and and mem
+
+1465
+00:53:28,150 --> 00:53:30,970
+sequel are doing consistent check long
+
+1466
+00:53:30,970 --> 00:53:32,650
+game which is just like snapshot
+
+1467
+00:53:32,650 --> 00:53:35,230
+isolation juice camber anything out both
+
+1468
+00:53:35,230 --> 00:53:38,560
+DB is not any system but they still have
+
+1469
+00:53:38,560 --> 00:53:39,970
+some checkpoints because what happens is
+
+1470
+00:53:39,970 --> 00:53:41,380
+when you say I want to take a checkpoint
+
+1471
+00:53:41,380 --> 00:53:43,000
+they switch into this sort of
+
+1472
+00:53:43,000 --> 00:53:44,950
+specialized two version or multi version
+
+1473
+00:53:44,950 --> 00:53:48,370
+system right where you just have the
+
+1474
+00:53:48,370 --> 00:53:50,020
+version of a tuple that existed at the
+
+1475
+00:53:50,020 --> 00:53:51,490
+checkpoint and then you just have
+
+1476
+00:53:51,490 --> 00:53:53,200
+another version that's always the the
+
+1477
+00:53:53,200 --> 00:53:54,850
+latest version you can't you don't have
+
+1478
+00:53:54,850 --> 00:53:56,050
+any have version change other than you
+
+1479
+00:53:56,050 --> 00:53:57,850
+only have two versions so that's how
+
+1480
+00:53:57,850 --> 00:53:59,140
+they would do consistent checkpoints
+
+1481
+00:53:59,140 --> 00:54:01,680
+alta base can actually do fuzzy and
+
+1482
+00:54:01,680 --> 00:54:05,140
+consistent checkpoints I think they do
+
+1483
+00:54:05,140 --> 00:54:07,450
+the same thing under x ten we're like if
+
+1484
+00:54:07,450 --> 00:54:09,160
+I'm shutting down I'll do a consistent
+
+1485
+00:54:09,160 --> 00:54:10,750
+blocking checkpoint but otherwise I'd
+
+1486
+00:54:10,750 --> 00:54:12,460
+know me take a fuzzy checkpoint all
+
+1487
+00:54:12,460 --> 00:54:15,060
+right Ahana does fuzzy with time-based
+
+1488
+00:54:15,060 --> 00:54:17,290
+again different database systems do
+
+1489
+00:54:17,290 --> 00:54:18,340
+different things
+
+1490
+00:54:18,340 --> 00:54:21,130
+if you're doing nbcc than my opinion
+
+1491
+00:54:21,130 --> 00:54:24,250
+doing the consistent checkpoint and
+
+1492
+00:54:24,250 --> 00:54:25,780
+taking a pleat snapshot is the way to go
+
+1493
+00:54:25,780 --> 00:54:28,450
+there's less engineering overhead of
+
+1494
+00:54:28,450 --> 00:54:29,950
+figuring out what they actually write
+
+1495
+00:54:29,950 --> 00:54:31,510
+out you just scan through and write
+
+1496
+00:54:31,510 --> 00:54:33,940
+everything so any questions about check
+
+1497
+00:54:33,940 --> 00:54:38,260
+once again after restart I load the
+
+1498
+00:54:38,260 --> 00:54:40,840
+checkpoint in and as I scan the
+
+1499
+00:54:40,840 --> 00:54:43,150
+checkpoint I'm copying data into my
+
+1500
+00:54:43,150 --> 00:54:45,280
+tables and as I do that it's essentially
+
+1501
+00:54:45,280 --> 00:54:47,530
+like an insert I update any indexes that
+
+1502
+00:54:47,530 --> 00:54:49,900
+are on that table so that that way they
+
+1503
+00:54:49,900 --> 00:54:53,740
+get they get pop populated correctly and
+
+1504
+00:54:53,740 --> 00:54:55,930
+then once that all that's done now that
+
+1505
+00:54:55,930 --> 00:55:01,120
+is back online yes question is with the
+
+1506
+00:55:01,120 --> 00:55:02,560
+four thing the index are to get copied
+
+1507
+00:55:02,560 --> 00:55:04,270
+depends on implementation you don't have
+
+1508
+00:55:04,270 --> 00:55:09,070
+to right yeah yeah so for yes all the
+
+1509
+00:55:09,070 --> 00:55:11,200
+indexes get copied we know how to you
+
+1510
+00:55:11,200 --> 00:55:15,220
+don't have to write all right it spy it
+
+1511
+00:55:15,220 --> 00:55:17,080
+again it's a waste of space my indexes
+
+1512
+00:55:17,080 --> 00:55:19,450
+are huge it's not worth the disk IO to
+
+1513
+00:55:19,450 --> 00:55:20,710
+write that out if I'm gonna repopulate
+
+1514
+00:55:20,710 --> 00:55:23,740
+it anyway on recovery right that trade
+
+1515
+00:55:23,740 --> 00:55:25,510
+up teen computation and and and and
+
+1516
+00:55:25,510 --> 00:55:30,190
+storage all right so the last thing I
+
+1517
+00:55:30,190 --> 00:55:33,880
+want to talk about very quickly is how
+
+1518
+00:55:33,880 --> 00:55:38,650
+to do fast restarts so everything I
+
+1519
+00:55:38,650 --> 00:55:40,540
+talked about so far that the the crash
+
+1520
+00:55:40,540 --> 00:55:43,570
+recovery for silo and sequel server and
+
+1521
+00:55:43,570 --> 00:55:45,730
+all the checkpoint stuff this is assumed
+
+1522
+00:55:45,730 --> 00:55:47,980
+that oh well our system was operating
+
+1523
+00:55:47,980 --> 00:55:49,300
+all right systems running something
+
+1524
+00:55:49,300 --> 00:55:50,380
+happened somebody tripped over the power
+
+1525
+00:55:50,380 --> 00:55:52,210
+cord lightning struck the data center
+
+1526
+00:55:52,210 --> 00:55:54,460
+and we did a hard crash it was
+
+1527
+00:55:54,460 --> 00:55:57,370
+unexpected right but there's other times
+
+1528
+00:55:57,370 --> 00:55:58,660
+we actually may need to restart the
+
+1529
+00:55:58,660 --> 00:56:00,730
+database system it's not gonna be from a
+
+1530
+00:56:00,730 --> 00:56:04,090
+crash right very commonly maybe we have
+
+1531
+00:56:04,090 --> 00:56:06,520
+to update our les libraries there's a
+
+1532
+00:56:06,520 --> 00:56:08,260
+technique in Linux called K splice
+
+1533
+00:56:08,260 --> 00:56:09,580
+allows you to update kernels without
+
+1534
+00:56:09,580 --> 00:56:11,350
+hundred restart the system but let's say
+
+1535
+00:56:11,350 --> 00:56:12,700
+you can't always do that sometimes you
+
+1536
+00:56:12,700 --> 00:56:14,580
+have to restart the whole whole OS
+
+1537
+00:56:14,580 --> 00:56:16,180
+certainly you're gonna upgrade the
+
+1538
+00:56:16,180 --> 00:56:19,300
+hardware some discs are swappable but
+
+1539
+00:56:19,300 --> 00:56:20,920
+dims I don't think are like you have to
+
+1540
+00:56:20,920 --> 00:56:22,480
+turn the system off put the new games in
+
+1541
+00:56:22,480 --> 00:56:24,930
+or certainly if you're moving to another
+
+1542
+00:56:24,930 --> 00:56:27,160
+AWS instance that's a whole another
+
+1543
+00:56:27,160 --> 00:56:29,350
+piece of hardware and then sometimes you
+
+1544
+00:56:29,350 --> 00:56:30,400
+just want to update the data system
+
+1545
+00:56:30,400 --> 00:56:32,410
+software again Oracle has techniques
+
+1546
+00:56:32,410 --> 00:56:33,670
+that allow you to do patching without
+
+1547
+00:56:33,670 --> 00:56:36,550
+taking everything offline but most
+
+1548
+00:56:36,550 --> 00:56:40,060
+systems don't have that so let's say we
+
+1549
+00:56:40,060 --> 00:56:41,830
+want to do this one here all right for
+
+1550
+00:56:41,830 --> 00:56:43,780
+the zoom these ones here we have to
+
+1551
+00:56:43,780 --> 00:56:44,830
+restart there's no way to get around
+
+1552
+00:56:44,830 --> 00:56:47,620
+this but in start restart the entire box
+
+1553
+00:56:47,620 --> 00:56:49,810
+for this one here though we don't have
+
+1554
+00:56:49,810 --> 00:56:50,890
+to restart the us we don't have to
+
+1555
+00:56:50,890 --> 00:56:53,230
+restart the hardware so the interesting
+
+1556
+00:56:53,230 --> 00:56:55,030
+to see away if we can restart the system
+
+1557
+00:56:55,030 --> 00:56:57,640
+and it for an in-memory database and not
+
+1558
+00:56:57,640 --> 00:56:59,050
+have to flush a checkpoint out the disk
+
+1559
+00:56:59,050 --> 00:57:01,120
+and then load it all back in over and
+
+1560
+00:57:01,120 --> 00:57:04,480
+over again so this is what Facebook can
+
+1561
+00:57:04,480 --> 00:57:07,240
+do in their scuba system so I'll briefly
+
+1562
+00:57:07,240 --> 00:57:08,860
+talk about what scuba is in a second but
+
+1563
+00:57:08,860 --> 00:57:09,550
+like you
+
+1564
+00:57:09,550 --> 00:57:11,470
+from the introduction class we spent a
+
+1565
+00:57:11,470 --> 00:57:12,760
+whole you know this is what this is what
+
+1566
+00:57:12,760 --> 00:57:13,720
+the students voted for the most
+
+1567
+00:57:13,720 --> 00:57:14,920
+interesting system they want me to talk
+
+1568
+00:57:14,920 --> 00:57:21,400
+about so scuba is a it's a distributed
+
+1569
+00:57:21,400 --> 00:57:24,070
+in memory OLAP system developed at
+
+1570
+00:57:24,070 --> 00:57:27,100
+Facebook to do event log processing so
+
+1571
+00:57:27,100 --> 00:57:29,800
+whenever you load a page in Facebook
+
+1572
+00:57:29,800 --> 00:57:31,690
+they're going to keep track of about
+
+1573
+00:57:31,690 --> 00:57:33,310
+every single stage every single service
+
+1574
+00:57:33,310 --> 00:57:35,770
+it touches for that request record all
+
+1575
+00:57:35,770 --> 00:57:37,390
+the information and then dump it off the
+
+1576
+00:57:37,390 --> 00:57:38,890
+scuba so you can do analytics and say
+
+1577
+00:57:38,890 --> 00:57:42,430
+find me the you know explain to me why
+
+1578
+00:57:42,430 --> 00:57:44,590
+my page requests 120 percent slower than
+
+1579
+00:57:44,590 --> 00:57:47,080
+then yesterday right because they're
+
+1580
+00:57:47,080 --> 00:57:49,000
+pushing out updates all the time for
+
+1581
+00:57:49,000 --> 00:57:50,890
+further through the web apps they want
+
+1582
+00:57:50,890 --> 00:57:54,280
+to know whether things are regressing so
+
+1583
+00:57:54,280 --> 00:57:56,110
+what they're going to do though is that
+
+1584
+00:57:56,110 --> 00:57:58,090
+when they want to update the the
+
+1585
+00:57:58,090 --> 00:58:00,580
+database system software that instead of
+
+1586
+00:58:00,580 --> 00:58:02,860
+shutting it down and taking checkpoint
+
+1587
+00:58:02,860 --> 00:58:04,450
+and loading it all back in they're gonna
+
+1588
+00:58:04,450 --> 00:58:06,010
+write out the contents of the database
+
+1589
+00:58:06,010 --> 00:58:08,110
+essentially the checkpoint to shared
+
+1590
+00:58:08,110 --> 00:58:11,710
+memory restart that the process come
+
+1591
+00:58:11,710 --> 00:58:14,350
+back up see that my database state is
+
+1592
+00:58:14,350 --> 00:58:16,000
+now in shared memory and suck it all
+
+1593
+00:58:16,000 --> 00:58:18,400
+back in they're essentially using shared
+
+1594
+00:58:18,400 --> 00:58:21,370
+memory as like as like a ram disk which
+
+1595
+00:58:21,370 --> 00:58:24,100
+is kind of interesting so you know I've
+
+1596
+00:58:24,100 --> 00:58:24,970
+already said this it's a distributed
+
+1597
+00:58:24,970 --> 00:58:26,830
+Emery's in my system it has a
+
+1598
+00:58:26,830 --> 00:58:28,660
+heterogenous architecture with leaf
+
+1599
+00:58:28,660 --> 00:58:30,730
+nodes and aggregator nodes this is not
+
+1600
+00:58:30,730 --> 00:58:32,830
+too interesting for us but just the
+
+1601
+00:58:32,830 --> 00:58:35,080
+thing to be mindful is the state of the
+
+1602
+00:58:35,080 --> 00:58:36,670
+database is only at these leaf nodes
+
+1603
+00:58:36,670 --> 00:58:39,010
+here right the aggregator nodes and the
+
+1604
+00:58:39,010 --> 00:58:40,420
+root node up above these are stateless
+
+1605
+00:58:40,420 --> 00:58:42,160
+and there's combining results of queries
+
+1606
+00:58:42,160 --> 00:58:44,560
+that these guys are they generate so all
+
+1607
+00:58:44,560 --> 00:58:46,360
+the updates inserting new data goes to
+
+1608
+00:58:46,360 --> 00:58:47,980
+these leaf nodes so this is the primary
+
+1609
+00:58:47,980 --> 00:58:49,480
+search location so if we want to restart
+
+1610
+00:58:49,480 --> 00:58:53,680
+these guys we need a way to can shred
+
+1611
+00:58:53,680 --> 00:58:54,970
+this out the shared memories so we don't
+
+1612
+00:58:54,970 --> 00:58:57,490
+the load the check on foo disk as a high
+
+1613
+00:58:57,490 --> 00:58:58,660
+level the way it works is that if I have
+
+1614
+00:58:58,660 --> 00:58:59,560
+a query like this they're gonna play
+
+1615
+00:58:59,560 --> 00:59:01,630
+come to plan fragments and say this guy
+
+1616
+00:59:01,630 --> 00:59:04,180
+goes down these guys are all gonna send
+
+1617
+00:59:04,180 --> 00:59:05,260
+their updates off and then we just
+
+1618
+00:59:05,260 --> 00:59:06,400
+combine it together to reach the final
+
+1619
+00:59:06,400 --> 00:59:08,410
+answer this is actually basically how
+
+1620
+00:59:08,410 --> 00:59:10,840
+men sequel work said well thangkas the
+
+1621
+00:59:10,840 --> 00:59:12,430
+story goes the guy that founded mem
+
+1622
+00:59:12,430 --> 00:59:14,500
+sequel he was at Microsoft all the
+
+1623
+00:59:14,500 --> 00:59:16,570
+Hecate on project bard some of their I
+
+1624
+00:59:16,570 --> 00:59:18,640
+was inspired by their ideas went to
+
+1625
+00:59:18,640 --> 00:59:19,300
+Facebook
+
+1626
+00:59:19,300 --> 00:59:20,590
+Deana I don't think he's old-school but
+
+1627
+00:59:20,590 --> 00:59:22,750
+he saw this this patterns used in other
+
+1628
+00:59:22,750 --> 00:59:25,090
+systems at Facebook saw this idea and
+
+1629
+00:59:25,090 --> 00:59:26,410
+then combined together to make them
+
+1630
+00:59:26,410 --> 00:59:29,800
+sequel alright so there's two approaches
+
+1631
+00:59:29,800 --> 00:59:30,340
+to do this
+
+1632
+00:59:30,340 --> 00:59:35,980
+so the we've already said this we could
+
+1633
+00:59:35,980 --> 00:59:38,080
+just do the shared memory heaps so that
+
+1634
+00:59:38,080 --> 00:59:41,200
+we could just in our system we modify
+
+1635
+00:59:41,200 --> 00:59:43,270
+the memory allocator such that whenever
+
+1636
+00:59:43,270 --> 00:59:44,830
+we call malloc for that for the data
+
+1637
+00:59:44,830 --> 00:59:47,290
+we're storing in the in the table
+
+1638
+00:59:47,290 --> 00:59:49,480
+instead of being local to my process now
+
+1639
+00:59:49,480 --> 00:59:51,610
+it's sitting in shared memory as far as
+
+1640
+00:59:51,610 --> 00:59:53,260
+you know there's no overhead in the OSF
+
+1641
+00:59:53,260 --> 00:59:54,310
+saying something is in shared memory
+
+1642
+00:59:54,310 --> 00:59:56,140
+because it's just getting back a memory
+
+1643
+00:59:56,140 --> 00:59:57,910
+address the u.s. knows that it's just
+
+1644
+00:59:57,910 --> 01:00:01,540
+the that memory should last beyond the
+
+1645
+01:00:01,540 --> 01:00:04,930
+process lifetime so to do this though
+
+1646
+01:00:04,930 --> 01:00:07,630
+again you have to modify J email or TC
+
+1647
+01:00:07,630 --> 01:00:08,740
+malloc we're never to malloc
+
+1648
+01:00:08,740 --> 01:00:11,200
+implementation you're using to be able
+
+1649
+01:00:11,200 --> 01:00:12,700
+to write things out to shared memory and
+
+1650
+01:00:12,700 --> 01:00:15,850
+be able to divide things up efficiently
+
+1651
+01:00:15,850 --> 01:00:17,170
+so that multiple threads meet writing to
+
+1652
+01:00:17,170 --> 01:00:19,480
+the same location so in the paper they
+
+1653
+01:00:19,480 --> 01:00:22,120
+talk about how they can't do lazy
+
+1654
+01:00:22,120 --> 01:00:23,710
+allocation of backing pages and shared
+
+1655
+01:00:23,710 --> 01:00:25,330
+memory meaning if I call malloc and
+
+1656
+01:00:25,330 --> 01:00:27,670
+something the shared memory the OS is
+
+1657
+01:00:27,670 --> 01:00:28,990
+actually need to have that backed by
+
+1658
+01:00:28,990 --> 01:00:31,690
+physical memory so they claim this in
+
+1659
+01:00:31,690 --> 01:00:33,790
+the paper they Facebook bought the guy
+
+1660
+01:00:33,790 --> 01:00:36,190
+or a B hired the guy that that that that
+
+1661
+01:00:36,190 --> 01:00:39,130
+created je malloc so in the paper you'll
+
+1662
+01:00:39,130 --> 01:00:40,030
+have what how they talk to the GE
+
+1663
+01:00:40,030 --> 01:00:41,620
+Malachi he says you can't do this I
+
+1664
+01:00:41,620 --> 01:00:43,660
+posted this on Twitter or at least the
+
+1665
+01:00:43,660 --> 01:00:45,340
+slides for this on Twitter and then some
+
+1666
+01:00:45,340 --> 01:00:46,390
+dude reached out to me and said you
+
+1667
+01:00:46,390 --> 01:00:47,860
+actually could do this like he actually
+
+1668
+01:00:47,860 --> 01:00:50,170
+tried it and in at least in the newer
+
+1669
+01:00:50,170 --> 01:00:52,000
+versions of Linux that you could do you
+
+1670
+01:00:52,000 --> 01:00:54,070
+could allocate memory shared memory and
+
+1671
+01:00:54,070 --> 01:00:56,350
+not have it backed by a physical memory
+
+1672
+01:00:56,350 --> 01:00:59,170
+right away so this part is actually not
+
+1673
+01:00:59,170 --> 01:00:59,650
+true anymore
+
+1674
+01:00:59,650 --> 01:01:01,150
+so you actually could still do it this
+
+1675
+01:01:01,150 --> 01:01:02,620
+way so you could have your memory
+
+1676
+01:01:02,620 --> 01:01:05,110
+allocator allocate pages on the heap and
+
+1677
+01:01:05,110 --> 01:01:07,450
+shared memory and not worry about any
+
+1678
+01:01:07,450 --> 01:01:09,400
+thread safety issues or backing it right
+
+1679
+01:01:09,400 --> 01:01:11,740
+away but instead what they're gonna do
+
+1680
+01:01:11,740 --> 01:01:14,470
+in this version of scuba is that when
+
+1681
+01:01:14,470 --> 01:01:16,210
+I'm told my process is going to shut
+
+1682
+01:01:16,210 --> 01:01:18,610
+down I stop all updates from any
+
+1683
+01:01:18,610 --> 01:01:20,350
+transactions any queries write
+
+1684
+01:01:20,350 --> 01:01:22,030
+everything out to shared memory and then
+
+1685
+01:01:22,030 --> 01:01:25,120
+I go ahead and restart and so they do
+
+1686
+01:01:25,120 --> 01:01:25,720
+some extra
+
+1687
+01:01:25,720 --> 01:01:28,600
+that where they keep track of what's the
+
+1688
+01:01:28,600 --> 01:01:31,930
+layout of that memory that they're
+
+1689
+01:01:31,930 --> 01:01:33,040
+running out to shared memory like what's
+
+1690
+01:01:33,040 --> 01:01:34,330
+the version that the atavism they wrote
+
+1691
+01:01:34,330 --> 01:01:35,680
+about so that if you restart and come
+
+1692
+01:01:35,680 --> 01:01:36,100
+back
+
+1693
+01:01:36,100 --> 01:01:38,560
+and you recognize oh I have some shared
+
+1694
+01:01:38,560 --> 01:01:40,780
+memory contents of the database from
+
+1695
+01:01:40,780 --> 01:01:43,090
+what it was before I've restarted did he
+
+1696
+01:01:43,090 --> 01:01:44,200
+make sure that the layout is still
+
+1697
+01:01:44,200 --> 01:01:46,030
+correct so they basically maintain some
+
+1698
+01:01:46,030 --> 01:01:47,530
+extra metadata and when they run out to
+
+1699
+01:01:47,530 --> 01:01:49,450
+shared memory to say oh by the way my
+
+1700
+01:01:49,450 --> 01:01:50,830
+layout looks like this and this version
+
+1701
+01:01:50,830 --> 01:01:52,060
+so if I come back and it's incompatible
+
+1702
+01:01:52,060 --> 01:01:55,570
+then I just load it back up from desk so
+
+1703
+01:01:55,570 --> 01:01:57,340
+scuba is interesting system because in
+
+1704
+01:01:57,340 --> 01:01:59,830
+their world this this is not high-value
+
+1705
+01:01:59,830 --> 01:02:01,990
+data right it's not like your timeline
+
+1706
+01:02:01,990 --> 01:02:03,430
+or all your whatever your friend
+
+1707
+01:02:03,430 --> 01:02:05,800
+messaging crap like they it's data that
+
+1708
+01:02:05,800 --> 01:02:07,390
+they could potentially lose they don't
+
+1709
+01:02:07,390 --> 01:02:10,900
+want to but it's not like they lose
+
+1710
+01:02:10,900 --> 01:02:14,830
+money if this goes away so ideally if
+
+1711
+01:02:14,830 --> 01:02:17,530
+they you know say a node comes back and
+
+1712
+01:02:17,530 --> 01:02:18,880
+there's nothing on disk but the shared
+
+1713
+01:02:18,880 --> 01:02:20,560
+memory sorry the the database system
+
+1714
+01:02:20,560 --> 01:02:22,270
+comes back there's nothing on disk
+
+1715
+01:02:22,270 --> 01:02:23,680
+everything's in shared memory but the
+
+1716
+01:02:23,680 --> 01:02:25,180
+shared memory data is not compatible
+
+1717
+01:02:25,180 --> 01:02:26,260
+with our new version of our software
+
+1718
+01:02:26,260 --> 01:02:28,510
+then they'll just backfill it from from
+
+1719
+01:02:28,510 --> 01:02:30,400
+another disk for some results in their
+
+1720
+01:02:30,400 --> 01:02:33,130
+world that that's okay so I like this
+
+1721
+01:02:33,130 --> 01:02:34,540
+idea I don't know if anybody else does
+
+1722
+01:02:34,540 --> 01:02:37,450
+this with shared memory the most famous
+
+1723
+01:02:37,450 --> 01:02:39,100
+shared memory system is Postgres but
+
+1724
+01:02:39,100 --> 01:02:40,930
+they're obviously not in memory and
+
+1725
+01:02:40,930 --> 01:02:42,580
+they're doing this to coordinate across
+
+1726
+01:02:42,580 --> 01:02:45,280
+different processes this is like this is
+
+1727
+01:02:45,280 --> 01:02:48,370
+now this is interesting idea to think
+
+1728
+01:02:48,370 --> 01:02:50,950
+about because it's it's passing data
+
+1729
+01:02:50,950 --> 01:02:52,900
+from one instance of the process to the
+
+1730
+01:02:52,900 --> 01:02:54,610
+next even though they don't actually
+
+1731
+01:02:54,610 --> 01:02:56,920
+overlap in time they're allowing the
+
+1732
+01:02:56,920 --> 01:03:00,280
+memory of the database go beyond the
+
+1733
+01:03:00,280 --> 01:03:02,230
+lifetime of the data system process
+
+1734
+01:03:02,230 --> 01:03:05,410
+itself cuz I find super fascinating any
+
+1735
+01:03:05,410 --> 01:03:09,190
+questions about this again if my
+
+1736
+01:03:09,190 --> 01:03:12,490
+database is one terabyte if I don't have
+
+1737
+01:03:12,490 --> 01:03:13,750
+this technique and I restart the
+
+1738
+01:03:13,750 --> 01:03:15,550
+database then I gotta suck in one
+
+1739
+01:03:15,550 --> 01:03:17,050
+terabyte off a disk which could be slow
+
+1740
+01:03:17,050 --> 01:03:19,360
+but in this case here I could come back
+
+1741
+01:03:19,360 --> 01:03:20,860
+and instantaneously have everything that
+
+1742
+01:03:20,860 --> 01:03:27,220
+I that I need okay all right so just to
+
+1743
+01:03:27,220 --> 01:03:30,670
+finish up the main takeaways from this
+
+1744
+01:03:30,670 --> 01:03:32,620
+is that physical logging is probably the
+
+1745
+01:03:32,620 --> 01:03:33,700
+best approach you would want to use for
+
+1746
+01:03:33,700 --> 01:03:35,920
+an in-memory data is that and it's gonna
+
+1747
+01:03:35,920 --> 01:03:37,450
+support all possible contextual schemes
+
+1748
+01:03:37,450 --> 01:03:39,850
+there are some advantages we can we can
+
+1749
+01:03:39,850 --> 01:03:41,980
+take up take things we take advantage of
+
+1750
+01:03:41,980 --> 01:03:44,500
+if we're using MVCC like doing the copy
+
+1751
+01:03:44,500 --> 01:03:47,110
+on updates to get consistent checkpoints
+
+1752
+01:03:47,110 --> 01:03:49,360
+by just you know relying on the idea of
+
+1753
+01:03:49,360 --> 01:03:49,720
+snaps
+
+1754
+01:03:49,720 --> 01:03:51,580
+isolation to only see changes from
+
+1755
+01:03:51,580 --> 01:03:52,510
+transactions that have already committed
+
+1756
+01:03:52,510 --> 01:03:54,910
+and as I'll talk about at the end of the
+
+1757
+01:03:54,910 --> 01:03:57,250
+semester non-volatile memory is here it
+
+1758
+01:03:57,250 --> 01:03:59,560
+is going to change how we want to do
+
+1759
+01:03:59,560 --> 01:04:01,119
+some of these login upfront protocols
+
+1760
+01:04:01,119 --> 01:04:05,349
+but the the high-level idea will still
+
+1761
+01:04:05,349 --> 01:04:07,930
+roughly be the same that we don't need
+
+1762
+01:04:07,930 --> 01:04:10,630
+to maybe restore or don't even log any
+
+1763
+01:04:10,630 --> 01:04:12,760
+undo information if we're careful where
+
+1764
+01:04:12,760 --> 01:04:14,440
+we store our data then we only need to
+
+1765
+01:04:14,440 --> 01:04:16,660
+keep track of renew information and that
+
+1766
+01:04:16,660 --> 01:04:20,220
+makes the law of replay much faster okay
+
+1767
+01:04:20,220 --> 01:04:22,599
+all right so next class we'll talk about
+
+1768
+01:04:22,599 --> 01:04:24,400
+networking protocols and I don't have a
+
+1769
+01:04:24,400 --> 01:04:25,540
+list of here but we'll also introduce
+
+1770
+01:04:25,540 --> 01:04:28,300
+project to I'll post this on Piazza you
+
+1771
+01:04:28,300 --> 01:04:29,640
+guys should start thinking about how to
+
+1772
+01:04:29,640 --> 01:04:33,640
+form groups of 3 because that's projects
+
+1773
+01:04:33,640 --> 01:04:35,619
+project you will be a group project ok
+
+1774
+01:04:35,619 --> 01:04:39,280
+if you can't find a group to be in send
+
+1775
+01:04:39,280 --> 01:04:40,330
+me an email and we'll figure out
+
+1776
+01:04:40,330 --> 01:04:42,700
+something for you ok I forget how many
+
+1777
+01:04:42,700 --> 01:04:43,720
+students are in the class I don't think
+
+1778
+01:04:43,720 --> 01:04:45,160
+many lore drops through we should have
+
+1779
+01:04:45,160 --> 01:04:47,920
+enough to do exactly 3 I think 13 groups
+
+1780
+01:04:47,920 --> 01:04:49,630
+are 3 or something like that ok
+
+1781
+01:04:49,630 --> 01:05:00,790
+yes that's B 3 ok so make friends and
+
+1782
+01:05:00,790 --> 01:05:02,890
+again and whoever you servers in your
+
+1783
+01:05:02,890 --> 01:05:04,420
+group for project three well I'm sorry
+
+1784
+01:05:04,420 --> 01:05:06,190
+project 2 will also be in the same group
+
+1785
+01:05:06,190 --> 01:05:07,869
+for project three so if someone is like
+
+1786
+01:05:07,869 --> 01:05:11,320
+a hygiene problems you know if you you
+
+1787
+01:05:11,320 --> 01:05:12,640
+know if you can't stand run project 2
+
+1788
+01:05:12,640 --> 01:05:13,839
+then you have to give one the project 3
+
+1789
+01:05:13,839 --> 01:05:15,849
+and that's not gonna be good ok and I
+
+1790
+01:05:15,849 --> 01:05:17,560
+five to break up fights I don't know 4
+
+1791
+01:05:17,560 --> 01:05:19,000
+and I can do it again which ideally
+
+1792
+01:05:19,000 --> 01:05:22,349
+don't want to do this ok any questions
+
+1793
+01:05:22,349 --> 01:05:25,330
+Bank it in the side park what is this
+
+1794
+01:05:25,330 --> 01:05:27,460
+some old fools hey yo real
+
+1795
+01:05:27,460 --> 01:05:28,760
+[Music]
+
+1796
+01:05:28,760 --> 01:05:31,040
+ ain't with that here called the
+
+1797
+01:05:31,040 --> 01:05:33,920
+whole it cuz I mochi ice cube down with
+
+1798
+01:05:33,920 --> 01:05:37,250
+the testy hi you look and it was go grab
+
+1799
+01:05:37,250 --> 01:05:39,920
+me a forty just to get my buzz song cuz
+
+1800
+01:05:39,920 --> 01:05:43,090
+I need it just a little more kick
+
+1801
+01:05:43,090 --> 01:05:46,060
+[Music]
+
+1802
+01:05:46,060 --> 01:05:50,450
+there's a nice and my hood won't be to
+
+1803
+01:05:50,450 --> 01:05:55,510
+say I'm nice to take a say I celebrate
+

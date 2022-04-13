@@ -1,0 +1,8360 @@
+1
+00:00:03,640 --> 00:00:13,140
+[Music]
+
+2
+00:00:15,279 --> 00:00:18,140
+they're an event I'm missing on campus
+
+3
+00:00:18,140 --> 00:00:24,320
+or what what is today free cake that's
+
+4
+00:00:24,320 --> 00:00:25,820
+pretty weak all right dude you drop
+
+5
+00:00:25,820 --> 00:00:30,529
+tables negative always all right all
+
+6
+00:00:30,529 --> 00:00:32,450
+right let's those are here let's look at
+
+7
+00:00:32,450 --> 00:00:35,210
+through this so again this is just the
+
+8
+00:00:35,210 --> 00:00:37,550
+the the outline for the many things for
+
+9
+00:00:37,550 --> 00:00:41,329
+you guys in the semester again these
+
+10
+00:00:41,329 --> 00:00:42,649
+dates are all available on the website
+
+11
+00:00:42,649 --> 00:00:46,789
+and then the extra credit for the the
+
+12
+00:00:46,789 --> 00:00:48,620
+first feedback review of the extra
+
+13
+00:00:48,620 --> 00:00:50,750
+credit what we do this Sunday and then I
+
+14
+00:00:50,750 --> 00:00:53,600
+also post on Piazza last night if you
+
+15
+00:00:53,600 --> 00:00:54,769
+haven't done this to already please go
+
+16
+00:00:54,769 --> 00:00:56,750
+vote for what database systems you want
+
+17
+00:00:56,750 --> 00:01:10,070
+me to cover on the last day yes result
+
+18
+00:01:10,070 --> 00:01:14,320
+of what sorry the result of what sorry
+
+19
+00:01:14,320 --> 00:01:15,439
+result
+
+20
+00:01:15,439 --> 00:01:18,170
+oh yeah right yeah no I have not heard
+
+21
+00:01:18,170 --> 00:01:18,560
+back yet
+
+22
+00:01:18,560 --> 00:01:22,280
+I will try if it comes in I will
+
+23
+00:01:22,280 --> 00:01:26,689
+announce on the last day of class I send
+
+24
+00:01:26,689 --> 00:01:28,490
+a send until Monday I don't it takes
+
+25
+00:01:28,490 --> 00:01:30,500
+whatever week or two or something so
+
+26
+00:01:30,500 --> 00:01:34,040
+well see any other questions related to
+
+27
+00:01:34,040 --> 00:01:38,479
+class again I don't think it looks like
+
+28
+00:01:38,479 --> 00:01:40,540
+me
+
+29
+00:01:40,630 --> 00:01:43,969
+alright this is say my wife lives a
+
+30
+00:01:43,969 --> 00:01:45,530
+certain lifestyle where I would have
+
+31
+00:01:45,530 --> 00:01:50,390
+questions ok so last class we talked
+
+32
+00:01:50,390 --> 00:01:51,909
+about it was an introduction to
+
+33
+00:01:51,909 --> 00:01:55,759
+distribute databases and sort of the
+
+34
+00:01:55,759 --> 00:01:59,360
+main three things we focus on was what
+
+35
+00:01:59,360 --> 00:02:00,829
+the system architecture of a system
+
+36
+00:02:00,829 --> 00:02:02,000
+looks like right we talked about shared
+
+37
+00:02:02,000 --> 00:02:04,009
+memory shared disk show nothing and I
+
+38
+00:02:04,009 --> 00:02:06,859
+said that most distributed databases are
+
+39
+00:02:06,859 --> 00:02:08,060
+actually every distributed race that's
+
+40
+00:02:08,060 --> 00:02:10,038
+out there is either gonna be shared disk
+
+41
+00:02:10,038 --> 00:02:12,560
+or sure nothing shared nothing is
+
+42
+00:02:12,560 --> 00:02:14,480
+traditionally the more popular approach
+
+43
+00:02:14,480 --> 00:02:16,099
+people take with distributed databases
+
+44
+00:02:16,099 --> 00:02:18,019
+but shared disk is becoming more
+
+45
+00:02:18,019 --> 00:02:20,480
+prevalent in cloud architectures
+
+46
+00:02:20,480 --> 00:02:22,129
+then we talk about are you partitioning
+
+47
+00:02:22,129 --> 00:02:23,629
+a sharding the hash partitioning rate
+
+48
+00:02:23,629 --> 00:02:25,819
+partitioning round robin just in a way
+
+49
+00:02:25,819 --> 00:02:29,440
+to take a database to break it up into
+
+50
+00:02:29,440 --> 00:02:31,700
+disjoint subsets that we assigned to
+
+51
+00:02:31,700 --> 00:02:33,379
+different different different nodes and
+
+52
+00:02:33,379 --> 00:02:35,180
+then we talked a little bit about the
+
+53
+00:02:35,180 --> 00:02:36,260
+end about how we want a new transaction
+
+54
+00:02:36,260 --> 00:02:38,480
+coordination of whether we have a
+
+55
+00:02:38,480 --> 00:02:41,060
+centralized approach that has a global
+
+56
+00:02:41,060 --> 00:02:43,160
+view of what's going on throughout new
+
+57
+00:02:43,160 --> 00:02:44,720
+tire system in the context of what
+
+58
+00:02:44,720 --> 00:02:46,790
+transactions are trying to do or a
+
+59
+00:02:46,790 --> 00:02:49,340
+decentralized approach where the the
+
+60
+00:02:49,340 --> 00:02:50,810
+nodes themselves are responsible for
+
+61
+00:02:50,810 --> 00:02:53,030
+figuring out you know whether things are
+
+62
+00:02:53,030 --> 00:02:56,480
+allowed to commit or not so the last
+
+63
+00:02:56,480 --> 00:03:00,319
+class all these topics are sort of with
+
+64
+00:03:00,319 --> 00:03:01,640
+accepted me for transaction coordination
+
+65
+00:03:01,640 --> 00:03:03,019
+but it for the most part everything I
+
+66
+00:03:03,019 --> 00:03:04,790
+talked about last class or applicable to
+
+67
+00:03:04,790 --> 00:03:07,519
+both trivedi databases that are designed
+
+68
+00:03:07,519 --> 00:03:10,430
+to run transactions or de juvinity races
+
+69
+00:03:10,430 --> 00:03:11,870
+that are trying to run designed around
+
+70
+00:03:11,870 --> 00:03:14,120
+analytics so for this class and then
+
+71
+00:03:14,120 --> 00:03:16,340
+Monday's Monday's class next week we're
+
+72
+00:03:16,340 --> 00:03:17,420
+now going to buy it up talking about
+
+73
+00:03:17,420 --> 00:03:19,610
+specific issues for each of those two
+
+74
+00:03:19,610 --> 00:03:21,410
+classes or workloads because there's
+
+75
+00:03:21,410 --> 00:03:22,430
+different trade-offs that they're gonna
+
+76
+00:03:22,430 --> 00:03:24,440
+make that may be good for transactions
+
+77
+00:03:24,440 --> 00:03:25,609
+but not good for analytics and
+
+78
+00:03:25,609 --> 00:03:27,470
+vice-versa it's again just as a reminder
+
+79
+00:03:27,470 --> 00:03:29,569
+for for what I mean when I say
+
+80
+00:03:29,569 --> 00:03:31,069
+transaction processing we're just an
+
+81
+00:03:31,069 --> 00:03:32,810
+analytical processing oil to be OLAP
+
+82
+00:03:32,810 --> 00:03:34,160
+again I think we've covered this a
+
+83
+00:03:34,160 --> 00:03:35,030
+couple times throughout the semester
+
+84
+00:03:35,030 --> 00:03:38,780
+just to reiterate this the dichotomy so
+
+85
+00:03:38,780 --> 00:03:41,030
+that everyone's on the same page and all
+
+86
+00:03:41,030 --> 00:03:42,319
+three workloads we're worrying about
+
+87
+00:03:42,319 --> 00:03:44,600
+operational operations that are trying
+
+88
+00:03:44,600 --> 00:03:48,200
+to update or read a small amount of data
+
+89
+00:03:48,200 --> 00:03:51,440
+in the database so again using Amazon as
+
+90
+00:03:51,440 --> 00:03:52,970
+an example when you go to the Amazon
+
+91
+00:03:52,970 --> 00:03:55,130
+website you add things to your cart you
+
+92
+00:03:55,130 --> 00:03:56,480
+make purchases for your account you
+
+93
+00:03:56,480 --> 00:03:58,400
+update your payment information all
+
+94
+00:03:58,400 --> 00:04:00,709
+those operations are transactions that
+
+95
+00:04:00,709 --> 00:04:03,079
+are only touching you know as we know
+
+96
+00:04:03,079 --> 00:04:04,400
+when you invoke those changes they're
+
+97
+00:04:04,400 --> 00:04:07,160
+only touching your data so the Amazon
+
+98
+00:04:07,160 --> 00:04:09,380
+database is quite large but for your
+
+99
+00:04:09,380 --> 00:04:11,120
+transactions to update you know do your
+
+100
+00:04:11,120 --> 00:04:13,069
+operations the amount of data you're
+
+101
+00:04:13,069 --> 00:04:15,650
+touching is is small and essentially the
+
+102
+00:04:15,650 --> 00:04:17,238
+database system is doing the same same
+
+103
+00:04:17,238 --> 00:04:18,649
+set of operations over and over again
+
+104
+00:04:18,649 --> 00:04:21,019
+because you're going through the the
+
+105
+00:04:21,019 --> 00:04:23,479
+website application code that you know
+
+106
+00:04:23,479 --> 00:04:24,770
+when you click on you know Add to Cart
+
+107
+00:04:24,770 --> 00:04:26,479
+that invokes a function on the
+
+108
+00:04:26,479 --> 00:04:27,919
+application code which then goes through
+
+109
+00:04:27,919 --> 00:04:29,810
+and execute so queries to make those
+
+110
+00:04:29,810 --> 00:04:32,870
+changes in OLAP workload this is where
+
+111
+00:04:32,870 --> 00:04:34,340
+we're now started doing analytics
+
+112
+00:04:34,340 --> 00:04:36,470
+to try to extrapolate new information
+
+113
+00:04:36,470 --> 00:04:39,260
+from all the data we've ingested on the
+
+114
+00:04:39,260 --> 00:04:41,990
+older TV side so again using Amazon eggs
+
+115
+00:04:41,990 --> 00:04:44,390
+example an analytical workload would be
+
+116
+00:04:44,390 --> 00:04:46,280
+something like trying to figure out what
+
+117
+00:04:46,280 --> 00:04:49,100
+was the most popular item for Carnegie
+
+118
+00:04:49,100 --> 00:04:50,300
+Mellon students during the month of
+
+119
+00:04:50,300 --> 00:04:52,820
+November when that when the temperature
+
+120
+00:04:52,820 --> 00:04:55,670
+was was you know above 30 degrees so
+
+121
+00:04:55,670 --> 00:04:56,840
+that's not something you do in LTP
+
+122
+00:04:56,840 --> 00:04:58,820
+because that's you know that's not a
+
+123
+00:04:58,820 --> 00:05:00,350
+transactional thing this is something
+
+124
+00:05:00,350 --> 00:05:01,640
+you do in the OLAP side
+
+125
+00:05:01,640 --> 00:05:03,830
+so these workloads are the queries much
+
+126
+00:05:03,830 --> 00:05:05,300
+running longer because they're touching
+
+127
+00:05:05,300 --> 00:05:07,700
+more data they're doing joins and doing
+
+128
+00:05:07,700 --> 00:05:09,860
+aggregations and oftentimes they are
+
+129
+00:05:09,860 --> 00:05:12,950
+one-off queries because someone's trying
+
+130
+00:05:12,950 --> 00:05:14,270
+to say you know answer that question oh
+
+131
+00:05:14,270 --> 00:05:16,370
+what's the most bought item for a
+
+132
+00:05:16,370 --> 00:05:18,800
+particular group of people and you know
+
+133
+00:05:18,800 --> 00:05:20,090
+they're filling out some dashboard or
+
+134
+00:05:20,090 --> 00:05:22,700
+using a analytical tool to compose the
+
+135
+00:05:22,700 --> 00:05:24,620
+query and then firing that off and maybe
+
+136
+00:05:24,620 --> 00:05:26,060
+the data that may never see that query
+
+137
+00:05:26,060 --> 00:05:28,790
+ever again so again for today's class
+
+138
+00:05:28,790 --> 00:05:30,650
+we're going to focus on the first part
+
+139
+00:05:30,650 --> 00:05:32,360
+oh it's P next class we'll talk about
+
+140
+00:05:32,360 --> 00:05:37,520
+overlap so the again just to go at a
+
+141
+00:05:37,520 --> 00:05:39,440
+high o discuss the what we're talking
+
+142
+00:05:39,440 --> 00:05:40,550
+about in distribute database so we're
+
+143
+00:05:40,550 --> 00:05:43,040
+going to focus on today we talked to the
+
+144
+00:05:43,040 --> 00:05:44,960
+set up before we have some partitioned
+
+145
+00:05:44,960 --> 00:05:47,450
+database whether it's logical
+
+146
+00:05:47,450 --> 00:05:49,000
+partitioning or physical partitioning
+
+147
+00:05:49,000 --> 00:05:51,020
+meaning is it shared nothing or shared
+
+148
+00:05:51,020 --> 00:05:54,710
+disk we you know I'm not explaining just
+
+149
+00:05:54,710 --> 00:05:56,210
+yet it doesn't matter what we're talk
+
+150
+00:05:56,210 --> 00:05:58,790
+about here today but the scenario we're
+
+151
+00:05:58,790 --> 00:06:00,050
+concerned about is we have we have a
+
+152
+00:06:00,050 --> 00:06:01,520
+application server that wants invoking
+
+153
+00:06:01,520 --> 00:06:04,280
+transaction it picks some partition node
+
+154
+00:06:04,280 --> 00:06:06,380
+to be the master one so it tells that
+
+155
+00:06:06,380 --> 00:06:08,150
+guy hey I want to execute a transaction
+
+156
+00:06:08,150 --> 00:06:10,310
+then it goes ahead and does a bunch of
+
+157
+00:06:10,310 --> 00:06:12,200
+updates or reads a bunch of data on our
+
+158
+00:06:12,200 --> 00:06:14,390
+various partitions and then now when a
+
+159
+00:06:14,390 --> 00:06:16,160
+transaction complete it goes to the
+
+160
+00:06:16,160 --> 00:06:17,810
+master guy that it started off with and
+
+161
+00:06:17,810 --> 00:06:19,580
+says hey I want to go ahead and commit
+
+162
+00:06:19,580 --> 00:06:22,040
+and assuming this is a decentralized
+
+163
+00:06:22,040 --> 00:06:23,420
+architecture meaning we don't have that
+
+164
+00:06:23,420 --> 00:06:24,890
+middleware we don't have that the TP
+
+165
+00:06:24,890 --> 00:06:26,750
+monitor that's coordinating all our
+
+166
+00:06:26,750 --> 00:06:29,150
+transactions now these notes at the
+
+167
+00:06:29,150 --> 00:06:30,920
+figure out amongst themselves whether
+
+168
+00:06:30,920 --> 00:06:32,360
+they're allowed to commit this
+
+169
+00:06:32,360 --> 00:06:36,050
+transaction so last class I was very
+
+170
+00:06:36,050 --> 00:06:38,450
+vague about this step here how to
+
+171
+00:06:38,450 --> 00:06:39,890
+determine whether it's safe to commit
+
+172
+00:06:39,890 --> 00:06:42,170
+and what does it mean to say hey we're
+
+173
+00:06:42,170 --> 00:06:43,310
+all going to go ahead and commit this
+
+174
+00:06:43,310 --> 00:06:45,230
+transaction so this is what we're
+
+175
+00:06:45,230 --> 00:06:47,360
+primarily going to focus on today this
+
+176
+00:06:47,360 --> 00:06:50,330
+this last step here and so essentially
+
+177
+00:06:50,330 --> 00:06:51,199
+what we're trying to do is we're trying
+
+178
+00:06:51,199 --> 00:06:53,300
+to have in our database system we're
+
+179
+00:06:53,300 --> 00:06:56,599
+trying to have all the nodes agree that
+
+180
+00:06:56,599 --> 00:06:58,939
+we should commit a transaction and if
+
+181
+00:06:58,939 --> 00:07:00,199
+everyone agrees that we commit this
+
+182
+00:07:00,199 --> 00:07:01,550
+transaction and we go ahead and commit
+
+183
+00:07:01,550 --> 00:07:03,800
+it we don't want any sort of weird
+
+184
+00:07:03,800 --> 00:07:06,979
+anomaly a weird reversal of you know one
+
+185
+00:07:06,979 --> 00:07:08,629
+node set is gonna commit and then an all
+
+186
+00:07:08,629 --> 00:07:10,129
+sudden it doesn't that transaction got
+
+187
+00:07:10,129 --> 00:07:12,020
+rolled back once everyone agrees that
+
+188
+00:07:12,020 --> 00:07:13,939
+we're gonna go to commit then we go
+
+189
+00:07:13,939 --> 00:07:16,129
+ahead and commit this so now there's
+
+190
+00:07:16,129 --> 00:07:18,259
+much issues we have to deal with in
+
+191
+00:07:18,259 --> 00:07:20,000
+order to make this happen correctly and
+
+192
+00:07:20,000 --> 00:07:22,279
+safely when we were on a shared
+
+193
+00:07:22,279 --> 00:07:23,479
+everything system meaning we our
+
+194
+00:07:23,479 --> 00:07:24,830
+database system was running on a single
+
+195
+00:07:24,830 --> 00:07:27,169
+box and we wanted to do our you know
+
+196
+00:07:27,169 --> 00:07:29,629
+validation protocol for OCC concurrency
+
+197
+00:07:29,629 --> 00:07:30,939
+control
+
+198
+00:07:30,939 --> 00:07:34,789
+the all the participants in deciding
+
+199
+00:07:34,789 --> 00:07:36,139
+whether this things a lot of commit was
+
+200
+00:07:36,139 --> 00:07:38,389
+running together in a single machine all
+
+201
+00:07:38,389 --> 00:07:40,819
+in the same memory possibly and it was
+
+202
+00:07:40,819 --> 00:07:42,800
+really fast and for us to figure out
+
+203
+00:07:42,800 --> 00:07:43,759
+whether we're allowed to go ahead and
+
+204
+00:07:43,759 --> 00:07:46,039
+commit and then if we said commit and it
+
+205
+00:07:46,039 --> 00:07:47,569
+truly was committed because we know
+
+206
+00:07:47,569 --> 00:07:49,879
+everything was on that single box but
+
+207
+00:07:49,879 --> 00:07:51,139
+now in distribute environment we have
+
+208
+00:07:51,139 --> 00:07:52,909
+the issue of let's say we go ahead and
+
+209
+00:07:52,909 --> 00:07:54,860
+say to commit everyone comes back and
+
+210
+00:07:54,860 --> 00:07:56,839
+says we go commit and then maybe I you
+
+211
+00:07:56,839 --> 00:07:58,719
+know during that time one--not goes down
+
+212
+00:07:58,719 --> 00:08:01,310
+what should happen I know all the same
+
+213
+00:08:01,310 --> 00:08:02,529
+asset properties we talked about before
+
+214
+00:08:02,529 --> 00:08:04,879
+then we don't need partial updates that
+
+215
+00:08:04,879 --> 00:08:07,069
+you're persisting to our database all of
+
+216
+00:08:07,069 --> 00:08:09,860
+those things we have to account for so
+
+217
+00:08:09,860 --> 00:08:11,330
+if an O goes down or I've got to deal
+
+218
+00:08:11,330 --> 00:08:13,159
+with that but what if the node doesn't
+
+219
+00:08:13,159 --> 00:08:15,979
+go down and instead our commit messages
+
+220
+00:08:15,979 --> 00:08:18,740
+just shorter show up late right the
+
+221
+00:08:18,740 --> 00:08:20,300
+packet got delayed somehow on the
+
+222
+00:08:20,300 --> 00:08:22,430
+network on the way over or which is
+
+223
+00:08:22,430 --> 00:08:24,979
+probably more common say our database
+
+224
+00:08:24,979 --> 00:08:27,080
+system was was you know buting the JVM
+
+225
+00:08:27,080 --> 00:08:28,339
+like it's written in Java written in
+
+226
+00:08:28,339 --> 00:08:30,439
+scala it's using the JVM and all sudden
+
+227
+00:08:30,439 --> 00:08:32,208
+the JVM decides to do a real expensive
+
+228
+00:08:32,208 --> 00:08:34,190
+garbage collection sweet and now our
+
+229
+00:08:34,190 --> 00:08:36,890
+process pauses and so we're gonna look
+
+230
+00:08:36,890 --> 00:08:39,708
+like we're unavailable why during this
+
+231
+00:08:39,708 --> 00:08:42,019
+GC GC pass and then all of a sudden we
+
+232
+00:08:42,019 --> 00:08:43,219
+come back after the GC and now our
+
+233
+00:08:43,219 --> 00:08:46,130
+messages are arrived and it's you know a
+
+234
+00:08:46,130 --> 00:08:49,459
+second has passed and then what happens
+
+235
+00:08:49,459 --> 00:08:53,060
+if we decide that how we determine how
+
+236
+00:08:53,060 --> 00:08:54,320
+many nodes have to agree that we're
+
+237
+00:08:54,320 --> 00:08:55,699
+gonna commit a transaction to decide
+
+238
+00:08:55,699 --> 00:08:57,069
+that we committed the transaction should
+
+239
+00:08:57,069 --> 00:09:00,740
+be all of them should it be some of them
+
+240
+00:09:00,740 --> 00:09:02,480
+right so these the things that we're
+
+241
+00:09:02,480 --> 00:09:05,140
+gonna we're gonna worry about today so
+
+242
+00:09:05,140 --> 00:09:07,280
+one important sumption we're gonna make
+
+243
+00:09:07,280 --> 00:09:10,190
+about this entire lecture is that we are
+
+244
+00:09:10,190 --> 00:09:12,110
+going to assume that the software
+
+245
+00:09:12,110 --> 00:09:13,280
+running on the arm nodes in our
+
+246
+00:09:13,280 --> 00:09:15,710
+distributed database or our friends
+
+247
+00:09:15,710 --> 00:09:17,210
+meaning gonna be well behaved
+
+248
+00:09:17,210 --> 00:09:18,200
+they're not gonna trying to screw us
+
+249
+00:09:18,200 --> 00:09:21,170
+over right there it's software that we
+
+250
+00:09:21,170 --> 00:09:22,850
+we as the database system developer
+
+251
+00:09:22,850 --> 00:09:25,550
+software that we wrote and that we've
+
+252
+00:09:25,550 --> 00:09:26,780
+deployed on the same administrative
+
+253
+00:09:26,780 --> 00:09:29,510
+domain so we asked a transaction we
+
+254
+00:09:29,510 --> 00:09:31,250
+asked endo to commit a transaction and
+
+255
+00:09:31,250 --> 00:09:32,630
+they come back so yeah we're going to
+
+256
+00:09:32,630 --> 00:09:36,050
+commit that we assume you know a modulo
+
+257
+00:09:36,050 --> 00:09:38,720
+harbor failure or you know software bug
+
+258
+00:09:38,720 --> 00:09:40,490
+we assume if a node tells us they're
+
+259
+00:09:40,490 --> 00:09:42,140
+going to commit a transaction they will
+
+260
+00:09:42,140 --> 00:09:44,570
+commit that transaction all right that's
+
+261
+00:09:44,570 --> 00:09:46,400
+going to simplify in some ways how we're
+
+262
+00:09:46,400 --> 00:09:49,010
+gonna do our commit protocol if you
+
+263
+00:09:49,010 --> 00:09:50,690
+assume that the nodes could be bad
+
+264
+00:09:50,690 --> 00:09:53,120
+actors right if they say yeah we
+
+265
+00:09:53,120 --> 00:09:54,470
+committed that with our screw you we're
+
+266
+00:09:54,470 --> 00:09:56,900
+not actually do that then you don't need
+
+267
+00:09:56,900 --> 00:09:57,620
+some of the things we'll talk about
+
+268
+00:09:57,620 --> 00:09:58,790
+today you actually need what it's called
+
+269
+00:09:58,790 --> 00:10:01,060
+a busy team fault tolerant protocol and
+
+270
+00:10:01,060 --> 00:10:03,080
+this is essentially what the blockchain
+
+271
+00:10:03,080 --> 00:10:07,100
+is under Bitcoin right a blockchain is
+
+272
+00:10:07,100 --> 00:10:08,770
+essentially just a distributed database
+
+273
+00:10:08,770 --> 00:10:11,240
+it's just a law your pen thinks but
+
+274
+00:10:11,240 --> 00:10:13,580
+transactions but in that environment you
+
+275
+00:10:13,580 --> 00:10:15,020
+soon because there's Bitcoin mining
+
+276
+00:10:15,020 --> 00:10:16,310
+right or whatever you're trying to do
+
+277
+00:10:16,310 --> 00:10:18,770
+that the participants in your
+
+278
+00:10:18,770 --> 00:10:20,480
+distributed database are not your friend
+
+279
+00:10:20,480 --> 00:10:22,280
+and they can lie to you so you need a
+
+280
+00:10:22,280 --> 00:10:24,800
+way to deal with that we are not in that
+
+281
+00:10:24,800 --> 00:10:27,410
+world most database systems durability
+
+282
+00:10:27,410 --> 00:10:28,730
+systems are not in this world most
+
+283
+00:10:28,730 --> 00:10:30,680
+refrigerators can assume that everybody
+
+284
+00:10:30,680 --> 00:10:32,210
+is gonna be is gonna play along
+
+285
+00:10:32,210 --> 00:10:36,050
+correctly most people don't need a
+
+286
+00:10:36,050 --> 00:10:37,340
+blockchain very few things need a
+
+287
+00:10:37,340 --> 00:10:38,270
+blockchain so if you think you're
+
+288
+00:10:38,270 --> 00:10:39,140
+building something and you use a
+
+289
+00:10:39,140 --> 00:10:44,120
+blockchain you rethink your life ok all
+
+290
+00:10:44,120 --> 00:10:45,830
+right so the things were talked about
+
+291
+00:10:45,830 --> 00:10:47,870
+today are listed here so yeah I didn't
+
+292
+00:10:47,870 --> 00:10:49,310
+say this last class I wanna sort of say
+
+293
+00:10:49,310 --> 00:10:51,470
+it again I'm trying to cover in three
+
+294
+00:10:51,470 --> 00:10:53,360
+lectures what would normally be like an
+
+295
+00:10:53,360 --> 00:10:55,910
+entire year of studying distributed
+
+296
+00:10:55,910 --> 00:10:58,160
+databases so we can't obviously cover
+
+297
+00:10:58,160 --> 00:11:00,770
+everything in detail and I consider my
+
+298
+00:11:00,770 --> 00:11:03,470
+goal here so just to expose you to like
+
+299
+00:11:03,470 --> 00:11:05,390
+the issues the problems the difficulties
+
+300
+00:11:05,390 --> 00:11:07,970
+of building a distributed database even
+
+301
+00:11:07,970 --> 00:11:09,710
+using a distributed database system so
+
+302
+00:11:09,710 --> 00:11:11,270
+that you know when you leave CMU and you
+
+303
+00:11:11,270 --> 00:11:13,040
+go out in the real world if you find
+
+304
+00:11:13,040 --> 00:11:14,220
+yourself in a situation
+
+305
+00:11:14,220 --> 00:11:16,320
+where you think you either need a user
+
+306
+00:11:16,320 --> 00:11:18,480
+Trivedi database or you think you want
+
+307
+00:11:18,480 --> 00:11:20,760
+to build one usually snow what are the
+
+308
+00:11:20,760 --> 00:11:22,590
+issues you should be thinking about and
+
+309
+00:11:22,590 --> 00:11:24,090
+so you can reason about you know whether
+
+310
+00:11:24,090 --> 00:11:26,340
+you're doing the right thing and also to
+
+311
+00:11:26,340 --> 00:11:28,260
+say upfront that most people probably
+
+312
+00:11:28,260 --> 00:11:30,180
+don't need a sugar database there's
+
+313
+00:11:30,180 --> 00:11:32,850
+obviously some useful cases but I would
+
+314
+00:11:32,850 --> 00:11:34,890
+say I mean I can't prove this but 90% of
+
+315
+00:11:34,890 --> 00:11:36,630
+the world's databases comes running on a
+
+316
+00:11:36,630 --> 00:11:38,970
+single box now I should have replication
+
+317
+00:11:38,970 --> 00:11:40,440
+and once you bring that in that becomes
+
+318
+00:11:40,440 --> 00:11:42,180
+a tribute database but most the times
+
+319
+00:11:42,180 --> 00:11:43,740
+you don't need a partition database most
+
+320
+00:11:43,740 --> 00:11:45,150
+workloads can handle be handled on a
+
+321
+00:11:45,150 --> 00:11:49,950
+single box right alright so let's talk
+
+322
+00:11:49,950 --> 00:11:51,120
+about time of commit protocol is how do
+
+323
+00:11:51,120 --> 00:11:51,960
+you get everyone to agree that we're
+
+324
+00:11:51,960 --> 00:11:53,220
+gonna commit how do we handle
+
+325
+00:11:53,220 --> 00:11:54,900
+replication to make sure that we have
+
+326
+00:11:54,900 --> 00:11:57,000
+multiple copies of our data so we can
+
+327
+00:11:57,000 --> 00:11:58,770
+always stay online then we'll get into
+
+328
+00:11:58,770 --> 00:11:59,760
+the cat fear I'm talking about
+
+329
+00:11:59,760 --> 00:12:01,590
+consistency issues how do we you know
+
+330
+00:12:01,590 --> 00:12:03,420
+what kind of guarantees can i distribute
+
+331
+00:12:03,420 --> 00:12:06,300
+database and provide for us
+
+332
+00:12:06,300 --> 00:12:08,850
+given our commit protocol and then we
+
+333
+00:12:08,850 --> 00:12:09,660
+have time at the end well quickly
+
+334
+00:12:09,660 --> 00:12:11,460
+talking about federated databases the
+
+335
+00:12:11,460 --> 00:12:13,740
+idea of composing dispair databases
+
+336
+00:12:13,740 --> 00:12:15,030
+together and to make a single database
+
+337
+00:12:15,030 --> 00:12:19,380
+instance okay alright so that example I
+
+338
+00:12:19,380 --> 00:12:21,570
+showed in the beginning of when we went
+
+339
+00:12:21,570 --> 00:12:22,380
+to go ahead and commit the transaction
+
+340
+00:12:22,380 --> 00:12:25,260
+and then the the one know how to talk to
+
+341
+00:12:25,260 --> 00:12:26,790
+the other nodes and say hey is it safe
+
+342
+00:12:26,790 --> 00:12:28,920
+to commit this is what is called an
+
+343
+00:12:28,920 --> 00:12:32,070
+atomic commit protocol yet idea here is
+
+344
+00:12:32,070 --> 00:12:34,290
+that we want to get everyone's feedback
+
+345
+00:12:34,290 --> 00:12:37,050
+that participated in our transaction to
+
+346
+00:12:37,050 --> 00:12:39,330
+decide whether it's okay to commit that
+
+347
+00:12:39,330 --> 00:12:43,920
+transaction and then if if one node or
+
+348
+00:12:43,920 --> 00:12:45,810
+enough nodes depending what protocol are
+
+349
+00:12:45,810 --> 00:12:50,010
+using if a certain amount of nodes above
+
+350
+00:12:50,010 --> 00:12:51,330
+the threshold that we're gonna define in
+
+351
+00:12:51,330 --> 00:12:53,220
+our protocol all agree that we should
+
+352
+00:12:53,220 --> 00:12:54,840
+commit this transaction then we tell
+
+353
+00:12:54,840 --> 00:12:56,670
+everyone we will commit this transaction
+
+354
+00:12:56,670 --> 00:12:59,400
+and then it then it becomes committed so
+
+355
+00:12:59,400 --> 00:13:01,010
+there's a bunch of different variants of
+
+356
+00:13:01,010 --> 00:13:03,210
+atomic commit protocol that you can use
+
+357
+00:13:03,210 --> 00:13:05,370
+so the two that we're going to focus on
+
+358
+00:13:05,370 --> 00:13:07,020
+is two-phase commit and Paxos two-phase
+
+359
+00:13:07,020 --> 00:13:08,310
+commit is probably the most prevalent
+
+360
+00:13:08,310 --> 00:13:10,710
+one right goes back into the 1980s
+
+361
+00:13:10,710 --> 00:13:12,540
+paxos has certain guarantees that
+
+362
+00:13:12,540 --> 00:13:15,330
+two-phase commit cannot provide some
+
+363
+00:13:15,330 --> 00:13:17,670
+systems can use this but it's this is
+
+364
+00:13:17,670 --> 00:13:19,020
+sort of a degenerate case of this
+
+365
+00:13:19,020 --> 00:13:21,330
+there's also a three phase commit that
+
+366
+00:13:21,330 --> 00:13:22,680
+was actually developed by Mike
+
+367
+00:13:22,680 --> 00:13:23,610
+Stonebraker the guy had invented
+
+368
+00:13:23,610 --> 00:13:26,310
+Postgres in the 1980s no one actually
+
+369
+00:13:26,310 --> 00:13:28,290
+ever does this it's too
+
+370
+00:13:28,290 --> 00:13:29,880
+there's too much you know too much
+
+371
+00:13:29,880 --> 00:13:32,340
+network traffic there's actually a four
+
+372
+00:13:32,340 --> 00:13:34,350
+phase commit as well from Microsoft they
+
+373
+00:13:34,350 --> 00:13:36,360
+using in this just to be a base called
+
+374
+00:13:36,360 --> 00:13:38,250
+form they have to do that because
+
+375
+00:13:38,250 --> 00:13:39,870
+they're using our DMA sort of special
+
+376
+00:13:39,870 --> 00:13:41,910
+remote memory access again we're not
+
+377
+00:13:41,910 --> 00:13:43,980
+going to cover that okay Pat so so we'll
+
+378
+00:13:43,980 --> 00:13:46,770
+talk about raft is was developed by
+
+379
+00:13:46,770 --> 00:13:51,690
+Stanford about ten years ago as a more
+
+380
+00:13:51,690 --> 00:13:53,940
+easily understood variant of paxos but
+
+381
+00:13:53,940 --> 00:13:54,930
+it basically provides the same
+
+382
+00:13:54,930 --> 00:13:57,060
+guarantees raft actually shows up a lot
+
+383
+00:13:57,060 --> 00:13:59,580
+more often in newer distributed systems
+
+384
+00:13:59,580 --> 00:14:01,890
+because there's a lot of existing or
+
+385
+00:14:01,890 --> 00:14:03,780
+that people basically wrote like Lib
+
+386
+00:14:03,780 --> 00:14:05,790
+raft right they were at libraries that
+
+387
+00:14:05,790 --> 00:14:06,960
+implement wrap that you can then
+
+388
+00:14:06,960 --> 00:14:09,600
+incorporate into their database for a
+
+389
+00:14:09,600 --> 00:14:11,340
+ton of different languages like there's
+
+390
+00:14:11,340 --> 00:14:12,930
+no Lib Paxos that everyone can use
+
+391
+00:14:12,930 --> 00:14:16,350
+Zab was developed for Apache zookeeper
+
+392
+00:14:16,350 --> 00:14:18,750
+and the view stamp replication is not
+
+393
+00:14:18,750 --> 00:14:20,250
+that common but this actually turned out
+
+394
+00:14:20,250 --> 00:14:22,920
+to be the first purely correct atomic
+
+395
+00:14:22,920 --> 00:14:24,600
+commit protocol it actually came out
+
+396
+00:14:24,600 --> 00:14:26,520
+before Paxos but people didn't recognize
+
+397
+00:14:26,520 --> 00:14:27,840
+that the properties of this thing had
+
+398
+00:14:27,840 --> 00:14:30,990
+until pax s came along much later so
+
+399
+00:14:30,990 --> 00:14:32,910
+again for distributed databases that are
+
+400
+00:14:32,910 --> 00:14:35,700
+not in the blockchain that are actually
+
+401
+00:14:35,700 --> 00:14:36,960
+you probably an encounter in the real
+
+402
+00:14:36,960 --> 00:14:39,960
+world use mostly you most likely see
+
+403
+00:14:39,960 --> 00:14:41,850
+two-phase commit or paxos and then from
+
+404
+00:14:41,850 --> 00:14:43,500
+new assistants apply wrap but for this
+
+405
+00:14:43,500 --> 00:14:45,000
+lecture I will just cover those two
+
+406
+00:14:45,000 --> 00:14:46,950
+they're the two base commit impacts
+
+407
+00:14:46,950 --> 00:14:49,230
+those so actual quick show of hands who
+
+408
+00:14:49,230 --> 00:14:50,370
+here has ever heard of two-phase commit
+
+409
+00:14:50,370 --> 00:14:51,990
+before alright
+
+410
+00:14:51,990 --> 00:14:54,900
+less than that okay so two-phase commit
+
+411
+00:14:54,900 --> 00:14:56,760
+sounds exactly the way you know it
+
+412
+00:14:56,760 --> 00:14:58,410
+sounds like it's a two-phase commit
+
+413
+00:14:58,410 --> 00:14:59,580
+protocol has two phases
+
+414
+00:14:59,580 --> 00:15:01,710
+so let's look an example here where
+
+415
+00:15:01,710 --> 00:15:03,000
+we're gonna have everyone agreed to
+
+416
+00:15:03,000 --> 00:15:05,310
+commit a transaction so assume at this
+
+417
+00:15:05,310 --> 00:15:07,410
+point the application server has
+
+418
+00:15:07,410 --> 00:15:09,210
+executed whatever queries that it wants
+
+419
+00:15:09,210 --> 00:15:11,160
+to to make changes on the database or
+
+420
+00:15:11,160 --> 00:15:13,320
+read whatever did data once on our
+
+421
+00:15:13,320 --> 00:15:15,690
+different nodes and it wants to go ahead
+
+422
+00:15:15,690 --> 00:15:17,220
+and commit so it's gonna send a commit
+
+423
+00:15:17,220 --> 00:15:19,500
+message to this guy here assume this is
+
+424
+00:15:19,500 --> 00:15:22,470
+the master node so under two-phase
+
+425
+00:15:22,470 --> 00:15:24,420
+commit a vernacular we are gonna say
+
+426
+00:15:24,420 --> 00:15:25,860
+this guy is going to be centered the
+
+427
+00:15:25,860 --> 00:15:27,980
+coordinator so that's in charge of
+
+428
+00:15:27,980 --> 00:15:30,570
+asking around to its friends involved in
+
+429
+00:15:30,570 --> 00:15:32,310
+the transaction whether it's allowed to
+
+430
+00:15:32,310 --> 00:15:34,380
+commit this transaction and then the
+
+431
+00:15:34,380 --> 00:15:35,550
+other two nodes here we call
+
+432
+00:15:35,550 --> 00:15:37,470
+participants now
+
+433
+00:15:37,470 --> 00:15:39,390
+I'm not going to show examples of this
+
+434
+00:15:39,390 --> 00:15:41,070
+but the node that participant node
+
+435
+00:15:41,070 --> 00:15:41,490
+itself
+
+436
+00:15:41,490 --> 00:15:44,720
+can also be a participant right this the
+
+437
+00:15:44,720 --> 00:15:46,890
+this note here could also have been
+
+438
+00:15:46,890 --> 00:15:48,390
+modified by this transaction and then
+
+439
+00:15:48,390 --> 00:15:49,589
+it's involved in this two-phase commit
+
+440
+00:15:49,589 --> 00:15:52,500
+process or simplicity assume that this
+
+441
+00:15:52,500 --> 00:15:54,570
+transaction here only modified data on
+
+442
+00:15:54,570 --> 00:15:58,410
+the on the two other nodes so in the
+
+443
+00:15:58,410 --> 00:16:00,720
+first phase called prepare phase we sent
+
+444
+00:16:00,720 --> 00:16:02,930
+out a network message to our
+
+445
+00:16:02,930 --> 00:16:04,740
+participants from the coordinator to
+
+446
+00:16:04,740 --> 00:16:06,810
+participants to ask them hey here's this
+
+447
+00:16:06,810 --> 00:16:08,580
+transaction we think you know about it
+
+448
+00:16:08,580 --> 00:16:12,060
+is it okay to commit and they're gonna
+
+449
+00:16:12,060 --> 00:16:13,500
+do whatever validation or whatever they
+
+450
+00:16:13,500 --> 00:16:15,029
+need to do to determine whether this
+
+451
+00:16:15,029 --> 00:16:17,040
+transactions live commit and if they
+
+452
+00:16:17,040 --> 00:16:19,200
+determine that it's okay then they send
+
+453
+00:16:19,200 --> 00:16:22,890
+back an okay message then now once you
+
+454
+00:16:22,890 --> 00:16:24,750
+get back the okay's from all the
+
+455
+00:16:24,750 --> 00:16:26,580
+participants the coordinator goes into
+
+456
+00:16:26,580 --> 00:16:28,970
+the second phase called the commit phase
+
+457
+00:16:28,970 --> 00:16:31,890
+where it tells the all the participants
+
+458
+00:16:31,890 --> 00:16:33,930
+hey good news everybody said we can
+
+459
+00:16:33,930 --> 00:16:35,550
+commit this transaction go ahead and
+
+460
+00:16:35,550 --> 00:16:38,190
+commit this and then likewise these guys
+
+461
+00:16:38,190 --> 00:16:39,750
+now have to send a response and say okay
+
+462
+00:16:39,750 --> 00:16:40,890
+we did that this transaction is
+
+463
+00:16:40,890 --> 00:16:43,350
+committed and then at this point here
+
+464
+00:16:43,350 --> 00:16:45,029
+when we get back and in the second phase
+
+465
+00:16:45,029 --> 00:16:47,370
+the okay's from all our participants we
+
+466
+00:16:47,370 --> 00:16:49,410
+can then go tell the outside world that
+
+467
+00:16:49,410 --> 00:16:50,550
+our transaction has successfully
+
+468
+00:16:50,550 --> 00:16:55,740
+committed so there's one thing I'm not
+
+469
+00:16:55,740 --> 00:16:56,880
+showing here and I think that the
+
+470
+00:16:56,880 --> 00:16:59,250
+textbook talks about this is that at
+
+471
+00:16:59,250 --> 00:17:02,100
+every step of the protocol on every
+
+472
+00:17:02,100 --> 00:17:04,050
+single node involved in it we're writing
+
+473
+00:17:04,050 --> 00:17:06,780
+out log messages to keep track of what
+
+474
+00:17:06,780 --> 00:17:08,520
+messages we got and what message what
+
+475
+00:17:08,520 --> 00:17:11,730
+what responses we sent out so at this
+
+476
+00:17:11,730 --> 00:17:13,410
+point here when I sent hey we'll go
+
+477
+00:17:13,410 --> 00:17:15,510
+ahead and commit this these guys are
+
+478
+00:17:15,510 --> 00:17:16,829
+gonna write a log message and say hey
+
+479
+00:17:16,829 --> 00:17:19,770
+for this transaction I saw I got a inter
+
+480
+00:17:19,770 --> 00:17:21,030
+of the commit phase and I said that was
+
+481
+00:17:21,030 --> 00:17:24,750
+okay to do right so that way if we crash
+
+482
+00:17:24,750 --> 00:17:26,520
+and come back we would say oh we were
+
+483
+00:17:26,520 --> 00:17:29,100
+involved in this transaction how far and
+
+484
+00:17:29,100 --> 00:17:30,720
+in the two-phase commit process did we
+
+485
+00:17:30,720 --> 00:17:32,280
+get to determine whether we need to undo
+
+486
+00:17:32,280 --> 00:17:34,970
+it or redo it
+
+487
+00:17:36,490 --> 00:17:37,870
+and so another point indistinct about
+
+488
+00:17:37,870 --> 00:17:39,700
+this and this will differ from taxes and
+
+489
+00:17:39,700 --> 00:17:41,830
+a few more slides is that all of the
+
+490
+00:17:41,830 --> 00:17:44,110
+nodes prevent all participant nodes in
+
+491
+00:17:44,110 --> 00:17:46,270
+the commit protocol for this transaction
+
+492
+00:17:46,270 --> 00:17:49,000
+they all have to say we have to commit
+
+493
+00:17:49,000 --> 00:17:49,800
+this transaction
+
+494
+00:17:49,800 --> 00:17:54,940
+it's either everyone or no one so we go
+
+495
+00:17:54,940 --> 00:17:56,620
+to the next sample here of one we
+
+496
+00:17:56,620 --> 00:17:58,360
+already have an abort it's again the
+
+497
+00:17:58,360 --> 00:18:00,400
+same thing Mike transaction finishes I
+
+498
+00:18:00,400 --> 00:18:02,080
+send a commit request to my coordinator
+
+499
+00:18:02,080 --> 00:18:04,030
+the coordinator enters the first phase
+
+500
+00:18:04,030 --> 00:18:06,490
+sent the prepare message to the to-to-to
+
+501
+00:18:06,490 --> 00:18:08,950
+participant nodes let's say this bottom
+
+502
+00:18:08,950 --> 00:18:11,170
+guy here for whatever reason you know
+
+503
+00:18:11,170 --> 00:18:12,730
+for its concurrency or protocols the
+
+504
+00:18:12,730 --> 00:18:13,870
+size that we cannot commit this
+
+505
+00:18:13,870 --> 00:18:16,570
+transaction so it sends back an abort
+
+506
+00:18:16,570 --> 00:18:18,970
+message so as soon as the coordinator
+
+507
+00:18:18,970 --> 00:18:21,370
+gets the first abort message from any of
+
+508
+00:18:21,370 --> 00:18:23,680
+the participants it is no longer in the
+
+509
+00:18:23,680 --> 00:18:25,540
+prepare phase and now it medially goes
+
+510
+00:18:25,540 --> 00:18:27,700
+into the next phase in this case we're
+
+511
+00:18:27,700 --> 00:18:30,340
+for the abort and so at this point we
+
+512
+00:18:30,340 --> 00:18:32,890
+can really go back to our client our
+
+513
+00:18:32,890 --> 00:18:34,090
+application and say hey this transaction
+
+514
+00:18:34,090 --> 00:18:36,610
+can't finish we're going to abort even
+
+515
+00:18:36,610 --> 00:18:38,440
+before we and go to the second phase or
+
+516
+00:18:38,440 --> 00:18:39,340
+even from before we hear back from
+
+517
+00:18:39,340 --> 00:18:41,530
+anybody else one abort message will kill
+
+518
+00:18:41,530 --> 00:18:44,590
+this entire thing so now in the abort
+
+519
+00:18:44,590 --> 00:18:46,480
+phase we say hey we're aborting this and
+
+520
+00:18:46,480 --> 00:18:48,430
+then everyone comes back says oK we've
+
+521
+00:18:48,430 --> 00:18:51,360
+aborted and at this point the the
+
+522
+00:18:51,360 --> 00:18:55,420
+transaction is done so the idea is here
+
+523
+00:18:55,420 --> 00:18:57,130
+that we need to network round trips to
+
+524
+00:18:57,130 --> 00:18:58,300
+get everyone to agree that were to
+
+525
+00:18:58,300 --> 00:19:00,070
+commit this transaction and then we go
+
+526
+00:19:00,070 --> 00:19:01,720
+ahead and our commit or abort this
+
+527
+00:19:01,720 --> 00:19:02,980
+transaction and we go ahead and then
+
+528
+00:19:02,980 --> 00:19:11,470
+apply that change yes so this question
+
+529
+00:19:11,470 --> 00:19:13,330
+for the abort commit the question is do
+
+530
+00:19:13,330 --> 00:19:16,450
+I need this second round here to tell
+
+531
+00:19:16,450 --> 00:19:18,790
+that the do I need to go to the nodes
+
+532
+00:19:18,790 --> 00:19:20,860
+here and say yes you've committed before
+
+533
+00:19:20,860 --> 00:19:24,360
+I tell the application run before I tell
+
+534
+00:19:33,750 --> 00:19:37,570
+so his question is same here I'm in the
+
+535
+00:19:37,570 --> 00:19:38,800
+prepare phase this rule action should
+
+536
+00:19:38,800 --> 00:19:41,560
+commit a semi semi preparer request
+
+537
+00:19:41,560 --> 00:19:45,910
+these guys send back okay is do I really
+
+538
+00:19:45,910 --> 00:19:48,250
+need to wait for the next round trip to
+
+539
+00:19:48,250 --> 00:19:49,660
+say okay go ahead and commit this and
+
+540
+00:19:49,660 --> 00:19:50,169
+get here back
+
+541
+00:19:50,169 --> 00:19:51,730
+from them before I can tell the
+
+542
+00:19:51,730 --> 00:19:55,210
+application I need to commit in practice
+
+543
+00:19:55,210 --> 00:20:00,220
+no for absolute correctness yes because
+
+544
+00:20:00,220 --> 00:20:04,629
+like if I can fight if I crash at this
+
+545
+00:20:04,629 --> 00:20:11,529
+point here right there's a trade-off
+
+546
+00:20:11,529 --> 00:20:14,080
+between the time it takes to recover and
+
+547
+00:20:14,080 --> 00:20:16,570
+the time it takes to send the response
+
+548
+00:20:16,570 --> 00:20:18,909
+so in if I'm logging everything to disk
+
+549
+00:20:18,909 --> 00:20:20,200
+then you're right
+
+550
+00:20:20,200 --> 00:20:23,409
+soon as I get back here if I crash at
+
+551
+00:20:23,409 --> 00:20:25,450
+this point here I have my two okay's
+
+552
+00:20:25,450 --> 00:20:27,429
+from my participants I'm gonna log that
+
+553
+00:20:27,429 --> 00:20:29,950
+to in the coordinator so now if I crash
+
+554
+00:20:29,950 --> 00:20:32,409
+I come back and I would say say save
+
+555
+00:20:32,409 --> 00:20:34,509
+been the coordinator goes down it would
+
+556
+00:20:34,509 --> 00:20:35,830
+come back in look in the long say oh I
+
+557
+00:20:35,830 --> 00:20:37,989
+solved this thing you know I got these
+
+558
+00:20:37,989 --> 00:20:39,359
+messages did I commit or not
+
+559
+00:20:39,359 --> 00:20:42,070
+okay well make sure I'm applying any
+
+560
+00:20:42,070 --> 00:20:44,590
+exchanges if one of these guys goes down
+
+561
+00:20:44,590 --> 00:20:46,840
+they would come back but they men they
+
+562
+00:20:46,840 --> 00:20:48,700
+would still need to know whether you
+
+563
+00:20:48,700 --> 00:20:50,169
+know whether it actually truly committed
+
+564
+00:20:50,169 --> 00:20:51,700
+free before they get actually you know
+
+565
+00:20:51,700 --> 00:20:54,700
+redo everything so for at the
+
+566
+00:20:54,700 --> 00:20:55,809
+correctness you asked for performance
+
+567
+00:20:55,809 --> 00:21:12,039
+you don't have to do that yes so this
+
+568
+00:21:12,039 --> 00:21:14,649
+question is if I'm here and then I send
+
+569
+00:21:14,649 --> 00:21:16,119
+back so I got I get to this point
+
+570
+00:21:16,119 --> 00:21:17,850
+everyone agrees that we're gonna commit
+
+571
+00:21:17,850 --> 00:21:19,929
+we're gonna write on disk in the
+
+572
+00:21:19,929 --> 00:21:21,580
+coordinator that we've committed that
+
+573
+00:21:21,580 --> 00:21:23,080
+everyone agreed to commit so therefore
+
+574
+00:21:23,080 --> 00:21:24,789
+we can enter this the the second phase
+
+575
+00:21:24,789 --> 00:21:25,840
+and go actually go ahead and do the
+
+576
+00:21:25,840 --> 00:21:30,129
+commit but then I crash before and then
+
+577
+00:21:30,129 --> 00:21:31,690
+I come back and I can reapply the change
+
+578
+00:21:31,690 --> 00:21:33,279
+and I didn't tell this guy he committed
+
+579
+00:21:33,279 --> 00:21:35,350
+so that's so that is actually not a
+
+580
+00:21:35,350 --> 00:21:37,090
+guarantee that we can provide in our
+
+581
+00:21:37,090 --> 00:21:39,669
+database system if this is true whether
+
+582
+00:21:39,669 --> 00:21:41,950
+it's single node or distributive so if
+
+583
+00:21:41,950 --> 00:21:43,749
+we get to the point where everywhere you
+
+584
+00:21:43,749 --> 00:21:45,309
+know we flush the log to disk we
+
+585
+00:21:45,309 --> 00:21:46,389
+everyone agreed that we're going to
+
+586
+00:21:46,389 --> 00:21:49,029
+commit but then before we tell the
+
+587
+00:21:49,029 --> 00:21:50,859
+outside world we've committed we crashed
+
+588
+00:21:50,859 --> 00:21:52,149
+and that never gonna Versa doesn't go
+
+589
+00:21:52,149 --> 00:21:53,859
+that tractions actually still gets
+
+590
+00:21:53,859 --> 00:21:55,570
+considered to be committed and it's up
+
+591
+00:21:55,570 --> 00:21:57,129
+for the application code to then come
+
+592
+00:21:57,129 --> 00:21:58,659
+back and figure out whether the double
+
+593
+00:21:58,659 --> 00:22:00,099
+question it asks actually committed or
+
+594
+00:22:00,099 --> 00:22:01,929
+not we can't guarantee that right
+
+595
+00:22:01,929 --> 00:22:03,620
+because how do we know like
+
+596
+00:22:03,620 --> 00:22:05,630
+in this case here that this message
+
+597
+00:22:05,630 --> 00:22:08,570
+could get could get lost the app the
+
+598
+00:22:08,570 --> 00:22:09,680
+database server it shouldn't be
+
+599
+00:22:09,680 --> 00:22:14,650
+responsible for figuring that out yes
+
+600
+00:22:17,200 --> 00:22:20,630
+from which one like for this one for
+
+601
+00:22:20,630 --> 00:22:23,540
+this one this the second phase no you
+
+602
+00:22:23,540 --> 00:22:24,980
+can it's just like just like mommy
+
+603
+00:22:24,980 --> 00:22:27,620
+aboard the transaction on a single node
+
+604
+00:22:27,620 --> 00:22:28,670
+as soon as I notes
+
+605
+00:22:28,670 --> 00:22:31,850
+I'm aborted why wait to flush any CLR
+
+606
+00:22:31,850 --> 00:22:33,620
+anything out the disk I just tell the
+
+607
+00:22:33,620 --> 00:22:34,730
+outside world immediately you'll board
+
+608
+00:22:34,730 --> 00:22:36,559
+it and who cares right because that's
+
+609
+00:22:36,559 --> 00:22:38,179
+it's as if the transaction never
+
+610
+00:22:38,179 --> 00:22:42,590
+executed so we tell it right away do you
+
+611
+00:22:42,590 --> 00:22:48,110
+have a question or no okay so actually
+
+612
+00:22:48,110 --> 00:22:50,300
+related to his question earlier about
+
+613
+00:22:50,300 --> 00:22:51,650
+the comment like do I really need to
+
+614
+00:22:51,650 --> 00:22:53,840
+wait for the okay's before that I tell
+
+615
+00:22:53,840 --> 00:22:56,510
+the outside world that I committed this
+
+616
+00:22:56,510 --> 00:22:57,890
+is this is actually two of the
+
+617
+00:22:57,890 --> 00:22:59,360
+optimizations you can actually do to
+
+618
+00:22:59,360 --> 00:23:01,640
+speed up the protocol and in exchange
+
+619
+00:23:01,640 --> 00:23:06,590
+for having a longer recovery time well
+
+620
+00:23:06,590 --> 00:23:07,940
+that that's the second one here that's
+
+621
+00:23:07,940 --> 00:23:08,690
+what he proposed
+
+622
+00:23:08,690 --> 00:23:10,160
+so the first optimization you can do is
+
+623
+00:23:10,160 --> 00:23:12,050
+caught early prepared loading so this
+
+624
+00:23:12,050 --> 00:23:14,660
+would be where if I know that my my
+
+625
+00:23:14,660 --> 00:23:18,320
+application is sending the last query
+
+626
+00:23:18,320 --> 00:23:20,600
+that is ever going to execute to one of
+
+627
+00:23:20,600 --> 00:23:23,990
+the participant nodes then in addition
+
+628
+00:23:23,990 --> 00:23:26,150
+to it to me sending the query I also
+
+629
+00:23:26,150 --> 00:23:28,250
+piggyback another message it says oh by
+
+630
+00:23:28,250 --> 00:23:30,140
+the way I'm never coming back you ask
+
+631
+00:23:30,140 --> 00:23:32,120
+you to do anything else so go ahead and
+
+632
+00:23:32,120 --> 00:23:33,830
+send me your response as if we were as
+
+633
+00:23:33,830 --> 00:23:35,929
+if we were in the prepare phase for
+
+634
+00:23:35,929 --> 00:23:38,059
+two-phase commit so now it's one network
+
+635
+00:23:38,059 --> 00:23:40,910
+message to exit the query and run run
+
+636
+00:23:40,910 --> 00:23:42,620
+the prepare phase and then my response I
+
+637
+00:23:42,620 --> 00:23:44,960
+get I get the result of that query plus
+
+638
+00:23:44,960 --> 00:23:48,440
+the result of the prepare check so this
+
+639
+00:23:48,440 --> 00:23:50,000
+obviously requires you to know and the
+
+640
+00:23:50,000 --> 00:23:50,870
+application server that you're never
+
+641
+00:23:50,870 --> 00:23:53,000
+going to go back and run another query
+
+642
+00:23:53,000 --> 00:23:58,160
+on the on that on that node what he was
+
+643
+00:23:58,160 --> 00:24:01,610
+proposing is the it was called early
+
+644
+00:24:01,610 --> 00:24:04,580
+acknowledgment after prepare so once you
+
+645
+00:24:04,580 --> 00:24:05,960
+know a known the coordinator that
+
+646
+00:24:05,960 --> 00:24:07,460
+everyone agrees ever to commit this
+
+647
+00:24:07,460 --> 00:24:10,340
+transaction then you can merely tell the
+
+648
+00:24:10,340 --> 00:24:11,570
+outside world your connection
+
+649
+00:24:11,570 --> 00:24:13,340
+transaction is committed and then you
+
+650
+00:24:13,340 --> 00:24:15,370
+take care of the of the
+
+651
+00:24:15,370 --> 00:24:17,650
+commit phase so again just visually it's
+
+652
+00:24:17,650 --> 00:24:19,870
+like this I do commit prepare phase
+
+653
+00:24:19,870 --> 00:24:21,910
+everyone votes that it's okay and then
+
+654
+00:24:21,910 --> 00:24:23,290
+now at this point once I get my two
+
+655
+00:24:23,290 --> 00:24:25,360
+responses for my participants I can go
+
+656
+00:24:25,360 --> 00:24:26,500
+ahead and tell the application I I
+
+657
+00:24:26,500 --> 00:24:30,940
+committed and the idea here is that the
+
+658
+00:24:30,940 --> 00:24:33,070
+likelihood that I'm gonna crash for this
+
+659
+00:24:33,070 --> 00:24:37,150
+round trip here is low so therefore I
+
+660
+00:24:37,150 --> 00:24:39,490
+it's okay for me to go ahead and do this
+
+661
+00:24:39,490 --> 00:24:42,600
+if I now crash during this you know say
+
+662
+00:24:42,600 --> 00:24:44,680
+before I hear back from this over for a
+
+663
+00:24:44,680 --> 00:24:46,330
+head back from B's then I have to do
+
+664
+00:24:46,330 --> 00:24:47,679
+extra work to figure out whether I true
+
+665
+00:24:47,679 --> 00:24:49,210
+actually committed and resolved the
+
+666
+00:24:49,210 --> 00:24:57,940
+thing correctly but that's okay yes this
+
+667
+00:24:57,940 --> 00:25:00,940
+question is if a transaction if we're in
+
+668
+00:25:00,940 --> 00:25:03,370
+this phase here and prepare I get my
+
+669
+00:25:03,370 --> 00:25:04,720
+prepare message participants says okay
+
+670
+00:25:04,720 --> 00:25:08,590
+I'm gonna commit this your question is
+
+671
+00:25:08,590 --> 00:25:16,080
+what do they logged at this point yes
+
+672
+00:25:16,080 --> 00:25:30,460
+yes yes yes okay so his question is so
+
+673
+00:25:30,460 --> 00:25:35,860
+I'm here I I send back my okay I tell
+
+674
+00:25:35,860 --> 00:25:37,390
+the application okay you've had your
+
+675
+00:25:37,390 --> 00:25:39,670
+go-ahead and committed but now this
+
+676
+00:25:39,670 --> 00:25:42,640
+participant crashes in the log it says I
+
+677
+00:25:42,640 --> 00:25:45,210
+told the correlator I was gonna commit
+
+678
+00:25:45,210 --> 00:25:48,100
+what do I do want to come back well this
+
+679
+00:25:48,100 --> 00:25:49,390
+do you assume the coordinator would know
+
+680
+00:25:49,390 --> 00:25:50,800
+all right well this guy crashed now he
+
+681
+00:25:50,800 --> 00:25:54,100
+comes back and I'm in my in my log here
+
+682
+00:25:54,100 --> 00:25:55,510
+I would I would then say all right well
+
+683
+00:25:55,510 --> 00:25:58,330
+I saw commits from everyone this
+
+684
+00:25:58,330 --> 00:26:00,550
+transaction should commit so you would
+
+685
+00:26:00,550 --> 00:26:01,870
+have quoted or fill in the missing
+
+686
+00:26:01,870 --> 00:26:05,080
+information as needed on the participant
+
+687
+00:26:05,080 --> 00:26:14,770
+participant when it comes back up right
+
+688
+00:26:14,770 --> 00:26:17,170
+so you would get here the commit message
+
+689
+00:26:17,170 --> 00:26:19,120
+and then that would never never show up
+
+690
+00:26:19,120 --> 00:26:21,040
+so the mister then it dies so this
+
+691
+00:26:21,040 --> 00:26:23,350
+requires you to have so we're not gonna
+
+692
+00:26:23,350 --> 00:26:25,650
+it does this is more distributed systems
+
+693
+00:26:25,650 --> 00:26:28,300
+stuff but it's you care about that we
+
+694
+00:26:28,300 --> 00:26:29,230
+need to hear
+
+695
+00:26:29,230 --> 00:26:30,250
+this one you can use like a heartbeat
+
+696
+00:26:30,250 --> 00:26:31,990
+just to keep track of like is the note
+
+697
+00:26:31,990 --> 00:26:34,000
+up to have this thing determine whether
+
+698
+00:26:34,000 --> 00:26:35,440
+like I I haven't heard back from them in
+
+699
+00:26:35,440 --> 00:26:37,809
+a while go into some recovery mode or a
+
+700
+00:26:37,809 --> 00:26:41,040
+failure mode to handle that case yeah
+
+701
+00:26:41,040 --> 00:26:51,790
+yes sir your question is why do we why
+
+702
+00:26:51,790 --> 00:26:59,620
+do we send the so that's when I should
+
+703
+00:26:59,620 --> 00:27:01,929
+question is why are we not sending the
+
+704
+00:27:01,929 --> 00:27:03,510
+success message after the commit phase
+
+705
+00:27:03,510 --> 00:27:06,190
+yeah so that's like the the original
+
+706
+00:27:06,190 --> 00:27:08,140
+two-phase commit protocol that's how it
+
+707
+00:27:08,140 --> 00:27:09,760
+works right
+
+708
+00:27:09,760 --> 00:27:12,160
+but think about in I'm not saying also
+
+709
+00:27:12,160 --> 00:27:13,990
+where these notes are located could be
+
+710
+00:27:13,990 --> 00:27:15,220
+in the same rack and the same data
+
+711
+00:27:15,220 --> 00:27:17,169
+center it could be across the world so
+
+712
+00:27:17,169 --> 00:27:19,840
+rather than me waiting for this the next
+
+713
+00:27:19,840 --> 00:27:21,669
+round trip which could be 100
+
+714
+00:27:21,669 --> 00:27:25,299
+milliseconds maybe longer I'll just go
+
+715
+00:27:25,299 --> 00:27:27,520
+ahead and send that hey you're actually
+
+716
+00:27:27,520 --> 00:27:30,370
+committed because I assume that I'm not
+
+717
+00:27:30,370 --> 00:27:31,750
+gonna crash during this time and I had a
+
+718
+00:27:31,750 --> 00:27:33,880
+copy magnet mechanism that are necessary
+
+719
+00:27:33,880 --> 00:27:36,400
+to then handle a ferritin error that he
+
+720
+00:27:36,400 --> 00:27:38,500
+mentioned to recover myself if I come
+
+721
+00:27:38,500 --> 00:27:56,110
+back after a crash yes your question is
+
+722
+00:27:56,110 --> 00:27:59,380
+if if you're here so you've told the
+
+723
+00:27:59,380 --> 00:28:00,520
+outside world you've told the
+
+724
+00:28:00,520 --> 00:28:01,510
+coordinator you want to you want to
+
+725
+00:28:01,510 --> 00:28:04,660
+commit what is actually what is this
+
+726
+00:28:04,660 --> 00:28:05,770
+note actually doing could you just keep
+
+727
+00:28:05,770 --> 00:28:19,150
+everything in memory questions instead
+
+728
+00:28:19,150 --> 00:28:21,669
+of I'm being vague here but like in the
+
+729
+00:28:21,669 --> 00:28:22,960
+original two-phase commit protocol like
+
+730
+00:28:22,960 --> 00:28:25,510
+I I logged a disk then sent my response
+
+731
+00:28:25,510 --> 00:28:27,640
+but nobody does that right so in theory
+
+732
+00:28:27,640 --> 00:28:29,160
+you could just buffer the log messages
+
+733
+00:28:29,160 --> 00:28:31,600
+if it gets flushed out as a group part
+
+734
+00:28:31,600 --> 00:28:34,179
+of group commit who cares but I know
+
+735
+00:28:34,179 --> 00:28:36,580
+that if I crash to come back and maybe
+
+736
+00:28:36,580 --> 00:28:37,929
+some of those log records that told me
+
+737
+00:28:37,929 --> 00:28:40,450
+what I was how I voted for committing
+
+738
+00:28:40,450 --> 00:28:42,400
+this transaction get lost
+
+739
+00:28:42,400 --> 00:28:42,919
+I could
+
+740
+00:28:42,919 --> 00:28:44,119
+come back and the coordinator would have
+
+741
+00:28:44,119 --> 00:28:46,850
+could could put me up get me up to speed
+
+742
+00:28:46,850 --> 00:28:48,259
+where I let you know fill in the missing
+
+743
+00:28:48,259 --> 00:28:50,869
+details that that I lost yeah you could
+
+744
+00:28:50,869 --> 00:28:52,399
+do that as well yeah I don't think
+
+745
+00:28:52,399 --> 00:28:54,350
+anybody does the hard core like flush
+
+746
+00:28:54,350 --> 00:28:56,269
+every log record on every single node
+
+747
+00:28:56,269 --> 00:28:58,190
+every single time nobody does nobody
+
+748
+00:28:58,190 --> 00:29:07,999
+does that so far as I know okay so just
+
+749
+00:29:07,999 --> 00:29:09,169
+to reiterate everything we talked about
+
+750
+00:29:09,169 --> 00:29:12,980
+tonight so the as I said the the nodes
+
+751
+00:29:12,980 --> 00:29:16,100
+can record what happens and each phase
+
+752
+00:29:16,100 --> 00:29:17,299
+and what messages they receive what
+
+753
+00:29:17,299 --> 00:29:19,239
+messages they send out to it to a log
+
+754
+00:29:19,239 --> 00:29:22,220
+and that allows them to fill in the
+
+755
+00:29:22,220 --> 00:29:23,779
+missing details when you come back after
+
+756
+00:29:23,779 --> 00:29:26,779
+a crash so if we're in while we're
+
+757
+00:29:26,779 --> 00:29:28,609
+running our transaction and the
+
+758
+00:29:28,609 --> 00:29:31,190
+coordinator crashes before we tell that
+
+759
+00:29:31,190 --> 00:29:32,480
+you know before we resolve what actually
+
+760
+00:29:32,480 --> 00:29:35,419
+happened it's up for the participants to
+
+761
+00:29:35,419 --> 00:29:37,659
+decide how to how they want to proceed
+
+762
+00:29:37,659 --> 00:29:39,799
+so the simplest thing to do is like if
+
+763
+00:29:39,799 --> 00:29:41,509
+the coordinator goes down assume the
+
+764
+00:29:41,509 --> 00:29:44,330
+transaction aborts and we just you know
+
+765
+00:29:44,330 --> 00:29:46,669
+you roll back any changes but you could
+
+766
+00:29:46,669 --> 00:29:48,169
+have the participants recognize our
+
+767
+00:29:48,169 --> 00:29:50,840
+coordinator is down and our transactions
+
+768
+00:29:50,840 --> 00:29:53,539
+still open so somebody could become the
+
+769
+00:29:53,539 --> 00:29:55,279
+new coordinator and then figure out how
+
+770
+00:29:55,279 --> 00:29:57,559
+everyone voted and then decide whether
+
+771
+00:29:57,559 --> 00:29:58,549
+you want to commit that transaction or
+
+772
+00:29:58,549 --> 00:30:14,539
+not yes so her question is what what if
+
+773
+00:30:14,539 --> 00:30:19,369
+we're here and say this guy sends the
+
+774
+00:30:19,369 --> 00:30:21,529
+commit message that arrives at no.2 but
+
+775
+00:30:21,529 --> 00:30:22,669
+before it can send the other one to
+
+776
+00:30:22,669 --> 00:30:23,179
+node3
+
+777
+00:30:23,179 --> 00:30:27,080
+it crashes what happens right so again
+
+778
+00:30:27,080 --> 00:30:30,889
+the first option is I write if we can
+
+779
+00:30:30,889 --> 00:30:32,869
+recognize the coordinator crash whether
+
+780
+00:30:32,869 --> 00:30:34,340
+it's a heartbeat or timeout or whatever
+
+781
+00:30:34,340 --> 00:30:36,470
+we just say this we had open transaction
+
+782
+00:30:36,470 --> 00:30:38,899
+we're gonna abort but at this point
+
+783
+00:30:38,899 --> 00:30:41,619
+we've told once we the coroner says one
+
+784
+00:30:41,619 --> 00:30:43,789
+one note hey this transaction is
+
+785
+00:30:43,789 --> 00:30:46,489
+committed that is the the ground truth
+
+786
+00:30:46,489 --> 00:30:48,320
+of what actually happened so it's now
+
+787
+00:30:48,320 --> 00:30:50,090
+let's up for this node then corn ate
+
+788
+00:30:50,090 --> 00:30:51,529
+with everyone else or tell everyone else
+
+789
+00:30:51,529 --> 00:30:53,899
+hey this transaction I the coordinator
+
+790
+00:30:53,899 --> 00:30:55,070
+said I transaction committed we should
+
+791
+00:30:55,070 --> 00:30:56,270
+actually go head and commit this
+
+792
+00:30:56,270 --> 00:30:58,760
+right again this is what I'm saying that
+
+793
+00:30:58,760 --> 00:31:01,610
+like we this doesn't work if our notes
+
+794
+00:31:01,610 --> 00:31:03,650
+are malicious it only works that like
+
+795
+00:31:03,650 --> 00:31:05,000
+everyone's on you know playing on the
+
+796
+00:31:05,000 --> 00:31:07,460
+same team so we hear we hear one commit
+
+797
+00:31:07,460 --> 00:31:10,160
+message from this guy and that should be
+
+798
+00:31:10,160 --> 00:31:12,020
+enough to validate everyone else and
+
+799
+00:31:12,020 --> 00:31:18,350
+tell them yes we should commit this okay
+
+800
+00:31:18,350 --> 00:31:21,490
+so then now if a participant crashes so
+
+801
+00:31:21,490 --> 00:31:24,380
+for this one under two phase commit we
+
+802
+00:31:24,380 --> 00:31:26,360
+just assume that the participant is gone
+
+803
+00:31:26,360 --> 00:31:29,240
+and we replace their missing response
+
+804
+00:31:29,240 --> 00:31:31,190
+with just an abort and we go ahead and
+
+805
+00:31:31,190 --> 00:31:34,730
+abort the transaction right that's sort
+
+806
+00:31:34,730 --> 00:31:38,210
+of the best thing to do so the key thing
+
+807
+00:31:38,210 --> 00:31:39,650
+to point out here what's happening is
+
+808
+00:31:39,650 --> 00:31:43,880
+that the nodes have a block until they
+
+809
+00:31:43,880 --> 00:31:47,140
+find out what's supposed to happen and
+
+810
+00:31:47,140 --> 00:31:49,700
+the wait you know to avoid blocking
+
+811
+00:31:49,700 --> 00:31:51,110
+forever you just have a sort of a
+
+812
+00:31:51,110 --> 00:31:52,880
+timeout but how long you set that you
+
+813
+00:31:52,880 --> 00:31:54,290
+know can vary depending on the operating
+
+814
+00:31:54,290 --> 00:31:56,720
+environment you just have a timeout and
+
+815
+00:31:56,720 --> 00:31:57,590
+say all right I haven't heard anything
+
+816
+00:31:57,590 --> 00:31:59,330
+about this person on time so we get we
+
+817
+00:31:59,330 --> 00:32:02,059
+go ahead and abort this transaction so
+
+818
+00:32:02,059 --> 00:32:04,190
+you could have a you know live block
+
+819
+00:32:04,190 --> 00:32:05,540
+issue or an issue we're like just not
+
+820
+00:32:05,540 --> 00:32:06,920
+making any forward progress because your
+
+821
+00:32:06,920 --> 00:32:12,920
+nose are sitting around and waiting so
+
+822
+00:32:12,920 --> 00:32:15,320
+an alternative to two-phase commit
+
+823
+00:32:15,320 --> 00:32:17,470
+choose Dubey scheme it is probably
+
+824
+00:32:17,470 --> 00:32:19,670
+certainly any distributed database built
+
+825
+00:32:19,670 --> 00:32:21,679
+in the 1980s and 90s is amusing
+
+826
+00:32:21,679 --> 00:32:25,160
+two-phase commit the newer ones can use
+
+827
+00:32:25,160 --> 00:32:27,290
+variants to two days commit or could use
+
+828
+00:32:27,290 --> 00:32:32,929
+Paxos a raft to base commit is a sort of
+
+829
+00:32:32,929 --> 00:32:35,240
+a subset or gender of a case of paxos
+
+830
+00:32:35,240 --> 00:32:37,700
+and hopefully it makes sense when we go
+
+831
+00:32:37,700 --> 00:32:40,309
+through it so with paxos it comes from
+
+832
+00:32:40,309 --> 00:32:42,440
+the distributed computing world so said
+
+833
+00:32:42,440 --> 00:32:43,429
+I'm calling this an atomic commit
+
+834
+00:32:43,429 --> 00:32:44,690
+protocol they'll call this a census
+
+835
+00:32:44,690 --> 00:32:46,370
+protocol but the idea is the same you're
+
+836
+00:32:46,370 --> 00:32:47,750
+trying to get a bunch of nodes to agree
+
+837
+00:32:47,750 --> 00:32:50,450
+that this is the correct behavior this
+
+838
+00:32:50,450 --> 00:32:51,980
+the correct change to our state machine
+
+839
+00:32:51,980 --> 00:32:55,309
+so what's gonna happen is under Patos is
+
+840
+00:32:55,309 --> 00:32:57,429
+that you can have a coordinator propose
+
+841
+00:32:57,429 --> 00:32:59,600
+whether transactions allowed to commit
+
+842
+00:32:59,600 --> 00:33:01,280
+and then a bunch of participants are
+
+843
+00:33:01,280 --> 00:33:03,020
+going to vote whether it's gonna succeed
+
+844
+00:33:03,020 --> 00:33:04,250
+or not whether that transaction is
+
+845
+00:33:04,250 --> 00:33:06,770
+allowed to commit but under paxos we
+
+846
+00:33:06,770 --> 00:33:08,570
+only need a majority of the nodes to
+
+847
+00:33:08,570 --> 00:33:10,040
+agree that committed to transact
+
+848
+00:33:10,040 --> 00:33:13,690
+in two-phase commit we need all of them
+
+849
+00:33:13,690 --> 00:33:16,310
+right so now what happens is that long
+
+850
+00:33:16,310 --> 00:33:18,050
+as you have the majority of nodes but a
+
+851
+00:33:18,050 --> 00:33:19,850
+green Commission's action you don't have
+
+852
+00:33:19,850 --> 00:33:21,500
+to block the entire system or block the
+
+853
+00:33:21,500 --> 00:33:23,930
+entire protocol you can still make
+
+854
+00:33:23,930 --> 00:33:25,310
+forward progress where again two-phase
+
+855
+00:33:25,310 --> 00:33:29,450
+commit you would have one one having one
+
+856
+00:33:29,450 --> 00:33:31,250
+participant become unavailable blocks
+
+857
+00:33:31,250 --> 00:33:33,920
+the whole thing so paxos the story
+
+858
+00:33:33,920 --> 00:33:37,490
+passes is quite interesting so the the
+
+859
+00:33:37,490 --> 00:33:39,230
+first description of paxos is in this
+
+860
+00:33:39,230 --> 00:33:40,730
+paper written by Leslie Lamport who won
+
+861
+00:33:40,730 --> 00:33:42,080
+the Turing award a few years ago called
+
+862
+00:33:42,080 --> 00:33:45,080
+the part-time Parliament so I think this
+
+863
+00:33:45,080 --> 00:33:46,340
+paper is dated
+
+864
+00:33:46,340 --> 00:33:49,160
+it says 1998 but he actually invented it
+
+865
+00:33:49,160 --> 00:33:51,860
+in - in 1992 and what he was trying to
+
+866
+00:33:51,860 --> 00:33:54,620
+do he was trying to come up with a proof
+
+867
+00:33:54,620 --> 00:33:56,210
+by contradiction of an example that
+
+868
+00:33:56,210 --> 00:33:58,850
+shows you couldn't have a consensus
+
+869
+00:33:58,850 --> 00:34:00,350
+protocol with this fault-tolerance
+
+870
+00:34:00,350 --> 00:34:02,150
+property and they end up in the process
+
+871
+00:34:02,150 --> 00:34:05,960
+of actually inventing one so if you ever
+
+872
+00:34:05,960 --> 00:34:07,580
+read this paper it's the craziest thing
+
+873
+00:34:07,580 --> 00:34:10,070
+because it's it's written as if he's
+
+874
+00:34:10,070 --> 00:34:11,870
+like an archaeologist and he finds he
+
+875
+00:34:11,870 --> 00:34:13,880
+goes this greek island a Paxos and he
+
+876
+00:34:13,880 --> 00:34:16,550
+finds this stone tablets and he derives
+
+877
+00:34:16,550 --> 00:34:18,590
+what the actual the algorithm is from
+
+878
+00:34:18,590 --> 00:34:20,360
+these ancient civilization like it's not
+
+879
+00:34:20,360 --> 00:34:21,770
+a computer science paper it's all like
+
+880
+00:34:21,770 --> 00:34:26,060
+this this this illustrative story so the
+
+881
+00:34:26,060 --> 00:34:27,860
+story goes is that he wrote this paper
+
+882
+00:34:27,860 --> 00:34:30,290
+92 with all this like the Greek island
+
+883
+00:34:30,290 --> 00:34:30,739
+stuff
+
+884
+00:34:30,739 --> 00:34:33,620
+the reviewers hated the story want him
+
+885
+00:34:33,620 --> 00:34:35,270
+to put you know rewrite it to make him
+
+886
+00:34:35,270 --> 00:34:37,399
+more of computer science he he refused
+
+887
+00:34:37,399 --> 00:34:39,409
+and he didn't make any change so he
+
+888
+00:34:39,409 --> 00:34:42,290
+retracted the paper put it in his his
+
+889
+00:34:42,290 --> 00:34:44,239
+filing cabinet it didn't touch it for
+
+890
+00:34:44,239 --> 00:34:45,860
+like six or seven years until people
+
+891
+00:34:45,860 --> 00:34:47,690
+started publishing papers that look a
+
+892
+00:34:47,690 --> 00:34:49,668
+little bit like Paxos so then he pulled
+
+893
+00:34:49,668 --> 00:34:51,590
+out says aha you're you're all way off
+
+894
+00:34:51,590 --> 00:34:53,239
+or you're close but I've already solved
+
+895
+00:34:53,239 --> 00:34:55,760
+this problem so that's what that's the
+
+896
+00:34:55,760 --> 00:34:56,719
+story you get when you read it from
+
+897
+00:34:56,719 --> 00:34:58,970
+Pleasant lamport's website when I was in
+
+898
+00:34:58,970 --> 00:35:01,370
+grad school one of my I took a class
+
+899
+00:35:01,370 --> 00:35:03,620
+from Maurice Herlihy the guy then menon
+
+900
+00:35:03,620 --> 00:35:06,110
+linearize ability transactional memory
+
+901
+00:35:06,110 --> 00:35:08,720
+he's being professor here at CMU and he
+
+902
+00:35:08,720 --> 00:35:09,890
+said he was actually one of the
+
+903
+00:35:09,890 --> 00:35:11,990
+reviewers of this paper and he said they
+
+904
+00:35:11,990 --> 00:35:14,810
+were they were okay back in 1992 with
+
+905
+00:35:14,810 --> 00:35:16,610
+all the Greek islands story they just
+
+906
+00:35:16,610 --> 00:35:18,440
+wanted him an avid add an appendix with
+
+907
+00:35:18,440 --> 00:35:20,630
+just an algorithm to show what the thing
+
+908
+00:35:20,630 --> 00:35:22,190
+actually was and like you know brief
+
+909
+00:35:22,190 --> 00:35:23,100
+description of it
+
+910
+00:35:23,100 --> 00:35:25,320
+and Leslie Lamport was so stubborn he
+
+911
+00:35:25,320 --> 00:35:26,220
+didn't he thought the paper is so
+
+912
+00:35:26,220 --> 00:35:29,370
+perfect he didn't change anything so but
+
+913
+00:35:29,370 --> 00:35:30,600
+it's an interesting paper you should
+
+914
+00:35:30,600 --> 00:35:32,670
+definitely go read it it's a it's
+
+915
+00:35:32,670 --> 00:35:36,180
+probably if you read you reason read
+
+916
+00:35:36,180 --> 00:35:37,770
+this for amusement you're not gonna
+
+917
+00:35:37,770 --> 00:35:39,300
+learn anything from it at least I didn't
+
+918
+00:35:39,300 --> 00:35:39,750
+um
+
+919
+00:35:39,750 --> 00:35:41,820
+and then he has a follow-up paper called
+
+920
+00:35:41,820 --> 00:35:43,170
+Paks photos made simple
+
+921
+00:35:43,170 --> 00:35:46,440
+that doesn't help either it's the Google
+
+922
+00:35:46,440 --> 00:35:48,660
+one paxos made live for me that was the
+
+923
+00:35:48,660 --> 00:35:50,430
+one that actually forget clicked and now
+
+924
+00:35:50,430 --> 00:35:51,510
+I understand what the protocol actually
+
+925
+00:35:51,510 --> 00:35:54,960
+was so let's go through a brief example
+
+926
+00:35:54,960 --> 00:35:56,850
+so for this we're now gonna introduce an
+
+927
+00:35:56,850 --> 00:35:58,800
+additional node right because we need to
+
+928
+00:35:58,800 --> 00:36:01,410
+have a voting majority and then the
+
+929
+00:36:01,410 --> 00:36:02,640
+difference is gonna be now when we got a
+
+930
+00:36:02,640 --> 00:36:04,260
+commitment crest under the paxos
+
+931
+00:36:04,260 --> 00:36:05,820
+parlance instead of on our to base
+
+932
+00:36:05,820 --> 00:36:07,500
+commit we have a coordinator Pat those
+
+933
+00:36:07,500 --> 00:36:08,460
+calls as a proposer
+
+934
+00:36:08,460 --> 00:36:09,990
+and then a set of participants they're
+
+935
+00:36:09,990 --> 00:36:12,420
+going to call it acceptors so this the
+
+936
+00:36:12,420 --> 00:36:13,890
+the proposer is going to say hey we want
+
+937
+00:36:13,890 --> 00:36:15,660
+to go ahead and commit this transaction
+
+938
+00:36:15,660 --> 00:36:19,080
+is that gonna be okay so now let's say
+
+939
+00:36:19,080 --> 00:36:20,850
+in our example here this middle node
+
+940
+00:36:20,850 --> 00:36:25,350
+here crashes and goes down so now the
+
+941
+00:36:25,350 --> 00:36:26,910
+first two nodes come back says yes we
+
+942
+00:36:26,910 --> 00:36:29,810
+agreed to go ahead and commit this so
+
+943
+00:36:29,810 --> 00:36:32,640
+under Paxos we just need a majority so
+
+944
+00:36:32,640 --> 00:36:34,350
+two out of three nodes in this example
+
+945
+00:36:34,350 --> 00:36:36,810
+here agree to commit this transaction so
+
+946
+00:36:36,810 --> 00:36:38,550
+that's enough that's enough for us to go
+
+947
+00:36:38,550 --> 00:36:40,650
+ahead and try to commit this on our two
+
+948
+00:36:40,650 --> 00:36:43,800
+phase commit if this guy goes down we we
+
+949
+00:36:43,800 --> 00:36:46,890
+have to abort the whole thing so now we
+
+950
+00:36:46,890 --> 00:36:49,170
+get the majority to agree we go ahead
+
+951
+00:36:49,170 --> 00:36:50,490
+and commit and they come back and say
+
+952
+00:36:50,490 --> 00:36:52,080
+yes we accept to make that commit and
+
+953
+00:36:52,080 --> 00:36:54,150
+then now we have to send back our
+
+954
+00:36:54,150 --> 00:36:57,000
+success message so we actually for this
+
+955
+00:36:57,000 --> 00:36:58,500
+one we have to wait until we get Beth to
+
+956
+00:36:58,500 --> 00:37:00,630
+the second phase response back we can't
+
+957
+00:37:00,630 --> 00:37:01,860
+shortcut it in a way you can in
+
+958
+00:37:01,860 --> 00:37:03,990
+two-phase commit because we actually
+
+959
+00:37:03,990 --> 00:37:06,150
+could come back and get rejected in in
+
+960
+00:37:06,150 --> 00:37:11,190
+the second phase so let's look at a
+
+961
+00:37:11,190 --> 00:37:12,270
+different example let's look at it in
+
+962
+00:37:12,270 --> 00:37:15,720
+terms of a timeline here so let's say at
+
+963
+00:37:15,720 --> 00:37:18,120
+the exact same time there's two
+
+964
+00:37:18,120 --> 00:37:19,620
+different proposers in our distributed
+
+965
+00:37:19,620 --> 00:37:22,440
+database and so the first guy is gonna
+
+966
+00:37:22,440 --> 00:37:23,370
+say hey I want to come to this
+
+967
+00:37:23,370 --> 00:37:25,290
+transaction and sort of think of what
+
+968
+00:37:25,290 --> 00:37:26,370
+they're really doing in the state
+
+969
+00:37:26,370 --> 00:37:28,620
+machine they're just appending a log
+
+970
+00:37:28,620 --> 00:37:30,630
+message and say here's the change we
+
+971
+00:37:30,630 --> 00:37:32,120
+made the state machine is the database
+
+972
+00:37:32,120 --> 00:37:34,410
+so they're proposing that this
+
+973
+00:37:34,410 --> 00:37:36,010
+transaction should commit and
+
+974
+00:37:36,010 --> 00:37:37,630
+for each changes should be applied to
+
+975
+00:37:37,630 --> 00:37:39,550
+the database so I'm moving the state
+
+976
+00:37:39,550 --> 00:37:42,970
+forward so it says I want to commit the
+
+977
+00:37:42,970 --> 00:37:46,270
+change for a timestamp n so girls lots
+
+978
+00:37:46,270 --> 00:37:48,430
+of acceptors right and then they come
+
+979
+00:37:48,430 --> 00:37:50,500
+back and say yes we agreed to go ahead
+
+980
+00:37:50,500 --> 00:37:53,170
+and commit this change but now there's
+
+981
+00:37:53,170 --> 00:37:54,550
+other propose that comes along says I've
+
+982
+00:37:54,550 --> 00:37:56,290
+other transaction that made a change and
+
+983
+00:37:56,290 --> 00:37:59,560
+it's timestamp is M plus one so it's a
+
+984
+00:37:59,560 --> 00:38:02,260
+logical time stamp so now what will
+
+985
+00:38:02,260 --> 00:38:04,030
+happen is if this guy comes back and
+
+986
+00:38:04,030 --> 00:38:05,890
+says hey I want to commit n cuz you guys
+
+987
+00:38:05,890 --> 00:38:07,030
+all agree to commit this let's go ahead
+
+988
+00:38:07,030 --> 00:38:09,580
+and commit this they're gonna reject it
+
+989
+00:38:09,580 --> 00:38:13,600
+because they stole n plus one so even
+
+990
+00:38:13,600 --> 00:38:14,680
+though they don't know what the outcome
+
+991
+00:38:14,680 --> 00:38:17,170
+of n plus one is going to be just the
+
+992
+00:38:17,170 --> 00:38:19,150
+mere fact of seeing a new proposal for
+
+993
+00:38:19,150 --> 00:38:21,130
+committing a transaction or changing the
+
+994
+00:38:21,130 --> 00:38:23,740
+state of the database that requires them
+
+995
+00:38:23,740 --> 00:38:26,980
+to all abort a reject the the one they
+
+996
+00:38:26,980 --> 00:38:30,790
+all agreed to before so then now we send
+
+997
+00:38:30,790 --> 00:38:32,590
+the agreement to commit and plus one and
+
+998
+00:38:32,590 --> 00:38:34,690
+then he goes says I all right great
+
+999
+00:38:34,690 --> 00:38:36,640
+let's go commit n plus one and then once
+
+1000
+00:38:36,640 --> 00:38:40,150
+we all accept this then at this point
+
+1001
+00:38:40,150 --> 00:38:41,110
+here the transaction is actually
+
+1002
+00:38:41,110 --> 00:38:52,990
+committed yes our question is yes so
+
+1003
+00:38:52,990 --> 00:38:55,540
+it's your question investigation what is
+
+1004
+00:38:55,540 --> 00:38:57,640
+this n and so if I come along with n
+
+1005
+00:38:57,640 --> 00:38:59,290
+minus one would that be be immediately
+
+1006
+00:38:59,290 --> 00:39:00,280
+rejected yes
+
+1007
+00:39:00,280 --> 00:39:02,890
+now how you actually have a logically in
+
+1008
+00:39:02,890 --> 00:39:09,430
+a a globally valid timestamp or counter
+
+1009
+00:39:09,430 --> 00:39:11,590
+that everyone agrees to go you know go
+
+1010
+00:39:11,590 --> 00:39:13,240
+up in the correct order so that I can
+
+1011
+00:39:13,240 --> 00:39:15,310
+always move four in a time the simple
+
+1012
+00:39:15,310 --> 00:39:16,810
+way to do that is you assume your clocks
+
+1013
+00:39:16,810 --> 00:39:21,190
+are reasonably in sync and you you could
+
+1014
+00:39:21,190 --> 00:39:23,290
+you could append a logical counter to it
+
+1015
+00:39:23,290 --> 00:39:25,300
+maybe prefix the hostname so that you
+
+1016
+00:39:25,300 --> 00:39:27,760
+can break ties right there's standard
+
+1017
+00:39:27,760 --> 00:39:33,060
+tricks to handle this yes
+
+1018
+00:39:34,430 --> 00:39:36,570
+all right so her question is could this
+
+1019
+00:39:36,570 --> 00:39:38,160
+go forever I mean theory could couldn't
+
+1020
+00:39:38,160 --> 00:39:40,470
+be to proposer just keep clobbering each
+
+1021
+00:39:40,470 --> 00:39:43,710
+other back and forth yes well we'll
+
+1022
+00:39:43,710 --> 00:39:54,570
+handle that next slide yes so your
+
+1023
+00:39:54,570 --> 00:39:55,950
+question is does it matter if there's
+
+1024
+00:39:55,950 --> 00:39:57,360
+say stating it there's a majority of
+
+1025
+00:39:57,360 --> 00:40:09,540
+acceptors or yes okay how would that
+
+1026
+00:40:09,540 --> 00:40:12,000
+work yeah so if one guy if one of these
+
+1027
+00:40:12,000 --> 00:40:14,430
+acceptors sees n plus 1 they have to
+
+1028
+00:40:14,430 --> 00:40:21,000
+reject n yeah I think they cover packs
+
+1029
+00:40:21,000 --> 00:40:22,350
+us in the distributed systems class
+
+1030
+00:40:22,350 --> 00:40:23,430
+right the guys in the X you have to
+
+1031
+00:40:23,430 --> 00:40:25,710
+implement it so I'm being I'm going
+
+1032
+00:40:25,710 --> 00:40:27,090
+through this very briefly just to show
+
+1033
+00:40:27,090 --> 00:40:29,190
+the distinction between two-phase commit
+
+1034
+00:40:29,190 --> 00:40:33,870
+and and Pat says that like yeah the
+
+1035
+00:40:33,870 --> 00:40:35,700
+hilum idea is the same except that under
+
+1036
+00:40:35,700 --> 00:40:38,190
+Pat says yeah you still get rejected in
+
+1037
+00:40:38,190 --> 00:40:39,840
+the second phase and you have a majority
+
+1038
+00:40:39,840 --> 00:40:44,190
+have to agree so now her question is or
+
+1039
+00:40:44,190 --> 00:40:46,560
+her observation is it could not get
+
+1040
+00:40:46,560 --> 00:40:48,240
+starred forever if I just have two
+
+1041
+00:40:48,240 --> 00:40:50,040
+proposers clobbering each other by
+
+1042
+00:40:50,040 --> 00:40:52,110
+posing you know n plus 1 and plus 2 n
+
+1043
+00:40:52,110 --> 00:40:53,730
+plus 3 and everything just keeps getting
+
+1044
+00:40:53,730 --> 00:40:56,130
+rejected absolutely so the way you
+
+1045
+00:40:56,130 --> 00:40:58,950
+handle this is called multi Paxos so the
+
+1046
+00:40:58,950 --> 00:41:01,320
+idea with multi packs s is that you you
+
+1047
+00:41:01,320 --> 00:41:03,530
+select some node to become the leader
+
+1048
+00:41:03,530 --> 00:41:07,260
+for your Paxos group and then it's the
+
+1049
+00:41:07,260 --> 00:41:10,320
+sole node responsible for for proposing
+
+1050
+00:41:10,320 --> 00:41:13,020
+changes to commit transactions it's the
+
+1051
+00:41:13,020 --> 00:41:14,430
+one that they think of this it could
+
+1052
+00:41:14,430 --> 00:41:15,990
+delegate it or designate it as the
+
+1053
+00:41:15,990 --> 00:41:18,510
+almost like the coordinator or the the
+
+1054
+00:41:18,510 --> 00:41:20,280
+middleware piece that everything
+
+1055
+00:41:20,280 --> 00:41:21,510
+everybody has to go to to determine
+
+1056
+00:41:21,510 --> 00:41:23,510
+whether they're allowed to commit or not
+
+1057
+00:41:23,510 --> 00:41:27,510
+and you have a lease on being designated
+
+1058
+00:41:27,510 --> 00:41:29,370
+as a leader like you know some 60
+
+1059
+00:41:29,370 --> 00:41:31,560
+seconds or so and then after that 60
+
+1060
+00:41:31,560 --> 00:41:34,020
+seconds is up you do a round of voting
+
+1061
+00:41:34,020 --> 00:41:36,480
+which is another another round of Paxos
+
+1062
+00:41:36,480 --> 00:41:38,610
+to determine who the next leader is
+
+1063
+00:41:38,610 --> 00:41:43,110
+going to be and then once that that's
+
+1064
+00:41:43,110 --> 00:41:44,850
+resolved then you go ahead and have you
+
+1065
+00:41:44,850 --> 00:41:46,560
+know that that new designated leader be
+
+1066
+00:41:46,560 --> 00:41:48,180
+the responsible for all
+
+1067
+00:41:48,180 --> 00:41:50,170
+for applying all the changes so this
+
+1068
+00:41:50,170 --> 00:41:52,000
+report this avoids that that starving
+
+1069
+00:41:52,000 --> 00:41:54,280
+starving issue because the leaders have
+
+1070
+00:41:54,280 --> 00:42:00,810
+been the only one proposing changes yes
+
+1071
+00:42:04,770 --> 00:42:06,820
+correct so she's like isn't just moving
+
+1072
+00:42:06,820 --> 00:42:07,870
+the problem because now couldn't get
+
+1073
+00:42:07,870 --> 00:42:10,140
+started for the leader election right so
+
+1074
+00:42:10,140 --> 00:42:13,030
+yeah we assume our nodes are friendly so
+
+1075
+00:42:13,030 --> 00:42:14,230
+we just have right in our and our
+
+1076
+00:42:14,230 --> 00:42:15,510
+database system you say all right well
+
+1077
+00:42:15,510 --> 00:42:18,940
+the after my lease is over I'll try to
+
+1078
+00:42:18,940 --> 00:42:22,660
+be the only one to to you know vote
+
+1079
+00:42:22,660 --> 00:42:24,520
+myself or propose that I can be the new
+
+1080
+00:42:24,520 --> 00:42:26,530
+leader how do you handle two guys
+
+1081
+00:42:26,530 --> 00:42:28,480
+clapping same time yes but you serve
+
+1082
+00:42:28,480 --> 00:42:31,540
+back off so I tried I got rejected so
+
+1083
+00:42:31,540 --> 00:42:33,400
+MIT said to me Miele trying to reject or
+
+1084
+00:42:33,400 --> 00:42:34,450
+merely try to propose it something new
+
+1085
+00:42:34,450 --> 00:42:37,120
+maybe I'll wait 10 milliseconds if I
+
+1086
+00:42:37,120 --> 00:42:38,350
+propose again I get rejected maybe I
+
+1087
+00:42:38,350 --> 00:42:44,590
+wait 20 just do it that way yes the
+
+1088
+00:42:44,590 --> 00:42:45,760
+question is how many proposals can you
+
+1089
+00:42:45,760 --> 00:42:48,570
+have and then as you want
+
+1090
+00:42:48,570 --> 00:42:50,410
+yeah algorithm doesn't say anything
+
+1091
+00:42:50,410 --> 00:42:52,360
+about limitation in practice it's like
+
+1092
+00:42:52,360 --> 00:42:53,830
+getting for it they'll call in a pack so
+
+1093
+00:42:53,830 --> 00:42:57,100
+this group you typically would have one
+
+1094
+00:42:57,100 --> 00:42:59,260
+under multi taxes to avoid this start
+
+1095
+00:42:59,260 --> 00:43:02,260
+starvation issue if we cover spanner at
+
+1096
+00:43:02,260 --> 00:43:04,150
+the end of the semester of an assistant
+
+1097
+00:43:04,150 --> 00:43:05,910
+potpourri which every year we always do
+
+1098
+00:43:05,910 --> 00:43:08,440
+I'll show you how you can do taxes with
+
+1099
+00:43:08,440 --> 00:43:18,370
+that question over here so the the main
+
+1100
+00:43:18,370 --> 00:43:20,080
+takeaway from this is that so with with
+
+1101
+00:43:20,080 --> 00:43:21,910
+two-phase commit and paxos you can both
+
+1102
+00:43:21,910 --> 00:43:23,800
+use them to commit transactions so to
+
+1103
+00:43:23,800 --> 00:43:25,510
+determine whether everyone agrees we
+
+1104
+00:43:25,510 --> 00:43:26,790
+want to go ahead and commit transactions
+
+1105
+00:43:26,790 --> 00:43:31,600
+in practice usually for distributed
+
+1106
+00:43:31,600 --> 00:43:34,240
+databases that are local to each other
+
+1107
+00:43:34,240 --> 00:43:35,320
+like meaning they're running under the
+
+1108
+00:43:35,320 --> 00:43:36,490
+same data center where they're not like
+
+1109
+00:43:36,490 --> 00:43:38,230
+you know or widespread geographic
+
+1110
+00:43:38,230 --> 00:43:40,240
+regions two-phase commit it's what
+
+1111
+00:43:40,240 --> 00:43:42,430
+people mostly use because the the number
+
+1112
+00:43:42,430 --> 00:43:46,450
+of round trips could be less and you
+
+1113
+00:43:46,450 --> 00:43:47,530
+assume that maybe the nodes are going to
+
+1114
+00:43:47,530 --> 00:43:49,630
+are going to be crash less often
+
+1115
+00:43:49,630 --> 00:43:52,210
+okay there's much extra failure scenario
+
+1116
+00:43:52,210 --> 00:43:53,890
+Cody you have to deal with ferret handle
+
+1117
+00:43:53,890 --> 00:43:55,990
+code to deal with like you know the
+
+1118
+00:43:55,990 --> 00:43:57,070
+coordinator goes down participant goes
+
+1119
+00:43:57,070 --> 00:43:59,380
+down so it's you know even though it
+
+1120
+00:43:59,380 --> 00:44:01,230
+would be slightly faster than paxos
+
+1121
+00:44:01,230 --> 00:44:02,370
+it's still there's so much of your stuff
+
+1122
+00:44:02,370 --> 00:44:03,450
+you have to do to make sure that you
+
+1123
+00:44:03,450 --> 00:44:05,130
+don't the whole system doesn't go down
+
+1124
+00:44:05,130 --> 00:44:06,530
+and you don't lose data
+
+1125
+00:44:06,530 --> 00:44:09,390
+as I said before the the inventor of
+
+1126
+00:44:09,390 --> 00:44:11,730
+paxos Leslie Lamport and Jim Gray the
+
+1127
+00:44:11,730 --> 00:44:13,320
+guide have been two phase locking they
+
+1128
+00:44:13,320 --> 00:44:16,110
+had a paper in early 2000s before Jim
+
+1129
+00:44:16,110 --> 00:44:21,510
+disappeared that showed that two base
+
+1130
+00:44:21,510 --> 00:44:23,190
+commit is a degenerative case of two
+
+1131
+00:44:23,190 --> 00:44:25,620
+phase locking right - sort of like I was
+
+1132
+00:44:25,620 --> 00:44:27,930
+talking to Jennifer case of paksas right
+
+1133
+00:44:27,930 --> 00:44:30,840
+the the coordinator it's the same taxes
+
+1134
+00:44:30,840 --> 00:44:34,140
+round of a voting it's just everyone has
+
+1135
+00:44:34,140 --> 00:44:40,050
+agree rather than the majority okay all
+
+1136
+00:44:40,050 --> 00:44:40,380
+right
+
+1137
+00:44:40,380 --> 00:44:42,180
+so let's talk about replication now as I
+
+1138
+00:44:42,180 --> 00:44:44,970
+said in beginning most people don't need
+
+1139
+00:44:44,970 --> 00:44:47,730
+a sort of a partitioned attributed
+
+1140
+00:44:47,730 --> 00:44:51,090
+database to handle the workload most the
+
+1141
+00:44:51,090 --> 00:44:52,410
+data says you play and count the real
+
+1142
+00:44:52,410 --> 00:44:54,720
+world while probably using you know some
+
+1143
+00:44:54,720 --> 00:44:55,980
+kind of replication and I would say that
+
+1144
+00:44:55,980 --> 00:44:57,680
+still counts as a distributed database
+
+1145
+00:44:57,680 --> 00:45:00,080
+so the idea here it should be a database
+
+1146
+00:45:00,080 --> 00:45:03,270
+replicated with application is that we
+
+1147
+00:45:03,270 --> 00:45:05,580
+want to make multiple copies of every
+
+1148
+00:45:05,580 --> 00:45:07,770
+object whether it's a page or a - poor
+
+1149
+00:45:07,770 --> 00:45:10,080
+table whatever you want and store them
+
+1150
+00:45:10,080 --> 00:45:12,000
+on multiple nodes so that if one of
+
+1151
+00:45:12,000 --> 00:45:14,220
+those nodes goes down we have a backup
+
+1152
+00:45:14,220 --> 00:45:16,500
+available for us so we don't have to
+
+1153
+00:45:16,500 --> 00:45:18,180
+wait for the system to reboot and replay
+
+1154
+00:45:18,180 --> 00:45:19,290
+the log to put us back in the correct
+
+1155
+00:45:19,290 --> 00:45:21,960
+state we could just failover using paxos
+
+1156
+00:45:21,960 --> 00:45:24,840
+to decide who to failover to to
+
+1157
+00:45:24,840 --> 00:45:26,490
+determine what becomes that you know the
+
+1158
+00:45:26,490 --> 00:45:29,820
+new location for writing data so there's
+
+1159
+00:45:29,820 --> 00:45:30,990
+a bunch of design decisions we have to
+
+1160
+00:45:30,990 --> 00:45:32,700
+think about when we want to build our
+
+1161
+00:45:32,700 --> 00:45:34,680
+replication scheme so we'll go through
+
+1162
+00:45:34,680 --> 00:45:36,410
+each of these one by one
+
+1163
+00:45:36,410 --> 00:45:40,350
+so the first first issue is what however
+
+1164
+00:45:40,350 --> 00:45:42,590
+after you can configure the system
+
+1165
+00:45:42,590 --> 00:45:44,550
+configure the replicas in the systems
+
+1166
+00:45:44,550 --> 00:45:46,550
+and where do the reads and writes go to
+
+1167
+00:45:46,550 --> 00:45:49,710
+so the most common approach is used what
+
+1168
+00:45:49,710 --> 00:45:51,900
+is called master replicas replication
+
+1169
+00:45:51,900 --> 00:45:54,020
+sometimes called called leader follower
+
+1170
+00:45:54,020 --> 00:45:56,280
+used to be called master slave but
+
+1171
+00:45:56,280 --> 00:45:58,290
+people try to try to avoid that term and
+
+1172
+00:45:58,290 --> 00:46:00,090
+the idea here is that there's some
+
+1173
+00:46:00,090 --> 00:46:04,140
+designated master for that form for a
+
+1174
+00:46:04,140 --> 00:46:06,630
+given object in the database and all the
+
+1175
+00:46:06,630 --> 00:46:08,130
+rights are going to go to that master
+
+1176
+00:46:08,130 --> 00:46:11,040
+master node and the master node is then
+
+1177
+00:46:11,040 --> 00:46:13,380
+responsible for propagating those
+
+1178
+00:46:13,380 --> 00:46:14,950
+changes the
+
+1179
+00:46:14,950 --> 00:46:19,510
+updates to its replicas and all the
+
+1180
+00:46:19,510 --> 00:46:21,640
+reads can go either to the master or
+
+1181
+00:46:21,640 --> 00:46:22,869
+some systems that can also go to the
+
+1182
+00:46:22,869 --> 00:46:24,609
+replicas so you can offload the work you
+
+1183
+00:46:24,609 --> 00:46:25,660
+have to do in the massacres the rights
+
+1184
+00:46:25,660 --> 00:46:28,510
+could be could be very expensive and so
+
+1185
+00:46:28,510 --> 00:46:30,460
+as I said if now the master goes down
+
+1186
+00:46:30,460 --> 00:46:32,619
+then we hold up axis around to do a
+
+1187
+00:46:32,619 --> 00:46:34,270
+leader election to determine which
+
+1188
+00:46:34,270 --> 00:46:35,740
+replica becomes the new master and
+
+1189
+00:46:35,740 --> 00:46:36,670
+that's where all the rights go to
+
+1190
+00:46:36,670 --> 00:46:42,160
+question this question is well this is a
+
+1191
+00:46:42,160 --> 00:46:45,570
+venture persistency no we'll get there
+
+1192
+00:46:45,570 --> 00:46:51,099
+but not necessarily no no no not true a
+
+1193
+00:46:51,099 --> 00:46:53,880
+few more slides
+
+1194
+00:46:53,880 --> 00:46:56,530
+okay the other approach is do
+
+1195
+00:46:56,530 --> 00:47:00,040
+multi-master where we have replicas
+
+1196
+00:47:00,040 --> 00:47:01,030
+stored in different machines and
+
+1197
+00:47:01,030 --> 00:47:03,250
+transactions are allowed to write to any
+
+1198
+00:47:03,250 --> 00:47:05,920
+of those replicas all right some
+
+1199
+00:47:05,920 --> 00:47:08,200
+sometimes called multi-home and then now
+
+1200
+00:47:08,200 --> 00:47:10,630
+that it's the replicas are responsible
+
+1201
+00:47:10,630 --> 00:47:13,240
+for determining if you have two
+
+1202
+00:47:13,240 --> 00:47:14,770
+transactions that try to update the same
+
+1203
+00:47:14,770 --> 00:47:16,480
+thing running the two different replicas
+
+1204
+00:47:16,480 --> 00:47:18,010
+how do you actually coordinate from
+
+1205
+00:47:18,010 --> 00:47:19,390
+decide which one should actually commit
+
+1206
+00:47:19,390 --> 00:47:20,619
+which one should abort how do you
+
+1207
+00:47:20,619 --> 00:47:24,010
+actually with conflicts so let's look at
+
+1208
+00:47:24,010 --> 00:47:25,510
+these visual ease again master master
+
+1209
+00:47:25,510 --> 00:47:28,119
+replicas yeah you have a master node all
+
+1210
+00:47:28,119 --> 00:47:31,300
+your rights go to this guy and in in
+
+1211
+00:47:31,300 --> 00:47:32,980
+some systems all the reads go here as
+
+1212
+00:47:32,980 --> 00:47:35,349
+well and then this just then propagates
+
+1213
+00:47:35,349 --> 00:47:36,849
+over the network
+
+1214
+00:47:36,849 --> 00:47:39,849
+the update information to it to its
+
+1215
+00:47:39,849 --> 00:47:43,089
+replicas so that can get applied and for
+
+1216
+00:47:43,089 --> 00:47:44,650
+some systems again you can have the
+
+1217
+00:47:44,650 --> 00:47:47,170
+reads go to the replicas so that you
+
+1218
+00:47:47,170 --> 00:47:48,460
+produce the amount of work you're doing
+
+1219
+00:47:48,460 --> 00:47:51,310
+on the front end so if your reads don't
+
+1220
+00:47:51,310 --> 00:47:53,290
+need to have the most up-to-date latest
+
+1221
+00:47:53,290 --> 00:47:56,109
+information then you can all flow them
+
+1222
+00:47:56,109 --> 00:47:58,450
+to to these other guys here all right
+
+1223
+00:47:58,450 --> 00:48:01,119
+this is still be potentially consistent
+
+1224
+00:48:01,119 --> 00:48:03,520
+by meaning like I can if I have snapshot
+
+1225
+00:48:03,520 --> 00:48:04,990
+isolation I can be guaranteed that I'm
+
+1226
+00:48:04,990 --> 00:48:07,030
+not seeing torn updates or partial
+
+1227
+00:48:07,030 --> 00:48:08,560
+updates from transactions still running
+
+1228
+00:48:08,560 --> 00:48:10,030
+on this guy here so I still can
+
+1229
+00:48:10,030 --> 00:48:11,800
+guarantee the consistency are the data
+
+1230
+00:48:11,800 --> 00:48:15,190
+I'm reading on my replicas it just may
+
+1231
+00:48:15,190 --> 00:48:16,359
+be the case that I'm not seeing the
+
+1232
+00:48:16,359 --> 00:48:18,280
+little latest information that's on the
+
+1233
+00:48:18,280 --> 00:48:22,660
+master the multi master approach is that
+
+1234
+00:48:22,660 --> 00:48:24,160
+again we have transactions can you read
+
+1235
+00:48:24,160 --> 00:48:26,380
+the rights to any copy of the data and
+
+1236
+00:48:26,380 --> 00:48:28,690
+then there's some procedure
+
+1237
+00:48:28,690 --> 00:48:30,339
+to resolve the conflict again using
+
+1238
+00:48:30,339 --> 00:48:32,010
+Paxos or two-phase committee to decide
+
+1239
+00:48:32,010 --> 00:48:34,869
+you know to have overlapping changes on
+
+1240
+00:48:34,869 --> 00:48:36,339
+these two replicas what should be the
+
+1241
+00:48:36,339 --> 00:48:40,690
+latest version so just as a quick
+
+1242
+00:48:40,690 --> 00:48:43,060
+anecdote Facebook originally used to use
+
+1243
+00:48:43,060 --> 00:48:44,579
+this Malta
+
+1244
+00:48:44,579 --> 00:48:46,720
+master replica setup for their giant
+
+1245
+00:48:46,720 --> 00:48:48,700
+data center right the the main data
+
+1246
+00:48:48,700 --> 00:48:49,690
+center was I think you know in
+
+1247
+00:48:49,690 --> 00:48:52,480
+California and then across the different
+
+1248
+00:48:52,480 --> 00:48:54,099
+around the world they would have
+
+1249
+00:48:54,099 --> 00:48:57,550
+replicas that would fall along the the
+
+1250
+00:48:57,550 --> 00:48:59,859
+you know the the the master and get
+
+1251
+00:48:59,859 --> 00:49:01,329
+updates to you know to propagate the
+
+1252
+00:49:01,329 --> 00:49:02,530
+changes so that you can see things and
+
+1253
+00:49:02,530 --> 00:49:04,210
+the way they would fake it out to make
+
+1254
+00:49:04,210 --> 00:49:05,530
+it look like your changes happen real
+
+1255
+00:49:05,530 --> 00:49:07,810
+fast locally like if you updated your
+
+1256
+00:49:07,810 --> 00:49:11,079
+timeline they would store that as a
+
+1257
+00:49:11,079 --> 00:49:12,760
+cookie information in your browser so
+
+1258
+00:49:12,760 --> 00:49:13,960
+that if you refresh the page you would
+
+1259
+00:49:13,960 --> 00:49:15,970
+see your update even though have may not
+
+1260
+00:49:15,970 --> 00:49:18,460
+been propagated to the to the replicas
+
+1261
+00:49:18,460 --> 00:49:19,660
+where you're reading your timeline from
+
+1262
+00:49:19,660 --> 00:49:21,460
+right cuz it takes a bit of is late for
+
+1263
+00:49:21,460 --> 00:49:23,170
+the right to show up here and then
+
+1264
+00:49:23,170 --> 00:49:25,540
+pushed out to the replicas and now
+
+1265
+00:49:25,540 --> 00:49:27,700
+probably five six years ago now they do
+
+1266
+00:49:27,700 --> 00:49:32,859
+the the multi multi master set up so an
+
+1267
+00:49:32,859 --> 00:49:35,950
+important concept in our with replicas
+
+1268
+00:49:35,950 --> 00:49:44,560
+yes you could react so there's a there's
+
+1269
+00:49:44,560 --> 00:49:46,060
+a lot of pumpkin permission map this
+
+1270
+00:49:46,060 --> 00:49:47,680
+four years ago so the way like if I
+
+1271
+00:49:47,680 --> 00:49:49,660
+write a post like you know in my
+
+1272
+00:49:49,660 --> 00:49:52,329
+timeline if i refresh the page and if
+
+1273
+00:49:52,329 --> 00:49:54,579
+I'm saying I'm in Brazil and I'm reading
+
+1274
+00:49:54,579 --> 00:49:56,980
+the Brazil my local data center has a
+
+1275
+00:49:56,980 --> 00:49:58,839
+replica of the master so now if i
+
+1276
+00:49:58,839 --> 00:50:00,730
+refresh my page and come back I wouldn't
+
+1277
+00:50:00,730 --> 00:50:02,740
+see my post because it has been
+
+1278
+00:50:02,740 --> 00:50:03,880
+propagated from the master to the
+
+1279
+00:50:03,880 --> 00:50:05,530
+replica because there's there's always
+
+1280
+00:50:05,530 --> 00:50:07,750
+delay for this so people would then you
+
+1281
+00:50:07,750 --> 00:50:09,250
+they want to avoid the issue of someone
+
+1282
+00:50:09,250 --> 00:50:11,230
+posting in their timeline hitting
+
+1283
+00:50:11,230 --> 00:50:12,940
+refresh and then thinking they're their
+
+1284
+00:50:12,940 --> 00:50:14,260
+post went missing because now you're
+
+1285
+00:50:14,260 --> 00:50:16,690
+reading from this right so the way they
+
+1286
+00:50:16,690 --> 00:50:17,680
+would handle that is they would actually
+
+1287
+00:50:17,680 --> 00:50:20,050
+store what she wrote in your browser
+
+1288
+00:50:20,050 --> 00:50:22,510
+cookie and then fill that in as if it
+
+1289
+00:50:22,510 --> 00:50:28,530
+was coming from the database it's not
+
+1290
+00:50:32,970 --> 00:50:36,609
+yes if they quit their browser and
+
+1291
+00:50:36,609 --> 00:50:38,079
+assuming the cookies got got blown away
+
+1292
+00:50:38,079 --> 00:50:41,990
+and you cut but even
+
+1293
+00:50:41,990 --> 00:50:44,599
+better scenario I make a change my time
+
+1294
+00:50:44,599 --> 00:50:46,220
+on this machine and I have another
+
+1295
+00:50:46,220 --> 00:50:47,599
+machine right next to it and I hit
+
+1296
+00:50:47,599 --> 00:50:49,220
+refresh on that machine it would go to
+
+1297
+00:50:49,220 --> 00:50:50,900
+the replica database down in Brazil it
+
+1298
+00:50:50,900 --> 00:50:53,630
+would not see your post you know it'd be
+
+1299
+00:50:53,630 --> 00:50:55,069
+a couple hundred milliseconds before
+
+1300
+00:50:55,069 --> 00:50:57,770
+they actually got propagated but they
+
+1301
+00:50:57,770 --> 00:50:58,730
+would say you know we'll still like to
+
+1302
+00:50:58,730 --> 00:50:59,930
+hurt someone could hit refresh on the
+
+1303
+00:50:59,930 --> 00:51:05,290
+two machines they're exact same time yes
+
+1304
+00:51:12,130 --> 00:51:13,280
+correct
+
+1305
+00:51:13,280 --> 00:51:15,470
+question is is that in my scenario with
+
+1306
+00:51:15,470 --> 00:51:17,960
+Facebook if the replicas Brazil this is
+
+1307
+00:51:17,960 --> 00:51:19,579
+in California when I actually did the
+
+1308
+00:51:19,579 --> 00:51:21,380
+post does that mean the application
+
+1309
+00:51:21,380 --> 00:51:22,970
+server needs to communicate with the the
+
+1310
+00:51:22,970 --> 00:51:24,530
+data is back in California from Brazil
+
+1311
+00:51:24,530 --> 00:51:28,970
+yes David is that's a huge bottle
+
+1312
+00:51:28,970 --> 00:51:29,990
+absolutely and that's why they did the
+
+1313
+00:51:29,990 --> 00:51:33,260
+cookie thing to hide it because doing
+
+1314
+00:51:33,260 --> 00:51:37,880
+this is this is hard right they had to
+
+1315
+00:51:37,880 --> 00:51:40,130
+build that and to get that right is not
+
+1316
+00:51:40,130 --> 00:51:46,220
+easy yes his question is receiving again
+
+1317
+00:51:46,220 --> 00:51:48,290
+using the Facebook example if someone
+
+1318
+00:51:48,290 --> 00:51:49,640
+comments on that post I will never see
+
+1319
+00:51:49,640 --> 00:51:52,130
+that no because again it's just the deal
+
+1320
+00:51:52,130 --> 00:51:54,290
+with you at the person writing the post
+
+1321
+00:51:54,290 --> 00:51:58,220
+if you hit refresh it would pull it from
+
+1322
+00:51:58,220 --> 00:51:59,720
+the cookie so that you would think you
+
+1323
+00:51:59,720 --> 00:52:01,069
+got it from me from the master but you
+
+1324
+00:52:01,069 --> 00:52:02,569
+really got it from the replica it fills
+
+1325
+00:52:02,569 --> 00:52:03,920
+in the missing information that knows it
+
+1326
+00:52:03,920 --> 00:52:07,099
+should exist for you eventually it the
+
+1327
+00:52:07,099 --> 00:52:08,660
+bastard will get propagated to the
+
+1328
+00:52:08,660 --> 00:52:11,299
+replica and then now if I do a refresh
+
+1329
+00:52:11,299 --> 00:52:12,619
+instead of coming at the cookie I'll
+
+1330
+00:52:12,619 --> 00:52:14,839
+come from my replica so Zimmer and post
+
+1331
+00:52:14,839 --> 00:52:17,240
+my comment i it'll be a delay before I
+
+1332
+00:52:17,240 --> 00:52:23,119
+can see it correct in the in the old in
+
+1333
+00:52:23,119 --> 00:52:24,530
+the old system yes and the new system
+
+1334
+00:52:24,530 --> 00:52:27,859
+yes everything is now we're getting the
+
+1335
+00:52:27,859 --> 00:52:29,690
+GPD our world which I don't wanna get
+
+1336
+00:52:29,690 --> 00:52:32,440
+into like where can data actually live
+
+1337
+00:52:32,440 --> 00:52:35,480
+but in generally think of yes like think
+
+1338
+00:52:35,480 --> 00:52:38,559
+of this is like Brazil America u.s.
+
+1339
+00:52:38,559 --> 00:52:40,490
+everyone has a complete copy in entire
+
+1340
+00:52:40,490 --> 00:52:43,010
+database whether Facebook actually does
+
+1341
+00:52:43,010 --> 00:52:44,470
+that anymore I don't know
+
+1342
+00:52:44,470 --> 00:52:47,450
+again this big think of this as this is
+
+1343
+00:52:47,450 --> 00:52:49,940
+a good example of it's sort of like mp3s
+
+1344
+00:52:49,940 --> 00:52:52,700
+right mp3s take advantage of AUSA's
+
+1345
+00:52:52,700 --> 00:52:55,400
+humans of what we can proceed
+
+1346
+00:52:55,400 --> 00:52:58,400
+in audio and they they can compress down
+
+1347
+00:52:58,400 --> 00:52:59,930
+you know wavelengths that we can't see
+
+1348
+00:52:59,930 --> 00:53:01,849
+by a throws away data that we humans are
+
+1349
+00:53:01,849 --> 00:53:03,049
+never going to be able to hear to
+
+1350
+00:53:03,049 --> 00:53:04,760
+compress the the you know the the actual
+
+1351
+00:53:04,760 --> 00:53:06,650
+file so it's sort of like the same thing
+
+1352
+00:53:06,650 --> 00:53:09,380
+right they know that if it takes me a
+
+1353
+00:53:09,380 --> 00:53:11,210
+hundred milliseconds to get to get up
+
+1354
+00:53:11,210 --> 00:53:14,180
+from a comment on my post get from the
+
+1355
+00:53:14,180 --> 00:53:16,520
+master the replica who cares
+
+1356
+00:53:16,520 --> 00:53:17,900
+if it takes me a hundred milliseconds to
+
+1357
+00:53:17,900 --> 00:53:19,339
+see your comment about my stupid picture
+
+1358
+00:53:19,339 --> 00:53:22,250
+right the thing they were trying to
+
+1359
+00:53:22,250 --> 00:53:23,720
+avoid was someone posting and then
+
+1360
+00:53:23,720 --> 00:53:26,690
+immediately not seen what they posted so
+
+1361
+00:53:26,690 --> 00:53:27,680
+that's why they were doing that cookie
+
+1362
+00:53:27,680 --> 00:53:29,869
+trick but for everything else you do
+
+1363
+00:53:29,869 --> 00:53:30,980
+have to wait till gets propagated and
+
+1364
+00:53:30,980 --> 00:53:32,450
+again if it's a hunter milliseconds to
+
+1365
+00:53:32,450 --> 00:53:33,829
+see a comment from from your friend who
+
+1366
+00:53:33,829 --> 00:53:52,700
+cares comment in the comment use case
+
+1367
+00:53:52,700 --> 00:53:54,170
+someone in California comments on like
+
+1368
+00:53:54,170 --> 00:54:00,049
+if I posted Raziel or something yes yes
+
+1369
+00:54:00,049 --> 00:54:02,990
+so just repeat his comment like for this
+
+1370
+00:54:02,990 --> 00:54:05,059
+one I'm showing p1 the partition P one
+
+1371
+00:54:05,059 --> 00:54:06,380
+and I'm assuming everyone has a complete
+
+1372
+00:54:06,380 --> 00:54:07,490
+copy of this but now you can think of
+
+1373
+00:54:07,490 --> 00:54:11,150
+like in a really large large trivia
+
+1374
+00:54:11,150 --> 00:54:14,150
+database with a lot of data I'm gonna
+
+1375
+00:54:14,150 --> 00:54:15,890
+maybe want to replicate p1 multiple
+
+1376
+00:54:15,890 --> 00:54:18,640
+times so there be multiple copies of p1
+
+1377
+00:54:18,640 --> 00:54:22,069
+and so maybe if all my data is down in
+
+1378
+00:54:22,069 --> 00:54:23,839
+if I'm down in Brazil then I'll keep
+
+1379
+00:54:23,839 --> 00:54:25,609
+more copies of my data in down in Brazil
+
+1380
+00:54:25,609 --> 00:54:27,049
+because I can update them more quickly
+
+1381
+00:54:27,049 --> 00:54:28,549
+if anybody's posting my comment Brazil
+
+1382
+00:54:28,549 --> 00:54:30,349
+now if anybody updates something in
+
+1383
+00:54:30,349 --> 00:54:31,789
+California that has to then get
+
+1384
+00:54:31,789 --> 00:54:34,010
+propagated down to Brazil so that when i
+
+1385
+00:54:34,010 --> 00:54:36,740
+refresh i can see it yes they handle all
+
+1386
+00:54:36,740 --> 00:54:40,640
+that yeah the facebook architecture
+
+1387
+00:54:40,640 --> 00:54:42,859
+actually means it's all based on my
+
+1388
+00:54:42,859 --> 00:54:45,559
+sequel at the end that is like the the
+
+1389
+00:54:45,559 --> 00:54:48,079
+core storage engine of their giant
+
+1390
+00:54:48,079 --> 00:54:49,940
+distributed database system is is my
+
+1391
+00:54:49,940 --> 00:54:52,400
+sequel they're getting rid of inner DB
+
+1392
+00:54:52,400 --> 00:54:54,670
+and eventually replacing with rocks DB
+
+1393
+00:54:54,670 --> 00:54:57,650
+but all the layers above that are sort
+
+1394
+00:54:57,650 --> 00:54:58,549
+of independent of what the actual
+
+1395
+00:54:58,549 --> 00:54:59,990
+underlying storage is but the azure
+
+1396
+00:54:59,990 --> 00:55:01,039
+storage doesn't look all that
+
+1397
+00:55:01,039 --> 00:55:03,049
+coordination stuff of like keeping the
+
+1398
+00:55:03,049 --> 00:55:05,359
+multi multi master stuff in sync that's
+
+1399
+00:55:05,359 --> 00:55:08,109
+all written by Facebook
+
+1400
+00:55:08,180 --> 00:55:11,010
+all right so an important property we
+
+1401
+00:55:11,010 --> 00:55:12,720
+care about in a replicated environment
+
+1402
+00:55:12,720 --> 00:55:14,850
+is this notion of K safety and the idea
+
+1403
+00:55:14,850 --> 00:55:16,980
+here is just keeping track of the number
+
+1404
+00:55:16,980 --> 00:55:19,020
+of copies of an object you have to have
+
+1405
+00:55:19,020 --> 00:55:21,350
+in order for our system to remain online
+
+1406
+00:55:21,350 --> 00:55:23,640
+so I don't know whether KP is a
+
+1407
+00:55:23,640 --> 00:55:25,500
+standardized term this is something that
+
+1408
+00:55:25,500 --> 00:55:28,170
+Mike Stonebreaker uses when describing
+
+1409
+00:55:28,170 --> 00:55:30,240
+vertical TB and basically it's it's a
+
+1410
+00:55:30,240 --> 00:55:31,800
+human defined threshold to say I need to
+
+1411
+00:55:31,800 --> 00:55:34,050
+have at least K copies of particular
+
+1412
+00:55:34,050 --> 00:55:36,510
+object at all time in my tribute a
+
+1413
+00:55:36,510 --> 00:55:38,280
+database and if I ever go below that K
+
+1414
+00:55:38,280 --> 00:55:41,070
+then I grind the system to a halt and I
+
+1415
+00:55:41,070 --> 00:55:42,840
+stop until either I can bring up a new
+
+1416
+00:55:42,840 --> 00:55:45,030
+new copy of that data or you know Hughes
+
+1417
+00:55:45,030 --> 00:55:47,010
+or the human comes in and makes a
+
+1418
+00:55:47,010 --> 00:55:49,680
+correction the idea here is is that we
+
+1419
+00:55:49,680 --> 00:55:51,480
+want to avoid losing data so obviously I
+
+1420
+00:55:51,480 --> 00:55:54,180
+want my K safety beat to be at least 1
+
+1421
+00:55:54,180 --> 00:55:56,370
+right because if I have if I lose one
+
+1422
+00:55:56,370 --> 00:55:58,620
+you know if I lose one node that has the
+
+1423
+00:55:58,620 --> 00:55:59,940
+only copy of that of a piece of data
+
+1424
+00:55:59,940 --> 00:56:01,860
+then I'm screwed now I could have false
+
+1425
+00:56:01,860 --> 00:56:03,510
+negatives or false positives for
+
+1426
+00:56:03,510 --> 00:56:04,530
+different queries and my database is
+
+1427
+00:56:04,530 --> 00:56:07,020
+incorrect so what this threshold
+
+1428
+00:56:07,020 --> 00:56:08,580
+actually is depends on you know how
+
+1429
+00:56:08,580 --> 00:56:12,180
+paranoid you are about keeping things
+
+1430
+00:56:12,180 --> 00:56:14,010
+online and then you can also you know
+
+1431
+00:56:14,010 --> 00:56:15,900
+vary this by saying like in my example
+
+1432
+00:56:15,900 --> 00:56:17,370
+what like I have more copy down in
+
+1433
+00:56:17,370 --> 00:56:20,220
+Brazil maybe one copy up in up in and
+
+1434
+00:56:20,220 --> 00:56:22,230
+you know in the US because I want to
+
+1435
+00:56:22,230 --> 00:56:24,330
+make you know I care about keeping local
+
+1436
+00:56:24,330 --> 00:56:28,260
+copies down in Brazil all right so now
+
+1437
+00:56:28,260 --> 00:56:29,520
+we want to get it what what are we
+
+1438
+00:56:29,520 --> 00:56:30,990
+actually propagating or how we're
+
+1439
+00:56:30,990 --> 00:56:32,790
+actually propagating our changes to to
+
+1440
+00:56:32,790 --> 00:56:35,040
+have replicas and he sort of asked about
+
+1441
+00:56:35,040 --> 00:56:36,450
+this like does this mean we're doing
+
+1442
+00:56:36,450 --> 00:56:38,190
+eventual consistency and I mention was
+
+1443
+00:56:38,190 --> 00:56:41,490
+no you'll see why so the propagations
+
+1444
+00:56:41,490 --> 00:56:45,570
+team is is is when should we how long do
+
+1445
+00:56:45,570 --> 00:56:47,430
+we have to wait or how many when should
+
+1446
+00:56:47,430 --> 00:56:48,480
+we tell the outside world that our
+
+1447
+00:56:48,480 --> 00:56:51,570
+transaction has committed and this is
+
+1448
+00:56:51,570 --> 00:56:52,620
+somewhat independent of the two-phase
+
+1449
+00:56:52,620 --> 00:56:54,090
+commit stuff right this is saying like
+
+1450
+00:56:54,090 --> 00:56:56,520
+with my replicas should I wait until the
+
+1451
+00:56:56,520 --> 00:56:58,860
+replica acknowledges that they got my
+
+1452
+00:56:58,860 --> 00:57:01,680
+change and have safety safety stored in
+
+1453
+00:57:01,680 --> 00:57:03,900
+a disk before I tell the outside world
+
+1454
+00:57:03,900 --> 00:57:06,360
+that I've actually committed and in
+
+1455
+00:57:06,360 --> 00:57:07,500
+general the two approaches of use
+
+1456
+00:57:07,500 --> 00:57:09,720
+synchronous or asynchronous synchronous
+
+1457
+00:57:09,720 --> 00:57:10,950
+will give you what's called strong
+
+1458
+00:57:10,950 --> 00:57:13,350
+consistency which means I can guarantee
+
+1459
+00:57:13,350 --> 00:57:14,820
+that if I tell the outside world of my
+
+1460
+00:57:14,820 --> 00:57:16,860
+transaction has committed if I go read
+
+1461
+00:57:16,860 --> 00:57:18,450
+that data from any replicas I'm
+
+1462
+00:57:18,450 --> 00:57:20,130
+guaranteed to see the changes of that
+
+1463
+00:57:20,130 --> 00:57:20,430
+turn
+
+1464
+00:57:20,430 --> 00:57:23,070
+action with eventual consistency the
+
+1465
+00:57:23,070 --> 00:57:25,380
+idea is that the change will eventually
+
+1466
+00:57:25,380 --> 00:57:27,240
+get propagated to my replicas so if I go
+
+1467
+00:57:27,240 --> 00:57:29,460
+if I hear back my transaction is
+
+1468
+00:57:29,460 --> 00:57:31,050
+committed and I immediately go try to
+
+1469
+00:57:31,050 --> 00:57:32,910
+read it on a replica I may not actually
+
+1470
+00:57:32,910 --> 00:57:37,080
+see it so again look at this visually so
+
+1471
+00:57:37,080 --> 00:57:39,480
+with synchronous we have say two nodes
+
+1472
+00:57:39,480 --> 00:57:42,300
+assuming we're doing a master replica
+
+1473
+00:57:42,300 --> 00:57:45,360
+set up we we say we want to commit on
+
+1474
+00:57:45,360 --> 00:57:47,460
+the on our master and then we have to go
+
+1475
+00:57:47,460 --> 00:57:51,660
+to the to the replica and say hey yeah
+
+1476
+00:57:51,660 --> 00:57:53,660
+we sent you a bunch of log messages or
+
+1477
+00:57:53,660 --> 00:57:56,160
+updates about this transaction made go
+
+1478
+00:57:56,160 --> 00:57:58,350
+ahead and flush it and then we pause and
+
+1479
+00:57:58,350 --> 00:57:59,880
+we wait until we hear a response back
+
+1480
+00:57:59,880 --> 00:58:01,800
+from our replicas to say that our
+
+1481
+00:58:01,800 --> 00:58:03,960
+transaction has has successfully been
+
+1482
+00:58:03,960 --> 00:58:05,460
+committed and then it's durable and disk
+
+1483
+00:58:05,460 --> 00:58:07,860
+and then once it done it's done flushing
+
+1484
+00:58:07,860 --> 00:58:09,180
+we send back the acknowledgement and at
+
+1485
+00:58:09,180 --> 00:58:10,770
+that point we can tell the outside world
+
+1486
+00:58:10,770 --> 00:58:13,350
+that we've committed so again at this
+
+1487
+00:58:13,350 --> 00:58:14,880
+point here when we get back the Siq
+
+1488
+00:58:14,880 --> 00:58:16,290
+knowledge meant if we try to read
+
+1489
+00:58:16,290 --> 00:58:18,660
+whatever this thing modified we're
+
+1490
+00:58:18,660 --> 00:58:21,180
+guaranteed to see that change correct
+
+1491
+00:58:21,180 --> 00:58:23,130
+you know see that the change we'd expect
+
+1492
+00:58:23,130 --> 00:58:27,200
+on both the master and and any replicas
+
+1493
+00:58:27,200 --> 00:58:29,610
+with asynchronous you don't wait for
+
+1494
+00:58:29,610 --> 00:58:32,610
+that response so I go ahead say I want
+
+1495
+00:58:32,610 --> 00:58:35,010
+to commit then I say hey go but go ahead
+
+1496
+00:58:35,010 --> 00:58:37,470
+and force the change but then I can
+
+1497
+00:58:37,470 --> 00:58:39,270
+Neely come back into the application say
+
+1498
+00:58:39,270 --> 00:58:43,080
+my transaction has committed and then
+
+1499
+00:58:43,080 --> 00:58:46,080
+now at some later point you know this
+
+1500
+00:58:46,080 --> 00:58:47,850
+thing with eventual get flushed but I
+
+1501
+00:58:47,850 --> 00:58:48,960
+don't really need to be told on the
+
+1502
+00:58:48,960 --> 00:58:51,540
+master be nice to know but I technically
+
+1503
+00:58:51,540 --> 00:58:54,990
+I don't have to be told so this is one
+
+1504
+00:58:54,990 --> 00:58:55,950
+of the good distinctions between
+
+1505
+00:58:55,950 --> 00:58:58,310
+distributed database sorry that the
+
+1506
+00:58:58,310 --> 00:59:02,130
+traditional transactional relational
+
+1507
+00:59:02,130 --> 00:59:03,870
+database management systems and the no
+
+1508
+00:59:03,870 --> 00:59:06,780
+sequel guys in the transactional
+
+1509
+00:59:06,780 --> 00:59:08,100
+database system we don't wanna lose any
+
+1510
+00:59:08,100 --> 00:59:09,330
+data we don't want to have any
+
+1511
+00:59:09,330 --> 00:59:11,360
+inconsistent reads so we would always do
+
+1512
+00:59:11,360 --> 00:59:14,340
+synchronous replication denote the no
+
+1513
+00:59:14,340 --> 00:59:16,490
+sequel guys would do this one here
+
+1514
+00:59:16,490 --> 00:59:19,200
+because the idea is that eventually this
+
+1515
+00:59:19,200 --> 00:59:20,670
+thing I'll get propagated to my replicas
+
+1516
+00:59:20,670 --> 00:59:23,970
+and so maybe in the small window like 50
+
+1517
+00:59:23,970 --> 00:59:25,590
+milliseconds I can maybe get a stale
+
+1518
+00:59:25,590 --> 00:59:29,210
+read on my replica that's who cares
+
+1519
+00:59:29,210 --> 00:59:31,500
+maybe it's a website of like stupid cat
+
+1520
+00:59:31,500 --> 00:59:33,849
+food cat photos with comments
+
+1521
+00:59:33,849 --> 00:59:35,680
+you know I can't see the last 50
+
+1522
+00:59:35,680 --> 00:59:38,170
+milliseconds of Cat Cat comments it's
+
+1523
+00:59:38,170 --> 00:59:39,279
+probably probably good enough
+
+1524
+00:59:39,279 --> 00:59:41,140
+I have money certainly I want to use
+
+1525
+00:59:41,140 --> 00:59:44,019
+this because what could happen here
+
+1526
+00:59:44,019 --> 00:59:47,349
+I tell my transaction commits I tell the
+
+1527
+00:59:47,349 --> 00:59:49,239
+outside world I committed but then this
+
+1528
+00:59:49,239 --> 00:59:51,789
+guy crashes and this guy crashes and say
+
+1529
+00:59:51,789 --> 00:59:53,109
+this guy didn't flush anything to disk
+
+1530
+00:59:53,109 --> 00:59:55,869
+and this guy didn't get the get the
+
+1531
+00:59:55,869 --> 00:59:58,029
+message yet or didn't apply it now I
+
+1532
+00:59:58,029 --> 01:00:01,440
+want to come back my transactions gone
+
+1533
+01:00:02,579 --> 01:00:07,709
+so as an aside come and I'll say that a
+
+1534
+01:00:07,709 --> 01:00:10,599
+lot of the the no sequel the no sequel
+
+1535
+01:00:10,599 --> 01:00:12,670
+systems from 10 years ago that all said
+
+1536
+01:00:12,670 --> 01:00:14,469
+we were a shoe sequel they were going to
+
+1537
+01:00:14,469 --> 01:00:16,589
+avoid joins avoid transactions a
+
+1538
+01:00:16,589 --> 01:00:18,519
+majority of em have added transactions
+
+1539
+01:00:18,519 --> 01:00:20,529
+the majority of them have added sequel
+
+1540
+01:00:20,529 --> 01:00:25,569
+and joints right so all the the me it's
+
+1541
+01:00:25,569 --> 01:00:26,859
+not to say that the certain aspects I
+
+1542
+01:00:26,859 --> 01:00:28,630
+know Segoe systems are invalid
+
+1543
+01:00:28,630 --> 01:00:30,130
+there are certainly use cases like
+
+1544
+01:00:30,130 --> 01:00:31,719
+website we don't really need to have
+
+1545
+01:00:31,719 --> 01:00:35,049
+strong consistency but in general I mean
+
+1546
+01:00:35,049 --> 01:00:36,400
+there's enough application out there
+
+1547
+01:00:36,400 --> 01:00:38,499
+where this this this matters a lot cuz
+
+1548
+01:00:38,499 --> 01:00:44,289
+you don't lose any data so let's say
+
+1549
+01:00:44,289 --> 01:00:45,910
+like if I get this commit message here
+
+1550
+01:00:45,910 --> 01:00:47,559
+and I immediately come back and say I
+
+1551
+01:00:47,559 --> 01:00:49,989
+acknowledgement and I don't wall get
+
+1552
+01:00:49,989 --> 01:00:52,630
+anything here actually see anybody did
+
+1553
+01:00:52,630 --> 01:00:54,549
+log something right say I woke to disk
+
+1554
+01:00:54,549 --> 01:00:56,619
+that we come into this transaction but
+
+1555
+01:00:56,619 --> 01:00:58,269
+now this this machine catches on fire
+
+1556
+01:00:58,269 --> 01:01:02,619
+those discs milk-like so now this this
+
+1557
+01:01:02,619 --> 01:01:05,079
+guy crashes to it but he just crashed he
+
+1558
+01:01:05,079 --> 01:01:07,719
+comes back he looks in this log he
+
+1559
+01:01:07,719 --> 01:01:08,829
+didn't get the flus message so that
+
+1560
+01:01:08,829 --> 01:01:11,589
+didn't show up in time so I told the
+
+1561
+01:01:11,589 --> 01:01:13,719
+outside world I committed but this guy
+
+1562
+01:01:13,719 --> 01:01:16,029
+never solved the change and I crashed so
+
+1563
+01:01:16,029 --> 01:01:21,969
+I come back now the transactions gone in
+
+1564
+01:01:21,969 --> 01:01:22,640
+that
+
+1565
+01:01:22,640 --> 01:01:24,049
+if that's your bank account with that
+
+1566
+01:01:24,049 --> 01:01:28,509
+money transfer you're pissed all right
+
+1567
+01:01:28,630 --> 01:01:31,309
+so it's up to the application to decide
+
+1568
+01:01:31,309 --> 01:01:32,450
+what trade-offs they want to make do
+
+1569
+01:01:32,450 --> 01:01:33,289
+they care about
+
+1570
+01:01:33,289 --> 01:01:35,960
+alright are you super conservative and
+
+1571
+01:01:35,960 --> 01:01:37,549
+don't lose any data then synchronous
+
+1572
+01:01:37,549 --> 01:01:39,890
+replication is the way to go if you're
+
+1573
+01:01:39,890 --> 01:01:41,930
+okay with maybe losing the last ten five
+
+1574
+01:01:41,930 --> 01:01:43,910
+you know 50 milliseconds of data and
+
+1575
+01:01:43,910 --> 01:01:49,599
+this is the way to go okay
+
+1576
+01:01:49,599 --> 01:01:52,099
+the next issue is when do we actually
+
+1577
+01:01:52,099 --> 01:01:54,380
+when we actually sense in there send our
+
+1578
+01:01:54,380 --> 01:01:56,059
+changes oh and what do these changes
+
+1579
+01:01:56,059 --> 01:01:59,509
+actually look like so one approach is to
+
+1580
+01:01:59,509 --> 01:02:03,259
+have the master continuously send all
+
+1581
+01:02:03,259 --> 01:02:05,210
+the updates that transactions make as
+
+1582
+01:02:05,210 --> 01:02:07,970
+they occur think of this is like it's
+
+1583
+01:02:07,970 --> 01:02:10,009
+it's like a it's attached to the right
+
+1584
+01:02:10,009 --> 01:02:11,630
+ahead log so anytime I create a log
+
+1585
+01:02:11,630 --> 01:02:12,950
+record that I'm gonna put you know I
+
+1586
+01:02:12,950 --> 01:02:14,480
+want to write out the disk I also send
+
+1587
+01:02:14,480 --> 01:02:17,359
+it out in the network to my to my to my
+
+1588
+01:02:17,359 --> 01:02:19,430
+replicas and they can start applying the
+
+1589
+01:02:19,430 --> 01:02:21,769
+changes as they come in of course this
+
+1590
+01:02:21,769 --> 01:02:23,509
+means now I not only don't need to send
+
+1591
+01:02:23,509 --> 01:02:24,710
+a commit message but I also need to send
+
+1592
+01:02:24,710 --> 01:02:26,569
+an abort message just as just as they
+
+1593
+01:02:26,569 --> 01:02:28,130
+would if I'm replaying the redhead log
+
+1594
+01:02:28,130 --> 01:02:30,200
+because I need to know what changes I
+
+1595
+01:02:30,200 --> 01:02:33,650
+need to roll back the other approach is
+
+1596
+01:02:33,650 --> 01:02:37,609
+to only send the log messages when the
+
+1597
+01:02:37,609 --> 01:02:39,589
+transaction actually goes into commit so
+
+1598
+01:02:39,589 --> 01:02:42,559
+we just buffer all our log messages in
+
+1599
+01:02:42,559 --> 01:02:45,109
+memory on the master node then to begin
+
+1600
+01:02:45,109 --> 01:02:47,089
+abort who cares we just drop it we don't
+
+1601
+01:02:47,089 --> 01:02:48,650
+send it send anything over the network
+
+1602
+01:02:48,650 --> 01:02:51,109
+if we go ahead and commit then we push
+
+1603
+01:02:51,109 --> 01:02:54,619
+everything to to our master I started to
+
+1604
+01:02:54,619 --> 01:02:57,980
+to our replicas alright and the
+
+1605
+01:02:57,980 --> 01:02:59,029
+advantage of this one is that you're not
+
+1606
+01:02:59,029 --> 01:03:00,710
+wasting time sending log messages that
+
+1607
+01:03:00,710 --> 01:03:02,569
+are gonna get aborted from transactions
+
+1608
+01:03:02,569 --> 01:03:05,450
+they're gonna board but of course this
+
+1609
+01:03:05,450 --> 01:03:07,369
+means now if I need it if I'm doing
+
+1610
+01:03:07,369 --> 01:03:09,019
+synchronous replication and I need to
+
+1611
+01:03:09,019 --> 01:03:11,329
+wait until this guy acknowledges the the
+
+1612
+01:03:11,329 --> 01:03:12,710
+replicas knowledge is that it's applied
+
+1613
+01:03:12,710 --> 01:03:14,329
+all this changes then if I'm sending
+
+1614
+01:03:14,329 --> 01:03:16,190
+this huge batch of updates all at once I
+
+1615
+01:03:16,190 --> 01:03:17,329
+have to wait till they all get flushed
+
+1616
+01:03:17,329 --> 01:03:19,009
+whereas in this one I can do it
+
+1617
+01:03:19,009 --> 01:03:21,710
+incrementally so far as they know most
+
+1618
+01:03:21,710 --> 01:03:25,239
+systems will do do the first one here
+
+1619
+01:03:25,239 --> 01:03:27,109
+all right the last one is a bit more
+
+1620
+01:03:27,109 --> 01:03:33,140
+nuanced but it's it's it's what it's
+
+1621
+01:03:33,140 --> 01:03:34,759
+determining how we're actually going to
+
+1622
+01:03:34,759 --> 01:03:36,290
+apply our one of the
+
+1623
+01:03:36,290 --> 01:03:37,820
+changes were actually gonna apply to the
+
+1624
+01:03:37,820 --> 01:03:42,380
+system on our replicas and so again in
+
+1625
+01:03:42,380 --> 01:03:44,090
+new databases a lot of times the
+
+1626
+01:03:44,090 --> 01:03:46,040
+terminology is vague or people use
+
+1627
+01:03:46,040 --> 01:03:46,880
+different things or to describe
+
+1628
+01:03:46,880 --> 01:03:49,910
+different things but I think active
+
+1629
+01:03:49,910 --> 01:03:51,620
+passive versus active active is
+
+1630
+01:03:51,620 --> 01:03:52,970
+standardized enough that this makes
+
+1631
+01:03:52,970 --> 01:03:53,960
+sense I don't know what I don't know
+
+1632
+01:03:53,960 --> 01:03:56,960
+what the textbook covers this so think
+
+1633
+01:03:56,960 --> 01:03:58,520
+of this is like with active active the
+
+1634
+01:03:58,520 --> 01:04:01,250
+idea is that our transaction who's gonna
+
+1635
+01:04:01,250 --> 01:04:07,100
+run independently on on each of our
+
+1636
+01:04:07,100 --> 01:04:09,800
+replicas so say Mia but we have a
+
+1637
+01:04:09,800 --> 01:04:11,810
+transaction want to update four tuples
+
+1638
+01:04:11,810 --> 01:04:14,060
+we're gonna run that transaction on the
+
+1639
+01:04:14,060 --> 01:04:15,470
+master I run that transaction on the
+
+1640
+01:04:15,470 --> 01:04:17,150
+replicas or if we're doing multi master
+
+1641
+01:04:17,150 --> 01:04:19,190
+again it runs on each each each copy of
+
+1642
+01:04:19,190 --> 01:04:23,120
+the note and so they're gonna when they
+
+1643
+01:04:23,120 --> 01:04:25,190
+commit all we need to do determine
+
+1644
+01:04:25,190 --> 01:04:26,630
+whether we've committed correctly is
+
+1645
+01:04:26,630 --> 01:04:27,950
+that we use need to check to see whether
+
+1646
+01:04:27,950 --> 01:04:31,300
+they all produce the same same result
+
+1647
+01:04:31,300 --> 01:04:34,100
+now this is not easy to do if you're
+
+1648
+01:04:34,100 --> 01:04:35,930
+doing an non-deterministic control
+
+1649
+01:04:35,930 --> 01:04:38,450
+scheme like two-phase locking and and
+
+1650
+01:04:38,450 --> 01:04:40,430
+you know time-saver learning all the
+
+1651
+01:04:40,430 --> 01:04:41,630
+things we talked about before because
+
+1652
+01:04:41,630 --> 01:04:43,100
+now you can be guaranteed that the
+
+1653
+01:04:43,100 --> 01:04:44,720
+transactions are running in the same
+
+1654
+01:04:44,720 --> 01:04:47,330
+order on our two replicas without
+
+1655
+01:04:47,330 --> 01:04:50,270
+checking for every single query so we
+
+1656
+01:04:50,270 --> 01:04:51,560
+talked a little bit but the partition
+
+1657
+01:04:51,560 --> 01:04:54,110
+time same ordering scheme when Prashant
+
+1658
+01:04:54,110 --> 01:04:55,820
+talked that tell that lecture in that
+
+1659
+01:04:55,820 --> 01:04:57,470
+case that's a term you can use that for
+
+1660
+01:04:57,470 --> 01:04:59,990
+deterministic virtual and guarantee that
+
+1661
+01:04:59,990 --> 01:05:01,970
+you know transactions run their
+
+1662
+01:05:01,970 --> 01:05:03,500
+operations in the exact same order on
+
+1663
+01:05:03,500 --> 01:05:06,800
+both sides so active active is not that
+
+1664
+01:05:06,800 --> 01:05:09,190
+common because you have to do a better
+
+1665
+01:05:09,190 --> 01:05:12,920
+exercise a run exactly the same what is
+
+1666
+01:05:12,920 --> 01:05:15,050
+more common is active passive where the
+
+1667
+01:05:15,050 --> 01:05:16,780
+transactions can execute on one location
+
+1668
+01:05:16,780 --> 01:05:20,300
+the one master node and then they're
+
+1669
+01:05:20,300 --> 01:05:21,860
+gonna propagate their changes to the
+
+1670
+01:05:21,860 --> 01:05:24,710
+replicas and these these changes could
+
+1671
+01:05:24,710 --> 01:05:27,890
+either be like no right ahead log you we
+
+1672
+01:05:27,890 --> 01:05:29,810
+can either send out the the physical
+
+1673
+01:05:29,810 --> 01:05:32,180
+updates to the actual 2 plus themselves
+
+1674
+01:05:32,180 --> 01:05:33,380
+or the bytes the low-low bytes we
+
+1675
+01:05:33,380 --> 01:05:35,630
+changed or we could also stream out the
+
+1676
+01:05:35,630 --> 01:05:36,950
+sequel queries that they did and just
+
+1677
+01:05:36,950 --> 01:05:38,060
+replay the single queries and our
+
+1678
+01:05:38,060 --> 01:05:41,030
+replicas there's advantages of both of
+
+1679
+01:05:41,030 --> 01:05:42,020
+them just as we talked about before
+
+1680
+01:05:42,020 --> 01:05:44,380
+between you know for the recovery time
+
+1681
+01:05:44,380 --> 01:05:46,490
+physical replication is usually the most
+
+1682
+01:05:46,490 --> 01:05:47,360
+common because all you're really doing
+
+1683
+01:05:47,360 --> 01:05:49,170
+is just sending up a lot the redhead log
+
+1684
+01:05:49,170 --> 01:05:51,150
+just and then the the replicas replay
+
+1685
+01:05:51,150 --> 01:05:54,140
+down so is this clear
+
+1686
+01:05:54,140 --> 01:06:07,559
+yes question is if you send the yeah his
+
+1687
+01:06:07,559 --> 01:06:09,420
+Christian is yeah I actually would agree
+
+1688
+01:06:09,420 --> 01:06:10,920
+that a statement is if you're sending
+
+1689
+01:06:10,920 --> 01:06:12,359
+the sequel queries isn't that the same
+
+1690
+01:06:12,359 --> 01:06:17,849
+thing as as as active active I'm
+
+1691
+01:06:17,849 --> 01:06:19,380
+thinking in terms of active passive
+
+1692
+01:06:19,380 --> 01:06:21,780
+where I run the sequel query on the on
+
+1693
+01:06:21,780 --> 01:06:24,599
+the the master and then the log message
+
+1694
+01:06:24,599 --> 01:06:27,299
+comes out as the sequel query active
+
+1695
+01:06:27,299 --> 01:06:28,950
+active in context of store procedures
+
+1696
+01:06:28,950 --> 01:06:30,839
+think of like two transactions running
+
+1697
+01:06:30,839 --> 01:06:32,849
+in their entirety independently on the
+
+1698
+01:06:32,849 --> 01:06:35,339
+two replicas but in your example yeah
+
+1699
+01:06:35,339 --> 01:06:37,170
+that this what I'm saying the terms are
+
+1700
+01:06:37,170 --> 01:06:39,210
+like nebulous I would agree that would
+
+1701
+01:06:39,210 --> 01:06:41,010
+be active active even though it's it's
+
+1702
+01:06:41,010 --> 01:06:44,640
+done after like active passive as I I
+
+1703
+01:06:44,640 --> 01:06:47,130
+run it on the master and then only after
+
+1704
+01:06:47,130 --> 01:06:48,270
+I run on the master and then I sent to
+
+1705
+01:06:48,270 --> 01:06:49,859
+the replicas but you could you could say
+
+1706
+01:06:49,859 --> 01:06:51,510
+alright I've run this query and then
+
+1707
+01:06:51,510 --> 01:06:52,710
+right before you run it on the master
+
+1708
+01:06:52,710 --> 01:06:53,940
+you you send it over to the to the
+
+1709
+01:06:53,940 --> 01:06:56,849
+replicas is that active active mmm-hmm
+
+1710
+01:06:56,849 --> 01:07:04,170
+I would agree yes alright um we have
+
+1711
+01:07:04,170 --> 01:07:07,530
+like eight minutes left and this is like
+
+1712
+01:07:07,530 --> 01:07:10,109
+one of the hardest things let's roll the
+
+1713
+01:07:10,109 --> 01:07:12,619
+dice let's see we can do it okay so
+
+1714
+01:07:12,619 --> 01:07:14,700
+there's this thing called a cat theorem
+
+1715
+01:07:14,700 --> 01:07:16,260
+that people apply for the trippity
+
+1716
+01:07:16,260 --> 01:07:19,040
+databases and this is a way to
+
+1717
+01:07:19,040 --> 01:07:21,990
+characterize and understand what are the
+
+1718
+01:07:21,990 --> 01:07:25,010
+properties or guarantees that a
+
+1719
+01:07:25,010 --> 01:07:28,220
+distributed database can provide for you
+
+1720
+01:07:28,220 --> 01:07:31,020
+and it's broken up to three parts
+
+1721
+01:07:31,020 --> 01:07:33,000
+consistency are consistent always
+
+1722
+01:07:33,000 --> 01:07:34,290
+available and never partition foot
+
+1723
+01:07:34,290 --> 01:07:37,140
+tolerant so this was this was originally
+
+1724
+01:07:37,140 --> 01:07:39,750
+posed as a conjecture by a berkeley
+
+1725
+01:07:39,750 --> 01:07:41,460
+professor named Eric Brewer in the late
+
+1726
+01:07:41,460 --> 01:07:44,099
+1990s and then it was formally proved at
+
+1727
+01:07:44,099 --> 01:07:45,990
+MIT that this is actually correct this
+
+1728
+01:07:45,990 --> 01:07:49,559
+is this is a true theorem in 2002 and
+
+1729
+01:07:49,559 --> 01:07:51,420
+the basic idea is that all these three
+
+1730
+01:07:51,420 --> 01:07:52,290
+things if you're going to have it
+
+1731
+01:07:52,290 --> 01:07:55,140
+asserted tributed a Bayes you you have
+
+1732
+01:07:55,140 --> 01:07:56,460
+to pick two of these you get two out of
+
+1733
+01:07:56,460 --> 01:07:59,430
+three right it's kind of like if you
+
+1734
+01:07:59,430 --> 01:08:02,230
+want it's like you know
+
+1735
+01:08:02,230 --> 01:08:04,600
+you're looking for a husband or a wife
+
+1736
+01:08:04,600 --> 01:08:05,980
+you can pick someone's either smart
+
+1737
+01:08:05,980 --> 01:08:07,720
+good-looking or not crazy but you can
+
+1738
+01:08:07,720 --> 01:08:08,950
+get me a two out of three of those
+
+1739
+01:08:08,950 --> 01:08:09,700
+things right
+
+1740
+01:08:09,700 --> 01:08:11,770
+same thing for drippity databases so
+
+1741
+01:08:11,770 --> 01:08:12,910
+let's go feetsies one by one
+
+1742
+01:08:12,910 --> 01:08:16,450
+again the idea is that it's this sort of
+
+1743
+01:08:16,450 --> 01:08:18,970
+Venn diagram where you have CA P which
+
+1744
+01:08:18,970 --> 01:08:20,319
+you can never be in the middle here you
+
+1745
+01:08:20,319 --> 01:08:21,580
+can never get a system has guarantees
+
+1746
+01:08:21,580 --> 01:08:23,799
+all these things so the consistency just
+
+1747
+01:08:23,799 --> 01:08:25,810
+means linearize ability thinking this is
+
+1748
+01:08:25,810 --> 01:08:28,170
+a stronger version of serializability
+
+1749
+01:08:28,170 --> 01:08:30,609
+availability means that at any given
+
+1750
+01:08:30,609 --> 01:08:32,529
+time we can access any node and get any
+
+1751
+01:08:32,529 --> 01:08:36,339
+data in our system and then partition
+
+1752
+01:08:36,339 --> 01:08:38,380
+tolerance this means that if we start
+
+1753
+01:08:38,380 --> 01:08:39,819
+losing messages because the network goes
+
+1754
+01:08:39,819 --> 01:08:42,009
+down a machine goes down that we can
+
+1755
+01:08:42,009 --> 01:08:44,410
+still process any response that we could
+
+1756
+01:08:44,410 --> 01:08:45,479
+ever want
+
+1757
+01:08:45,479 --> 01:08:49,270
+so the no sequel guys they are going to
+
+1758
+01:08:49,270 --> 01:08:53,049
+be AP they're gonna they're gonna try to
+
+1759
+01:08:53,049 --> 01:08:54,609
+provide availability and partition
+
+1760
+01:08:54,609 --> 01:08:56,710
+tolerance in exchange for giving up
+
+1761
+01:08:56,710 --> 01:08:58,450
+consistency like that's the eventual
+
+1762
+01:08:58,450 --> 01:08:59,890
+consistency thing like I can't guarantee
+
+1763
+01:08:59,890 --> 01:09:02,979
+that if I tell you I made your a I tell
+
+1764
+01:09:02,979 --> 01:09:04,540
+you that you're right it's exceeded that
+
+1765
+01:09:04,540 --> 01:09:05,859
+I guarantee that everyone's gonna see
+
+1766
+01:09:05,859 --> 01:09:08,738
+that right in the sort of new sequel or
+
+1767
+01:09:08,738 --> 01:09:10,359
+the traditional transactional district
+
+1768
+01:09:10,359 --> 01:09:12,430
+of data systems they're gonna try to do
+
+1769
+01:09:12,430 --> 01:09:16,779
+CPU or CA and then their award if like I
+
+1770
+01:09:16,779 --> 01:09:19,060
+can't talk to a node rather than keep on
+
+1771
+01:09:19,060 --> 01:09:20,460
+running I just shut the whole thing down
+
+1772
+01:09:20,460 --> 01:09:23,439
+and in that case I give up I give up a
+
+1773
+01:09:23,439 --> 01:09:25,839
+bell Doty all right so let's go through
+
+1774
+01:09:25,839 --> 01:09:27,250
+these one by one I think we've covered
+
+1775
+01:09:27,250 --> 01:09:29,109
+most of these already but just to show
+
+1776
+01:09:29,109 --> 01:09:31,060
+them visually to understand what what
+
+1777
+01:09:31,060 --> 01:09:32,920
+they actually mean so again with kiss
+
+1778
+01:09:32,920 --> 01:09:34,988
+assistance II the idea is that if we do
+
+1779
+01:09:34,988 --> 01:09:36,670
+a write on one machine that everyone
+
+1780
+01:09:36,670 --> 01:09:38,680
+should see that right before we tell the
+
+1781
+01:09:38,680 --> 01:09:39,790
+outside world that are right it
+
+1782
+01:09:39,790 --> 01:09:41,589
+succeeded so our transaction is running
+
+1783
+01:09:41,589 --> 01:09:43,330
+on this application server here it wants
+
+1784
+01:09:43,330 --> 01:09:45,880
+to set a to two and then we're going to
+
+1785
+01:09:45,880 --> 01:09:47,770
+propagate that change to this replica
+
+1786
+01:09:47,770 --> 01:09:50,080
+and then we can tell the outside world
+
+1787
+01:09:50,080 --> 01:09:51,549
+that we did acknowledge there right and
+
+1788
+01:09:51,549 --> 01:09:55,210
+at this point whether we read a on the
+
+1789
+01:09:55,210 --> 01:09:57,910
+replica or on the master will see a e
+
+1790
+01:09:57,910 --> 01:10:00,040
+equals two right so another application
+
+1791
+01:10:00,040 --> 01:10:02,380
+server can immediately see no after this
+
+1792
+01:10:02,380 --> 01:10:04,090
+right has succeeded I can see a equals
+
+1793
+01:10:04,090 --> 01:10:08,160
+two and I get back the correct response
+
+1794
+01:10:09,320 --> 01:10:11,219
+partition tolerance our availability
+
+1795
+01:10:11,219 --> 01:10:13,409
+says that if this replica it goes down
+
+1796
+01:10:13,409 --> 01:10:17,010
+then either the mat the this application
+
+1797
+01:10:17,010 --> 01:10:18,630
+server or this other application server
+
+1798
+01:10:18,630 --> 01:10:20,579
+can can read and write to anything that
+
+1799
+01:10:20,579 --> 01:10:27,300
+at once here all right and then the last
+
+1800
+01:10:27,300 --> 01:10:28,710
+one is partition tolerance the idea here
+
+1801
+01:10:28,710 --> 01:10:30,929
+is that say the network goes down the
+
+1802
+01:10:30,929 --> 01:10:32,039
+network that I'm using to communicate
+
+1803
+01:10:32,039 --> 01:10:34,679
+between these two machines goes down the
+
+1804
+01:10:34,679 --> 01:10:35,999
+machines don't go down but it never goes
+
+1805
+01:10:35,999 --> 01:10:38,489
+down or my messages my packets are
+
+1806
+01:10:38,489 --> 01:10:40,679
+getting lost in the network so now
+
+1807
+01:10:40,679 --> 01:10:43,199
+what's gonna happen here well soon again
+
+1808
+01:10:43,199 --> 01:10:45,150
+before we had master replicas set up and
+
+1809
+01:10:45,150 --> 01:10:47,130
+I said with master up like I set up you
+
+1810
+01:10:47,130 --> 01:10:48,749
+run patos to decide who then who the
+
+1811
+01:10:48,749 --> 01:10:52,349
+master is and then that's where all the
+
+1812
+01:10:52,349 --> 01:10:54,619
+updates are gonna go so at this point
+
+1813
+01:10:54,619 --> 01:10:56,880
+there's that there's a network partition
+
+1814
+01:10:56,880 --> 01:10:59,400
+so these guys can't communicate but they
+
+1815
+01:10:59,400 --> 01:11:00,659
+know they're so up like you know you're
+
+1816
+01:11:00,659 --> 01:11:04,469
+still alive so now you run paxos and you
+
+1817
+01:11:04,469 --> 01:11:06,179
+find out oh I'm still alive now I'm the
+
+1818
+01:11:06,179 --> 01:11:09,510
+new master all right so now if my two
+
+1819
+01:11:09,510 --> 01:11:11,369
+application servers send at the exact
+
+1820
+01:11:11,369 --> 01:11:13,650
+same time updates to my database this
+
+1821
+01:11:13,650 --> 01:11:15,239
+guy's sets a equals to this guy's says
+
+1822
+01:11:15,239 --> 01:11:17,280
+eight all three both of these notes
+
+1823
+01:11:17,280 --> 01:11:18,630
+think that their master because they ran
+
+1824
+01:11:18,630 --> 01:11:20,489
+packs those that was fine you know no
+
+1825
+01:11:20,489 --> 01:11:22,050
+one else about loaded us where the
+
+1826
+01:11:22,050 --> 01:11:23,999
+master so we said okay it's okay for me
+
+1827
+01:11:23,999 --> 01:11:25,739
+to go ahead and make this change we send
+
+1828
+01:11:25,739 --> 01:11:26,670
+the acknowledgement that we made that
+
+1829
+01:11:26,670 --> 01:11:30,030
+change but now at some point the network
+
+1830
+01:11:30,030 --> 01:11:32,489
+comes back and I need to reconcile this
+
+1831
+01:11:32,489 --> 01:11:34,469
+change in synchronize and now you're
+
+1832
+01:11:34,469 --> 01:11:35,849
+screwed because now one guy says I
+
+1833
+01:11:35,849 --> 01:11:37,199
+equals two and this other guy says equal
+
+1834
+01:11:37,199 --> 01:11:39,269
+three and we told the outside world that
+
+1835
+01:11:39,269 --> 01:11:49,829
+those rights succeeded so yes correction
+
+1836
+01:11:49,829 --> 01:11:52,889
+is when can you have CP you mM you can't
+
+1837
+01:11:52,889 --> 01:11:57,289
+really take the back
+
+1838
+01:11:57,289 --> 01:11:59,460
+yeah so this what I'm saying it's sort
+
+1839
+01:11:59,460 --> 01:12:02,550
+of so what would CP look like CV was
+
+1840
+01:12:02,550 --> 01:12:05,639
+says what the network goes down I can't
+
+1841
+01:12:05,639 --> 01:12:08,360
+communicate communicate these two nodes
+
+1842
+01:12:08,360 --> 01:12:09,989
+what should I do
+
+1843
+01:12:09,989 --> 01:12:13,920
+so if I'm doing like a kay safety thing
+
+1844
+01:12:13,920 --> 01:12:17,010
+where I say I need to have three copies
+
+1845
+01:12:17,010 --> 01:12:19,860
+of the data at all times and say I have
+
+1846
+01:12:19,860 --> 01:12:22,050
+another I have another node over here
+
+1847
+01:12:22,050 --> 01:12:24,660
+so these two guys would you say hey we
+
+1848
+01:12:24,660 --> 01:12:26,490
+have at least two copies we're fine we
+
+1849
+01:12:26,490 --> 01:12:27,960
+do leader election this guy says he's
+
+1850
+01:12:27,960 --> 01:12:28,590
+the master
+
+1851
+01:12:28,590 --> 01:12:31,110
+so now anybody can do writes here and
+
+1852
+01:12:31,110 --> 01:12:31,890
+then that's fine
+
+1853
+01:12:31,890 --> 01:12:33,510
+this guy over here say well Mike a
+
+1854
+01:12:33,510 --> 01:12:37,410
+safety is is two but I only have one so
+
+1855
+01:12:37,410 --> 01:12:39,090
+I have to shut down I can't run anything
+
+1856
+01:12:39,090 --> 01:12:41,090
+so therefore I'm giving up availability
+
+1857
+01:12:41,090 --> 01:12:43,080
+so in that case I can have I'm
+
+1858
+01:12:43,080 --> 01:12:44,850
+technically handling the partition the
+
+1859
+01:12:44,850 --> 01:12:48,000
+partition in the network by being not
+
+1860
+01:12:48,000 --> 01:12:49,890
+available on that side but this sides
+
+1861
+01:12:49,890 --> 01:12:52,170
+okay so this is called split brain
+
+1862
+01:12:52,170 --> 01:12:54,150
+initiative systems like I have two sides
+
+1863
+01:12:54,150 --> 01:12:56,220
+like two brain size the brain can't
+
+1864
+01:12:56,220 --> 01:12:57,330
+communicate and they both think they're
+
+1865
+01:12:57,330 --> 01:13:02,310
+their king of the world so again in a in
+
+1866
+01:13:02,310 --> 01:13:04,890
+a traditional transactional database
+
+1867
+01:13:04,890 --> 01:13:07,860
+system they basically stop the system
+
+1868
+01:13:07,860 --> 01:13:09,180
+when you realize you can't communicate
+
+1869
+01:13:09,180 --> 01:13:12,630
+with everyone right or if you have a
+
+1870
+01:13:12,630 --> 01:13:14,190
+majority then you say I'm the new master
+
+1871
+01:13:14,190 --> 01:13:16,200
+and so in this example here if say this
+
+1872
+01:13:16,200 --> 01:13:20,910
+guy came back up well assuming that
+
+1873
+01:13:20,910 --> 01:13:21,810
+seeming this guy
+
+1874
+01:13:21,810 --> 01:13:24,500
+if this guy was allowed to make changes
+
+1875
+01:13:24,500 --> 01:13:27,180
+because it had its case a factor was
+
+1876
+01:13:27,180 --> 01:13:29,970
+enough then when I came back I would
+
+1877
+01:13:29,970 --> 01:13:31,470
+have to have a new human come in and
+
+1878
+01:13:31,470 --> 01:13:33,150
+resolved this change we can't magically
+
+1879
+01:13:33,150 --> 01:13:37,230
+just do that in our system and in that
+
+1880
+01:13:37,230 --> 01:13:38,910
+case we again we stopped the world and
+
+1881
+01:13:38,910 --> 01:13:41,010
+we go offline until someone comes in and
+
+1882
+01:13:41,010 --> 01:13:59,070
+fixes us yes yes correct so his calm is
+
+1883
+01:13:59,070 --> 01:14:01,050
+how do I avoid the split brain well if
+
+1884
+01:14:01,050 --> 01:14:03,240
+your case safety factor is half the nose
+
+1885
+01:14:03,240 --> 01:14:05,550
+plus one that means that at least you're
+
+1886
+01:14:05,550 --> 01:14:08,640
+always guaranteed to have yeah only one
+
+1887
+01:14:08,640 --> 01:14:11,940
+side could be could be the be the master
+
+1888
+01:14:11,940 --> 01:14:15,180
+and the other guy fails yes that's it
+
+1889
+01:14:15,180 --> 01:14:20,220
+there's no the magic right and again so
+
+1890
+01:14:20,220 --> 01:14:23,610
+going back to the nocebo guys in their
+
+1891
+01:14:23,610 --> 01:14:25,500
+world again they're dealing with like in
+
+1892
+01:14:25,500 --> 01:14:27,000
+it traditionally with dealing with like
+
+1893
+01:14:27,000 --> 01:14:28,950
+websites that you want to have be online
+
+1894
+01:14:28,950 --> 01:14:32,280
+24/7 so in their world they they would
+
+1895
+01:14:32,280 --> 01:14:34,170
+rather have system be available and
+
+1896
+01:14:34,170 --> 01:14:35,870
+still serve request
+
+1897
+01:14:35,870 --> 01:14:37,860
+albeit maybe they're there they're
+
+1898
+01:14:37,860 --> 01:14:39,449
+slightly wrong or delayed in getting
+
+1899
+01:14:39,449 --> 01:14:41,489
+that all the changes but that was better
+
+1900
+01:14:41,489 --> 01:14:43,980
+than being completely online if you're
+
+1901
+01:14:43,980 --> 01:14:45,660
+dealing with money and you can't you
+
+1902
+01:14:45,660 --> 01:14:47,010
+don't want my I don't want to give out
+
+1903
+01:14:47,010 --> 01:14:49,380
+you know a million dollars to you that I
+
+1904
+01:14:49,380 --> 01:14:50,790
+don't have and again a million dollars
+
+1905
+01:14:50,790 --> 01:14:51,900
+ever hear from you know because I have a
+
+1906
+01:14:51,900 --> 01:14:53,699
+split brain in their role they can't
+
+1907
+01:14:53,699 --> 01:14:54,960
+have that happen so they'd rather take
+
+1908
+01:14:54,960 --> 01:14:57,510
+the whole thing down so I'm not saying
+
+1909
+01:14:57,510 --> 01:14:59,699
+one is better than another I'm saying
+
+1910
+01:14:59,699 --> 01:15:01,020
+for certain application scenarios one
+
+1911
+01:15:01,020 --> 01:15:06,510
+one is prefer preferable but it's just
+
+1912
+01:15:06,510 --> 01:15:08,070
+sort of good understand like when you
+
+1913
+01:15:08,070 --> 01:15:09,390
+start design you should be data system
+
+1914
+01:15:09,390 --> 01:15:12,830
+what trade-offs are you actually making
+
+1915
+01:15:14,449 --> 01:15:18,540
+okay so let's just finish out quickly
+
+1916
+01:15:18,540 --> 01:15:20,310
+about federated Davis so the cap theorem
+
+1917
+01:15:20,310 --> 01:15:22,980
+again it's it's include to be correct in
+
+1918
+01:15:22,980 --> 01:15:26,510
+the late 2000s there was some if you go
+
+1919
+01:15:26,510 --> 01:15:28,620
+if you go google the phrase like
+
+1920
+01:15:28,620 --> 01:15:30,090
+defeated cat theorem there's a bunch of
+
+1921
+01:15:30,090 --> 01:15:32,190
+people making wild claims about how
+
+1922
+01:15:32,190 --> 01:15:33,449
+their database is defeated a cap theorem
+
+1923
+01:15:33,449 --> 01:15:35,610
+and they were presently put down as
+
+1924
+01:15:35,610 --> 01:15:38,699
+being stupid its second you can't have
+
+1925
+01:15:38,699 --> 01:15:39,570
+it you should be database you can have
+
+1926
+01:15:39,570 --> 01:15:40,440
+at your videos that can do everything
+
+1927
+01:15:40,440 --> 01:15:43,920
+you can do a bunch of extra stuff to try
+
+1928
+01:15:43,920 --> 01:15:46,380
+to mitigate the bottleneck sort of the
+
+1929
+01:15:46,380 --> 01:15:48,210
+issues you would have by having these
+
+1930
+01:15:48,210 --> 01:15:50,489
+various these you know machine know down
+
+1931
+01:15:50,489 --> 01:15:52,199
+and things like that so redundancy so
+
+1932
+01:15:52,199 --> 01:15:55,949
+that you can you know reduce the the
+
+1933
+01:15:55,949 --> 01:15:57,810
+likelihood of a network partition or
+
+1934
+01:15:57,810 --> 01:15:59,489
+things like that but in the end of the
+
+1935
+01:15:59,489 --> 01:16:01,350
+day they're unavoidable at some point
+
+1936
+01:16:01,350 --> 01:16:02,250
+you're gonna run out of money or the
+
+1937
+01:16:02,250 --> 01:16:03,719
+it's isms gonna get you slow and you're
+
+1938
+01:16:03,719 --> 01:16:05,040
+gonna be you're you're gonna become
+
+1939
+01:16:05,040 --> 01:16:07,100
+beholden to it
+
+1940
+01:16:07,100 --> 01:16:08,880
+all right so let's just finish up
+
+1941
+01:16:08,880 --> 01:16:12,840
+quickly so I just want to briefly
+
+1942
+01:16:12,840 --> 01:16:14,850
+mention what a federated database is so
+
+1943
+01:16:14,850 --> 01:16:16,500
+that if you ever see one or think about
+
+1944
+01:16:16,500 --> 01:16:18,960
+think about building one you just know
+
+1945
+01:16:18,960 --> 01:16:22,500
+what it is so in all you know all this
+
+1946
+01:16:22,500 --> 01:16:23,580
+tribute davis's we talked about so far
+
+1947
+01:16:23,580 --> 01:16:26,580
+we have assumed that all the nodes are
+
+1948
+01:16:26,580 --> 01:16:28,410
+running the exact same database system
+
+1949
+01:16:28,410 --> 01:16:30,870
+software right it's in here it's my cell
+
+1950
+01:16:30,870 --> 01:16:32,280
+just ripping a version of my C code
+
+1951
+01:16:32,280 --> 01:16:33,660
+attributed version of cockroach TV or
+
+1952
+01:16:33,660 --> 01:16:36,660
+whatever but sometimes in some systems
+
+1953
+01:16:36,660 --> 01:16:39,000
+and sort of large organizations you have
+
+1954
+01:16:39,000 --> 01:16:40,949
+these sort of one-off applications that
+
+1955
+01:16:40,949 --> 01:16:43,410
+are using you know this kind of database
+
+1956
+01:16:43,410 --> 01:16:44,699
+system and then it's other applications
+
+1957
+01:16:44,699 --> 01:16:46,290
+using this other type of data system and
+
+1958
+01:16:46,290 --> 01:16:48,330
+they need a way to sort of do maybe
+
+1959
+01:16:48,330 --> 01:16:49,440
+transactions across all
+
+1960
+01:16:49,440 --> 01:16:51,480
+do queries across all of them so they
+
+1961
+01:16:51,480 --> 01:16:53,160
+appear as a single database instance
+
+1962
+01:16:53,160 --> 01:16:54,900
+even though underneath the covers
+
+1963
+01:16:54,900 --> 01:16:56,820
+they're running quickly different
+
+1964
+01:16:56,820 --> 01:16:59,670
+software so this is what a federated
+
+1965
+01:16:59,670 --> 01:17:02,699
+basis is designed to hope designed to
+
+1966
+01:17:02,699 --> 01:17:05,010
+solve the idea is that we provide a
+
+1967
+01:17:05,010 --> 01:17:07,590
+single logical database instance and we
+
+1968
+01:17:07,590 --> 01:17:10,110
+know how to take a single query that own
+
+1969
+01:17:10,110 --> 01:17:11,850
+that single database instance and break
+
+1970
+01:17:11,850 --> 01:17:14,640
+it up into plan fragments that we can
+
+1971
+01:17:14,640 --> 01:17:16,380
+then possibly execute on the separate
+
+1972
+01:17:16,380 --> 01:17:18,449
+machines and we have a way to sort of
+
+1973
+01:17:18,449 --> 01:17:20,580
+put it all back together so this was a
+
+1974
+01:17:20,580 --> 01:17:23,330
+big thing in the late 1980s early 1990s
+
+1975
+01:17:23,330 --> 01:17:25,830
+right as companies and organizations got
+
+1976
+01:17:25,830 --> 01:17:26,969
+larger and there was more database
+
+1977
+01:17:26,969 --> 01:17:29,280
+deployments you think would it be great
+
+1978
+01:17:29,280 --> 01:17:30,630
+we had a single interface for all our
+
+1979
+01:17:30,630 --> 01:17:33,719
+databases it didn't pan out because you
+
+1980
+01:17:33,719 --> 01:17:35,550
+end up dealing in a designing a system
+
+1981
+01:17:35,550 --> 01:17:36,570
+that has to do with a lowest common
+
+1982
+01:17:36,570 --> 01:17:38,310
+denominator of all your systems
+
+1983
+01:17:38,310 --> 01:17:39,600
+all right this system doesn't do
+
+1984
+01:17:39,600 --> 01:17:40,949
+transaction or this doesn't do these
+
+1985
+01:17:40,949 --> 01:17:42,390
+type of queries so we can't do that for
+
+1986
+01:17:42,390 --> 01:17:44,790
+other systems all right so again people
+
+1987
+01:17:44,790 --> 01:17:50,430
+try this people still try this it's
+
+1988
+01:17:50,430 --> 01:17:51,960
+usually a bad idea it's not gonna end
+
+1989
+01:17:51,960 --> 01:17:54,330
+well you do simple things but you know
+
+1990
+01:17:54,330 --> 01:17:56,820
+having this is beautiful all in the one
+
+1991
+01:17:56,820 --> 01:17:58,140
+federated database it's not gonna work
+
+1992
+01:17:58,140 --> 01:18:00,390
+so again basic ideas like this you have
+
+1993
+01:18:00,390 --> 01:18:01,710
+your application server you have your
+
+1994
+01:18:01,710 --> 01:18:03,150
+middleware system and your separate back
+
+1995
+01:18:03,150 --> 01:18:05,370
+in databases so single query goes to the
+
+1996
+01:18:05,370 --> 01:18:07,230
+middleware and then it recognizes what
+
+1997
+01:18:07,230 --> 01:18:08,520
+all these different systems can actually
+
+1998
+01:18:08,520 --> 01:18:10,890
+support and so it rewrite the portion of
+
+1999
+01:18:10,890 --> 01:18:12,060
+the query that you want to run on these
+
+2000
+01:18:12,060 --> 01:18:13,410
+different machines for their different
+
+2001
+01:18:13,410 --> 01:18:16,430
+api's right so my sequel does sequel
+
+2002
+01:18:16,430 --> 01:18:20,850
+MongoDB does JSON queries Redis does its
+
+2003
+01:18:20,850 --> 01:18:22,440
+own thing in the subway is whatever
+
+2004
+01:18:22,440 --> 01:18:24,420
+alright so it knows how to take all
+
+2005
+01:18:24,420 --> 01:18:26,790
+those queries break it up and run on
+
+2006
+01:18:26,790 --> 01:18:28,500
+those separate machines and then you get
+
+2007
+01:18:28,500 --> 01:18:30,510
+back the result so these things are
+
+2008
+01:18:30,510 --> 01:18:32,550
+usually call connectors like they have
+
+2009
+01:18:32,550 --> 01:18:34,110
+the ability to communicate with these
+
+2010
+01:18:34,110 --> 01:18:35,460
+different databases and pull them into
+
+2011
+01:18:35,460 --> 01:18:39,150
+the single system the one database that
+
+2012
+01:18:39,150 --> 01:18:42,030
+Pike is the the best positioned to do a
+
+2013
+01:18:42,030 --> 01:18:43,620
+federated database architecture is
+
+2014
+01:18:43,620 --> 01:18:47,010
+actually Postgres so Postgres has this
+
+2015
+01:18:47,010 --> 01:18:48,239
+thing called the foreign data wrappers
+
+2016
+01:18:48,239 --> 01:18:51,120
+think of this is like a an api oh you
+
+2017
+01:18:51,120 --> 01:18:52,860
+can plug in different data sources that
+
+2018
+01:18:52,860 --> 01:18:55,370
+are outside the normal Postgres storage
+
+2019
+01:18:55,370 --> 01:18:57,510
+so there's there's there's
+
+2020
+01:18:57,510 --> 01:18:59,370
+de foreign data wrappers for you know
+
+2021
+01:18:59,370 --> 01:19:00,989
+for for and all these other
+
+2022
+01:19:00,989 --> 01:19:02,760
+systems so I write all my sequel queries
+
+2023
+01:19:02,760 --> 01:19:03,300
+in
+
+2024
+01:19:03,300 --> 01:19:05,310
+to Postgres then the foreign data
+
+2025
+01:19:05,310 --> 01:19:06,630
+wrapper news how to go out to these
+
+2026
+01:19:06,630 --> 01:19:09,210
+individual systems and suck the data in
+
+2027
+01:19:09,210 --> 01:19:13,620
+which i think is pretty cool okay so any
+
+2028
+01:19:13,620 --> 01:19:17,130
+question about any of us as I said yes
+
+2029
+01:19:17,130 --> 01:19:19,370
+the bat
+
+2030
+01:19:23,180 --> 01:19:24,870
+alright serious question is can I
+
+2031
+01:19:24,870 --> 01:19:27,150
+recommend any distributed OLAP or OLTP
+
+2032
+01:19:27,150 --> 01:19:30,870
+system oh that let's take this offline
+
+2033
+01:19:30,870 --> 01:19:31,920
+because it's a complicated question
+
+2034
+01:19:31,920 --> 01:19:33,540
+depends what are you trying to do
+
+2035
+01:19:33,540 --> 01:19:35,130
+what does your data look like how much
+
+2036
+01:19:35,130 --> 01:19:38,070
+data do you have do you want sequel or
+
+2037
+01:19:38,070 --> 01:19:49,910
+not no sequel why I mean there's like
+
+2038
+01:19:49,910 --> 01:19:53,160
+you seen DVD die oh there's 680 basis to
+
+2039
+01:19:53,160 --> 01:19:55,620
+some 260 whatever like there's not gonna
+
+2040
+01:19:55,620 --> 01:19:58,140
+be this one magic thing that like solves
+
+2041
+01:19:58,140 --> 01:19:59,940
+all the world's problems you have to
+
+2042
+01:19:59,940 --> 01:20:01,200
+look at your application requirements
+
+2043
+01:20:01,200 --> 01:20:02,940
+and end up making compromises about what
+
+2044
+01:20:02,940 --> 01:20:04,230
+you know what features you need what
+
+2045
+01:20:04,230 --> 01:20:06,240
+features you don't need how much money
+
+2046
+01:20:06,240 --> 01:20:14,550
+you will spend right so let's cover this
+
+2047
+01:20:14,550 --> 01:20:16,740
+net class is a popular video that system
+
+2048
+01:20:16,740 --> 01:20:18,720
+will come at an x-class some popular
+
+2049
+01:20:18,720 --> 01:20:22,860
+distributor ltp systems so all the the
+
+2050
+01:20:22,860 --> 01:20:25,830
+major vendors sequel server db2 and an
+
+2051
+01:20:25,830 --> 01:20:26,760
+Oracle
+
+2052
+01:20:26,760 --> 01:20:28,440
+they all have their own distributed
+
+2053
+01:20:28,440 --> 01:20:30,420
+systems all right there's newer startups
+
+2054
+01:20:30,420 --> 01:20:34,700
+like cockroach Tidy be yoga buy fauna
+
+2055
+01:20:34,700 --> 01:20:37,950
+Mongo's distributed right they all make
+
+2056
+01:20:37,950 --> 01:20:38,880
+you know they all have different
+
+2057
+01:20:38,880 --> 01:20:43,470
+trade-offs well covered I'll list out
+
+2058
+01:20:43,470 --> 01:20:45,770
+some overlap subsonex class and actually
+
+2059
+01:20:45,770 --> 01:20:47,820
+let's talk let's talk offline maybe
+
+2060
+01:20:47,820 --> 01:20:48,570
+there's some of your cover at the
+
+2061
+01:20:48,570 --> 01:20:50,810
+potpourri in the last class all right so
+
+2062
+01:20:50,810 --> 01:20:53,010
+again the main takeaway I saw from
+
+2063
+01:20:53,010 --> 01:20:54,770
+beginning is that we assumed all our
+
+2064
+01:20:54,770 --> 01:20:56,850
+database nodes in our system are
+
+2065
+01:20:56,850 --> 01:20:58,680
+friendly that makes our life easier of
+
+2066
+01:20:58,680 --> 01:21:00,090
+how we do commits and transactions and
+
+2067
+01:21:00,090 --> 01:21:01,920
+replication if they're not friendly then
+
+2068
+01:21:01,920 --> 01:21:04,140
+that's what the blockchain is and the
+
+2069
+01:21:04,140 --> 01:21:05,520
+projection worked if they do to prove
+
+2070
+01:21:05,520 --> 01:21:07,800
+that when we say commit transactions we
+
+2071
+01:21:07,800 --> 01:21:09,000
+want to create a transaction that
+
+2072
+01:21:09,000 --> 01:21:10,170
+everybody actually committed transaction
+
+2073
+01:21:10,170 --> 01:21:12,480
+and in case a Bitcoin that's all the
+
+2074
+01:21:12,480 --> 01:21:13,800
+hashing stuff they do with the Merkle
+
+2075
+01:21:13,800 --> 01:21:16,649
+trees ok
+
+2076
+01:21:16,649 --> 01:21:18,329
+all right so Monday's class next week
+
+2077
+01:21:18,329 --> 01:21:20,159
+will be the last lecture on the sugar
+
+2078
+01:21:20,159 --> 01:21:21,539
+databases will cover just rip it all app
+
+2079
+01:21:21,539 --> 01:21:23,579
+systems I think that'll be the end of
+
+2080
+01:21:23,579 --> 01:21:26,809
+the material for the for the semester
+
+2081
+01:21:26,809 --> 01:21:30,090
+that'll be covered on the final on when
+
+2082
+01:21:30,090 --> 01:21:31,320
+we come back after Thanksgiving that'll
+
+2083
+01:21:31,320 --> 01:21:32,909
+be the guest lecture from Oracle and
+
+2084
+01:21:32,909 --> 01:21:34,349
+then the system potpourri in the final
+
+2085
+01:21:34,349 --> 01:21:40,729
+review okay any questions all right guys
+
+2086
+01:21:51,400 --> 01:21:54,479
+[Music]
+
+2087
+01:22:01,189 --> 01:22:03,499
+ricochet jelly hit the deli food
+
+2088
+01:22:03,499 --> 01:22:13,169
+naturally don't fill out drinking only
+
+2089
+01:22:13,169 --> 01:22:16,739
+two you can't and if the sink don't know
+
+2090
+01:22:16,739 --> 01:22:19,669
+your phone can tap a
+

@@ -1,0 +1,8332 @@
+1
+00:00:01,300 --> 00:00:05,129
+[Music]
+
+2
+00:00:05,200 --> 00:00:05,930
+[Applause]
+
+3
+00:00:05,930 --> 00:00:08,630
+[Music]
+
+4
+00:00:08,630 --> 00:00:10,020
+[Applause]
+
+5
+00:00:10,020 --> 00:00:11,780
+[Music]
+
+6
+00:00:11,780 --> 00:00:14,820
+alright let's get started so real
+
+7
+00:00:14,820 --> 00:00:17,580
+quickly about project 2 if you haven't
+
+8
+00:00:17,580 --> 00:00:19,080
+signed up yet for a group please go do
+
+9
+00:00:19,080 --> 00:00:20,970
+that the other thing we're gonna change
+
+10
+00:00:20,970 --> 00:00:25,320
+is that we felt that the number of
+
+11
+00:00:25,320 --> 00:00:27,720
+submissions of people submitting their
+
+12
+00:00:27,720 --> 00:00:30,599
+project one at the very end was higher
+
+13
+00:00:30,599 --> 00:00:32,880
+than I wanted and it sort of partly my
+
+14
+00:00:32,880 --> 00:00:34,170
+fault for not warning you guys ahead of
+
+15
+00:00:34,170 --> 00:00:35,579
+time hey don't wait till last minute and
+
+16
+00:00:35,579 --> 00:00:38,730
+so to avoid this same issue for project
+
+17
+00:00:38,730 --> 00:00:40,620
+two what we're gonna have is we'll have
+
+18
+00:00:40,620 --> 00:00:42,960
+a check point half way where you just
+
+19
+00:00:42,960 --> 00:00:45,360
+have to do inserts and reads so if they
+
+20
+00:00:45,360 --> 00:00:49,050
+do splits and then so that'll be like 25
+
+21
+00:00:49,050 --> 00:00:50,910
+or 30 percent of the grade and then
+
+22
+00:00:50,910 --> 00:00:52,230
+we'll have the regular submission
+
+23
+00:00:52,230 --> 00:00:53,460
+deadline that'll still be the same and I
+
+24
+00:00:53,460 --> 00:00:55,649
+thought that the support the fool the
+
+25
+00:00:55,649 --> 00:00:57,180
+full test suite okay
+
+26
+00:00:57,180 --> 00:00:58,859
+again it's just a 14 function for you
+
+27
+00:00:58,859 --> 00:01:01,800
+guys start looking at this sooner rather
+
+28
+00:01:01,800 --> 00:01:03,570
+than later through not like trying to
+
+29
+00:01:03,570 --> 00:01:06,960
+write a thread safe in memory index one
+
+30
+00:01:06,960 --> 00:01:08,610
+day before it's due that's gonna be a
+
+31
+00:01:08,610 --> 00:01:13,020
+bad idea okay all right so today we're
+
+32
+00:01:13,020 --> 00:01:15,780
+going to talk about scheduling so last
+
+33
+00:01:15,780 --> 00:01:19,110
+class was about how to take a query
+
+34
+00:01:19,110 --> 00:01:20,820
+request from the client put into our
+
+35
+00:01:20,820 --> 00:01:23,070
+system run it somehow we didn't say how
+
+36
+00:01:23,070 --> 00:01:25,380
+all getting there and then we would take
+
+37
+00:01:25,380 --> 00:01:27,390
+a response from the result from the
+
+38
+00:01:27,390 --> 00:01:29,130
+query and shove it back over the wire to
+
+39
+00:01:29,130 --> 00:01:32,009
+the client so now today's class we start
+
+40
+00:01:32,009 --> 00:01:33,780
+the next chapter of how we're actually
+
+41
+00:01:33,780 --> 00:01:35,430
+going to execute those queries and so
+
+42
+00:01:35,430 --> 00:01:37,799
+we're gonna focus on scheduling so we're
+
+43
+00:01:37,799 --> 00:01:39,630
+still not actually executing the the the
+
+44
+00:01:39,630 --> 00:01:42,360
+scans yet and reading our indexes but
+
+45
+00:01:42,360 --> 00:01:44,040
+we're getting we're getting closer
+
+46
+00:01:44,040 --> 00:01:46,829
+closer to that so we need on just need
+
+47
+00:01:46,829 --> 00:01:48,439
+to define some terms we're gonna use
+
+48
+00:01:48,439 --> 00:01:49,920
+going forward
+
+49
+00:01:49,920 --> 00:01:51,869
+describe what query execution looks like
+
+50
+00:01:51,869 --> 00:01:54,750
+so a query plan is going to be comprised
+
+51
+00:01:54,750 --> 00:01:58,170
+of operators and you can think of these
+
+52
+00:01:58,170 --> 00:01:59,159
+as sort of like a relational algebra
+
+53
+00:01:59,159 --> 00:02:02,549
+operators and so we'll talk about how we
+
+54
+00:02:02,549 --> 00:02:04,530
+do query planning and if you more
+
+55
+00:02:04,530 --> 00:02:06,180
+lectures the basic ideas we get the
+
+56
+00:02:06,180 --> 00:02:07,740
+sequel query like this and we have
+
+57
+00:02:07,740 --> 00:02:10,530
+represented as a as a directed tree
+
+58
+00:02:10,530 --> 00:02:13,650
+structure of operators and
+
+59
+00:02:13,650 --> 00:02:14,939
+the lowest level we have these access
+
+60
+00:02:14,939 --> 00:02:16,409
+methods were they're going to scan
+
+61
+00:02:16,409 --> 00:02:18,269
+tuples or scan to index and feed them up
+
+62
+00:02:18,269 --> 00:02:20,340
+into the next operator and then the
+
+63
+00:02:20,340 --> 00:02:23,579
+results percolate to the top so we're
+
+64
+00:02:23,579 --> 00:02:27,000
+gonna define now a an invocation of an
+
+65
+00:02:27,000 --> 00:02:29,700
+operator in our query plan a specific
+
+66
+00:02:29,700 --> 00:02:31,439
+invocation of it will be defined as an
+
+67
+00:02:31,439 --> 00:02:33,540
+operator instance so for a given
+
+68
+00:02:33,540 --> 00:02:35,760
+operator in our query plan like scan
+
+69
+00:02:35,760 --> 00:02:38,069
+table a we can have multiple instances
+
+70
+00:02:38,069 --> 00:02:40,620
+of this operator that allow us to
+
+71
+00:02:40,620 --> 00:02:43,590
+execute this scan in in parallel and now
+
+72
+00:02:43,590 --> 00:02:45,030
+the idea is the way we're going to group
+
+73
+00:02:45,030 --> 00:02:47,989
+up group group together the the
+
+74
+00:02:47,989 --> 00:02:50,159
+operators instances that we're going to
+
+75
+00:02:50,159 --> 00:02:52,200
+execute in our system alright were to
+
+76
+00:02:52,200 --> 00:02:55,980
+call these groups as tasks right and the
+
+77
+00:02:55,980 --> 00:02:57,420
+idea is that sort of like in the
+
+78
+00:02:57,420 --> 00:02:59,250
+pipeline model we wanted to have string
+
+79
+00:02:59,250 --> 00:03:00,829
+it together as many tests as we can
+
+80
+00:03:00,829 --> 00:03:03,629
+within a single task or pipeline so
+
+81
+00:03:03,629 --> 00:03:04,980
+though we don't have a context switch
+
+82
+00:03:04,980 --> 00:03:07,319
+going from you know from one task to the
+
+83
+00:03:07,319 --> 00:03:09,239
+other so for a scan on a I can do the
+
+84
+00:03:09,239 --> 00:03:10,829
+filter and then depending on join
+
+85
+00:03:10,829 --> 00:03:12,180
+algorithm I'm doing like if I'm doing a
+
+86
+00:03:12,180 --> 00:03:14,040
+hash join then I can have the pipeline
+
+87
+00:03:14,040 --> 00:03:16,079
+also build the hash table for me so I'm
+
+88
+00:03:16,079 --> 00:03:17,639
+just passing her up intermediate results
+
+89
+00:03:17,639 --> 00:03:19,549
+from one operator instance to the next
+
+90
+00:03:19,549 --> 00:03:23,250
+so again at a high level our job today
+
+91
+00:03:23,250 --> 00:03:24,629
+is to figure out how we're going to
+
+92
+00:03:24,629 --> 00:03:28,169
+schedule these tasks right and where
+
+93
+00:03:28,169 --> 00:03:29,040
+they're going to execute and what
+
+94
+00:03:29,040 --> 00:03:31,409
+they're actually going to do so for
+
+95
+00:03:31,409 --> 00:03:33,120
+every single query plan that shows up we
+
+96
+00:03:33,120 --> 00:03:35,220
+got a side now where when and how to
+
+97
+00:03:35,220 --> 00:03:38,760
+execute it and so this case one of these
+
+98
+00:03:38,760 --> 00:03:40,290
+decisions will have any task so we
+
+99
+00:03:40,290 --> 00:03:43,349
+actually use for our query plan like if
+
+100
+00:03:43,349 --> 00:03:45,690
+we say we have this number of cores when
+
+101
+00:03:45,690 --> 00:03:50,250
+we have we could assign one task for our
+
+102
+00:03:50,250 --> 00:03:52,319
+query plan for each core remain when it
+
+103
+00:03:52,319 --> 00:03:53,699
+over subscribe have more tests and we
+
+104
+00:03:53,699 --> 00:03:55,049
+have cores and that way we can have more
+
+105
+00:03:55,049 --> 00:03:57,569
+flexible scheduling then this question
+
+106
+00:03:57,569 --> 00:03:58,739
+of how many cores we actually want to
+
+107
+00:03:58,739 --> 00:04:00,599
+use right so we can have a X number of
+
+108
+00:04:00,599 --> 00:04:02,970
+tasks and Y number of threads and or
+
+109
+00:04:02,970 --> 00:04:04,530
+cores and we can decide how many cores
+
+110
+00:04:04,530 --> 00:04:07,199
+we want to use then we had to spec
+
+111
+00:04:07,199 --> 00:04:10,590
+decide on what course should tasks
+
+112
+00:04:10,590 --> 00:04:13,440
+actually execute on and then when that
+
+113
+00:04:13,440 --> 00:04:14,849
+task completes and it produces some
+
+114
+00:04:14,849 --> 00:04:16,529
+output we need to decide where that
+
+115
+00:04:16,529 --> 00:04:19,260
+output is going to go all right even Bay
+
+116
+00:04:19,260 --> 00:04:20,488
+about this so far are we saying are we
+
+117
+00:04:20,488 --> 00:04:22,289
+actually this query we get back result
+
+118
+00:04:22,289 --> 00:04:24,479
+but now as we are starting executing the
+
+119
+00:04:24,479 --> 00:04:26,639
+tasks that are comprised in that query
+
+120
+00:04:26,639 --> 00:04:28,319
+we had to make decision of where we
+
+121
+00:04:28,319 --> 00:04:31,439
+should tickets output and and as we see
+
+122
+00:04:31,439 --> 00:04:33,060
+as we talk about different sort of
+
+123
+00:04:33,060 --> 00:04:35,520
+memory architectures we need to be aware
+
+124
+00:04:35,520 --> 00:04:37,139
+of where that memory is actually located
+
+125
+00:04:37,139 --> 00:04:38,729
+what we're reading writing to so that we
+
+126
+00:04:38,729 --> 00:04:42,060
+get the best performance right so the
+
+127
+00:04:42,060 --> 00:04:43,439
+reason why we're gonna do all of this is
+
+128
+00:04:43,439 --> 00:04:45,629
+that the database system is knows
+
+129
+00:04:45,629 --> 00:04:47,849
+exactly what the query is knows exactly
+
+130
+00:04:47,849 --> 00:04:50,219
+what the tasks are it knows what what
+
+131
+00:04:50,219 --> 00:04:51,659
+threats has available to it and knows
+
+132
+00:04:51,659 --> 00:04:53,189
+where the memory or the data is actually
+
+133
+00:04:53,189 --> 00:04:55,229
+located so we're in the position to make
+
+134
+00:04:55,229 --> 00:04:57,120
+the best decision about how to execute
+
+135
+00:04:57,120 --> 00:04:59,520
+this query planning efficiently the OS
+
+136
+00:04:59,520 --> 00:05:06,479
+doesn't know this question this question
+
+137
+00:05:06,479 --> 00:05:07,560
+is how do we find what a pipeline is
+
+138
+00:05:07,560 --> 00:05:09,360
+will come to that next class but the
+
+139
+00:05:09,360 --> 00:05:12,029
+basic way to think about this is how far
+
+140
+00:05:12,029 --> 00:05:14,340
+can I take a single tuple or batch of
+
+141
+00:05:14,340 --> 00:05:16,259
+tuples and write it up the query plan
+
+142
+00:05:16,259 --> 00:05:19,229
+before I have to before I get to a point
+
+143
+00:05:19,229 --> 00:05:21,719
+where I can't go farther so in this case
+
+144
+00:05:21,719 --> 00:05:24,120
+here scan a filter and do say you're
+
+145
+00:05:24,120 --> 00:05:26,460
+doing a hash join I can build the hash
+
+146
+00:05:26,460 --> 00:05:29,009
+table on this side of the join but I
+
+147
+00:05:29,009 --> 00:05:30,839
+can't actually produce any result to do
+
+148
+00:05:30,839 --> 00:05:33,930
+the projection because I need to do the
+
+149
+00:05:33,930 --> 00:05:35,939
+probe side so this is called a pipeline
+
+150
+00:05:35,939 --> 00:05:48,419
+breaker yes so state question is is it
+
+151
+00:05:48,419 --> 00:05:50,099
+is this truly a pipeline breaker because
+
+152
+00:05:50,099 --> 00:05:54,839
+if I had if the pipeline breaker was
+
+153
+00:05:54,839 --> 00:05:58,610
+here and I might II realized the output
+
+154
+00:05:58,610 --> 00:06:01,589
+from both of these guys then shove it to
+
+155
+00:06:01,589 --> 00:06:04,289
+my hash table right like the basic
+
+156
+00:06:04,289 --> 00:06:05,879
+things I can't go higher and to treat
+
+157
+00:06:05,879 --> 00:06:08,539
+until I have all the data from one side
+
+158
+00:06:08,539 --> 00:06:10,919
+right so there's a pipeline here for
+
+159
+00:06:10,919 --> 00:06:13,289
+this side but the pipeline for B can go
+
+160
+00:06:13,289 --> 00:06:16,889
+all the way up what doesn't make more
+
+161
+00:06:16,889 --> 00:06:19,740
+sense next class but the main idea what
+
+162
+00:06:19,740 --> 00:06:21,360
+I care about is like you understand it's
+
+163
+00:06:21,360 --> 00:06:23,460
+like oh well a task is what we're gonna
+
+164
+00:06:23,460 --> 00:06:24,930
+schedule on the task and B cries of
+
+165
+00:06:24,930 --> 00:06:26,639
+multiple operators and we're roughly
+
+166
+00:06:26,639 --> 00:06:32,039
+gonna base it on pipelines and the the
+
+167
+00:06:32,039 --> 00:06:33,719
+the main takeaway again from all this is
+
+168
+00:06:33,719 --> 00:06:36,419
+that we're not gonna rely on the OS to
+
+169
+00:06:36,419 --> 00:06:38,759
+do any of this for us we're Network the
+
+170
+00:06:38,759 --> 00:06:40,139
+Davis it's always going to know better
+
+171
+00:06:40,139 --> 00:06:40,630
+so it
+
+172
+00:06:40,630 --> 00:06:44,650
+can make the best decision so to begin I
+
+173
+00:06:44,650 --> 00:06:45,610
+want to first talk about different
+
+174
+00:06:45,610 --> 00:06:46,810
+process models we can have in our
+
+175
+00:06:46,810 --> 00:06:50,080
+databases in architecture it basically
+
+176
+00:06:50,080 --> 00:06:52,390
+tells us you know what is it it's gonna
+
+177
+00:06:52,390 --> 00:06:54,550
+find what a worker actually is is it a
+
+178
+00:06:54,550 --> 00:06:56,560
+thread is it a process then we'll talk
+
+179
+00:06:56,560 --> 00:06:58,060
+about the problem of data placement in
+
+180
+00:06:58,060 --> 00:06:59,680
+for in memory databases we need to be
+
+181
+00:06:59,680 --> 00:07:01,300
+aware of the layout of memory or the
+
+182
+00:07:01,300 --> 00:07:02,920
+physical location of addresses in memory
+
+183
+00:07:02,920 --> 00:07:05,590
+so that we can have our threads try to
+
+184
+00:07:05,590 --> 00:07:07,300
+or workers try to act to operate on
+
+185
+00:07:07,300 --> 00:07:10,030
+local data and then we'll talk about the
+
+186
+00:07:10,030 --> 00:07:11,830
+different techniques for doing AI Namek
+
+187
+00:07:11,830 --> 00:07:16,030
+scheduling in a database system okay so
+
+188
+00:07:16,030 --> 00:07:18,970
+the the paper had you guys read on hyper
+
+189
+00:07:18,970 --> 00:07:20,800
+you know that's an example of doing
+
+190
+00:07:20,800 --> 00:07:23,020
+their dynamic scheduling and we'll
+
+191
+00:07:23,020 --> 00:07:24,880
+contrast this with something like Hana
+
+192
+00:07:24,880 --> 00:07:27,580
+which is gonna be doing you know having
+
+193
+00:07:27,580 --> 00:07:28,840
+different types of worker pools a
+
+194
+00:07:28,840 --> 00:07:30,130
+different kind of stealing versus no
+
+195
+00:07:30,130 --> 00:07:32,200
+stealing policies right so that's sort
+
+196
+00:07:32,200 --> 00:07:34,330
+of what our focus is on today but for
+
+197
+00:07:34,330 --> 00:07:36,880
+this part here but to make this decision
+
+198
+00:07:36,880 --> 00:07:38,020
+about how we're gonna design our
+
+199
+00:07:38,020 --> 00:07:39,640
+databases and your scheduling here we
+
+200
+00:07:39,640 --> 00:07:41,980
+need be aware of what we're how we built
+
+201
+00:07:41,980 --> 00:07:45,640
+the system up here okay all right so
+
+202
+00:07:45,640 --> 00:07:46,810
+let's first talk about how we're going
+
+203
+00:07:46,810 --> 00:07:50,500
+to assign workers to computation on
+
+204
+00:07:50,500 --> 00:07:52,930
+units in our database system so the the
+
+205
+00:07:52,930 --> 00:07:54,550
+the process model is gonna find whether
+
+206
+00:07:54,550 --> 00:07:55,960
+the system is how the sip is going to
+
+207
+00:07:55,960 --> 00:07:58,180
+support concurrent requests from a
+
+208
+00:07:58,180 --> 00:08:00,100
+multi-user application meaning our
+
+209
+00:08:00,100 --> 00:08:01,810
+application could send multiple queries
+
+210
+00:08:01,810 --> 00:08:03,880
+at the same time or multiple transaction
+
+211
+00:08:03,880 --> 00:08:05,620
+invocations at the same time and we
+
+212
+00:08:05,620 --> 00:08:07,210
+needed a way to decide how we're going
+
+213
+00:08:07,210 --> 00:08:09,910
+to interleave them at the sort of
+
+214
+00:08:09,910 --> 00:08:12,370
+low-level hardware level all right so
+
+215
+00:08:12,370 --> 00:08:13,630
+we're not talking about how do we decide
+
+216
+00:08:13,630 --> 00:08:17,740
+a logical level like what what
+
+217
+00:08:17,740 --> 00:08:19,690
+transactions lottery what pieces of data
+
+218
+00:08:19,690 --> 00:08:22,150
+this is like how do we take a task and
+
+219
+00:08:22,150 --> 00:08:24,160
+actually assign it to some worker and
+
+220
+00:08:24,160 --> 00:08:27,310
+what is that worker so I'm using the
+
+221
+00:08:27,310 --> 00:08:27,910
+term worker
+
+222
+00:08:27,910 --> 00:08:30,070
+I'm cajon gonna slip up and say thread
+
+223
+00:08:30,070 --> 00:08:33,070
+but and and for the systems we're
+
+224
+00:08:33,070 --> 00:08:34,360
+talking about it is going to be a thread
+
+225
+00:08:34,360 --> 00:08:35,979
+but the way to think about this is like
+
+226
+00:08:35,979 --> 00:08:38,460
+it doesn't the data says doesn't know
+
+227
+00:08:38,460 --> 00:08:40,750
+technically doesn't need to know whether
+
+228
+00:08:40,750 --> 00:08:42,789
+it's a and it doesn't need to know take
+
+229
+00:08:42,789 --> 00:08:45,640
+that it's it's a sort of high-level term
+
+230
+00:08:45,640 --> 00:08:49,990
+to describe again a a component in the
+
+231
+00:08:49,990 --> 00:08:52,300
+system that can execute tasks and this
+
+232
+00:08:52,300 --> 00:08:54,329
+could be either a process or
+
+233
+00:08:54,329 --> 00:08:56,100
+read the reason why I'm saying I take
+
+234
+00:08:56,100 --> 00:08:57,329
+back what I said would the adenosine
+
+235
+00:08:57,329 --> 00:08:58,920
+doesn't need to know but certainly if
+
+236
+00:08:58,920 --> 00:09:00,720
+it's a process I need to know how to
+
+237
+00:09:00,720 --> 00:09:01,739
+communicate with with other processes
+
+238
+00:09:01,739 --> 00:09:02,939
+because they're not going to technically
+
+239
+00:09:02,939 --> 00:09:05,459
+be in my same address space so it's just
+
+240
+00:09:05,459 --> 00:09:07,259
+basically a way for us to execute tasks
+
+241
+00:09:07,259 --> 00:09:09,269
+and then return results to the
+
+242
+00:09:09,269 --> 00:09:12,439
+application so there's a great book
+
+243
+00:09:12,439 --> 00:09:16,799
+written over a decade ago from Mike
+
+244
+00:09:16,799 --> 00:09:19,410
+Stonebraker Joe Hellerstein at Berkeley
+
+245
+00:09:19,410 --> 00:09:21,449
+and the guy that runs most AWS James
+
+246
+00:09:21,449 --> 00:09:23,189
+Hamilton I called architecture of a
+
+247
+00:09:23,189 --> 00:09:24,629
+database system so this is in the
+
+248
+00:09:24,629 --> 00:09:26,730
+context of a of a dis coordinate system
+
+249
+00:09:26,730 --> 00:09:29,040
+but this book really lays out at a nice
+
+250
+00:09:29,040 --> 00:09:31,170
+sort of clean abstraction you know how
+
+251
+00:09:31,170 --> 00:09:33,059
+you actually design the system at that's
+
+252
+00:09:33,059 --> 00:09:34,470
+sort of this low level education level
+
+253
+00:09:34,470 --> 00:09:37,230
+here all right so the three approaches
+
+254
+00:09:37,230 --> 00:09:38,279
+we're talking about a process per
+
+255
+00:09:38,279 --> 00:09:40,439
+database worker process pool and a
+
+256
+00:09:40,439 --> 00:09:42,149
+thread per Davis worker and again we've
+
+257
+00:09:42,149 --> 00:09:43,499
+covered this in the introduction class
+
+258
+00:09:43,499 --> 00:09:44,549
+but I just want to go over this again
+
+259
+00:09:44,549 --> 00:09:47,459
+and the spoiler would be that for all
+
+260
+00:09:47,459 --> 00:09:49,589
+the systems we're gonna talk about today
+
+261
+00:09:49,589 --> 00:09:50,759
+and going forward breath of the semester
+
+262
+00:09:50,759 --> 00:09:52,350
+it's gonna be the last one here because
+
+263
+00:09:52,350 --> 00:09:54,269
+this one is the most common one in in
+
+264
+00:09:54,269 --> 00:09:57,929
+modern systems so process per worker is
+
+265
+00:09:57,929 --> 00:09:59,519
+where every single worker in our system
+
+266
+00:09:59,519 --> 00:10:02,759
+is going to be a separate OS process so
+
+267
+00:10:02,759 --> 00:10:04,499
+that means that when a request shows up
+
+268
+00:10:04,499 --> 00:10:07,009
+say goes through some kind of dispatcher
+
+269
+00:10:07,009 --> 00:10:10,230
+it can then handoff the connection to
+
+270
+00:10:10,230 --> 00:10:12,509
+another worker that that will then read
+
+271
+00:10:12,509 --> 00:10:14,369
+the socket and allow and take any
+
+272
+00:10:14,369 --> 00:10:16,230
+requests that it gets from the from the
+
+273
+00:10:16,230 --> 00:10:18,089
+from the client and executed on the
+
+274
+00:10:18,089 --> 00:10:21,509
+database system and so the all the
+
+275
+00:10:21,509 --> 00:10:23,910
+scheduling that's being done here is is
+
+276
+00:10:23,910 --> 00:10:26,489
+managed by the operating system because
+
+277
+00:10:26,489 --> 00:10:29,189
+we're just calling fork to start off a
+
+278
+00:10:29,189 --> 00:10:31,709
+new process and we have no direct
+
+279
+00:10:31,709 --> 00:10:33,540
+control to say whether you know it
+
+280
+00:10:33,540 --> 00:10:34,799
+should when it when it shouldn't it
+
+281
+00:10:34,799 --> 00:10:37,649
+should run so the tricky thing is
+
+282
+00:10:37,649 --> 00:10:39,059
+sometimes often is that what this is
+
+283
+00:10:39,059 --> 00:10:42,419
+like I may not know my dispatcher
+
+284
+00:10:42,419 --> 00:10:44,910
+exactly you know how much work these
+
+285
+00:10:44,910 --> 00:10:46,589
+workers are doing and I have to rely on
+
+286
+00:10:46,589 --> 00:10:48,899
+the OS that do sort of throttling and
+
+287
+00:10:48,899 --> 00:10:51,869
+and and flow control because these guys
+
+288
+00:10:51,869 --> 00:10:53,999
+can just do whatever they want or need
+
+289
+00:10:53,999 --> 00:10:55,649
+to write extra extra code and they have
+
+290
+00:10:55,649 --> 00:10:56,999
+them communicate some way back to the
+
+291
+00:10:56,999 --> 00:10:58,679
+dispatcher to have a centralized view
+
+292
+00:10:58,679 --> 00:11:00,569
+about what's happening but in systems
+
+293
+00:11:00,569 --> 00:11:02,730
+like Postgres as far as I know they
+
+294
+00:11:02,730 --> 00:11:04,589
+don't do this all those systems that do
+
+295
+00:11:04,589 --> 00:11:07,169
+the approach is db2 and Oracle db2 is a
+
+296
+00:11:07,169 --> 00:11:08,400
+weird one because
+
+297
+00:11:08,400 --> 00:11:11,100
+there is a you know there's when people
+
+298
+00:11:11,100 --> 00:11:13,350
+say oh I'm running db2 there's actually
+
+299
+00:11:13,350 --> 00:11:15,720
+four versions of db2 that are completely
+
+300
+00:11:15,720 --> 00:11:18,390
+separate code bases like one for z/os
+
+301
+00:11:18,390 --> 00:11:20,610
+ones for some other mainframe system and
+
+302
+00:11:20,610 --> 00:11:22,200
+then there's like the Linux UNIX windows
+
+303
+00:11:22,200 --> 00:11:24,180
+one and there's a fourth one I forget
+
+304
+00:11:24,180 --> 00:11:25,290
+right and they're all completely
+
+305
+00:11:25,290 --> 00:11:29,040
+separate so we'll see in the next two
+
+306
+00:11:29,040 --> 00:11:30,840
+slides db2 is gonna support all these
+
+307
+00:11:30,840 --> 00:11:32,730
+approaches because they have to run in
+
+308
+00:11:32,730 --> 00:11:33,870
+all these different environments but it
+
+309
+00:11:33,870 --> 00:11:35,490
+may not be the exact same codebase every
+
+310
+00:11:35,490 --> 00:11:39,780
+single time okay one advantage you get
+
+311
+00:11:39,780 --> 00:11:42,030
+from this is that if the worker if
+
+312
+00:11:42,030 --> 00:11:43,440
+there's mistake in the software and the
+
+313
+00:11:43,440 --> 00:11:45,840
+worker crashes you don't take down the
+
+314
+00:11:45,840 --> 00:11:48,030
+whole system because workers dies and
+
+315
+00:11:48,030 --> 00:11:50,070
+then you can fork a new one and bring it
+
+316
+00:11:50,070 --> 00:11:51,540
+back up so this makes the system
+
+317
+00:11:51,540 --> 00:11:52,920
+slightly more resilient than you would
+
+318
+00:11:52,920 --> 00:11:55,470
+have in a and a threading based model
+
+319
+00:11:55,470 --> 00:11:56,880
+because if one thread has a seg fault
+
+320
+00:11:56,880 --> 00:12:00,720
+then the whole process dies the next
+
+321
+00:12:00,720 --> 00:12:02,460
+post is just an extension of the worker
+
+322
+00:12:02,460 --> 00:12:04,380
+a single process per worker
+
+323
+00:12:04,380 --> 00:12:07,290
+we have a process pool and rather than
+
+324
+00:12:07,290 --> 00:12:08,940
+forking off the dispatcher of forking
+
+325
+00:12:08,940 --> 00:12:10,680
+off a new process for every single
+
+326
+00:12:10,680 --> 00:12:13,020
+request that shows up it knows it has a
+
+327
+00:12:13,020 --> 00:12:15,270
+bunch of workers that are available to
+
+328
+00:12:15,270 --> 00:12:17,220
+it that can hand off the request and
+
+329
+00:12:17,220 --> 00:12:19,380
+have that you know run the query for us
+
+330
+00:12:19,380 --> 00:12:22,290
+and in some cases to say if I want to
+
+331
+00:12:22,290 --> 00:12:24,780
+support intro query parallelism I can
+
+332
+00:12:24,780 --> 00:12:26,100
+take a single query and run across
+
+333
+00:12:26,100 --> 00:12:28,770
+multiple processes of metalworkers this
+
+334
+00:12:28,770 --> 00:12:31,080
+one worker could identify that there's
+
+335
+00:12:31,080 --> 00:12:32,400
+other workers available to it in the
+
+336
+00:12:32,400 --> 00:12:34,200
+same pool that are idle and start
+
+337
+00:12:34,200 --> 00:12:37,920
+handing off work to that right the bad
+
+338
+00:12:37,920 --> 00:12:39,600
+bad thing about this approach is that
+
+339
+00:12:39,600 --> 00:12:41,700
+it's gonna ruin our locality unless we
+
+340
+00:12:41,700 --> 00:12:44,850
+have extra logic in the dispatcher to be
+
+341
+00:12:44,850 --> 00:12:47,550
+mindful of what worker executed our
+
+342
+00:12:47,550 --> 00:12:50,340
+query the last time right because say
+
+343
+00:12:50,340 --> 00:12:51,690
+these guys are all running on separate
+
+344
+00:12:51,690 --> 00:12:55,710
+sockets and if for this one request the
+
+345
+00:12:55,710 --> 00:12:57,030
+first query shows up I run on this
+
+346
+00:12:57,030 --> 00:12:59,400
+worker the next query shows up for the
+
+347
+00:12:59,400 --> 00:13:01,080
+same connection but it runs a noun or
+
+348
+00:13:01,080 --> 00:13:02,700
+another worker running on another socket
+
+349
+00:13:02,700 --> 00:13:05,340
+all the cache locality I had for
+
+350
+00:13:05,340 --> 00:13:07,020
+bringing in data into memory or that the
+
+351
+00:13:07,020 --> 00:13:09,000
+local cache for this worker is now gone
+
+352
+00:13:09,000 --> 00:13:10,380
+because now I'm not running on a
+
+353
+00:13:10,380 --> 00:13:14,550
+complete different socket so this often
+
+354
+00:13:14,550 --> 00:13:16,230
+times me bad for in memory systems is
+
+355
+00:13:16,230 --> 00:13:19,140
+because the overhead of keeping track of
+
+356
+00:13:19,140 --> 00:13:22,050
+what work I ran on last
+
+357
+00:13:22,050 --> 00:13:24,420
+and either pause until that workers
+
+358
+00:13:24,420 --> 00:13:25,470
+freed up if it's in running another
+
+359
+00:13:25,470 --> 00:13:26,759
+query before connects you my next query
+
+360
+00:13:26,759 --> 00:13:30,329
+or you know basically holding it until
+
+361
+00:13:30,329 --> 00:13:31,379
+the next query shows up which is just
+
+362
+00:13:31,379 --> 00:13:33,540
+the same thing as the previous slide all
+
+363
+00:13:33,540 --> 00:13:36,540
+that sort of orchestration can slow
+
+364
+00:13:36,540 --> 00:13:39,540
+things down and Postgres added this in
+
+365
+00:13:39,540 --> 00:13:41,639
+2015 all right they can have intro query
+
+366
+00:13:41,639 --> 00:13:43,529
+parallelism and as I said db2 tries to
+
+367
+00:13:43,529 --> 00:13:45,749
+support everything what's the most
+
+368
+00:13:45,749 --> 00:13:47,970
+common one is the thread per worker
+
+369
+00:13:47,970 --> 00:13:49,499
+right a multi-threaded application
+
+370
+00:13:49,499 --> 00:14:00,480
+question assume you're running on a
+
+371
+00:14:00,480 --> 00:14:02,459
+thing for this assume for this semester
+
+372
+00:14:02,459 --> 00:14:13,829
+it's all single machine sockets few more
+
+373
+00:14:13,829 --> 00:14:15,540
+slides would make more sense if they're
+
+374
+00:14:15,540 --> 00:14:17,249
+on the same socket you have local cache
+
+375
+00:14:17,249 --> 00:14:22,110
+and l1 l2 is not shared but l3 shared so
+
+376
+00:14:22,110 --> 00:14:24,089
+if you run on the same socket the
+
+377
+00:14:24,089 --> 00:14:27,420
+penalty of a cache miss depend of the
+
+378
+00:14:27,420 --> 00:14:28,619
+cache misses it was the same for like
+
+379
+00:14:28,619 --> 00:14:31,139
+the likelihood that the data I need that
+
+380
+00:14:31,139 --> 00:14:32,579
+like if I have a query they execute some
+
+381
+00:14:32,579 --> 00:14:34,079
+recent data the next pretty shows up
+
+382
+00:14:34,079 --> 00:14:35,910
+wants to read that same data right
+
+383
+00:14:35,910 --> 00:14:37,049
+you see used all the time I read after
+
+384
+00:14:37,049 --> 00:14:40,679
+write or read modify write then if I'm
+
+385
+00:14:40,679 --> 00:14:42,480
+running on the same socket then the data
+
+386
+00:14:42,480 --> 00:14:44,610
+is read could be hanging on l3 cache and
+
+387
+00:14:44,610 --> 00:14:46,860
+that'll go fast if I'm known another
+
+388
+00:14:46,860 --> 00:14:48,329
+socket which doesn't have to share that
+
+389
+00:14:48,329 --> 00:14:54,449
+l3 cache I pay another cache miss so the
+
+390
+00:14:54,449 --> 00:14:56,850
+previous one is like for this connection
+
+391
+00:14:56,850 --> 00:14:59,670
+right this worker is now dedicated to
+
+392
+00:14:59,670 --> 00:15:01,589
+the connection to this client so any
+
+393
+00:15:01,589 --> 00:15:03,059
+query that shows up is always going to
+
+394
+00:15:03,059 --> 00:15:04,799
+go to this worker right because it
+
+395
+00:15:04,799 --> 00:15:05,910
+basically takes over listening like
+
+396
+00:15:05,910 --> 00:15:08,699
+basically what happens is the bluee
+
+397
+00:15:08,699 --> 00:15:09,839
+Postgres works if this is called the
+
+398
+00:15:09,839 --> 00:15:11,999
+postmaster the the connection shows up
+
+399
+00:15:11,999 --> 00:15:14,129
+the postmaster says great I can hand you
+
+400
+00:15:14,129 --> 00:15:16,649
+off to a worker go now right to this
+
+401
+00:15:16,649 --> 00:15:18,929
+socket or this port number here and so
+
+402
+00:15:18,929 --> 00:15:20,369
+this comes back now and this thing's
+
+403
+00:15:20,369 --> 00:15:21,749
+listening on this port and now has
+
+404
+00:15:21,749 --> 00:15:24,919
+direct access to write 10 queries here
+
+405
+00:15:24,919 --> 00:15:27,899
+yes you're bypassing the dispatcher this
+
+406
+00:15:27,899 --> 00:15:29,309
+one is like I'm always going to this new
+
+407
+00:15:29,309 --> 00:15:30,209
+dispatcher I think of this as a
+
+408
+00:15:30,209 --> 00:15:31,919
+sectionalized scheduler and it's now
+
+409
+00:15:31,919 --> 00:15:33,209
+making this kitchen how to hand handle
+
+410
+00:15:33,209 --> 00:15:35,850
+things off in different processes
+
+411
+00:15:35,850 --> 00:15:39,240
+threat poor workers is is it's a single
+
+412
+00:15:39,240 --> 00:15:41,459
+process and we have inside that process
+
+413
+00:15:41,459 --> 00:15:43,440
+we have multiple threads you may or may
+
+414
+00:15:43,440 --> 00:15:45,060
+not have a dispatcher a thread you still
+
+415
+00:15:45,060 --> 00:15:46,709
+can do the same approach where you have
+
+416
+00:15:46,709 --> 00:15:49,680
+one thread listens on a socket that all
+
+417
+00:15:49,680 --> 00:15:51,000
+incremental quests have to go to and
+
+418
+00:15:51,000 --> 00:15:52,500
+then you hand it off to an another
+
+419
+00:15:52,500 --> 00:15:55,199
+socket on another thread so it can
+
+420
+00:15:55,199 --> 00:15:57,740
+process things or you can just have a
+
+421
+00:15:57,740 --> 00:15:59,880
+dedicated thread per your connection or
+
+422
+00:15:59,880 --> 00:16:01,649
+you just have a sort of a
+
+423
+00:16:01,649 --> 00:16:03,420
+general-purpose networking layer that
+
+424
+00:16:03,420 --> 00:16:06,000
+his hands off work to anybody that has
+
+425
+00:16:06,000 --> 00:16:09,269
+has idle cycles as I said every single
+
+426
+00:16:09,269 --> 00:16:10,980
+database systems written in the last 10
+
+427
+00:16:10,980 --> 00:16:14,670
+years is follows this approach so you
+
+428
+00:16:14,670 --> 00:16:15,779
+may be thinking well this is clearly
+
+429
+00:16:15,779 --> 00:16:18,509
+better you know you know pay a penny for
+
+430
+00:16:18,509 --> 00:16:20,519
+context switches everything's in the
+
+431
+00:16:20,519 --> 00:16:22,170
+same address base so any thread can read
+
+432
+00:16:22,170 --> 00:16:24,360
+any any you know memory location of
+
+433
+00:16:24,360 --> 00:16:26,130
+another thread yes you have to do the
+
+434
+00:16:26,130 --> 00:16:27,420
+the current suite of stuff to make sure
+
+435
+00:16:27,420 --> 00:16:28,980
+you don't have any issues or or the
+
+436
+00:16:28,980 --> 00:16:30,209
+latching to make sure that you don't
+
+437
+00:16:30,209 --> 00:16:31,649
+clobber each other when you access
+
+438
+00:16:31,649 --> 00:16:35,370
+critical sections so but this is clearly
+
+439
+00:16:35,370 --> 00:16:38,040
+gonna have the lower overhead than the
+
+440
+00:16:38,040 --> 00:16:40,319
+process process approach and we take a
+
+441
+00:16:40,319 --> 00:16:42,480
+guess why nobody built databases this
+
+442
+00:16:42,480 --> 00:16:46,980
+way in the 1980s 1990s correctly says
+
+443
+00:16:46,980 --> 00:16:48,509
+POSIX threads or P threads were not
+
+444
+00:16:48,509 --> 00:16:50,220
+standardized so all the different
+
+445
+00:16:50,220 --> 00:16:52,230
+operating systems you know son or
+
+446
+00:16:52,230 --> 00:16:56,519
+Solaris H parks for Linux even came
+
+447
+00:16:56,519 --> 00:16:57,750
+around but the limits came out in the
+
+448
+00:16:57,750 --> 00:16:59,639
+early 90s there wasn't a POSIX standard
+
+449
+00:16:59,639 --> 00:17:01,439
+to say here's a threading API everyone
+
+450
+00:17:01,439 --> 00:17:03,660
+had their own API and they had semantics
+
+451
+00:17:03,660 --> 00:17:05,520
+of how they you know could spawn threads
+
+452
+00:17:05,520 --> 00:17:08,699
+and and you know do join from them was
+
+453
+00:17:08,699 --> 00:17:11,039
+slightly different wasn't dramatically
+
+454
+00:17:11,039 --> 00:17:12,780
+different but like the API was certainly
+
+455
+00:17:12,780 --> 00:17:14,609
+different so if I want to support a
+
+456
+00:17:14,609 --> 00:17:15,929
+bunch of operating systems for my
+
+457
+00:17:15,929 --> 00:17:18,299
+database ism then I would have to have a
+
+458
+00:17:18,299 --> 00:17:19,740
+sort of wrapper layer to make sure that
+
+459
+00:17:19,740 --> 00:17:23,490
+that that I had it sort of the lowest
+
+460
+00:17:23,490 --> 00:17:24,780
+common denominator of what the thread
+
+461
+00:17:24,780 --> 00:17:26,939
+API was so it made it more portable now
+
+462
+00:17:26,939 --> 00:17:28,590
+a P threads this is this is not an issue
+
+463
+00:17:28,590 --> 00:17:31,919
+so one thing also say to well one of
+
+464
+00:17:31,919 --> 00:17:33,990
+things we did when we serve first
+
+465
+00:17:33,990 --> 00:17:35,940
+started building peloton was we took the
+
+466
+00:17:35,940 --> 00:17:37,380
+Postgres source code forked it like
+
+467
+00:17:37,380 --> 00:17:41,460
+everyone else does we then converted it
+
+468
+00:17:41,460 --> 00:17:43,470
+to be multi-threaded if you go google
+
+469
+00:17:43,470 --> 00:17:45,659
+Postgres multi-threaded you'll see a
+
+470
+00:17:45,659 --> 00:17:47,549
+mailing list post from i'm former PhD
+
+471
+00:17:47,549 --> 00:17:50,120
+student saying hey look we did
+
+472
+00:17:50,120 --> 00:17:52,770
+afraid why we did it was a bad whatever
+
+473
+00:17:52,770 --> 00:17:54,780
+ah but it turns out the way we actually
+
+474
+00:17:54,780 --> 00:17:56,490
+got it to convert convert it was wasn't
+
+475
+00:17:56,490 --> 00:17:59,580
+like we took the in the Postgres source
+
+476
+00:17:59,580 --> 00:18:01,050
+code it's a single code base but they
+
+477
+00:18:01,050 --> 00:18:02,370
+have all these pound of fines that says
+
+478
+00:18:02,370 --> 00:18:05,430
+if you know if Linux do this if when 32
+
+479
+00:18:05,430 --> 00:18:07,530
+do that if you go take the windows code
+
+480
+00:18:07,530 --> 00:18:08,640
+you can actually convert that to
+
+481
+00:18:08,640 --> 00:18:09,990
+pthreads much more easily then you could
+
+482
+00:18:09,990 --> 00:18:14,460
+convert the the Linux code anyway and we
+
+483
+00:18:14,460 --> 00:18:15,840
+also converted this tipo plus 11 which
+
+484
+00:18:15,840 --> 00:18:18,240
+again for for historical reasons I don't
+
+485
+00:18:18,240 --> 00:18:20,100
+remember but in our new system we threw
+
+486
+00:18:20,100 --> 00:18:21,390
+all that away we don't have any we don't
+
+487
+00:18:21,390 --> 00:18:23,760
+inherit any Postgres code anymore so
+
+488
+00:18:23,760 --> 00:18:25,830
+again the multi-threaded approach is
+
+489
+00:18:25,830 --> 00:18:27,750
+better you have lower overhead context
+
+490
+00:18:27,750 --> 00:18:29,700
+switch and then you don't the manage
+
+491
+00:18:29,700 --> 00:18:31,650
+shared memory in the multi process case
+
+492
+00:18:31,650 --> 00:18:34,650
+you're either sending I pcs to each
+
+493
+00:18:34,650 --> 00:18:37,140
+other or you have shared memory to so
+
+494
+00:18:37,140 --> 00:18:38,550
+that everyone can read and write into
+
+495
+00:18:38,550 --> 00:18:41,490
+the same location the important thing
+
+496
+00:18:41,490 --> 00:18:43,170
+else to point out too is just because we
+
+497
+00:18:43,170 --> 00:18:45,660
+may be using a multi-threaded process
+
+498
+00:18:45,660 --> 00:18:47,550
+model doesn't necessarily mean we're
+
+499
+00:18:47,550 --> 00:18:48,870
+gonna get intro query parallelism in our
+
+500
+00:18:48,870 --> 00:18:51,360
+database system so Maltin my sequel is a
+
+501
+00:18:51,360 --> 00:18:53,790
+multi-threaded database system but it's
+
+502
+00:18:53,790 --> 00:18:56,640
+one thread per query request right they
+
+503
+00:18:56,640 --> 00:18:57,930
+can't divide it up the tasks across
+
+504
+00:18:57,930 --> 00:18:59,850
+multiple workers and in their
+
+505
+00:18:59,850 --> 00:19:01,740
+environment doing OTP that's that's
+
+506
+00:19:01,740 --> 00:19:04,290
+that's fine and as I said I'm not aware
+
+507
+00:19:04,290 --> 00:19:06,510
+of anybody any other system in the last
+
+508
+00:19:06,510 --> 00:19:08,070
+built in the last ten years and the last
+
+509
+00:19:08,070 --> 00:19:10,650
+their forked from from post graphs which
+
+510
+00:19:10,650 --> 00:19:13,380
+is a process pool model approach and
+
+511
+00:19:13,380 --> 00:19:15,300
+let's they're based on post grass every
+
+512
+00:19:15,300 --> 00:19:16,980
+new system is gonna be using both multi
+
+513
+00:19:16,980 --> 00:19:19,830
+threads okay and that's we're gonna
+
+514
+00:19:19,830 --> 00:19:23,010
+that's what we use in our system alright
+
+515
+00:19:23,010 --> 00:19:24,690
+so now let's get to his question was
+
+516
+00:19:24,690 --> 00:19:27,870
+about this this issue of of whether this
+
+517
+00:19:27,870 --> 00:19:29,730
+core running same corn same socket or a
+
+518
+00:19:29,730 --> 00:19:32,970
+different socket so regardless of how
+
+519
+00:19:32,970 --> 00:19:36,360
+we're gonna do our worker allocation or
+
+520
+00:19:36,360 --> 00:19:39,090
+task assignment policy in our system we
+
+521
+00:19:39,090 --> 00:19:40,680
+want to make sure that all the workers
+
+522
+00:19:40,680 --> 00:19:43,590
+are going to operate on local data so in
+
+523
+00:19:43,590 --> 00:19:44,910
+a distributed system this is like a
+
+524
+00:19:44,910 --> 00:19:47,640
+no-brainer if I have two machines and my
+
+525
+00:19:47,640 --> 00:19:49,920
+data is you know my machines on the west
+
+526
+00:19:49,920 --> 00:19:51,150
+coast one machine was the East Coast my
+
+527
+00:19:51,150 --> 00:19:53,100
+query shows up and wants to touch data
+
+528
+00:19:53,100 --> 00:19:55,320
+on the west coast I send the query to
+
+529
+00:19:55,320 --> 00:19:56,820
+the west coast and process it there that
+
+530
+00:19:56,820 --> 00:19:59,220
+way its operating on local data well a
+
+531
+00:19:59,220 --> 00:20:01,560
+multi socket multi-core data or
+
+532
+00:20:01,560 --> 00:20:04,320
+but socket multi-core system even though
+
+533
+00:20:04,320 --> 00:20:06,870
+it's running on on in a one box still is
+
+534
+00:20:06,870 --> 00:20:08,610
+sort of like a distributor database
+
+535
+00:20:08,610 --> 00:20:10,800
+system so the same rules the same same
+
+536
+00:20:10,800 --> 00:20:13,230
+concepts apply here so we want to make
+
+537
+00:20:13,230 --> 00:20:14,940
+sure that we always have our tasks
+
+538
+00:20:14,940 --> 00:20:18,150
+operate on local data for where the
+
+539
+00:20:18,150 --> 00:20:20,550
+thread the worker is actually running so
+
+540
+00:20:20,550 --> 00:20:22,560
+this means now that our scheduler needs
+
+541
+00:20:22,560 --> 00:20:24,930
+me aware of what the memory layout is
+
+542
+00:20:24,930 --> 00:20:28,440
+for our underlying hardware and at a
+
+543
+00:20:28,440 --> 00:20:30,450
+high level there's two approaches this
+
+544
+00:20:30,450 --> 00:20:31,890
+is a uniform and and then the
+
+545
+00:20:31,890 --> 00:20:33,870
+non-uniform memory access so this is
+
+546
+00:20:33,870 --> 00:20:37,020
+also the acronym is Numa so you're here
+
+547
+00:20:37,020 --> 00:20:38,400
+meet a multiple times numeral region
+
+548
+00:20:38,400 --> 00:20:40,140
+Numa this noon with that that's that's
+
+549
+00:20:40,140 --> 00:20:41,610
+this one this is the most common one we
+
+550
+00:20:41,610 --> 00:20:45,210
+have in a most eSATA system today back
+
+551
+00:20:45,210 --> 00:20:46,320
+in the day we had what was called
+
+552
+00:20:46,320 --> 00:20:48,330
+uniform memory access this is sometimes
+
+553
+00:20:48,330 --> 00:20:51,390
+called symmetric multiprocessors SMP and
+
+554
+00:20:51,390 --> 00:20:53,760
+it's basically the same thing and the
+
+555
+00:20:53,760 --> 00:20:56,610
+idea is that the the tasks of the
+
+556
+00:20:56,610 --> 00:20:57,630
+workers are running down here in the
+
+557
+00:20:57,630 --> 00:21:00,510
+cores they do have some local CPU caches
+
+558
+00:21:00,510 --> 00:21:04,560
+l1 l2 l3 but all memory is managed
+
+559
+00:21:04,560 --> 00:21:06,780
+through this system bus so for any task
+
+560
+00:21:06,780 --> 00:21:09,270
+running on any socket the cost of
+
+561
+00:21:09,270 --> 00:21:12,030
+accessing a chunk of memory is the same
+
+562
+00:21:12,030 --> 00:21:14,010
+no matter where I'm running on right so
+
+563
+00:21:14,010 --> 00:21:15,570
+if I'm down here and I want to access
+
+564
+00:21:15,570 --> 00:21:18,000
+memory that's in in this this damn here
+
+565
+00:21:18,000 --> 00:21:19,860
+the cost of retrieving that is the same
+
+566
+00:21:19,860 --> 00:21:21,440
+if I was running here or the other ones
+
+567
+00:21:21,440 --> 00:21:24,420
+because there's overhead of going over
+
+568
+00:21:24,420 --> 00:21:27,060
+there this system bus so we still need
+
+569
+00:21:27,060 --> 00:21:28,590
+to do cache invalidation in this world
+
+570
+00:21:28,590 --> 00:21:31,110
+right the the the the hardware is aware
+
+571
+00:21:31,110 --> 00:21:33,870
+of I read this region of memory and now
+
+572
+00:21:33,870 --> 00:21:35,940
+it's in my CPU cache somebody else reads
+
+573
+00:21:35,940 --> 00:21:37,560
+the same thing and rights to it the
+
+574
+00:21:37,560 --> 00:21:39,450
+system boss has to take can handle of
+
+575
+00:21:39,450 --> 00:21:40,980
+invalidating our cache every you know
+
+576
+00:21:40,980 --> 00:21:43,350
+our cache entry up here all that sort of
+
+577
+00:21:43,350 --> 00:21:46,140
+handle for you so they said this is how
+
+578
+00:21:46,140 --> 00:21:49,950
+they built up until maybe like 2005 ish
+
+579
+00:21:49,950 --> 00:21:53,310
+2006 this is how Intel and AMD we're
+
+580
+00:21:53,310 --> 00:21:56,400
+designing their multi socket CPU systems
+
+581
+00:21:56,400 --> 00:21:59,640
+but now we have have the Numa stuff and
+
+582
+00:21:59,640 --> 00:22:01,020
+in this world there's not really any
+
+583
+00:22:01,020 --> 00:22:02,660
+from a database system perspective
+
+584
+00:22:02,660 --> 00:22:06,330
+there's no intelligence intelligence we
+
+585
+00:22:06,330 --> 00:22:08,370
+need to embed in our scheduler because I
+
+586
+00:22:08,370 --> 00:22:10,500
+said it does we don't know we don't care
+
+587
+00:22:10,500 --> 00:22:11,970
+this looks like one John address base
+
+588
+00:22:11,970 --> 00:22:15,299
+and the access cost is the same
+
+589
+00:22:15,299 --> 00:22:18,519
+what modern systems look like is in the
+
+590
+00:22:18,519 --> 00:22:22,029
+new model is that you still you now have
+
+591
+00:22:22,029 --> 00:22:24,340
+memory that's local to each socket so
+
+592
+00:22:24,340 --> 00:22:25,600
+you again you always have your your
+
+593
+00:22:25,600 --> 00:22:27,399
+local CPU cache and then you're gonna
+
+594
+00:22:27,399 --> 00:22:28,600
+have dims that are there gonna be
+
+595
+00:22:28,600 --> 00:22:30,700
+physically closer to your socket and
+
+596
+00:22:30,700 --> 00:22:32,499
+have a direct path to go read and write
+
+597
+00:22:32,499 --> 00:22:36,639
+to it so on on Intel chips the CPU cache
+
+598
+00:22:36,639 --> 00:22:39,570
+for every core the l1 l2 will be
+
+599
+00:22:39,570 --> 00:22:42,009
+specific to that core but then they're
+
+600
+00:22:42,009 --> 00:22:44,259
+also share share l3 and then obviously
+
+601
+00:22:44,259 --> 00:22:47,379
+they share the dim here and then now if
+
+602
+00:22:47,379 --> 00:22:50,049
+I need to have my my tasks running here
+
+603
+00:22:50,049 --> 00:22:51,940
+if it needs to access memory that's not
+
+604
+00:22:51,940 --> 00:22:53,619
+in my local dim and I got to go over to
+
+605
+00:22:53,619 --> 00:22:55,570
+this other CPU here I'm going to go over
+
+606
+00:22:55,570 --> 00:22:58,149
+this interconnect to send my message in
+
+607
+00:22:58,149 --> 00:22:59,679
+the hardware to say hey go read this
+
+608
+00:22:59,679 --> 00:23:01,779
+thing for me then the CPU knows how to
+
+609
+00:23:01,779 --> 00:23:03,100
+go out to the dim and then bring it back
+
+610
+00:23:03,100 --> 00:23:04,090
+down into me
+
+611
+00:23:04,090 --> 00:23:07,720
+so the the performance difference here
+
+612
+00:23:07,720 --> 00:23:09,850
+for just pure like read/write speed is
+
+613
+00:23:09,850 --> 00:23:12,159
+about 50 percent slower so if I have to
+
+614
+00:23:12,159 --> 00:23:13,809
+read data around here roughly it's could
+
+615
+00:23:13,809 --> 00:23:15,309
+be 50 percent slower than if I was
+
+616
+00:23:15,309 --> 00:23:22,210
+reading data locally yes like for the
+
+617
+00:23:22,210 --> 00:23:24,519
+here to here no look at the bus is
+
+618
+00:23:24,519 --> 00:23:27,399
+basically like this bus is basically
+
+619
+00:23:27,399 --> 00:23:28,809
+saying like alright I want access memory
+
+620
+00:23:28,809 --> 00:23:30,519
+address and you basically translate that
+
+621
+00:23:30,519 --> 00:23:35,110
+into some dim slot right yeah look
+
+622
+00:23:35,110 --> 00:23:37,059
+locally is yeah so if I have to read
+
+623
+00:23:37,059 --> 00:23:39,039
+here as 50% slower than reading local
+
+624
+00:23:39,039 --> 00:23:40,779
+here like think of this as like as the
+
+625
+00:23:40,779 --> 00:23:45,850
+fast path yeah so again like that means
+
+626
+00:23:45,850 --> 00:23:48,700
+now in our database system when we start
+
+627
+00:23:48,700 --> 00:23:50,820
+loading in our data we want to be aware
+
+628
+00:23:50,820 --> 00:23:53,529
+we're actually gonna put it then when
+
+629
+00:23:53,529 --> 00:23:54,879
+queries show up and they want to start
+
+630
+00:23:54,879 --> 00:23:56,799
+executing we need to be aware of what
+
+631
+00:23:56,799 --> 00:23:58,960
+data they want to touch right in our
+
+632
+00:23:58,960 --> 00:24:00,850
+task and make sure our tasks are on here
+
+633
+00:24:00,850 --> 00:24:03,490
+then OS doesn't know anything right the
+
+634
+00:24:03,490 --> 00:24:06,190
+OS sees a bunch of threads that want to
+
+635
+00:24:06,190 --> 00:24:08,409
+do some kind of work but it doesn't know
+
+636
+00:24:08,409 --> 00:24:09,549
+you know doesn't know your Bitcoin
+
+637
+00:24:09,549 --> 00:24:11,049
+mining thread from your database to some
+
+638
+00:24:11,049 --> 00:24:14,200
+thread so we have to tell it hey we want
+
+639
+00:24:14,200 --> 00:24:15,519
+to make sure that we run things locally
+
+640
+00:24:15,519 --> 00:24:21,249
+here right so the this interconnect if
+
+641
+00:24:21,249 --> 00:24:23,230
+it's you know it's a high speed high
+
+642
+00:24:23,230 --> 00:24:24,340
+speed
+
+643
+00:24:24,340 --> 00:24:25,659
+not really I don't think though I
+
+644
+00:24:25,659 --> 00:24:27,460
+wouldn't call it a bus but they say it's
+
+645
+00:24:27,460 --> 00:24:28,519
+a high speed connect
+
+646
+00:24:28,519 --> 00:24:30,139
+between these different sockets that's
+
+647
+00:24:30,139 --> 00:24:31,700
+multiplex you can go both directions and
+
+648
+00:24:31,700 --> 00:24:34,070
+talk to anybody in television we call
+
+649
+00:24:34,070 --> 00:24:35,570
+this the quickpath interconnect of the
+
+650
+00:24:35,570 --> 00:24:37,969
+qpi then that wasn't good enough so now
+
+651
+00:24:37,969 --> 00:24:39,549
+they call it the ultra path interconnect
+
+652
+00:24:39,549 --> 00:24:41,509
+in 2017
+
+653
+00:24:41,509 --> 00:24:43,219
+AMD has their own version it's now
+
+654
+00:24:43,219 --> 00:24:45,049
+called the infinity fabric power has
+
+655
+00:24:45,049 --> 00:24:46,820
+their own thing an arm
+
+656
+00:24:46,820 --> 00:24:48,440
+I think has their own thing as well but
+
+657
+00:24:48,440 --> 00:24:50,479
+it's at a high level they're all it's
+
+658
+00:24:50,479 --> 00:24:53,349
+all doing the same thing right
+
+659
+00:24:53,349 --> 00:24:59,659
+okay so now if I called Malick question
+
+660
+00:24:59,659 --> 00:25:01,009
+is where's my memory going to show up
+
+661
+00:25:01,009 --> 00:25:05,359
+all right so the way to think about this
+
+662
+00:25:05,359 --> 00:25:07,339
+is that we're going to take the the
+
+663
+00:25:07,339 --> 00:25:09,349
+tables that we have in memory and we're
+
+664
+00:25:09,349 --> 00:25:10,820
+going to partition them or break them up
+
+665
+00:25:10,820 --> 00:25:14,389
+into two chunks of data blocks and then
+
+666
+00:25:14,389 --> 00:25:16,609
+now we want to assign them each of these
+
+667
+00:25:16,609 --> 00:25:20,179
+blocks to a specific CPU core right and
+
+668
+00:25:20,179 --> 00:25:23,109
+in a more high CPU socket or Numa region
+
+669
+00:25:23,109 --> 00:25:26,149
+so if we're aware of where we're putting
+
+670
+00:25:26,149 --> 00:25:28,099
+our data where that data is being
+
+671
+00:25:28,099 --> 00:25:30,559
+located when a query shows up and we
+
+672
+00:25:30,559 --> 00:25:31,999
+make decisions about how to break it up
+
+673
+00:25:31,999 --> 00:25:33,889
+into tasks and what those tasks what
+
+674
+00:25:33,889 --> 00:25:35,299
+pieces of data those tasks of an operate
+
+675
+00:25:35,299 --> 00:25:37,669
+on we can make sure that we schedule our
+
+676
+00:25:37,669 --> 00:25:39,799
+operators to execute on data its local
+
+677
+00:25:39,799 --> 00:25:42,709
+to this so this is an old problem in
+
+678
+00:25:42,709 --> 00:25:43,879
+distribute data this is called data
+
+679
+00:25:43,879 --> 00:25:45,589
+placement so think of partitioning is
+
+680
+00:25:45,589 --> 00:25:47,149
+deciding like how do I break it up and
+
+681
+00:25:47,149 --> 00:25:48,589
+what boundaries and then data placement
+
+682
+00:25:48,589 --> 00:25:50,479
+is saying where do I put those actual
+
+683
+00:25:50,479 --> 00:25:52,669
+partitions that I've generated so in
+
+684
+00:25:52,669 --> 00:25:54,649
+Linux you can control this through the
+
+685
+00:25:54,649 --> 00:25:56,869
+the move pages syscall or the noumic
+
+686
+00:25:56,869 --> 00:25:58,669
+control command-line option or command
+
+687
+00:25:58,669 --> 00:26:00,379
+line tool so basically what happens with
+
+688
+00:26:00,379 --> 00:26:03,469
+new it would move pages that if you just
+
+689
+00:26:03,469 --> 00:26:04,940
+invoke it with a memory address it'll
+
+690
+00:26:04,940 --> 00:26:06,349
+come back and tell you what numeration
+
+691
+00:26:06,349 --> 00:26:08,479
+and it's on but if you invoke it with a
+
+692
+00:26:08,479 --> 00:26:12,349
+memory address a size and a numeration
+
+693
+00:26:12,349 --> 00:26:15,109
+it'll it'll move that data to to that
+
+694
+00:26:15,109 --> 00:26:16,849
+location and I think that's a blocking
+
+695
+00:26:16,849 --> 00:26:19,879
+syscall so if you think about this if I
+
+696
+00:26:19,879 --> 00:26:22,399
+have a one terabyte database and I can
+
+697
+00:26:22,399 --> 00:26:24,049
+load it into memory and then sort of get
+
+698
+00:26:24,049 --> 00:26:25,669
+randomly scattered across different
+
+699
+00:26:25,669 --> 00:26:28,579
+different sockets then I can go back and
+
+700
+00:26:28,579 --> 00:26:31,159
+call move pages and start putting things
+
+701
+00:26:31,159 --> 00:26:32,509
+in and what you know where I want them
+
+702
+00:26:32,509 --> 00:26:37,489
+all right so let's talk about now what
+
+703
+00:26:37,489 --> 00:26:39,679
+happens when you call malloc so let's
+
+704
+00:26:39,679 --> 00:26:40,969
+say our data system calls malloc cuz
+
+705
+00:26:40,969 --> 00:26:42,019
+we're gonna load into one terabyte
+
+706
+00:26:42,019 --> 00:26:42,830
+database
+
+707
+00:26:42,830 --> 00:26:45,140
+the question I have for you guys is what
+
+708
+00:26:45,140 --> 00:26:47,450
+happens what happens in that Cisco
+
+709
+00:26:47,450 --> 00:26:49,970
+assume that my allocator as already
+
+710
+00:26:49,970 --> 00:26:52,370
+handed out all the the the pages that I
+
+711
+00:26:52,370 --> 00:26:54,620
+have that's already pre allocated what
+
+712
+00:26:54,620 --> 00:26:59,410
+does it actually do yes
+
+713
+00:26:59,410 --> 00:27:03,110
+he says calls s break yes sort of well
+
+714
+00:27:03,110 --> 00:27:05,030
+yeah that's this right so as break will
+
+715
+00:27:05,030 --> 00:27:07,040
+extend the process data segment but
+
+716
+00:27:07,040 --> 00:27:08,060
+that's just getting moving it to be
+
+717
+00:27:08,060 --> 00:27:11,240
+larger but after that it's actually not
+
+718
+00:27:11,240 --> 00:27:12,860
+doing anything it's like all a day was
+
+719
+00:27:12,860 --> 00:27:15,260
+update the internal bookkeeping data
+
+720
+00:27:15,260 --> 00:27:17,000
+structures it has for for this boundary
+
+721
+00:27:17,000 --> 00:27:18,800
+but all the virtual memory just
+
+722
+00:27:18,800 --> 00:27:20,780
+allocated with the S break is not
+
+723
+00:27:20,780 --> 00:27:23,090
+actually physically allocated in memory
+
+724
+00:27:23,090 --> 00:27:26,030
+because no one's access to debt it's
+
+725
+00:27:26,030 --> 00:27:27,770
+only when we touch the data does is
+
+726
+00:27:27,770 --> 00:27:29,870
+they're paid fault and then the OS says
+
+727
+00:27:29,870 --> 00:27:30,860
+oh it looks like you're actually gonna
+
+728
+00:27:30,860 --> 00:27:32,810
+use this memory let me go may have and
+
+729
+00:27:32,810 --> 00:27:37,040
+be backed by physical memory right so
+
+730
+00:27:37,040 --> 00:27:38,660
+now though let's say after the page
+
+731
+00:27:38,660 --> 00:27:40,640
+fault so after call s break and then
+
+732
+00:27:40,640 --> 00:27:42,430
+someone tries to access this memory
+
+733
+00:27:42,430 --> 00:27:44,480
+where are we actually gonna put this
+
+734
+00:27:44,480 --> 00:27:48,250
+this memory week that we just allocated
+
+735
+00:27:48,490 --> 00:27:52,910
+let me take a guess is it to thread that
+
+736
+00:27:52,910 --> 00:27:54,050
+allocate of it or is the thread that
+
+737
+00:27:54,050 --> 00:27:57,650
+touched it touch it
+
+738
+00:27:57,650 --> 00:28:01,220
+why that's what the paper said yes okay
+
+739
+00:28:01,220 --> 00:28:01,580
+good
+
+740
+00:28:01,580 --> 00:28:05,390
+fantastic okay yes so there is a policy
+
+741
+00:28:05,390 --> 00:28:08,630
+that to tell the OS that whatever thread
+
+742
+00:28:08,630 --> 00:28:10,130
+touches that memory that's where I
+
+743
+00:28:10,130 --> 00:28:11,270
+wanted to be allocated so when there's
+
+744
+00:28:11,270 --> 00:28:13,790
+so I can allocate it it adult calls s
+
+745
+00:28:13,790 --> 00:28:15,800
+break extends virtual memory from light
+
+746
+00:28:15,800 --> 00:28:17,600
+for my process but only one no threat
+
+747
+00:28:17,600 --> 00:28:18,830
+touches it then there's the page fault
+
+748
+00:28:18,830 --> 00:28:20,480
+and then we put it in that physical
+
+749
+00:28:20,480 --> 00:28:27,530
+location yes this question is the OS
+
+750
+00:28:27,530 --> 00:28:29,960
+cannot promise virtual memory unless it
+
+751
+00:28:29,960 --> 00:28:31,370
+has physical memory what do you I
+
+752
+00:28:31,370 --> 00:28:33,850
+promise
+
+753
+00:28:37,610 --> 00:28:41,070
+think big I I want I want one terabyte
+
+754
+00:28:41,070 --> 00:28:53,520
+of memory what happens oh you can't you
+
+755
+00:28:53,520 --> 00:29:03,620
+can't yes yes it's bad but is it wrong
+
+756
+00:29:05,900 --> 00:29:08,760
+yes phosphates yes so that's the way so
+
+757
+00:29:08,760 --> 00:29:10,560
+actually you can see this now if you run
+
+758
+00:29:10,560 --> 00:29:12,690
+some of the tests with a SAN from our
+
+759
+00:29:12,690 --> 00:29:15,000
+database system it'll say the virtual
+
+760
+00:29:15,000 --> 00:29:16,590
+memory size of the database process is
+
+761
+00:29:16,590 --> 00:29:19,860
+12 terabytes we obviously don't have 12
+
+762
+00:29:19,860 --> 00:29:23,750
+terabytes on any machine right so the
+
+763
+00:29:23,750 --> 00:29:26,700
+the OS is making the decision here that
+
+764
+00:29:26,700 --> 00:29:29,250
+like most people are gonna allocate more
+
+765
+00:29:29,250 --> 00:29:30,630
+memory than they actually need so I'll
+
+766
+00:29:30,630 --> 00:29:33,120
+to let you have it and if you actually
+
+767
+00:29:33,120 --> 00:29:34,680
+end up needing it then you yes you you
+
+768
+00:29:34,680 --> 00:29:36,990
+have to start swapping out pages to to
+
+769
+00:29:36,990 --> 00:29:39,150
+the swap space on disk and that makes it
+
+770
+00:29:39,150 --> 00:29:40,290
+look that's virtual memory it makes it
+
+771
+00:29:40,290 --> 00:29:41,370
+look like you have more memory than you
+
+772
+00:29:41,370 --> 00:29:42,090
+actually have
+
+773
+00:29:42,090 --> 00:29:46,590
+all right but in our in a database world
+
+774
+00:29:46,590 --> 00:29:48,300
+for the things we talk about here we
+
+775
+00:29:48,300 --> 00:29:50,100
+actually talk about that the the data
+
+776
+00:29:50,100 --> 00:29:52,040
+the inside tables the tools themselves
+
+777
+00:29:52,040 --> 00:29:56,370
+we're gonna use that space so seeing of
+
+778
+00:29:56,370 --> 00:29:58,710
+this is like alright well I I'm not
+
+779
+00:29:58,710 --> 00:30:00,240
+gonna allocate I'm not gonna turn to
+
+780
+00:30:00,240 --> 00:30:01,830
+anybody says mourn and have pre-allocate
+
+781
+00:30:01,830 --> 00:30:04,230
+you know one gigabyte of memory it's
+
+782
+00:30:04,230 --> 00:30:06,300
+only as I start inserting data that I've
+
+783
+00:30:06,300 --> 00:30:07,920
+recognized oh well I'm running out of
+
+784
+00:30:07,920 --> 00:30:09,360
+space for my pre allocated memory that I
+
+785
+00:30:09,360 --> 00:30:11,760
+have now let me go grab another you know
+
+786
+00:30:11,760 --> 00:30:14,370
+100 megabytes break it up to block start
+
+787
+00:30:14,370 --> 00:30:16,800
+filling data in so the question is we're
+
+788
+00:30:16,800 --> 00:30:18,270
+trying to get here is like when I do
+
+789
+00:30:18,270 --> 00:30:20,760
+that where's that M memory actually be
+
+790
+00:30:20,760 --> 00:30:22,860
+stored by default you get this where the
+
+791
+00:30:22,860 --> 00:30:25,290
+OS does round-robin to start just
+
+792
+00:30:25,290 --> 00:30:28,110
+writing out pages to lean in one socket
+
+793
+00:30:28,110 --> 00:30:29,820
+at a time and goes around over and over
+
+794
+00:30:29,820 --> 00:30:32,370
+again what he said as he pointed out the
+
+795
+00:30:32,370 --> 00:30:34,230
+paper that you can tell the OS I want to
+
+796
+00:30:34,230 --> 00:30:36,330
+use the first touch policy so that I'll
+
+797
+00:30:36,330 --> 00:30:38,700
+allocate the memory and then when the
+
+798
+00:30:38,700 --> 00:30:41,330
+task actually starts inserting into that
+
+799
+00:30:41,330 --> 00:30:44,460
+into that block there'll be the page
+
+800
+00:30:44,460 --> 00:30:46,410
+fault and then that's when it updates
+
+801
+00:30:46,410 --> 00:30:47,910
+the the virtual memory table to now be
+
+802
+00:30:47,910 --> 00:30:49,639
+back by physical memory and then I can
+
+803
+00:30:49,639 --> 00:30:53,269
+that data into the to the table and that
+
+804
+00:30:53,269 --> 00:30:54,649
+physical memory will be wherever my
+
+805
+00:30:54,649 --> 00:30:59,239
+threat is actually running right again
+
+806
+00:30:59,239 --> 00:31:00,979
+you can do this you can modify the
+
+807
+00:31:00,979 --> 00:31:02,629
+location after the fact you can call
+
+808
+00:31:02,629 --> 00:31:05,899
+that move pages sis call to say alright
+
+809
+00:31:05,899 --> 00:31:07,729
+well I've loaded my table and let me go
+
+810
+00:31:07,729 --> 00:31:09,019
+start moving things around accordingly
+
+811
+00:31:09,019 --> 00:31:10,309
+but that's actually obviously stupid
+
+812
+00:31:10,309 --> 00:31:12,440
+because like if I'm loading a one
+
+813
+00:31:12,440 --> 00:31:13,759
+terabyte data is I don't want to load it
+
+814
+00:31:13,759 --> 00:31:15,259
+all in first and just have it be
+
+815
+00:31:15,259 --> 00:31:16,999
+scattered around randomly then go back
+
+816
+00:31:16,999 --> 00:31:18,769
+and do sequential scan and then actually
+
+817
+00:31:18,769 --> 00:31:19,940
+start you know moving things to the
+
+818
+00:31:19,940 --> 00:31:22,190
+right location I want to use this policy
+
+819
+00:31:22,190 --> 00:31:23,839
+ahead of time be aware where I'm
+
+820
+00:31:23,839 --> 00:31:27,499
+scheduling my schedule might might my my
+
+821
+00:31:27,499 --> 00:31:29,989
+tasks so that I have an even
+
+822
+00:31:29,989 --> 00:31:31,759
+distribution of the data across all all
+
+823
+00:31:31,759 --> 00:31:36,200
+threads or close all sockets right so
+
+824
+00:31:36,200 --> 00:31:38,509
+let's see the impact of this when we
+
+825
+00:31:38,509 --> 00:31:39,799
+have fine grained control of where we're
+
+826
+00:31:39,799 --> 00:31:41,509
+putting data so I'm gonna show to slides
+
+827
+00:31:41,509 --> 00:31:42,889
+here the first will be LTP and the first
+
+828
+00:31:42,889 --> 00:31:44,839
+of the OLAP so this is from a paper a
+
+829
+00:31:44,839 --> 00:31:47,299
+few years ago from a natasa Telemachus
+
+830
+00:31:47,299 --> 00:31:49,639
+group at EPFL and so this is running an
+
+831
+00:31:49,639 --> 00:31:51,919
+in-memory database on a four socket
+
+832
+00:31:51,919 --> 00:31:54,559
+machine eight cores per six cores per
+
+833
+00:31:54,559 --> 00:31:56,539
+socket and they're just gonna run the
+
+834
+00:31:56,539 --> 00:31:59,599
+TPCC payment transaction and what
+
+835
+00:31:59,599 --> 00:32:01,639
+they're gonna do is they're going to put
+
+836
+00:32:01,639 --> 00:32:04,759
+the different warehouses or the blocks
+
+837
+00:32:04,759 --> 00:32:07,279
+of data for the for the for the database
+
+838
+00:32:07,279 --> 00:32:09,829
+on different configurations across the
+
+839
+00:32:09,829 --> 00:32:11,929
+the sockets so spread will be every
+
+840
+00:32:11,929 --> 00:32:15,799
+every socket has has you know an equal
+
+841
+00:32:15,799 --> 00:32:17,029
+portion of one quarter of the total
+
+842
+00:32:17,029 --> 00:32:18,979
+table group was where you're gonna shove
+
+843
+00:32:18,979 --> 00:32:20,690
+everything when to a single socket mix
+
+844
+00:32:20,690 --> 00:32:22,639
+is where you split it 50/50 and the OS
+
+845
+00:32:22,639 --> 00:32:24,109
+is just letting the OS do whatever at
+
+846
+00:32:24,109 --> 00:32:25,909
+once and I'm putting question marks in
+
+847
+00:32:25,909 --> 00:32:27,979
+here because like we don't know so
+
+848
+00:32:27,979 --> 00:32:29,450
+whatever the policy that the OS decides
+
+849
+00:32:29,450 --> 00:32:31,849
+to do is what it gets and so what you
+
+850
+00:32:31,849 --> 00:32:34,929
+can see here obviously that if our
+
+851
+00:32:34,929 --> 00:32:37,159
+threads can access data that are all
+
+852
+00:32:37,159 --> 00:32:39,079
+running on the same socket you'll get
+
+853
+00:32:39,079 --> 00:32:40,759
+about a 30% improvement over what the OS
+
+854
+00:32:40,759 --> 00:32:42,499
+will do because the OS is gonna do
+
+855
+00:32:42,499 --> 00:32:44,119
+something looks like it's doing
+
+856
+00:32:44,119 --> 00:32:45,289
+something a little bit smarter than
+
+857
+00:32:45,289 --> 00:32:47,479
+spread but not that you know much
+
+858
+00:32:47,479 --> 00:32:50,539
+smarter than mix or group so we this is
+
+859
+00:32:50,539 --> 00:32:51,829
+just showing you if you let the let the
+
+860
+00:32:51,829 --> 00:32:53,749
+OS be in charge of deciding where
+
+861
+00:32:53,749 --> 00:32:55,309
+they're gonna place data and also where
+
+862
+00:32:55,309 --> 00:32:58,729
+it's gonna schedule our threads is you
+
+863
+00:32:58,729 --> 00:33:00,319
+have a bad time and you get 30% better
+
+864
+00:33:00,319 --> 00:33:01,790
+by doing it yourself
+
+865
+00:33:01,790 --> 00:33:05,000
+right and when I think of the students
+
+866
+00:33:05,000 --> 00:33:05,960
+like all the feds are running on some
+
+867
+00:33:05,960 --> 00:33:08,360
+Woonsocket so you may be thinking all
+
+868
+00:33:08,360 --> 00:33:10,280
+right well wouldn't be better for me to
+
+869
+00:33:10,280 --> 00:33:12,200
+spread across multiple sockets so that
+
+870
+00:33:12,200 --> 00:33:15,710
+our threads have you know a larger
+
+871
+00:33:15,710 --> 00:33:17,150
+portion of the CPU caches to themselves
+
+872
+00:33:17,150 --> 00:33:18,800
+well no because going over that
+
+873
+00:33:18,800 --> 00:33:20,570
+interconnect to transfer data from one
+
+874
+00:33:20,570 --> 00:33:22,910
+thread to the next is gonna be
+
+875
+00:33:22,910 --> 00:33:24,290
+problematic because this payment
+
+876
+00:33:24,290 --> 00:33:26,060
+transaction will update data at
+
+877
+00:33:26,060 --> 00:33:27,890
+different partitions so you may have to
+
+878
+00:33:27,890 --> 00:33:31,550
+go crawl socket the next slide I want
+
+879
+00:33:31,550 --> 00:33:34,040
+show you is a micro benchmark experiment
+
+880
+00:33:34,040 --> 00:33:35,840
+that some former students of mine ran a
+
+881
+00:33:35,840 --> 00:33:38,630
+few years ago so this is running a sort
+
+882
+00:33:38,630 --> 00:33:41,030
+of a simple execution engine that they
+
+883
+00:33:41,030 --> 00:33:44,360
+wrote for I think for taking 618 and all
+
+884
+00:33:44,360 --> 00:33:45,830
+it's going to do is just a sequential
+
+885
+00:33:45,830 --> 00:33:48,410
+scan over 10 million tuples and they're
+
+886
+00:33:48,410 --> 00:33:50,300
+gonna run this on a beast machine we had
+
+887
+00:33:50,300 --> 00:33:53,450
+in the PTL or PDL there was eight
+
+888
+00:33:53,450 --> 00:33:56,840
+sockets at the time ago 2008 machine
+
+889
+00:33:56,840 --> 00:33:58,400
+it's a bit old but like there's the only
+
+890
+00:33:58,400 --> 00:34:00,640
+a socket machine we had access to and
+
+891
+00:34:00,640 --> 00:34:03,020
+every every socket has 10 cores plus
+
+892
+00:34:03,020 --> 00:34:05,690
+hyper threading and so the what along
+
+893
+00:34:05,690 --> 00:34:07,130
+the x-axis you can see is they're gonna
+
+894
+00:34:07,130 --> 00:34:09,080
+add more threads to do the sequential
+
+895
+00:34:09,080 --> 00:34:11,418
+scan in parallel so the the size of the
+
+896
+00:34:11,418 --> 00:34:13,040
+table has always been the same and now
+
+897
+00:34:13,040 --> 00:34:14,360
+we're just adding more threads so that
+
+898
+00:34:14,360 --> 00:34:17,000
+we can you know do do do execute the
+
+899
+00:34:17,000 --> 00:34:19,929
+scan in parallel so what you see is that
+
+900
+00:34:19,929 --> 00:34:22,969
+at the lower core counts or thread
+
+901
+00:34:22,969 --> 00:34:24,440
+counts the performance difference
+
+902
+00:34:24,440 --> 00:34:27,290
+between the the so the raina partition
+
+903
+00:34:27,290 --> 00:34:28,850
+is like you just let the OS decide where
+
+904
+00:34:28,850 --> 00:34:29,480
+wants to put it
+
+905
+00:34:29,480 --> 00:34:31,070
+the local partition is where you you
+
+906
+00:34:31,070 --> 00:34:33,320
+assign threads to execute the scan on
+
+907
+00:34:33,320 --> 00:34:35,810
+data that's local to its its numeration
+
+908
+00:34:35,810 --> 00:34:38,449
+so at the lower thread counts because
+
+909
+00:34:38,449 --> 00:34:40,820
+the the table is spread across multiple
+
+910
+00:34:40,820 --> 00:34:45,230
+sockets the probability that a thread is
+
+911
+00:34:45,230 --> 00:34:46,730
+going to have to access data at a remote
+
+912
+00:34:46,730 --> 00:34:48,830
+socket and go over the interconnect is
+
+913
+00:34:48,830 --> 00:34:51,800
+higher so therefore it doesn't really
+
+914
+00:34:51,800 --> 00:34:53,110
+matter if you're dividing up
+
+915
+00:34:53,110 --> 00:34:55,580
+intelligently or not but as we now
+
+916
+00:34:55,580 --> 00:34:58,220
+increase the number of threads then the
+
+917
+00:34:58,220 --> 00:35:00,470
+amount of cross socket traffic we have
+
+918
+00:35:00,470 --> 00:35:03,110
+for our scan threads goes down
+
+919
+00:35:03,110 --> 00:35:05,180
+significantly for for when we do the
+
+920
+00:35:05,180 --> 00:35:07,070
+local partition local partitioning and
+
+921
+00:35:07,070 --> 00:35:08,240
+that's why you get better performance
+
+922
+00:35:08,240 --> 00:35:10,820
+and then this division point here is
+
+923
+00:35:10,820 --> 00:35:12,980
+when hyper threading kicks in so up into
+
+924
+00:35:12,980 --> 00:35:14,090
+80 cores
+
+925
+00:35:14,090 --> 00:35:15,650
+it's all you know
+
+926
+00:35:15,650 --> 00:35:16,880
+Harbor chorus but then in the
+
+927
+00:35:16,880 --> 00:35:18,290
+hyper-threading you get the virtual
+
+928
+00:35:18,290 --> 00:35:21,230
+course and at that point here we're
+
+929
+00:35:21,230 --> 00:35:23,420
+bound by memory bandwidth so throwing
+
+930
+00:35:23,420 --> 00:35:25,160
+more cores and more threads at us that
+
+931
+00:35:25,160 --> 00:35:26,660
+doesn't help us anything because it's
+
+932
+00:35:26,660 --> 00:35:28,130
+not like you know one thread stolen
+
+933
+00:35:28,130 --> 00:35:29,570
+waiting for like disk i/o another thread
+
+934
+00:35:29,570 --> 00:35:31,400
+it can run everybody just waiting for
+
+935
+00:35:31,400 --> 00:35:32,840
+get stuff at it out of the memory
+
+936
+00:35:32,840 --> 00:35:34,220
+controller so that's why the performance
+
+937
+00:35:34,220 --> 00:35:37,730
+plateaus so this case here I forget the
+
+938
+00:35:37,730 --> 00:35:39,680
+exact numbers but it's almost about a 2x
+
+939
+00:35:39,680 --> 00:35:41,420
+performance difference between or over
+
+940
+00:35:41,420 --> 00:35:43,190
+2x performance difference between being
+
+941
+00:35:43,190 --> 00:35:44,630
+intelligent at how we do or you know
+
+942
+00:35:44,630 --> 00:35:45,800
+place our data on run time on our
+
+943
+00:35:45,800 --> 00:35:49,250
+operators versus letting the OS and the
+
+944
+00:35:49,250 --> 00:35:53,930
+hardware manager for us okay so as I
+
+945
+00:35:53,930 --> 00:35:57,170
+said briefly the is this notion of
+
+946
+00:35:57,170 --> 00:35:58,520
+partitioning and data placement we're
+
+947
+00:35:58,520 --> 00:36:01,270
+not gonna talk about partitioning here
+
+948
+00:36:01,270 --> 00:36:03,530
+but think about partitioning scheme is
+
+949
+00:36:03,530 --> 00:36:06,650
+again it's some policy we're to use to
+
+950
+00:36:06,650 --> 00:36:08,690
+decide how we divide our data up into
+
+951
+00:36:08,690 --> 00:36:11,000
+chunks and the placement decides the
+
+952
+00:36:11,000 --> 00:36:12,530
+placement policy decides where we're
+
+953
+00:36:12,530 --> 00:36:14,840
+gonna put those partitions so the
+
+954
+00:36:14,840 --> 00:36:18,560
+placement policy is sort of agnostic to
+
+955
+00:36:18,560 --> 00:36:20,180
+what's actually in our partitions and
+
+956
+00:36:20,180 --> 00:36:21,890
+you saw this in the morsel paper right
+
+957
+00:36:21,890 --> 00:36:23,780
+in the morsel paper that said all the
+
+958
+00:36:23,780 --> 00:36:24,800
+threats care about is that they're
+
+959
+00:36:24,800 --> 00:36:26,270
+operating on data that's local to it and
+
+960
+00:36:26,270 --> 00:36:27,770
+they just pull it out of queue and this
+
+961
+00:36:27,770 --> 00:36:30,110
+process it in a partitioning scheme you
+
+962
+00:36:30,110 --> 00:36:32,890
+can have some higher-level logical
+
+963
+00:36:32,890 --> 00:36:35,120
+meaning or semantics to how you're
+
+964
+00:36:35,120 --> 00:36:36,830
+dividing up the data that you can then
+
+965
+00:36:36,830 --> 00:36:40,460
+exploit in your query execution and this
+
+966
+00:36:40,460 --> 00:36:42,110
+is what we'll cover this in future
+
+967
+00:36:42,110 --> 00:36:45,920
+lectures like if I know that my my quick
+
+968
+00:36:45,920 --> 00:36:47,210
+might workload is always going to be
+
+969
+00:36:47,210 --> 00:36:51,080
+doing hash joins on a given partition or
+
+970
+00:36:51,080 --> 00:36:52,190
+starting I want to give an attribute
+
+971
+00:36:52,190 --> 00:36:54,140
+then I could decide the hash partition
+
+972
+00:36:54,140 --> 00:36:56,150
+my data all in that joint attribute so
+
+973
+00:36:56,150 --> 00:36:58,160
+that now when I run the joint algorithm
+
+974
+00:36:58,160 --> 00:37:00,920
+all the data that that every operator
+
+975
+00:37:00,920 --> 00:37:03,370
+needs to operate to do the join is is
+
+976
+00:37:03,370 --> 00:37:06,470
+local to it and the query optimizer is
+
+977
+00:37:06,470 --> 00:37:08,750
+aware of this partitioning scheme all
+
+978
+00:37:08,750 --> 00:37:11,270
+that is sort of above us when we do data
+
+979
+00:37:11,270 --> 00:37:15,590
+placement scheduling here okay all right
+
+980
+00:37:15,590 --> 00:37:17,090
+so at this point what we have we have a
+
+981
+00:37:17,090 --> 00:37:19,100
+process model we have a task assignment
+
+982
+00:37:19,100 --> 00:37:20,960
+pilot model basically how we're gonna
+
+983
+00:37:20,960 --> 00:37:23,660
+decide you know where should where
+
+984
+00:37:23,660 --> 00:37:25,850
+should tests actually run its where the
+
+985
+00:37:25,850 --> 00:37:28,220
+memory is local to it and we decided how
+
+986
+00:37:28,220 --> 00:37:29,359
+we're gonna saw it you know
+
+987
+00:37:29,359 --> 00:37:32,660
+determine what mechanism we're going to
+
+988
+00:37:32,660 --> 00:37:36,200
+use to pin chunks of memory or chunks of
+
+989
+00:37:36,200 --> 00:37:39,049
+data to memory locations so now we need
+
+990
+00:37:39,049 --> 00:37:39,950
+to talk about how we're actually to
+
+991
+00:37:39,950 --> 00:37:41,869
+create a bunch of tasks that we want to
+
+992
+00:37:41,869 --> 00:37:44,660
+then execute for our for our logical
+
+993
+00:37:44,660 --> 00:37:47,420
+query plan and then once we have those
+
+994
+00:37:47,420 --> 00:37:48,470
+we can get aside how we're actually
+
+995
+00:37:48,470 --> 00:37:51,470
+going to going to to schedule them so
+
+996
+00:37:51,470 --> 00:37:53,660
+402 B queries this is super simple
+
+997
+00:37:53,660 --> 00:37:55,999
+because most of the time there's not
+
+998
+00:37:55,999 --> 00:37:57,589
+really any opportunities for parallelism
+
+999
+00:37:57,589 --> 00:38:00,259
+in a single old to be query I could have
+
+1000
+00:38:00,259 --> 00:38:01,700
+multiple OTP queries running at the same
+
+1001
+00:38:01,700 --> 00:38:03,289
+time across different transactions and
+
+1002
+00:38:03,289 --> 00:38:04,880
+certainly I want to have them run on
+
+1003
+00:38:04,880 --> 00:38:06,079
+separate threads and they want to run on
+
+1004
+00:38:06,079 --> 00:38:09,109
+on you know on the the sockets that have
+
+1005
+00:38:09,109 --> 00:38:11,450
+the memory that's local to it but for
+
+1006
+00:38:11,450 --> 00:38:13,519
+the data they want to access but within
+
+1007
+00:38:13,519 --> 00:38:15,380
+a single or to be query I can't really
+
+1008
+00:38:15,380 --> 00:38:17,390
+divide that up into sub chunks right
+
+1009
+00:38:17,390 --> 00:38:20,660
+like go get andis account record that's
+
+1010
+00:38:20,660 --> 00:38:22,369
+like a single and next probe to go get
+
+1011
+00:38:22,369 --> 00:38:23,210
+my one record
+
+1012
+00:38:23,210 --> 00:38:25,819
+I can't paralyze that so this is gonna
+
+1013
+00:38:25,819 --> 00:38:27,440
+be this what we care about this for is
+
+1014
+00:38:27,440 --> 00:38:30,200
+for the OLAP queries and then we can
+
+1015
+00:38:30,200 --> 00:38:31,640
+still apply now the same techniques
+
+1016
+00:38:31,640 --> 00:38:32,839
+we're gonna do to schedule OLAP queries
+
+1017
+00:38:32,839 --> 00:38:35,210
+to schedule multiple ultimately queries
+
+1018
+00:38:35,210 --> 00:38:36,920
+at the same time right okay that are
+
+1019
+00:38:36,920 --> 00:38:37,970
+running on behalf of different
+
+1020
+00:38:37,970 --> 00:38:42,200
+transactions so the easiest way to do
+
+1021
+00:38:42,200 --> 00:38:44,359
+scheduling is called static segment and
+
+1022
+00:38:44,359 --> 00:38:45,769
+that's where the data doesn't decide
+
+1023
+00:38:45,769 --> 00:38:47,029
+before it even starts exceeding the
+
+1024
+00:38:47,029 --> 00:38:48,920
+query I know the number threads that I
+
+1025
+00:38:48,920 --> 00:38:52,549
+have a number of course that I have it
+
+1026
+00:38:52,549 --> 00:38:54,950
+can decide like I'll just say I have one
+
+1027
+00:38:54,950 --> 00:38:56,779
+task for every core and then shove them
+
+1028
+00:38:56,779 --> 00:38:59,410
+off to the hardware and let them execute
+
+1029
+00:38:59,410 --> 00:39:02,269
+right so this is the easiest thing to do
+
+1030
+00:39:02,269 --> 00:39:04,309
+because I don't worry about monitoring
+
+1031
+00:39:04,309 --> 00:39:06,200
+the behavior of the task while they're
+
+1032
+00:39:06,200 --> 00:39:08,480
+running I just say this is my plan I'm
+
+1033
+00:39:08,480 --> 00:39:10,460
+sticking with it and I don't care about
+
+1034
+00:39:10,460 --> 00:39:13,339
+alternatives so this is the if you're
+
+1035
+00:39:13,339 --> 00:39:14,390
+building a data system for the first
+
+1036
+00:39:14,390 --> 00:39:15,799
+time this is probably what you end up
+
+1037
+00:39:15,799 --> 00:39:16,910
+building because it's the easiest thing
+
+1038
+00:39:16,910 --> 00:39:19,970
+to do so again this is not the same
+
+1039
+00:39:19,970 --> 00:39:22,099
+thing as is the placement policy stuff
+
+1040
+00:39:22,099 --> 00:39:24,109
+right we we have a place in policy into
+
+1041
+00:39:24,109 --> 00:39:27,140
+us to have that we use to assign the
+
+1042
+00:39:27,140 --> 00:39:28,220
+tasks to threads basically the data
+
+1043
+00:39:28,220 --> 00:39:29,989
+location this just sort of saying how do
+
+1044
+00:39:29,989 --> 00:39:33,140
+we divide up our tasks and and and at
+
+1045
+00:39:33,140 --> 00:39:35,440
+runtime how do we actually schedule them
+
+1046
+00:39:35,440 --> 00:39:39,259
+so the approach that I had you guys the
+
+1047
+00:39:39,259 --> 00:39:40,730
+reason why this is me Paulo Matic for
+
+1048
+00:39:40,730 --> 00:39:43,069
+OLAP queries especially is that
+
+1049
+00:39:43,069 --> 00:39:46,849
+it doesn't take into account the the you
+
+1050
+00:39:46,849 --> 00:39:48,769
+know the the runtime of these individual
+
+1051
+00:39:48,769 --> 00:39:50,779
+tasks only different courts so if I have
+
+1052
+00:39:50,779 --> 00:39:53,029
+that one terabyte database and I have a
+
+1053
+00:39:53,029 --> 00:39:54,499
+sim I'm doing a scan on it with a
+
+1054
+00:39:54,499 --> 00:39:56,660
+predicate and for whatever reason on one
+
+1055
+00:39:56,660 --> 00:40:00,589
+socket the data at that socket that
+
+1056
+00:40:00,589 --> 00:40:02,359
+predicate evaluates to true for more
+
+1057
+00:40:02,359 --> 00:40:04,309
+tuples where every other socket that the
+
+1058
+00:40:04,309 --> 00:40:05,569
+predicate is very selective so I should
+
+1059
+00:40:05,569 --> 00:40:06,680
+end up throwing most of the data away
+
+1060
+00:40:06,680 --> 00:40:09,739
+and so that means now for my task runs
+
+1061
+00:40:09,739 --> 00:40:11,599
+on my one socket it's gonna spend much
+
+1062
+00:40:11,599 --> 00:40:14,420
+longer than the other sock has to finish
+
+1063
+00:40:14,420 --> 00:40:16,819
+that one task because more tuples are
+
+1064
+00:40:16,819 --> 00:40:18,709
+getting put into its output buffer as
+
+1065
+00:40:18,709 --> 00:40:21,109
+it's doing more memory copying and if I
+
+1066
+00:40:21,109 --> 00:40:22,579
+static scheduling approach I can't
+
+1067
+00:40:22,579 --> 00:40:24,289
+dynamically adjust the system and say
+
+1068
+00:40:24,289 --> 00:40:25,759
+alright well I see this guy's going slow
+
+1069
+00:40:25,759 --> 00:40:28,099
+and there's much more data than that it
+
+1070
+00:40:28,099 --> 00:40:30,229
+could possibly execute the heck bet
+
+1071
+00:40:30,229 --> 00:40:32,509
+we're waiting on let me go bring in
+
+1072
+00:40:32,509 --> 00:40:34,249
+other threads to help it out to speed
+
+1073
+00:40:34,249 --> 00:40:36,920
+things up so statics - you can't do that
+
+1074
+00:40:36,920 --> 00:40:38,989
+but this is what dynamic scheduling can
+
+1075
+00:40:38,989 --> 00:40:40,789
+can handle and this is the problem that
+
+1076
+00:40:40,789 --> 00:40:42,079
+the hyper guys are trying to solve what
+
+1077
+00:40:42,079 --> 00:40:44,719
+their approach so the more so driven
+
+1078
+00:40:44,719 --> 00:40:46,969
+scheduling is the idea is that we're
+
+1079
+00:40:46,969 --> 00:40:48,729
+going to process our tasks in parallel
+
+1080
+00:40:48,729 --> 00:40:50,959
+over these horizontal partitions that
+
+1081
+00:40:50,959 --> 00:40:53,479
+they call morsels so morsel is a hyper
+
+1082
+00:40:53,479 --> 00:40:55,130
+term it's not like a standard term in
+
+1083
+00:40:55,130 --> 00:40:57,529
+database systems I think they picked it
+
+1084
+00:40:57,529 --> 00:40:59,269
+because they didn't want to use word
+
+1085
+00:40:59,269 --> 00:41:00,499
+term block because that's uses a bunch
+
+1086
+00:41:00,499 --> 00:41:01,880
+of places they didn't use a term
+
+1087
+00:41:01,880 --> 00:41:02,900
+partition because that's already bunch
+
+1088
+00:41:02,900 --> 00:41:05,229
+of you can use as much places like a
+
+1089
+00:41:05,229 --> 00:41:07,579
+morsel is larger than a block but
+
+1090
+00:41:07,579 --> 00:41:09,380
+smaller than a partition it's a way to
+
+1091
+00:41:09,380 --> 00:41:11,150
+think about it as far as you know no
+
+1092
+00:41:11,150 --> 00:41:12,410
+other system actually uses in this term
+
+1093
+00:41:12,410 --> 00:41:15,049
+this is specific to hyper so they're
+
+1094
+00:41:15,049 --> 00:41:17,959
+gonna have one worker per core and so
+
+1095
+00:41:17,959 --> 00:41:19,789
+you have a multi-core socket you can
+
+1096
+00:41:19,789 --> 00:41:21,619
+have multiple cores per support for that
+
+1097
+00:41:21,619 --> 00:41:23,959
+socket there can be a pool based tasks
+
+1098
+00:41:23,959 --> 00:41:26,509
+einman meaning the the workers are gonna
+
+1099
+00:41:26,509 --> 00:41:27,920
+run they're gonna check some centralized
+
+1100
+00:41:27,920 --> 00:41:29,329
+data structure and say what work is
+
+1101
+00:41:29,329 --> 00:41:31,699
+available available to me and then when
+
+1102
+00:41:31,699 --> 00:41:33,259
+they load the data in they'll just do
+
+1103
+00:41:33,259 --> 00:41:35,299
+round-robin data placement so they'll
+
+1104
+00:41:35,299 --> 00:41:36,859
+have you know say I'm doing a bulk
+
+1105
+00:41:36,859 --> 00:41:39,739
+insert and I'll say well some portion of
+
+1106
+00:41:39,739 --> 00:41:41,180
+that ball concerned goes to this socket
+
+1107
+00:41:41,180 --> 00:41:43,009
+some portion goes this office I got the
+
+1108
+00:41:43,009 --> 00:41:46,009
+morsels so it's gonna be interesting
+
+1109
+00:41:46,009 --> 00:41:47,839
+about their approach is that the
+
+1110
+00:41:47,839 --> 00:41:50,089
+implementation of the actual database
+
+1111
+00:41:50,089 --> 00:41:52,309
+system is going to be entirely Numa
+
+1112
+00:41:52,309 --> 00:41:54,289
+aware meaning they'll have
+
+1113
+00:41:54,289 --> 00:41:56,630
+implementations of operators that
+
+1114
+00:41:56,630 --> 00:41:58,250
+recognize whether they're accessing data
+
+1115
+00:41:58,250 --> 00:42:00,830
+on a local numeral region or a remote
+
+1116
+00:42:00,830 --> 00:42:03,200
+Numa region and they'll do they'll have
+
+1117
+00:42:03,200 --> 00:42:04,520
+different strategies of where they put
+
+1118
+00:42:04,520 --> 00:42:06,560
+they put the output data or what what
+
+1119
+00:42:06,560 --> 00:42:08,110
+album they actually may want to use
+
+1120
+00:42:08,110 --> 00:42:10,790
+right and they'll use this when they
+
+1121
+00:42:10,790 --> 00:42:12,050
+make decisions about how to pull things
+
+1122
+00:42:12,050 --> 00:42:16,820
+out of the task task queue so as I said
+
+1123
+00:42:16,820 --> 00:42:18,470
+they're using a pull model so that means
+
+1124
+00:42:18,470 --> 00:42:19,610
+that there's no separate dispatcher
+
+1125
+00:42:19,610 --> 00:42:21,440
+thread there's no single thread in
+
+1126
+00:42:21,440 --> 00:42:22,910
+charge of having a global view of what's
+
+1127
+00:42:22,910 --> 00:42:25,700
+going on in the entire system and the
+
+1128
+00:42:25,700 --> 00:42:27,440
+threads are doing the workers arguing
+
+1129
+00:42:27,440 --> 00:42:28,510
+cooperative scheduling because
+
+1130
+00:42:28,510 --> 00:42:31,370
+everyone's looking at the same queue so
+
+1131
+00:42:31,370 --> 00:42:32,810
+what's gonna happen is that when they
+
+1132
+00:42:32,810 --> 00:42:35,300
+pull tasks out of this queue each worker
+
+1133
+00:42:35,300 --> 00:42:37,510
+thread is going to going to prefer
+
+1134
+00:42:37,510 --> 00:42:39,650
+threat of tasks that aren't gonna
+
+1135
+00:42:39,650 --> 00:42:42,680
+operate data local to it but it also can
+
+1136
+00:42:42,680 --> 00:42:44,720
+recognize that there are there no tests
+
+1137
+00:42:44,720 --> 00:42:46,070
+available to it that's that's operating
+
+1138
+00:42:46,070 --> 00:42:48,650
+on with local data and go try to steal
+
+1139
+00:42:48,650 --> 00:42:51,500
+work or steal tasks from another worker
+
+1140
+00:42:51,500 --> 00:42:54,110
+thread that may be operating data that
+
+1141
+00:42:54,110 --> 00:42:55,820
+that's that's remote to my worker thread
+
+1142
+00:42:55,820 --> 00:42:57,620
+but because this other worker thread is
+
+1143
+00:42:57,620 --> 00:43:00,590
+is going slow for some reason we'll pick
+
+1144
+00:43:00,590 --> 00:43:02,350
+up the slack and take some of their work
+
+1145
+00:43:02,350 --> 00:43:05,210
+and then their approach also - I'm not
+
+1146
+00:43:05,210 --> 00:43:06,800
+actually I'm a slide for this but in
+
+1147
+00:43:06,800 --> 00:43:09,380
+their model they only execute one query
+
+1148
+00:43:09,380 --> 00:43:12,650
+at a time so a query shows up they're
+
+1149
+00:43:12,650 --> 00:43:13,790
+gonna break it up to a bunch of tasks
+
+1150
+00:43:13,790 --> 00:43:15,680
+and you don't move on to the next query
+
+1151
+00:43:15,680 --> 00:43:17,960
+until all the tasks for that for that
+
+1152
+00:43:17,960 --> 00:43:19,010
+one query are finished
+
+1153
+00:43:19,010 --> 00:43:21,560
+alright so it's either the query is
+
+1154
+00:43:21,560 --> 00:43:22,550
+completely done and there's no more
+
+1155
+00:43:22,550 --> 00:43:23,780
+tasks available to it I move on to the
+
+1156
+00:43:23,780 --> 00:43:26,060
+next one or a worker thread can go steal
+
+1157
+00:43:26,060 --> 00:43:28,940
+tasks that the straggler worker can't
+
+1158
+00:43:28,940 --> 00:43:39,370
+keep up question yes question is like
+
+1159
+00:43:39,690 --> 00:43:42,130
+yeah so his question is what is actually
+
+1160
+00:43:42,130 --> 00:43:43,810
+dividing up of query into tasks and
+
+1161
+00:43:43,810 --> 00:43:45,670
+putting them into the queue I would call
+
+1162
+00:43:45,670 --> 00:43:47,230
+that a dispatcher that's like a that's
+
+1163
+00:43:47,230 --> 00:43:49,300
+sort of like the the front-end layer the
+
+1164
+00:43:49,300 --> 00:43:51,640
+query shows up you parse it you know
+
+1165
+00:43:51,640 --> 00:43:52,840
+parts the sequel front of the query
+
+1166
+00:43:52,840 --> 00:43:54,550
+optimizer and then at that point you
+
+1167
+00:43:54,550 --> 00:43:56,140
+have a you divide them into tasks and
+
+1168
+00:43:56,140 --> 00:43:58,150
+then a certain to the queue and whether
+
+1169
+00:43:58,150 --> 00:44:00,070
+that's a dedicated thread that's that's
+
+1170
+00:44:00,070 --> 00:44:01,630
+separate from the networking thread or
+
+1171
+00:44:01,630 --> 00:44:03,070
+the networking thread itself it doesn't
+
+1172
+00:44:03,070 --> 00:44:04,859
+it doesn't matter at this point I
+
+1173
+00:44:04,859 --> 00:44:06,880
+actually don't know what they do in our
+
+1174
+00:44:06,880 --> 00:44:09,730
+current system we the same thread that
+
+1175
+00:44:09,730 --> 00:44:12,340
+takes the the sequel query off the
+
+1176
+00:44:12,340 --> 00:44:14,470
+network socket parses it binds it not
+
+1177
+00:44:14,470 --> 00:44:16,630
+buys it well then it divides it up but
+
+1178
+00:44:16,630 --> 00:44:18,630
+you could hand it off to another queue
+
+1179
+00:44:18,630 --> 00:44:23,140
+yes this question is how that works you
+
+1180
+00:44:23,140 --> 00:44:23,530
+only work
+
+1181
+00:44:23,530 --> 00:44:26,530
+give me two slides we'll get there all
+
+1182
+00:44:26,530 --> 00:44:27,460
+right so first thing we need to do is
+
+1183
+00:44:27,460 --> 00:44:29,410
+divide our data up into into morsels so
+
+1184
+00:44:29,410 --> 00:44:31,060
+say this is our data table we have four
+
+1185
+00:44:31,060 --> 00:44:33,940
+columns so morsels are just horizontal
+
+1186
+00:44:33,940 --> 00:44:35,680
+partitioning where we're gonna say
+
+1187
+00:44:35,680 --> 00:44:38,950
+within some strive all right this is
+
+1188
+00:44:38,950 --> 00:44:42,820
+this is the boundary of a morsel in the
+
+1189
+00:44:42,820 --> 00:44:44,290
+in the paper they talk about they use a
+
+1190
+00:44:44,290 --> 00:44:45,580
+hundred thousand two pools per most
+
+1191
+00:44:45,580 --> 00:44:47,859
+morsel and they say they pick this
+
+1192
+00:44:47,859 --> 00:44:49,930
+number because it provides the right
+
+1193
+00:44:49,930 --> 00:44:51,250
+amount of parallelism versus the
+
+1194
+00:44:51,250 --> 00:44:53,890
+overhead of putting stuff in a queue so
+
+1195
+00:44:53,890 --> 00:44:56,260
+for every task I get and pull out of the
+
+1196
+00:44:56,260 --> 00:44:59,710
+queue I'm gonna least operate on at most
+
+1197
+00:44:59,710 --> 00:45:04,119
+100,000 tuples in peloton our block
+
+1198
+00:45:04,119 --> 00:45:06,760
+sizes were a thousand tuples in aged
+
+1199
+00:45:06,760 --> 00:45:08,470
+order the system I helped build before I
+
+1200
+00:45:08,470 --> 00:45:10,690
+came to see him you we did ten megabytes
+
+1201
+00:45:10,690 --> 00:45:12,460
+as far as I remember from the
+
+1202
+00:45:12,460 --> 00:45:13,900
+discussions of those systems we just
+
+1203
+00:45:13,900 --> 00:45:15,160
+picked those numbers out of her ass like
+
+1204
+00:45:15,160 --> 00:45:16,510
+it's not like there was any magic to it
+
+1205
+00:45:16,510 --> 00:45:19,089
+I think in the case of hyper they said
+
+1206
+00:45:19,089 --> 00:45:20,800
+they actually did some you know some
+
+1207
+00:45:20,800 --> 00:45:22,450
+internal micro benchmark to determine
+
+1208
+00:45:22,450 --> 00:45:23,619
+that a hundred thousand one actually was
+
+1209
+00:45:23,619 --> 00:45:25,869
+actually reasonable in our new system as
+
+1210
+00:45:25,869 --> 00:45:29,550
+I said a few more few lectures ago our
+
+1211
+00:45:29,550 --> 00:45:32,680
+block sizes are 1 megabytes because this
+
+1212
+00:45:32,680 --> 00:45:34,770
+allows to have the 20 bit offsets that
+
+1213
+00:45:34,770 --> 00:45:37,810
+we use the line as command in c + 11 i
+
+1214
+00:45:37,810 --> 00:45:39,520
+didn't look to align our blocks of 1
+
+1215
+00:45:39,520 --> 00:45:42,700
+megabyte chunks in memory right and
+
+1216
+00:45:42,700 --> 00:45:44,410
+again so for each of these muscles we'll
+
+1217
+00:45:44,410 --> 00:45:45,400
+just order to assign them to different
+
+1218
+00:45:45,400 --> 00:45:48,430
+CPU sockets so now getting to his
+
+1219
+00:45:48,430 --> 00:45:50,410
+question how how we're actually going to
+
+1220
+00:45:50,410 --> 00:45:52,330
+do work-stealing so say now we take our
+
+1221
+00:45:52,330 --> 00:45:53,019
+query plan
+
+1222
+00:45:53,019 --> 00:45:54,969
+and then we're gonna chop it up into
+
+1223
+00:45:54,969 --> 00:45:57,189
+different tasks then we're gonna put in
+
+1224
+00:45:57,189 --> 00:45:59,289
+this global queue and then now down here
+
+1225
+00:45:59,289 --> 00:46:00,909
+for every single socket it's gonna have
+
+1226
+00:46:00,909 --> 00:46:02,919
+its local memory and then it'll have a
+
+1227
+00:46:02,919 --> 00:46:04,509
+buffer that the control results but it
+
+1228
+00:46:04,509 --> 00:46:06,069
+also have all the morsels that it's
+
+1229
+00:46:06,069 --> 00:46:09,880
+aware of that are local to it and so the
+
+1230
+00:46:09,880 --> 00:46:12,729
+buffers will be as you process a task we
+
+1231
+00:46:12,729 --> 00:46:14,589
+want to write data to our local buffer
+
+1232
+00:46:14,589 --> 00:46:16,059
+it's sort of the same way we talked
+
+1233
+00:46:16,059 --> 00:46:18,069
+about doing the Delta store in the hyper
+
+1234
+00:46:18,069 --> 00:46:21,429
+approach where as I was generating new
+
+1235
+00:46:21,429 --> 00:46:22,239
+versions
+
+1236
+00:46:22,239 --> 00:46:24,459
+I put the old versions in thread local
+
+1237
+00:46:24,459 --> 00:46:26,140
+memory and that means that I didn't have
+
+1238
+00:46:26,140 --> 00:46:28,689
+to have a coronation of a global shared
+
+1239
+00:46:28,689 --> 00:46:30,729
+memory space that that multiple threads
+
+1240
+00:46:30,729 --> 00:46:32,229
+be ready and ready to at the same time I
+
+1241
+00:46:32,229 --> 00:46:34,089
+know that no the threat writing to my
+
+1242
+00:46:34,089 --> 00:46:35,289
+buffer at this time so I don't take a
+
+1243
+00:46:35,289 --> 00:46:38,229
+latch on it so now all the threads are
+
+1244
+00:46:38,229 --> 00:46:41,529
+gonna go look in the queue and pull down
+
+1245
+00:46:41,529 --> 00:46:43,089
+the first bunch of tests that it must
+
+1246
+00:46:43,089 --> 00:46:45,489
+execute so in this task you you maintain
+
+1247
+00:46:45,489 --> 00:46:46,749
+information about the dependency between
+
+1248
+00:46:46,749 --> 00:46:52,089
+these between the between the tasks so
+
+1249
+00:46:52,089 --> 00:46:53,619
+it would know that I can't actually
+
+1250
+00:46:53,619 --> 00:46:56,199
+execute the probe until I do the build
+
+1251
+00:46:56,199 --> 00:46:58,019
+the hash table and do partitioning for
+
+1252
+00:46:58,019 --> 00:47:00,519
+on the other side here so it knows that
+
+1253
+00:47:00,519 --> 00:47:01,899
+these are the tasks I can execute first
+
+1254
+00:47:01,899 --> 00:47:05,679
+so again so as the each each thread runs
+
+1255
+00:47:05,679 --> 00:47:07,839
+a worker runs the task it's pulling data
+
+1256
+00:47:07,839 --> 00:47:09,639
+out of its local memory which is gonna
+
+1257
+00:47:09,639 --> 00:47:12,159
+be fast and then as a you know actually
+
+1258
+00:47:12,159 --> 00:47:14,019
+X use the operators and produces some
+
+1259
+00:47:14,019 --> 00:47:15,939
+output result it writes it now to its
+
+1260
+00:47:15,939 --> 00:47:21,689
+local buffer yes question is is the
+
+1261
+00:47:21,689 --> 00:47:24,639
+global task queue in some sort of socket
+
+1262
+00:47:24,639 --> 00:47:26,499
+or is it distributed I think they let
+
+1263
+00:47:26,499 --> 00:47:28,119
+the OS manage this one because there's
+
+1264
+00:47:28,119 --> 00:47:30,849
+not really anything everybody if
+
+1265
+00:47:30,849 --> 00:47:31,779
+everyone has to read and write to it
+
+1266
+00:47:31,779 --> 00:47:35,349
+there's not any magic you can do and
+
+1267
+00:47:35,349 --> 00:47:38,789
+think about it - like the
+
+1268
+00:47:44,340 --> 00:47:46,890
+yeah so his point is like well well
+
+1269
+00:47:46,890 --> 00:47:49,620
+we'll see this in Hana wait his damn it
+
+1270
+00:47:49,620 --> 00:47:51,930
+is this global task queue is a shared
+
+1271
+00:47:51,930 --> 00:47:53,760
+shared memory space right so I need so
+
+1272
+00:47:53,760 --> 00:47:55,650
+they're going to use a lot free your lat
+
+1273
+00:47:55,650 --> 00:47:57,750
+tree hash table to avoid having to
+
+1274
+00:47:57,750 --> 00:47:59,340
+synchronize on on this or have a heavy
+
+1275
+00:47:59,340 --> 00:48:00,540
+synchronization synchronization
+
+1276
+00:48:00,540 --> 00:48:03,810
+primitive but you could partition the
+
+1277
+00:48:03,810 --> 00:48:05,430
+memory of this global task queue such
+
+1278
+00:48:05,430 --> 00:48:07,530
+that these guys look in their local
+
+1279
+00:48:07,530 --> 00:48:08,970
+memory first find tasks that are
+
+1280
+00:48:08,970 --> 00:48:10,350
+specific to him and if not gonna look at
+
+1281
+00:48:10,350 --> 00:48:11,850
+other ones Hana would do this as far as
+
+1282
+00:48:11,850 --> 00:48:31,110
+I know hyper Hana does this was seen a
+
+1283
+00:48:31,110 --> 00:48:35,270
+few more times yes there's this quote I
+
+1284
+00:48:35,270 --> 00:48:42,990
+think yes for what everything they
+
+1285
+00:48:42,990 --> 00:48:45,090
+didn't do this so but the point the plan
+
+1286
+00:48:45,090 --> 00:48:47,370
+is gonna make is like the morsel size is
+
+1287
+00:48:47,370 --> 00:48:50,250
+100 100 thousand tuples that's where the
+
+1288
+00:48:50,250 --> 00:48:52,260
+big the bottleneck is gonna be if I'm
+
+1289
+00:48:52,260 --> 00:48:53,940
+going over the inter connect to a remote
+
+1290
+00:48:53,940 --> 00:48:55,710
+socket like the bottleneck is reading
+
+1291
+00:48:55,710 --> 00:48:58,290
+this going fetching one task that's
+
+1292
+00:48:58,290 --> 00:49:02,100
+gonna be maybe a kilobyte of a size it's
+
+1293
+00:49:02,100 --> 00:49:04,770
+not me that big so going getting
+
+1294
+00:49:04,770 --> 00:49:06,900
+fetching one thing from a memory region
+
+1295
+00:49:06,900 --> 00:49:09,180
+it's not a big deal that's not what the
+
+1296
+00:49:09,180 --> 00:49:11,340
+bottleneck is so again you want to add
+
+1297
+00:49:11,340 --> 00:49:12,630
+is I'm knows law we want to optimize
+
+1298
+00:49:12,630 --> 00:49:15,030
+where the big overhead is or spending
+
+1299
+00:49:15,030 --> 00:49:16,560
+all our time it's with this and that's
+
+1300
+00:49:16,560 --> 00:49:20,850
+what the Optima is all right so say now
+
+1301
+00:49:20,850 --> 00:49:24,780
+these first two threads make sure the
+
+1302
+00:49:24,780 --> 00:49:26,280
+sister won't good the first two threads
+
+1303
+00:49:26,280 --> 00:49:28,830
+are finish up the first three workers
+
+1304
+00:49:28,830 --> 00:49:30,420
+finished up their tasks but the third
+
+1305
+00:49:30,420 --> 00:49:32,460
+guy is running slower as I said so maybe
+
+1306
+00:49:32,460 --> 00:49:35,730
+this filter is is unselective so we're
+
+1307
+00:49:35,730 --> 00:49:37,140
+generating a lot of output and running
+
+1308
+00:49:37,140 --> 00:49:38,400
+into our buffers and that means we're
+
+1309
+00:49:38,400 --> 00:49:41,340
+doing copying and wrong slower so now
+
+1310
+00:49:41,340 --> 00:49:44,370
+the other two workers can go grab the
+
+1311
+00:49:44,370 --> 00:49:45,780
+next two tasks or to execute
+
+1312
+00:49:45,780 --> 00:49:47,430
+same thing but say now this first one
+
+1313
+00:49:47,430 --> 00:49:49,050
+though finishes up this task more
+
+1314
+00:49:49,050 --> 00:49:51,300
+quickly it can then recognize that oh
+
+1315
+00:49:51,300 --> 00:49:55,670
+well the b3 is waiting
+
+1316
+00:49:55,670 --> 00:49:56,930
+also needs the executed before we can
+
+1317
+00:49:56,930 --> 00:49:59,540
+exit the the next task in our in our
+
+1318
+00:49:59,540 --> 00:50:01,790
+pipeline or in a query plan so let me go
+
+1319
+00:50:01,790 --> 00:50:03,680
+ahead and steal this guy bring it down
+
+1320
+00:50:03,680 --> 00:50:06,590
+and and and operate on it so that means
+
+1321
+00:50:06,590 --> 00:50:09,770
+now I'm at the copy data or move data
+
+1322
+00:50:09,770 --> 00:50:11,480
+we're not moving data you're copying
+
+1323
+00:50:11,480 --> 00:50:13,940
+data from the memory of the morsels for
+
+1324
+00:50:13,940 --> 00:50:15,860
+this socket here you're putting into
+
+1325
+00:50:15,860 --> 00:50:17,390
+your CPU cache over here so that's going
+
+1326
+00:50:17,390 --> 00:50:18,950
+over an interconnect but as I produce
+
+1327
+00:50:18,950 --> 00:50:20,720
+output then I'm gonna write this in my
+
+1328
+00:50:20,720 --> 00:50:22,820
+local buffer and there's some metadata
+
+1329
+00:50:22,820 --> 00:50:24,950
+that maintaining to say for this task
+
+1330
+00:50:24,950 --> 00:50:28,730
+the location of the enemy result that
+
+1331
+00:50:28,730 --> 00:50:30,920
+the next operator would need in our task
+
+1332
+00:50:30,920 --> 00:50:33,140
+queue is located here so there's some
+
+1333
+00:50:33,140 --> 00:50:34,700
+internal bookkeeping the third Natur
+
+1334
+00:50:34,700 --> 00:50:36,470
+they're keeping track up to know this
+
+1335
+00:50:36,470 --> 00:50:38,860
+task output got written to this location
+
+1336
+00:50:38,860 --> 00:51:05,990
+yes the same I think they mean by that
+
+1337
+00:51:05,990 --> 00:51:09,530
+is like they're not the because
+
+1338
+00:51:09,530 --> 00:51:12,110
+everything is in memory the amount of
+
+1339
+00:51:12,110 --> 00:51:14,510
+time like say here for this one when
+
+1340
+00:51:14,510 --> 00:51:17,060
+they were all A's because everything's
+
+1341
+00:51:17,060 --> 00:51:19,600
+in memory they're gonna be close enough
+
+1342
+00:51:19,600 --> 00:51:21,770
+it's not like this thing's gonna be
+
+1343
+00:51:21,770 --> 00:51:24,110
+waiting on disk and therefore be minutes
+
+1344
+00:51:24,110 --> 00:51:27,830
+slower right it's just like the idea is
+
+1345
+00:51:27,830 --> 00:51:29,150
+again because they only excute one query
+
+1346
+00:51:29,150 --> 00:51:31,460
+at a time rather than have this guy be
+
+1347
+00:51:31,460 --> 00:51:34,670
+idle waiting for b2 to finish then a3
+
+1348
+00:51:34,670 --> 00:51:35,810
+has to finish and then has to actually
+
+1349
+00:51:35,810 --> 00:51:37,160
+be three before you connect to the next
+
+1350
+00:51:37,160 --> 00:51:38,960
+task in go ahead and just go ahead and
+
+1351
+00:51:38,960 --> 00:51:46,070
+steal it yes this question is for this
+
+1352
+00:51:46,070 --> 00:51:47,660
+one here when I had to copy the more
+
+1353
+00:51:47,660 --> 00:51:50,600
+soul into my CPU cache running the sake
+
+1354
+00:51:50,600 --> 00:51:54,830
+here do I then do I then physically you
+
+1355
+00:51:54,830 --> 00:51:56,510
+know permanently move it to be over here
+
+1356
+00:51:56,510 --> 00:52:00,260
+no right because again the net score you
+
+1357
+00:52:00,260 --> 00:52:02,210
+might show up and now maybe this this
+
+1358
+00:52:02,210 --> 00:52:04,880
+socket is it's the slow one right and
+
+1359
+00:52:04,880 --> 00:52:06,380
+then this guy might be stealing back
+
+1360
+00:52:06,380 --> 00:52:06,830
+from me
+
+1361
+00:52:06,830 --> 00:52:09,470
+right typically you don't move the
+
+1362
+00:52:09,470 --> 00:52:09,750
+memory
+
+1363
+00:52:09,750 --> 00:52:11,730
+once it's all ready once it's already
+
+1364
+00:52:11,730 --> 00:52:13,890
+placed in locations you may want to
+
+1365
+00:52:13,890 --> 00:52:17,400
+report it repartition it may be split up
+
+1366
+00:52:17,400 --> 00:52:19,230
+on a different attribute but that seemed
+
+1367
+00:52:19,230 --> 00:52:21,180
+rare and many said that in those systems
+
+1368
+00:52:21,180 --> 00:52:26,150
+as well okay
+
+1369
+00:52:26,150 --> 00:52:28,740
+so again because they only have one work
+
+1370
+00:52:28,740 --> 00:52:30,960
+uh procore hyper has used that work
+
+1371
+00:52:30,960 --> 00:52:32,610
+stealing because otherwise they're gonna
+
+1372
+00:52:32,610 --> 00:52:34,530
+be they have threads waiting for for
+
+1373
+00:52:34,530 --> 00:52:36,660
+stragglers and as we already said they
+
+1374
+00:52:36,660 --> 00:52:37,830
+use a lot free hash able to maintain
+
+1375
+00:52:37,830 --> 00:52:39,690
+global work use so that means that the
+
+1376
+00:52:39,690 --> 00:52:41,910
+overhead of going grabbing things from
+
+1377
+00:52:41,910 --> 00:52:43,530
+the work queue is not that significant
+
+1378
+00:52:43,530 --> 00:52:46,470
+relevant relative to the actual cost of
+
+1379
+00:52:46,470 --> 00:52:50,040
+processing the morsel so now let's talk
+
+1380
+00:52:50,040 --> 00:52:52,650
+about another approach from Hannam and
+
+1381
+00:52:52,650 --> 00:52:53,790
+it sort of gets into what he was saying
+
+1382
+00:52:53,790 --> 00:52:57,360
+about how you want to organize the queue
+
+1383
+00:52:57,360 --> 00:53:00,600
+so Hana is gonna be using a I should be
+
+1384
+00:53:00,600 --> 00:53:02,070
+very clear this is from a research paper
+
+1385
+00:53:02,070 --> 00:53:04,650
+that a PhD student wrote while employed
+
+1386
+00:53:04,650 --> 00:53:07,710
+at sa P so in in in in Germany they have
+
+1387
+00:53:07,710 --> 00:53:10,860
+a model for PhDs where a a student can
+
+1388
+00:53:10,860 --> 00:53:13,080
+go work full-time at the company they
+
+1389
+00:53:13,080 --> 00:53:14,280
+still do research they still write
+
+1390
+00:53:14,280 --> 00:53:16,560
+papers they get paid by that company you
+
+1391
+00:53:16,560 --> 00:53:18,660
+like a regular salary like I'm not like
+
+1392
+00:53:18,660 --> 00:53:21,000
+a PhD stipend but then they get they get
+
+1393
+00:53:21,000 --> 00:53:23,670
+the degree from an institution so as far
+
+1394
+00:53:23,670 --> 00:53:24,960
+as you know what I'm describing here
+
+1395
+00:53:24,960 --> 00:53:26,640
+never actually made it into the real
+
+1396
+00:53:26,640 --> 00:53:28,800
+Hana system although the student was
+
+1397
+00:53:28,800 --> 00:53:30,810
+actually physically working on the real
+
+1398
+00:53:30,810 --> 00:53:32,580
+Hana source code when they implemented
+
+1399
+00:53:32,580 --> 00:53:36,000
+this but this is sort of a a different
+
+1400
+00:53:36,000 --> 00:53:38,100
+approach of how to do scheduling that
+
+1401
+00:53:38,100 --> 00:53:43,620
+than when Hana actually really does so
+
+1402
+00:53:43,620 --> 00:53:45,270
+his statement is does that mean whatever
+
+1403
+00:53:45,270 --> 00:53:46,560
+they describe here did not work out and
+
+1404
+00:53:46,560 --> 00:53:47,700
+therefore they did not want to put it in
+
+1405
+00:53:47,700 --> 00:53:49,860
+the real Hana system there's like yes
+
+1406
+00:53:49,860 --> 00:53:51,240
+this is a good idea we should do that
+
+1407
+00:53:51,240 --> 00:53:52,530
+and then there's like the engineering
+
+1408
+00:53:52,530 --> 00:53:53,880
+overhead of taking this research code
+
+1409
+00:53:53,880 --> 00:53:56,160
+and putting to the real system that's
+
+1410
+00:53:56,160 --> 00:53:57,690
+oftentimes why this stuff doesn't
+
+1411
+00:53:57,690 --> 00:54:01,260
+materialize right but it's not not like
+
+1412
+00:54:01,260 --> 00:54:03,000
+it's wasted work right certainly like if
+
+1413
+00:54:03,000 --> 00:54:05,220
+now ACP decides to build a new system
+
+1414
+00:54:05,220 --> 00:54:06,630
+which they actually end up rewriting a
+
+1415
+00:54:06,630 --> 00:54:08,640
+lot of Hana you know they now know
+
+1416
+00:54:08,640 --> 00:54:12,210
+something about you know some of the way
+
+1417
+00:54:12,210 --> 00:54:13,560
+different alternatives way to organize
+
+1418
+00:54:13,560 --> 00:54:15,300
+that's the schedule mechanisms so they
+
+1419
+00:54:15,300 --> 00:54:15,930
+could have done this
+
+1420
+00:54:15,930 --> 00:54:17,820
+so as you don't know since the 2019
+
+1421
+00:54:17,820 --> 00:54:19,440
+rewrite of Hana that came out last year
+
+1422
+00:54:19,440 --> 00:54:21,090
+I don't know whether they do this I
+
+1423
+00:54:21,090 --> 00:54:24,019
+suspect not but I just don't know
+
+1424
+00:54:24,019 --> 00:54:27,539
+all right so what they're gonna do is
+
+1425
+00:54:27,539 --> 00:54:29,579
+they're gonna it's a pool based cue but
+
+1426
+00:54:29,579 --> 00:54:30,690
+they're going to have multiple workers
+
+1427
+00:54:30,690 --> 00:54:32,880
+per socket so it's not gonna be the same
+
+1428
+00:54:32,880 --> 00:54:35,160
+thing in Hana where you have one worker
+
+1429
+00:54:35,160 --> 00:54:37,079
+for a core every core could have
+
+1430
+00:54:37,079 --> 00:54:38,339
+multiple workers and there being
+
+1431
+00:54:38,339 --> 00:54:41,119
+different different they're gonna have
+
+1432
+00:54:41,119 --> 00:54:45,539
+different statuses and so each group now
+
+1433
+00:54:45,539 --> 00:54:48,959
+also is gonna have a soft and a hard
+
+1434
+00:54:48,959 --> 00:54:51,359
+priority queue so that's what he was
+
+1435
+00:54:51,359 --> 00:54:52,979
+saying so couldn't I have a cue where I
+
+1436
+00:54:52,979 --> 00:54:54,509
+know that's local to me and I go check
+
+1437
+00:54:54,509 --> 00:54:56,400
+that first and if nothing's there then I
+
+1438
+00:54:56,400 --> 00:54:57,719
+go check another cue that's the global
+
+1439
+00:54:57,719 --> 00:55:00,420
+one that's this so the soft key would be
+
+1440
+00:55:00,420 --> 00:55:03,509
+local to my group it's gonna be some
+
+1441
+00:55:03,509 --> 00:55:04,559
+number of workers running on the same
+
+1442
+00:55:04,559 --> 00:55:08,190
+socket I sorry take it back that's the
+
+1443
+00:55:08,190 --> 00:55:09,809
+hard cue the hard cue is local to my
+
+1444
+00:55:09,809 --> 00:55:11,940
+group and hard means that nobody can
+
+1445
+00:55:11,940 --> 00:55:14,549
+steal for me and the soft one means that
+
+1446
+00:55:14,549 --> 00:55:16,019
+someone is allowed to go ahead and steal
+
+1447
+00:55:16,019 --> 00:55:17,279
+this so I still want to execute both
+
+1448
+00:55:17,279 --> 00:55:19,859
+tasks this just says that this thing has
+
+1449
+00:55:19,859 --> 00:55:21,749
+to run in my socket or my group no one
+
+1450
+00:55:21,749 --> 00:55:23,069
+can take it and these are things that
+
+1451
+00:55:23,069 --> 00:55:24,930
+are eligible to be stolen from other
+
+1452
+00:55:24,930 --> 00:55:27,630
+other things so now they're gonna have
+
+1453
+00:55:27,630 --> 00:55:30,719
+have a separate watchdog thread that's
+
+1454
+00:55:30,719 --> 00:55:32,339
+going to have a global view of what's
+
+1455
+00:55:32,339 --> 00:55:34,199
+going on at every single group on every
+
+1456
+00:55:34,199 --> 00:55:36,239
+single socket and then they can decide
+
+1457
+00:55:36,239 --> 00:55:39,479
+that whether some group is being
+
+1458
+00:55:39,479 --> 00:55:41,699
+oversubscribed and has more tasks that
+
+1459
+00:55:41,699 --> 00:55:43,859
+they can actually process and then it
+
+1460
+00:55:43,859 --> 00:55:46,979
+can take threads away from one group and
+
+1461
+00:55:46,979 --> 00:55:49,140
+then allocate additional threads or
+
+1462
+00:55:49,140 --> 00:55:50,670
+allow additional threads to run in
+
+1463
+00:55:50,670 --> 00:55:53,849
+another group so so it's really you're
+
+1464
+00:55:53,849 --> 00:55:56,219
+getting births cut the balancing you're
+
+1465
+00:55:56,219 --> 00:55:57,479
+having the work-stealing that you have
+
+1466
+00:55:57,479 --> 00:55:59,459
+under hyper but you also have the
+
+1467
+00:55:59,459 --> 00:56:01,650
+ability to crank up the number of thread
+
+1468
+00:56:01,650 --> 00:56:03,779
+you want to be executing tasks as well
+
+1469
+00:56:03,779 --> 00:56:05,459
+so you sort of get that you're using
+
+1470
+00:56:05,459 --> 00:56:08,549
+both approaches so as I said we have a
+
+1471
+00:56:08,549 --> 00:56:11,099
+soft queue and a hard queue so fred's
+
+1472
+00:56:11,099 --> 00:56:12,329
+are allowed to steal tasks from other
+
+1473
+00:56:12,329 --> 00:56:15,390
+soft cues and the Hark you how to do
+
+1474
+00:56:15,390 --> 00:56:17,329
+that and then for the different pools
+
+1475
+00:56:17,329 --> 00:56:19,349
+for within a group would have four
+
+1476
+00:56:19,349 --> 00:56:20,519
+different pools that'll keep track of
+
+1477
+00:56:20,519 --> 00:56:23,249
+what types of threads we have running so
+
+1478
+00:56:23,249 --> 00:56:24,599
+working thread is when we have one
+
+1479
+00:56:24,599 --> 00:56:26,160
+that's actually running a task that it
+
+1480
+00:56:26,160 --> 00:56:27,930
+pulled from some queue it doesn't matter
+
+1481
+00:56:27,930 --> 00:56:29,459
+what queue came from because we know
+
+1482
+00:56:29,459 --> 00:56:31,469
+that it's processing something we have
+
+1483
+00:56:31,469 --> 00:56:33,180
+an inactive thread where we know we're
+
+1484
+00:56:33,180 --> 00:56:35,160
+blocked in the kernel give you some
+
+1485
+00:56:35,160 --> 00:56:37,140
+latch and
+
+1486
+00:56:37,140 --> 00:56:39,390
+it's some later point it'll get woken up
+
+1487
+00:56:39,390 --> 00:56:42,930
+a free thread is one where it's gonna
+
+1488
+00:56:42,930 --> 00:56:45,539
+sleep a little wake up check its queue
+
+1489
+00:56:45,539 --> 00:56:47,190
+to see whether anything for to execute
+
+1490
+00:56:47,190 --> 00:56:48,630
+in the software the other or the hard
+
+1491
+00:56:48,630 --> 00:56:51,210
+queue local to it if if so then it go
+
+1492
+00:56:51,210 --> 00:56:52,349
+ahead and execute it and now becomes a
+
+1493
+00:56:52,349 --> 00:56:54,059
+working thread if not then it goes back
+
+1494
+00:56:54,059 --> 00:56:56,700
+to sleep and then we have part threads
+
+1495
+00:56:56,700 --> 00:57:00,599
+where the thread the sleeps and it
+
+1496
+00:57:00,599 --> 00:57:02,039
+doesn't get woken up until the wash dog
+
+1497
+00:57:02,039 --> 00:57:03,569
+thread comes comes along says hey we
+
+1498
+00:57:03,569 --> 00:57:05,460
+need you you know wake up and actually
+
+1499
+00:57:05,460 --> 00:57:08,640
+start doing stuff and so again what this
+
+1500
+00:57:08,640 --> 00:57:10,799
+isn't allow us to do is we can now scale
+
+1501
+00:57:10,799 --> 00:57:14,190
+up the number of threads we have like in
+
+1502
+00:57:14,190 --> 00:57:16,140
+the park thread queue case cuz like or
+
+1503
+00:57:16,140 --> 00:57:18,089
+the pool case cuz if I recognize that my
+
+1504
+00:57:18,089 --> 00:57:20,309
+group cannot all my threads are working
+
+1505
+00:57:20,309 --> 00:57:21,990
+or they're inactive there's no free
+
+1506
+00:57:21,990 --> 00:57:23,099
+threads because they're all they're all
+
+1507
+00:57:23,099 --> 00:57:24,900
+working on things if I don't have enough
+
+1508
+00:57:24,900 --> 00:57:26,579
+resources to process the work I need to
+
+1509
+00:57:26,579 --> 00:57:28,890
+have for my group I can now release
+
+1510
+00:57:28,890 --> 00:57:30,569
+these Park threads or unpark them and
+
+1511
+00:57:30,569 --> 00:57:32,160
+have them start processing things as
+
+1512
+00:57:32,160 --> 00:57:34,349
+well and then maybe on another group
+
+1513
+00:57:34,349 --> 00:57:39,000
+I'll park their threads so there's a lot
+
+1514
+00:57:39,000 --> 00:57:40,740
+of work right this is this sounds like
+
+1515
+00:57:40,740 --> 00:57:42,420
+an operating system because it sort of
+
+1516
+00:57:42,420 --> 00:57:44,009
+is and we'll see this from from from
+
+1517
+00:57:44,009 --> 00:57:45,509
+sequel server and a few more slides but
+
+1518
+00:57:45,509 --> 00:57:46,950
+they actually did build an operating
+
+1519
+00:57:46,950 --> 00:57:48,269
+system that runs inside the database
+
+1520
+00:57:48,269 --> 00:57:50,069
+system do they even call it that
+
+1521
+00:57:50,069 --> 00:57:52,440
+so with this they're gonna again they're
+
+1522
+00:57:52,440 --> 00:57:54,119
+gonna they're gonna adjust the threads
+
+1523
+00:57:54,119 --> 00:57:56,549
+from the pinning of the threads where
+
+1524
+00:57:56,549 --> 00:57:58,400
+they're actually running based on
+
+1525
+00:57:58,400 --> 00:58:00,900
+whether the task is CPU bound or memory
+
+1526
+00:58:00,900 --> 00:58:06,269
+bound so like if my task is if for my
+
+1527
+00:58:06,269 --> 00:58:08,970
+for my group if my task says that I know
+
+1528
+00:58:08,970 --> 00:58:10,559
+I I have a bunch of tasks and I can't
+
+1529
+00:58:10,559 --> 00:58:11,519
+process in the fast enough
+
+1530
+00:58:11,519 --> 00:58:16,319
+I can allow threads to well I couldn't
+
+1531
+00:58:16,319 --> 00:58:18,779
+part them if I have to not enough work
+
+1532
+00:58:18,779 --> 00:58:20,460
+if I could unpark bam if I have two of
+
+1533
+00:58:20,460 --> 00:58:22,380
+more than actually need and I have to do
+
+1534
+00:58:22,380 --> 00:58:23,549
+that for other socket because I don't
+
+1535
+00:58:23,549 --> 00:58:24,920
+want to saturate the memory bandwidth
+
+1536
+00:58:24,920 --> 00:58:26,910
+over the all system because the maybe
+
+1537
+00:58:26,910 --> 00:58:28,680
+those tasks are pulling data over the
+
+1538
+00:58:28,680 --> 00:58:31,109
+interconnect right what was interesting
+
+1539
+00:58:31,109 --> 00:58:34,349
+about this is that they found that when
+
+1540
+00:58:34,349 --> 00:58:36,720
+they looked at the really large socket
+
+1541
+00:58:36,720 --> 00:58:38,910
+machines that khana can run on they
+
+1542
+00:58:38,910 --> 00:58:40,470
+found that the hyper approach of long
+
+1543
+00:58:40,470 --> 00:58:41,970
+the work stealing was actually a bad
+
+1544
+00:58:41,970 --> 00:58:44,279
+idea so in the hyper paper they were
+
+1545
+00:58:44,279 --> 00:58:45,690
+looking I think at two to four socket
+
+1546
+00:58:45,690 --> 00:58:47,970
+machines the Hana guys are looking at
+
+1547
+00:58:47,970 --> 00:58:49,829
+like sixty-four socket r128 socket
+
+1548
+00:58:49,829 --> 00:58:50,460
+machines
+
+1549
+00:58:50,460 --> 00:58:52,470
+so in that environment what you want to
+
+1550
+00:58:52,470 --> 00:58:56,099
+do is you don't have any soft cues you
+
+1551
+00:58:56,099 --> 00:58:59,190
+put everything in the hard queue and you
+
+1552
+00:58:59,190 --> 00:59:00,780
+can then scale up the number of threads
+
+1553
+00:59:00,780 --> 00:59:03,720
+you're running on every single on every
+
+1554
+00:59:03,720 --> 00:59:05,700
+single group on every single socket but
+
+1555
+00:59:05,700 --> 00:59:08,490
+you don't allow threads to to take work
+
+1556
+00:59:08,490 --> 00:59:10,109
+from another socket and go over the
+
+1557
+00:59:10,109 --> 00:59:11,880
+interconnect everybody always process
+
+1558
+00:59:11,880 --> 00:59:19,260
+things things locally right yes the task
+
+1559
+00:59:19,260 --> 00:59:20,250
+of the Softee in the heart here like
+
+1560
+00:59:20,250 --> 00:59:26,790
+what would be an example so the question
+
+1561
+00:59:26,790 --> 00:59:28,380
+is what what how do I know what to put
+
+1562
+00:59:28,380 --> 00:59:34,230
+in a hard humour soft ass could be like
+
+1563
+00:59:34,230 --> 00:59:36,510
+well we'll see in the next slide so in
+
+1564
+00:59:36,510 --> 00:59:40,140
+Hana for this example they have the
+
+1565
+00:59:40,140 --> 00:59:42,270
+entire system architecture is running on
+
+1566
+00:59:42,270 --> 00:59:44,579
+these these whirlpools so that means
+
+1567
+00:59:44,579 --> 00:59:46,020
+like never requests will be running on
+
+1568
+00:59:46,020 --> 00:59:49,829
+the whirlpool so if I have a if I have a
+
+1569
+00:59:49,829 --> 00:59:51,270
+task that says you know read the next
+
+1570
+00:59:51,270 --> 00:59:53,520
+message next packet from this socket
+
+1571
+00:59:53,520 --> 00:59:56,369
+I want to run that you know at the at
+
+1572
+00:59:56,369 --> 00:59:58,740
+the thread or at the socket were at the
+
+1573
+00:59:58,740 --> 01:00:00,599
+CPU socket on the network swear that
+
+1574
+01:00:00,599 --> 01:00:02,670
+never sock is located and I don't want
+
+1575
+01:00:02,670 --> 01:00:05,750
+somebody else to go go take that from me
+
+1576
+01:00:05,750 --> 01:00:08,339
+yeah I mean this is the next slide so
+
+1577
+01:00:08,339 --> 01:00:10,920
+again like there thread groups are
+
+1578
+01:00:10,920 --> 01:00:12,299
+running everything so in the hyper case
+
+1579
+01:00:12,299 --> 01:00:15,660
+the the the pools were only doing
+
+1580
+01:00:15,660 --> 01:00:17,940
+processing queries they're putting
+
+1581
+01:00:17,940 --> 01:00:19,559
+everything in the system so now you can
+
+1582
+01:00:19,559 --> 01:00:23,819
+do things like if my if I have I'm over
+
+1583
+01:00:23,819 --> 01:00:26,790
+subscribed on the number of queries I'm
+
+1584
+01:00:26,790 --> 01:00:28,859
+executing rather than accepting new
+
+1585
+01:00:28,859 --> 01:00:30,900
+never requests I'll take some networking
+
+1586
+01:00:30,900 --> 01:00:32,819
+threads from their pool and spin up new
+
+1587
+01:00:32,819 --> 01:00:34,530
+threads or unpark threads in my
+
+1588
+01:00:34,530 --> 01:00:37,109
+execution pool and so that sort of gets
+
+1589
+01:00:37,109 --> 01:00:39,510
+the natural flow control of not you know
+
+1590
+01:00:39,510 --> 01:00:40,470
+taking more queries than you actually
+
+1591
+01:00:40,470 --> 01:00:43,380
+can execute so here's that same query we
+
+1592
+01:00:43,380 --> 01:00:46,230
+had before right and so save these tasks
+
+1593
+01:00:46,230 --> 01:00:48,210
+here we can put into the soft queue and
+
+1594
+01:00:48,210 --> 01:00:49,890
+then for whatever reason we put these
+
+1595
+01:00:49,890 --> 01:00:52,500
+other tasks in the hard queue right for
+
+1596
+01:00:52,500 --> 01:00:54,030
+my purpose here it just doesn't actually
+
+1597
+01:00:54,030 --> 01:00:55,589
+matter and shown this registration
+
+1598
+01:00:55,589 --> 01:00:58,859
+purposes so now again all the worker
+
+1599
+01:00:58,859 --> 01:01:01,319
+queues the worker the worker threads are
+
+1600
+01:01:01,319 --> 01:01:03,510
+pulling from the soft queue by inactive
+
+1601
+01:01:03,510 --> 01:01:04,110
+threads
+
+1602
+01:01:04,110 --> 01:01:06,210
+are just waiting on something in the OS
+
+1603
+01:01:06,210 --> 01:01:08,850
+the free threads are just spinning on
+
+1604
+01:01:08,850 --> 01:01:10,440
+the soft Q or the heart of Q looking for
+
+1605
+01:01:10,440 --> 01:01:11,940
+work to do and the park threads are just
+
+1606
+01:01:11,940 --> 01:01:14,520
+blocked by the watchdog thread so I
+
+1607
+01:01:14,520 --> 01:01:16,200
+can't say here that I recognize that I
+
+1608
+01:01:16,200 --> 01:01:19,620
+can't keep up with my demands so say now
+
+1609
+01:01:19,620 --> 01:01:21,180
+my free thread pulls out something from
+
+1610
+01:01:21,180 --> 01:01:23,220
+the heart Q then it gets migrated now
+
+1611
+01:01:23,220 --> 01:01:24,750
+and now it is considered to be a working
+
+1612
+01:01:24,750 --> 01:01:27,330
+thread and the watchdog thread above
+
+1613
+01:01:27,330 --> 01:01:28,650
+that all this knows how many threads
+
+1614
+01:01:28,650 --> 01:01:30,360
+were actually running on every single
+
+1615
+01:01:30,360 --> 01:01:32,190
+group and can make scheduling decisions
+
+1616
+01:01:32,190 --> 01:01:33,600
+about about our resource allocation
+
+1617
+01:01:33,600 --> 01:01:38,360
+decisions up above yes
+
+1618
+01:01:38,360 --> 01:01:40,530
+parts that are like threads in reserve
+
+1619
+01:01:40,530 --> 01:01:42,900
+so like instead of calling spawn I just
+
+1620
+01:01:42,900 --> 01:01:47,720
+hadn't there right so they are I
+
+1621
+01:01:47,720 --> 01:01:49,620
+actually don't know what the true
+
+1622
+01:01:49,620 --> 01:01:50,940
+difference I think in actual thread
+
+1623
+01:01:50,940 --> 01:01:52,650
+would be like I'm blocked waiting to get
+
+1624
+01:01:52,650 --> 01:01:53,970
+to the latch or a mutex
+
+1625
+01:01:53,970 --> 01:01:55,440
+and the OS but if I come back then I
+
+1626
+01:01:55,440 --> 01:01:58,050
+become become working this is like I
+
+1627
+01:01:58,050 --> 01:02:00,510
+think you're parked in the OS you're
+
+1628
+01:02:00,510 --> 01:02:02,580
+blocking me West on some mutex and it's
+
+1629
+01:02:02,580 --> 01:02:03,960
+like it's the conditional variable where
+
+1630
+01:02:03,960 --> 01:02:05,010
+like some other threat has to come and
+
+1631
+01:02:05,010 --> 01:02:06,390
+say now you're allowed to wake up and
+
+1632
+01:02:06,390 --> 01:02:08,610
+the idea is that I can dynamically have
+
+1633
+01:02:08,610 --> 01:02:09,840
+these guys get released and execute
+
+1634
+01:02:09,840 --> 01:02:11,370
+without having to call call spawn
+
+1635
+01:02:11,370 --> 01:02:13,800
+because that's a contact switch or a sis
+
+1636
+01:02:13,800 --> 01:02:19,500
+call and the context switch okay so the
+
+1637
+01:02:19,500 --> 01:02:21,270
+last scheduling thing I'm gonna talk
+
+1638
+01:02:21,270 --> 01:02:22,980
+about is which i think is the most
+
+1639
+01:02:22,980 --> 01:02:25,140
+fascinating one out of all of these it's
+
+1640
+01:02:25,140 --> 01:02:28,020
+not for an in memory system but again
+
+1641
+01:02:28,020 --> 01:02:29,880
+it's it's so it's so different than
+
+1642
+01:02:29,880 --> 01:02:30,900
+everything else we've talked about so
+
+1643
+01:02:30,900 --> 01:02:32,850
+far but I think I think it's amazing
+
+1644
+01:02:32,850 --> 01:02:35,700
+so in sequel server in 2005 they
+
+1645
+01:02:35,700 --> 01:02:37,680
+released in the new version of sequel
+
+1646
+01:02:37,680 --> 01:02:40,680
+server they now released that in bundle
+
+1647
+01:02:40,680 --> 01:02:43,050
+inside the dated system this basically a
+
+1648
+01:02:43,050 --> 01:02:45,060
+user mode operating system called sequel
+
+1649
+01:02:45,060 --> 01:02:48,330
+OS and the idea is that this is a layer
+
+1650
+01:02:48,330 --> 01:02:50,280
+that sits above the real operating
+
+1651
+01:02:50,280 --> 01:02:52,920
+system with the Windows kernel and the
+
+1652
+01:02:52,920 --> 01:02:54,540
+actual the database system engine itself
+
+1653
+01:02:54,540 --> 01:02:57,510
+that manages and provisions hardware
+
+1654
+01:02:57,510 --> 01:03:00,090
+resources and the original motivation of
+
+1655
+01:03:00,090 --> 01:03:03,750
+this was that rather than the the you
+
+1656
+01:03:03,750 --> 01:03:05,430
+know as new moon was coming more
+
+1657
+01:03:05,430 --> 01:03:07,380
+prevalent as there was hardware changes
+
+1658
+01:03:07,380 --> 01:03:09,090
+rather than having all the different
+
+1659
+01:03:09,090 --> 01:03:11,340
+implementations or of the different
+
+1660
+01:03:11,340 --> 01:03:13,410
+operators inside the database system
+
+1661
+01:03:13,410 --> 01:03:15,390
+execution engine rather than have to all
+
+1662
+01:03:15,390 --> 01:03:17,790
+be aware of of Numa and
+
+1663
+01:03:17,790 --> 01:03:19,440
+and memory look memory layouts and
+
+1664
+01:03:19,440 --> 01:03:21,540
+things like that they would have
+
+1665
+01:03:21,540 --> 01:03:23,490
+abstract all that away through the
+
+1666
+01:03:23,490 --> 01:03:25,590
+sequel West layer and have it makes
+
+1667
+01:03:25,590 --> 01:03:28,110
+decisions about you know where to
+
+1668
+01:03:28,110 --> 01:03:29,760
+actually run tasks and how to actually
+
+1669
+01:03:29,760 --> 01:03:33,960
+run things in parallel so it's things
+
+1670
+01:03:33,960 --> 01:03:35,520
+amazing because it's more than just like
+
+1671
+01:03:35,520 --> 01:03:36,960
+scheduling threads they do a bunch of
+
+1672
+01:03:36,960 --> 01:03:39,390
+other stuff like IO scheduling they
+
+1673
+01:03:39,390 --> 01:03:40,770
+actually manage up the buffer pool
+
+1674
+01:03:40,770 --> 01:03:44,250
+inside that cos they they do lock
+
+1675
+01:03:44,250 --> 01:03:46,830
+scheduling and unlock management inside
+
+1676
+01:03:46,830 --> 01:03:48,870
+this as well again the idea here is that
+
+1677
+01:03:48,870 --> 01:03:52,650
+rather than us having to to have these
+
+1678
+01:03:52,650 --> 01:03:54,870
+ad hoc invitations of specialized Lodge
+
+1679
+01:03:54,870 --> 01:03:56,430
+to deal with like oh this threads ready
+
+1680
+01:03:56,430 --> 01:03:58,020
+for this lock and therefore might my
+
+1681
+01:03:58,020 --> 01:03:59,460
+join Alvin can run this way or whatever
+
+1682
+01:03:59,460 --> 01:04:01,680
+like all that is taken care of in the
+
+1683
+01:04:01,680 --> 01:04:03,360
+sequel West layer and you just implement
+
+1684
+01:04:03,360 --> 01:04:05,220
+your basic operators up above and this
+
+1685
+01:04:05,220 --> 01:04:07,110
+thing handles all that for you right
+
+1686
+01:04:07,110 --> 01:04:08,730
+again when you think of like if you took
+
+1687
+01:04:08,730 --> 01:04:09,900
+the intro class we talked about
+
+1688
+01:04:09,900 --> 01:04:12,000
+disscourn and database systems right we
+
+1689
+01:04:12,000 --> 01:04:13,500
+talked about the buffer pool manager the
+
+1690
+01:04:13,500 --> 01:04:14,970
+role manager is basically replicating
+
+1691
+01:04:14,970 --> 01:04:16,500
+the same logic for the OS does for
+
+1692
+01:04:16,500 --> 01:04:18,540
+virtual memory allocate some pages or
+
+1693
+01:04:18,540 --> 01:04:20,820
+III can allocate more memory than
+
+1694
+01:04:20,820 --> 01:04:22,590
+actually available to me and I know how
+
+1695
+01:04:22,590 --> 01:04:24,600
+to swap things out on disk so so
+
+1696
+01:04:24,600 --> 01:04:26,370
+Microsoft basically went all-in so let's
+
+1697
+01:04:26,370 --> 01:04:28,650
+do everything the OS is doing and put it
+
+1698
+01:04:28,650 --> 01:04:30,180
+inside our database system right it's
+
+1699
+01:04:30,180 --> 01:04:33,180
+it's pretty amazing so but for this
+
+1700
+01:04:33,180 --> 01:04:35,160
+lecture what we talk about is they are
+
+1701
+01:04:35,160 --> 01:04:37,260
+doing for thread scheduling they're
+
+1702
+01:04:37,260 --> 01:04:38,430
+gonna do non-preemptive thread
+
+1703
+01:04:38,430 --> 01:04:42,330
+scheduling by modifying the the database
+
+1704
+01:04:42,330 --> 01:04:45,030
+system code itself to be able to yield
+
+1705
+01:04:45,030 --> 01:04:48,480
+back to some to the scheduler so before
+
+1706
+01:04:48,480 --> 01:04:50,040
+we get to that I also say to is like
+
+1707
+01:04:50,040 --> 01:04:52,080
+this sequel OS layer is part of the
+
+1708
+01:04:52,080 --> 01:04:53,940
+reason why Microsoft was able to port
+
+1709
+01:04:53,940 --> 01:04:56,760
+sequel server over to to Linux so
+
+1710
+01:04:56,760 --> 01:05:00,570
+there's announcement was in 2017 and the
+
+1711
+01:05:00,570 --> 01:05:02,400
+this TechCrunch article they talked
+
+1712
+01:05:02,400 --> 01:05:04,410
+about how when they had to take C Co OS
+
+1713
+01:05:04,410 --> 01:05:07,500
+and instead of talking to win32 they now
+
+1714
+01:05:07,500 --> 01:05:09,570
+talk to the Linux kernel that wasn't a
+
+1715
+01:05:09,570 --> 01:05:11,280
+major change for them I mean was not it
+
+1716
+01:05:11,280 --> 01:05:12,840
+was not insignificant but it's not like
+
+1717
+01:05:12,840 --> 01:05:14,430
+we need to change all other aspects of
+
+1718
+01:05:14,430 --> 01:05:16,050
+the database system because all of this
+
+1719
+01:05:16,050 --> 01:05:17,660
+low-level
+
+1720
+01:05:17,660 --> 01:05:20,730
+management of OS resources and hardware
+
+1721
+01:05:20,730 --> 01:05:22,560
+resources is all done by these OS layer
+
+1722
+01:05:22,560 --> 01:05:24,300
+so you just change the sequel last part
+
+1723
+01:05:24,300 --> 01:05:26,700
+to make its talk to Linux and not touch
+
+1724
+01:05:26,700 --> 01:05:27,420
+anything else
+
+1725
+01:05:27,420 --> 01:05:29,730
+so the same codebase for doing other
+
+1726
+01:05:29,730 --> 01:05:31,109
+joint algorithms doing all the X
+
+1727
+01:05:31,109 --> 01:05:33,839
+shishun flow control or control or the
+
+1728
+01:05:33,839 --> 01:05:36,239
+indexes all that sits above C go s and
+
+1729
+01:05:36,239 --> 01:05:38,789
+then have to modify any of that going
+
+1730
+01:05:38,789 --> 01:05:41,309
+back to my example of db2 before db2 did
+
+1731
+01:05:41,309 --> 01:05:42,569
+not have that abstraction layer so
+
+1732
+01:05:42,569 --> 01:05:43,470
+that's why they have four different
+
+1733
+01:05:43,470 --> 01:05:45,450
+distinct code bases right they've
+
+1734
+01:05:45,450 --> 01:05:47,009
+attempted I think to try to have a
+
+1735
+01:05:47,009 --> 01:05:48,749
+unified code base but it never you know
+
+1736
+01:05:48,749 --> 01:05:50,789
+it's never happened it's never gonna
+
+1737
+01:05:50,789 --> 01:05:52,039
+happen
+
+1738
+01:05:52,039 --> 01:05:53,819
+Microsoft was able to do it through the
+
+1739
+01:05:53,819 --> 01:05:55,259
+sequel OS so I think it's really
+
+1740
+01:05:55,259 --> 01:06:00,170
+fascinating okay so what is pre-emptive
+
+1741
+01:06:00,170 --> 01:06:02,009
+thread scratching look like in their
+
+1742
+01:06:02,009 --> 01:06:02,309
+world
+
+1743
+01:06:02,309 --> 01:06:06,359
+so in CIOs the quantum is gonna be for
+
+1744
+01:06:06,359 --> 01:06:07,799
+every thread it's gonna be for
+
+1745
+01:06:07,799 --> 01:06:10,920
+milliseconds and I know what the quantum
+
+1746
+01:06:10,920 --> 01:06:15,809
+size is in default Linux these questions
+
+1747
+01:06:15,809 --> 01:06:19,619
+what's the quantum quantum is like so
+
+1748
+01:06:19,619 --> 01:06:21,930
+you haven't so you have a thread it gets
+
+1749
+01:06:21,930 --> 01:06:23,730
+scheduled on the OS schedules it for
+
+1750
+01:06:23,730 --> 01:06:26,579
+execution it's gonna run for a certain
+
+1751
+01:06:26,579 --> 01:06:27,749
+mount of time called the quantum and
+
+1752
+01:06:27,749 --> 01:06:28,980
+then it's some point when the quantum is
+
+1753
+01:06:28,980 --> 01:06:29,940
+up there's interrupt
+
+1754
+01:06:29,940 --> 01:06:31,890
+they take your thread away and handle it
+
+1755
+01:06:31,890 --> 01:06:33,269
+and I have a context or another thread
+
+1756
+01:06:33,269 --> 01:06:36,269
+right time slice would be another term
+
+1757
+01:06:36,269 --> 01:06:40,440
+right so Freight for those you've taken
+
+1758
+01:06:40,440 --> 01:06:43,200
+OS or OS class what what is that what is
+
+1759
+01:06:43,200 --> 01:06:48,329
+the quantum size and Linux nobody knows
+
+1760
+01:06:48,329 --> 01:06:49,710
+go to the vague answer because it's
+
+1761
+01:06:49,710 --> 01:06:51,690
+actually dynamic right it can it can
+
+1762
+01:06:51,690 --> 01:06:53,609
+vary I you know depending on the clock
+
+1763
+01:06:53,609 --> 01:06:55,049
+speed depending on what else is running
+
+1764
+01:06:55,049 --> 01:06:57,180
+right if it knows that there's no other
+
+1765
+01:06:57,180 --> 01:06:59,069
+threads running that are you know taking
+
+1766
+01:06:59,069 --> 01:07:01,259
+demand from this from the CPU it can
+
+1767
+01:07:01,259 --> 01:07:02,789
+then make your quantum slightly larger
+
+1768
+01:07:02,789 --> 01:07:04,890
+all right to avoid a context switch to
+
+1769
+01:07:04,890 --> 01:07:06,119
+some other task that that's not needed
+
+1770
+01:07:06,119 --> 01:07:09,180
+right if you switch into real time mode
+
+1771
+01:07:09,180 --> 01:07:11,819
+for Linux then the quantum is fixed to
+
+1772
+01:07:11,819 --> 01:07:14,160
+be I think a hundred milliseconds now
+
+1773
+01:07:14,160 --> 01:07:15,690
+the idea there is like again the context
+
+1774
+01:07:15,690 --> 01:07:16,739
+switches are not cheap because you're
+
+1775
+01:07:16,739 --> 01:07:18,450
+taking all the registers putting out you
+
+1776
+01:07:18,450 --> 01:07:22,170
+know into GPU caches changing the the
+
+1777
+01:07:22,170 --> 01:07:23,309
+program counter like all that's not
+
+1778
+01:07:23,309 --> 01:07:25,680
+cheap and so in the real time at last
+
+1779
+01:07:25,680 --> 01:07:27,089
+they let your quantum long for a longer
+
+1780
+01:07:27,089 --> 01:07:30,690
+time so in in cos the quantum time is
+
+1781
+01:07:30,690 --> 01:07:32,460
+gonna be four milliseconds but they have
+
+1782
+01:07:32,460 --> 01:07:34,230
+no way to enforce this because this is
+
+1783
+01:07:34,230 --> 01:07:36,049
+all done in user level in user mode
+
+1784
+01:07:36,049 --> 01:07:40,019
+meaning we hand a task off to a thread
+
+1785
+01:07:40,019 --> 01:07:44,039
+it runs there's no way for us in our
+
+1786
+01:07:44,039 --> 01:07:44,790
+inner because we're
+
+1787
+01:07:44,790 --> 01:07:46,260
+the same process and we're not the OS
+
+1788
+01:07:46,260 --> 01:07:47,850
+there's no way for us to say thread
+
+1789
+01:07:47,850 --> 01:07:49,740
+you're done give us give us back control
+
+1790
+01:07:49,740 --> 01:07:52,530
+of the core and you can't do that
+
+1791
+01:07:52,530 --> 01:07:53,910
+because that's what the OS does because
+
+1792
+01:07:53,910 --> 01:07:56,100
+they can do it through hardware so what
+
+1793
+01:07:56,100 --> 01:07:58,470
+they're gonna do now is modify they went
+
+1794
+01:07:58,470 --> 01:08:01,350
+modified the the source code of sequel
+
+1795
+01:08:01,350 --> 01:08:03,930
+server itself to introduce yield calls
+
+1796
+01:08:03,930 --> 01:08:07,680
+to cause the thread to go back and you
+
+1797
+01:08:07,680 --> 01:08:08,790
+know return the control back to the
+
+1798
+01:08:08,790 --> 01:08:11,010
+schedule so let's say this is a simple
+
+1799
+01:08:11,010 --> 01:08:12,420
+query here a select star from a where a
+
+1800
+01:08:12,420 --> 01:08:16,319
+value equals some parameter so a really
+
+1801
+01:08:16,319 --> 01:08:18,060
+simple implementation of this would be a
+
+1802
+01:08:18,060 --> 01:08:20,100
+for loop where we get a bunch of tuples
+
+1803
+01:08:20,100 --> 01:08:21,720
+evaluate a predicate and then if they
+
+1804
+01:08:21,720 --> 01:08:23,100
+match our predicate we admit it
+
+1805
+01:08:23,100 --> 01:08:25,890
+so what basically what Microsoft had to
+
+1806
+01:08:25,890 --> 01:08:28,140
+do was go back and modify the source
+
+1807
+01:08:28,140 --> 01:08:30,299
+code to keep track of the amount of time
+
+1808
+01:08:30,299 --> 01:08:33,210
+that they spent at each different part
+
+1809
+01:08:33,210 --> 01:08:35,700
+and recognize that if the if the times
+
+1810
+01:08:35,700 --> 01:08:37,140
+it's the last the last time I called
+
+1811
+01:08:37,140 --> 01:08:39,870
+yield to the scheduler was boys you know
+
+1812
+01:08:39,870 --> 01:08:42,270
+more than four milliseconds ago then I
+
+1813
+01:08:42,270 --> 01:08:44,399
+go ahead and yield back puts control
+
+1814
+01:08:44,399 --> 01:08:46,410
+back now to the scheduler guys you can
+
+1815
+01:08:46,410 --> 01:08:47,880
+decide whether to run your tasks again
+
+1816
+01:08:47,880 --> 01:08:49,290
+or whether they hand it off to another
+
+1817
+01:08:49,290 --> 01:08:53,399
+task and so this is amazing this is like
+
+1818
+01:08:53,399 --> 01:08:55,410
+pseudocode they're obviously not calling
+
+1819
+01:08:55,410 --> 01:08:57,240
+you know get current timestamp over
+
+1820
+01:08:57,240 --> 01:08:58,229
+never again for every single tuple that
+
+1821
+01:08:58,229 --> 01:08:58,770
+would be stupid
+
+1822
+01:08:58,770 --> 01:09:02,279
+I I think the way they did it was they
+
+1823
+01:09:02,279 --> 01:09:04,830
+sort of knew like in the code itself
+
+1824
+01:09:04,830 --> 01:09:07,799
+like if I'm doing a for loop you know
+
+1825
+01:09:07,799 --> 01:09:09,359
+they know the cost of going and maybe
+
+1826
+01:09:09,359 --> 01:09:10,950
+retrieving the tuple and whether it's in
+
+1827
+01:09:10,950 --> 01:09:12,750
+disk or it's in memory the worth the
+
+1828
+01:09:12,750 --> 01:09:14,970
+time that is and they can then use some
+
+1829
+01:09:14,970 --> 01:09:16,979
+in built-in calculations to decide very
+
+1830
+01:09:16,979 --> 01:09:19,620
+cheaply has my form four milliseconds
+
+1831
+01:09:19,620 --> 01:09:27,240
+gone up yes so his question is how do I
+
+1832
+01:09:27,240 --> 01:09:28,770
+control with the next thread the OS is
+
+1833
+01:09:28,770 --> 01:09:35,069
+going to schedule right you can't arrest
+
+1834
+01:09:35,069 --> 01:09:39,060
+yield or sequel or yield so dizzy this
+
+1835
+01:09:39,060 --> 01:09:40,859
+is this is not a versus mode this is the
+
+1836
+01:09:40,859 --> 01:09:44,270
+Seco OS you
+
+1837
+01:09:50,660 --> 01:09:52,830
+they can control what secret summer task
+
+1838
+01:09:52,830 --> 01:09:57,000
+is running yes right and since a bunch
+
+1839
+01:09:57,000 --> 01:09:58,710
+of banners does this so one is your
+
+1840
+01:09:58,710 --> 01:10:01,680
+right eye like I can't prevent the OS
+
+1841
+01:10:01,680 --> 01:10:04,590
+from swapping out the scheduler right so
+
+1842
+01:10:04,590 --> 01:10:06,900
+what your best practices we're setting
+
+1843
+01:10:06,900 --> 01:10:08,760
+up any database system is run the data
+
+1844
+01:10:08,760 --> 01:10:11,340
+system on a machine by itself and so you
+
+1845
+01:10:11,340 --> 01:10:13,230
+know you're not doing Bitcoin mining or
+
+1846
+01:10:13,230 --> 01:10:15,720
+you know encoding a video or watching
+
+1847
+01:10:15,720 --> 01:10:16,860
+YouTube at the same time you're trying
+
+1848
+01:10:16,860 --> 01:10:19,310
+to run transactions right so the the
+
+1849
+01:10:19,310 --> 01:10:21,960
+contention for the CPU will be lower and
+
+1850
+01:10:21,960 --> 01:10:24,050
+with cooperative scheduling or the the
+
+1851
+01:10:24,050 --> 01:10:26,970
+fair scheduling approach in Linux if I
+
+1852
+01:10:26,970 --> 01:10:28,530
+know know the thread is trying to access
+
+1853
+01:10:28,530 --> 01:10:30,600
+you know trying to do stuff I'll come
+
+1854
+01:10:30,600 --> 01:10:31,950
+back to Mike the thread right away so
+
+1855
+01:10:31,950 --> 01:10:34,980
+yes I could be in the middle of this the
+
+1856
+01:10:34,980 --> 01:10:37,940
+OS might swap me out
+
+1857
+01:10:38,420 --> 01:10:41,190
+correct so this to this this quantum
+
+1858
+01:10:41,190 --> 01:10:47,510
+times is a user mode concept what's that
+
+1859
+01:10:48,920 --> 01:10:51,320
+yeah yes
+
+1860
+01:10:51,320 --> 01:10:53,220
+another interesting advantage you get
+
+1861
+01:10:53,220 --> 01:10:55,530
+from this as well as like now I can do
+
+1862
+01:10:55,530 --> 01:10:57,390
+sort of fair scheduling and provisioning
+
+1863
+01:10:57,390 --> 01:11:01,080
+for between maybe different tenants of
+
+1864
+01:11:01,080 --> 01:11:03,150
+the same money on the same database so I
+
+1865
+01:11:03,150 --> 01:11:04,320
+have two customers running my same
+
+1866
+01:11:04,320 --> 01:11:06,180
+sequel server instance one is I could
+
+1867
+01:11:06,180 --> 01:11:07,350
+just divide them up to run on different
+
+1868
+01:11:07,350 --> 01:11:10,470
+sockets but I could also now just use
+
+1869
+01:11:10,470 --> 01:11:12,180
+these Quantum's to enforce that they
+
+1870
+01:11:12,180 --> 01:11:15,600
+both could equal time or like if I now
+
+1871
+01:11:15,600 --> 01:11:17,100
+have a budget for how many Quantum's are
+
+1872
+01:11:17,100 --> 01:11:18,150
+going to get from one tenant versus
+
+1873
+01:11:18,150 --> 01:11:20,190
+another the quantum times still gonna be
+
+1874
+01:11:20,190 --> 01:11:21,810
+4 milliseconds but maybe I give more
+
+1875
+01:11:21,810 --> 01:11:23,580
+Quantum's to this other guy because
+
+1876
+01:11:23,580 --> 01:11:25,530
+they're giving me more money than the
+
+1877
+01:11:25,530 --> 01:11:27,660
+first tenant so this is allows you to
+
+1878
+01:11:27,660 --> 01:11:29,040
+search all sorts of amazing things you
+
+1879
+01:11:29,040 --> 01:11:31,140
+can't easily do with the hyper approach
+
+1880
+01:11:31,140 --> 01:11:34,800
+or the or the Haan approach because they
+
+1881
+01:11:34,800 --> 01:11:36,930
+they don't know what what the actual
+
+1882
+01:11:36,930 --> 01:11:40,340
+tasks are actually trying to do right so
+
+1883
+01:11:40,340 --> 01:11:44,220
+I don't know whether as far as you know
+
+1884
+01:11:44,220 --> 01:11:47,580
+nobody else does this with this sequel
+
+1885
+01:11:47,580 --> 01:11:49,410
+West layer this is something I want to
+
+1886
+01:11:49,410 --> 01:11:50,550
+do in our system because I think it'll
+
+1887
+01:11:50,550 --> 01:11:52,640
+benefit the self-driving stuff
+
+1888
+01:11:52,640 --> 01:11:55,110
+the only other system that I know that
+
+1889
+01:11:55,110 --> 01:11:56,910
+does something similar is fauna DB and
+
+1890
+01:11:56,910 --> 01:11:59,310
+so they're not doing the same kind of
+
+1891
+01:11:59,310 --> 01:12:02,040
+like fixed quantum size or not again
+
+1892
+01:12:02,040 --> 01:12:02,970
+it's not fixed
+
+1893
+01:12:02,970 --> 01:12:04,890
+to make it be always for milliseconds
+
+1894
+01:12:04,890 --> 01:12:07,050
+but but the way Hana does this is that
+
+1895
+01:12:07,050 --> 01:12:10,470
+they only yield back to the in database
+
+1896
+01:12:10,470 --> 01:12:14,280
+scheduler whenever you do i oh so in in
+
+1897
+01:12:14,280 --> 01:12:16,320
+cos i could do all this in memory and
+
+1898
+01:12:16,320 --> 01:12:18,120
+I'm still gonna yield back after my
+
+1899
+01:12:18,120 --> 01:12:20,550
+quantum is is it's roughly up in fauna
+
+1900
+01:12:20,550 --> 01:12:22,170
+DB they basically say oh I'm gonna read
+
+1901
+01:12:22,170 --> 01:12:24,480
+something from disk or over the network
+
+1902
+01:12:24,480 --> 01:12:25,920
+let me go back to my schedule and say
+
+1903
+01:12:25,920 --> 01:12:27,390
+hey I'm gonna pause for a bit
+
+1904
+01:12:27,390 --> 01:12:30,240
+schedule somebody else if you can and if
+
+1905
+01:12:30,240 --> 01:12:32,190
+this guy says oh you're fine go and then
+
+1906
+01:12:32,190 --> 01:12:33,570
+you get back control otherwise to
+
+1907
+01:12:33,570 --> 01:12:38,370
+schedule something else yes is it a good
+
+1908
+01:12:38,370 --> 01:12:40,290
+project read yes we can talk about this
+
+1909
+01:12:40,290 --> 01:12:43,680
+yes and right now we don't really have
+
+1910
+01:12:43,680 --> 01:12:45,210
+anything I don't have slides with us we
+
+1911
+01:12:45,210 --> 01:12:47,670
+use for query execution we use intel's
+
+1912
+01:12:47,670 --> 01:12:49,620
+thread building blocks which i don't
+
+1913
+01:12:49,620 --> 01:12:52,530
+like because it's basically it's almost
+
+1914
+01:12:52,530 --> 01:12:54,510
+like a black box you basically basically
+
+1915
+01:12:54,510 --> 01:12:55,770
+for the query plan you divide it up into
+
+1916
+01:12:55,770 --> 01:12:59,450
+a dag you hand it off to the to thread
+
+1917
+01:12:59,450 --> 01:13:02,880
+to TV TVB library and it's scheduler it
+
+1918
+01:13:02,880 --> 01:13:04,260
+does its thing and a better you get back
+
+1919
+01:13:04,260 --> 01:13:06,240
+response but you can't send in or
+
+1920
+01:13:06,240 --> 01:13:07,920
+something else at the same time at least
+
+1921
+01:13:07,920 --> 01:13:13,050
+I don't think okay alright so the last
+
+1922
+01:13:13,050 --> 01:13:15,000
+thing I'm gonna talk about is how to do
+
+1923
+01:13:15,000 --> 01:13:17,400
+flow control I sort of briefly talked
+
+1924
+01:13:17,400 --> 01:13:18,870
+about this about with the hard and soft
+
+1925
+01:13:18,870 --> 01:13:20,990
+queues approach like if I recognize that
+
+1926
+01:13:20,990 --> 01:13:23,820
+I can't process queries fast enough then
+
+1927
+01:13:23,820 --> 01:13:25,140
+I can take away networking threads and
+
+1928
+01:13:25,140 --> 01:13:27,750
+assign unpark query processing threads
+
+1929
+01:13:27,750 --> 01:13:31,980
+but basically like if query share
+
+1930
+01:13:31,980 --> 01:13:33,270
+showing off faster than we can handle
+
+1931
+01:13:33,270 --> 01:13:34,710
+them then we're going to become
+
+1932
+01:13:34,710 --> 01:13:37,710
+overloaded so once again the OS is not
+
+1933
+01:13:37,710 --> 01:13:39,750
+gonna help us because if for cpu-bound
+
+1934
+01:13:39,750 --> 01:13:43,350
+then it just does nothing right if for
+
+1935
+01:13:43,350 --> 01:13:44,670
+memory bound and actually what his
+
+1936
+01:13:44,670 --> 01:13:47,520
+question is like if I allocate one
+
+1937
+01:13:47,520 --> 01:13:48,780
+terabyte of memory and I don't have one
+
+1938
+01:13:48,780 --> 01:13:50,400
+terabyte of memory and I don't have one
+
+1939
+01:13:50,400 --> 01:13:52,380
+terabyte of swap space what's gonna
+
+1940
+01:13:52,380 --> 01:13:52,950
+happen
+
+1941
+01:13:52,950 --> 01:13:54,780
+well the OS called has this special
+
+1942
+01:13:54,780 --> 01:13:56,580
+thing called the out of out of memory
+
+1943
+01:13:56,580 --> 01:13:59,730
+killer om and basically says oh I'm
+
+1944
+01:13:59,730 --> 01:14:00,810
+running out of memory I'm running out of
+
+1945
+01:14:00,810 --> 01:14:02,220
+swap days let me pick a random process
+
+1946
+01:14:02,220 --> 01:14:04,920
+and just kill it right and you get a sig
+
+1947
+01:14:04,920 --> 01:14:07,320
+term it you you know it just kills you
+
+1948
+01:14:07,320 --> 01:14:11,420
+right yes
+
+1949
+01:14:12,610 --> 01:14:24,280
+what sir what is cowlick sorry Oh
+
+1950
+01:14:24,280 --> 01:14:30,530
+cowlick sorry yes um what would say what
+
+1951
+01:14:30,530 --> 01:14:32,600
+would that do I feel like if I try to
+
+1952
+01:14:32,600 --> 01:14:34,520
+malloc and initialize one terabyte of
+
+1953
+01:14:34,520 --> 01:14:36,680
+memory it's gonna start running up the
+
+1954
+01:14:36,680 --> 01:14:39,320
+swap space and again like if I don't saw
+
+1955
+01:14:39,320 --> 01:14:42,800
+spaces I think the policy is for om I
+
+1956
+01:14:42,800 --> 01:14:44,240
+think it picks whatever the one has the
+
+1957
+01:14:44,240 --> 01:14:46,370
+most memory because again from the
+
+1958
+01:14:46,370 --> 01:14:49,340
+operating system world like Linux job is
+
+1959
+01:14:49,340 --> 01:14:52,820
+not to die right and if and if so nor it
+
+1960
+01:14:52,820 --> 01:14:54,620
+survived it's got to kill your database
+
+1961
+01:14:54,620 --> 01:15:00,170
+system it's gonna do it right um so you
+
+1962
+01:15:00,170 --> 01:15:02,480
+know in it so from the obvious
+
+1963
+01:15:02,480 --> 01:15:04,100
+perspective this is the right thing to
+
+1964
+01:15:04,100 --> 01:15:05,990
+do instead of me crack grinding to a
+
+1965
+01:15:05,990 --> 01:15:08,270
+halt and never doing anything right I'll
+
+1966
+01:15:08,270 --> 01:15:10,400
+I'll kill the data system and then that
+
+1967
+01:15:10,400 --> 01:15:13,660
+way you can still know what YouTube yeah
+
+1968
+01:15:13,660 --> 01:15:17,060
+so from a again from the Davis isn't
+
+1969
+01:15:17,060 --> 01:15:18,680
+that's the same thing in this crash but
+
+1970
+01:15:18,680 --> 01:15:20,720
+we knew something that's smarter and
+
+1971
+01:15:20,720 --> 01:15:22,630
+they're basically two concepts here
+
+1972
+01:15:22,630 --> 01:15:24,560
+emission control and throttling and
+
+1973
+01:15:24,560 --> 01:15:25,880
+basically the idea is where do we
+
+1974
+01:15:25,880 --> 01:15:27,500
+recognize where our bottleneck is that
+
+1975
+01:15:27,500 --> 01:15:28,730
+we can't process things fasten off and
+
+1976
+01:15:28,730 --> 01:15:31,480
+then how do we then expose that out to
+
+1977
+01:15:31,480 --> 01:15:35,450
+the to the outside world so that new
+
+1978
+01:15:35,450 --> 01:15:36,740
+queries don't show up and we get
+
+1979
+01:15:36,740 --> 01:15:38,780
+overwhelmed so Mission Control is
+
+1980
+01:15:38,780 --> 01:15:41,540
+basically we recognize that a query
+
+1981
+01:15:41,540 --> 01:15:43,790
+shows up and then we don't have enough
+
+1982
+01:15:43,790 --> 01:15:44,930
+resources to actually - right now
+
+1983
+01:15:44,930 --> 01:15:48,380
+because we're CPU bound or we're running
+
+1984
+01:15:48,380 --> 01:15:51,260
+out of memory we go ahead and say we we
+
+1985
+01:15:51,260 --> 01:15:54,560
+reject the request and I think in the
+
+1986
+01:15:54,560 --> 01:15:56,570
+post ghost protocol I I don't think you
+
+1987
+01:15:56,570 --> 01:15:59,270
+can send back it's the rejection request
+
+1988
+01:15:59,270 --> 01:16:01,100
+but you can send back a like query fail
+
+1989
+01:16:01,100 --> 01:16:04,880
+or it's close connection throttling
+
+1990
+01:16:04,880 --> 01:16:07,100
+would be you just introduced some
+
+1991
+01:16:07,100 --> 01:16:09,950
+artificial delay for queries as they
+
+1992
+01:16:09,950 --> 01:16:12,770
+show up so that the idea is that I sleep
+
+1993
+01:16:12,770 --> 01:16:13,760
+a little bit for us maybe start
+
+1994
+01:16:13,760 --> 01:16:15,320
+processing the query or as I'm running
+
+1995
+01:16:15,320 --> 01:16:16,790
+the query maybe sleep a little as well
+
+1996
+01:16:16,790 --> 01:16:21,050
+and that way the for the system overall
+
+1997
+01:16:21,050 --> 01:16:22,460
+because now queries are not trying to
+
+1998
+01:16:22,460 --> 01:16:25,300
+all do you know do work at the same time
+
+1999
+01:16:25,300 --> 01:16:27,920
+this is sort of smooth things out and I
+
+2000
+01:16:27,920 --> 01:16:30,199
+can I can you know I can actually
+
+2001
+01:16:30,199 --> 01:16:31,070
+process things that make forward
+
+2002
+01:16:31,070 --> 01:16:34,070
+progress so I'm not saying one is better
+
+2003
+01:16:34,070 --> 01:16:35,570
+than other different systems do
+
+2004
+01:16:35,570 --> 01:16:37,640
+different things this one is probably
+
+2005
+01:16:37,640 --> 01:16:39,620
+the most common one but again this needs
+
+2006
+01:16:39,620 --> 01:16:41,449
+you need to now be aware of what's going
+
+2007
+01:16:41,449 --> 01:16:43,880
+on in the in the in the in the actual
+
+2008
+01:16:43,880 --> 01:16:45,320
+worker pools we're to actually exceeded
+
+2009
+01:16:45,320 --> 01:16:46,820
+queries in order to make this decision
+
+2010
+01:16:46,820 --> 01:16:48,530
+for this one you don't need any
+
+2011
+01:16:48,530 --> 01:16:50,480
+centralized control you just say you
+
+2012
+01:16:50,480 --> 01:16:52,190
+know well other than like I need to
+
+2013
+01:16:52,190 --> 01:16:54,440
+recognize that I'm going slower or my
+
+2014
+01:16:54,440 --> 01:16:56,449
+queue is getting a lot of certainty I
+
+2015
+01:16:56,449 --> 01:16:58,130
+can't it's getting larger than it is
+
+2016
+01:16:58,130 --> 01:17:00,530
+smaller as I process things then I just
+
+2017
+01:17:00,530 --> 01:17:01,580
+introduced these things but I don't
+
+2018
+01:17:01,580 --> 01:17:03,140
+really make a global decision every
+
+2019
+01:17:03,140 --> 01:17:04,250
+threat could make its own decision about
+
+2020
+01:17:04,250 --> 01:17:08,660
+about introducing to sleep okay so the
+
+2021
+01:17:08,660 --> 01:17:10,580
+high-end systems can do this this is
+
+2022
+01:17:10,580 --> 01:17:13,219
+sort of like a approach one approach to
+
+2023
+01:17:13,219 --> 01:17:15,110
+sorry it's a backwards but like this is
+
+2024
+01:17:15,110 --> 01:17:16,460
+the easiest one to do the high-end
+
+2025
+01:17:16,460 --> 01:17:18,230
+systems can do this because you can do
+
+2026
+01:17:18,230 --> 01:17:20,870
+other things like I can have I can have
+
+2027
+01:17:20,870 --> 01:17:22,969
+priority queues to say like if a someone
+
+2028
+01:17:22,969 --> 01:17:24,590
+connects with this username let their
+
+2029
+01:17:24,590 --> 01:17:25,910
+queries always run even though I'm
+
+2030
+01:17:25,910 --> 01:17:27,680
+oversaturated whereas like if someone
+
+2031
+01:17:27,680 --> 01:17:29,239
+else is like a low low paying customer
+
+2032
+01:17:29,239 --> 01:17:31,250
+they can run slower and certainly if I'm
+
+2033
+01:17:31,250 --> 01:17:34,010
+the admin like a lot of these systems
+
+2034
+01:17:34,010 --> 01:17:36,410
+always maintain one open port for it for
+
+2035
+01:17:36,410 --> 01:17:37,430
+the admin view it'll connect to the
+
+2036
+01:17:37,430 --> 01:17:38,870
+system and actually queries start
+
+2037
+01:17:38,870 --> 01:17:42,290
+killing things and in you know free up
+
+2038
+01:17:42,290 --> 01:17:44,239
+resources so in that case here that's
+
+2039
+01:17:44,239 --> 01:17:47,810
+you know this is very common alright so
+
+2040
+01:17:47,810 --> 01:17:49,780
+we covered a lot today
+
+2041
+01:17:49,780 --> 01:17:52,070
+the main takeaway again throughout the
+
+2042
+01:17:52,070 --> 01:17:53,570
+entire semester and especially today is
+
+2043
+01:17:53,570 --> 01:17:55,520
+that what is a database system well it's
+
+2044
+01:17:55,520 --> 01:17:57,230
+a beautiful piece of software that we
+
+2045
+01:17:57,230 --> 01:17:59,150
+don't want the OS to ruin for us so
+
+2046
+01:17:59,150 --> 01:18:00,890
+we're trying to do as much as we can as
+
+2047
+01:18:00,890 --> 01:18:02,780
+possible sequel West is sort of one
+
+2048
+01:18:02,780 --> 01:18:04,880
+extreme but at the very least we need to
+
+2049
+01:18:04,880 --> 01:18:07,430
+be aware of the layout of memory where
+
+2050
+01:18:07,430 --> 01:18:08,960
+threads are be running so that we we
+
+2051
+01:18:08,960 --> 01:18:11,210
+minimize that that traffic over to
+
+2052
+01:18:11,210 --> 01:18:15,410
+interconnect right and the amount of
+
+2053
+01:18:15,410 --> 01:18:17,360
+metadata mean you maintain about where a
+
+2054
+01:18:17,360 --> 01:18:18,860
+morsel is locator where a block of date
+
+2055
+01:18:18,860 --> 01:18:22,070
+is located is pretty low right it's not
+
+2056
+01:18:22,070 --> 01:18:23,719
+like we need you know anything inside
+
+2057
+01:18:23,719 --> 01:18:24,949
+this is need to know if you want this
+
+2058
+01:18:24,949 --> 01:18:27,350
+address here's where it's located or we
+
+2059
+01:18:27,350 --> 01:18:29,210
+could also do the cisco on the fly and
+
+2060
+01:18:29,210 --> 01:18:31,160
+say well I know there's black located
+
+2061
+01:18:31,160 --> 01:18:32,840
+here what neumann region is it located
+
+2062
+01:18:32,840 --> 01:18:34,910
+in and then assign a task to it after
+
+2063
+01:18:34,910 --> 01:18:36,920
+that but typically that's that you don't
+
+2064
+01:18:36,920 --> 01:18:38,840
+want to do that because that's a syscall
+
+2065
+01:18:38,840 --> 01:18:40,760
+and so we wouldn't track everything
+
+2066
+01:18:40,760 --> 01:18:42,860
+ourselves and the OS again it's a
+
+2067
+01:18:42,860 --> 01:18:45,199
+frenemy we need it to live but we don't
+
+2068
+01:18:45,199 --> 01:18:46,460
+want to actually have to talk to as much
+
+2069
+01:18:46,460 --> 01:18:47,810
+as possible we don't want it to do
+
+2070
+01:18:47,810 --> 01:18:52,969
+anything ok any questions all right so
+
+2071
+01:18:52,969 --> 01:18:54,739
+next class now we're going into more
+
+2072
+01:18:54,739 --> 01:18:57,230
+detail about what are these tasks
+
+2073
+01:18:57,230 --> 01:18:58,190
+actually could look like and how we're
+
+2074
+01:18:58,190 --> 01:19:00,190
+actually gonna execute them okay and
+
+2075
+01:19:00,190 --> 01:19:03,170
+then we'll post on Piazza for the update
+
+2076
+01:19:03,170 --> 01:19:05,000
+of the the checkpoint for for project
+
+2077
+01:19:05,000 --> 01:19:06,889
+two and if you don't have a group I will
+
+2078
+01:19:06,889 --> 01:19:09,020
+email you today and force you to make
+
+2079
+01:19:09,020 --> 01:19:10,750
+friends and pick a group okay
+
+2080
+01:19:10,750 --> 01:19:16,780
+guys what is this
+
+2081
+01:19:16,970 --> 01:19:37,079
+[Music]
+
+2082
+01:19:38,820 --> 01:19:41,070
+and my hood won't be the same I've diced
+
+2083
+01:19:41,070 --> 01:19:44,930
+you take a say I said a prayer
+

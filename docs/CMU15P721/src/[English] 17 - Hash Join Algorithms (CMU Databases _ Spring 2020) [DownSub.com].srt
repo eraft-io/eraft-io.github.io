@@ -1,0 +1,6928 @@
+1
+00:00:01,300 --> 00:00:05,129
+[Music]
+
+2
+00:00:05,200 --> 00:00:05,930
+[Applause]
+
+3
+00:00:05,930 --> 00:00:08,630
+[Music]
+
+4
+00:00:08,630 --> 00:00:10,020
+[Applause]
+
+5
+00:00:10,020 --> 00:00:11,269
+[Music]
+
+6
+00:00:11,269 --> 00:00:13,349
+today we're going to talk about hash
+
+7
+00:00:13,349 --> 00:00:15,210
+joins again I'm just here my home office
+
+8
+00:00:15,210 --> 00:00:18,660
+it's me up here with the terrier in
+
+9
+00:00:18,660 --> 00:00:21,359
+attendance so it'll be asking questions
+
+10
+00:00:21,359 --> 00:00:26,279
+as we go along today so why are hash
+
+11
+00:00:26,279 --> 00:00:28,199
+coins important well it's joined in
+
+12
+00:00:28,199 --> 00:00:29,460
+general are important because that's one
+
+13
+00:00:29,460 --> 00:00:30,929
+of those common things operated with an
+
+14
+00:00:30,929 --> 00:00:34,860
+execute in analytical workloads so for
+
+15
+00:00:34,860 --> 00:00:36,420
+today we're gonna start talked about in
+
+16
+00:00:36,420 --> 00:00:38,309
+the background of what it means for to
+
+17
+00:00:38,309 --> 00:00:39,329
+do a joint algorithm
+
+18
+00:00:39,329 --> 00:00:41,040
+I had a high-level and in some of the
+
+19
+00:00:41,040 --> 00:00:42,780
+history of the back and forth between
+
+20
+00:00:42,780 --> 00:00:45,450
+the performance trade-offs of a hash
+
+21
+00:00:45,450 --> 00:00:47,250
+joint versus the sort merge join that
+
+22
+00:00:47,250 --> 00:00:48,120
+we'll talk about have you a parallel
+
+23
+00:00:48,120 --> 00:00:50,579
+house join and in the different ways to
+
+24
+00:00:50,579 --> 00:00:52,829
+do the three phases and then we talked
+
+25
+00:00:52,829 --> 00:00:54,059
+about how did you build a hash table the
+
+26
+00:00:54,059 --> 00:00:55,530
+hashing scheme the hashing function and
+
+27
+00:00:55,530 --> 00:00:57,180
+then we'll finish off with a discussion
+
+28
+00:00:57,180 --> 00:00:59,520
+of the evaluation of the based on some
+
+29
+00:00:59,520 --> 00:01:00,750
+of the results and in the paper you guys
+
+30
+00:01:00,750 --> 00:01:06,060
+were assigned to me so the in the
+
+31
+00:01:06,060 --> 00:01:08,220
+introduction class last semester when we
+
+32
+00:01:08,220 --> 00:01:10,110
+talked about joint albums we didn't
+
+33
+00:01:10,110 --> 00:01:12,180
+really talk about how to set execute
+
+34
+00:01:12,180 --> 00:01:15,119
+them in terms of multiple threads at in
+
+35
+00:01:15,119 --> 00:01:18,150
+parallel we mostly focused on trying to
+
+36
+00:01:18,150 --> 00:01:21,450
+assess you know how much disk IO we were
+
+37
+00:01:21,450 --> 00:01:22,799
+going to incur for the different
+
+38
+00:01:22,799 --> 00:01:24,810
+algorithms but now in an in-memory
+
+39
+00:01:24,810 --> 00:01:26,430
+system we don't have disk and now we
+
+40
+00:01:26,430 --> 00:01:28,729
+want to maximize the amount of
+
+41
+00:01:28,729 --> 00:01:31,049
+parallelization we can get across on our
+
+42
+00:01:31,049 --> 00:01:33,060
+course on our CPUs and now we need to
+
+43
+00:01:33,060 --> 00:01:34,500
+focus on how we're actually gonna use
+
+44
+00:01:34,500 --> 00:01:37,009
+our hardware efficiently to do the joint
+
+45
+00:01:37,009 --> 00:01:39,150
+so parallel joint is just taking two
+
+46
+00:01:39,150 --> 00:01:41,400
+tables two relations that we want to
+
+47
+00:01:41,400 --> 00:01:42,840
+join together but we're gonna do this
+
+48
+00:01:42,840 --> 00:01:44,220
+joint across multiple threads I'm going
+
+49
+00:01:44,220 --> 00:01:45,540
+to try to minimize the amount of
+
+50
+00:01:45,540 --> 00:01:47,280
+contention and synchronization as
+
+51
+00:01:47,280 --> 00:01:49,170
+possible so that we get the best
+
+52
+00:01:49,170 --> 00:01:51,450
+performance so the two main approaches
+
+53
+00:01:51,450 --> 00:01:53,159
+we're going to do the view joins in an
+
+54
+00:01:53,159 --> 00:01:54,810
+OLAP system are going to be either
+
+55
+00:01:54,810 --> 00:01:57,329
+hashing or server or sorting these are
+
+56
+00:01:57,329 --> 00:01:58,799
+there's no other sort of way to
+
+57
+00:01:58,799 --> 00:02:01,259
+magically be able to identify when you
+
+58
+00:02:01,259 --> 00:02:03,000
+have matching tuples right it's either
+
+59
+00:02:03,000 --> 00:02:05,130
+one or the other and so for this class
+
+60
+00:02:05,130 --> 00:02:06,329
+also the means we're not going to
+
+61
+00:02:06,329 --> 00:02:09,508
+discuss national loop joins because
+
+62
+00:02:09,508 --> 00:02:12,840
+that's like the worst case scenario in
+
+63
+00:02:12,840 --> 00:02:14,459
+in an OLAP system because it's just
+
+64
+00:02:14,459 --> 00:02:16,290
+doing a brute-force search of scruncho
+
+65
+00:02:16,290 --> 00:02:17,940
+scans over the tables to try to find
+
+66
+00:02:17,940 --> 00:02:18,810
+matching tuples
+
+67
+00:02:18,810 --> 00:02:21,480
+so in OLAP systems you're not gonna see
+
+68
+00:02:21,480 --> 00:02:23,730
+nested loop joins except for some rare
+
+69
+00:02:23,730 --> 00:02:25,610
+cases when the tables are super small
+
+70
+00:02:25,610 --> 00:02:27,959
+and so for that reason they're also you
+
+71
+00:02:27,959 --> 00:02:31,890
+know running those in parallel is the
+
+72
+00:02:31,890 --> 00:02:32,910
+same way you would just sort of run a
+
+73
+00:02:32,910 --> 00:02:35,400
+scan in parallel so there's not that
+
+74
+00:02:35,400 --> 00:02:37,680
+much we talked about here the other
+
+75
+00:02:37,680 --> 00:02:39,629
+thing I'll say also - though in OTP
+
+76
+00:02:39,629 --> 00:02:42,780
+systems you will see initially joins
+
+77
+00:02:42,780 --> 00:02:44,959
+because awesome talk oftentimes these
+
+78
+00:02:44,959 --> 00:02:46,769
+database systems that are designed for
+
+79
+00:02:46,769 --> 00:02:49,019
+transaction processing workloads don't
+
+80
+00:02:49,019 --> 00:02:50,459
+need to do hash joins or don't even need
+
+81
+00:02:50,459 --> 00:02:52,530
+to do sort merge joins because they're
+
+82
+00:02:52,530 --> 00:02:55,079
+not doing large joints between different
+
+83
+00:02:55,079 --> 00:02:57,390
+tables it's always doing foreign key
+
+84
+00:02:57,390 --> 00:02:59,400
+lookups or small number key lookups to
+
+85
+00:02:59,400 --> 00:03:01,739
+go get data that you would then give out
+
+86
+00:03:01,739 --> 00:03:03,180
+to the application or like render a web
+
+87
+00:03:03,180 --> 00:03:05,099
+page let's think of like Amazon when you
+
+88
+00:03:05,099 --> 00:03:07,709
+log in there could be a nested loop join
+
+89
+00:03:07,709 --> 00:03:10,049
+for taking Amy's account and getting all
+
+90
+00:03:10,049 --> 00:03:12,180
+andis orders so there'll be a foreign
+
+91
+00:03:12,180 --> 00:03:14,970
+key reference from the the order
+
+92
+00:03:14,970 --> 00:03:18,480
+customer ID to the customer table right
+
+93
+00:03:18,480 --> 00:03:20,130
+and then that case is just an index
+
+94
+00:03:20,130 --> 00:03:21,630
+nested loop joint which will be super
+
+95
+00:03:21,630 --> 00:03:23,010
+fashion way more efficient than you
+
+96
+00:03:23,010 --> 00:03:24,690
+would do a hash drawing because you
+
+97
+00:03:24,690 --> 00:03:26,280
+don't need to build the hash table to do
+
+98
+00:03:26,280 --> 00:03:28,380
+the join you just use that that existing
+
+99
+00:03:28,380 --> 00:03:31,470
+index so for this reason an index in
+
+100
+00:03:31,470 --> 00:03:33,959
+this loop join at a high level is going
+
+101
+00:03:33,959 --> 00:03:38,250
+to look a lot like a hash join it's just
+
+102
+00:03:38,250 --> 00:03:40,739
+that the the data structure you use to
+
+103
+00:03:40,739 --> 00:03:42,540
+find matching tuples already exists
+
+104
+00:03:42,540 --> 00:03:44,760
+because the OGB application already
+
+105
+00:03:44,760 --> 00:03:47,069
+defined the index that you're gonna do a
+
+106
+00:03:47,069 --> 00:03:49,980
+join on I said again the high-level
+
+107
+00:03:49,980 --> 00:03:51,630
+differences here is that a hash join
+
+108
+00:03:51,630 --> 00:03:54,630
+builds a data structure like an index
+
+109
+00:03:54,630 --> 00:03:55,919
+that allow you to find the matching
+
+110
+00:03:55,919 --> 00:03:59,069
+tuples but when that query finishes it
+
+111
+00:03:59,069 --> 00:04:00,810
+throws away the hash table and an x
+
+112
+00:04:00,810 --> 00:04:02,489
+squared comes along and just really
+
+113
+00:04:02,489 --> 00:04:05,099
+about the hash table again in a index
+
+114
+00:04:05,099 --> 00:04:07,139
+mmm as a loop join the index already
+
+115
+00:04:07,139 --> 00:04:08,579
+exists so you don't need to build it on
+
+116
+00:04:08,579 --> 00:04:10,440
+the fly you just use that in order to
+
+117
+00:04:10,440 --> 00:04:12,870
+find the matches for your tuples but a
+
+118
+00:04:12,870 --> 00:04:15,030
+big difference is that in ocean settings
+
+119
+00:04:15,030 --> 00:04:18,298
+this index is most likely going to be a
+
+120
+00:04:18,298 --> 00:04:20,250
+tree based data structure so either be
+
+121
+00:04:20,250 --> 00:04:21,779
+plus tree or a radix tree that we talked
+
+122
+00:04:21,779 --> 00:04:24,570
+about before and and so that means
+
+123
+00:04:24,570 --> 00:04:25,490
+you'll get login
+
+124
+00:04:25,490 --> 00:04:27,949
+Gups when you do the join but for a hash
+
+125
+00:04:27,949 --> 00:04:29,690
+join you using a hatchet we'll give you
+
+126
+00:04:29,690 --> 00:04:32,300
+on average oh one lookups which is way
+
+127
+00:04:32,300 --> 00:04:34,910
+more faster so that's why nobody builds
+
+128
+00:04:34,910 --> 00:04:37,340
+a B+ Trading when you do a join with
+
+129
+00:04:37,340 --> 00:04:39,410
+some rare exceptions when you're doing
+
+130
+00:04:39,410 --> 00:04:41,120
+like you know range range predicates and
+
+131
+00:04:41,120 --> 00:04:42,080
+things like that on the joint but we're
+
+132
+00:04:42,080 --> 00:04:43,569
+focusing on equi-join
+
+133
+00:04:43,569 --> 00:04:46,610
+so perhaps on we're gonna use a hash
+
+134
+00:04:46,610 --> 00:04:47,569
+table because that's gonna be more
+
+135
+00:04:47,569 --> 00:04:52,789
+efficient so the debate of whether sort
+
+136
+00:04:52,789 --> 00:04:55,539
+merge-join is faster than hash join is
+
+137
+00:04:55,539 --> 00:04:59,180
+one of these classic problems in in
+
+138
+00:04:59,180 --> 00:05:01,550
+databases that over the last 50 years
+
+139
+00:05:01,550 --> 00:05:03,319
+it's gone back and forth of which which
+
+140
+00:05:03,319 --> 00:05:05,569
+approach is actually better so in the
+
+141
+00:05:05,569 --> 00:05:08,150
+1970s the conventional wisdom was that
+
+142
+00:05:08,150 --> 00:05:11,330
+sort vers join with superior because the
+
+143
+00:05:11,330 --> 00:05:12,770
+amount of memory that was available to
+
+144
+00:05:12,770 --> 00:05:14,659
+these early date early computers early
+
+145
+00:05:14,659 --> 00:05:16,729
+systems back then was was quite limited
+
+146
+00:05:16,729 --> 00:05:20,000
+and they had algorithms to do external
+
+147
+00:05:20,000 --> 00:05:21,740
+merge sort so you could spilled a disk
+
+148
+00:05:21,740 --> 00:05:24,440
+and still sort the data and so I it's
+
+149
+00:05:24,440 --> 00:05:26,300
+unclear whether they knew they could do
+
+150
+00:05:26,300 --> 00:05:28,880
+a hash joint that could spilt a desk or
+
+151
+00:05:28,880 --> 00:05:30,889
+not but the conventional wisdom was the
+
+152
+00:05:30,889 --> 00:05:32,539
+sort MERS joined was better because they
+
+153
+00:05:32,539 --> 00:05:34,070
+already had that external more short
+
+154
+00:05:34,070 --> 00:05:37,460
+algorithm then the 1980s came along and
+
+155
+00:05:37,460 --> 00:05:40,370
+then there was this movement called sort
+
+156
+00:05:40,370 --> 00:05:41,990
+of database machines where they've
+
+157
+00:05:41,990 --> 00:05:43,699
+identified that hash twins could be
+
+158
+00:05:43,699 --> 00:05:46,940
+superior if you had a specialized
+
+159
+00:05:46,940 --> 00:05:49,130
+hardware support to do the hashing and
+
+160
+00:05:49,130 --> 00:05:52,039
+do the hash join and so in the 1980s the
+
+161
+00:05:52,039 --> 00:05:53,599
+potential wisdom was that hashing
+
+162
+00:05:53,599 --> 00:05:56,530
+patterns were superior because they had
+
+163
+00:05:56,530 --> 00:05:58,520
+because they had hardware that could do
+
+164
+00:05:58,520 --> 00:05:59,539
+it more efficiently than you could do
+
+165
+00:05:59,539 --> 00:06:03,110
+sorting so we we don't really talk about
+
+166
+00:06:03,110 --> 00:06:05,000
+davison machines anymore the idea I
+
+167
+00:06:05,000 --> 00:06:06,680
+think of this is like it's a custom
+
+168
+00:06:06,680 --> 00:06:09,080
+appliance that has special instructions
+
+169
+00:06:09,080 --> 00:06:11,300
+or special hardware specifically for a
+
+170
+00:06:11,300 --> 00:06:14,389
+particular database system they sort of
+
+171
+00:06:14,389 --> 00:06:17,569
+went out of vogue in the 1980s because
+
+172
+00:06:17,569 --> 00:06:19,520
+Intel and all the other chip
+
+173
+00:06:19,520 --> 00:06:20,780
+manufacturers were putting out new
+
+174
+00:06:20,780 --> 00:06:24,259
+things new CPUs all the time and even
+
+175
+00:06:24,259 --> 00:06:25,940
+voted with Moore's law things got faster
+
+176
+00:06:25,940 --> 00:06:27,110
+and faster because you had more
+
+177
+00:06:27,110 --> 00:06:29,300
+transistors so by the time if you were a
+
+178
+00:06:29,300 --> 00:06:30,919
+database company the time it took you to
+
+179
+00:06:30,919 --> 00:06:33,319
+fabricate or design and fabricate your
+
+180
+00:06:33,319 --> 00:06:34,940
+database machine with specialized
+
+181
+00:06:34,940 --> 00:06:36,860
+hardware and then actually put it in
+
+182
+00:06:36,860 --> 00:06:38,660
+production and start selling it
+
+183
+00:06:38,660 --> 00:06:40,550
+Intel or whoever put out already new
+
+184
+00:06:40,550 --> 00:06:43,880
+CPUs that were that negated any
+
+185
+00:06:43,880 --> 00:06:45,380
+performance gains you had in your custom
+
+186
+00:06:45,380 --> 00:06:47,270
+hardware you don't really see this
+
+187
+00:06:47,270 --> 00:06:49,700
+anymore aw that's kind of coming back in
+
+188
+00:06:49,700 --> 00:06:52,850
+vogue not so much with specialized
+
+189
+00:06:52,850 --> 00:06:54,290
+Harvard like they didn't data's machines
+
+190
+00:06:54,290 --> 00:06:57,890
+but more like FPGAs GPUs and and other
+
+191
+00:06:57,890 --> 00:06:59,420
+types of hardware accelerators that it's
+
+192
+00:06:59,420 --> 00:07:01,970
+there's still commodity base but you can
+
+193
+00:07:01,970 --> 00:07:03,500
+design custom kernels for the database
+
+194
+00:07:03,500 --> 00:07:07,850
+on them then in the 1990s there was this
+
+195
+00:07:07,850 --> 00:07:09,890
+paper from gertz graphi the same guy
+
+196
+00:07:09,890 --> 00:07:11,570
+that did volcano the same guy that did
+
+197
+00:07:11,570 --> 00:07:13,280
+the BP plus tree stuff we talked about
+
+198
+00:07:13,280 --> 00:07:16,340
+before with latching he came out with a
+
+199
+00:07:16,340 --> 00:07:19,910
+paper that said that the algorithms are
+
+200
+00:07:19,910 --> 00:07:21,800
+basically equivalent that for all
+
+201
+00:07:21,800 --> 00:07:24,380
+different real world scenarios on the
+
+202
+00:07:24,380 --> 00:07:26,510
+marver that existed at the time you
+
+203
+00:07:26,510 --> 00:07:29,570
+wouldn't really see a noticeable
+
+204
+00:07:29,570 --> 00:07:31,540
+performance difference between being
+
+205
+00:07:31,540 --> 00:07:34,580
+short version hashing so they were Dean
+
+206
+00:07:34,580 --> 00:07:39,740
+equivalent but then in the 2000s as
+
+207
+00:07:39,740 --> 00:07:42,710
+there was more and more analytical
+
+208
+00:07:42,710 --> 00:07:45,170
+databases being created like Vertica
+
+209
+00:07:45,170 --> 00:07:47,270
+greenplum aster data things like that it
+
+210
+00:07:47,270 --> 00:07:48,710
+was shown that hash joins were
+
+211
+00:07:48,710 --> 00:07:52,700
+considered to be superior on the horror
+
+212
+00:07:52,700 --> 00:07:53,980
+that was available at the time and
+
+213
+00:07:53,980 --> 00:07:56,840
+really since then that's that's been the
+
+214
+00:07:56,840 --> 00:07:59,720
+case right in the 2010s it wasn't so
+
+215
+00:07:59,720 --> 00:08:00,860
+much a debate about whether certain
+
+216
+00:08:00,860 --> 00:08:02,480
+bursts join was better than hash join if
+
+217
+00:08:02,480 --> 00:08:04,070
+the debate was whether you want to do a
+
+218
+00:08:04,070 --> 00:08:05,990
+partition hash join or non partition
+
+219
+00:08:05,990 --> 00:08:07,760
+hash join which is what we'll talk about
+
+220
+00:08:07,760 --> 00:08:10,850
+today and in the in the current decade
+
+221
+00:08:10,850 --> 00:08:15,200
+again unless there's some unless there's
+
+222
+00:08:15,200 --> 00:08:16,970
+some major breakthrough in the hardware
+
+223
+00:08:16,970 --> 00:08:19,490
+I don't think that certain version will
+
+224
+00:08:19,490 --> 00:08:20,990
+ever come up on top again I think
+
+225
+00:08:20,990 --> 00:08:23,810
+hashing is it's been proven to be
+
+226
+00:08:23,810 --> 00:08:27,080
+superior in many cases now obviously if
+
+227
+00:08:27,080 --> 00:08:28,910
+your data is already sorted on the join
+
+228
+00:08:28,910 --> 00:08:31,730
+key then you don't need to do the sort
+
+229
+00:08:31,730 --> 00:08:33,020
+at all and just doing the merge phase
+
+230
+00:08:33,020 --> 00:08:35,179
+then you know that's the best-case
+
+231
+00:08:35,179 --> 00:08:36,650
+scenario and that that certainly will be
+
+232
+00:08:36,650 --> 00:08:40,960
+the beta hash joint algorithm but
+
+233
+00:08:40,960 --> 00:08:43,309
+databases normally don't keep things
+
+234
+00:08:43,309 --> 00:08:47,990
+sorted all the time all right so let's
+
+235
+00:08:47,990 --> 00:08:49,610
+talk about now what the last decade
+
+236
+00:08:49,610 --> 00:08:51,140
+looked like sort of how we got to where
+
+237
+00:08:51,140 --> 00:08:52,340
+we are today and why
+
+238
+00:08:52,340 --> 00:08:53,630
+I signed the paper you guys were reading
+
+239
+00:08:53,630 --> 00:08:56,090
+so again the 2000 and the early 2000s at
+
+240
+00:08:56,090 --> 00:08:59,120
+the turn of the century it was deemed
+
+241
+00:08:59,120 --> 00:09:00,770
+that the research showed that hash join
+
+242
+00:09:00,770 --> 00:09:04,220
+was superior so the one of the key
+
+243
+00:09:04,220 --> 00:09:05,990
+papers in this came out from Intel when
+
+244
+00:09:05,990 --> 00:09:09,140
+Oracle in 2009 where they showed that
+
+245
+00:09:09,140 --> 00:09:10,550
+hashing was indeed superior than the
+
+246
+00:09:10,550 --> 00:09:15,230
+sword merge but they speculated that if
+
+247
+00:09:15,230 --> 00:09:17,840
+we now had larger Cindy registers in
+
+248
+00:09:17,840 --> 00:09:20,150
+particular 512-bit Cindy registers like
+
+249
+00:09:20,150 --> 00:09:24,080
+avx-512 for Intel then sort MERS join
+
+250
+00:09:24,080 --> 00:09:26,750
+would actually be faster now as far as
+
+251
+00:09:26,750 --> 00:09:29,210
+they know I there hasn't been a paper
+
+252
+00:09:29,210 --> 00:09:31,880
+since 2017 when a tx5 spell came out
+
+253
+00:09:31,880 --> 00:09:36,460
+that has actually tested this theory but
+
+254
+00:09:36,460 --> 00:09:38,450
+the ancient you can see whether that
+
+255
+00:09:38,450 --> 00:09:39,590
+that's actually you know what this is
+
+256
+00:09:39,590 --> 00:09:42,080
+actually true or not but again still now
+
+257
+00:09:42,080 --> 00:09:43,580
+everyone's still just doing a hashed
+
+258
+00:09:43,580 --> 00:09:48,440
+joins then in 2011 researchers at
+
+259
+00:09:48,440 --> 00:09:50,180
+Wisconsin put out a paper that started
+
+260
+00:09:50,180 --> 00:09:52,250
+the debate of whether you went to a
+
+261
+00:09:52,250 --> 00:09:53,930
+partition has joined versus a non
+
+262
+00:09:53,930 --> 00:09:56,210
+partition has shown and will discuss
+
+263
+00:09:56,210 --> 00:09:58,280
+these results later later in this
+
+264
+00:09:58,280 --> 00:10:02,150
+lecture but then the the Germans with
+
+265
+00:10:02,150 --> 00:10:06,470
+hyper came out and said Oh Intel is
+
+266
+00:10:06,470 --> 00:10:09,410
+actually wrong and Wisconsin was wrong
+
+267
+00:10:09,410 --> 00:10:11,630
+certain was joined is already fast or
+
+268
+00:10:11,630 --> 00:10:13,850
+even without the larger Cindy registers
+
+269
+00:10:13,850 --> 00:10:15,860
+and they showed how how you could do
+
+270
+00:10:15,860 --> 00:10:18,980
+this in hyper but then they came out a
+
+271
+00:10:18,980 --> 00:10:21,200
+year later with another paper that said
+
+272
+00:10:21,200 --> 00:10:22,730
+ignore what we just said in the previous
+
+273
+00:10:22,730 --> 00:10:25,940
+year we were wrong hashing is actually
+
+274
+00:10:25,940 --> 00:10:27,650
+superior and here's and here's a better
+
+275
+00:10:27,650 --> 00:10:31,670
+implementation for it then in 2013 there
+
+276
+00:10:31,670 --> 00:10:33,680
+was another paper from researchers in
+
+277
+00:10:33,680 --> 00:10:36,020
+Switzerland from ETH where they have a
+
+278
+00:10:36,020 --> 00:10:37,580
+bunch of ways to make a radix hash
+
+279
+00:10:37,580 --> 00:10:39,830
+drawing perform more efficiently so a
+
+280
+00:10:39,830 --> 00:10:41,240
+radix hash drawing radix partitioning
+
+281
+00:10:41,240 --> 00:10:43,640
+join we'll discuss this and few more
+
+282
+00:10:43,640 --> 00:10:44,900
+lectures they just showed how you can
+
+283
+00:10:44,900 --> 00:10:46,430
+you can do this more efficiently than an
+
+284
+00:10:46,430 --> 00:10:49,460
+on partition join but then another group
+
+285
+00:10:49,460 --> 00:10:52,460
+of Germans in 2016 came out and said
+
+286
+00:10:52,460 --> 00:10:56,090
+everyone needs to hold out but and stop
+
+287
+00:10:56,090 --> 00:10:58,280
+publishing these papers that say you
+
+288
+00:10:58,280 --> 00:11:00,260
+know here's my hash going back look how
+
+289
+00:11:00,260 --> 00:11:03,080
+much better it is they actually then did
+
+290
+00:11:03,080 --> 00:11:05,910
+a an exhaustive evaluation of
+
+291
+00:11:05,910 --> 00:11:07,290
+the different design decisions you could
+
+292
+00:11:07,290 --> 00:11:10,080
+have in your in your joint algorithm to
+
+293
+00:11:10,080 --> 00:11:11,400
+better understand what the trade-offs
+
+294
+00:11:11,400 --> 00:11:12,690
+are and which one is actually going to
+
+295
+00:11:12,690 --> 00:11:15,180
+be better than another so again that's
+
+296
+00:11:15,180 --> 00:11:16,560
+why I signed you guys this paper because
+
+297
+00:11:16,560 --> 00:11:18,300
+I get rather than just saying here's
+
+298
+00:11:18,300 --> 00:11:19,710
+this one-off implementation that we did
+
+299
+00:11:19,710 --> 00:11:22,230
+as Wisconsin did or hyper dated or ETH
+
+300
+00:11:22,230 --> 00:11:24,660
+did they just sorta did a complete sweep
+
+301
+00:11:24,660 --> 00:11:26,970
+over all their possible parameters in
+
+302
+00:11:26,970 --> 00:11:28,800
+these implications and showed you know
+
+303
+00:11:28,800 --> 00:11:30,600
+in what scenarios would one be better
+
+304
+00:11:30,600 --> 00:11:36,300
+than another so the so now if you want
+
+305
+00:11:36,300 --> 00:11:37,920
+to design our joint algorithm but that's
+
+306
+00:11:37,920 --> 00:11:40,830
+sort vers joint or hash join what are
+
+307
+00:11:40,830 --> 00:11:42,390
+some things you should think about to
+
+308
+00:11:42,390 --> 00:11:44,160
+make this thing run efficiently and it
+
+309
+00:11:44,160 --> 00:11:47,460
+could give performance so at a high
+
+310
+00:11:47,460 --> 00:11:48,570
+level of the two goals that we're gonna
+
+311
+00:11:48,570 --> 00:11:49,860
+have is that we want to minimize stick
+
+312
+00:11:49,860 --> 00:11:51,690
+Rinna's ation and minimize the cost of
+
+313
+00:11:51,690 --> 00:11:54,380
+accessing memory while we do the joint
+
+314
+00:11:54,380 --> 00:11:56,610
+so the first ones are obvious right we
+
+315
+00:11:56,610 --> 00:12:00,150
+talked about this before it basically
+
+316
+00:12:00,150 --> 00:12:01,530
+means that we want to avoid having to
+
+317
+00:12:01,530 --> 00:12:02,940
+take latches to protect critical
+
+318
+00:12:02,940 --> 00:12:04,950
+sections of the data structure of our
+
+319
+00:12:04,950 --> 00:12:08,580
+join so that you don't have any
+
+320
+00:12:08,580 --> 00:12:10,650
+contention or complex between threads so
+
+321
+00:12:10,650 --> 00:12:11,970
+that every thread is basically running
+
+322
+00:12:11,970 --> 00:12:13,800
+at full speed and they're not waiting
+
+323
+00:12:13,800 --> 00:12:15,270
+for another thread to give up some some
+
+324
+00:12:15,270 --> 00:12:19,710
+resource okay so I'll step to this this
+
+325
+00:12:19,710 --> 00:12:21,240
+doesn't necessarily we need to make our
+
+326
+00:12:21,240 --> 00:12:24,240
+algorithm latch free and there are latch
+
+327
+00:12:24,240 --> 00:12:26,520
+free techniques to do sorting and and
+
+328
+00:12:26,520 --> 00:12:30,030
+and merge or sorting and hash joins it
+
+329
+00:12:30,030 --> 00:12:31,920
+just means we need to get smarter about
+
+330
+00:12:31,920 --> 00:12:36,090
+how we're we're taking our latches for
+
+331
+00:12:36,090 --> 00:12:38,070
+the second one here the idea is that we
+
+332
+00:12:38,070 --> 00:12:41,820
+want to make sure that any time we have
+
+333
+00:12:41,820 --> 00:12:43,260
+a worker thread that's computing a join
+
+334
+00:12:43,260 --> 00:12:45,630
+any time they have to touch data access
+
+335
+00:12:45,630 --> 00:12:48,240
+it to do a check or write something we
+
+336
+00:12:48,240 --> 00:12:50,580
+want to make sure that that data is is
+
+337
+00:12:50,580 --> 00:12:53,400
+local to that core and this could be
+
+338
+00:12:53,400 --> 00:12:55,380
+either in the same numeration or ideally
+
+339
+00:12:55,380 --> 00:12:57,930
+in the same CPU cache right we want to
+
+340
+00:12:57,930 --> 00:12:59,370
+minimize the memory cache misses and
+
+341
+00:12:59,370 --> 00:13:02,790
+never minimize a number of cross
+
+342
+00:13:02,790 --> 00:13:04,500
+interconnect traffic between between
+
+343
+00:13:04,500 --> 00:13:10,830
+sockets so the way we can do this does
+
+344
+00:13:10,830 --> 00:13:12,180
+this last one improve our cache behavior
+
+345
+00:13:12,180 --> 00:13:13,520
+is twofold
+
+346
+00:13:13,520 --> 00:13:15,390
+so the things are going to matter for
+
+347
+00:13:15,390 --> 00:13:17,670
+most for us when we when we when we have
+
+348
+00:13:17,670 --> 00:13:19,110
+our algorithm that's gonna cause us to
+
+349
+00:13:19,110 --> 00:13:19,640
+have cache
+
+350
+00:13:19,640 --> 00:13:23,600
+is is we need to account for the size of
+
+351
+00:13:23,600 --> 00:13:26,090
+our cash and our TLD translation
+
+352
+00:13:26,090 --> 00:13:28,760
+lookaside buffer so that we're not
+
+353
+00:13:28,760 --> 00:13:31,370
+trying to access a large number of pages
+
+354
+00:13:31,370 --> 00:13:34,430
+at the same time so think about this if
+
+355
+00:13:34,430 --> 00:13:36,890
+I now need to touch ten to 'pls
+
+356
+00:13:36,890 --> 00:13:38,930
+if those ten to poles are in 10
+
+357
+00:13:38,930 --> 00:13:42,710
+different pages I only have five entries
+
+358
+00:13:42,710 --> 00:13:45,800
+in my TLD that's mapping the virtual
+
+359
+00:13:45,800 --> 00:13:47,030
+memory address to the physical memory
+
+360
+00:13:47,030 --> 00:13:49,850
+address then in order for me to actually
+
+361
+00:13:49,850 --> 00:13:51,830
+do my operations on those ten things I'm
+
+362
+00:13:51,830 --> 00:13:53,390
+gonna have to start addicting things for
+
+363
+00:13:53,390 --> 00:13:56,090
+my TLB and therefore of a cache miss on
+
+364
+00:13:56,090 --> 00:13:57,530
+the data that I want plus a cache miss
+
+365
+00:13:57,530 --> 00:14:00,020
+in the TLB II said I big my access go
+
+366
+00:14:00,020 --> 00:14:03,080
+twice as slow so ideally I want a brave
+
+367
+00:14:03,080 --> 00:14:06,260
+it'll bring a small amount of data or
+
+368
+00:14:06,260 --> 00:14:07,580
+the middle amount of data I need to do
+
+369
+00:14:07,580 --> 00:14:08,900
+whatever operations I think it need to
+
+370
+00:14:08,900 --> 00:14:11,150
+do and complete all those operations
+
+371
+00:14:11,150 --> 00:14:14,630
+before I move on to the to the next name
+
+372
+00:14:14,630 --> 00:14:17,000
+and that's sort of called locality the
+
+373
+00:14:17,000 --> 00:14:18,470
+temple and spatial locality so I'm just
+
+374
+00:14:18,470 --> 00:14:20,750
+making sure that I'm accessing that fie
+
+375
+00:14:20,750 --> 00:14:22,100
+access this thing multiple times I want
+
+376
+00:14:22,100 --> 00:14:24,080
+to do this within the same short time
+
+377
+00:14:24,080 --> 00:14:25,220
+window so that it's always in the cache
+
+378
+00:14:25,220 --> 00:14:27,200
+and I'm accessing multiple things I'll
+
+379
+00:14:27,200 --> 00:14:28,130
+make sure that they're close together
+
+380
+00:14:28,130 --> 00:14:30,560
+either in the same cache line all right
+
+381
+00:14:30,560 --> 00:14:31,790
+ideally in the same cache line so that
+
+382
+00:14:31,790 --> 00:14:33,560
+I'm not paying the penalty of multiple
+
+383
+00:14:33,560 --> 00:14:36,980
+cache misses and polluting my TLB so the
+
+384
+00:14:36,980 --> 00:14:40,430
+way we can achieve this is is is we need
+
+385
+00:14:40,430 --> 00:14:45,470
+be the way to achieve this we need to be
+
+386
+00:14:45,470 --> 00:14:47,150
+aware of the what kind of accesses we're
+
+387
+00:14:47,150 --> 00:14:49,010
+going to do and the two type of excesses
+
+388
+00:14:49,010 --> 00:14:50,780
+are either essential scans or random
+
+389
+00:14:50,780 --> 00:14:54,410
+lookups so with with non-random access
+
+390
+00:14:54,410 --> 00:14:56,660
+where I'm just reading a sequence of
+
+391
+00:14:56,660 --> 00:15:00,680
+bytes in order then again I want to make
+
+392
+00:15:00,680 --> 00:15:02,300
+sure that that data it will fit into a
+
+393
+00:15:02,300 --> 00:15:04,610
+single cache line so that's one you know
+
+394
+00:15:04,610 --> 00:15:06,560
+cache miss and one memory stole to go
+
+395
+00:15:06,560 --> 00:15:08,330
+fetch it and bring it bring it into to
+
+396
+00:15:08,330 --> 00:15:10,790
+the CPU and then for everything I bring
+
+397
+00:15:10,790 --> 00:15:13,190
+in to my CPU caches I want to execute as
+
+398
+00:15:13,190 --> 00:15:14,870
+many operations because I can't on them
+
+399
+00:15:14,870 --> 00:15:17,870
+if I do have to do random lookups though
+
+400
+00:15:17,870 --> 00:15:20,870
+I want to make sure that those random
+
+401
+00:15:20,870 --> 00:15:23,510
+lookups are getting clustered together
+
+402
+00:15:23,510 --> 00:15:26,990
+within the same cache line so that I
+
+403
+00:15:26,990 --> 00:15:30,200
+again I ever do Stan umber of lookups
+
+404
+00:15:30,200 --> 00:15:31,560
+that I have to do
+
+405
+00:15:31,560 --> 00:15:34,980
+to memory so this is this classic
+
+406
+00:15:34,980 --> 00:15:36,569
+trade-off between the number
+
+407
+00:15:36,569 --> 00:15:37,889
+instructions we're gonna have or the
+
+408
+00:15:37,889 --> 00:15:40,740
+cycle Grantham incur versus the amount
+
+409
+00:15:40,740 --> 00:15:46,560
+of memory and so the will see this you
+
+410
+00:15:46,560 --> 00:15:48,089
+know in a second but like the way we can
+
+411
+00:15:48,089 --> 00:15:49,559
+achieve all these things is through sort
+
+412
+00:15:49,559 --> 00:15:51,629
+of careful partitioning and being aware
+
+413
+00:15:51,629 --> 00:15:53,790
+of what data exists and in what location
+
+414
+00:15:53,790 --> 00:15:56,189
+so that our threads are always accessing
+
+415
+00:15:56,189 --> 00:16:00,300
+data that's that's it's close to it okay
+
+416
+00:16:00,300 --> 00:16:02,459
+so for the parallel hash drawing again
+
+417
+00:16:02,459 --> 00:16:04,379
+hash join is super important for us
+
+418
+00:16:04,379 --> 00:16:06,660
+because it it's gonna be the most common
+
+419
+00:16:06,660 --> 00:16:07,949
+joint algorithm that's implemented in
+
+420
+00:16:07,949 --> 00:16:12,990
+systems and a lot of OLAP queries are
+
+421
+00:16:12,990 --> 00:16:14,970
+going to contain joins we want this form
+
+422
+00:16:14,970 --> 00:16:18,540
+efficiently as possible in the paper you
+
+423
+00:16:18,540 --> 00:16:20,910
+guys read though you saw that the the
+
+424
+00:16:20,910 --> 00:16:23,519
+join portion of one particular TP CH
+
+425
+00:16:23,519 --> 00:16:26,490
+query actually was not the the bulk of
+
+426
+00:16:26,490 --> 00:16:29,040
+the execution time I've actually seen
+
+427
+00:16:29,040 --> 00:16:31,139
+numbers that go in both ways I've seen
+
+428
+00:16:31,139 --> 00:16:33,059
+numbers from Impala that shows the the
+
+429
+00:16:33,059 --> 00:16:35,009
+joins are like 45% of the time of the
+
+430
+00:16:35,009 --> 00:16:38,850
+system in the case of the sort of the
+
+431
+00:16:38,850 --> 00:16:40,589
+testbed system you guys read about from
+
+432
+00:16:40,589 --> 00:16:44,519
+from Germany or Saarland it was maybe
+
+433
+00:16:44,519 --> 00:16:46,139
+like less than ten to fifteen percent of
+
+434
+00:16:46,139 --> 00:16:48,139
+the total time so just how much of the
+
+435
+00:16:48,139 --> 00:16:50,009
+time the system is going to spend doing
+
+436
+00:16:50,009 --> 00:16:52,199
+hash coins you can vary from system to
+
+437
+00:16:52,199 --> 00:16:53,970
+system but certainly there's gonna be a
+
+438
+00:16:53,970 --> 00:16:55,800
+lot of joins and these joins are almost
+
+439
+00:16:55,800 --> 00:16:57,420
+always gonna be executed as as hash
+
+440
+00:16:57,420 --> 00:16:59,069
+joins so we're gonna run that as fast as
+
+441
+00:16:59,069 --> 00:17:03,629
+possible so at a high level the goal is
+
+442
+00:17:03,629 --> 00:17:05,010
+where the parallel hash one album is
+
+443
+00:17:05,010 --> 00:17:06,929
+that we want all our cores to be busy at
+
+444
+00:17:06,929 --> 00:17:08,789
+all times that nobody should be stalled
+
+445
+00:17:08,789 --> 00:17:10,799
+winning get data no should be nobody
+
+446
+00:17:10,799 --> 00:17:12,390
+should be stalled waiting for another
+
+447
+00:17:12,390 --> 00:17:13,919
+thread to complete some operation before
+
+448
+00:17:13,919 --> 00:17:15,809
+they can proceed ideally you want
+
+449
+00:17:15,809 --> 00:17:17,429
+everyone just running full blast all the
+
+450
+00:17:17,429 --> 00:17:19,559
+time and of course this is easier said
+
+451
+00:17:19,559 --> 00:17:24,390
+than done so a hash join is comprised of
+
+452
+00:17:24,390 --> 00:17:25,549
+three phases
+
+453
+00:17:25,549 --> 00:17:27,839
+partitioning build the partition build
+
+454
+00:17:27,839 --> 00:17:29,909
+and probe so we're gonna go through each
+
+455
+00:17:29,909 --> 00:17:30,600
+of these one by one
+
+456
+00:17:30,600 --> 00:17:33,030
+but it's one show this as it as an
+
+457
+00:17:33,030 --> 00:17:34,470
+outline for well where we're going to go
+
+458
+00:17:34,470 --> 00:17:37,080
+in this lecture so in the first phase is
+
+459
+00:17:37,080 --> 00:17:38,789
+it's entirely optional the partition
+
+460
+00:17:38,789 --> 00:17:41,039
+phase and the idea here is that we want
+
+461
+00:17:41,039 --> 00:17:43,230
+to divide our table tables that were
+
+462
+00:17:43,230 --> 00:17:44,690
+joining together
+
+463
+00:17:44,690 --> 00:17:47,220
+into smaller chunks based on the hash
+
+464
+00:17:47,220 --> 00:17:51,870
+key so that in the subsequent phases we
+
+465
+00:17:51,870 --> 00:17:54,660
+can have threads operate on on just data
+
+466
+00:17:54,660 --> 00:17:56,190
+in their partition they don't need to go
+
+467
+00:17:56,190 --> 00:17:58,770
+look at data and other partitions so if
+
+468
+00:17:58,770 --> 00:18:00,240
+your member for an intro class we talked
+
+469
+00:18:00,240 --> 00:18:02,160
+about this doing partitioning and
+
+470
+00:18:02,160 --> 00:18:04,080
+spilling buckets at disk this is also
+
+471
+00:18:04,080 --> 00:18:05,910
+called sometimes the grace hash join
+
+472
+00:18:05,910 --> 00:18:08,070
+right the grace hash join just means
+
+473
+00:18:08,070 --> 00:18:09,179
+you're at a high level you're doing this
+
+474
+00:18:09,179 --> 00:18:11,549
+this partitioning phase but how you do
+
+475
+00:18:11,549 --> 00:18:13,590
+the partition can vary from from one
+
+476
+00:18:13,590 --> 00:18:16,080
+implementation of the next and then once
+
+477
+00:18:16,080 --> 00:18:18,150
+whether or not we do the partitioning
+
+478
+00:18:18,150 --> 00:18:20,850
+the next phase well do the we'll build a
+
+479
+00:18:20,850 --> 00:18:22,320
+hash table so this is where we're
+
+480
+00:18:22,320 --> 00:18:24,630
+scanning through the outer table our and
+
+481
+00:18:24,630 --> 00:18:26,850
+then we're just gonna build a hash table
+
+482
+00:18:26,850 --> 00:18:30,660
+on the fly for the for the join key that
+
+483
+00:18:30,660 --> 00:18:33,270
+that our query is asking for then in the
+
+484
+00:18:33,270 --> 00:18:34,470
+second fit or that sort of the final
+
+485
+00:18:34,470 --> 00:18:35,910
+phase for the probe we're gonna do a
+
+486
+00:18:35,910 --> 00:18:39,660
+scruncher scan on the inner table s and
+
+487
+00:18:39,660 --> 00:18:42,090
+we're gonna look up as join key hash it
+
+488
+00:18:42,090 --> 00:18:44,730
+do a probe into the hash table see
+
+489
+00:18:44,730 --> 00:18:47,309
+whether we have a match and if so then
+
+490
+00:18:47,309 --> 00:18:49,260
+we'll produce will combine the tuples
+
+491
+00:18:49,260 --> 00:18:50,820
+and produces as the output of the
+
+492
+00:18:50,820 --> 00:18:52,350
+operator that's then fed up into the
+
+493
+00:18:52,350 --> 00:18:55,470
+query plan so the important thing to
+
+494
+00:18:55,470 --> 00:18:57,510
+point out though is in this probe phase
+
+495
+00:18:57,510 --> 00:18:59,070
+and the paper you guys are assigned to
+
+496
+00:18:59,070 --> 00:19:02,429
+read in a real system after you if
+
+497
+00:19:02,429 --> 00:19:03,809
+you've a match on the probe you actually
+
+498
+00:19:03,809 --> 00:19:05,280
+need to materialize this combined tuple
+
+499
+00:19:05,280 --> 00:19:07,590
+and then and then copy it into an output
+
+500
+00:19:07,590 --> 00:19:10,020
+buffer for the operator and a lot of the
+
+501
+00:19:10,020 --> 00:19:11,040
+hash drawn papers that I showed of
+
+502
+00:19:11,040 --> 00:19:13,169
+beginning or the join papers Dutch in
+
+503
+00:19:13,169 --> 00:19:14,220
+the beginning they actually don't do
+
+504
+00:19:14,220 --> 00:19:17,429
+this last step just because you know
+
+505
+00:19:17,429 --> 00:19:18,540
+then one of the numbers to look really
+
+506
+00:19:18,540 --> 00:19:20,880
+really good or they sort of they didn't
+
+507
+00:19:20,880 --> 00:19:22,679
+really sort of think about it but in a
+
+508
+00:19:22,679 --> 00:19:24,360
+real system and in the Saarland paper
+
+509
+00:19:24,360 --> 00:19:26,160
+they actually do this last step which is
+
+510
+00:19:26,160 --> 00:19:27,510
+important because that can affect the
+
+511
+00:19:27,510 --> 00:19:29,360
+performance of the rest of the system
+
+512
+00:19:29,360 --> 00:19:31,230
+we'll talk about the implications of
+
+513
+00:19:31,230 --> 00:19:32,669
+this with a limited early
+
+514
+00:19:32,669 --> 00:19:34,200
+materialization and late materialization
+
+515
+00:19:34,200 --> 00:19:39,059
+in a few more slides all right so let's
+
+516
+00:19:39,059 --> 00:19:40,799
+go to each of these phases separately
+
+517
+00:19:40,799 --> 00:19:42,120
+and we'll talk about the different ways
+
+518
+00:19:42,120 --> 00:19:44,160
+to implement them so again the the
+
+519
+00:19:44,160 --> 00:19:45,929
+partition phase is we're gonna take the
+
+520
+00:19:45,929 --> 00:19:47,580
+both relations the inner one and the
+
+521
+00:19:47,580 --> 00:19:49,350
+outer one we're going to scan through
+
+522
+00:19:49,350 --> 00:19:52,919
+them look at the join key hash them and
+
+523
+00:19:52,919 --> 00:19:55,320
+then assign them to some output buffer
+
+524
+00:19:55,320 --> 00:19:58,419
+the partition buffer and so the whole
+
+525
+00:19:58,419 --> 00:20:00,999
+idea of this is that although we're
+
+526
+00:20:00,999 --> 00:20:03,279
+paying an extra an extra cost of having
+
+527
+00:20:03,279 --> 00:20:05,049
+to scan through the data and copy it
+
+528
+00:20:05,049 --> 00:20:07,269
+once the idea is that if we're
+
+529
+00:20:07,269 --> 00:20:09,609
+intelligent about how we do this we can
+
+530
+00:20:09,609 --> 00:20:11,499
+write the data out in such a way that
+
+531
+00:20:11,499 --> 00:20:14,259
+when we do the buildin probe will
+
+532
+00:20:14,259 --> 00:20:16,690
+minimize the number of a reduced number
+
+533
+00:20:16,690 --> 00:20:18,159
+of cycles we have to execute those
+
+534
+00:20:18,159 --> 00:20:19,779
+instructions because we'll minimize the
+
+535
+00:20:19,779 --> 00:20:21,789
+number of cache misses I will make sure
+
+536
+00:20:21,789 --> 00:20:24,580
+that the the threads are operating on
+
+537
+00:20:24,580 --> 00:20:26,590
+one data that's that that's a local to
+
+538
+00:20:26,590 --> 00:20:29,320
+them I so again the idea is we pay this
+
+539
+00:20:29,320 --> 00:20:31,239
+upfront cost to make other stuff go
+
+540
+00:20:31,239 --> 00:20:34,600
+faster later on so sometimes in this
+
+541
+00:20:34,600 --> 00:20:36,220
+literature as I said sometimes can be
+
+542
+00:20:36,220 --> 00:20:37,450
+called a queries hash Dorn sometimes
+
+543
+00:20:37,450 --> 00:20:39,039
+called the hybrid hash drawing or the
+
+544
+00:20:39,039 --> 00:20:41,139
+radix hash join right whenever you see
+
+545
+00:20:41,139 --> 00:20:42,789
+those sort of these qualifiers in front
+
+546
+00:20:42,789 --> 00:20:43,989
+of the hash join just means that they're
+
+547
+00:20:43,989 --> 00:20:46,119
+doing some kind of partitioning step in
+
+548
+00:20:46,119 --> 00:20:48,850
+front of it so as I said in the last
+
+549
+00:20:48,850 --> 00:20:51,730
+slide we need be aware of what we're
+
+550
+00:20:51,730 --> 00:20:53,789
+actually putting into our buffers
+
+551
+00:20:53,789 --> 00:20:56,139
+because that's gonna greatly affect the
+
+552
+00:20:56,139 --> 00:20:58,210
+performance well it turns out the what
+
+553
+00:20:58,210 --> 00:20:59,350
+you etching you put in your buffers is
+
+554
+00:20:59,350 --> 00:21:01,149
+gonna depend on what the storage model
+
+555
+00:21:01,149 --> 00:21:03,820
+is that we talked about before so if
+
+556
+00:21:03,820 --> 00:21:06,850
+it's a row store usually they put the
+
+557
+00:21:06,850 --> 00:21:09,159
+entire tuple in the upload buffer
+
+558
+00:21:09,159 --> 00:21:11,859
+because even though I only need maybe
+
+559
+00:21:11,859 --> 00:21:13,179
+need a subset of the attributes to do
+
+560
+00:21:13,179 --> 00:21:15,009
+the join or X be the rest of the query
+
+561
+00:21:15,009 --> 00:21:17,980
+it's just either to copy some contiguous
+
+562
+00:21:17,980 --> 00:21:19,450
+chunk of memory and write in to my
+
+563
+00:21:19,450 --> 00:21:21,879
+output buffer Hertz my partition buffer
+
+564
+00:21:21,879 --> 00:21:25,869
+in a column store oftentimes what you do
+
+565
+00:21:25,869 --> 00:21:28,749
+is you only store the keys that you need
+
+566
+00:21:28,749 --> 00:21:32,440
+to do the join and then the offset to
+
+567
+00:21:32,440 --> 00:21:34,119
+where to find the rest the to posts if
+
+568
+00:21:34,119 --> 00:21:36,039
+you needed it stitch it together and the
+
+569
+00:21:36,039 --> 00:21:38,129
+reason why you can do this is because
+
+570
+00:21:38,129 --> 00:21:40,330
+you want to do this is because you're
+
+571
+00:21:40,330 --> 00:21:41,649
+minimizing the amount of data that
+
+572
+00:21:41,649 --> 00:21:44,950
+you're actually copying copying from you
+
+573
+00:21:44,950 --> 00:21:48,700
+know and making these partitions and you
+
+574
+00:21:48,700 --> 00:21:49,869
+don't have to worry about chopping it up
+
+575
+00:21:49,869 --> 00:21:51,249
+as you would in a row store because it's
+
+576
+00:21:51,249 --> 00:21:53,200
+already divided or partitioned for you
+
+577
+00:21:53,200 --> 00:21:55,809
+as a column store so the more efficient
+
+578
+00:21:55,809 --> 00:21:57,489
+approach to do again is just the bare
+
+579
+00:21:57,489 --> 00:21:59,499
+minimum number a bare minimum
+
+580
+00:21:59,499 --> 00:22:01,179
+information you need in order to compute
+
+581
+00:22:01,179 --> 00:22:02,830
+the join and then if another part of the
+
+582
+00:22:02,830 --> 00:22:04,690
+query up above and the plan needs
+
+583
+00:22:04,690 --> 00:22:05,889
+additional columns are additional
+
+584
+00:22:05,889 --> 00:22:08,019
+attributes you use the offset to go find
+
+585
+00:22:08,019 --> 00:22:10,679
+find that information
+
+586
+00:22:10,899 --> 00:22:14,149
+so for partitioning there's two
+
+587
+00:22:14,149 --> 00:22:15,860
+approaches there's the non-blocking and
+
+588
+00:22:15,860 --> 00:22:17,809
+the blocking partitioning or the radix
+
+589
+00:22:17,809 --> 00:22:21,679
+partitioning and so with the non
+
+590
+00:22:21,679 --> 00:22:23,120
+blocking approach the idea is that you
+
+591
+00:22:23,120 --> 00:22:24,710
+have a set of threads that are going to
+
+592
+00:22:24,710 --> 00:22:27,649
+go through and partition the data so
+
+593
+00:22:27,649 --> 00:22:29,659
+scan the adder at our inner table start
+
+594
+00:22:29,659 --> 00:22:32,690
+producing these partitions and then as
+
+595
+00:22:32,690 --> 00:22:34,639
+it's generating is output you can have
+
+596
+00:22:34,639 --> 00:22:36,260
+another set of threads we'll read that
+
+597
+00:22:36,260 --> 00:22:38,840
+data and start start the next phase to
+
+598
+00:22:38,840 --> 00:22:42,230
+start populating the hash table right
+
+599
+00:22:42,230 --> 00:22:43,580
+and you can do this because you're not
+
+600
+00:22:43,580 --> 00:22:44,990
+worried about any false positive false
+
+601
+00:22:44,990 --> 00:22:45,740
+negatives
+
+602
+00:22:45,740 --> 00:22:48,409
+I'm sorry false negatives like as the
+
+603
+00:22:48,409 --> 00:22:50,210
+data is partitioned you can then
+
+604
+00:22:50,210 --> 00:22:52,549
+immediately populate the hash table it
+
+605
+00:22:52,549 --> 00:22:53,929
+depends on whether you're doing one pass
+
+606
+00:22:53,929 --> 00:22:55,250
+to pass but in general for the non
+
+607
+00:22:55,250 --> 00:22:57,799
+blocking one people do people do one
+
+608
+00:22:57,799 --> 00:23:02,029
+pass right in the second approach when
+
+609
+00:23:02,029 --> 00:23:03,409
+you're doing the the radix partitioning
+
+610
+00:23:03,409 --> 00:23:05,330
+the way it works is that you can have
+
+611
+00:23:05,330 --> 00:23:07,669
+all the threads will scan through the
+
+612
+00:23:07,669 --> 00:23:11,419
+the table once and the tables once and
+
+613
+00:23:11,419 --> 00:23:14,690
+produce the partitions and because you
+
+614
+00:23:14,690 --> 00:23:17,149
+don't know exactly how far each thread
+
+615
+00:23:17,149 --> 00:23:19,070
+it's gone and you know whether since
+
+616
+00:23:19,070 --> 00:23:20,570
+everything's already broken into buckets
+
+617
+00:23:20,570 --> 00:23:23,330
+you can't be guaranteed that you have
+
+618
+00:23:23,330 --> 00:23:24,559
+all the data you need to fill the hash
+
+619
+00:23:24,559 --> 00:23:26,419
+table so all the threads were doing this
+
+620
+00:23:26,419 --> 00:23:27,830
+but this partitioning at the same time
+
+621
+00:23:27,830 --> 00:23:29,360
+and then when that completes then you
+
+622
+00:23:29,360 --> 00:23:32,080
+switch over and do the the build phase
+
+623
+00:23:32,080 --> 00:23:34,100
+so let's go through each of these one by
+
+624
+00:23:34,100 --> 00:23:36,500
+one so in case a non-blocking
+
+625
+00:23:36,500 --> 00:23:39,620
+partitioning there's actually a two sort
+
+626
+00:23:39,620 --> 00:23:41,210
+of subsets or the two additional ways
+
+627
+00:23:41,210 --> 00:23:44,149
+you can actually implement this again
+
+628
+00:23:44,149 --> 00:23:45,289
+this is this we're gonna scan the
+
+629
+00:23:45,289 --> 00:23:47,000
+relation and then once and then build
+
+630
+00:23:47,000 --> 00:23:49,519
+the output on the fly so with shared
+
+631
+00:23:49,519 --> 00:23:51,769
+partitions you're gonna have all the
+
+632
+00:23:51,769 --> 00:23:53,330
+threads try to write into the same
+
+633
+00:23:53,330 --> 00:23:55,130
+memory locations at the same time or the
+
+634
+00:23:55,130 --> 00:23:57,919
+same buckets for your partitions and
+
+635
+00:23:57,919 --> 00:23:59,299
+that means that you have to use a latch
+
+636
+00:23:59,299 --> 00:24:01,490
+to synchronize the buckets to make sure
+
+637
+00:24:01,490 --> 00:24:02,720
+that one thread doesn't doesn't
+
+638
+00:24:02,720 --> 00:24:04,190
+overwrite something that another thread
+
+639
+00:24:04,190 --> 00:24:07,039
+wrote it wrote into incorrectly in the
+
+640
+00:24:07,039 --> 00:24:08,389
+second post you used to have private
+
+641
+00:24:08,389 --> 00:24:10,039
+partitions where each thread now has its
+
+642
+00:24:10,039 --> 00:24:12,110
+own set of buckets that they can
+
+643
+00:24:12,110 --> 00:24:14,690
+populate there's no other thread writing
+
+644
+00:24:14,690 --> 00:24:15,889
+to this bucket so you don't need a latch
+
+645
+00:24:15,889 --> 00:24:19,570
+to protect anything and then once the
+
+646
+00:24:19,570 --> 00:24:21,380
+once this
+
+647
+00:24:21,380 --> 00:24:23,900
+first phase is done with first pass it
+
+648
+00:24:23,900 --> 00:24:25,400
+down with the private partitions
+
+649
+00:24:25,400 --> 00:24:27,320
+then you can go through a with another
+
+650
+00:24:27,320 --> 00:24:29,770
+set of threads and then populate the
+
+651
+00:24:29,770 --> 00:24:33,110
+global partitioning buckets that you're
+
+652
+00:24:33,110 --> 00:24:36,740
+doing the first one so again a classic
+
+653
+00:24:36,740 --> 00:24:38,570
+classic commuter science here there's no
+
+654
+00:24:38,570 --> 00:24:41,000
+free lunch right on one hand in this
+
+655
+00:24:41,000 --> 00:24:42,650
+case here we're using latches to protect
+
+656
+00:24:42,650 --> 00:24:44,840
+the data structure but we only have to
+
+657
+00:24:44,840 --> 00:24:47,660
+go through the partition every pass once
+
+658
+00:24:47,660 --> 00:24:50,930
+in this one it's latch free but that now
+
+659
+00:24:50,930 --> 00:24:52,430
+means that we have to then take a second
+
+660
+00:24:52,430 --> 00:24:54,620
+pass through the data to consolidate
+
+661
+00:24:54,620 --> 00:24:56,150
+consolidate all the information that's
+
+662
+00:24:56,150 --> 00:24:58,850
+spread out or divided amongst the
+
+663
+00:24:58,850 --> 00:25:01,310
+different threads so we'll go through
+
+664
+00:25:01,310 --> 00:25:03,920
+let's go through each of these so here's
+
+665
+00:25:03,920 --> 00:25:06,500
+the the share partition approach alright
+
+666
+00:25:06,500 --> 00:25:07,820
+so we have our data table we have three
+
+667
+00:25:07,820 --> 00:25:09,830
+columns and the first thing we're gonna
+
+668
+00:25:09,830 --> 00:25:13,130
+do is just divide up the data into
+
+669
+00:25:13,130 --> 00:25:14,900
+different chunks or morsels like we did
+
+670
+00:25:14,900 --> 00:25:17,750
+before and these are just ranges of data
+
+671
+00:25:17,750 --> 00:25:19,310
+we don't know actually what's in them
+
+672
+00:25:19,310 --> 00:25:20,810
+yet we just say you know the first
+
+673
+00:25:20,810 --> 00:25:23,000
+hundred two blows goes this thread the
+
+674
+00:25:23,000 --> 00:25:24,230
+next hundred - blows goes this other
+
+675
+00:25:24,230 --> 00:25:27,230
+thread so now say we wanted you to do a
+
+676
+00:25:27,230 --> 00:25:30,200
+join on column B so we'll take the value
+
+677
+00:25:30,200 --> 00:25:31,580
+of B and every single tuple and we're
+
+678
+00:25:31,580 --> 00:25:33,500
+gonna hash it with the same hash
+
+679
+00:25:33,500 --> 00:25:35,330
+function we're gonna use for the the
+
+680
+00:25:35,330 --> 00:25:39,950
+buildin probe phase so the we have to do
+
+681
+00:25:39,950 --> 00:25:40,850
+this because you have to make sure that
+
+682
+00:25:40,850 --> 00:25:43,280
+if we hash a key in one in one phase
+
+683
+00:25:43,280 --> 00:25:45,530
+that if we hashed that same key later on
+
+684
+00:25:45,530 --> 00:25:47,510
+we end up in the same location or in our
+
+685
+00:25:47,510 --> 00:25:48,890
+hash table or in our bucket to make sure
+
+686
+00:25:48,890 --> 00:25:50,240
+we can find the information that we're
+
+687
+00:25:50,240 --> 00:25:53,060
+looking for so we're gonna hash that and
+
+688
+00:25:53,060 --> 00:25:54,680
+we know that our patient's we're gonna
+
+689
+00:25:54,680 --> 00:25:56,660
+we're specified ahead of time so we're
+
+690
+00:25:56,660 --> 00:25:59,150
+just gonna mod that by the hash value by
+
+691
+00:25:59,150 --> 00:26:00,410
+the number of partitions and that'll
+
+692
+00:26:00,410 --> 00:26:02,150
+tell us what partition chain we're gonna
+
+693
+00:26:02,150 --> 00:26:04,760
+go into so now every thread is going to
+
+694
+00:26:04,760 --> 00:26:07,820
+write into for every single value of the
+
+695
+00:26:07,820 --> 00:26:09,500
+hash it and mod and that tell you which
+
+696
+00:26:09,500 --> 00:26:10,430
+one they go right into them
+
+697
+00:26:10,430 --> 00:26:13,760
+and so again this is a global - set of
+
+698
+00:26:13,760 --> 00:26:15,530
+buckets so every thread can be writing
+
+699
+00:26:15,530 --> 00:26:18,200
+into any any bucket at any time so we
+
+700
+00:26:18,200 --> 00:26:19,760
+just have to use a latch to protect the
+
+701
+00:26:19,760 --> 00:26:22,100
+the last place where you want to do an
+
+702
+00:26:22,100 --> 00:26:24,650
+insert I want you quite a lot then you
+
+703
+00:26:24,650 --> 00:26:28,070
+can insert a new value in there the
+
+704
+00:26:28,070 --> 00:26:29,810
+other approach again is with private
+
+705
+00:26:29,810 --> 00:26:32,090
+partitions same set up we revive the
+
+706
+00:26:32,090 --> 00:26:34,190
+data up amongst different threads and
+
+707
+00:26:34,190 --> 00:26:34,909
+they're just
+
+708
+00:26:34,909 --> 00:26:37,820
+threw a hatchet and then modify the
+
+709
+00:26:37,820 --> 00:26:39,409
+number petitions that we want to have
+
+710
+00:26:39,409 --> 00:26:42,289
+but what's gonna happen is each thread
+
+711
+00:26:42,289 --> 00:26:44,299
+has its own sort of group of buckets
+
+712
+00:26:44,299 --> 00:26:46,549
+that we saw in a previous slide so now
+
+713
+00:26:46,549 --> 00:26:48,259
+when I do my write into these different
+
+714
+00:26:48,259 --> 00:26:50,659
+buckets at each thread I'm the only
+
+715
+00:26:50,659 --> 00:26:52,039
+thread writing in there I don't need to
+
+716
+00:26:52,039 --> 00:26:53,419
+protect me two latches so this is gonna
+
+717
+00:26:53,419 --> 00:26:56,090
+go really really fast now once all the
+
+718
+00:26:56,090 --> 00:26:58,340
+threads are done then I have to do
+
+719
+00:26:58,340 --> 00:27:00,080
+combine everything together to create
+
+720
+00:27:00,080 --> 00:27:02,299
+that global partition of the space that
+
+721
+00:27:02,299 --> 00:27:05,299
+I had in the last slide so to do this I
+
+722
+00:27:05,299 --> 00:27:08,139
+can just have a bunch of the threads
+
+723
+00:27:08,139 --> 00:27:11,889
+each pick a separate you know partition
+
+724
+00:27:11,889 --> 00:27:15,080
+group of calls to different threads and
+
+725
+00:27:15,080 --> 00:27:17,419
+be responsible for populating this thing
+
+726
+00:27:17,419 --> 00:27:20,059
+so I in this case here I don't need
+
+727
+00:27:20,059 --> 00:27:21,379
+acquire latches when I do this
+
+728
+00:27:21,379 --> 00:27:23,450
+consolidation but I still have to take a
+
+729
+00:27:23,450 --> 00:27:25,429
+second path so thread two we'll go do
+
+730
+00:27:25,429 --> 00:27:26,570
+partition two and thread three do
+
+731
+00:27:26,570 --> 00:27:30,470
+Parchin three and so forth alright so
+
+732
+00:27:30,470 --> 00:27:32,210
+again this is also a good example of
+
+733
+00:27:32,210 --> 00:27:34,489
+where materialization issues can be are
+
+734
+00:27:34,489 --> 00:27:37,369
+important because I'm copying the data
+
+735
+00:27:37,369 --> 00:27:39,619
+twice at the copy the data once out of
+
+736
+00:27:39,619 --> 00:27:41,539
+the data table into my partition and
+
+737
+00:27:41,539 --> 00:27:43,220
+then out of the the private partition
+
+738
+00:27:43,220 --> 00:27:45,739
+into the combined partition so if I'm a
+
+739
+00:27:45,739 --> 00:27:47,239
+row store and I'm copying the entire
+
+740
+00:27:47,239 --> 00:27:49,309
+tuple of my two bolts very large then
+
+741
+00:27:49,309 --> 00:27:52,129
+this copy is expensive if it's a column
+
+742
+00:27:52,129 --> 00:27:53,869
+store and I'm all in copying the middle
+
+743
+00:27:53,869 --> 00:27:55,129
+amount of data they need to do to join
+
+744
+00:27:55,129 --> 00:27:57,049
+plus the offset well that can be much
+
+745
+00:27:57,049 --> 00:27:58,700
+smaller than the full size of the tuple
+
+746
+00:27:58,700 --> 00:28:00,919
+and therefore this copy can be you know
+
+747
+00:28:00,919 --> 00:28:03,019
+less pressure on the CPU caches and
+
+748
+00:28:03,019 --> 00:28:05,090
+memory and certainly potentially you
+
+749
+00:28:05,090 --> 00:28:10,700
+know less instructions okay so so that
+
+750
+00:28:10,700 --> 00:28:14,200
+was an example of the sort of the
+
+751
+00:28:14,200 --> 00:28:18,049
+non-blocking partition scheme let's talk
+
+752
+00:28:18,049 --> 00:28:19,129
+about now with the radix partitioning
+
+753
+00:28:19,129 --> 00:28:22,879
+approach and the idea here is that we're
+
+754
+00:28:22,879 --> 00:28:24,229
+doing the same kind of partitioning that
+
+755
+00:28:24,229 --> 00:28:28,489
+we saw before but we are being more
+
+756
+00:28:28,489 --> 00:28:32,450
+careful or more careful we are doing the
+
+757
+00:28:32,450 --> 00:28:38,210
+partition in such a way that we can we
+
+758
+00:28:38,210 --> 00:28:41,210
+can have the threads write two separate
+
+759
+00:28:41,210 --> 00:28:43,909
+locations in memory without how to take
+
+760
+00:28:43,909 --> 00:28:46,640
+latches but we have to wait
+
+761
+00:28:46,640 --> 00:28:48,530
+everyone finishes before we can move on
+
+762
+00:28:48,530 --> 00:28:50,660
+to the next phase because we don't know
+
+763
+00:28:50,660 --> 00:28:53,480
+what what else is missing and that'll
+
+764
+00:28:53,480 --> 00:28:55,160
+make more sense when we talk about I'm
+
+765
+00:28:55,160 --> 00:28:57,380
+gonna show the diagram so with the rate
+
+766
+00:28:57,380 --> 00:28:58,160
+of partitioning we're gonna take
+
+767
+00:28:58,160 --> 00:29:01,040
+multiple steps to go the multi step pass
+
+768
+00:29:01,040 --> 00:29:03,830
+over the each of the relation and so in
+
+769
+00:29:03,830 --> 00:29:04,850
+the first step we're going to scan
+
+770
+00:29:04,850 --> 00:29:07,130
+through and compute a histogram that's
+
+771
+00:29:07,130 --> 00:29:09,080
+going to tell us the number of tuples
+
+772
+00:29:09,080 --> 00:29:12,770
+we're gonna have her hand then we can
+
+773
+00:29:12,770 --> 00:29:14,960
+use that histogram to compute what is
+
+774
+00:29:14,960 --> 00:29:17,030
+called a Pixum that'll tell us at what
+
+775
+00:29:17,030 --> 00:29:20,419
+offset in our partition space should we
+
+776
+00:29:20,419 --> 00:29:23,870
+write a particular tuple then now we're
+
+777
+00:29:23,870 --> 00:29:27,530
+gonna go through and scan our again and
+
+778
+00:29:27,530 --> 00:29:29,929
+now do the hashing and based on where
+
+779
+00:29:29,929 --> 00:29:31,520
+we've defined where we turn to our
+
+780
+00:29:31,520 --> 00:29:33,110
+writes with a previous column then we
+
+781
+00:29:33,110 --> 00:29:35,809
+write into that the partition space so
+
+782
+00:29:35,809 --> 00:29:37,490
+again we'll go through each is one by
+
+783
+00:29:37,490 --> 00:29:39,140
+one so the first thing to point out to
+
+784
+00:29:39,140 --> 00:29:40,309
+also is that the term greatest
+
+785
+00:29:40,309 --> 00:29:42,770
+partitioning is is just means the digit
+
+786
+00:29:42,770 --> 00:29:45,590
+or a byte of the total key it's the same
+
+787
+00:29:45,590 --> 00:29:48,530
+rate X term that we saw when we talk
+
+788
+00:29:48,530 --> 00:29:50,210
+about radix treaties before right
+
+789
+00:29:50,210 --> 00:29:51,980
+instead of having the entire key I just
+
+790
+00:29:51,980 --> 00:29:54,559
+gonna hash or partition basement on a
+
+791
+00:29:54,559 --> 00:29:57,470
+chunk of it the prefix column is just a
+
+792
+00:29:57,470 --> 00:30:00,169
+way to do a again that determine what's
+
+793
+00:30:00,169 --> 00:30:01,460
+the starting location that we want to
+
+794
+00:30:01,460 --> 00:30:04,010
+write into our global global partition
+
+795
+00:30:04,010 --> 00:30:06,410
+buffer for each thread so let's let's
+
+796
+00:30:06,410 --> 00:30:07,610
+let's first understand what a prefix um
+
+797
+00:30:07,610 --> 00:30:10,730
+is so again the raid X is just the is
+
+798
+00:30:10,730 --> 00:30:13,700
+just a value of some digit within the
+
+799
+00:30:13,700 --> 00:30:16,760
+key all right so my keys are 89 12 2300
+
+800
+00:30:16,760 --> 00:30:20,210
+841 and 64 so the raid X at this first
+
+801
+00:30:20,210 --> 00:30:21,380
+position here for each of these keys
+
+802
+00:30:21,380 --> 00:30:23,210
+would be nine two three eight one four
+
+803
+00:30:23,210 --> 00:30:25,880
+and then the raid X for the next key is
+
+804
+00:30:25,880 --> 00:30:29,630
+just eight one two and so forth like
+
+805
+00:30:29,630 --> 00:30:32,030
+that so that's all that means with the
+
+806
+00:30:32,030 --> 00:30:33,290
+raid X partitioning we're going to look
+
+807
+00:30:33,290 --> 00:30:35,360
+at one digit within the key at a time
+
+808
+00:30:35,360 --> 00:30:37,730
+hash that figure that where that goes to
+
+809
+00:30:37,730 --> 00:30:39,559
+and then if you want to do additional
+
+810
+00:30:39,559 --> 00:30:42,130
+passes we could look at we could look at
+
+811
+00:30:42,130 --> 00:30:46,309
+Malton people get subsequent digits so
+
+812
+00:30:46,309 --> 00:30:48,770
+the in modern CPUs you can compute this
+
+813
+00:30:48,770 --> 00:30:49,309
+radix
+
+814
+00:30:49,309 --> 00:30:50,630
+pretty efficiently with this
+
+815
+00:30:50,630 --> 00:30:52,010
+multiplication instruction so this is
+
+816
+00:30:52,010 --> 00:30:54,230
+not it's not an expensive operation to
+
+817
+00:30:54,230 --> 00:30:55,730
+do this
+
+818
+00:30:55,730 --> 00:30:59,570
+so now with this radix the radix is of
+
+819
+00:30:59,570 --> 00:31:01,639
+these the keys we can compute what's
+
+820
+00:31:01,639 --> 00:31:03,500
+called the P Pixum and that's just a
+
+821
+00:31:03,500 --> 00:31:08,360
+running summation a running count of the
+
+822
+00:31:08,360 --> 00:31:13,309
+numbers and the position of the of the
+
+823
+00:31:13,309 --> 00:31:15,889
+prefix um in the output determined is
+
+824
+00:31:15,889 --> 00:31:19,399
+based on what keys came before it so I
+
+825
+00:31:19,399 --> 00:31:21,950
+have the keys 1 2 3 4 5 6 so for my
+
+826
+00:31:21,950 --> 00:31:24,320
+prefix um in the first position the
+
+827
+00:31:24,320 --> 00:31:25,700
+previous time was just 1 because it's
+
+828
+00:31:25,700 --> 00:31:26,899
+just there's no nothing that came before
+
+829
+00:31:26,899 --> 00:31:29,990
+it so it's just a value 1 but now for
+
+830
+00:31:29,990 --> 00:31:31,639
+the next position I'm gonna take the
+
+831
+00:31:31,639 --> 00:31:33,440
+value of the previous prefix some
+
+832
+00:31:33,440 --> 00:31:36,440
+computation and then the value of this
+
+833
+00:31:36,440 --> 00:31:38,809
+key and add them together and that's now
+
+834
+00:31:38,809 --> 00:31:41,360
+my prefix um for this position so 1 plus
+
+835
+00:31:41,360 --> 00:31:44,029
+2 is 3 same thing now I take this
+
+836
+00:31:44,029 --> 00:31:47,929
+position here 3 3 6 10 15 20 and 21 and
+
+837
+00:31:47,929 --> 00:31:50,269
+so forth like that and the reason why we
+
+838
+00:31:50,269 --> 00:31:51,950
+learn to do this is because now we can
+
+839
+00:31:51,950 --> 00:31:54,350
+use these these pick some to tell us
+
+840
+00:31:54,350 --> 00:31:56,179
+again what offset we want to write into
+
+841
+00:31:56,179 --> 00:31:58,460
+because we say like if I have one tuple
+
+842
+00:31:58,460 --> 00:32:00,669
+before me then I should start writing my
+
+843
+00:32:00,669 --> 00:32:04,340
+like my tuples that after position 1 but
+
+844
+00:32:04,340 --> 00:32:05,779
+then now this guy says I want to write
+
+845
+00:32:05,779 --> 00:32:07,100
+tuples in and he knows he just started
+
+846
+00:32:07,100 --> 00:32:08,929
+offset 3 these are essentially gonna be
+
+847
+00:32:08,929 --> 00:32:12,159
+used offsets within the partition array
+
+848
+00:32:12,159 --> 00:32:14,480
+so let's look at a dues rate of
+
+849
+00:32:14,480 --> 00:32:15,980
+partition so again the first step we
+
+850
+00:32:15,980 --> 00:32:19,010
+need to do is inspect the input keys and
+
+851
+00:32:19,010 --> 00:32:21,559
+crater histograms so say the output the
+
+852
+00:32:21,559 --> 00:32:22,429
+input keys that we're dealing with here
+
+853
+00:32:22,429 --> 00:32:24,500
+are already the that we've already
+
+854
+00:32:24,500 --> 00:32:25,909
+hashed it we've already modded by the
+
+855
+00:32:25,909 --> 00:32:28,940
+number of partitions that we have I just
+
+856
+00:32:28,940 --> 00:32:30,110
+a goodbye we haven't mired by number of
+
+857
+00:32:30,110 --> 00:32:32,029
+partitions we've we've hashed it and now
+
+858
+00:32:32,029 --> 00:32:33,260
+we want to look at the digits of the
+
+859
+00:32:33,260 --> 00:32:36,289
+hashes so what we're gonna do is look at
+
+860
+00:32:36,289 --> 00:32:40,490
+look at the the first digit here and for
+
+861
+00:32:40,490 --> 00:32:42,139
+each each thread you're just you're
+
+862
+00:32:42,139 --> 00:32:43,669
+going to stand through your assigned
+
+863
+00:32:43,669 --> 00:32:47,169
+range and compute what the histogram is
+
+864
+00:32:47,169 --> 00:32:50,000
+right so it's the number of values that
+
+865
+00:32:50,000 --> 00:32:52,309
+will appear at a particular partition so
+
+866
+00:32:52,309 --> 00:32:55,250
+in this case here for CPU 0 at partition
+
+867
+00:32:55,250 --> 00:32:58,760
+0 it had 2 entries 1 2 at partition 1 it
+
+868
+00:32:58,760 --> 00:33:01,700
+had 2 entries 1 2 like down here it has
+
+869
+00:33:01,700 --> 00:33:04,669
+at partition 0 it has one because
+
+870
+00:33:04,669 --> 00:33:06,559
+there's 1 0 there and then for partition
+
+871
+00:33:06,559 --> 00:33:09,230
+1 it has 3 1 2 3
+
+872
+00:33:09,230 --> 00:33:10,519
+I think we just compute this histogram
+
+873
+00:33:10,519 --> 00:33:12,519
+by scanning through the data efficiently
+
+874
+00:33:12,519 --> 00:33:14,750
+then now we're gonna do is compute the
+
+875
+00:33:14,750 --> 00:33:18,559
+offsets in our partition array that the
+
+876
+00:33:18,559 --> 00:33:21,529
+threads can all right into so we have to
+
+877
+00:33:21,529 --> 00:33:23,179
+block and wait until all the threads
+
+878
+00:33:23,179 --> 00:33:25,700
+complete their partition and then we now
+
+879
+00:33:25,700 --> 00:33:27,830
+compute the prefix um based on the
+
+880
+00:33:27,830 --> 00:33:29,179
+histograms that tell us where we're
+
+881
+00:33:29,179 --> 00:33:30,950
+gonna start writing in to where every
+
+882
+00:33:30,950 --> 00:33:32,240
+thread can write into this partition
+
+883
+00:33:32,240 --> 00:33:34,970
+array all right so be like this so
+
+884
+00:33:34,970 --> 00:33:37,580
+partition 0 for CPU 0 is right here and
+
+885
+00:33:37,580 --> 00:33:40,460
+the partition 0 for CPU 1 can write here
+
+886
+00:33:40,460 --> 00:33:43,700
+right so position 0 starts at position 0
+
+887
+00:33:43,700 --> 00:33:45,769
+because with the previous um petition 0
+
+888
+00:33:45,769 --> 00:33:48,049
+at CPU 1 but right here because it's
+
+889
+00:33:48,049 --> 00:33:49,909
+this value was 2 because the previous
+
+890
+00:33:49,909 --> 00:33:52,639
+column will be 3 so 1 2 3 and so forth
+
+891
+00:33:52,639 --> 00:33:56,000
+for the other one so now what does this
+
+892
+00:33:56,000 --> 00:33:57,529
+do for us this is now gonna give us a
+
+893
+00:33:57,529 --> 00:34:01,940
+giant array or giant buffer that the
+
+894
+00:34:01,940 --> 00:34:04,130
+threads can start writing into and they
+
+895
+00:34:04,130 --> 00:34:05,990
+don't need a coordinator acquire latches
+
+896
+00:34:05,990 --> 00:34:09,530
+to protect any any location in memory
+
+897
+00:34:09,530 --> 00:34:11,449
+when it does this right because it's
+
+898
+00:34:11,449 --> 00:34:12,980
+already computed the prefix own we
+
+899
+00:34:12,980 --> 00:34:14,359
+already know that nobody else will be
+
+900
+00:34:14,359 --> 00:34:16,639
+writing into our location so we can just
+
+901
+00:34:16,639 --> 00:34:18,918
+write into it just fine and we have to
+
+902
+00:34:18,918 --> 00:34:20,869
+maintain an internal counter in our CPU
+
+903
+00:34:20,869 --> 00:34:23,270
+to say oh 4 partitions 0 I've already
+
+904
+00:34:23,270 --> 00:34:24,469
+inserted you know one thing or two
+
+905
+00:34:24,469 --> 00:34:26,569
+things or 3 thing so using my starting
+
+906
+00:34:26,569 --> 00:34:28,699
+point I can then decide quickly at what
+
+907
+00:34:28,699 --> 00:34:31,369
+all set should I write my my new my next
+
+908
+00:34:31,369 --> 00:34:34,639
+piece of data into alright so now with
+
+909
+00:34:34,639 --> 00:34:37,250
+this this we've computed this this
+
+910
+00:34:37,250 --> 00:34:38,869
+partition output and the starting
+
+911
+00:34:38,869 --> 00:34:40,520
+location is where we do our rights now
+
+912
+00:34:40,520 --> 00:34:42,889
+we go back and do our scan again and now
+
+913
+00:34:42,889 --> 00:34:44,179
+we do our partitioning and now we're
+
+914
+00:34:44,179 --> 00:34:47,659
+copying in the values of the the keys
+
+915
+00:34:47,659 --> 00:34:49,909
+that we've hashed into our partition of
+
+916
+00:34:49,909 --> 00:34:51,649
+writing and again we can do this without
+
+917
+00:34:51,649 --> 00:34:54,589
+applying latches so now at a high level
+
+918
+00:34:54,589 --> 00:34:55,579
+the way to think about this is that
+
+919
+00:34:55,579 --> 00:34:57,349
+we've have we have partition 0 and
+
+920
+00:34:57,349 --> 00:35:00,589
+partition 1 and so at this point we can
+
+921
+00:35:00,589 --> 00:35:02,930
+then hand that off to the build phase or
+
+922
+00:35:02,930 --> 00:35:04,190
+and and start the computing the hash
+
+923
+00:35:04,190 --> 00:35:06,920
+table or if we wanted to we could start
+
+924
+00:35:06,920 --> 00:35:09,680
+dividing this up even further sub
+
+925
+00:35:09,680 --> 00:35:13,130
+partitioning again so that our chunk of
+
+926
+00:35:13,130 --> 00:35:15,020
+data in these partition can now fit into
+
+927
+00:35:15,020 --> 00:35:17,000
+a cache line or a small number of cache
+
+928
+00:35:17,000 --> 00:35:19,369
+lines all right and so to do that we
+
+929
+00:35:19,369 --> 00:35:22,460
+just go back now and do jump to the next
+
+930
+00:35:22,460 --> 00:35:25,280
+next radix right within this the next
+
+931
+00:35:25,280 --> 00:35:27,500
+radix value and this do this you know
+
+932
+00:35:27,500 --> 00:35:30,400
+partitioning all over again all right
+
+933
+00:35:30,400 --> 00:35:34,790
+but I would say in the in practice well
+
+934
+00:35:34,790 --> 00:35:36,080
+in practice most people don't do rate
+
+935
+00:35:36,080 --> 00:35:38,570
+partitioning although it is shown to be
+
+936
+00:35:38,570 --> 00:35:41,869
+superior and then the other few systems
+
+937
+00:35:41,869 --> 00:35:44,570
+that I knew that do this they're mostly
+
+938
+00:35:44,570 --> 00:35:47,960
+academic prototypes they almost never do
+
+939
+00:35:47,960 --> 00:35:49,609
+two passes is usually one pass and
+
+940
+00:35:49,609 --> 00:35:54,640
+you're done all right so now we have our
+
+941
+00:35:54,640 --> 00:35:56,930
+whether or not we done partitioning now
+
+942
+00:35:56,930 --> 00:35:58,700
+we enter the build phase and again the
+
+943
+00:35:58,700 --> 00:35:59,839
+idea here is that we're going to scan
+
+944
+00:35:59,839 --> 00:36:02,810
+the outer table either just in the
+
+945
+00:36:02,810 --> 00:36:04,820
+original table itself or if we partition
+
+946
+00:36:04,820 --> 00:36:06,740
+and then the partitions and then for
+
+947
+00:36:06,740 --> 00:36:08,230
+every single tuple we're gonna have
+
+948
+00:36:08,230 --> 00:36:10,609
+we're gonna hash it on the same key we
+
+949
+00:36:10,609 --> 00:36:12,800
+use in the partitioning phase and then
+
+950
+00:36:12,800 --> 00:36:16,270
+we're gonna store it into a hash table
+
+951
+00:36:16,270 --> 00:36:19,580
+right and ideally we wanted to design
+
+952
+00:36:19,580 --> 00:36:21,650
+our hash table such that the the size
+
+953
+00:36:21,650 --> 00:36:23,599
+every bucket that we're writing into is
+
+954
+00:36:23,599 --> 00:36:26,270
+going to be you know just a few cache
+
+955
+00:36:26,270 --> 00:36:28,640
+lines in size right because that's gonna
+
+956
+00:36:28,640 --> 00:36:29,810
+last a good go through things more
+
+957
+00:36:29,810 --> 00:36:33,200
+efficiently so we now need to discuss
+
+958
+00:36:33,200 --> 00:36:34,910
+what this actually hash tables gonna
+
+959
+00:36:34,910 --> 00:36:36,619
+look like right sort of said like oh
+
+960
+00:36:36,619 --> 00:36:38,990
+great the buckets we write into a hash
+
+961
+00:36:38,990 --> 00:36:40,790
+table will be a few cache lines well
+
+962
+00:36:40,790 --> 00:36:42,380
+what does that actually mean right what
+
+963
+00:36:42,380 --> 00:36:43,580
+what is what does our hash table
+
+964
+00:36:43,580 --> 00:36:46,130
+actually look like so
+
+965
+00:36:46,130 --> 00:36:47,900
+to understand what a hash table is we
+
+966
+00:36:47,900 --> 00:36:49,940
+need there's two main design decisions
+
+967
+00:36:49,940 --> 00:36:51,770
+typically when people say they have a
+
+968
+00:36:51,770 --> 00:36:54,320
+hash table it's sort of used colloquy
+
+969
+00:36:54,320 --> 00:36:55,940
+just to mean like the data structure
+
+970
+00:36:55,940 --> 00:37:00,050
+itself but in in in practices actually
+
+971
+00:37:00,050 --> 00:37:01,310
+commits a combination of these two
+
+972
+00:37:01,310 --> 00:37:02,900
+things the the hash function the hashing
+
+973
+00:37:02,900 --> 00:37:05,300
+scheme so the hash function is a way
+
+974
+00:37:05,300 --> 00:37:06,589
+we're going to take it take our key
+
+975
+00:37:06,589 --> 00:37:08,630
+that's in a larger domain alergic space
+
+976
+00:37:08,630 --> 00:37:12,500
+and we want to map it to a specific
+
+977
+00:37:12,500 --> 00:37:15,290
+location or slot in our in our hash
+
+978
+00:37:15,290 --> 00:37:17,420
+table data structure but it says like
+
+979
+00:37:17,420 --> 00:37:19,970
+you take all possible strings and you
+
+980
+00:37:19,970 --> 00:37:21,440
+want to have a hash function that can
+
+981
+00:37:21,440 --> 00:37:23,869
+then convert it into some integer that
+
+982
+00:37:23,869 --> 00:37:25,910
+we can then say you know within one to
+
+983
+00:37:25,910 --> 00:37:28,430
+ten or something some smaller range you
+
+984
+00:37:28,430 --> 00:37:30,220
+know what slot we're going to write into
+
+985
+00:37:30,220 --> 00:37:34,700
+so let's see in a second B we have this
+
+986
+00:37:34,700 --> 00:37:35,810
+contention between
+
+987
+00:37:35,810 --> 00:37:37,940
+having a hash algorithm that is fast and
+
+988
+00:37:37,940 --> 00:37:39,560
+also having a hash algorithm that has a
+
+989
+00:37:39,560 --> 00:37:41,900
+low collision rate because we want to
+
+990
+00:37:41,900 --> 00:37:43,370
+make sure that if we take two keys that
+
+991
+00:37:43,370 --> 00:37:46,010
+are distinct we don't want them to hash
+
+992
+00:37:46,010 --> 00:37:47,780
+to the same location but we want to be
+
+993
+00:37:47,780 --> 00:37:49,870
+able to compute that hash very quickly
+
+994
+00:37:49,870 --> 00:37:52,310
+the the second design decision is the
+
+995
+00:37:52,310 --> 00:37:53,630
+hashing scheme and this basically says
+
+996
+00:37:53,630 --> 00:37:55,190
+that after you've done the hashing if
+
+997
+00:37:55,190 --> 00:37:57,320
+now you have two keys that hash to the
+
+998
+00:37:57,320 --> 00:37:58,580
+same location meaning you have a
+
+999
+00:37:58,580 --> 00:38:01,100
+collision on that key how do you
+
+1000
+00:38:01,100 --> 00:38:03,170
+actually deal with that and so again
+
+1001
+00:38:03,170 --> 00:38:05,780
+there's trade-off between allocating a
+
+1002
+00:38:05,780 --> 00:38:07,580
+ton of memory for a hash table so that
+
+1003
+00:38:07,580 --> 00:38:10,280
+every possible cache P I ever see it's
+
+1004
+00:38:10,280 --> 00:38:11,930
+guaranteed not to collide with any other
+
+1005
+00:38:11,930 --> 00:38:15,350
+key but that would take a lot of memory
+
+1006
+00:38:15,350 --> 00:38:18,350
+and so if I want to support collisions I
+
+1007
+00:38:18,350 --> 00:38:21,220
+want to have my collision reconciliation
+
+1008
+00:38:21,220 --> 00:38:24,650
+you know method or procedure being
+
+1009
+00:38:24,650 --> 00:38:26,360
+efficient as possible so I don't you
+
+1010
+00:38:26,360 --> 00:38:27,350
+know I'm not spending a lot of
+
+1011
+00:38:27,350 --> 00:38:28,970
+computation time to find or insert a new
+
+1012
+00:38:28,970 --> 00:38:32,060
+key again we'll cover each of these one
+
+1013
+00:38:32,060 --> 00:38:35,720
+might want I will say though although
+
+1014
+00:38:35,720 --> 00:38:36,770
+I'll present a bunch of different
+
+1015
+00:38:36,770 --> 00:38:38,480
+approaches to doing hash tables or hash
+
+1016
+00:38:38,480 --> 00:38:40,850
+functions every single database system
+
+1017
+00:38:40,850 --> 00:38:42,110
+that I've ever talked to every company
+
+1018
+00:38:42,110 --> 00:38:46,400
+that ever talked to they usually just
+
+1019
+00:38:46,400 --> 00:38:48,650
+pick one they'll have a reason why they
+
+1020
+00:38:48,650 --> 00:38:50,090
+picked it like oh we ran some benchmarks
+
+1021
+00:38:50,090 --> 00:38:51,710
+and it seemed you know seemed to work
+
+1022
+00:38:51,710 --> 00:38:54,590
+well and although in some cases some
+
+1023
+00:38:54,590 --> 00:38:56,030
+hashing scheme might be better another
+
+1024
+00:38:56,030 --> 00:38:56,990
+for different workloads of different
+
+1025
+00:38:56,990 --> 00:38:59,540
+query types nobody as far as I know is
+
+1026
+00:38:59,540 --> 00:39:01,310
+actually tries to be adaptive everyone
+
+1027
+00:39:01,310 --> 00:39:03,170
+sort of picks one hash table or one hash
+
+1028
+00:39:03,170 --> 00:39:05,270
+function and tries to make that be as
+
+1029
+00:39:05,270 --> 00:39:06,760
+efficient as possible they don't try to
+
+1030
+00:39:06,760 --> 00:39:09,560
+automatically adapt the hashing scheme
+
+1031
+00:39:09,560 --> 00:39:11,570
+they're using based on what the query
+
+1032
+00:39:11,570 --> 00:39:12,830
+the dataset looks like everyone just
+
+1033
+00:39:12,830 --> 00:39:15,800
+sort of picks one and runs with it all
+
+1034
+00:39:15,800 --> 00:39:18,050
+right so for hash functions again the
+
+1035
+00:39:18,050 --> 00:39:19,190
+idea is that we want to take an
+
+1036
+00:39:19,190 --> 00:39:21,800
+arbitrary key of any possible length an
+
+1037
+00:39:21,800 --> 00:39:24,890
+impossible domain and then map it to a
+
+1038
+00:39:24,890 --> 00:39:26,840
+smaller domain that we can then you know
+
+1039
+00:39:26,840 --> 00:39:28,490
+use that to find a location in our hash
+
+1040
+00:39:28,490 --> 00:39:31,580
+table so this means that although those
+
+1041
+00:39:31,580 --> 00:39:32,810
+those hash functions out there that
+
+1042
+00:39:32,810 --> 00:39:34,340
+provides security guarantees a
+
+1043
+00:39:34,340 --> 00:39:36,680
+cryptographic hash functions or two-way
+
+1044
+00:39:36,680 --> 00:39:37,820
+hash functions like I can encrypt
+
+1045
+00:39:37,820 --> 00:39:39,560
+something and decrypt it we don't care
+
+1046
+00:39:39,560 --> 00:39:41,570
+about any of that right we all the care
+
+1047
+00:39:41,570 --> 00:39:43,280
+about is having an efficient one-way
+
+1048
+00:39:43,280 --> 00:39:46,970
+hash with a locally generate and we'll
+
+1049
+00:39:46,970 --> 00:39:48,800
+see what some examples are in the next
+
+1050
+00:39:48,800 --> 00:39:49,730
+slide
+
+1051
+00:39:49,730 --> 00:39:53,210
+so the the best way to understand this
+
+1052
+00:39:53,210 --> 00:39:54,500
+trade-off between collision and
+
+1053
+00:39:54,500 --> 00:39:57,580
+performance is think of the two extremes
+
+1054
+00:39:57,580 --> 00:40:00,470
+so the fastest hash function you could
+
+1055
+00:40:00,470 --> 00:40:02,780
+ever have is one where no matter what
+
+1056
+00:40:02,780 --> 00:40:04,910
+key you give it you always return the
+
+1057
+00:40:04,910 --> 00:40:07,670
+value one right that's like there's
+
+1058
+00:40:07,670 --> 00:40:09,440
+there's no computation it's just you
+
+1059
+00:40:09,440 --> 00:40:11,930
+know writing one to the staff or the the
+
+1060
+00:40:11,930 --> 00:40:14,090
+output of the function and then you're
+
+1061
+00:40:14,090 --> 00:40:16,040
+done but of course this means that the
+
+1062
+00:40:16,040 --> 00:40:17,180
+collision rates can be terrible because
+
+1063
+00:40:17,180 --> 00:40:18,740
+no matter what key I give it it always
+
+1064
+00:40:18,740 --> 00:40:21,440
+comes back with value one so it's super
+
+1065
+00:40:21,440 --> 00:40:22,670
+efficient but my collision rate will be
+
+1066
+00:40:22,670 --> 00:40:25,400
+is bad on the other end of the spectrum
+
+1067
+00:40:25,400 --> 00:40:27,800
+I can have what is called perfect
+
+1068
+00:40:27,800 --> 00:40:30,590
+hashing where it's a magic hash function
+
+1069
+00:40:30,590 --> 00:40:33,860
+that no matter what key you give it it's
+
+1070
+00:40:33,860 --> 00:40:35,930
+guaranteed to always produce a unique
+
+1071
+00:40:35,930 --> 00:40:39,800
+hash key so again these exist in the
+
+1072
+00:40:39,800 --> 00:40:41,630
+literature or in theory in practice and
+
+1073
+00:40:41,630 --> 00:40:43,370
+nobody actually implements them because
+
+1074
+00:40:43,370 --> 00:40:44,420
+typically the way you actually implement
+
+1075
+00:40:44,420 --> 00:40:46,490
+them is do you need to know all the keys
+
+1076
+00:40:46,490 --> 00:40:50,960
+ahead of time and you you would then
+
+1077
+00:40:50,960 --> 00:40:53,690
+build it with it the mapping function
+
+1078
+00:40:53,690 --> 00:40:57,410
+with a with a hash table itself so you
+
+1079
+00:40:57,410 --> 00:40:58,880
+would need a hash table to in order to
+
+1080
+00:40:58,880 --> 00:41:01,610
+have a hash table which sort of defeats
+
+1081
+00:41:01,610 --> 00:41:02,840
+the purpose of having you know an
+
+1082
+00:41:02,840 --> 00:41:06,050
+efficient hash table so again these are
+
+1083
+00:41:06,050 --> 00:41:07,790
+the two extremes we want something in
+
+1084
+00:41:07,790 --> 00:41:13,460
+between so the you know this is sort of
+
+1085
+00:41:13,460 --> 00:41:16,040
+active development area for both
+
+1086
+00:41:16,040 --> 00:41:20,210
+research and for companies and startups
+
+1087
+00:41:20,210 --> 00:41:22,670
+and sort of hackers in general so
+
+1088
+00:41:22,670 --> 00:41:24,380
+there's this benchmark created by the
+
+1089
+00:41:24,380 --> 00:41:27,380
+murmur to hash guy call it SM hasher and
+
+1090
+00:41:27,380 --> 00:41:29,270
+this is sort of a benchmark suite that
+
+1091
+00:41:29,270 --> 00:41:30,710
+has measurements to determine the
+
+1092
+00:41:30,710 --> 00:41:32,570
+performance and collision rate of a
+
+1093
+00:41:32,570 --> 00:41:33,740
+bunch of hash functions so if you're
+
+1094
+00:41:33,740 --> 00:41:35,540
+interesting this kind of stuff you can
+
+1095
+00:41:35,540 --> 00:41:38,030
+go check out his blog or the game page
+
+1096
+00:41:38,030 --> 00:41:41,590
+for this but I want to focus quickly on
+
+1097
+00:41:41,590 --> 00:41:44,240
+just sort of five high level hash
+
+1098
+00:41:44,240 --> 00:41:46,960
+functions that you see often in the wild
+
+1099
+00:41:46,960 --> 00:41:49,070
+CRC was originally developed in the
+
+1100
+00:41:49,070 --> 00:41:52,360
+1970s to do error code detection for in
+
+1101
+00:41:52,360 --> 00:41:56,900
+networking there's now on on modern CPUs
+
+1102
+00:41:56,900 --> 00:41:58,760
+there's there's built-in instructions to
+
+1103
+00:41:58,760 --> 00:42:02,360
+do CRC very efficiently I think in the
+
+1104
+00:42:02,360 --> 00:42:03,530
+slides I'll show the next slide
+
+1105
+00:42:03,530 --> 00:42:04,250
+I don't think I'm using those
+
+1106
+00:42:04,250 --> 00:42:05,420
+instructions actually I'm pretty sure
+
+1107
+00:42:05,420 --> 00:42:08,390
+I'm not so if you just use the algorithm
+
+1108
+00:42:08,390 --> 00:42:10,730
+you get a software-based here I see it's
+
+1109
+00:42:10,730 --> 00:42:11,960
+gonna be really slow you use the
+
+1110
+00:42:11,960 --> 00:42:15,080
+instructions it'll go faster murmur hash
+
+1111
+00:42:15,080 --> 00:42:17,510
+was this random dude on the internet who
+
+1112
+00:42:17,510 --> 00:42:19,160
+said hey here's this hash function
+
+1113
+00:42:19,160 --> 00:42:21,800
+I developed that's general-purpose that
+
+1114
+00:42:21,800 --> 00:42:24,470
+well as fast a bunch of people seem to
+
+1115
+00:42:24,470 --> 00:42:26,300
+like it they picked up picked it up and
+
+1116
+00:42:26,300 --> 00:42:29,330
+sort of expanded upon it or modified it
+
+1117
+00:42:29,330 --> 00:42:32,660
+and in particular which Google City hash
+
+1118
+00:42:32,660 --> 00:42:34,190
+was based on member hash but they
+
+1119
+00:42:34,190 --> 00:42:35,390
+designed it for their for their
+
+1120
+00:42:35,390 --> 00:42:37,580
+environment where they wanted to do how
+
+1121
+00:42:37,580 --> 00:42:39,820
+efficient hashing for short keys
+
+1122
+00:42:39,820 --> 00:42:42,350
+there's the Facebook xx hash which is
+
+1123
+00:42:42,350 --> 00:42:43,730
+considered to be the state of the art
+
+1124
+00:42:43,730 --> 00:42:45,860
+now I this is from the same guy at
+
+1125
+00:42:45,860 --> 00:42:47,810
+Facebook that inveteracy standard of the
+
+1126
+00:42:47,810 --> 00:42:52,270
+compression again this is sort of doing
+
+1127
+00:42:52,270 --> 00:42:54,620
+it's just you know the mathematical
+
+1128
+00:42:54,620 --> 00:42:57,020
+variation of the of the methods being
+
+1129
+00:42:57,020 --> 00:42:58,850
+used in member hash and then farm hash
+
+1130
+00:42:58,850 --> 00:43:01,400
+is a newer version of City hash that's
+
+1131
+00:43:01,400 --> 00:43:02,900
+designed to have better collision rates
+
+1132
+00:43:02,900 --> 00:43:07,940
+for larger keys so there's also in 2016
+
+1133
+00:43:07,940 --> 00:43:11,300
+there was a highway hash from Google but
+
+1134
+00:43:11,300 --> 00:43:16,190
+that that has like guarantees for sort
+
+1135
+00:43:16,190 --> 00:43:17,300
+of the encrypted you know cryptographic
+
+1136
+00:43:17,300 --> 00:43:19,130
+analysis and you can't leak any data
+
+1137
+00:43:19,130 --> 00:43:22,670
+from from the hash functions again we
+
+1138
+00:43:22,670 --> 00:43:24,110
+don't care about that in our hash table
+
+1139
+00:43:24,110 --> 00:43:26,750
+because is it this we're using this hash
+
+1140
+00:43:26,750 --> 00:43:28,100
+function internally it's not exposed to
+
+1141
+00:43:28,100 --> 00:43:31,430
+the outside world so this is just a
+
+1142
+00:43:31,430 --> 00:43:34,760
+benchmark that I run every year where
+
+1143
+00:43:34,760 --> 00:43:37,580
+it's it's not SM hasher it's it's a
+
+1144
+00:43:37,580 --> 00:43:39,350
+different type of workload we're just
+
+1145
+00:43:39,350 --> 00:43:40,400
+trying to measure the throughput rate
+
+1146
+00:43:40,400 --> 00:43:42,530
+you can have for these different hash
+
+1147
+00:43:42,530 --> 00:43:43,100
+functions
+
+1148
+00:43:43,100 --> 00:43:45,440
+so again CRC 64 I think this is just all
+
+1149
+00:43:45,440 --> 00:43:47,210
+software based actually I should rewrite
+
+1150
+00:43:47,210 --> 00:43:49,120
+that to be use the harbor instructions
+
+1151
+00:43:49,120 --> 00:43:51,290
+but that the main takeaway here is a
+
+1152
+00:43:51,290 --> 00:43:52,790
+common common thing you'll see is that
+
+1153
+00:43:52,790 --> 00:43:56,690
+you have key sizes of either 32 or 64 64
+
+1154
+00:43:56,690 --> 00:44:00,830
+bits that it's 30 32 and 64 bytes you
+
+1155
+00:44:00,830 --> 00:44:03,320
+don't see like super large keys and this
+
+1156
+00:44:03,320 --> 00:44:05,570
+just sure just showing that there's if
+
+1157
+00:44:05,570 --> 00:44:08,780
+you have if you have key sizes that are
+
+1158
+00:44:08,780 --> 00:44:11,450
+aligned to cache lines then these
+
+1159
+00:44:11,450 --> 00:44:12,800
+algorithms can form more efficiently so
+
+1160
+00:44:12,800 --> 00:44:14,540
+the sort of the salt to the patterns is
+
+1161
+00:44:14,540 --> 00:44:15,560
+when you have
+
+1162
+00:44:15,560 --> 00:44:17,540
+is when you start going through the next
+
+1163
+00:44:17,540 --> 00:44:19,490
+cache line you pay that penalty so the
+
+1164
+00:44:19,490 --> 00:44:21,140
+main takeaway here is that again X X
+
+1165
+00:44:21,140 --> 00:44:23,210
+hash 3 is considered to be the fastest
+
+1166
+00:44:23,210 --> 00:44:26,030
+and then followed by by city has some
+
+1167
+00:44:26,030 --> 00:44:27,860
+farm hash I think this is an older
+
+1168
+00:44:27,860 --> 00:44:29,330
+version of murmur hash 3 I think there
+
+1169
+00:44:29,330 --> 00:44:30,500
+might be a newer version that would be
+
+1170
+00:44:30,500 --> 00:44:33,410
+it would could perform better but again
+
+1171
+00:44:33,410 --> 00:44:35,930
+in our own system we use excess hash 3
+
+1172
+00:44:35,930 --> 00:44:38,480
+because that pin this determines that
+
+1173
+00:44:38,480 --> 00:44:39,140
+things are
+
+1174
+00:44:39,140 --> 00:44:40,760
+this shows that thing it's it's much
+
+1175
+00:44:40,760 --> 00:44:45,740
+better ok so let's talk about now
+
+1176
+00:44:45,740 --> 00:44:48,440
+hashing schemes again the hashing scheme
+
+1177
+00:44:48,440 --> 00:44:50,870
+is is what we handled collision so where
+
+1178
+00:44:50,870 --> 00:44:53,030
+our hash function says this key should
+
+1179
+00:44:53,030 --> 00:44:54,710
+hash to this bucket or this slot in our
+
+1180
+00:44:54,710 --> 00:44:57,020
+in our data structure and something's
+
+1181
+00:44:57,020 --> 00:44:59,180
+are being there how do we deal with it
+
+1182
+00:44:59,180 --> 00:45:01,910
+right so what's up well and so I was
+
+1183
+00:45:01,910 --> 00:45:04,940
+I'll say - these are also for the most
+
+1184
+00:45:04,940 --> 00:45:08,000
+part except for chain hashing these are
+
+1185
+00:45:08,000 --> 00:45:10,850
+static hashing schemes meaning I'm gonna
+
+1186
+00:45:10,850 --> 00:45:13,460
+size the hash table before I actually do
+
+1187
+00:45:13,460 --> 00:45:14,690
+anything with it so I sort of have a
+
+1188
+00:45:14,690 --> 00:45:17,150
+rough approximation of how many keys I'm
+
+1189
+00:45:17,150 --> 00:45:19,520
+gonna have to store in my hash pump or
+
+1190
+00:45:19,520 --> 00:45:23,270
+hash table and if now I have a collision
+
+1191
+00:45:23,270 --> 00:45:24,440
+that I can't reconcile because there's
+
+1192
+00:45:24,440 --> 00:45:26,060
+no free space based on on the protocol
+
+1193
+00:45:26,060 --> 00:45:28,160
+I'm using I then have to resize it and
+
+1194
+00:45:28,160 --> 00:45:29,540
+the way you typically resize it is just
+
+1195
+00:45:29,540 --> 00:45:32,000
+you double the size and rehash
+
+1196
+00:45:32,000 --> 00:45:33,710
+everything and put it back in chain
+
+1197
+00:45:33,710 --> 00:45:35,600
+hashing you can just extend the hash
+
+1198
+00:45:35,600 --> 00:45:36,790
+chain which I'll show in the next slide
+
+1199
+00:45:36,790 --> 00:45:39,050
+indefinitely but but this can then
+
+1200
+00:45:39,050 --> 00:45:42,380
+generate to a to ask when to scan when
+
+1201
+00:45:42,380 --> 00:45:44,390
+you do lookups if everything hashes to
+
+1202
+00:45:44,390 --> 00:45:48,470
+the same chain so chain hash tables
+
+1203
+00:45:48,470 --> 00:45:49,790
+people think about when they think about
+
+1204
+00:45:49,790 --> 00:45:51,110
+a hash table I think this is what you
+
+1205
+00:45:51,110 --> 00:45:54,350
+get in in Java when you say you want a
+
+1206
+00:45:54,350 --> 00:45:57,110
+hash map class and the idea is that
+
+1207
+00:45:57,110 --> 00:46:01,100
+there's a there's an array of pointers
+
+1208
+00:46:01,100 --> 00:46:04,400
+to chains and I take my key I hash it
+
+1209
+00:46:04,400 --> 00:46:06,320
+that tells me what offset I want to look
+
+1210
+00:46:06,320 --> 00:46:11,420
+at in my my chain and then I can I can
+
+1211
+00:46:11,420 --> 00:46:14,900
+jump to that location right and so the
+
+1212
+00:46:14,900 --> 00:46:16,370
+way we're going to resolve collisions is
+
+1213
+00:46:16,370 --> 00:46:19,520
+that if two keys map to the same chain
+
+1214
+00:46:19,520 --> 00:46:21,410
+we're just gonna sort them into the same
+
+1215
+00:46:21,410 --> 00:46:24,440
+bucket and if my bucket gets full then I
+
+1216
+00:46:24,440 --> 00:46:26,180
+just extend it allocate a new bucket and
+
+1217
+00:46:26,180 --> 00:46:28,550
+I added to my linked list so again the
+
+1218
+00:46:28,550 --> 00:46:29,190
+chain can grow
+
+1219
+00:46:29,190 --> 00:46:31,890
+infinitely and if everything hashes at
+
+1220
+00:46:31,890 --> 00:46:33,780
+the same location then doing any look of
+
+1221
+00:46:33,780 --> 00:46:38,700
+a sasquatch will scan all right so let's
+
+1222
+00:46:38,700 --> 00:46:40,800
+look at a quick example so ignore this
+
+1223
+00:46:40,800 --> 00:46:42,210
+for now but like here's our buckets
+
+1224
+00:46:42,210 --> 00:46:44,069
+again so within each bucket we have two
+
+1225
+00:46:44,069 --> 00:46:46,890
+slots so I take my first key I'm gonna
+
+1226
+00:46:46,890 --> 00:46:50,640
+hash it and the it's gonna match this
+
+1227
+00:46:50,640 --> 00:46:53,400
+bucket here this bucket is empty so I
+
+1228
+00:46:53,400 --> 00:46:56,160
+can insert my key into the first slot so
+
+1229
+00:46:56,160 --> 00:46:57,450
+the thing to point out here though is
+
+1230
+00:46:57,450 --> 00:47:00,720
+that we want to store both the hash of
+
+1231
+00:47:00,720 --> 00:47:03,510
+the key as well as the original key and
+
+1232
+00:47:03,510 --> 00:47:04,470
+the reason why we want to store the hash
+
+1233
+00:47:04,470 --> 00:47:05,849
+is because now if we're gonna do a
+
+1234
+00:47:05,849 --> 00:47:09,480
+comparison to see does a exist if we
+
+1235
+00:47:09,480 --> 00:47:11,190
+already have the hash we can do that
+
+1236
+00:47:11,190 --> 00:47:12,480
+comparison very quickly with just
+
+1237
+00:47:12,480 --> 00:47:14,250
+integers but if this key is like a bar
+
+1238
+00:47:14,250 --> 00:47:16,560
+chart or something larger then we
+
+1239
+00:47:16,560 --> 00:47:17,880
+obviously need to make sure that this
+
+1240
+00:47:17,880 --> 00:47:19,619
+thing we have this original key so we
+
+1241
+00:47:19,619 --> 00:47:21,240
+can determine what wave of people false
+
+1242
+00:47:21,240 --> 00:47:23,609
+positive but we keep this one as well so
+
+1243
+00:47:23,609 --> 00:47:25,500
+that we can do that lookup more
+
+1244
+00:47:25,500 --> 00:47:28,349
+efficiently so a goes here we can write
+
+1245
+00:47:28,349 --> 00:47:32,490
+to that first location B B goes here I
+
+1246
+00:47:32,490 --> 00:47:35,790
+can write to that location C goes here
+
+1247
+00:47:35,790 --> 00:47:37,619
+right match to the same bucket this slot
+
+1248
+00:47:37,619 --> 00:47:39,869
+is empty so can write into there but now
+
+1249
+00:47:39,869 --> 00:47:42,540
+D wants to write into this bucket but
+
+1250
+00:47:42,540 --> 00:47:44,640
+the two slots are full so all we need to
+
+1251
+00:47:44,640 --> 00:47:47,640
+do is now allocate a new bucket add a
+
+1252
+00:47:47,640 --> 00:47:49,020
+pointer from the first bucket to the
+
+1253
+00:47:49,020 --> 00:47:51,150
+second bucket in our linked list and now
+
+1254
+00:47:51,150 --> 00:47:54,150
+we can add in D same thing for E this
+
+1255
+00:47:54,150 --> 00:47:55,800
+bucket is full we follow the chain and
+
+1256
+00:47:55,800 --> 00:47:58,560
+go here and now we can write E and then
+
+1257
+00:47:58,560 --> 00:48:01,109
+F gets written down here so again now if
+
+1258
+00:48:01,109 --> 00:48:04,170
+I want to do a lookup say find me key D
+
+1259
+00:48:04,170 --> 00:48:06,839
+D would would hash to this bucket I
+
+1260
+00:48:06,839 --> 00:48:08,369
+would do a sequential scan within the
+
+1261
+00:48:08,369 --> 00:48:09,619
+bucket looking in every single key
+
+1262
+00:48:09,619 --> 00:48:11,579
+typically you do with the hash first cuz
+
+1263
+00:48:11,579 --> 00:48:14,339
+that'll be more efficient if I don't
+
+1264
+00:48:14,339 --> 00:48:17,069
+find a match then I know I need to and
+
+1265
+00:48:17,069 --> 00:48:18,540
+there's there's if I don't find a match
+
+1266
+00:48:18,540 --> 00:48:19,619
+in the bucket I'm at and there's a
+
+1267
+00:48:19,619 --> 00:48:21,270
+pointer to it the next bucket they
+
+1268
+00:48:21,270 --> 00:48:22,349
+didn't need to jump over here and
+
+1269
+00:48:22,349 --> 00:48:24,710
+continue my special scan
+
+1270
+00:48:24,710 --> 00:48:27,030
+so one interesting optimization you can
+
+1271
+00:48:27,030 --> 00:48:31,079
+do with the slot array is instead of
+
+1272
+00:48:31,079 --> 00:48:34,079
+throwing these as 64-bit pointers or you
+
+1273
+00:48:34,079 --> 00:48:36,060
+store the store pointers at 64 bits
+
+1274
+00:48:36,060 --> 00:48:37,920
+because that's what Intel hardware tells
+
+1275
+00:48:37,920 --> 00:48:40,140
+you you have to do but Intel action
+
+1276
+00:48:40,140 --> 00:48:41,730
+doesn't use all 64 bits for every
+
+1277
+00:48:41,730 --> 00:48:42,660
+address you know actually
+
+1278
+00:48:42,660 --> 00:48:45,660
+uses 48 bits so in the case of hyper
+
+1279
+00:48:45,660 --> 00:48:47,760
+what they do is they actually store for
+
+1280
+00:48:47,760 --> 00:48:51,210
+all these pointers they store a bitmap
+
+1281
+00:48:51,210 --> 00:48:53,460
+I'm sorry a bloom filter that says
+
+1282
+00:48:53,460 --> 00:48:56,400
+here's all the keys that exist in my
+
+1283
+00:48:56,400 --> 00:48:59,520
+chain so now what I can do is when I do
+
+1284
+00:48:59,520 --> 00:49:01,800
+a hash and I say I should go to this
+
+1285
+00:49:01,800 --> 00:49:03,780
+bucket and I look at this point in to
+
+1286
+00:49:03,780 --> 00:49:06,120
+tell me where I need to go there's
+
+1287
+00:49:06,120 --> 00:49:07,530
+actually gonna be a bloom filter inside
+
+1288
+00:49:07,530 --> 00:49:10,800
+of it that we then check to see whether
+
+1289
+00:49:10,800 --> 00:49:12,330
+the key I'm looking for is actually
+
+1290
+00:49:12,330 --> 00:49:13,800
+gonna exist in my blue footer because
+
+1291
+00:49:13,800 --> 00:49:15,570
+the bloom filter will give you it won't
+
+1292
+00:49:15,570 --> 00:49:16,740
+give you false negatives but it could
+
+1293
+00:49:16,740 --> 00:49:18,090
+give me false positives so could tell
+
+1294
+00:49:18,090 --> 00:49:20,130
+you this key exists and when it actually
+
+1295
+00:49:20,130 --> 00:49:21,570
+doesn't you have to go scan and find it
+
+1296
+00:49:21,570 --> 00:49:23,700
+just to see that it doesn't exist but if
+
+1297
+00:49:23,700 --> 00:49:25,710
+it doesn't exist in your key then this
+
+1298
+00:49:25,710 --> 00:49:27,240
+thing would be guaranteed to say it
+
+1299
+00:49:27,240 --> 00:49:28,590
+doesn't exist so you don't actually need
+
+1300
+00:49:28,590 --> 00:49:30,600
+to follow the chain you just need to
+
+1301
+00:49:30,600 --> 00:49:34,440
+look at this bloom filter so I think for
+
+1302
+00:49:34,440 --> 00:49:36,660
+this reason the the hyper guys say that
+
+1303
+00:49:36,660 --> 00:49:40,050
+the hash chain hash table is to peer to
+
+1304
+00:49:40,050 --> 00:49:42,360
+all other hash tables if you do this one
+
+1305
+00:49:42,360 --> 00:49:45,290
+trick the problem though is although I
+
+1306
+00:49:45,290 --> 00:49:48,210
+can agree with that the problem is that
+
+1307
+00:49:48,210 --> 00:49:51,870
+the Intel's not guaranteed to only use
+
+1308
+00:49:51,870 --> 00:49:54,330
+60 48 bits for all pointers in the
+
+1309
+00:49:54,330 --> 00:49:56,790
+future right it's some late appointment
+
+1310
+00:49:56,790 --> 00:49:58,470
+may say all right well now use all 64
+
+1311
+00:49:58,470 --> 00:50:00,600
+bits and then this thing doesn't work so
+
+1312
+00:50:00,600 --> 00:50:02,340
+then maybe they could just store the 16
+
+1313
+00:50:02,340 --> 00:50:05,760
+bit bloom filter and Pat it out sort of
+
+1314
+00:50:05,760 --> 00:50:07,380
+like the the Judi fat pointers we saw
+
+1315
+00:50:07,380 --> 00:50:09,090
+with the Judea Ray's you could store
+
+1316
+00:50:09,090 --> 00:50:14,480
+that on the slot array well alright the
+
+1317
+00:50:14,480 --> 00:50:18,300
+so chain hashing is pretty common in
+
+1318
+00:50:18,300 --> 00:50:20,190
+data structure used in database systems
+
+1319
+00:50:20,190 --> 00:50:22,560
+for joins though most of the time you
+
+1320
+00:50:22,560 --> 00:50:26,310
+see a linear probe hash table because
+
+1321
+00:50:26,310 --> 00:50:28,050
+it's so simple and just ends up being
+
+1322
+00:50:28,050 --> 00:50:30,330
+more efficient so with leaner probe hash
+
+1323
+00:50:30,330 --> 00:50:32,520
+table I think it's a giant table of
+
+1324
+00:50:32,520 --> 00:50:36,210
+slots and I'm gonna hash my key and I'm
+
+1325
+00:50:36,210 --> 00:50:37,710
+gonna mod it by the number of slots that
+
+1326
+00:50:37,710 --> 00:50:38,790
+I have and that's when tell me where to
+
+1327
+00:50:38,790 --> 00:50:40,920
+jump to find the memory address of the
+
+1328
+00:50:40,920 --> 00:50:43,290
+slot that I want so when I want to do an
+
+1329
+00:50:43,290 --> 00:50:45,090
+insert if nothing exists in that slot
+
+1330
+00:50:45,090 --> 00:50:46,380
+then I can just go ahead and write into
+
+1331
+00:50:46,380 --> 00:50:48,960
+it if something does exist then I need
+
+1332
+00:50:48,960 --> 00:50:52,950
+to scan down in going from the top to
+
+1333
+00:50:52,950 --> 00:50:54,660
+the bottom from that slot location and
+
+1334
+00:50:54,660 --> 00:50:56,500
+look at all the slauson's wife
+
+1335
+00:50:56,500 --> 00:50:58,900
+one that is empty and then I can go
+
+1336
+00:50:58,900 --> 00:51:01,810
+ahead and insert my value in it now this
+
+1337
+00:51:01,810 --> 00:51:03,130
+means that when I wanted to do a lookup
+
+1338
+00:51:03,130 --> 00:51:05,410
+to find my key I'm gonna slaughter jump
+
+1339
+00:51:05,410 --> 00:51:07,630
+to that same location and I have to
+
+1340
+00:51:07,630 --> 00:51:08,980
+start looking to see whether the key I'm
+
+1341
+00:51:08,980 --> 00:51:11,320
+looking for is actually there that's
+
+1342
+00:51:11,320 --> 00:51:13,150
+because I don't know if it's got if it's
+
+1343
+00:51:13,150 --> 00:51:14,470
+not actually in a slot that it should
+
+1344
+00:51:14,470 --> 00:51:16,540
+hash to it maybe below that I need to
+
+1345
+00:51:16,540 --> 00:51:18,100
+scan through until I find it
+
+1346
+00:51:18,100 --> 00:51:20,500
+or I find the empty slot which tells me
+
+1347
+00:51:20,500 --> 00:51:23,770
+that the key doesn't exist so this is
+
+1348
+00:51:23,770 --> 00:51:26,050
+look an example does say again I want to
+
+1349
+00:51:26,050 --> 00:51:28,090
+put these keys in here first one we hash
+
+1350
+00:51:28,090 --> 00:51:30,100
+a we modded by the number of slots and
+
+1351
+00:51:30,100 --> 00:51:31,240
+that tells us we want to write into here
+
+1352
+00:51:31,240 --> 00:51:32,830
+that's fine nothing was already in there
+
+1353
+00:51:32,830 --> 00:51:34,840
+we can go ahead and do that now I want
+
+1354
+00:51:34,840 --> 00:51:37,060
+to do hash on B I can write this slot
+
+1355
+00:51:37,060 --> 00:51:39,490
+nothing's there so we're done now I want
+
+1356
+00:51:39,490 --> 00:51:42,190
+to do an insert on C C hashes to this
+
+1357
+00:51:42,190 --> 00:51:45,010
+slot location but a already exists so I
+
+1358
+00:51:45,010 --> 00:51:47,230
+can't store it here I'm gonna store it
+
+1359
+00:51:47,230 --> 00:51:49,900
+at the next empty slot I can find which
+
+1360
+00:51:49,900 --> 00:51:52,570
+is just the one below it so again now if
+
+1361
+00:51:52,570 --> 00:51:54,610
+I want to do a lookup on C I would hatch
+
+1362
+00:51:54,610 --> 00:51:57,970
+here C a and that I would see the key a
+
+1363
+00:51:57,970 --> 00:51:59,410
+that's not the one I'm looking for
+
+1364
+00:51:59,410 --> 00:52:02,500
+so then I scan down till I find either
+
+1365
+00:52:02,500 --> 00:52:04,180
+an empty slot or the key that I want in
+
+1366
+00:52:04,180 --> 00:52:06,010
+this case here I would find see in the
+
+1367
+00:52:06,010 --> 00:52:09,490
+next location now with DD hashes in this
+
+1368
+00:52:09,490 --> 00:52:11,080
+location again we can't write it because
+
+1369
+00:52:11,080 --> 00:52:13,060
+into there because C's are two here so
+
+1370
+00:52:13,060 --> 00:52:15,070
+we write it the next one he wants to
+
+1371
+00:52:15,070 --> 00:52:16,810
+write to a we can't do that
+
+1372
+00:52:16,810 --> 00:52:18,160
+we can't write to the next one Karen do
+
+1373
+00:52:18,160 --> 00:52:19,360
+the next one and keep going till we find
+
+1374
+00:52:19,360 --> 00:52:22,810
+our empty slot like that F like likewise
+
+1375
+00:52:22,810 --> 00:52:24,040
+Wright State what's right here but it
+
+1376
+00:52:24,040 --> 00:52:27,540
+can't so goes go to the next one so the
+
+1377
+00:52:27,540 --> 00:52:30,070
+thing you got to keep track of with this
+
+1378
+00:52:30,070 --> 00:52:34,120
+is if I do a lookup or an insert I need
+
+1379
+00:52:34,120 --> 00:52:35,950
+to keep track of what was my starting
+
+1380
+00:52:35,950 --> 00:52:37,570
+location into the slot array of for this
+
+1381
+00:52:37,570 --> 00:52:39,510
+table because if I loop back around
+
+1382
+00:52:39,510 --> 00:52:41,770
+trying to find the thing I'm looking for
+
+1383
+00:52:41,770 --> 00:52:44,140
+or empty slot and I and I come back to
+
+1384
+00:52:44,140 --> 00:52:46,360
+my starting point then I know my hash
+
+1385
+00:52:46,360 --> 00:52:48,310
+table is full and there's no more free
+
+1386
+00:52:48,310 --> 00:52:49,720
+spaces for me to insert something all
+
+1387
+00:52:49,720 --> 00:52:51,940
+right the key I'm looking for is not
+
+1388
+00:52:51,940 --> 00:52:55,300
+there then I have to again rehash
+
+1389
+00:52:55,300 --> 00:52:57,190
+everything and by doubling the size or
+
+1390
+00:52:57,190 --> 00:52:58,900
+buildin hash table doubling the size and
+
+1391
+00:52:58,900 --> 00:53:00,970
+rehashing everything so again trying to
+
+1392
+00:53:00,970 --> 00:53:02,830
+pick out the right hash table size can
+
+1393
+00:53:02,830 --> 00:53:04,930
+be tricky and we'll see and a few more
+
+1394
+00:53:04,930 --> 00:53:07,000
+lectures how this can be problematic if
+
+1395
+00:53:07,000 --> 00:53:08,170
+you don't get the if you don't estimate
+
+1396
+00:53:08,170 --> 00:53:10,710
+things correctly in the first
+
+1397
+00:53:10,710 --> 00:53:14,440
+so the other interesting thing about
+
+1398
+00:53:14,440 --> 00:53:15,579
+this data structure and we'll see some
+
+1399
+00:53:15,579 --> 00:53:19,380
+variations in in the next slides is that
+
+1400
+00:53:19,380 --> 00:53:23,230
+it's gonna penalize the the collision
+
+1401
+00:53:23,230 --> 00:53:24,550
+scheme who's going to penalize both
+
+1402
+00:53:24,550 --> 00:53:29,109
+inserts and lookups in the same way so
+
+1403
+00:53:29,109 --> 00:53:31,569
+in the case of this one here I want to
+
+1404
+00:53:31,569 --> 00:53:35,530
+insert E and I had to jump down to four
+
+1405
+00:53:35,530 --> 00:53:38,710
+slots into stored here if now I want to
+
+1406
+00:53:38,710 --> 00:53:40,359
+do a look-up on e I'm gonna pay that
+
+1407
+00:53:40,359 --> 00:53:42,250
+same penalty because I'm gonna hash here
+
+1408
+00:53:42,250 --> 00:53:44,980
+and I have to scan down until I find an
+
+1409
+00:53:44,980 --> 00:53:46,089
+empty slot of the key that I'm looking
+
+1410
+00:53:46,089 --> 00:53:48,190
+for so there's nothing in this collision
+
+1411
+00:53:48,190 --> 00:53:50,369
+scheme or this hashing scheme that
+
+1412
+00:53:50,369 --> 00:53:52,660
+prefers making inserts be faster or
+
+1413
+00:53:52,660 --> 00:53:54,609
+making different buffers making lookups
+
+1414
+00:53:54,609 --> 00:54:01,950
+be faster in a hash join depending on
+
+1415
+00:54:01,950 --> 00:54:07,000
+whether the the the the size of the of
+
+1416
+00:54:07,000 --> 00:54:08,319
+the inner table versus the average of
+
+1417
+00:54:08,319 --> 00:54:10,930
+depending on that ratio you may want to
+
+1418
+00:54:10,930 --> 00:54:12,220
+choose a different collision scheme that
+
+1419
+00:54:12,220 --> 00:54:14,260
+makes inserts go faster if the the outer
+
+1420
+00:54:14,260 --> 00:54:16,210
+table is bigger or loves lookups go
+
+1421
+00:54:16,210 --> 00:54:20,260
+faster if the inner table is larger but
+
+1422
+00:54:20,260 --> 00:54:21,849
+again as I said as far as I know most
+
+1423
+00:54:21,849 --> 00:54:24,280
+energy systems don't don't switch up
+
+1424
+00:54:24,280 --> 00:54:26,290
+it's always pick one scheme and
+
+1425
+00:54:26,290 --> 00:54:28,450
+oftentimes this one is the simplest one
+
+1426
+00:54:28,450 --> 00:54:30,670
+and important in that feature shows that
+
+1427
+00:54:30,670 --> 00:54:36,730
+this performs the best okay so the we've
+
+1428
+00:54:36,730 --> 00:54:38,290
+already talked about this you know in
+
+1429
+00:54:38,290 --> 00:54:39,579
+order to reduce the number of wasteful
+
+1430
+00:54:39,579 --> 00:54:42,970
+comparisons we have to do we want to
+
+1431
+00:54:42,970 --> 00:54:44,920
+avoid collisions on hash keys of course
+
+1432
+00:54:44,920 --> 00:54:46,780
+that entirely depends on how good our
+
+1433
+00:54:46,780 --> 00:54:50,339
+collision rate is per hash function and
+
+1434
+00:54:50,339 --> 00:54:52,720
+one way to avoid it entirely is that we
+
+1435
+00:54:52,720 --> 00:54:55,630
+can just have a huge hash table with two
+
+1436
+00:54:55,630 --> 00:54:56,859
+EPs a number of slots we expect to have
+
+1437
+00:54:56,859 --> 00:54:59,109
+so that every single time you hash your
+
+1438
+00:54:59,109 --> 00:55:01,470
+key and put it into the data structure
+
+1439
+00:55:01,470 --> 00:55:03,579
+it's there's nothing going to be in the
+
+1440
+00:55:03,579 --> 00:55:05,079
+slot that is trying to write too but
+
+1441
+00:55:05,079 --> 00:55:06,670
+again you pay that penalty of allocating
+
+1442
+00:55:06,670 --> 00:55:08,230
+more memory for your hash table so how
+
+1443
+00:55:08,230 --> 00:55:10,540
+do I get balanced this correctly is not
+
+1444
+00:55:10,540 --> 00:55:14,079
+trivial so let's look at some variations
+
+1445
+00:55:14,079 --> 00:55:19,030
+of linear probe hashing that do try to
+
+1446
+00:55:19,030 --> 00:55:21,460
+switch the dynamic or switch the penalty
+
+1447
+00:55:21,460 --> 00:55:22,400
+between insert
+
+1448
+00:55:22,400 --> 00:55:25,550
+and lookups by changing how the
+
+1449
+00:55:25,550 --> 00:55:27,740
+collision the collision protocol we're
+
+1450
+00:55:27,740 --> 00:55:30,770
+going to use so one approach is called
+
+1451
+00:55:30,770 --> 00:55:32,450
+Robin Hood hashing and the idea here is
+
+1452
+00:55:32,450 --> 00:55:36,680
+that when we do an insert if we find
+
+1453
+00:55:36,680 --> 00:55:39,620
+that the slot we want to insert into is
+
+1454
+00:55:39,620 --> 00:55:42,980
+already occupied then we look to see
+
+1455
+00:55:42,980 --> 00:55:46,010
+whether the key that exists in the slot
+
+1456
+00:55:46,010 --> 00:55:49,070
+we want to write to is farther away from
+
+1457
+00:55:49,070 --> 00:55:52,130
+its home slaughter it's not where it
+
+1458
+00:55:52,130 --> 00:55:56,270
+should be then where our key is and if
+
+1459
+00:55:56,270 --> 00:55:58,310
+it isn't then we're gonna steal it slot
+
+1460
+00:55:58,310 --> 00:56:00,530
+and force it that other key we just we
+
+1461
+00:56:00,530 --> 00:56:02,930
+just evicted to go to a new location
+
+1462
+00:56:02,930 --> 00:56:04,880
+so it's called Robin Hood hashing
+
+1463
+00:56:04,880 --> 00:56:05,900
+because the idea is that we're gonna
+
+1464
+00:56:05,900 --> 00:56:08,930
+have Porky's steal from that we're gonna
+
+1465
+00:56:08,930 --> 00:56:11,330
+steal from the rich keys and give the
+
+1466
+00:56:11,330 --> 00:56:13,220
+slots to the poor keys and again this
+
+1467
+00:56:13,220 --> 00:56:16,370
+the the wealth of a key is based on how
+
+1468
+00:56:16,370 --> 00:56:19,610
+many hops you are you are away from your
+
+1469
+00:56:19,610 --> 00:56:22,250
+your big the position the optin position
+
+1470
+00:56:22,250 --> 00:56:23,740
+for you where you should be in the table
+
+1471
+00:56:23,740 --> 00:56:27,740
+all right so this is an old technique it
+
+1472
+00:56:27,740 --> 00:56:29,690
+was virtually published in a tech report
+
+1473
+00:56:29,690 --> 00:56:34,490
+in or in a public paper in 1985 it sort
+
+1474
+00:56:34,490 --> 00:56:38,240
+of was lost or not lost or like really
+
+1475
+00:56:38,240 --> 00:56:40,190
+didn't get any attention until recent
+
+1476
+00:56:40,190 --> 00:56:42,770
+years and particularly this showed up on
+
+1477
+00:56:42,770 --> 00:56:46,820
+Hacker News a couple years ago and now
+
+1478
+00:56:46,820 --> 00:56:48,740
+sort of this is there are a few systems
+
+1479
+00:56:48,740 --> 00:56:51,080
+that actually using this although I will
+
+1480
+00:56:51,080 --> 00:56:52,310
+say the research shows that this is
+
+1481
+00:56:52,310 --> 00:56:54,070
+actually a bad idea
+
+1482
+00:56:54,070 --> 00:56:56,660
+because you pay a penalty of just
+
+1483
+00:56:56,660 --> 00:57:00,410
+copying and moving is expensive all
+
+1484
+00:57:00,410 --> 00:57:01,850
+right so let's say it's the same skin
+
+1485
+00:57:01,850 --> 00:57:03,830
+keys we want to have before again Robin
+
+1486
+00:57:03,830 --> 00:57:05,840
+hashing is an a variation on lunar probe
+
+1487
+00:57:05,840 --> 00:57:08,590
+hashing so it's just a giant slot array
+
+1488
+00:57:08,590 --> 00:57:11,660
+we start off by hashing a that goes here
+
+1489
+00:57:11,660 --> 00:57:14,240
+just like before but now in addition
+
+1490
+00:57:14,240 --> 00:57:15,470
+just drawing the hash in the original
+
+1491
+00:57:15,470 --> 00:57:18,410
+key we're also going to store the number
+
+1492
+00:57:18,410 --> 00:57:20,570
+of jumps that this key is from its
+
+1493
+00:57:20,570 --> 00:57:22,700
+optimal position and the optimal
+
+1494
+00:57:22,700 --> 00:57:24,440
+position is determined by where it
+
+1495
+00:57:24,440 --> 00:57:27,770
+should have been or what was the first
+
+1496
+00:57:27,770 --> 00:57:29,690
+location that we jumped to when we did
+
+1497
+00:57:29,690 --> 00:57:32,750
+our initial hash right like if you were
+
+1498
+00:57:32,750 --> 00:57:34,640
+looking for this key and used this hash
+
+1499
+00:57:34,640 --> 00:57:35,390
+you
+
+1500
+00:57:35,390 --> 00:57:37,940
+hash function where could you find it
+
+1501
+00:57:37,940 --> 00:57:39,260
+immediately assuming there wasn't any
+
+1502
+00:57:39,260 --> 00:57:42,289
+other collisions saying they would be
+
+1503
+00:57:42,289 --> 00:57:44,690
+now bu hashes up here it sits in this
+
+1504
+00:57:44,690 --> 00:57:46,430
+optima position so it's the number hops
+
+1505
+00:57:46,430 --> 00:57:47,930
+it is from away from its where it should
+
+1506
+00:57:47,930 --> 00:57:51,500
+be zero but now we're gonna hash C C's
+
+1507
+00:57:51,500 --> 00:57:52,849
+gonna land in the same position where a
+
+1508
+00:57:52,849 --> 00:57:55,339
+is so now we need to look at to see
+
+1509
+00:57:55,339 --> 00:57:58,339
+whether we should evict whatever is in
+
+1510
+00:57:58,339 --> 00:58:00,710
+the slot we want to go into or should we
+
+1511
+00:58:00,710 --> 00:58:02,480
+leave it alone and and jump down to the
+
+1512
+00:58:02,480 --> 00:58:05,000
+next slot just like a linear program so
+
+1513
+00:58:05,000 --> 00:58:09,380
+this first jump here the a is a is zero
+
+1514
+00:58:09,380 --> 00:58:12,140
+hops away from its its optimal position
+
+1515
+00:58:12,140 --> 00:58:14,690
+and C is zero hops from its original
+
+1516
+00:58:14,690 --> 00:58:17,960
+position so C will leave a alone all
+
+1517
+00:58:17,960 --> 00:58:19,039
+right because they're considered
+
+1518
+00:58:19,039 --> 00:58:21,380
+equivalent so then now it'll jump down
+
+1519
+00:58:21,380 --> 00:58:23,660
+here this flop is empty so now we'll
+
+1520
+00:58:23,660 --> 00:58:25,339
+store C in here so now this is saying
+
+1521
+00:58:25,339 --> 00:58:29,269
+that C is one hop away from where it
+
+1522
+00:58:29,269 --> 00:58:32,809
+should have been originally D comes
+
+1523
+00:58:32,809 --> 00:58:34,670
+along here D wants to go where C is
+
+1524
+00:58:34,670 --> 00:58:39,380
+located C as a has a hop cost of or a
+
+1525
+00:58:39,380 --> 00:58:42,109
+hop distance of one therefore 1 is
+
+1526
+00:58:42,109 --> 00:58:45,079
+greater than 0 for D because D of D is 0
+
+1527
+00:58:45,079 --> 00:58:46,940
+steps if we could go here so in this
+
+1528
+00:58:46,940 --> 00:58:49,940
+case here C is considered more poor than
+
+1529
+00:58:49,940 --> 00:58:54,500
+D so D will leave C alone and then we
+
+1530
+00:58:54,500 --> 00:58:57,349
+jump down here and we write D now we
+
+1531
+00:58:57,349 --> 00:59:00,140
+write e egh wants to go where a is you
+
+1532
+00:59:00,140 --> 00:59:03,589
+can't do that a a 0 is equal to e 0 so
+
+1533
+00:59:03,589 --> 00:59:05,839
+we leave it alone then we come down here
+
+1534
+00:59:05,839 --> 00:59:07,579
+and at this point E is now one hop away
+
+1535
+00:59:07,579 --> 00:59:09,710
+from where it should be but oh so is C
+
+1536
+00:59:09,710 --> 00:59:11,029
+so they're also equivalent so we leave
+
+1537
+00:59:11,029 --> 00:59:13,880
+those alone but then we get here and now
+
+1538
+00:59:13,880 --> 00:59:16,130
+he is two hops away from where it should
+
+1539
+00:59:16,130 --> 00:59:19,519
+be and D is only one hop away so so D
+
+1540
+00:59:19,519 --> 00:59:21,289
+considered more rich or more wealthy
+
+1541
+00:59:21,289 --> 00:59:26,029
+than e so easily slot insert its key in
+
+1542
+00:59:26,029 --> 00:59:27,799
+and then now the thread continues on and
+
+1543
+00:59:27,799 --> 00:59:29,269
+figures out the next location to put D
+
+1544
+00:59:29,269 --> 00:59:31,400
+which is the next empty slot and then
+
+1545
+00:59:31,400 --> 00:59:34,039
+now D is two hops away foam from where
+
+1546
+00:59:34,039 --> 00:59:37,309
+it should be and then now we get to F F
+
+1547
+00:59:37,309 --> 00:59:39,609
+go where where D is but it can't do that
+
+1548
+00:59:39,609 --> 00:59:42,440
+so then it goes down here so again the
+
+1549
+00:59:42,440 --> 00:59:45,819
+idea here is that we're amortize ingush
+
+1550
+00:59:45,819 --> 00:59:49,230
+stealing the slots and reinserting key
+
+1551
+00:59:49,230 --> 00:59:51,450
+that are already in the table the ideas
+
+1552
+00:59:51,450 --> 00:59:53,750
+that were amortized
+
+1553
+00:59:53,750 --> 00:59:58,880
+of any given key by having each key be
+
+1554
+00:59:58,880 --> 01:00:00,780
+closer to the where they should have
+
+1555
+01:00:00,780 --> 01:00:04,380
+been originally so going going back here
+
+1556
+01:00:04,380 --> 01:00:08,430
+with with e under um regularly no
+
+1557
+01:00:08,430 --> 01:00:09,000
+problem
+
+1558
+01:00:09,000 --> 01:00:11,430
+II what it ends up here and do you
+
+1559
+01:00:11,430 --> 01:00:13,560
+everyone left alone here so II would
+
+1560
+01:00:13,560 --> 01:00:15,750
+have been three three hops away from
+
+1561
+01:00:15,750 --> 01:00:17,550
+from its original location and D would
+
+1562
+01:00:17,550 --> 01:00:19,470
+have been left left knowing with with at
+
+1563
+01:00:19,470 --> 01:00:22,320
+one hop away but on a Robin Hood they
+
+1564
+01:00:22,320 --> 01:00:24,990
+both end up being two hops away so who
+
+1565
+01:00:24,990 --> 01:00:27,680
+on average you're saying the lookups are
+
+1566
+01:00:27,680 --> 01:00:30,900
+roughly equivalent across all keys so
+
+1567
+01:00:30,900 --> 01:00:32,490
+that you don't have one key you know
+
+1568
+01:00:32,490 --> 01:00:36,170
+take take much longer than other ones so
+
+1569
+01:00:36,170 --> 01:00:38,490
+this seems like a decent idea alright
+
+1570
+01:00:38,490 --> 01:00:39,570
+see if this seems kind of interesting
+
+1571
+01:00:39,570 --> 01:00:40,980
+but the research literature shows that
+
+1572
+01:00:40,980 --> 01:00:45,450
+it is bad because this was stealing the
+
+1573
+01:00:45,450 --> 01:00:48,990
+keys is terrible for you know cache
+
+1574
+01:00:48,990 --> 01:00:52,829
+performance and so it makes the inserts
+
+1575
+01:00:52,829 --> 01:00:54,569
+so much more expensive that any benefit
+
+1576
+01:00:54,569 --> 01:00:58,319
+you get from doing the the lookup for
+
+1577
+01:00:58,319 --> 01:01:00,240
+making the fines go faster is completely
+
+1578
+01:01:00,240 --> 01:01:04,650
+negated now for a hash join you know
+
+1579
+01:01:04,650 --> 01:01:05,670
+we're building these ephemeral hash
+
+1580
+01:01:05,670 --> 01:01:07,770
+tables where we insert them do our
+
+1581
+01:01:07,770 --> 01:01:09,750
+probes and in the bill phase or so the
+
+1582
+01:01:09,750 --> 01:01:12,540
+pro phase and then throw it away if your
+
+1583
+01:01:12,540 --> 01:01:14,550
+data structure might be longer living
+
+1584
+01:01:14,550 --> 01:01:16,440
+like you build the hash table and then
+
+1585
+01:01:16,440 --> 01:01:18,380
+you keep doing the lookups over to again
+
+1586
+01:01:18,380 --> 01:01:20,670
+then this approach actually might might
+
+1587
+01:01:20,670 --> 01:01:23,220
+be preferable for perhaps joins it won't
+
+1588
+01:01:23,220 --> 01:01:26,880
+be another technique is called hopscotch
+
+1589
+01:01:26,880 --> 01:01:29,609
+hashing which came out in 2008 from
+
+1590
+01:01:29,609 --> 01:01:32,670
+Maurice Hurley who used to be factor
+
+1591
+01:01:32,670 --> 01:01:34,050
+here at CMU and now he's a professor at
+
+1592
+01:01:34,050 --> 01:01:37,550
+Brown and so the idea here is that
+
+1593
+01:01:37,550 --> 01:01:41,970
+rather than letting a rather than
+
+1594
+01:01:41,970 --> 01:01:45,359
+letting a key change position like in
+
+1595
+01:01:45,359 --> 01:01:47,790
+Robin Hood nashing to any possible
+
+1596
+01:01:47,790 --> 01:01:51,750
+location in the in the in the slot array
+
+1597
+01:01:51,750 --> 01:01:54,480
+we're going to bound how far they can go
+
+1598
+01:01:54,480 --> 01:01:57,300
+into what's called a neighborhood so
+
+1599
+01:01:57,300 --> 01:01:59,490
+neighborhood we defined as a a
+
+1600
+01:01:59,490 --> 01:02:02,609
+contiguous range of slots that a key is
+
+1601
+01:02:02,609 --> 01:02:03,269
+allowed to it
+
+1602
+01:02:03,269 --> 01:02:07,319
+and it can exist anywhere in in that in
+
+1603
+01:02:07,319 --> 01:02:08,729
+this neighborhood so if you're looking
+
+1604
+01:02:08,729 --> 01:02:10,319
+for a key and you look at this where it
+
+1605
+01:02:10,319 --> 01:02:11,399
+should be in this neighborhood and it's
+
+1606
+01:02:11,399 --> 01:02:12,779
+not there then you know the key doesn't
+
+1607
+01:02:12,779 --> 01:02:15,659
+exist so you bound how far you actually
+
+1608
+01:02:15,659 --> 01:02:19,979
+have to scan through so the size the
+
+1609
+01:02:19,979 --> 01:02:21,419
+neighborhood is being configurable I
+
+1610
+01:02:21,419 --> 01:02:24,869
+forget what the ritual paper says but in
+
+1611
+01:02:24,869 --> 01:02:26,640
+for this example here we'll use a key
+
+1612
+01:02:26,640 --> 01:02:28,829
+size our neighborhood size of three so
+
+1613
+01:02:28,829 --> 01:02:30,449
+again it's just linear probing so we
+
+1614
+01:02:30,449 --> 01:02:33,029
+haven't we have our slot array and so
+
+1615
+01:02:33,029 --> 01:02:34,140
+the first neighborhood for this first
+
+1616
+01:02:34,140 --> 01:02:36,119
+position here will be size of three so
+
+1617
+01:02:36,119 --> 01:02:36,989
+one two three
+
+1618
+01:02:36,989 --> 01:02:38,759
+but the neighbourhoods are overlapping
+
+1619
+01:02:38,759 --> 01:02:40,769
+so for the next one and the next one so
+
+1620
+01:02:40,769 --> 01:02:43,259
+forth right there they have a portion of
+
+1621
+01:02:43,259 --> 01:02:44,999
+the previous neighborhood in their
+
+1622
+01:02:44,999 --> 01:02:47,099
+neighborhood and you would do this all
+
+1623
+01:02:47,099 --> 01:02:49,799
+the way down so now let's say I want to
+
+1624
+01:02:49,799 --> 01:02:51,569
+start and start inserting these keys so
+
+1625
+01:02:51,569 --> 01:02:53,789
+just like before I want to start a it's
+
+1626
+01:02:53,789 --> 01:02:56,609
+it would go in here and its neighborhood
+
+1627
+01:02:56,609 --> 01:02:58,559
+is it's three three slots so I can sort
+
+1628
+01:02:58,559 --> 01:03:00,539
+it anywhere that I want and practice
+
+1629
+01:03:00,539 --> 01:03:01,769
+though you've just inserted it into the
+
+1630
+01:03:01,769 --> 01:03:03,299
+first location if it's empty right and
+
+1631
+01:03:03,299 --> 01:03:05,969
+we're done then we do an insert for B
+
+1632
+01:03:05,969 --> 01:03:07,529
+same thing we go to the first location
+
+1633
+01:03:07,529 --> 01:03:10,169
+in this neighborhood and we're done but
+
+1634
+01:03:10,169 --> 01:03:12,359
+now we want to start at C C should go
+
+1635
+01:03:12,359 --> 01:03:13,769
+where a is but it can because a is
+
+1636
+01:03:13,769 --> 01:03:17,039
+occupying so we say we need to find the
+
+1637
+01:03:17,039 --> 01:03:20,189
+next empty slot in our neighborhood to
+
+1638
+01:03:20,189 --> 01:03:23,429
+insert into into all right so we just do
+
+1639
+01:03:23,429 --> 01:03:25,019
+it now sequential scan down till we find
+
+1640
+01:03:25,019 --> 01:03:26,399
+up for empty slot let me go ahead and
+
+1641
+01:03:26,399 --> 01:03:29,069
+serve ourselves like that's so far this
+
+1642
+01:03:29,069 --> 01:03:32,069
+is the same thing as linear program now
+
+1643
+01:03:32,069 --> 01:03:33,479
+I want to start D D you should go where
+
+1644
+01:03:33,479 --> 01:03:36,119
+C is against crunch we'll scan down to I
+
+1645
+01:03:36,119 --> 01:03:37,699
+find that and then I got certain there
+
+1646
+01:03:37,699 --> 01:03:41,159
+but now I want to start e ninis going in
+
+1647
+01:03:41,159 --> 01:03:44,069
+this neighborhood but as I do my
+
+1648
+01:03:44,069 --> 01:03:45,659
+sequential scan I would find that all
+
+1649
+01:03:45,659 --> 01:03:48,719
+these these slots in my neighborhood are
+
+1650
+01:03:48,719 --> 01:03:50,939
+occupied so now I need to go outside my
+
+1651
+01:03:50,939 --> 01:03:53,309
+neighborhood and find the first free
+
+1652
+01:03:53,309 --> 01:03:56,279
+slot which happens to be here and so now
+
+1653
+01:03:56,279 --> 01:03:57,599
+what I want to do is I wanted to
+
+1654
+01:03:57,599 --> 01:04:01,049
+determine whether I can swap in reverse
+
+1655
+01:04:01,049 --> 01:04:03,659
+order any key or any key my previous
+
+1656
+01:04:03,659 --> 01:04:05,039
+neighborhood that I'm trying to get into
+
+1657
+01:04:05,039 --> 01:04:10,409
+with the this empty slot and that way I
+
+1658
+01:04:10,409 --> 01:04:12,479
+could then insert my key into my
+
+1659
+01:04:12,479 --> 01:04:14,249
+neighborhood and the idea here is it to
+
+1660
+01:04:14,249 --> 01:04:15,599
+make sure that we bound whatever key
+
+1661
+01:04:15,599 --> 01:04:16,600
+we're moving
+
+1662
+01:04:16,600 --> 01:04:18,400
+to make sure that it is in our slot here
+
+1663
+01:04:18,400 --> 01:04:21,130
+so in case of D ID should belong here
+
+1664
+01:04:21,130 --> 01:04:22,900
+so it's neighborhood are these two
+
+1665
+01:04:22,900 --> 01:04:25,690
+things one two three so it's okay for D
+
+1666
+01:04:25,690 --> 01:04:28,630
+to them get moved down here and then we
+
+1667
+01:04:28,630 --> 01:04:30,580
+can hash e and put it into our
+
+1668
+01:04:30,580 --> 01:04:35,350
+neighborhood and then we're done it now
+
+1669
+01:04:35,350 --> 01:04:37,840
+I insert F F should go where D is its
+
+1670
+01:04:37,840 --> 01:04:39,250
+neighborhood or these two and this one
+
+1671
+01:04:39,250 --> 01:04:40,960
+could be wraparound and in this case
+
+1672
+01:04:40,960 --> 01:04:42,970
+here I can just scan down I find a the
+
+1673
+01:04:42,970 --> 01:04:46,360
+free slot and I get started alright so
+
+1674
+01:04:46,360 --> 01:04:48,100
+how this works is that you have to
+
+1675
+01:04:48,100 --> 01:04:50,050
+maintain some metadata about in every
+
+1676
+01:04:50,050 --> 01:04:53,010
+neighborhood about what keys are in them
+
+1677
+01:04:53,010 --> 01:04:56,470
+or what what neighborhood I belong to so
+
+1678
+01:04:56,470 --> 01:04:58,420
+you can make make a determination of if
+
+1679
+01:04:58,420 --> 01:05:01,090
+all my keys in my neighborhood that I'm
+
+1680
+01:05:01,090 --> 01:05:03,460
+trying to get into Perl occupied are all
+
+1681
+01:05:03,460 --> 01:05:07,600
+belong in my neighborhood then I have to
+
+1682
+01:05:07,600 --> 01:05:09,460
+I have to double the size the hashing on
+
+1683
+01:05:09,460 --> 01:05:11,230
+the Builder and rebuild it so the idea
+
+1684
+01:05:11,230 --> 01:05:13,180
+here is we're bounding how much we have
+
+1685
+01:05:13,180 --> 01:05:16,630
+to look to find a free slot to just be
+
+1686
+01:05:16,630 --> 01:05:19,090
+local in my neighborhood and if I can't
+
+1687
+01:05:19,090 --> 01:05:20,950
+in turn anything in my neighborhood or
+
+1688
+01:05:20,950 --> 01:05:22,420
+not finding a I'm looking for in my
+
+1689
+01:05:22,420 --> 01:05:23,650
+neighborhood then I don't need
+
+1690
+01:05:23,650 --> 01:05:25,420
+potentially scan the entire thing so
+
+1691
+01:05:25,420 --> 01:05:27,580
+just so it's a variation I think a robin
+
+1692
+01:05:27,580 --> 01:05:28,810
+hood hashing where you're bounding how
+
+1693
+01:05:28,810 --> 01:05:31,060
+much you know how you bounded the
+
+1694
+01:05:31,060 --> 01:05:34,060
+insertion search space and they look up
+
+1695
+01:05:34,060 --> 01:05:37,720
+space alright
+
+1696
+01:05:37,720 --> 01:05:39,430
+the last hash to mean what about our
+
+1697
+01:05:39,430 --> 01:05:42,130
+cuckoo hashing and this is me different
+
+1698
+01:05:42,130 --> 01:05:45,580
+than all the other ones where we are if
+
+1699
+01:05:45,580 --> 01:05:48,700
+we hash something we you know you're not
+
+1700
+01:05:48,700 --> 01:05:50,380
+guarantee that the slot you jump first
+
+1701
+01:05:50,380 --> 01:05:52,390
+lot you jump into it's gonna be exactly
+
+1702
+01:05:52,390 --> 01:05:54,100
+the thing you know it will be exactly
+
+1703
+01:05:54,100 --> 01:05:55,840
+where your key can be found in the case
+
+1704
+01:05:55,840 --> 01:05:58,000
+of hopscotch hashing it would be in the
+
+1705
+01:05:58,000 --> 01:05:59,020
+neighborhood in the case of linear
+
+1706
+01:05:59,020 --> 01:06:00,700
+probing or Robin Hood hashing you have
+
+1707
+01:06:00,700 --> 01:06:01,930
+to keep scanning down till you find the
+
+1708
+01:06:01,930 --> 01:06:03,340
+key looking for odie find empty space
+
+1709
+01:06:03,340 --> 01:06:04,990
+but with cuckoo hashing when you hash
+
+1710
+01:06:04,990 --> 01:06:06,340
+you deal with lookup and you're
+
+1711
+01:06:06,340 --> 01:06:08,170
+guaranteed either the key doesn't exist
+
+1712
+01:06:08,170 --> 01:06:09,850
+or the first place that you jump into
+
+1713
+01:06:09,850 --> 01:06:12,670
+will be the key that you want this is
+
+1714
+01:06:12,670 --> 01:06:14,590
+the way they can achieve this is that
+
+1715
+01:06:14,590 --> 01:06:15,910
+they're gonna maintain multiple hash
+
+1716
+01:06:15,910 --> 01:06:18,910
+tables simultaneously each of their own
+
+1717
+01:06:18,910 --> 01:06:20,950
+hash function so now when I want to do
+
+1718
+01:06:20,950 --> 01:06:23,220
+an insert I hash it multiple times and I
+
+1719
+01:06:23,220 --> 01:06:25,990
+see whether I can insert it into any
+
+1720
+01:06:25,990 --> 01:06:29,560
+free slot and any my tables if now that
+
+1721
+01:06:29,560 --> 01:06:30,520
+slot is being on
+
+1722
+01:06:30,520 --> 01:06:34,240
+then I'm gonna steal that slot take that
+
+1723
+01:06:34,240 --> 01:06:35,980
+key out and then have that that key I
+
+1724
+01:06:35,980 --> 01:06:37,630
+Vic tada rehash that and put that into
+
+1725
+01:06:37,630 --> 01:06:40,030
+another table the idea is that you could
+
+1726
+01:06:40,030 --> 01:06:41,590
+have this thing changing changing one
+
+1727
+01:06:41,590 --> 01:06:44,260
+hash table a key you could have a key
+
+1728
+01:06:44,260 --> 01:06:46,120
+that already been inserted change its
+
+1729
+01:06:46,120 --> 01:06:49,290
+hash table multiple times
+
+1730
+01:06:55,880 --> 01:06:57,940
+you
+
+1731
+01:26:07,020 --> 01:26:10,590
+what is this
+
+1732
+01:26:10,790 --> 01:26:37,989
+[Music]
+

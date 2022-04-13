@@ -1,0 +1,6124 @@
+1
+00:00:01,300 --> 00:00:05,129
+[Music]
+
+2
+00:00:05,200 --> 00:00:05,930
+[Applause]
+
+3
+00:00:05,930 --> 00:00:08,630
+[Music]
+
+4
+00:00:08,630 --> 00:00:10,020
+[Applause]
+
+5
+00:00:10,020 --> 00:00:15,619
+[Music]
+
+6
+00:00:15,619 --> 00:00:19,350
+so today's focus is on like how to
+
+7
+00:00:19,350 --> 00:00:21,090
+actually then build the second major
+
+8
+00:00:21,090 --> 00:00:24,119
+component of a Curie optimizer of how to
+
+9
+00:00:24,119 --> 00:00:27,539
+actually do estimations on what we think
+
+10
+00:00:27,539 --> 00:00:29,670
+this system is going to actually do when
+
+11
+00:00:29,670 --> 00:00:30,750
+the excuse to query like how much this
+
+12
+00:00:30,750 --> 00:00:33,210
+is gonna cost us to execute the query so
+
+13
+00:00:33,210 --> 00:00:38,180
+yeah so this is not working so the the
+
+14
+00:00:38,180 --> 00:00:40,440
+the reason why we have to do this
+
+15
+00:00:40,440 --> 00:00:42,480
+I should be sort of obvious when we talk
+
+16
+00:00:42,480 --> 00:00:44,460
+about the cost based search models from
+
+17
+00:00:44,460 --> 00:00:46,559
+the last two classes I said that there's
+
+18
+00:00:46,559 --> 00:00:48,450
+a sort of black magic box thing that
+
+19
+00:00:48,450 --> 00:00:50,190
+that's gonna tell us that here's what
+
+20
+00:00:50,190 --> 00:00:51,570
+the expected cost of executing this
+
+21
+00:00:51,570 --> 00:00:53,610
+particular query is and again it's an
+
+22
+00:00:53,610 --> 00:00:55,649
+internal cost it's not something that's
+
+23
+00:00:55,649 --> 00:00:57,600
+meaningful outside of the database
+
+24
+00:00:57,600 --> 00:00:59,280
+system I mean you can't take my sequels
+
+25
+00:00:59,280 --> 00:01:01,410
+cost model have it spit out a number and
+
+26
+00:01:01,410 --> 00:01:02,940
+then take Postgres this cost model take
+
+27
+00:01:02,940 --> 00:01:04,830
+that number and then make a comparison
+
+28
+00:01:04,830 --> 00:01:07,560
+right this is completely dependent on
+
+29
+00:01:07,560 --> 00:01:09,090
+the implementation of the system and
+
+30
+00:01:09,090 --> 00:01:10,920
+it's really just meant for us to be able
+
+31
+00:01:10,920 --> 00:01:13,350
+to say this query plan is better than
+
+32
+00:01:13,350 --> 00:01:15,479
+this other query plan for some reason
+
+33
+00:01:15,479 --> 00:01:17,340
+which will describe going forward in
+
+34
+00:01:17,340 --> 00:01:19,290
+this lecture and therefore that's what I
+
+35
+00:01:19,290 --> 00:01:23,610
+want to use right so the other thing
+
+36
+00:01:23,610 --> 00:01:24,930
+important to understand - this is also
+
+37
+00:01:24,930 --> 00:01:26,369
+independent this cost model is
+
+38
+00:01:26,369 --> 00:01:28,799
+independent of the search strategies we
+
+39
+00:01:28,799 --> 00:01:30,360
+talked about last time meaning whether
+
+40
+00:01:30,360 --> 00:01:33,150
+we're doing top-down or bottom-up I it
+
+41
+00:01:33,150 --> 00:01:34,950
+doesn't matter right we at the end of
+
+42
+00:01:34,950 --> 00:01:36,299
+day we still need a cost model that and
+
+43
+00:01:36,299 --> 00:01:38,150
+still needs me to make predictions about
+
+44
+00:01:38,150 --> 00:01:41,610
+you know whether one plan is is better
+
+45
+00:01:41,610 --> 00:01:45,840
+than another so if you're gonna build a
+
+46
+00:01:45,840 --> 00:01:47,880
+cost model how would you actually do it
+
+47
+00:01:47,880 --> 00:01:49,950
+well there's a couple different things
+
+48
+00:01:49,950 --> 00:01:52,500
+you can include in it so the first is
+
+49
+00:01:52,500 --> 00:01:54,560
+are the physical cost so these would be
+
+50
+00:01:54,560 --> 00:01:57,390
+what is the hardware actually going to
+
+51
+00:01:57,390 --> 00:02:00,240
+do when it X use the query right how
+
+52
+00:02:00,240 --> 00:02:01,890
+many CPU cycles how many cache misses
+
+53
+00:02:01,890 --> 00:02:04,020
+all right how many how much date you're
+
+54
+00:02:04,020 --> 00:02:08,399
+gonna read from disk right this is
+
+55
+00:02:08,399 --> 00:02:10,229
+obviously dependent on the the machine
+
+56
+00:02:10,229 --> 00:02:11,670
+that you're running on and it's hardware
+
+57
+00:02:11,670 --> 00:02:13,750
+configuration because as we saw
+
+58
+00:02:13,750 --> 00:02:15,640
+couple of different examples right the
+
+59
+00:02:15,640 --> 00:02:17,710
+whether you're using a Xeon CPU for a
+
+60
+00:02:17,710 --> 00:02:20,230
+Xeon Phi those CPUs have very different
+
+61
+00:02:20,230 --> 00:02:21,910
+characteristics and therefore the
+
+62
+00:02:21,910 --> 00:02:24,220
+performance of your algorithms or your
+
+63
+00:02:24,220 --> 00:02:26,710
+query can vary depending what hardware
+
+64
+00:02:26,710 --> 00:02:29,920
+it is so this is usually pretty tricky
+
+65
+00:02:29,920 --> 00:02:31,780
+to do because because of that reason
+
+66
+00:02:31,780 --> 00:02:33,370
+because it's hard to actually have build
+
+67
+00:02:33,370 --> 00:02:35,530
+models based on all of them possible
+
+68
+00:02:35,530 --> 00:02:38,220
+hardware configurations that could exist
+
+69
+00:02:38,220 --> 00:02:40,900
+the next approach is to do what I'll
+
+70
+00:02:40,900 --> 00:02:43,810
+call logical costs and these are where
+
+71
+00:02:43,810 --> 00:02:47,190
+we're basing their cost estimates on the
+
+72
+00:02:47,190 --> 00:02:50,260
+what the operators in a query plan are
+
+73
+00:02:50,260 --> 00:02:52,230
+going to actually do at a logical level
+
+74
+00:02:52,230 --> 00:02:54,489
+so no it's a physical level would be
+
+75
+00:02:54,489 --> 00:02:56,200
+again I read this when to block some
+
+76
+00:02:56,200 --> 00:02:58,840
+disk a logical level would be I'm gonna
+
+77
+00:02:58,840 --> 00:03:01,540
+read this many tuples from a table or my
+
+78
+00:03:01,540 --> 00:03:03,670
+joint operator is gonna spit out this
+
+79
+00:03:03,670 --> 00:03:06,550
+many tuples after the join or my scans
+
+80
+00:03:06,550 --> 00:03:08,350
+gonna filter so many to so many tuples
+
+81
+00:03:08,350 --> 00:03:11,020
+so for these this is gonna be
+
+82
+00:03:11,020 --> 00:03:12,850
+independent of what algorithm we're
+
+83
+00:03:12,850 --> 00:03:15,340
+actually using in our query plan so this
+
+84
+00:03:15,340 --> 00:03:16,870
+is only looking at the logical operator
+
+85
+00:03:16,870 --> 00:03:19,120
+something physical operators right and
+
+86
+00:03:19,120 --> 00:03:21,610
+this is this should be sort of obvious
+
+87
+00:03:21,610 --> 00:03:23,200
+right if I'm doing a nested loop joined
+
+88
+00:03:23,200 --> 00:03:25,390
+versus a hash join the end of the day
+
+89
+00:03:25,390 --> 00:03:27,370
+both algorithms should should generate
+
+90
+00:03:27,370 --> 00:03:30,430
+this the exact same result writing the
+
+91
+00:03:30,430 --> 00:03:32,470
+same number of tuples because otherwise
+
+92
+00:03:32,470 --> 00:03:35,019
+I have problems in my implementation and
+
+93
+00:03:35,019 --> 00:03:36,760
+so therefore we don't care whether in
+
+94
+00:03:36,760 --> 00:03:38,680
+the for logical aspects we don't care
+
+95
+00:03:38,680 --> 00:03:40,450
+about whether it's you know it's one
+
+96
+00:03:40,450 --> 00:03:43,120
+algorithm versus the other so the tricky
+
+97
+00:03:43,120 --> 00:03:44,890
+thing is gonna be and what was in the
+
+98
+00:03:44,890 --> 00:03:46,540
+paper you guys read about and we'll talk
+
+99
+00:03:46,540 --> 00:03:48,549
+about going forward is you're obviously
+
+100
+00:03:48,549 --> 00:03:49,959
+gonna need to be able to estimate
+
+101
+00:03:49,959 --> 00:03:52,450
+accurately what the output of an
+
+102
+00:03:52,450 --> 00:03:54,820
+operator is gonna be because that's
+
+103
+00:03:54,820 --> 00:03:56,680
+gonna be fed and as the input for the
+
+104
+00:03:56,680 --> 00:03:58,600
+next operator so in order to say are you
+
+105
+00:03:58,600 --> 00:03:59,680
+the number two because I'm gonna read
+
+106
+00:03:59,680 --> 00:04:00,880
+into this operator and therefore um
+
+107
+00:04:00,880 --> 00:04:02,590
+generate this much output and you need
+
+108
+00:04:02,590 --> 00:04:04,390
+to know what came below me in the query
+
+109
+00:04:04,390 --> 00:04:06,700
+planner and that again that that's gonna
+
+110
+00:04:06,700 --> 00:04:09,010
+be the hardest thing we have to do and
+
+111
+00:04:09,010 --> 00:04:11,260
+the last one is going to be sort of
+
+112
+00:04:11,260 --> 00:04:12,549
+average the cost or asymptotic
+
+113
+00:04:12,549 --> 00:04:15,340
+complexity of the of the operators right
+
+114
+00:04:15,340 --> 00:04:16,450
+and this is where it actually matters
+
+115
+00:04:16,450 --> 00:04:17,890
+whether we're doing a hash join or a
+
+116
+00:04:17,890 --> 00:04:20,140
+nested loop join or index scan versus
+
+117
+00:04:20,140 --> 00:04:22,660
+Quantrill scan right and again for these
+
+118
+00:04:22,660 --> 00:04:25,150
+ones we you know we can just
+
+119
+00:04:25,150 --> 00:04:28,509
+we can sort of have weights that's
+
+120
+00:04:28,509 --> 00:04:30,669
+people say oh the the hash joint is is
+
+121
+00:04:30,669 --> 00:04:32,919
+you know x times better than a messy
+
+122
+00:04:32,919 --> 00:04:35,050
+loop joint and therefore prefer that but
+
+123
+00:04:35,050 --> 00:04:36,310
+there are obviously some scenarios
+
+124
+00:04:36,310 --> 00:04:39,820
+within a solution would be better so as
+
+125
+00:04:39,820 --> 00:04:41,410
+well see is going going along and
+
+126
+00:04:41,410 --> 00:04:42,759
+actually I'll show the next couple
+
+127
+00:04:42,759 --> 00:04:45,789
+slides what we're primarily gonna do for
+
+128
+00:04:45,789 --> 00:04:47,830
+an in-memory database is gonna be a
+
+129
+00:04:47,830 --> 00:04:51,520
+combination of these two for this one up
+
+130
+00:04:51,520 --> 00:04:55,720
+here if you can do it but it's hard and
+
+131
+00:04:55,720 --> 00:04:57,370
+this is another good example over like
+
+132
+00:04:57,370 --> 00:04:59,979
+the difference between the commercial
+
+133
+00:04:59,979 --> 00:05:01,030
+database systems of the open source
+
+134
+00:05:01,030 --> 00:05:02,949
+database system so at the talk the
+
+135
+00:05:02,949 --> 00:05:05,590
+redshift talk on on Monday if you went
+
+136
+00:05:05,590 --> 00:05:07,690
+to that epic Rattus mentioned they're
+
+137
+00:05:07,690 --> 00:05:10,330
+like oh like the the query optimizer in
+
+138
+00:05:10,330 --> 00:05:13,360
+their system is is maturity difficult
+
+139
+00:05:13,360 --> 00:05:16,240
+and you know the they've spent a lot of
+
+140
+00:05:16,240 --> 00:05:19,000
+money fixing it up at Amazon and it's
+
+141
+00:05:19,000 --> 00:05:20,500
+way better than any of the open source
+
+142
+00:05:20,500 --> 00:05:21,340
+ones that are out there
+
+143
+00:05:21,340 --> 00:05:23,020
+it's sort of commercial grade or
+
+144
+00:05:23,020 --> 00:05:24,550
+enterprise grade because the enterprise
+
+145
+00:05:24,550 --> 00:05:25,870
+guys are gonna include all these things
+
+146
+00:05:25,870 --> 00:05:28,090
+the source guys probably just include
+
+147
+00:05:28,090 --> 00:05:32,949
+two these two guys so for a disc based
+
+148
+00:05:32,949 --> 00:05:35,320
+database system the most obvious thing
+
+149
+00:05:35,320 --> 00:05:37,030
+that we care about is the disc right
+
+150
+00:05:37,030 --> 00:05:38,199
+it's the end of the day that that's the
+
+151
+00:05:38,199 --> 00:05:39,460
+most expensive things like feeding
+
+152
+00:05:39,460 --> 00:05:41,800
+getting things off of a you know
+
+153
+00:05:41,800 --> 00:05:46,210
+spinning this hard drive or SSD so in
+
+154
+00:05:46,210 --> 00:05:49,270
+this world the CPU costs are they're not
+
+155
+00:05:49,270 --> 00:05:51,370
+negligible in the sense of like we can
+
+156
+00:05:51,370 --> 00:05:54,010
+ignore them but if your cost model only
+
+157
+00:05:54,010 --> 00:05:56,380
+includes how many blocks are data that
+
+158
+00:05:56,380 --> 00:05:58,030
+you know how many blocks of data that I
+
+159
+00:05:58,030 --> 00:06:00,220
+read and write from disk that's probably
+
+160
+00:06:00,220 --> 00:06:01,960
+gonna get you you know 90% of the way
+
+161
+00:06:01,960 --> 00:06:04,240
+there right who cares what you actually
+
+162
+00:06:04,240 --> 00:06:05,919
+do when you bring the data into your
+
+163
+00:06:05,919 --> 00:06:07,810
+into memory I guess it's getting from
+
+164
+00:06:07,810 --> 00:06:10,449
+dishes most expensive thing now
+
+165
+00:06:10,449 --> 00:06:14,770
+obviously on a it's it's less of an
+
+166
+00:06:14,770 --> 00:06:17,740
+issue on modern SSDs but definitely if
+
+167
+00:06:17,740 --> 00:06:19,330
+you have a spinning this hard drive you
+
+168
+00:06:19,330 --> 00:06:20,590
+know taking the account the difference
+
+169
+00:06:20,590 --> 00:06:22,210
+between sequential i/o versus random i/o
+
+170
+00:06:22,210 --> 00:06:24,699
+is a big difference and a lot of times
+
+171
+00:06:24,699 --> 00:06:27,310
+you can you see in a disk or in a
+
+172
+00:06:27,310 --> 00:06:28,840
+database system especially older ones
+
+173
+00:06:28,840 --> 00:06:31,330
+they use algorithms that are that are
+
+174
+00:06:31,330 --> 00:06:32,560
+designed to optimize the amount of
+
+175
+00:06:32,560 --> 00:06:36,419
+sequential i/o you're doing alright so
+
+176
+00:06:36,419 --> 00:06:39,030
+the important thing that
+
+177
+00:06:39,030 --> 00:06:40,860
+you know understand but and the disk
+
+178
+00:06:40,860 --> 00:06:43,680
+based system is that the database system
+
+179
+00:06:43,680 --> 00:06:45,979
+is gonna have complete control over
+
+180
+00:06:45,979 --> 00:06:48,389
+what's in memory over its buffer pool
+
+181
+00:06:48,389 --> 00:06:50,430
+management assuming you're not using em
+
+182
+00:06:50,430 --> 00:06:54,210
+map which well we can discuss later the
+
+183
+00:06:54,210 --> 00:06:56,460
+you know we know exactly in our
+
+184
+00:06:56,460 --> 00:06:57,990
+databases we know how we're actually
+
+185
+00:06:57,990 --> 00:07:00,060
+bringing blocks in we know how our
+
+186
+00:07:00,060 --> 00:07:02,819
+writing blocks out we know what you know
+
+187
+00:07:02,819 --> 00:07:05,189
+what algorithm are using to decide what
+
+188
+00:07:05,189 --> 00:07:06,689
+data is colle what data we want to evict
+
+189
+00:07:06,689 --> 00:07:09,030
+right so we have complete control over
+
+190
+00:07:09,030 --> 00:07:11,960
+this and we can include this in our
+
+191
+00:07:11,960 --> 00:07:14,310
+calculations in our cost model we know
+
+192
+00:07:14,310 --> 00:07:16,349
+how you know if we're gonna give this
+
+193
+00:07:16,349 --> 00:07:18,029
+amount of mem this this amount of memory
+
+194
+00:07:18,029 --> 00:07:19,590
+and a buffer pool to run this query and
+
+195
+00:07:19,590 --> 00:07:20,939
+therefore it has to read this amount of
+
+196
+00:07:20,939 --> 00:07:23,490
+data whether that's sequential over says
+
+197
+00:07:23,490 --> 00:07:25,259
+random i/o we can then you know take
+
+198
+00:07:25,259 --> 00:07:27,240
+that and account into our cost models to
+
+199
+00:07:27,240 --> 00:07:28,680
+make estimations what we think the query
+
+200
+00:07:28,680 --> 00:07:32,250
+is actually gonna do all right so I
+
+201
+00:07:32,250 --> 00:07:34,949
+would say you know this is this is what
+
+202
+00:07:34,949 --> 00:07:36,300
+I'm describing here is how you would do
+
+203
+00:07:36,300 --> 00:07:38,699
+this on a single node displace database
+
+204
+00:07:38,699 --> 00:07:40,740
+system if your distributed database just
+
+205
+00:07:40,740 --> 00:07:43,770
+replace the word disk with network right
+
+206
+00:07:43,770 --> 00:07:46,860
+that's it's basically the same thing and
+
+207
+00:07:46,860 --> 00:07:49,500
+you have the same issues so I want a
+
+208
+00:07:49,500 --> 00:07:52,560
+quick example what Postgres does the
+
+209
+00:07:52,560 --> 00:07:53,819
+reason why I always like to use
+
+210
+00:07:53,819 --> 00:07:56,279
+post-course as an example for describing
+
+211
+00:07:56,279 --> 00:07:58,979
+how you know how real Sussman actually
+
+212
+00:07:58,979 --> 00:08:00,569
+implements so this is that in my opinion
+
+213
+00:08:00,569 --> 00:08:02,009
+it's like almost like a textbook
+
+214
+00:08:02,009 --> 00:08:04,229
+definition or implementation of a
+
+215
+00:08:04,229 --> 00:08:06,029
+database database systems like if you
+
+216
+00:08:06,029 --> 00:08:08,009
+take any introduction class you take the
+
+217
+00:08:08,009 --> 00:08:10,349
+textbook when using that and the way
+
+218
+00:08:10,349 --> 00:08:12,150
+they describe the algorithms and in the
+
+219
+00:08:12,150 --> 00:08:13,439
+textbook assumes exactly how it's
+
+220
+00:08:13,439 --> 00:08:16,889
+actually implemented in in Postgres so
+
+221
+00:08:16,889 --> 00:08:18,000
+for Postgres they're gonna use a
+
+222
+00:08:18,000 --> 00:08:21,509
+combination of CPU and i/o costs they're
+
+223
+00:08:21,509 --> 00:08:22,949
+gonna be weighted by these what are call
+
+224
+00:08:22,949 --> 00:08:25,439
+magic constant factors right magic magic
+
+225
+00:08:25,439 --> 00:08:28,379
+weights and the reason why you do this
+
+226
+00:08:28,379 --> 00:08:30,150
+is the basically just say like because
+
+227
+00:08:30,150 --> 00:08:31,199
+it's dependent on what the hardware
+
+228
+00:08:31,199 --> 00:08:32,969
+actually can do so they'll say you know
+
+229
+00:08:32,969 --> 00:08:36,570
+sequential i/o will be you know x times
+
+230
+00:08:36,570 --> 00:08:40,229
+fast direct times better than then
+
+231
+00:08:40,229 --> 00:08:43,078
+random i/o and memory i/o will be x
+
+232
+00:08:43,078 --> 00:08:44,940
+times faster than so catch why oh all
+
+233
+00:08:44,940 --> 00:08:49,100
+right so in this environment they are
+
+234
+00:08:49,100 --> 00:08:51,720
+obviously targeting
+
+235
+00:08:51,720 --> 00:08:54,149
+in these sort of default configuration a
+
+236
+00:08:54,149 --> 00:08:56,009
+database that's on disk and therefore
+
+237
+00:08:56,009 --> 00:08:57,509
+you don't have a lot of memory so they
+
+238
+00:08:57,509 --> 00:08:59,069
+again they want to use that in their
+
+239
+00:08:59,069 --> 00:09:03,480
+cost want to account for you know what's
+
+240
+00:09:03,480 --> 00:09:05,250
+actually going on but the tricky thing
+
+241
+00:09:05,250 --> 00:09:07,649
+is they expose this to you as as an
+
+242
+00:09:07,649 --> 00:09:08,879
+administrator that you can actually tune
+
+243
+00:09:08,879 --> 00:09:10,230
+these waits for you right so the default
+
+244
+00:09:10,230 --> 00:09:12,540
+is the memory is 400x faster than
+
+245
+00:09:12,540 --> 00:09:14,430
+reading from disk and then scratch iOS
+
+246
+00:09:14,430 --> 00:09:16,709
+for it's faster than random i/o so you
+
+247
+00:09:16,709 --> 00:09:19,079
+can go in the look in the documentation
+
+248
+00:09:19,079 --> 00:09:22,110
+to see how you change these these costs
+
+249
+00:09:22,110 --> 00:09:23,550
+but then they had this nice little
+
+250
+00:09:23,550 --> 00:09:26,220
+warning here that basically says like if
+
+251
+00:09:26,220 --> 00:09:28,620
+you start mucking around with these you
+
+252
+00:09:28,620 --> 00:09:30,360
+could have problems right because again
+
+253
+00:09:30,360 --> 00:09:33,839
+these these are highly dependent on what
+
+254
+00:09:33,839 --> 00:09:35,370
+the actual workload is and what the data
+
+255
+00:09:35,370 --> 00:09:36,509
+looks like and what your hardware
+
+256
+00:09:36,509 --> 00:09:37,680
+actually looks like it's really hard to
+
+257
+00:09:37,680 --> 00:09:40,889
+get this right right so most people
+
+258
+00:09:40,889 --> 00:09:42,060
+don't you know don't don't tune these
+
+259
+00:09:42,060 --> 00:09:43,290
+things because they don't know you don't
+
+260
+00:09:43,290 --> 00:09:43,949
+know what you're doing
+
+261
+00:09:43,949 --> 00:09:46,050
+and you don't want to cause regressions
+
+262
+00:09:46,050 --> 00:09:47,279
+on you know some portion of your
+
+263
+00:09:47,279 --> 00:09:50,790
+workload United what a commercial system
+
+264
+00:09:50,790 --> 00:09:53,699
+does we can look at what db2 does in
+
+265
+00:09:53,699 --> 00:09:55,769
+their system of all the three major
+
+266
+00:09:55,769 --> 00:09:58,889
+systems db2 sequel server and Oracle db2
+
+267
+00:09:58,889 --> 00:10:00,870
+is actually the most open about
+
+268
+00:10:00,870 --> 00:10:02,939
+discussing what their query optimizer
+
+269
+00:10:02,939 --> 00:10:04,170
+does and what their cost model actually
+
+270
+00:10:04,170 --> 00:10:06,959
+does right I
+
+271
+00:10:06,959 --> 00:10:08,550
+there's no as far as I know there's no
+
+272
+00:10:08,550 --> 00:10:12,720
+major publications from Oracle or sequel
+
+273
+00:10:12,720 --> 00:10:13,769
+server that talks about what what they
+
+274
+00:10:13,769 --> 00:10:14,970
+do right we just sort of know some
+
+275
+00:10:14,970 --> 00:10:16,410
+things based on talking talking to
+
+276
+00:10:16,410 --> 00:10:18,269
+people there but iBM is actually pretty
+
+277
+00:10:18,269 --> 00:10:19,769
+good about discussing this and this call
+
+278
+00:10:19,769 --> 00:10:22,199
+comes from a presentation from guy Loman
+
+279
+00:10:22,199 --> 00:10:24,360
+who was the guy that invented the
+
+280
+00:10:24,360 --> 00:10:26,220
+starburst stuff that we talked about two
+
+281
+00:10:26,220 --> 00:10:29,550
+classes ago so the db2 cost model is a
+
+282
+00:10:29,550 --> 00:10:31,649
+combination of all of these things so
+
+283
+00:10:31,649 --> 00:10:32,939
+the first of all they're gonna look at
+
+284
+00:10:32,939 --> 00:10:34,800
+what the database actually looks like so
+
+285
+00:10:34,800 --> 00:10:36,809
+the schema and he says they collect on
+
+286
+00:10:36,809 --> 00:10:38,670
+the tables the columns are in the
+
+287
+00:10:38,670 --> 00:10:41,040
+indexes but then they're also when you
+
+288
+00:10:41,040 --> 00:10:42,899
+when you turn the system on they're
+
+289
+00:10:42,899 --> 00:10:44,309
+gonna run these little micro benchmark
+
+290
+00:10:44,309 --> 00:10:46,379
+micro benchmarks that are going to
+
+291
+00:10:46,379 --> 00:10:48,829
+stress tests like the CPU the disk
+
+292
+00:10:48,829 --> 00:10:51,389
+memory and the network if you're if it's
+
+293
+00:10:51,389 --> 00:10:54,300
+a distributed system I and then we used
+
+294
+00:10:54,300 --> 00:10:57,660
+that to essentially generate the weights
+
+295
+00:10:57,660 --> 00:10:59,430
+that I was showing you in the last last
+
+296
+00:10:59,430 --> 00:11:01,380
+slide for Postgres so first question get
+
+297
+00:11:01,380 --> 00:11:04,199
+the set these weights manually db2 tries
+
+298
+00:11:04,199 --> 00:11:05,040
+to figure this out
+
+299
+00:11:05,040 --> 00:11:06,180
+you and tries to be real fine grain
+
+300
+00:11:06,180 --> 00:11:07,740
+based on what your hardware can actually
+
+301
+00:11:07,740 --> 00:11:11,670
+do but then also when you actually start
+
+302
+00:11:11,670 --> 00:11:13,560
+doing cost estimation for the query that
+
+303
+00:11:13,560 --> 00:11:15,810
+shows up they just don't look at your
+
+304
+00:11:15,810 --> 00:11:17,790
+query in isolation by itself
+
+305
+00:11:17,790 --> 00:11:19,740
+they also account for what what other
+
+306
+00:11:19,740 --> 00:11:21,680
+things are running at the same time and
+
+307
+00:11:21,680 --> 00:11:24,420
+then use that to determine you know what
+
+308
+00:11:24,420 --> 00:11:26,190
+the effect of those concurrent
+
+309
+00:11:26,190 --> 00:11:27,569
+operations are on for your particular
+
+310
+00:11:27,569 --> 00:11:29,970
+query like if you're running by yourself
+
+311
+00:11:29,970 --> 00:11:31,470
+then you know you take all the memory in
+
+312
+00:11:31,470 --> 00:11:34,410
+the world and you run really fast but if
+
+313
+00:11:34,410 --> 00:11:35,579
+you bunch of other queries aren't at the
+
+314
+00:11:35,579 --> 00:11:36,810
+same time you're not gonna get all the
+
+315
+00:11:36,810 --> 00:11:38,399
+memory so that far they may take they
+
+316
+00:11:38,399 --> 00:11:40,350
+take that into consideration when they
+
+317
+00:11:40,350 --> 00:11:42,139
+estimate the cost of your query plan
+
+318
+00:11:42,139 --> 00:11:44,970
+right so again this is just it's way
+
+319
+00:11:44,970 --> 00:11:47,399
+more sophisticated than what any of the
+
+320
+00:11:47,399 --> 00:11:49,440
+open source guys do and the Postgres one
+
+321
+00:11:49,440 --> 00:11:50,759
+as far as I know at least Alessa med
+
+322
+00:11:50,759 --> 00:11:53,370
+locus is is much better than my sequel
+
+323
+00:11:53,370 --> 00:11:58,529
+one probably the best open source it pi
+
+324
+00:11:58,529 --> 00:11:59,699
+is the best open source query optimizer
+
+325
+00:11:59,699 --> 00:12:01,339
+cost model that's out there today
+
+326
+00:12:01,339 --> 00:12:03,690
+he's leased a year ago when I looked at
+
+327
+00:12:03,690 --> 00:12:05,160
+I don't I don't know I don't can't think
+
+328
+00:12:05,160 --> 00:12:08,100
+of anybody else that got better all
+
+329
+00:12:08,100 --> 00:12:09,060
+right but we care about in the my
+
+330
+00:12:09,060 --> 00:12:12,470
+databases so what do they do so from
+
+331
+00:12:12,470 --> 00:12:15,360
+looking at the documentation and manuals
+
+332
+00:12:15,360 --> 00:12:17,389
+of the major in memory database systems
+
+333
+00:12:17,389 --> 00:12:20,420
+as far as they can tell everyone does
+
+334
+00:12:20,420 --> 00:12:23,510
+does what i'm scribing here so basically
+
+335
+00:12:23,510 --> 00:12:25,860
+the disk is gone so you don't care about
+
+336
+00:12:25,860 --> 00:12:28,170
+disk i/o yes you have to write to the
+
+337
+00:12:28,170 --> 00:12:30,269
+log but that's incidental right that
+
+338
+00:12:30,269 --> 00:12:32,699
+doesn't affect whether you choose one
+
+339
+00:12:32,699 --> 00:12:33,930
+particular query plan versus another
+
+340
+00:12:33,930 --> 00:12:37,079
+like if I update a table like who cares
+
+341
+00:12:37,079 --> 00:12:39,660
+like the disk is not considered in the
+
+342
+00:12:39,660 --> 00:12:41,100
+cost of that of writing up the log
+
+343
+00:12:41,100 --> 00:12:44,639
+records right so at the end of the day
+
+344
+00:12:44,639 --> 00:12:47,939
+that they're all the intermediary bases
+
+345
+00:12:47,939 --> 00:12:50,360
+are going to do a combination of
+
+346
+00:12:50,360 --> 00:12:52,709
+primarily how many tuples are being
+
+347
+00:12:52,709 --> 00:12:53,939
+processed by an operator or how many
+
+348
+00:12:53,939 --> 00:12:57,360
+people star general and some basic
+
+349
+00:12:57,360 --> 00:13:00,209
+weights to do to say hash join so better
+
+350
+00:13:00,209 --> 00:13:02,670
+than the initial loop joins but the the
+
+351
+00:13:02,670 --> 00:13:04,529
+number of tuples in and out is the major
+
+352
+00:13:04,529 --> 00:13:08,519
+factor the reason why you can't actually
+
+353
+00:13:08,519 --> 00:13:10,589
+do anything more fine-grain or like in
+
+354
+00:13:10,589 --> 00:13:12,449
+like count for how much memory I'm going
+
+355
+00:13:12,449 --> 00:13:14,069
+to be able to use for my query in the
+
+356
+00:13:14,069 --> 00:13:17,040
+same way you could with in a disk based
+
+357
+00:13:17,040 --> 00:13:18,899
+system is because we have
+
+358
+00:13:18,899 --> 00:13:20,819
+control over actually the the cash
+
+359
+00:13:20,819 --> 00:13:23,279
+management of our systems that's all
+
+360
+00:13:23,279 --> 00:13:25,680
+done by the CPU and the CPU we can
+
+361
+00:13:25,680 --> 00:13:27,059
+provide hints to it we could prefetch
+
+362
+00:13:27,059 --> 00:13:28,410
+things we can try to pin things in our
+
+363
+00:13:28,410 --> 00:13:30,300
+caches but the end of the day that the
+
+364
+00:13:30,300 --> 00:13:32,939
+CPU decides on its own what gets what
+
+365
+00:13:32,939 --> 00:13:34,680
+gets moved in and out of the cache so we
+
+366
+00:13:34,680 --> 00:13:35,910
+don't even bother with any of that so we
+
+367
+00:13:35,910 --> 00:13:39,689
+just try to estimate how much data might
+
+368
+00:13:39,689 --> 00:13:41,449
+as my operator going to read and write
+
+369
+00:13:41,449 --> 00:13:46,170
+it turns out that ends up being a well
+
+370
+00:13:46,170 --> 00:13:47,879
+I'll say a reasonable estimation of what
+
+371
+00:13:47,879 --> 00:13:50,670
+the CPU resources I'm gonna I'm gonna
+
+372
+00:13:50,670 --> 00:13:53,610
+use to run my query and this also say us
+
+373
+00:13:53,610 --> 00:13:57,110
+also this is not also accounting weather
+
+374
+00:13:57,110 --> 00:13:59,579
+like whether I want to run one thread
+
+375
+00:13:59,579 --> 00:14:01,920
+versus 100 threads right that's sort of
+
+376
+00:14:01,920 --> 00:14:03,869
+a separate policy that's different than
+
+377
+00:14:03,869 --> 00:14:06,240
+what we're trying to do here but that's
+
+378
+00:14:06,240 --> 00:14:07,679
+almost like a mission control or
+
+379
+00:14:07,679 --> 00:14:10,040
+resource management for the system so
+
+380
+00:14:10,040 --> 00:14:12,269
+typically as far as I know you don't you
+
+381
+00:14:12,269 --> 00:14:13,949
+don't see that in an accountant for than
+
+382
+00:14:13,949 --> 00:14:15,720
+the cost model like that sort of cabins
+
+383
+00:14:15,720 --> 00:14:19,679
+after the path and again if you have it
+
+384
+00:14:19,679 --> 00:14:20,970
+like even if you if you're an in-memory
+
+385
+00:14:20,970 --> 00:14:23,879
+system like a look at mem sequel since
+
+386
+00:14:23,879 --> 00:14:25,949
+they're distributed again go back to the
+
+387
+00:14:25,949 --> 00:14:27,240
+last slide they care about the network
+
+388
+00:14:27,240 --> 00:14:29,670
+so they have to account for that and not
+
+389
+00:14:29,670 --> 00:14:32,339
+so much in this don't matters but like
+
+390
+00:14:32,339 --> 00:14:36,240
+the network is the major factor alright
+
+391
+00:14:36,240 --> 00:14:40,730
+so I want to give an example of a of
+
+392
+00:14:40,730 --> 00:14:43,980
+what was a sophisticated cost model from
+
+393
+00:14:43,980 --> 00:14:46,620
+the 1990s done in small basis it
+
+394
+00:14:46,620 --> 00:14:47,819
+actually does some of the things that we
+
+395
+00:14:47,819 --> 00:14:50,790
+talk about with db2 so what they would
+
+396
+00:14:50,790 --> 00:14:52,079
+have is they have this sort of two-phase
+
+397
+00:14:52,079 --> 00:14:57,209
+approach where the as the vidalias
+
+398
+00:14:57,209 --> 00:14:58,589
+developers were building the systems
+
+399
+00:14:58,589 --> 00:15:00,389
+like at at the company that were
+
+400
+00:15:00,389 --> 00:15:02,370
+building small base they would try to
+
+401
+00:15:02,370 --> 00:15:04,019
+identify what are all these low-level
+
+402
+00:15:04,019 --> 00:15:07,290
+primitives of of during that occurred
+
+403
+00:15:07,290 --> 00:15:09,149
+during query execution whether or not
+
+404
+00:15:09,149 --> 00:15:10,470
+they're primitives like in the same way
+
+405
+00:15:10,470 --> 00:15:12,299
+not really like in vector wise
+
+406
+00:15:12,299 --> 00:15:13,589
+primitives where you had like those for
+
+407
+00:15:13,589 --> 00:15:15,329
+those but it's thing of like low-level
+
+408
+00:15:15,329 --> 00:15:17,910
+things like I read an index or I write
+
+409
+00:15:17,910 --> 00:15:21,509
+to a tuple so they generate these
+
+410
+00:15:21,509 --> 00:15:25,350
+low-level operations and then they
+
+411
+00:15:25,350 --> 00:15:29,220
+create these micro benchmarks that allow
+
+412
+00:15:29,220 --> 00:15:31,680
+them to sort of simulate
+
+413
+00:15:31,680 --> 00:15:34,050
+each of these different operations so
+
+414
+00:15:34,050 --> 00:15:37,500
+then now at runtime in your system when
+
+415
+00:15:37,500 --> 00:15:40,860
+you deployed to deploy a small base they
+
+416
+00:15:40,860 --> 00:15:42,390
+would take all these micro benchmarks
+
+417
+00:15:42,390 --> 00:15:44,490
+run them when you turn the system on and
+
+418
+00:15:44,490 --> 00:15:46,560
+collect some profile information about
+
+419
+00:15:46,560 --> 00:15:49,290
+how fast your machine is and then in the
+
+420
+00:15:49,290 --> 00:15:51,750
+cost model when you look at a query plan
+
+421
+00:15:51,750 --> 00:15:52,950
+you count up the number of these
+
+422
+00:15:52,950 --> 00:15:54,510
+low-level operations or primitives that
+
+423
+00:15:54,510 --> 00:15:57,330
+they're doing multiply that by them by
+
+424
+00:15:57,330 --> 00:16:00,060
+the micro benchmark results that you
+
+425
+00:16:00,060 --> 00:16:01,740
+collected and then that's how they're
+
+426
+00:16:01,740 --> 00:16:03,300
+determining what you know what the cost
+
+427
+00:16:03,300 --> 00:16:07,020
+of executed query plan is all right so
+
+428
+00:16:07,020 --> 00:16:10,680
+for again small base was this early in
+
+429
+00:16:10,680 --> 00:16:12,630
+memory databases some prototype at HP
+
+430
+00:16:12,630 --> 00:16:15,270
+Labs HP labs then spun it off as a
+
+431
+00:16:15,270 --> 00:16:16,890
+separate company called times 10 and
+
+432
+00:16:16,890 --> 00:16:19,500
+then times 10 got bought by Oracle in
+
+433
+00:16:19,500 --> 00:16:23,250
+like 2006 and it still exists today you
+
+434
+00:16:23,250 --> 00:16:26,970
+can download it the old system used to
+
+435
+00:16:26,970 --> 00:16:28,200
+beat it we haven't tried it against a
+
+436
+00:16:28,200 --> 00:16:32,040
+new system yet the Oracle primarily
+
+437
+00:16:32,040 --> 00:16:34,529
+sells it as like a CPU cache or sorry an
+
+438
+00:16:34,529 --> 00:16:36,630
+in-memory cache for the the main Oracle
+
+439
+00:16:36,630 --> 00:16:38,670
+like flagship database but you can't
+
+440
+00:16:38,670 --> 00:16:40,260
+still run this as a standalone system
+
+441
+00:16:40,260 --> 00:16:42,270
+but as far as I know again by looking at
+
+442
+00:16:42,270 --> 00:16:44,850
+the documentation what they did the 19
+
+443
+00:16:44,850 --> 00:16:46,589
+it like this paper in the 1990s they
+
+444
+00:16:46,589 --> 00:16:48,330
+don't do in the real system today they
+
+445
+00:16:48,330 --> 00:16:49,890
+still do they do what I've described
+
+446
+00:16:49,890 --> 00:16:51,150
+before they just estimate what's the
+
+447
+00:16:51,150 --> 00:16:52,589
+number to balls in and out for an
+
+448
+00:16:52,589 --> 00:16:56,100
+operator is this is similar this
+
+449
+00:16:56,100 --> 00:16:57,660
+approach is similar to boga mips if you
+
+450
+00:16:57,660 --> 00:16:59,580
+know what that is in linux right when
+
+451
+00:16:59,580 --> 00:17:02,190
+you boot up linux they run this thing
+
+452
+00:17:02,190 --> 00:17:03,360
+this little micro venture called booger
+
+453
+00:17:03,360 --> 00:17:05,400
+bits that tries to approximate how fast
+
+454
+00:17:05,400 --> 00:17:07,260
+your CPU is and they use that for
+
+455
+00:17:07,260 --> 00:17:10,079
+timings decisions for like interrupts
+
+456
+00:17:10,079 --> 00:17:11,939
+and scheduling if you ever looked like
+
+457
+00:17:11,939 --> 00:17:14,699
+/proc slash cpu info you'll see like you
+
+458
+00:17:14,699 --> 00:17:16,829
+know here's the here's a here's my Intel
+
+459
+00:17:16,829 --> 00:17:18,900
+CPU here's the the the model number
+
+460
+00:17:18,900 --> 00:17:20,819
+here's an of course I have there'll be a
+
+461
+00:17:20,819 --> 00:17:22,800
+little entry karpova mips and you use
+
+462
+00:17:22,800 --> 00:17:24,359
+that as an approximation of how fast
+
+463
+00:17:24,359 --> 00:17:31,710
+your cpu is ok so I said that the most
+
+464
+00:17:31,710 --> 00:17:32,730
+important thing we're gonna care about
+
+465
+00:17:32,730 --> 00:17:35,040
+is the number of tuples in and number
+
+466
+00:17:35,040 --> 00:17:39,000
+two was out or process by by by an
+
+467
+00:17:39,000 --> 00:17:40,860
+operator so now we got to figure out how
+
+468
+00:17:40,860 --> 00:17:42,030
+we're gonna actually gonna be able to
+
+469
+00:17:42,030 --> 00:17:43,120
+estimate that
+
+470
+00:17:43,120 --> 00:17:45,080
+so the way we're going to do this is
+
+471
+00:17:45,080 --> 00:17:46,520
+that we're going to try to estimate the
+
+472
+00:17:46,520 --> 00:17:52,220
+selectivity of an operator which is
+
+473
+00:17:52,220 --> 00:17:54,200
+going to determine the percentage of the
+
+474
+00:17:54,200 --> 00:17:57,350
+tuples that are fed into it it's the
+
+475
+00:17:57,350 --> 00:17:58,400
+percentage of the tuples that would then
+
+476
+00:17:58,400 --> 00:18:00,590
+be admitted as output all right so if I
+
+477
+00:18:00,590 --> 00:18:02,150
+if I'm given a hundred tuples and my
+
+478
+00:18:02,150 --> 00:18:05,120
+selectivity is 10% then I'm gonna admit
+
+479
+00:18:05,120 --> 00:18:09,400
+ten tubal's all right so the way you
+
+480
+00:18:09,400 --> 00:18:11,120
+traditionally do this in a database
+
+481
+00:18:11,120 --> 00:18:12,590
+system is you can just model this as a
+
+482
+00:18:12,590 --> 00:18:15,770
+the probability of whether a predicate
+
+483
+00:18:15,770 --> 00:18:19,330
+will be satisfied for a particular tuple
+
+484
+00:18:19,330 --> 00:18:23,090
+all right and so the way we can generate
+
+485
+00:18:23,090 --> 00:18:24,650
+now these these probability estimations
+
+486
+00:18:24,650 --> 00:18:26,480
+is through a combination of these
+
+487
+00:18:26,480 --> 00:18:28,220
+different techniques so we can have
+
+488
+00:18:28,220 --> 00:18:29,840
+domain constraints right this would be
+
+489
+00:18:29,840 --> 00:18:32,990
+something like if we know the you know
+
+490
+00:18:32,990 --> 00:18:35,090
+the value range ahead of time of a
+
+491
+00:18:35,090 --> 00:18:37,880
+particular attribute like if it's an
+
+492
+00:18:37,880 --> 00:18:39,920
+enum field we know that there's only the
+
+493
+00:18:39,920 --> 00:18:42,890
+cardinality is fixed we can rely on pre
+
+494
+00:18:42,890 --> 00:18:44,570
+computed statistics that we can generate
+
+495
+00:18:44,570 --> 00:18:47,000
+and put into our data blocks and our
+
+496
+00:18:47,000 --> 00:18:48,650
+tables I mean we talked to us before
+
+497
+00:18:48,650 --> 00:18:49,940
+when we talked about compression these
+
+498
+00:18:49,940 --> 00:18:51,140
+are like zoom maps so I can pre-compute
+
+499
+00:18:51,140 --> 00:18:54,350
+aggregations for different columns in my
+
+500
+00:18:54,350 --> 00:18:56,840
+in a block and then when I want to
+
+501
+00:18:56,840 --> 00:18:59,330
+figure out whether a what's the
+
+502
+00:18:59,330 --> 00:19:01,040
+likelihood that my operators gonna match
+
+503
+00:19:01,040 --> 00:19:02,840
+where my predicate is gonna match a
+
+504
+00:19:02,840 --> 00:19:04,820
+tuple within a you know within a block I
+
+505
+00:19:04,820 --> 00:19:05,990
+can look at the zone maps and maybe
+
+506
+00:19:05,990 --> 00:19:08,030
+derive some early information like a
+
+507
+00:19:08,030 --> 00:19:11,240
+mini max value we can also use
+
+508
+00:19:11,240 --> 00:19:13,250
+histograms or approximations which I'll
+
+509
+00:19:13,250 --> 00:19:14,930
+talk about in a second and then we also
+
+510
+00:19:14,930 --> 00:19:18,530
+do sampling so there's no one of these
+
+511
+00:19:18,530 --> 00:19:20,600
+is better than another like you kinda
+
+512
+00:19:20,600 --> 00:19:22,040
+wanna use a combination of all these
+
+513
+00:19:22,040 --> 00:19:23,240
+things that you can to try to estimate
+
+514
+00:19:23,240 --> 00:19:24,770
+selectivity like the more information
+
+515
+00:19:24,770 --> 00:19:32,450
+you can get the better so the now the
+
+516
+00:19:32,450 --> 00:19:34,010
+number of tuples that we're going to end
+
+517
+00:19:34,010 --> 00:19:35,230
+up processing is going to combination
+
+518
+00:19:35,230 --> 00:19:38,930
+the is the number two boats we're in a
+
+519
+00:19:38,930 --> 00:19:41,300
+process it would be 10 and on dependent
+
+520
+00:19:41,300 --> 00:19:43,520
+on three different things so first is
+
+521
+00:19:43,520 --> 00:19:45,230
+obviously the access method that we're
+
+522
+00:19:45,230 --> 00:19:47,090
+using to access to read to Plus from the
+
+523
+00:19:47,090 --> 00:19:49,010
+table right if it's a sequential scan
+
+524
+00:19:49,010 --> 00:19:50,930
+then we're gonna potentially look at
+
+525
+00:19:50,930 --> 00:19:52,400
+everything unless we push down the limit
+
+526
+00:19:52,400 --> 00:19:55,130
+clause if it's an index scan that we can
+
+527
+00:19:55,130 --> 00:19:56,540
+even more fine grain and on
+
+528
+00:19:56,540 --> 00:19:58,550
+look at you know the subset of the total
+
+529
+00:19:58,550 --> 00:20:00,980
+key space then we have would actually
+
+530
+00:20:00,980 --> 00:20:02,150
+the distribution of the values of the
+
+531
+00:20:02,150 --> 00:20:03,920
+database attributes right this is where
+
+532
+00:20:03,920 --> 00:20:05,390
+the estimation stuff is gonna come and
+
+533
+00:20:05,390 --> 00:20:07,430
+come into play see I don't know if for a
+
+534
+00:20:07,430 --> 00:20:10,250
+given predicate what's the likelihood of
+
+535
+00:20:10,250 --> 00:20:12,350
+probability that I have values in and
+
+536
+00:20:12,350 --> 00:20:15,230
+you know that would satisfy that I'm
+
+537
+00:20:15,230 --> 00:20:16,730
+gonna course then also what are the
+
+538
+00:20:16,730 --> 00:20:18,470
+actual predicate s-- themselves right if
+
+539
+00:20:18,470 --> 00:20:20,900
+I'm doing a quality predicate on a
+
+540
+00:20:20,900 --> 00:20:23,360
+unique column then I know my selectivity
+
+541
+00:20:23,360 --> 00:20:25,250
+is gonna be one over the number of
+
+542
+00:20:25,250 --> 00:20:26,960
+tuples that I have because the only one
+
+543
+00:20:26,960 --> 00:20:28,910
+actually can match but now if I start
+
+544
+00:20:28,910 --> 00:20:32,180
+doing a range scan then this becomes one
+
+545
+00:20:32,180 --> 00:20:33,650
+problematic to try to estimate this
+
+546
+00:20:33,650 --> 00:20:35,870
+right so the main takeaway is that for
+
+547
+00:20:35,870 --> 00:20:37,400
+simple queries like something equals
+
+548
+00:20:37,400 --> 00:20:40,010
+something we can do a reasonably good
+
+549
+00:20:40,010 --> 00:20:42,770
+job for for matching that if you start
+
+550
+00:20:42,770 --> 00:20:46,670
+throwing in inequalities throw in range
+
+551
+00:20:46,670 --> 00:20:49,790
+scans thrown disjunctions then it
+
+552
+00:20:49,790 --> 00:20:52,550
+becomes really hard and again because
+
+553
+00:20:52,550 --> 00:20:58,940
+more data you can get the better so one
+
+554
+00:20:58,940 --> 00:21:00,890
+approach again we in intro class we
+
+555
+00:21:00,890 --> 00:21:02,210
+teach you how to generate histograms
+
+556
+00:21:02,210 --> 00:21:04,550
+right that's basically you run the
+
+557
+00:21:04,550 --> 00:21:06,890
+analyze function for analyze operation
+
+558
+00:21:06,890 --> 00:21:08,660
+in your database system and that does a
+
+559
+00:21:08,660 --> 00:21:11,000
+sequential scan of your table and it
+
+560
+00:21:11,000 --> 00:21:14,690
+computes some kind of histogram based on
+
+561
+00:21:14,690 --> 00:21:18,170
+what the what values it actually sees so
+
+562
+00:21:18,170 --> 00:21:19,340
+that's the thing that's the standard
+
+563
+00:21:19,340 --> 00:21:23,690
+technique what's been sort of more
+
+564
+00:21:23,690 --> 00:21:26,900
+prevalent in recent years is to generate
+
+565
+00:21:26,900 --> 00:21:28,760
+set of exact histograms to generate what
+
+566
+00:21:28,760 --> 00:21:30,530
+are called sketches which are these
+
+567
+00:21:30,530 --> 00:21:33,110
+approximate data data structures that
+
+568
+00:21:33,110 --> 00:21:36,110
+can give you a hint about what the you
+
+569
+00:21:36,110 --> 00:21:38,270
+know is contained in the data so think
+
+570
+00:21:38,270 --> 00:21:39,920
+of this as like a hit like a like a the
+
+571
+00:21:39,920 --> 00:21:41,150
+bloom filter is an approximate data
+
+572
+00:21:41,150 --> 00:21:42,830
+structure right because it can give you
+
+573
+00:21:42,830 --> 00:21:44,330
+false positives but I'm never gonna be
+
+574
+00:21:44,330 --> 00:21:45,980
+false negatives and you can't actually
+
+575
+00:21:45,980 --> 00:21:48,680
+tell it won't tell you what values or
+
+576
+00:21:48,680 --> 00:21:50,450
+keys are actually in the bloom filter it
+
+577
+00:21:50,450 --> 00:21:51,890
+is if you just ask it whether something
+
+578
+00:21:51,890 --> 00:21:53,320
+exists it will give you a true or false
+
+579
+00:21:53,320 --> 00:21:55,280
+so these sketches are a lot more
+
+580
+00:21:55,280 --> 00:21:57,770
+complicated rather than giving you you
+
+581
+00:21:57,770 --> 00:21:59,270
+know simple true and false is they can
+
+582
+00:21:59,270 --> 00:22:01,400
+actually tell you values that could that
+
+583
+00:22:01,400 --> 00:22:04,370
+could exist right but again you could
+
+584
+00:22:04,370 --> 00:22:06,230
+have false positives I don't know what
+
+585
+00:22:06,230 --> 00:22:07,610
+some of these I don't actually sometimes
+
+586
+00:22:07,610 --> 00:22:08,480
+I don't know whether you get false
+
+587
+00:22:08,480 --> 00:22:10,350
+negatives as well
+
+588
+00:22:10,350 --> 00:22:13,059
+so there's a bunch of different kind of
+
+589
+00:22:13,059 --> 00:22:17,049
+sketches that people can use right the
+
+590
+00:22:17,049 --> 00:22:19,299
+reason why I bring this up was a few
+
+591
+00:22:19,299 --> 00:22:22,630
+years ago we had the the CEO of splice
+
+592
+00:22:22,630 --> 00:22:25,570
+machine come and give a talk in the
+
+593
+00:22:25,570 --> 00:22:29,590
+intro class and he see me alum he's on
+
+594
+00:22:29,590 --> 00:22:31,809
+the board of advisors for the Dean and
+
+595
+00:22:31,809 --> 00:22:34,870
+he was here in February and he made this
+
+596
+00:22:34,870 --> 00:22:36,280
+comment about when he was talking about
+
+597
+00:22:36,280 --> 00:22:37,660
+their query optimizer and their cost
+
+598
+00:22:37,660 --> 00:22:40,240
+model was they did the textbook way
+
+599
+00:22:40,240 --> 00:22:41,799
+initially where they distilled
+
+600
+00:22:41,799 --> 00:22:43,750
+histograms first and they used the
+
+601
+00:22:43,750 --> 00:22:45,370
+standard algorithms equations to try to
+
+602
+00:22:45,370 --> 00:22:47,380
+do estimations on the selectivity of
+
+603
+00:22:47,380 --> 00:22:50,290
+predicates and their operators but then
+
+604
+00:22:50,290 --> 00:22:51,730
+they ended up using this sketching
+
+605
+00:22:51,730 --> 00:22:54,070
+library from Yahoo that did these
+
+606
+00:22:54,070 --> 00:22:56,290
+approximations right so you you can
+
+607
+00:22:56,290 --> 00:22:58,240
+bound the you get bare error bound and
+
+608
+00:22:58,240 --> 00:22:59,890
+estimates to be able say like oh this is
+
+609
+00:22:59,890 --> 00:23:01,030
+what I think it's gonna be and here's
+
+610
+00:23:01,030 --> 00:23:03,010
+here's my confidence about but what what
+
+611
+00:23:03,010 --> 00:23:05,559
+I'm telling you and they said that when
+
+612
+00:23:05,559 --> 00:23:07,480
+they switch to using these sketches
+
+613
+00:23:07,480 --> 00:23:09,790
+instead of histograms the accuracy of
+
+614
+00:23:09,790 --> 00:23:11,710
+their predictions and the robustness of
+
+615
+00:23:11,710 --> 00:23:14,620
+the query optimizer I primarily because
+
+616
+00:23:14,620 --> 00:23:17,650
+it because of the better cost model the
+
+617
+00:23:17,650 --> 00:23:19,600
+the difference of quite significant so I
+
+618
+00:23:19,600 --> 00:23:21,040
+think they said they like in the old
+
+619
+00:23:21,040 --> 00:23:22,510
+system when they were using histograms
+
+620
+00:23:22,510 --> 00:23:24,940
+they could do the cost model would be
+
+621
+00:23:24,940 --> 00:23:28,480
+okay up to like 10 tables per per query
+
+622
+00:23:28,480 --> 00:23:30,490
+look at 10 table join but when they
+
+623
+00:23:30,490 --> 00:23:32,020
+added this then they I think we could go
+
+624
+00:23:32,020 --> 00:23:34,660
+up to like 75 tables which is again it's
+
+625
+00:23:34,660 --> 00:23:36,850
+not then I'm saying that the right
+
+626
+00:23:36,850 --> 00:23:38,679
+metric to use to determine the quality
+
+627
+00:23:38,679 --> 00:23:40,390
+of your cost model but that was sort of
+
+628
+00:23:40,390 --> 00:23:42,880
+anecdotal evidence that suggested that
+
+629
+00:23:42,880 --> 00:23:45,130
+using cash is better than histograms and
+
+630
+00:23:45,130 --> 00:23:47,860
+in our old optimizer in the old system
+
+631
+00:23:47,860 --> 00:23:50,679
+we ended up using histograms as well but
+
+632
+00:23:50,679 --> 00:23:52,360
+I'm sorry yes then I'm using some of
+
+633
+00:23:52,360 --> 00:23:55,240
+these sketches as well but we never we
+
+634
+00:23:55,240 --> 00:23:56,559
+never invented it we never no we never
+
+635
+00:23:56,559 --> 00:23:57,700
+actually measured how much better it
+
+636
+00:23:57,700 --> 00:24:02,710
+actually was and again I this approach I
+
+637
+00:24:02,710 --> 00:24:04,120
+think is also used in the commercial
+
+638
+00:24:04,120 --> 00:24:07,270
+systems the other main technique to
+
+639
+00:24:07,270 --> 00:24:09,010
+generate estimations about the
+
+640
+00:24:09,010 --> 00:24:12,610
+selectivity are to do sampling the basic
+
+641
+00:24:12,610 --> 00:24:14,950
+idea here is that rather than look at
+
+642
+00:24:14,950 --> 00:24:16,570
+these sketches or the histograms and try
+
+643
+00:24:16,570 --> 00:24:18,419
+to approximate what the selectivity is
+
+644
+00:24:18,419 --> 00:24:21,460
+let me actually just take a subset of
+
+645
+00:24:21,460 --> 00:24:22,990
+the tables I'm accessing
+
+646
+00:24:22,990 --> 00:24:26,380
+run my query on that or run my skin with
+
+647
+00:24:26,380 --> 00:24:28,420
+predicate on that and then determine
+
+648
+00:24:28,420 --> 00:24:31,000
+what my selectivity is and then assume
+
+649
+00:24:31,000 --> 00:24:33,160
+that my sample is a good approximation
+
+650
+00:24:33,160 --> 00:24:35,830
+what the total table actually looks like
+
+651
+00:24:35,830 --> 00:24:37,480
+and then now I have better knowledge
+
+652
+00:24:37,480 --> 00:24:39,700
+about making my might make my choices in
+
+653
+00:24:39,700 --> 00:24:43,510
+my cost model right so there's basically
+
+654
+00:24:43,510 --> 00:24:45,309
+two approach to do this it's like online
+
+655
+00:24:45,309 --> 00:24:48,370
+versus offline so the offline approach
+
+656
+00:24:48,370 --> 00:24:51,580
+is you you in the background every so
+
+657
+00:24:51,580 --> 00:24:53,470
+often you you generate this this
+
+658
+00:24:53,470 --> 00:24:56,950
+read-only copy of the table that you
+
+659
+00:24:56,950 --> 00:25:00,040
+sort of put aside and then you do that
+
+660
+00:25:00,040 --> 00:25:01,330
+your sample and you use that in your
+
+661
+00:25:01,330 --> 00:25:02,950
+cross model to predict the selectivity
+
+662
+00:25:02,950 --> 00:25:05,380
+of your predicates right and then you
+
+663
+00:25:05,380 --> 00:25:07,420
+have this sort of this this background
+
+664
+00:25:07,420 --> 00:25:10,630
+job that looks and say says well what
+
+665
+00:25:10,630 --> 00:25:13,450
+how much of my data has changed and then
+
+666
+00:25:13,450 --> 00:25:14,770
+if it's you know it's above some
+
+667
+00:25:14,770 --> 00:25:17,260
+threshold then I go back and refresh my
+
+668
+00:25:17,260 --> 00:25:21,100
+my sample the other person to do this an
+
+669
+00:25:21,100 --> 00:25:23,980
+online fashion is when the query shows
+
+670
+00:25:23,980 --> 00:25:26,130
+up and you go in your cost model you
+
+671
+00:25:26,130 --> 00:25:30,130
+actually go on the real table and run
+
+672
+00:25:30,130 --> 00:25:32,530
+your a little bit of your query now and
+
+673
+00:25:32,530 --> 00:25:34,750
+and then determine what the selectivity
+
+674
+00:25:34,750 --> 00:25:36,550
+of your predicate predicates are and
+
+675
+00:25:36,550 --> 00:25:37,840
+obviously this becomes tricky because
+
+676
+00:25:37,840 --> 00:25:39,970
+you have to you trying to do a cost
+
+677
+00:25:39,970 --> 00:25:43,410
+estimation for for running your query
+
+678
+00:25:43,410 --> 00:25:45,460
+but now you actually run and run
+
+679
+00:25:45,460 --> 00:25:47,200
+something up the query it's some subset
+
+680
+00:25:47,200 --> 00:25:49,480
+of the query on the table and that could
+
+681
+00:25:49,480 --> 00:25:53,170
+end up being slow and then you also
+
+682
+00:25:53,170 --> 00:25:54,100
+don't want to slow down other
+
+683
+00:25:54,100 --> 00:25:55,570
+transactions or queries that run at the
+
+684
+00:25:55,570 --> 00:25:56,679
+same time so you want to run make sure
+
+685
+00:25:56,679 --> 00:25:57,640
+you run this on read read uncommitted
+
+686
+00:25:57,640 --> 00:25:59,860
+without you know without editing any
+
+687
+00:25:59,860 --> 00:26:01,570
+latches or locks to avoid interfering
+
+688
+00:26:01,570 --> 00:26:05,320
+with anybody else so the way to think
+
+689
+00:26:05,320 --> 00:26:07,059
+about doing the sampling thing is like I
+
+690
+00:26:07,059 --> 00:26:09,370
+had my where clause rather than do it
+
+691
+00:26:09,370 --> 00:26:10,929
+make any joins that is pick out the
+
+692
+00:26:10,929 --> 00:26:12,550
+predicate sfrom from my where clauses
+
+693
+00:26:12,550 --> 00:26:14,500
+and we're joined clauses and I just run
+
+694
+00:26:14,500 --> 00:26:17,470
+that on the on the you know on the
+
+695
+00:26:17,470 --> 00:26:19,330
+tables themselves to compute this the
+
+696
+00:26:19,330 --> 00:26:20,500
+course now this becomes hard if you have
+
+697
+00:26:20,500 --> 00:26:22,000
+joins because now the selectivity of the
+
+698
+00:26:22,000 --> 00:26:24,460
+join is tough to compute unless you
+
+699
+00:26:24,460 --> 00:26:29,350
+start joining things so to the extent in
+
+700
+00:26:29,350 --> 00:26:31,570
+which people use different systems use
+
+701
+00:26:31,570 --> 00:26:36,190
+sampling aggressively will vary and this
+
+702
+00:26:36,190 --> 00:26:36,790
+is where again the
+
+703
+00:26:36,790 --> 00:26:37,930
+where we get into like commercial
+
+704
+00:26:37,930 --> 00:26:39,280
+systems are doing something that they
+
+705
+00:26:39,280 --> 00:26:40,810
+don't really talk about publicly so it's
+
+706
+00:26:40,810 --> 00:26:41,620
+hard to know what they're actually doing
+
+707
+00:26:41,620 --> 00:26:44,050
+all right but I know in the case for the
+
+708
+00:26:44,050 --> 00:26:45,370
+paper you guys read I think they
+
+709
+00:26:45,370 --> 00:26:47,440
+mentioned some paper sequel server
+
+710
+00:26:47,440 --> 00:26:49,120
+performs the best sequels our servers
+
+711
+00:26:49,120 --> 00:26:51,310
+doing a combination of histograms or
+
+712
+00:26:51,310 --> 00:26:56,650
+approximations plus sampling okay so any
+
+713
+00:26:56,650 --> 00:26:57,970
+questions about this so we're using this
+
+714
+00:26:57,970 --> 00:26:59,980
+to figure out we have to use either
+
+715
+00:26:59,980 --> 00:27:02,380
+histograms sketches or sampling to
+
+716
+00:27:02,380 --> 00:27:04,810
+figure out the selectivity of all these
+
+717
+00:27:04,810 --> 00:27:06,820
+predicates and then we can use that
+
+718
+00:27:06,820 --> 00:27:09,250
+compute the cardinality of our operators
+
+719
+00:27:09,250 --> 00:27:11,560
+which is then the the amount of data
+
+720
+00:27:11,560 --> 00:27:13,690
+that's that's being generated right as
+
+721
+00:27:13,690 --> 00:27:15,940
+the output right and the reason why we
+
+722
+00:27:15,940 --> 00:27:17,320
+want to know what this is because that
+
+723
+00:27:17,320 --> 00:27:21,400
+is then being fed it's the input to try
+
+724
+00:27:21,400 --> 00:27:24,970
+to our next our next operator and the
+
+725
+00:27:24,970 --> 00:27:26,470
+problem is gonna be the the more
+
+726
+00:27:26,470 --> 00:27:29,650
+inaccurate our estimates are for the
+
+727
+00:27:29,650 --> 00:27:30,940
+cardinality the selectivity of our
+
+728
+00:27:30,940 --> 00:27:33,100
+predicate in these operators at the
+
+729
+00:27:33,100 --> 00:27:35,140
+lower parts in the tree then that's
+
+730
+00:27:35,140 --> 00:27:36,910
+gonna amp get amplified as you go up
+
+731
+00:27:36,910 --> 00:27:39,400
+because I'm off of the bottom leaf node
+
+732
+00:27:39,400 --> 00:27:41,830
+as I go up that error gets carried over
+
+733
+00:27:41,830 --> 00:27:45,010
+and now become a more off I can in again
+
+734
+00:27:45,010 --> 00:27:46,450
+this is what you saw in the paper you
+
+735
+00:27:46,450 --> 00:27:54,190
+guys read all right so the textbook way
+
+736
+00:27:54,190 --> 00:27:56,950
+you would actually compute the
+
+737
+00:27:56,950 --> 00:28:01,210
+cardinality is by modeling the the
+
+738
+00:28:01,210 --> 00:28:03,430
+selectivity as I said as a probability
+
+739
+00:28:03,430 --> 00:28:06,730
+and then you make the following three
+
+740
+00:28:06,730 --> 00:28:08,350
+assumptions about that those
+
+741
+00:28:08,350 --> 00:28:10,480
+probabilities to be able to compute what
+
+742
+00:28:10,480 --> 00:28:12,880
+what you know what the the cardinality
+
+743
+00:28:12,880 --> 00:28:13,960
+is gonna be the selectivity is gonna be
+
+744
+00:28:13,960 --> 00:28:16,810
+right and again so I would say this is
+
+745
+00:28:16,810 --> 00:28:18,580
+what I'm describing here is what we
+
+746
+00:28:18,580 --> 00:28:20,380
+teach you in the interruption class to
+
+747
+00:28:20,380 --> 00:28:22,150
+go read every single text book about
+
+748
+00:28:22,150 --> 00:28:23,470
+databases this what they would tell you
+
+749
+00:28:23,470 --> 00:28:25,300
+and hopefully they would say the caveat
+
+750
+00:28:25,300 --> 00:28:27,220
+like oh this goes this goes real wrong
+
+751
+00:28:27,220 --> 00:28:31,000
+real quick but people still do this
+
+752
+00:28:31,000 --> 00:28:32,380
+right because there's no there's nothing
+
+753
+00:28:32,380 --> 00:28:34,000
+else right look the only other way to do
+
+754
+00:28:34,000 --> 00:28:36,160
+the only way to get the exact cost of a
+
+755
+00:28:36,160 --> 00:28:37,840
+query is actually to run the query but
+
+756
+00:28:37,840 --> 00:28:39,100
+that's actually super slow so you can't
+
+757
+00:28:39,100 --> 00:28:41,080
+do that so you make use of some soon as
+
+758
+00:28:41,080 --> 00:28:43,330
+you make these these should reduce in
+
+759
+00:28:43,330 --> 00:28:44,920
+the accuracy just be able to get
+
+760
+00:28:44,920 --> 00:28:48,520
+something that works reasonably well so
+
+761
+00:28:48,520 --> 00:28:49,660
+the first assumption we're gonna make in
+
+762
+00:28:49,660 --> 00:28:50,530
+many cases is that
+
+763
+00:28:50,530 --> 00:28:52,440
+we have a uniform distribution of values
+
+764
+00:28:52,440 --> 00:28:55,240
+for in our attributes meaning the
+
+765
+00:28:55,240 --> 00:28:56,560
+probability that a given attribute
+
+766
+00:28:56,560 --> 00:29:00,640
+appears in my in my in my column is the
+
+767
+00:29:00,640 --> 00:29:02,740
+same for all values of course we know
+
+768
+00:29:02,740 --> 00:29:04,090
+that this is not true like more people
+
+769
+00:29:04,090 --> 00:29:05,470
+live in New York City than men in
+
+770
+00:29:05,470 --> 00:29:08,200
+Montana so I can't assume that that you
+
+771
+00:29:08,200 --> 00:29:09,760
+know that the ZIP codes in Montana have
+
+772
+00:29:09,760 --> 00:29:12,010
+a the same probability of occurring for
+
+773
+00:29:12,010 --> 00:29:14,080
+people a people database than people in
+
+774
+00:29:14,080 --> 00:29:15,790
+New York City right the way you
+
+775
+00:29:15,790 --> 00:29:17,980
+typically get around this is to maintain
+
+776
+00:29:17,980 --> 00:29:19,150
+a separate data structure for what are
+
+777
+00:29:19,150 --> 00:29:21,310
+called heavy hitters this thing of this
+
+778
+00:29:21,310 --> 00:29:23,650
+is just like a little hash table on the
+
+779
+00:29:23,650 --> 00:29:26,020
+side that says here's the top 10 or top
+
+780
+00:29:26,020 --> 00:29:30,810
+20 values that occur in my column
+
+781
+00:29:30,810 --> 00:29:34,030
+because because more times than you know
+
+782
+00:29:34,030 --> 00:29:35,980
+I'm more likely to query those values
+
+783
+00:29:35,980 --> 00:29:38,110
+and therefore I can go do a lookup in
+
+784
+00:29:38,110 --> 00:29:39,850
+this heavy-hitter table and get more
+
+785
+00:29:39,850 --> 00:29:41,050
+accurate estimates but then everything
+
+786
+00:29:41,050 --> 00:29:44,260
+else is just assumed to be uniform the
+
+787
+00:29:44,260 --> 00:29:45,520
+next is that we're gonna assume that all
+
+788
+00:29:45,520 --> 00:29:48,660
+our our our predicates are independent
+
+789
+00:29:48,660 --> 00:29:50,770
+again we're modeling these as
+
+790
+00:29:50,770 --> 00:29:51,970
+probabilities that means we can actually
+
+791
+00:29:51,970 --> 00:29:53,440
+multiply them together and that's gonna
+
+792
+00:29:53,440 --> 00:29:55,060
+produce the true selectivity of our
+
+793
+00:29:55,060 --> 00:29:56,560
+predicate of course that's not going to
+
+794
+00:29:56,560 --> 00:29:58,410
+work we'll see that in the next slide
+
+795
+00:29:58,410 --> 00:30:02,440
+and the last one is that the we're gonna
+
+796
+00:30:02,440 --> 00:30:06,460
+assume that the join keys for inter
+
+797
+00:30:06,460 --> 00:30:08,380
+relations that we're trying to join on
+
+798
+00:30:08,380 --> 00:30:11,650
+will always exist in the adulation right
+
+799
+00:30:11,650 --> 00:30:13,690
+this obvious doesn't work and if you
+
+800
+00:30:13,690 --> 00:30:14,890
+start doing left outer joins or right
+
+801
+00:30:14,890 --> 00:30:16,480
+outer joins this becomes problematic
+
+802
+00:30:16,480 --> 00:30:18,130
+again this is this is another major
+
+803
+00:30:18,130 --> 00:30:21,220
+assumption that people people have in
+
+804
+00:30:21,220 --> 00:30:24,220
+their cross model so let me show an
+
+805
+00:30:24,220 --> 00:30:27,400
+example how this all goes bad and this
+
+806
+00:30:27,400 --> 00:30:29,320
+great little bin yet or this this sort
+
+807
+00:30:29,320 --> 00:30:32,470
+of simple problem that again that was
+
+808
+00:30:32,470 --> 00:30:35,110
+that was a blog honor from guy Logan but
+
+809
+00:30:35,110 --> 00:30:36,250
+I like this because the illustrates
+
+810
+00:30:36,250 --> 00:30:38,200
+exactly all the problems would have that
+
+811
+00:30:38,200 --> 00:30:39,160
+you have when you make all those
+
+812
+00:30:39,160 --> 00:30:41,410
+assumptions so say you have a simple
+
+813
+00:30:41,410 --> 00:30:44,650
+database keeping track of cars and you
+
+814
+00:30:44,650 --> 00:30:46,930
+have you have in your database you have
+
+815
+00:30:46,930 --> 00:30:50,650
+ten different models like Tesla Honda
+
+816
+00:30:50,650 --> 00:30:53,920
+Ford and so forth and then start using
+
+817
+00:30:53,920 --> 00:30:57,060
+ten mix test well-fought Tesla Ford
+
+818
+00:30:57,060 --> 00:30:59,890
+Honda Toyota and then you have a hundred
+
+819
+00:30:59,890 --> 00:31:03,290
+ifferent models so like a
+
+820
+00:31:03,290 --> 00:31:08,809
+that Ford Escort is is a model or a
+
+821
+00:31:08,809 --> 00:31:10,790
+Toyota Corolla is a model so you have a
+
+822
+00:31:10,790 --> 00:31:13,280
+hundred of those so if you have a query
+
+823
+00:31:13,280 --> 00:31:16,220
+now that says where make eCos Honda and
+
+824
+00:31:16,220 --> 00:31:19,070
+model equals a chord right so we have a
+
+825
+00:31:19,070 --> 00:31:20,750
+conjunction and to equality predicates
+
+826
+00:31:20,750 --> 00:31:23,960
+if you make the independence and
+
+827
+00:31:23,960 --> 00:31:25,490
+uniformity assumptions from the last
+
+828
+00:31:25,490 --> 00:31:27,770
+slide when trying to estimate the
+
+829
+00:31:27,770 --> 00:31:31,309
+selectivity of this predicate right then
+
+830
+00:31:31,309 --> 00:31:32,960
+you're gonna end up with one over ten
+
+831
+00:31:32,960 --> 00:31:35,809
+because we have ten makes right so we I
+
+832
+00:31:35,809 --> 00:31:37,429
+mean it's an equality predicate so it's
+
+833
+00:31:37,429 --> 00:31:39,710
+Honda can occur once so it's one out of
+
+834
+00:31:39,710 --> 00:31:43,520
+ten and we multiply that by one over 100
+
+835
+00:31:43,520 --> 00:31:45,230
+because again we have a hundred
+
+836
+00:31:45,230 --> 00:31:46,880
+different models and Accord is one model
+
+837
+00:31:46,880 --> 00:31:50,120
+so it's 1 or 1 over 100 so in this case
+
+838
+00:31:50,120 --> 00:31:52,160
+here the the selectivity is estimated to
+
+839
+00:31:52,160 --> 00:31:57,280
+be 0.001 but in reality we know that
+
+840
+00:31:57,280 --> 00:31:59,240
+Honda is the only one that makes them
+
+841
+00:31:59,240 --> 00:32:03,049
+the recored so it's not you know it's
+
+842
+00:32:03,049 --> 00:32:05,419
+not this it's not 1 over 10 times 1 over
+
+843
+00:32:05,419 --> 00:32:07,190
+100 these columns are actually
+
+844
+00:32:07,190 --> 00:32:08,990
+correlated like if you have if you have
+
+845
+00:32:08,990 --> 00:32:10,840
+an accord then you have a Honda Accord
+
+846
+00:32:10,840 --> 00:32:13,760
+right so the true selectivity is 1 over
+
+847
+00:32:13,760 --> 00:32:17,990
+100 so again that that independence
+
+848
+00:32:17,990 --> 00:32:20,570
+assumption that from the last slide is
+
+849
+00:32:20,570 --> 00:32:21,710
+going to make us be an order of
+
+850
+00:32:21,710 --> 00:32:24,040
+magnitude off in our estimations and
+
+851
+00:32:24,040 --> 00:32:26,840
+then now if I start saying if I'm
+
+852
+00:32:26,840 --> 00:32:29,000
+automatically off at the selectivity of
+
+853
+00:32:29,000 --> 00:32:31,160
+some lower low operator and I feed that
+
+854
+00:32:31,160 --> 00:32:33,020
+now into another operator who's also
+
+855
+00:32:33,020 --> 00:32:34,370
+gonna be another order magnitude off
+
+856
+00:32:34,370 --> 00:32:38,200
+then then I'm really screwed all right
+
+857
+00:32:38,200 --> 00:32:42,559
+so the way to solve this problem and as
+
+858
+00:32:42,559 --> 00:32:45,440
+far as you know this only this this this
+
+859
+00:32:45,440 --> 00:32:47,900
+feature only exists in the commercial
+
+860
+00:32:47,900 --> 00:32:49,070
+systems is if you would have called
+
+861
+00:32:49,070 --> 00:32:51,740
+column group statistics or basically
+
+862
+00:32:51,740 --> 00:32:53,540
+telling the database system that these
+
+863
+00:32:53,540 --> 00:32:55,640
+columns are correlated and therefore it
+
+864
+00:32:55,640 --> 00:32:57,169
+should maintain statistics about them
+
+865
+00:32:57,169 --> 00:32:59,000
+and when it computes the the prek the
+
+866
+00:32:59,000 --> 00:33:00,740
+the selectivity during its cost model
+
+867
+00:33:00,740 --> 00:33:02,600
+estimates to treat them as being
+
+868
+00:33:02,600 --> 00:33:04,309
+correlated right and don't assume that
+
+869
+00:33:04,309 --> 00:33:07,340
+they're independent right so again
+
+870
+00:33:07,340 --> 00:33:08,750
+basically the way it works is like the
+
+871
+00:33:08,750 --> 00:33:10,370
+DB has to come in and tell it to do some
+
+872
+00:33:10,370 --> 00:33:11,780
+hey these two columns are correlated and
+
+873
+00:33:11,780 --> 00:33:14,030
+then if the system supports that then
+
+874
+00:33:14,030 --> 00:33:15,650
+they can they can update their cross
+
+875
+00:33:15,650 --> 00:33:16,640
+model appropriately
+
+876
+00:33:16,640 --> 00:33:19,730
+and again only db2 and Oracle do this I
+
+877
+00:33:19,730 --> 00:33:21,770
+don't think as far as I know my sequel
+
+878
+00:33:21,770 --> 00:33:23,390
+and Postgres don't do this and none of
+
+879
+00:33:23,390 --> 00:33:25,100
+the other major of the source system
+
+880
+00:33:25,100 --> 00:33:29,150
+systems do this now main thing why does
+
+881
+00:33:29,150 --> 00:33:31,400
+this why is this manual right why does
+
+882
+00:33:31,400 --> 00:33:33,730
+the DBA have to tell the dinner system
+
+883
+00:33:33,730 --> 00:33:35,960
+and I think that's why why can't we do
+
+884
+00:33:35,960 --> 00:33:38,470
+this automatically
+
+885
+00:33:39,130 --> 00:33:41,990
+cuz it's hard right like think about how
+
+886
+00:33:41,990 --> 00:33:44,510
+to figure this out in this example here
+
+887
+00:33:44,510 --> 00:33:46,880
+it's super easy right because it's I
+
+888
+00:33:46,880 --> 00:33:49,640
+only have you know 10 10 makes and 100
+
+889
+00:33:49,640 --> 00:33:53,179
+models but I have a billion tuples and I
+
+890
+00:33:53,179 --> 00:33:54,440
+have you know and they have a really
+
+891
+00:33:54,440 --> 00:33:57,290
+wide table with a thousand columns now I
+
+892
+00:33:57,290 --> 00:33:58,730
+got to go look for every single unit
+
+893
+00:33:58,730 --> 00:34:01,549
+combination of you know of different
+
+894
+00:34:01,549 --> 00:34:03,650
+columns look at all different possible
+
+895
+00:34:03,650 --> 00:34:05,809
+values that can occur right this thing
+
+896
+00:34:05,809 --> 00:34:08,570
+is gonna blow the search base is just
+
+897
+00:34:08,570 --> 00:34:11,929
+massive so this is why you can't do this
+
+898
+00:34:11,929 --> 00:34:14,270
+automatically now there may be ways to
+
+899
+00:34:14,270 --> 00:34:16,340
+approximate this automatically but again
+
+900
+00:34:16,340 --> 00:34:19,668
+as far as I know no no major system it
+
+901
+00:34:19,668 --> 00:34:21,260
+can do this automatically for you happen
+
+902
+00:34:21,260 --> 00:34:24,739
+tell it ahead of time we we can talk
+
+903
+00:34:24,739 --> 00:34:26,030
+offline about whether deep nets help
+
+904
+00:34:26,030 --> 00:34:27,679
+with this there people are looking into
+
+905
+00:34:27,679 --> 00:34:29,570
+this now but nothing is nothing is
+
+906
+00:34:29,570 --> 00:34:34,550
+nothing nothing exists yet all right so
+
+907
+00:34:34,550 --> 00:34:37,489
+let's look now about how these simple
+
+908
+00:34:37,489 --> 00:34:40,159
+examples can really foul us up right mo
+
+909
+00:34:40,159 --> 00:34:42,168
+we start thrown in joins into our query
+
+910
+00:34:42,168 --> 00:34:44,418
+plan so here we're doing it a simple 3
+
+911
+00:34:44,418 --> 00:34:47,750
+Way join on ABC where a ID equals B ID
+
+912
+00:34:47,750 --> 00:34:50,210
+ID go see ID and then b ID has a filter
+
+913
+00:34:50,210 --> 00:34:52,969
+where the ID is greater than 100 all
+
+914
+00:34:52,969 --> 00:34:55,190
+right so assume here we have a for
+
+915
+00:34:55,190 --> 00:34:56,810
+there's a there's a you know filter
+
+916
+00:34:56,810 --> 00:34:58,460
+predicate in v or operator in between
+
+917
+00:34:58,460 --> 00:35:00,470
+the B and then join right am for
+
+918
+00:35:00,470 --> 00:35:02,480
+simplicity reasons I'm just showing the
+
+919
+00:35:02,480 --> 00:35:05,780
+filter being done down here right so the
+
+920
+00:35:05,780 --> 00:35:06,890
+first thing we need to do is compute the
+
+921
+00:35:06,890 --> 00:35:11,030
+cardinality of the the access methods
+
+922
+00:35:11,030 --> 00:35:13,070
+that are that are retrieving tuples from
+
+923
+00:35:13,070 --> 00:35:15,500
+from the tables right for a and C
+
+924
+00:35:15,500 --> 00:35:17,750
+there's no filter so therefore the
+
+925
+00:35:17,750 --> 00:35:19,220
+cardinality of the operator that's
+
+926
+00:35:19,220 --> 00:35:21,590
+scanning a and C is just the number of
+
+927
+00:35:21,590 --> 00:35:23,869
+tuples that are in the table and that's
+
+928
+00:35:23,869 --> 00:35:26,060
+that's easy for me to compute I can get
+
+929
+00:35:26,060 --> 00:35:29,660
+that from the catalog for B it's going
+
+930
+00:35:29,660 --> 00:35:30,500
+to be the number
+
+931
+00:35:30,500 --> 00:35:34,130
+be multiplied by the selectivity of our
+
+932
+00:35:34,130 --> 00:35:37,670
+predicate here all right so now we're
+
+933
+00:35:37,670 --> 00:35:40,340
+gonna feed up the output of these scan
+
+934
+00:35:40,340 --> 00:35:43,670
+operators into our joint so now we need
+
+935
+00:35:43,670 --> 00:35:46,130
+to be able to compute the cardinality of
+
+936
+00:35:46,130 --> 00:35:49,070
+our joint operators so what's gonna
+
+937
+00:35:49,070 --> 00:35:53,780
+happen here is that if I if these guys
+
+938
+00:35:53,780 --> 00:35:56,570
+if this is if this thing is bad right
+
+939
+00:35:56,570 --> 00:35:58,340
+ANC is simple right because there's no
+
+940
+00:35:58,340 --> 00:36:01,430
+filter but if this thing's wrong then
+
+941
+00:36:01,430 --> 00:36:03,710
+now I'm feeding in the incorrect number
+
+942
+00:36:03,710 --> 00:36:06,350
+tuples into this joint operator and then
+
+943
+00:36:06,350 --> 00:36:08,330
+now I've got to figure out what the
+
+944
+00:36:08,330 --> 00:36:11,690
+selectivity of these two attributes are
+
+945
+00:36:11,690 --> 00:36:14,030
+assume I don't have a foreign key assume
+
+946
+00:36:14,030 --> 00:36:15,830
+that these guys aren't correlated like I
+
+947
+00:36:15,830 --> 00:36:18,290
+know nothing about them so I am now I
+
+948
+00:36:18,290 --> 00:36:20,120
+got to figure out for every single value
+
+949
+00:36:20,120 --> 00:36:24,230
+that exists in a for a day eight ID how
+
+950
+00:36:24,230 --> 00:36:26,240
+many values are going to match that in
+
+951
+00:36:26,240 --> 00:36:30,080
+be ID and I can try to figure this out
+
+952
+00:36:30,080 --> 00:36:33,740
+and in my hit my histograms but you know
+
+953
+00:36:33,740 --> 00:36:36,170
+back that's gonna be hard so then now I
+
+954
+00:36:36,170 --> 00:36:38,960
+take the output of this estimate and now
+
+955
+00:36:38,960 --> 00:36:40,760
+that's gonna be fed into this estimate
+
+956
+00:36:40,760 --> 00:36:43,040
+here took from this join this thing is
+
+957
+00:36:43,040 --> 00:36:44,270
+just reading the table so that's super
+
+958
+00:36:44,270 --> 00:36:46,430
+simple so now I had the same problem
+
+959
+00:36:46,430 --> 00:36:47,650
+that I had before now I gotta figure out
+
+960
+00:36:47,650 --> 00:36:51,260
+well what's the likelihood that a tuple
+
+961
+00:36:51,260 --> 00:36:54,410
+that matched a ID equals B ID here will
+
+962
+00:36:54,410 --> 00:36:56,330
+exist and get fed up into this thing and
+
+963
+00:36:56,330 --> 00:36:57,890
+then also be able to net match on see
+
+964
+00:36:57,890 --> 00:37:02,420
+that ID right so again I get that wrong
+
+965
+00:37:02,420 --> 00:37:04,370
+this gets wrong and then see this gets
+
+966
+00:37:04,370 --> 00:37:07,160
+me more wrong alright so this this is
+
+967
+00:37:07,160 --> 00:37:09,260
+what we're dealing this is like the the
+
+968
+00:37:09,260 --> 00:37:13,600
+math it just is not in your favor here
+
+969
+00:37:13,630 --> 00:37:15,230
+regardless of whether we're treating
+
+970
+00:37:15,230 --> 00:37:16,460
+these things of probabilities it's not
+
+971
+00:37:16,460 --> 00:37:18,920
+like these experts are always gonna get
+
+972
+00:37:18,920 --> 00:37:21,710
+wrong and and just it gets worse as we
+
+973
+00:37:21,710 --> 00:37:23,990
+go up so again this is you were to see
+
+974
+00:37:23,990 --> 00:37:25,190
+this in the joint on our benchmark in
+
+975
+00:37:25,190 --> 00:37:27,050
+the paper you guys read the more tables
+
+976
+00:37:27,050 --> 00:37:30,710
+you add the more bad guests right for
+
+977
+00:37:30,710 --> 00:37:32,810
+this reason here what is throwing errors
+
+978
+00:37:32,810 --> 00:37:34,430
+and pop of errors a puffing up another
+
+979
+00:37:34,430 --> 00:37:39,710
+query plan all right so the the paper I
+
+980
+00:37:39,710 --> 00:37:41,930
+had you guys read came from from the
+
+981
+00:37:41,930 --> 00:37:43,850
+hyper team in Germany
+
+982
+00:37:43,850 --> 00:37:50,900
+and it was an evaluation of how how
+
+983
+00:37:50,900 --> 00:37:52,430
+accurate are the the sort of the
+
+984
+00:37:52,430 --> 00:37:54,230
+cardinality estimates and operators for
+
+985
+00:37:54,230 --> 00:37:56,900
+a variety of different database systems
+
+986
+00:37:56,900 --> 00:37:59,000
+and then they wanted to use that to
+
+987
+00:37:59,000 --> 00:38:03,680
+figure out the just how bad things
+
+988
+00:38:03,680 --> 00:38:05,000
+actually can get how all four you are
+
+989
+00:38:05,000 --> 00:38:06,800
+from from that to the real time so the
+
+990
+00:38:06,800 --> 00:38:08,420
+paper doesn't not telling you how to
+
+991
+00:38:08,420 --> 00:38:11,480
+build a cost model I sort of roughly
+
+992
+00:38:11,480 --> 00:38:14,810
+sketched it out how to do this here but
+
+993
+00:38:14,810 --> 00:38:16,250
+it's just showing you what happens when
+
+994
+00:38:16,250 --> 00:38:17,660
+the caught and the s was in your cost
+
+995
+00:38:17,660 --> 00:38:21,770
+model go wrong and and then they sort of
+
+996
+00:38:21,770 --> 00:38:25,510
+proposed some some sort of design so
+
+997
+00:38:25,510 --> 00:38:27,950
+design principles of building David
+
+998
+00:38:27,950 --> 00:38:29,270
+system sort of what you should focus on
+
+999
+00:38:29,270 --> 00:38:31,400
+on trying to make the system more robust
+
+1000
+00:38:31,400 --> 00:38:33,860
+to you know deviations or errors in your
+
+1001
+00:38:33,860 --> 00:38:36,410
+cost models so in the paper they
+
+1002
+00:38:36,410 --> 00:38:38,930
+proposed a new benchmark code the Jo B
+
+1003
+00:38:38,930 --> 00:38:42,200
+that joint ordered a benchmark so in
+
+1004
+00:38:42,200 --> 00:38:44,510
+this one they're actually it's actually
+
+1005
+00:38:44,510 --> 00:38:47,180
+based on I think the IMDB data set so
+
+1006
+00:38:47,180 --> 00:38:51,080
+the the movie website so and this is a
+
+1007
+00:38:51,080 --> 00:38:53,960
+real data set so the the the tables are
+
+1008
+00:38:53,960 --> 00:38:55,190
+actually gonna have skewed based on a
+
+1009
+00:38:55,190 --> 00:38:57,200
+real-world distribution right and like
+
+1010
+00:38:57,200 --> 00:38:58,520
+tpc agent TPCC
+
+1011
+00:38:58,520 --> 00:39:00,260
+these are having uniform distribution
+
+1012
+00:39:00,260 --> 00:39:02,240
+where everything you know the likelihood
+
+1013
+00:39:02,240 --> 00:39:04,250
+of one attribute occurring is is the
+
+1014
+00:39:04,250 --> 00:39:06,200
+same for all started like kind of one
+
+1015
+00:39:06,200 --> 00:39:08,270
+value occurring for a given column it's
+
+1016
+00:39:08,270 --> 00:39:10,850
+the same for all values in the joint
+
+1017
+00:39:10,850 --> 00:39:12,560
+under benchmark is actually real you
+
+1018
+00:39:12,560 --> 00:39:14,510
+know has real skew in it
+
+1019
+00:39:14,510 --> 00:39:17,720
+so they're going to generate a bunch of
+
+1020
+00:39:17,720 --> 00:39:19,550
+different queries that are going to join
+
+1021
+00:39:19,550 --> 00:39:21,830
+more and more tables and then they want
+
+1022
+00:39:21,830 --> 00:39:24,170
+to be able to measure what the cost
+
+1023
+00:39:24,170 --> 00:39:25,970
+model thinks the selectivity is going to
+
+1024
+00:39:25,970 --> 00:39:28,040
+be of over the cardinality of the good
+
+1025
+00:39:28,040 --> 00:39:29,900
+operators and compare that with what
+
+1026
+00:39:29,900 --> 00:39:32,240
+actually the real what the real data
+
+1027
+00:39:32,240 --> 00:39:35,150
+actually looks like right so for this
+
+1028
+00:39:35,150 --> 00:39:36,590
+the way they're gonna use this is that
+
+1029
+00:39:36,590 --> 00:39:39,560
+they're they're gonna load the data in
+
+1030
+00:39:39,560 --> 00:39:41,480
+you know in once and then they're gonna
+
+1031
+00:39:41,480 --> 00:39:43,970
+run analyze which and that fires off the
+
+1032
+00:39:43,970 --> 00:39:46,100
+background job to actually go scan all
+
+1033
+00:39:46,100 --> 00:39:47,960
+the table and let the system compute
+
+1034
+00:39:47,960 --> 00:39:49,250
+whatever statistics that I want to
+
+1035
+00:39:49,250 --> 00:39:50,810
+compute that's the best-case scenario
+
+1036
+00:39:50,810 --> 00:39:52,580
+there's no update so just I load the
+
+1037
+00:39:52,580 --> 00:39:55,160
+data in and run analyze anything they
+
+1038
+00:39:55,160 --> 00:39:56,960
+want to see in this best-case scenario
+
+1039
+00:39:56,960 --> 00:39:57,480
+however
+
+1040
+00:39:57,480 --> 00:40:00,630
+things get so once you have this one
+
+1041
+00:40:00,630 --> 00:40:02,609
+graph here because this really this is
+
+1042
+00:40:02,609 --> 00:40:05,100
+the most important one here and so the
+
+1043
+00:40:05,100 --> 00:40:07,010
+way to understand this is that the
+
+1044
+00:40:07,010 --> 00:40:11,550
+y-axis is the how far away you are from
+
+1045
+00:40:11,550 --> 00:40:15,000
+the from from being exactly accurate in
+
+1046
+00:40:15,000 --> 00:40:17,820
+the in the cardinality estimations so
+
+1047
+00:40:17,820 --> 00:40:19,590
+this middle line here is when you're
+
+1048
+00:40:19,590 --> 00:40:21,750
+perfectly accurate and then if you're if
+
+1049
+00:40:21,750 --> 00:40:22,740
+you're above this then you're
+
+1050
+00:40:22,740 --> 00:40:24,450
+overestimating estimating if you're
+
+1051
+00:40:24,450 --> 00:40:25,859
+below this then you're under estimating
+
+1052
+00:40:25,859 --> 00:40:30,570
+right and then the the what the x-axis
+
+1053
+00:40:30,570 --> 00:40:32,670
+is the number of tables that they're
+
+1054
+00:40:32,670 --> 00:40:36,380
+joining in the query here all right so
+
+1055
+00:40:36,380 --> 00:40:38,390
+the first thing to point out is that
+
+1056
+00:40:38,390 --> 00:40:40,740
+everyone the overall trend seems to be
+
+1057
+00:40:40,740 --> 00:40:42,840
+that everyone is under estimating right
+
+1058
+00:40:42,840 --> 00:40:45,600
+as you add more tables everyone sort of
+
+1059
+00:40:45,600 --> 00:40:48,390
+starts to it starts to go down all right
+
+1060
+00:40:48,390 --> 00:40:52,200
+Hey so again what is that from well that
+
+1061
+00:40:52,200 --> 00:40:54,840
+that as we showed in that when we talked
+
+1062
+00:40:54,840 --> 00:40:55,830
+about there's assumption so I can be
+
+1063
+00:40:55,830 --> 00:40:57,540
+assumed that things are independent then
+
+1064
+00:40:57,540 --> 00:41:00,560
+I assume my selectivity is gonna be way
+
+1065
+00:41:00,560 --> 00:41:03,570
+way less than it actually is so that's
+
+1066
+00:41:03,570 --> 00:41:04,680
+why they're again they're all under
+
+1067
+00:41:04,680 --> 00:41:06,359
+estimating from what the actual value
+
+1068
+00:41:06,359 --> 00:41:10,890
+should be so the first one to point out
+
+1069
+00:41:10,890 --> 00:41:13,230
+is this this this one this one guy here
+
+1070
+00:41:13,230 --> 00:41:15,930
+actually does reasonably well up to
+
+1071
+00:41:15,930 --> 00:41:19,650
+about three or four tables right and
+
+1072
+00:41:19,650 --> 00:41:21,540
+cross all of these they're actually the
+
+1073
+00:41:21,540 --> 00:41:22,740
+they're the most they had the most
+
+1074
+00:41:22,740 --> 00:41:25,260
+tightest balance from from the you know
+
+1075
+00:41:25,260 --> 00:41:26,820
+being one person accurate versus all the
+
+1076
+00:41:26,820 --> 00:41:31,700
+other ones the three systems here are
+
+1077
+00:41:31,700 --> 00:41:33,780
+essentially how all had the same trends
+
+1078
+00:41:33,780 --> 00:41:37,530
+okay but the the the the bounds are all
+
+1079
+00:41:37,530 --> 00:41:42,240
+very right again as you add more tables
+
+1080
+00:41:42,240 --> 00:41:44,310
+the the estimation gets worse and then
+
+1081
+00:41:44,310 --> 00:41:46,859
+you you know it's six tables it just
+
+1082
+00:41:46,859 --> 00:41:48,900
+it's really bad and then you have this
+
+1083
+00:41:48,900 --> 00:41:50,580
+middle guy here who's just like way off
+
+1084
+00:41:50,580 --> 00:41:53,070
+right away it's just okay with two
+
+1085
+00:41:53,070 --> 00:41:54,210
+tables and then after that it's just
+
+1086
+00:41:54,210 --> 00:41:56,280
+it's way it's under estimating way more
+
+1087
+00:41:56,280 --> 00:41:57,109
+than everyone else
+
+1088
+00:41:57,109 --> 00:42:03,540
+so I think in the paper they tell you
+
+1089
+00:42:03,540 --> 00:42:05,220
+that that the the first one in the last
+
+1090
+00:42:05,220 --> 00:42:08,910
+one or Postgres on hyper right and I
+
+1091
+00:42:08,910 --> 00:42:11,210
+think I slowed it last time who is
+
+1092
+00:42:11,210 --> 00:42:13,220
+the best one here right let me take a
+
+1093
+00:42:13,220 --> 00:42:17,030
+guess what this one is Microsoft sequel
+
+1094
+00:42:17,030 --> 00:42:19,220
+server okay then we think you guess what
+
+1095
+00:42:19,220 --> 00:42:22,040
+these other two ones are which ones
+
+1096
+00:42:22,040 --> 00:42:28,010
+Oracle this one here you Teddy titovs
+
+1097
+00:42:28,010 --> 00:42:30,200
+this one I originate a fake Oracle's
+
+1098
+00:42:30,200 --> 00:42:33,050
+this one radiative you think Oracle's
+
+1099
+00:42:33,050 --> 00:42:37,609
+this one okay and then there's we need a
+
+1100
+00:42:37,609 --> 00:42:41,660
+last lesson what took a db2 okay so you
+
+1101
+00:42:41,660 --> 00:42:43,520
+think you think this is db2 this is
+
+1102
+00:42:43,520 --> 00:42:55,580
+Oracle okay there you go so yes so there
+
+1103
+00:42:55,580 --> 00:42:59,089
+are let's focus on sequel server so
+
+1104
+00:42:59,089 --> 00:43:01,369
+sequel server does is Cascades
+
+1105
+00:43:01,369 --> 00:43:03,260
+but again the cost model is independent
+
+1106
+00:43:03,260 --> 00:43:04,670
+of whether or not you're doing Cascades
+
+1107
+00:43:04,670 --> 00:43:08,420
+or or bottom-up right but they're doing
+
+1108
+00:43:08,420 --> 00:43:11,560
+sampling they're doing histograms I and
+
+1109
+00:43:11,560 --> 00:43:14,599
+it's just sequence it was just really
+
+1110
+00:43:14,599 --> 00:43:17,000
+good in my opinion I considered to be
+
+1111
+00:43:17,000 --> 00:43:20,210
+all of these three systems here I think
+
+1112
+00:43:20,210 --> 00:43:23,990
+it's the at least what they talked about
+
+1113
+00:43:23,990 --> 00:43:25,880
+publicly in my opinion is the most like
+
+1114
+00:43:25,880 --> 00:43:27,170
+state-of-the-art leading-edge system
+
+1115
+00:43:27,170 --> 00:43:30,440
+right workin db2 are good they're not
+
+1116
+00:43:30,440 --> 00:43:32,690
+bad systems it's just I feel like sequel
+
+1117
+00:43:32,690 --> 00:43:35,660
+server is they've based on what they've
+
+1118
+00:43:35,660 --> 00:43:36,950
+talked about publicly it seems like this
+
+1119
+00:43:36,950 --> 00:43:40,640
+thing is his way you know farther head
+
+1120
+00:43:40,640 --> 00:43:43,369
+net and then everyone else getting
+
+1121
+00:43:43,369 --> 00:43:46,849
+across so I would say for all database
+
+1122
+00:43:46,849 --> 00:43:48,970
+systems open source and commercial
+
+1123
+00:43:48,970 --> 00:43:50,960
+secrets of reply has the best query
+
+1124
+00:43:50,960 --> 00:43:56,119
+optimizer so and it shows here but let's
+
+1125
+00:43:56,119 --> 00:44:00,589
+now look into see a little more detail
+
+1126
+00:44:00,589 --> 00:44:02,480
+about what actually happens when when
+
+1127
+00:44:02,480 --> 00:44:05,720
+you when you get correct estimates so
+
+1128
+00:44:05,720 --> 00:44:06,920
+for this one they're gonna instrument
+
+1129
+00:44:06,920 --> 00:44:11,420
+Postgres 9.4 and the way to understand
+
+1130
+00:44:11,420 --> 00:44:15,589
+this graph here is that the the the
+
+1131
+00:44:15,589 --> 00:44:19,210
+x-axis is what percentage of the queries
+
+1132
+00:44:19,210 --> 00:44:23,300
+that they're going to execute are within
+
+1133
+00:44:23,300 --> 00:44:25,599
+the
+
+1134
+00:44:25,720 --> 00:44:28,790
+how much slower are they from the the
+
+1135
+00:44:28,790 --> 00:44:30,610
+actual execution of the query itself
+
+1136
+00:44:30,610 --> 00:44:35,900
+right so if you is that how much I mean
+
+1137
+00:44:35,900 --> 00:44:38,540
+sort of they instrumented Postgres and
+
+1138
+00:44:38,540 --> 00:44:40,460
+they they made it so that rather than
+
+1139
+00:44:40,460 --> 00:44:42,890
+doing using histogram to estimate the
+
+1140
+00:44:42,890 --> 00:44:45,290
+cardinality of an operator they modified
+
+1141
+00:44:45,290 --> 00:44:47,270
+the system so that it this you know
+
+1142
+00:44:47,270 --> 00:44:49,010
+whatever function says go estimate what
+
+1143
+00:44:49,010 --> 00:44:50,600
+the cardinality is they replace that
+
+1144
+00:44:50,600 --> 00:44:52,040
+with a magic Oracle that always gives
+
+1145
+00:44:52,040 --> 00:44:53,570
+them back exactly the correct answer
+
+1146
+00:44:53,570 --> 00:44:56,660
+every time right so the way to read this
+
+1147
+00:44:56,660 --> 00:45:01,160
+is it's how how far they are from the
+
+1148
+00:45:01,160 --> 00:45:04,880
+what the real estimate is gonna do
+
+1149
+00:45:04,880 --> 00:45:07,730
+versus what the if what the query
+
+1150
+00:45:07,730 --> 00:45:08,690
+performance will be if you have the
+
+1151
+00:45:08,690 --> 00:45:10,850
+exact eczema's versus what if you use
+
+1152
+00:45:10,850 --> 00:45:12,590
+the built in cost model but that's
+
+1153
+00:45:12,590 --> 00:45:15,410
+making approximations so if you're in
+
+1154
+00:45:15,410 --> 00:45:17,420
+this band here 0.9 at one point one
+
+1155
+00:45:17,420 --> 00:45:20,720
+means that you're the the performance of
+
+1156
+00:45:20,720 --> 00:45:23,060
+the query using the approximations is
+
+1157
+00:45:23,060 --> 00:45:26,060
+roughly the same of what you get when
+
+1158
+00:45:26,060 --> 00:45:27,470
+you have approximate you know what if
+
+1159
+00:45:27,470 --> 00:45:29,450
+you have the exact result and then over
+
+1160
+00:45:29,450 --> 00:45:31,250
+here is like you're getting way you know
+
+1161
+00:45:31,250 --> 00:45:34,580
+way way slower as you go in this
+
+1162
+00:45:34,580 --> 00:45:36,140
+direction and then this is what
+
+1163
+00:45:36,140 --> 00:45:37,640
+percentage of the queries in the total
+
+1164
+00:45:37,640 --> 00:45:39,110
+number of queries that they gave into
+
+1165
+00:45:39,110 --> 00:45:40,850
+the system fit into these different
+
+1166
+00:45:40,850 --> 00:45:45,080
+buckets here right so this shows you
+
+1167
+00:45:45,080 --> 00:45:49,640
+that when you're using estimations that
+
+1168
+00:45:49,640 --> 00:45:55,400
+60% of the queries are 1.2 to 1.1 or 8
+
+1169
+00:45:55,400 --> 00:46:00,020
+more times slower than the you know the
+
+1170
+00:46:00,020 --> 00:46:01,670
+queries you have the true cardinality
+
+1171
+00:46:01,670 --> 00:46:04,730
+exact estimations here right and so
+
+1172
+00:46:04,730 --> 00:46:07,940
+what's going on is because Postgres is
+
+1173
+00:46:07,940 --> 00:46:10,820
+under estimating this the cardinality of
+
+1174
+00:46:10,820 --> 00:46:14,150
+its operators it thinks that the the you
+
+1175
+00:46:14,150 --> 00:46:15,260
+know the number of tuples that it's
+
+1176
+00:46:15,260 --> 00:46:17,030
+going to is going to pass one opportu
+
+1177
+00:46:17,030 --> 00:46:19,160
+the next is is less as lower than it
+
+1178
+00:46:19,160 --> 00:46:21,320
+actually is and they use these
+
+1179
+00:46:21,320 --> 00:46:23,840
+cardinality estimates to size the hash
+
+1180
+00:46:23,840 --> 00:46:26,630
+table for when you do a hash joint right
+
+1181
+00:46:26,630 --> 00:46:29,420
+or decide whether you even want to do a
+
+1182
+00:46:29,420 --> 00:46:31,070
+hash joint and all right if if you're
+
+1183
+00:46:31,070 --> 00:46:32,420
+only going to access a small number
+
+1184
+00:46:32,420 --> 00:46:36,350
+tuples and enjoying the if you're then a
+
+1185
+00:46:36,350 --> 00:46:38,750
+nested loop joins is super fast
+
+1186
+00:46:38,750 --> 00:46:39,830
+because you don't have to set up a hash
+
+1187
+00:46:39,830 --> 00:46:41,030
+table you don't have to build it you
+
+1188
+00:46:41,030 --> 00:46:42,620
+don't probe it you just do these two
+
+1189
+00:46:42,620 --> 00:46:44,180
+little four loops on like four tuples
+
+1190
+00:46:44,180 --> 00:46:45,890
+and the outer table an inner table
+
+1191
+00:46:45,890 --> 00:46:47,390
+that's you know as fast as you're going
+
+1192
+00:46:47,390 --> 00:46:50,240
+to ever get so Postgres ends up because
+
+1193
+00:46:50,240 --> 00:46:52,460
+it's under estimating the cardinality of
+
+1194
+00:46:52,460 --> 00:46:54,500
+his operators to sing o your app you're
+
+1195
+00:46:54,500 --> 00:46:56,480
+operating one of ten tuples Nestle's up
+
+1196
+00:46:56,480 --> 00:46:58,250
+joint right and then it starts running
+
+1197
+00:46:58,250 --> 00:47:00,410
+and it says oh list is not this is
+
+1198
+00:47:00,410 --> 00:47:03,410
+not ten do pools but by that point the
+
+1199
+00:47:03,410 --> 00:47:04,850
+query plan is baked right you can't
+
+1200
+00:47:04,850 --> 00:47:07,660
+switch back to do the hash join right
+
+1201
+00:47:07,660 --> 00:47:10,220
+why not
+
+1202
+00:47:10,220 --> 00:47:11,660
+because you see that one you'd have to
+
+1203
+00:47:11,660 --> 00:47:13,640
+do adaptive query processing right so
+
+1204
+00:47:13,640 --> 00:47:15,950
+you have to be able to say I my query
+
+1205
+00:47:15,950 --> 00:47:18,590
+optimizer made a mistake go back and
+
+1206
+00:47:18,590 --> 00:47:20,300
+rerun you know run the optimizer and get
+
+1207
+00:47:20,300 --> 00:47:21,920
+a new plan based on something I you know
+
+1208
+00:47:21,920 --> 00:47:25,960
+based on what data I've seen so far
+
+1209
+00:47:27,850 --> 00:47:36,260
+Stadium next loop join hash join and get
+
+1210
+00:47:36,260 --> 00:47:41,570
+the same as all right but like so you
+
+1211
+00:47:41,570 --> 00:47:43,010
+could do it the way actually one way to
+
+1212
+00:47:43,010 --> 00:47:48,620
+do this is that if I see now the as if I
+
+1213
+00:47:48,620 --> 00:47:51,680
+see that I have like I thought it was
+
+1214
+00:47:51,680 --> 00:47:52,850
+kinda like ten two people so now I have
+
+1215
+00:47:52,850 --> 00:47:55,190
+1 billion tube was coming in before I
+
+1216
+00:47:55,190 --> 00:47:56,570
+even start the nested loop joint I could
+
+1217
+00:47:56,570 --> 00:47:58,370
+say don't do that slip joints which ever
+
+1218
+00:47:58,370 --> 00:48:00,800
+do a hash join you could do that in some
+
+1219
+00:48:00,800 --> 00:48:02,300
+ways it depends on how they're
+
+1220
+00:48:02,300 --> 00:48:05,660
+pipelining tuples but they don't it's an
+
+1221
+00:48:05,660 --> 00:48:07,580
+engineering thing right sort of like
+
+1222
+00:48:07,580 --> 00:48:09,200
+it's like once the optimizers makes the
+
+1223
+00:48:09,200 --> 00:48:10,670
+decision they go with it
+
+1224
+00:48:10,670 --> 00:48:12,560
+now adaptive query processing or
+
+1225
+00:48:12,560 --> 00:48:16,430
+optimization is when you say I think the
+
+1226
+00:48:16,430 --> 00:48:17,990
+optimizer made a mistake go back and
+
+1227
+00:48:17,990 --> 00:48:19,520
+regenerate a query plant and then now
+
+1228
+00:48:19,520 --> 00:48:21,380
+yet you know now you have to you get
+
+1229
+00:48:21,380 --> 00:48:23,600
+into this world of like do I throw away
+
+1230
+00:48:23,600 --> 00:48:25,880
+all the data I process so far and start
+
+1231
+00:48:25,880 --> 00:48:28,190
+up from scratch or can I come up with a
+
+1232
+00:48:28,190 --> 00:48:29,990
+new query plan that can use some of the
+
+1233
+00:48:29,990 --> 00:48:31,700
+data already process and just you know
+
+1234
+00:48:31,700 --> 00:48:33,710
+continue with with that that would
+
+1235
+00:48:33,710 --> 00:48:35,660
+essentially do what you're proposing but
+
+1236
+00:48:35,660 --> 00:48:37,700
+as far as you know I mean I know
+
+1237
+00:48:37,700 --> 00:48:40,580
+Postgres doesn't do that I don't know
+
+1238
+00:48:40,580 --> 00:48:42,620
+actually what sequel server and oracle
+
+1239
+00:48:42,620 --> 00:48:43,940
+do I think they throw everything away
+
+1240
+00:48:43,940 --> 00:48:47,810
+and start over right you primarily you
+
+1241
+00:48:47,810 --> 00:48:50,240
+primarily do that for it for for John
+
+1242
+00:48:50,240 --> 00:48:51,250
+ordering
+
+1243
+00:48:51,250 --> 00:48:53,080
+switching routine Nestle pet and hash
+
+1244
+00:48:53,080 --> 00:48:58,300
+join there's no reason you could in
+
+1245
+00:48:58,300 --> 00:48:59,109
+poker doesn't do it
+
+1246
+00:48:59,109 --> 00:49:03,280
+I think we're engineer reasons okay so
+
+1247
+00:49:03,280 --> 00:49:06,400
+the right so in this case here again
+
+1248
+00:49:06,400 --> 00:49:09,160
+things are running slower because a lot
+
+1249
+00:49:09,160 --> 00:49:10,240
+of quotes are end up being nestled up
+
+1250
+00:49:10,240 --> 00:49:11,560
+joins when they really should be hash
+
+1251
+00:49:11,560 --> 00:49:12,250
+hash joints
+
+1252
+00:49:12,250 --> 00:49:15,640
+so the next thing they did was in
+
+1253
+00:49:15,640 --> 00:49:17,680
+Postgres you can pass a flag to say
+
+1254
+00:49:17,680 --> 00:49:34,150
+sorry yes yes but I don't know why we we
+
+1255
+00:49:34,150 --> 00:49:51,060
+can a specter I don't know just noise oh
+
+1256
+00:49:56,580 --> 00:50:00,820
+god okay so he said like the air for the
+
+1257
+00:50:00,820 --> 00:50:03,970
+first drone operator fed into the the
+
+1258
+00:50:03,970 --> 00:50:06,369
+first join overestimated the second join
+
+1259
+00:50:06,369 --> 00:50:08,200
+that have fed into underestimated and
+
+1260
+00:50:08,200 --> 00:50:10,690
+then that came out to be exactly exactly
+
+1261
+00:50:10,690 --> 00:50:13,420
+correct now why this is running you know
+
+1262
+00:50:13,420 --> 00:50:17,280
+zero point to be faster or I don't know
+
+1263
+00:50:17,280 --> 00:50:21,700
+all right but it's I mean it's it's it's
+
+1264
+00:50:21,700 --> 00:50:24,099
+a pretty low amount like it's you know
+
+1265
+00:50:24,099 --> 00:50:26,440
+one or two percent all right
+
+1266
+00:50:26,440 --> 00:50:29,020
+so all right what I'm saying I was
+
+1267
+00:50:29,020 --> 00:50:33,430
+saying here is that again the the the
+
+1268
+00:50:33,430 --> 00:50:35,859
+first sort of assessment of why things
+
+1269
+00:50:35,859 --> 00:50:37,720
+are running floors because it's picking
+
+1270
+00:50:37,720 --> 00:50:39,430
+measure Luke John when you can hash join
+
+1271
+00:50:39,430 --> 00:50:41,320
+so in Postgres you can pass a flag in
+
+1272
+00:50:41,320 --> 00:50:42,930
+your session and the Gilberts terminal
+
+1273
+00:50:42,930 --> 00:50:45,160
+and you can say set no merged or
+
+1274
+00:50:45,160 --> 00:50:46,540
+something like that or no nest luke join
+
+1275
+00:50:46,540 --> 00:50:49,480
+you can tell the optimizer to not even
+
+1276
+00:50:49,480 --> 00:50:51,670
+consider a nested loop join for your
+
+1277
+00:50:51,670 --> 00:50:53,619
+query so in this case here to only
+
+1278
+00:50:53,619 --> 00:50:56,140
+consider as a hash join but now you
+
+1279
+00:50:56,140 --> 00:50:58,330
+still see that you're still getting
+
+1280
+00:50:58,330 --> 00:51:01,570
+worst performance right then then you
+
+1281
+00:51:01,570 --> 00:51:02,530
+know where you should be if you have two
+
+1282
+00:51:02,530 --> 00:51:04,780
+cardinalities right it did help right
+
+1283
+00:51:04,780 --> 00:51:06,070
+fewer queries are getting picked as a
+
+1284
+00:51:06,070 --> 00:51:07,780
+nested loop joining but still your some
+
+1285
+00:51:07,780 --> 00:51:10,180
+queries to start running slower in this
+
+1286
+00:51:10,180 --> 00:51:14,080
+case it turns out that the in this
+
+1287
+00:51:14,080 --> 00:51:16,260
+version of Postgres they were using the
+
+1288
+00:51:16,260 --> 00:51:18,580
+Cardinal cardinality estimates from the
+
+1289
+00:51:18,580 --> 00:51:22,810
+operators to decide how to allocate the
+
+1290
+00:51:22,810 --> 00:51:25,350
+hash table when you do the hash join
+
+1291
+00:51:25,350 --> 00:51:27,520
+right so you say you know I'm gonna do
+
+1292
+00:51:27,520 --> 00:51:29,740
+100 I have my card in alleys 100 so make
+
+1293
+00:51:29,740 --> 00:51:31,660
+sure I have a hash table that has you
+
+1294
+00:51:31,660 --> 00:51:33,820
+know 200 slots for you know to put
+
+1295
+00:51:33,820 --> 00:51:36,430
+things in and so if you undersized the
+
+1296
+00:51:36,430 --> 00:51:39,040
+hash table what happens is that as we
+
+1297
+00:51:39,040 --> 00:51:39,850
+talked about you end up with these
+
+1298
+00:51:39,850 --> 00:51:41,800
+really long you know I think they were
+
+1299
+00:51:41,800 --> 00:51:44,350
+doing a bucket hash hash table so you
+
+1300
+00:51:44,350 --> 00:51:45,520
+have these really long bucket chains
+
+1301
+00:51:45,520 --> 00:51:47,290
+that essentially becomes a sequential
+
+1302
+00:51:47,290 --> 00:51:48,960
+scan every single time you do a probe
+
+1303
+00:51:48,960 --> 00:51:52,930
+right so and if you had correct
+
+1304
+00:51:52,930 --> 00:51:55,030
+estimates about what the cardinality was
+
+1305
+00:51:55,030 --> 00:51:56,230
+then you could say all right well my
+
+1306
+00:51:56,230 --> 00:51:57,520
+hash table need to be this big because
+
+1307
+00:51:57,520 --> 00:51:59,170
+my data sets coming in is gonna be this
+
+1308
+00:51:59,170 --> 00:52:01,240
+big and then you don't worry about you
+
+1309
+00:52:01,240 --> 00:52:03,910
+know these these long special scans so
+
+1310
+00:52:03,910 --> 00:52:06,390
+to prove that this was actually the case
+
+1311
+00:52:06,390 --> 00:52:08,320
+again this is a post missed nine point
+
+1312
+00:52:08,320 --> 00:52:11,410
+four then in Postgres 9.5 they had the
+
+1313
+00:52:11,410 --> 00:52:13,570
+ability to do dynamically resize the
+
+1314
+00:52:13,570 --> 00:52:16,090
+hash table if your estimates go wrong so
+
+1315
+00:52:16,090 --> 00:52:18,070
+they back ported that feature for post
+
+1316
+00:52:18,070 --> 00:52:20,230
+post 9 by 5 into 9 point 4 and they
+
+1317
+00:52:20,230 --> 00:52:21,910
+reran this the same experiment and that
+
+1318
+00:52:21,910 --> 00:52:24,550
+now you see that there's more queries
+
+1319
+00:52:24,550 --> 00:52:26,590
+that are actually mattered or getting
+
+1320
+00:52:26,590 --> 00:52:27,940
+closer where you should be if you have
+
+1321
+00:52:27,940 --> 00:52:35,410
+the true cardinality right so the this
+
+1322
+00:52:35,410 --> 00:52:37,090
+is a good example of showing it's not
+
+1323
+00:52:37,090 --> 00:52:39,730
+just picking whether one operator is
+
+1324
+00:52:39,730 --> 00:52:41,200
+should be a hash joint versus a net
+
+1325
+00:52:41,200 --> 00:52:42,790
+that's looped on it's actually what
+
+1326
+00:52:42,790 --> 00:52:43,870
+you're actually doing in that operator
+
+1327
+00:52:43,870 --> 00:52:46,120
+can be greatly affected by the the
+
+1328
+00:52:46,120 --> 00:52:47,550
+estimations that your cost models making
+
+1329
+00:52:47,550 --> 00:52:54,250
+all right all right so Victor then say
+
+1330
+00:52:54,250 --> 00:52:55,900
+you know were talking about this and he
+
+1331
+00:52:55,900 --> 00:52:59,800
+sent me sort of a synopsis of what he
+
+1332
+00:52:59,800 --> 00:53:00,880
+thought were the most important things
+
+1333
+00:53:00,880 --> 00:53:02,530
+that came out of this experiment or this
+
+1334
+00:53:02,530 --> 00:53:06,460
+study that he did and the the first is
+
+1335
+00:53:06,460 --> 00:53:10,620
+that they felt that having an accurate
+
+1336
+00:53:10,620 --> 00:53:12,970
+you know cost model from your query
+
+1337
+00:53:12,970 --> 00:53:15,430
+optimizer and of actually being in some
+
+1338
+00:53:15,430 --> 00:53:17,110
+cases more important than is having like
+
+1339
+00:53:17,110 --> 00:53:18,750
+the fastest engine in the world
+
+1340
+00:53:18,750 --> 00:53:22,770
+right like if you you know it who cares
+
+1341
+00:53:22,770 --> 00:53:24,540
+that we knew Cindy processing or query
+
+1342
+00:53:24,540 --> 00:53:25,859
+compilation and all the other tricks
+
+1343
+00:53:25,859 --> 00:53:26,760
+that we talked about the entire semester
+
+1344
+00:53:26,760 --> 00:53:29,400
+if our optimizer is total and we're
+
+1345
+00:53:29,400 --> 00:53:31,260
+like picking the worst doing orders and
+
+1346
+00:53:31,260 --> 00:53:33,359
+we're always doing this a loop join then
+
+1347
+00:53:33,359 --> 00:53:35,310
+who cares how fast the engine is in like
+
+1348
+00:53:35,310 --> 00:53:36,420
+you know simple examples when we
+
+1349
+00:53:36,420 --> 00:53:38,520
+actually throw real real-world data at
+
+1350
+00:53:38,520 --> 00:53:41,310
+it then we're just gonna get you know
+
+1351
+00:53:41,310 --> 00:53:46,020
+we're gonna get crushed so the the in
+
+1352
+00:53:46,020 --> 00:53:47,880
+being able to pick up the joinery is ply
+
+1353
+00:53:47,880 --> 00:53:49,320
+the most important thing from all of us
+
+1354
+00:53:49,320 --> 00:53:52,890
+the other thing they found was basically
+
+1355
+00:53:52,890 --> 00:53:55,619
+that the cardinality estimates are
+
+1356
+00:53:55,619 --> 00:53:57,320
+always gonna be wrong
+
+1357
+00:53:57,320 --> 00:54:00,030
+so when you actually implement the
+
+1358
+00:54:00,030 --> 00:54:02,609
+operators in your system you want to
+
+1359
+00:54:02,609 --> 00:54:05,250
+have them be adaptive enough to not
+
+1360
+00:54:05,250 --> 00:54:07,640
+adapt it so they don't they rely on
+
+1361
+00:54:07,640 --> 00:54:10,020
+estimations coming from from the query
+
+1362
+00:54:10,020 --> 00:54:11,790
+optimizer because you just assume that's
+
+1363
+00:54:11,790 --> 00:54:14,490
+gonna be wrong and as the data comes in
+
+1364
+00:54:14,490 --> 00:54:16,260
+you want to be able to adapt to whatever
+
+1365
+00:54:16,260 --> 00:54:18,420
+it is your system is doing to account
+
+1366
+00:54:18,420 --> 00:54:19,680
+for the actual data that it's actually
+
+1367
+00:54:19,680 --> 00:54:22,050
+seen right so being but a resize the
+
+1368
+00:54:22,050 --> 00:54:23,880
+hash table automatically rather than
+
+1369
+00:54:23,880 --> 00:54:25,650
+just you know taking where the cost
+
+1370
+00:54:25,650 --> 00:54:27,119
+model gives you and just fixing the size
+
+1371
+00:54:27,119 --> 00:54:29,580
+to be exactly that and we're doing this
+
+1372
+00:54:29,580 --> 00:54:32,670
+now in our own system we haven't pushed
+
+1373
+00:54:32,670 --> 00:54:34,260
+it to the master branch ad this is in
+
+1374
+00:54:34,260 --> 00:54:37,020
+the separate LLVM branch but we can
+
+1375
+00:54:37,020 --> 00:54:38,640
+reorder like predicates so some
+
+1376
+00:54:38,640 --> 00:54:39,510
+predicates and more selective than
+
+1377
+00:54:39,510 --> 00:54:41,430
+others the cost model might think that
+
+1378
+00:54:41,430 --> 00:54:43,080
+you want to execute your predicate in
+
+1379
+00:54:43,080 --> 00:54:44,910
+this order we can then shuffle things on
+
+1380
+00:54:44,910 --> 00:54:49,650
+the fly as we see real data the other
+
+1381
+00:54:49,650 --> 00:54:52,980
+things that he said that and you sort of
+
+1382
+00:54:52,980 --> 00:54:56,339
+see this in the design about in hyper is
+
+1383
+00:54:56,339 --> 00:55:00,630
+that having an engine that is can do
+
+1384
+00:55:00,630 --> 00:55:03,270
+faster quencher scans and fast hash
+
+1385
+00:55:03,270 --> 00:55:06,750
+joins may actually end up being better
+
+1386
+00:55:06,750 --> 00:55:08,670
+than having all these sort of fancy
+
+1387
+00:55:08,670 --> 00:55:10,650
+indexes to do joins and and and and
+
+1388
+00:55:10,650 --> 00:55:13,470
+lookups right because the more indexes
+
+1389
+00:55:13,470 --> 00:55:15,150
+you have and the more complex the
+
+1390
+00:55:15,150 --> 00:55:17,609
+estimations have to be for your in your
+
+1391
+00:55:17,609 --> 00:55:19,980
+cost model so rather than try to account
+
+1392
+00:55:19,980 --> 00:55:22,290
+for any of this you just say screw it
+
+1393
+00:55:22,290 --> 00:55:23,520
+honest I'm gonna sequential scan
+
+1394
+00:55:23,520 --> 00:55:25,770
+everything and just rip through the data
+
+1395
+00:55:25,770 --> 00:55:28,650
+really fast and and and who cares what
+
+1396
+00:55:28,650 --> 00:55:29,880
+you know whether an index would help me
+
+1397
+00:55:29,880 --> 00:55:31,880
+here
+
+1398
+00:55:31,880 --> 00:55:33,799
+for analytical queries I maybe agree
+
+1399
+00:55:33,799 --> 00:55:35,480
+with this for some things maybe not not
+
+1400
+00:55:35,480 --> 00:55:40,069
+enough for others right I had mixed
+
+1401
+00:55:40,069 --> 00:55:42,650
+feelings about this one last one he says
+
+1402
+00:55:42,650 --> 00:55:45,650
+that trying to have a more accurate cost
+
+1403
+00:55:45,650 --> 00:55:47,240
+model like using the micro benchmarks
+
+1404
+00:55:47,240 --> 00:55:48,079
+the stuff that I talked at the very
+
+1405
+00:55:48,079 --> 00:55:49,970
+beginning like trying to you know
+
+1406
+00:55:49,970 --> 00:55:51,920
+profile the hardware and include that in
+
+1407
+00:55:51,920 --> 00:55:54,769
+your estimations they felt that was a
+
+1408
+00:55:54,769 --> 00:55:56,630
+waste of time just having better
+
+1409
+00:55:56,630 --> 00:55:58,400
+cardinality estimations is the most
+
+1410
+00:55:58,400 --> 00:56:00,019
+important thing that means having better
+
+1411
+00:56:00,019 --> 00:56:02,329
+statistics better sketches whether
+
+1412
+00:56:02,329 --> 00:56:03,529
+you're throwing deep nets in there or
+
+1413
+00:56:03,529 --> 00:56:06,789
+not we could talk about that separately
+
+1414
+00:56:06,789 --> 00:56:09,349
+but getting this right is more important
+
+1415
+00:56:09,349 --> 00:56:11,839
+than having some more fine-grained
+
+1416
+00:56:11,839 --> 00:56:13,009
+accuracy and what the harbor's actually
+
+1417
+00:56:13,009 --> 00:56:16,009
+can do okay so I thought these are
+
+1418
+00:56:16,009 --> 00:56:18,170
+pretty useful right again like some of
+
+1419
+00:56:18,170 --> 00:56:20,269
+these we've adopted in the design of our
+
+1420
+00:56:20,269 --> 00:56:23,900
+system other ones not so much alright so
+
+1421
+00:56:23,900 --> 00:56:25,789
+the last thing I want to talk about and
+
+1422
+00:56:25,789 --> 00:56:27,259
+this will lead us into what we'll talk
+
+1423
+00:56:27,259 --> 00:56:31,430
+about a Monday is this project from from
+
+1424
+00:56:31,430 --> 00:56:35,539
+IBM from I guess this point 2000 2001 so
+
+1425
+00:56:35,539 --> 00:56:39,190
+18 years ago for this thing called Leo
+
+1426
+00:56:39,190 --> 00:56:41,480
+so you may be thinking and sort of what
+
+1427
+00:56:41,480 --> 00:56:43,309
+he was sort of suggesting earlier is
+
+1428
+00:56:43,309 --> 00:56:45,950
+that if my cost model is gonna make
+
+1429
+00:56:45,950 --> 00:56:46,910
+these estimates and they're gonna be
+
+1430
+00:56:46,910 --> 00:56:47,450
+wrong
+
+1431
+00:56:47,450 --> 00:56:50,359
+then as I run my query and I see oh the
+
+1432
+00:56:50,359 --> 00:56:51,589
+data is actually completely different
+
+1433
+00:56:51,589 --> 00:56:54,289
+can't I just fix myself or can't I just
+
+1434
+00:56:54,289 --> 00:56:57,410
+possibly also go fix the estimates right
+
+1435
+00:56:57,410 --> 00:57:00,410
+and this is what IBM was trying to do
+
+1436
+00:57:00,410 --> 00:57:01,309
+with this thing called the learning
+
+1437
+00:57:01,309 --> 00:57:03,680
+optimizer so the idea would be that my
+
+1438
+00:57:03,680 --> 00:57:05,630
+query shows up I run it through my core
+
+1439
+00:57:05,630 --> 00:57:07,759
+my query optimizer I generate the cost
+
+1440
+00:57:07,759 --> 00:57:09,140
+amount of generates estimates about what
+
+1441
+00:57:09,140 --> 00:57:11,089
+I think's the data looks like I then run
+
+1442
+00:57:11,089 --> 00:57:13,579
+that query and then now I observe are
+
+1443
+00:57:13,579 --> 00:57:15,680
+the estimations about the cardinality in
+
+1444
+00:57:15,680 --> 00:57:17,329
+the selectivity of my predicate is that
+
+1445
+00:57:17,329 --> 00:57:19,819
+matching what I'm actually seeing in the
+
+1446
+00:57:19,819 --> 00:57:22,460
+real data and then when the query
+
+1447
+00:57:22,460 --> 00:57:25,099
+finishes they they check to see whether
+
+1448
+00:57:25,099 --> 00:57:30,230
+the estimations differ from the from the
+
+1449
+00:57:30,230 --> 00:57:32,539
+real data and if they differ then they
+
+1450
+00:57:32,539 --> 00:57:36,079
+try to feed back the real data back into
+
+1451
+00:57:36,079 --> 00:57:38,119
+the optimizer so that when the next
+
+1452
+00:57:38,119 --> 00:57:40,400
+query shows up they can rely on the data
+
+1453
+00:57:40,400 --> 00:57:41,390
+they've already collected from the
+
+1454
+00:57:41,390 --> 00:57:45,170
+previous query all right so this seems
+
+1455
+00:57:45,170 --> 00:57:46,520
+this would solved this problem right
+
+1456
+00:57:46,520 --> 00:57:49,069
+it's like like oh we're some it's wrong
+
+1457
+00:57:49,069 --> 00:57:50,690
+we run real data see what actually
+
+1458
+00:57:50,690 --> 00:58:01,819
+happens the I would say that every db2
+
+1459
+00:58:01,819 --> 00:58:03,260
+administrator that I've ever talked to
+
+1460
+00:58:03,260 --> 00:58:06,650
+and I asked him about this that they
+
+1461
+00:58:06,650 --> 00:58:08,240
+always say the first thing they do when
+
+1462
+00:58:08,240 --> 00:58:10,339
+they install db2 is they turn all the
+
+1463
+00:58:10,339 --> 00:58:13,849
+ball cuz it never worked and we had
+
+1464
+00:58:13,849 --> 00:58:15,770
+Oracle has something similar to do
+
+1465
+00:58:15,770 --> 00:58:17,630
+memory management like automatic memory
+
+1466
+00:58:17,630 --> 00:58:18,589
+management for the buffer pool manager
+
+1467
+00:58:18,589 --> 00:58:21,859
+and we talked to some DBAs a few few
+
+1468
+00:58:21,859 --> 00:58:23,569
+weeks ago and it like yeah we turn that
+
+1469
+00:58:23,569 --> 00:58:25,460
+off immediately like all this automated
+
+1470
+00:58:25,460 --> 00:58:29,960
+stuff not right I so I mean I never ever
+
+1471
+00:58:29,960 --> 00:58:32,839
+found out why why I've heard there was
+
+1472
+00:58:32,839 --> 00:58:34,490
+some engineering difficulties at IBM to
+
+1473
+00:58:34,490 --> 00:58:35,780
+get this thing to actually to work the
+
+1474
+00:58:35,780 --> 00:58:37,730
+way they wanted to work and fit into the
+
+1475
+00:58:37,730 --> 00:58:40,250
+rest of the system correctly I think
+
+1476
+00:58:40,250 --> 00:58:41,630
+this didn't work because of engineering
+
+1477
+00:58:41,630 --> 00:58:43,790
+reasons and it's a shame because it
+
+1478
+00:58:43,790 --> 00:58:45,920
+seems like this would would solve our
+
+1479
+00:58:45,920 --> 00:58:48,079
+problems but because of this I think a
+
+1480
+00:58:48,079 --> 00:58:50,150
+lot of people a lot of these a lot of
+
+1481
+00:58:50,150 --> 00:58:51,619
+commercial systems have been hesitant to
+
+1482
+00:58:51,619 --> 00:58:53,750
+adopt similar techniques just because
+
+1483
+00:58:53,750 --> 00:58:56,390
+this thing's sort of you know fell apart
+
+1484
+00:58:56,390 --> 00:58:58,640
+but but this event lead us into what
+
+1485
+00:58:58,640 --> 00:58:59,930
+we're going to talk about on Monday of
+
+1486
+00:58:59,930 --> 00:59:02,270
+like the sort of revival or not a
+
+1487
+00:59:02,270 --> 00:59:03,859
+revival but a continuation of a long
+
+1488
+00:59:03,859 --> 00:59:06,790
+history of trying to do automated tuning
+
+1489
+00:59:06,790 --> 00:59:10,430
+in in in database systems to sort of
+
+1490
+00:59:10,430 --> 00:59:11,780
+leave e8 some of these difficulties
+
+1491
+00:59:11,780 --> 00:59:14,299
+right so now you know what's in vogue is
+
+1492
+00:59:14,299 --> 00:59:15,950
+machine learning and the people trying
+
+1493
+00:59:15,950 --> 00:59:16,970
+to apply machine learning to these
+
+1494
+00:59:16,970 --> 00:59:18,770
+problems but actually goes back into
+
+1495
+00:59:18,770 --> 00:59:21,109
+like the 1970s like people people have
+
+1496
+00:59:21,109 --> 00:59:22,309
+been working on this problem for a long
+
+1497
+00:59:22,309 --> 00:59:24,770
+time so so this is just sort of one
+
+1498
+00:59:24,770 --> 00:59:30,400
+example it does that didn't work okay so
+
+1499
+00:59:30,400 --> 00:59:33,440
+the main takeaway today is that for a
+
+1500
+00:59:33,440 --> 00:59:35,780
+memory database being able to estimate
+
+1501
+00:59:35,780 --> 00:59:37,010
+the number of tools we're gonna process
+
+1502
+00:59:37,010 --> 00:59:40,880
+per operator is gonna be the for us a
+
+1503
+00:59:40,880 --> 00:59:42,460
+reasonable approximation of what the
+
+1504
+00:59:42,460 --> 00:59:46,369
+cost of a core is going to be of course
+
+1505
+00:59:46,369 --> 00:59:48,230
+now that means that in order to to
+
+1506
+00:59:48,230 --> 00:59:49,910
+estimate the number to was gonna process
+
+1507
+00:59:49,910 --> 00:59:52,099
+per operator you got to know what the
+
+1508
+00:59:52,099 --> 00:59:54,319
+card in the cardinality is of your
+
+1509
+00:59:54,319 --> 00:59:57,920
+children operators and then as we show
+
+1510
+00:59:57,920 --> 00:59:58,970
+things can go bad
+
+1511
+00:59:58,970 --> 01:00:04,790
+quickly and so I think the way Microsoft
+
+1512
+01:00:04,790 --> 01:00:06,350
+does the cost estimation is using
+
+1513
+01:00:06,350 --> 01:00:07,790
+combination of sampling of sketches is
+
+1514
+01:00:07,790 --> 01:00:09,650
+the right way to do this and we tried
+
+1515
+01:00:09,650 --> 01:00:10,850
+doing this in our own database system
+
+1516
+01:00:10,850 --> 01:00:12,350
+but we never vetted it to determine
+
+1517
+01:00:12,350 --> 01:00:13,700
+whether it was actually accurate and
+
+1518
+01:00:13,700 --> 01:00:15,380
+what will happen is in the summer when
+
+1519
+01:00:15,380 --> 01:00:18,200
+we bring over the the old optimizer from
+
+1520
+01:00:18,200 --> 01:00:20,630
+peloton into the new system we're
+
+1521
+01:00:20,630 --> 01:00:21,920
+probably not gonna bring over the cost
+
+1522
+01:00:21,920 --> 01:00:23,870
+model we will start with a simple cost
+
+1523
+01:00:23,870 --> 01:00:27,320
+model that basically says if I haven't
+
+1524
+01:00:27,320 --> 01:00:28,910
+indexed my cost is zero if I have a
+
+1525
+01:00:28,910 --> 01:00:31,190
+sequential scan that cost us one that's
+
+1526
+01:00:31,190 --> 01:00:32,300
+the simplest cost model you could ever
+
+1527
+01:00:32,300 --> 01:00:33,890
+have that won't handle drawing ordering
+
+1528
+01:00:33,890 --> 01:00:35,030
+for us but at least that'll get us
+
+1529
+01:00:35,030 --> 01:00:39,520
+started on being with a pic indexes okay
+
+1530
+01:00:40,020 --> 01:01:08,500
+what is this I won't be to say you take
+
+1531
+01:01:08,500 --> 01:01:11,820
+a seat pray
+

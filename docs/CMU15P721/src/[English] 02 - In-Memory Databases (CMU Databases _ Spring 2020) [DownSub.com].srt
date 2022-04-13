@@ -1,0 +1,7804 @@
+1
+00:00:01,300 --> 00:00:05,129
+[Music]
+
+2
+00:00:05,200 --> 00:00:05,930
+[Applause]
+
+3
+00:00:05,930 --> 00:00:08,630
+[Music]
+
+4
+00:00:08,630 --> 00:00:10,020
+[Applause]
+
+5
+00:00:10,020 --> 00:00:12,650
+[Music]
+
+6
+00:00:12,650 --> 00:00:16,550
+as I said I can't be on campus this week
+
+7
+00:00:16,550 --> 00:00:19,770
+I'm still here in Europe right now I am
+
+8
+00:00:19,770 --> 00:00:22,650
+actually in Munich visiting Thomas
+
+9
+00:00:22,650 --> 00:00:25,439
+Norman at at T um and that's where they
+
+10
+00:00:25,439 --> 00:00:27,570
+invented hyper and the new database and
+
+11
+00:00:27,570 --> 00:00:30,449
+putting an umbrella so part of me going
+
+12
+00:00:30,449 --> 00:00:32,610
+down to visit Thomas is sort of to sort
+
+13
+00:00:32,610 --> 00:00:34,290
+of get a better understanding why the
+
+14
+00:00:34,290 --> 00:00:36,780
+Germans are so good at databases and so
+
+15
+00:00:36,780 --> 00:00:39,989
+as part of this they took me up here in
+
+16
+00:00:39,989 --> 00:00:41,670
+the Alps somewhere in the mountains I
+
+17
+00:00:41,670 --> 00:00:43,140
+don't know exactly where we are it's
+
+18
+00:00:43,140 --> 00:00:45,570
+freezing and the idea it's like this you
+
+19
+00:00:45,570 --> 00:00:47,969
+go in the woods and you think about your
+
+20
+00:00:47,969 --> 00:00:49,530
+thoughts for like an hour or something
+
+21
+00:00:49,530 --> 00:00:51,750
+somehow that's gonna magically make you
+
+22
+00:00:51,750 --> 00:00:54,930
+better understand databases so whatever
+
+23
+00:00:54,930 --> 00:00:56,399
+I'm just sitting here now it's freezing
+
+24
+00:00:56,399 --> 00:00:58,020
+cold there's some hunting dog running
+
+25
+00:00:58,020 --> 00:01:00,180
+around fighting things you may see that
+
+26
+00:01:00,180 --> 00:01:02,789
+in the background and I thought it'd be
+
+27
+00:01:02,789 --> 00:01:04,049
+a good time to get through and start
+
+28
+00:01:04,049 --> 00:01:07,619
+discussing the next lecture so let's see
+
+29
+00:01:07,619 --> 00:01:09,330
+how far we can get before it gets too
+
+30
+00:01:09,330 --> 00:01:14,189
+cold so the last class we discussed the
+
+31
+00:01:14,189 --> 00:01:16,530
+sort of a high-level history of database
+
+32
+00:01:16,530 --> 00:01:19,670
+systems and primarily what I focused on
+
+33
+00:01:19,670 --> 00:01:24,020
+was sort of thinking about the problem
+
+34
+00:01:24,020 --> 00:01:29,700
+in terms of like at a high level mostly
+
+35
+00:01:29,700 --> 00:01:31,680
+based on data models you know whether it
+
+36
+00:01:31,680 --> 00:01:33,479
+was the codasyl stuff or the the
+
+37
+00:01:33,479 --> 00:01:35,490
+hierarchal data model the relational
+
+38
+00:01:35,490 --> 00:01:38,610
+data model and so that was the sort of
+
+39
+00:01:38,610 --> 00:01:41,970
+main discussion of last class another
+
+40
+00:01:41,970 --> 00:01:43,200
+way to sort of think about it was an
+
+41
+00:01:43,200 --> 00:01:45,240
+overarching theme throughout the entire
+
+42
+00:01:45,240 --> 00:01:48,869
+history of databases is this constant
+
+43
+00:01:48,869 --> 00:01:51,329
+struggle of building database systems
+
+44
+00:01:51,329 --> 00:01:53,369
+that have to deal with the limitations
+
+45
+00:01:53,369 --> 00:01:56,189
+of the harbor at the time right it's the
+
+46
+00:01:56,189 --> 00:01:58,409
+same in the 1970s 1960s as it is now
+
+47
+00:01:58,409 --> 00:01:59,880
+we're you know we're always trying to
+
+48
+00:01:59,880 --> 00:02:03,000
+run databases on new hardware and get
+
+49
+00:02:03,000 --> 00:02:05,790
+the best performance we can out of it so
+
+50
+00:02:05,790 --> 00:02:08,068
+back in the 1970s though when they built
+
+51
+00:02:08,068 --> 00:02:09,538
+the first relational database systems
+
+52
+00:02:09,538 --> 00:02:11,819
+database systems the hardware it was a
+
+53
+00:02:11,819 --> 00:02:13,470
+lot different than what we
+
+54
+00:02:13,470 --> 00:02:16,890
+today but at a high level the the basic
+
+55
+00:02:16,890 --> 00:02:20,010
+idea is still the same and so the
+
+56
+00:02:20,010 --> 00:02:21,270
+problem though is like when we start to
+
+57
+00:02:21,270 --> 00:02:24,870
+talk about modern systems the although
+
+58
+00:02:24,870 --> 00:02:27,660
+the basic idea is still the same the
+
+59
+00:02:27,660 --> 00:02:29,460
+limitations that harbour is not exactly
+
+60
+00:02:29,460 --> 00:02:34,110
+the same so back then in the 1970s all
+
+61
+00:02:34,110 --> 00:02:35,670
+right you didn't have machines with a
+
+62
+00:02:35,670 --> 00:02:37,320
+lot of sockets a lot of about a cores
+
+63
+00:02:37,320 --> 00:02:39,210
+right you had a unit processor you had a
+
+64
+00:02:39,210 --> 00:02:42,090
+single single core CPU that could really
+
+65
+00:02:42,090 --> 00:02:45,270
+only execute one thread at a time the
+
+66
+00:02:45,270 --> 00:02:47,490
+rams also severely limited it was very
+
+67
+00:02:47,490 --> 00:02:50,280
+expensive so you were you were lucky to
+
+68
+00:02:50,280 --> 00:02:51,810
+get you know a machine had diarrea but
+
+69
+00:02:51,810 --> 00:02:54,780
+maybe like of like a megabyte sorry now
+
+70
+00:02:54,780 --> 00:02:56,430
+we can go into the terabyte so in a
+
+71
+00:02:56,430 --> 00:02:59,190
+single box and because bran was limited
+
+72
+00:02:59,190 --> 00:03:00,750
+we had a store the entire database on
+
+73
+00:03:00,750 --> 00:03:02,910
+disk and so the the whole architecture
+
+74
+00:03:02,910 --> 00:03:04,770
+the database system was predicated on
+
+75
+00:03:04,770 --> 00:03:07,500
+you know retrieving data from disk and
+
+76
+00:03:07,500 --> 00:03:09,810
+of course back then this were way slower
+
+77
+00:03:09,810 --> 00:03:12,660
+than they were now and certainly the
+
+78
+00:03:12,660 --> 00:03:15,780
+sequential access was was much faster
+
+79
+00:03:15,780 --> 00:03:18,269
+than random access so you try to design
+
+80
+00:03:18,269 --> 00:03:20,550
+algorithms and data structures that
+
+81
+00:03:20,550 --> 00:03:24,570
+could maximize going to access so now in
+
+82
+00:03:24,570 --> 00:03:29,160
+the modern era in you know 20 20 s now
+
+83
+00:03:29,160 --> 00:03:31,650
+we have machines that have enough DRAM
+
+84
+00:03:31,650 --> 00:03:34,709
+such that most databases can probably
+
+85
+00:03:34,709 --> 00:03:36,780
+fit entirely in main memory and there's
+
+86
+00:03:36,780 --> 00:03:38,250
+always going to be the outliers there's
+
+87
+00:03:38,250 --> 00:03:39,930
+always going to be you know the googles
+
+88
+00:03:39,930 --> 00:03:41,250
+and the Facebook's and Amazon's of the
+
+89
+00:03:41,250 --> 00:03:43,170
+world where their data but their
+
+90
+00:03:43,170 --> 00:03:45,180
+databases can be in the size of
+
+91
+00:03:45,180 --> 00:03:48,510
+petabytes but for probably 99% of the
+
+92
+00:03:48,510 --> 00:03:50,310
+applications their database maybe
+
+93
+00:03:50,310 --> 00:03:53,190
+measures in in gigabytes or a few
+
+94
+00:03:53,190 --> 00:03:56,160
+terabytes and so again with that with
+
+95
+00:03:56,160 --> 00:03:57,390
+that size you can certainly have a
+
+96
+00:03:57,390 --> 00:03:59,209
+database fit entirely in main memory
+
+97
+00:03:59,209 --> 00:04:01,380
+whether it's a distributed system or a
+
+98
+00:04:01,380 --> 00:04:05,150
+single node system so to understand why
+
+99
+00:04:05,150 --> 00:04:07,739
+databases you know aren't as maybe as
+
+100
+00:04:07,739 --> 00:04:09,810
+large as you think they actually are you
+
+101
+00:04:09,810 --> 00:04:11,519
+gotta understand that there's a sort of
+
+102
+00:04:11,519 --> 00:04:12,900
+difference between structured and
+
+103
+00:04:12,900 --> 00:04:14,340
+unstructured data or semi structured
+
+104
+00:04:14,340 --> 00:04:17,070
+data so structured data sets or be
+
+105
+00:04:17,070 --> 00:04:18,510
+things that we mean normal talked about
+
+106
+00:04:18,510 --> 00:04:19,978
+with you about databases so you have a
+
+107
+00:04:19,978 --> 00:04:23,310
+well-defined schema they have attributes
+
+108
+00:04:23,310 --> 00:04:25,080
+right and every record has to have those
+
+109
+00:04:25,080 --> 00:04:27,669
+attributes and so in those data
+
+110
+00:04:27,669 --> 00:04:29,169
+they're usually again these are
+
+111
+00:04:29,169 --> 00:04:31,930
+typically smaller unstructured data sets
+
+112
+00:04:31,930 --> 00:04:35,409
+would be things like video files sound
+
+113
+00:04:35,409 --> 00:04:37,509
+files or images right these are things
+
+114
+00:04:37,509 --> 00:04:39,759
+where the contents of every single
+
+115
+00:04:39,759 --> 00:04:41,860
+record in in that data set are is going
+
+116
+00:04:41,860 --> 00:04:43,659
+to be different or there's not even any
+
+117
+00:04:43,659 --> 00:04:45,219
+structure at all and you know you can't
+
+118
+00:04:45,219 --> 00:04:49,469
+run queries directly on on a video data
+
+119
+00:04:49,469 --> 00:04:52,120
+semi-structured would be things like log
+
+120
+00:04:52,120 --> 00:04:54,249
+files that are generated such that
+
+121
+00:04:54,249 --> 00:04:55,300
+they're they're meant to be human
+
+122
+00:04:55,300 --> 00:04:58,449
+readable but they're you know they're
+
+123
+00:04:58,449 --> 00:05:00,759
+not gonna have the exact same fields for
+
+124
+00:05:00,759 --> 00:05:03,159
+every single log record you can parse
+
+125
+00:05:03,159 --> 00:05:05,409
+them and extract those fields but you
+
+126
+00:05:05,409 --> 00:05:06,699
+know some love records might have other
+
+127
+00:05:06,699 --> 00:05:09,909
+fields other ones might have others so
+
+128
+00:05:09,909 --> 00:05:11,680
+again unstructured and semi-structured
+
+129
+00:05:11,680 --> 00:05:13,689
+data sets these are typically larger you
+
+130
+00:05:13,689 --> 00:05:16,689
+think of like YouTube YouTube yeah the
+
+131
+00:05:16,689 --> 00:05:19,300
+the my sequel database that that they
+
+132
+00:05:19,300 --> 00:05:21,939
+use in YouTube you know that's gonna be
+
+133
+00:05:21,939 --> 00:05:23,800
+a fraction of the size of the total
+
+134
+00:05:23,800 --> 00:05:25,150
+amount of video that they're storing and
+
+135
+00:05:25,150 --> 00:05:26,379
+the videos all the unstructured stuff
+
+136
+00:05:26,379 --> 00:05:29,370
+the my sequel forties database is the
+
+137
+00:05:29,370 --> 00:05:32,469
+structured database so for our purposes
+
+138
+00:05:32,469 --> 00:05:34,419
+here in this class we're primarily going
+
+139
+00:05:34,419 --> 00:05:36,960
+to focus on the structured data because
+
+140
+00:05:36,960 --> 00:05:39,490
+that's really only you know you can kind
+
+141
+00:05:39,490 --> 00:05:40,360
+of do the things that we're talking
+
+142
+00:05:40,360 --> 00:05:42,159
+about here but there's no magic way to
+
+143
+00:05:42,159 --> 00:05:44,560
+do vectorize query execution on video
+
+144
+00:05:44,560 --> 00:05:46,539
+data what do you have to do you have to
+
+145
+00:05:46,539 --> 00:05:48,550
+convert that video data into structured
+
+146
+00:05:48,550 --> 00:05:49,599
+data and then you can run your queries
+
+147
+00:05:49,599 --> 00:05:53,409
+on it so right so they so that's gonna
+
+148
+00:05:53,409 --> 00:05:55,060
+be the poker server for ourselves here
+
+149
+00:05:55,060 --> 00:05:58,449
+today the other thing we need to
+
+150
+00:05:58,449 --> 00:06:01,680
+understand also now is that how are we
+
+151
+00:06:01,680 --> 00:06:03,430
+and how we're gonna get the best
+
+152
+00:06:03,430 --> 00:06:05,409
+performance in a davis ism to run on the
+
+153
+00:06:05,409 --> 00:06:08,589
+structured data so you may think all
+
+154
+00:06:08,589 --> 00:06:10,449
+right well if my database can mostly
+
+155
+00:06:10,449 --> 00:06:12,849
+this is to fit on main memory can I take
+
+156
+00:06:12,849 --> 00:06:15,339
+a you know traditional disk or a
+
+157
+00:06:15,339 --> 00:06:18,580
+database system as as one as I described
+
+158
+00:06:18,580 --> 00:06:20,229
+last semester in the introduction class
+
+159
+00:06:20,229 --> 00:06:22,479
+can we just give that you know run that
+
+160
+00:06:22,479 --> 00:06:25,029
+on a machine with a large enough large
+
+161
+00:06:25,029 --> 00:06:26,409
+nut via Ram and set the buffer pool
+
+162
+00:06:26,409 --> 00:06:29,500
+cache size to be big enough such that
+
+163
+00:06:29,500 --> 00:06:30,759
+everything's gonna fit in a memory is
+
+164
+00:06:30,759 --> 00:06:32,050
+that going to be enough for us to get
+
+165
+00:06:32,050 --> 00:06:34,060
+the best performance and the spoiler is
+
+166
+00:06:34,060 --> 00:06:35,680
+gonna be no right and we need to
+
+167
+00:06:35,680 --> 00:06:38,589
+understand why so for today's lecture
+
+168
+00:06:38,589 --> 00:06:40,569
+see how far we can get before we get too
+
+169
+00:06:40,569 --> 00:06:41,560
+cold
+
+170
+00:06:41,560 --> 00:06:43,630
+is that we're gonna first discuss what a
+
+171
+00:06:43,630 --> 00:06:45,700
+dis cornea database system is so we can
+
+172
+00:06:45,700 --> 00:06:47,200
+understand you know when we started
+
+173
+00:06:47,200 --> 00:06:49,180
+talking on imitative systems how do they
+
+174
+00:06:49,180 --> 00:06:52,210
+avoid all the bottlenecks of the
+
+175
+00:06:52,210 --> 00:06:54,580
+slowdown issues of distorting system
+
+176
+00:06:54,580 --> 00:06:57,130
+then we're to talk about from this we
+
+177
+00:06:57,130 --> 00:06:58,510
+can go a little deeper into the current
+
+178
+00:06:58,510 --> 00:06:59,740
+role and see what are the bottlenecks
+
+179
+00:06:59,740 --> 00:07:01,690
+that we have to overcome to get these
+
+180
+00:07:01,690 --> 00:07:04,150
+control protocols to run in in memory
+
+181
+00:07:04,150 --> 00:07:08,800
+systems so the the definition that I
+
+182
+00:07:08,800 --> 00:07:10,510
+always like to use for a disc or any
+
+183
+00:07:10,510 --> 00:07:13,690
+database system is one where the the
+
+184
+00:07:13,690 --> 00:07:15,700
+architecture system of the system is
+
+185
+00:07:15,700 --> 00:07:18,490
+predicated on the assumption that the
+
+186
+00:07:18,490 --> 00:07:20,169
+primary search location the database
+
+187
+00:07:20,169 --> 00:07:22,090
+like all the contents of the database
+
+188
+00:07:22,090 --> 00:07:23,740
+there's records and indexes and material
+
+189
+00:07:23,740 --> 00:07:25,290
+that's used everything with the store is
+
+190
+00:07:25,290 --> 00:07:27,700
+going to be on some kind of non-volatile
+
+191
+00:07:27,700 --> 00:07:29,380
+storage but that's a spinning disk hard
+
+192
+00:07:29,380 --> 00:07:32,650
+drive or an SSD so that means that the
+
+193
+00:07:32,650 --> 00:07:34,750
+database is going to be designed based
+
+194
+00:07:34,750 --> 00:07:35,680
+on this assumption and therefore all the
+
+195
+00:07:35,680 --> 00:07:37,479
+algorithms the data structures and
+
+196
+00:07:37,479 --> 00:07:39,340
+everything that's on inside of it has to
+
+197
+00:07:39,340 --> 00:07:40,870
+be aware that you know at any time we
+
+198
+00:07:40,870 --> 00:07:42,419
+could have to go get something from disk
+
+199
+00:07:42,419 --> 00:07:44,860
+now the database itself will be
+
+200
+00:07:44,860 --> 00:07:47,320
+organized into a set of fixed length
+
+201
+00:07:47,320 --> 00:07:48,789
+pages or stuff that sometimes goes
+
+202
+00:07:48,789 --> 00:07:51,700
+blocks and then we're gonna use a Emery
+
+203
+00:07:51,700 --> 00:07:54,430
+buffering manager to store or cache the
+
+204
+00:07:54,430 --> 00:07:56,950
+pages in memory as we receive them from
+
+205
+00:07:56,950 --> 00:07:59,320
+disk again we're assuming a von Neumann
+
+206
+00:07:59,320 --> 00:08:01,990
+architecture and that means we can't you
+
+207
+00:08:01,990 --> 00:08:04,630
+know can't operate directly on on data
+
+208
+00:08:04,630 --> 00:08:07,270
+as it exists on disk you know that can
+
+209
+00:08:07,270 --> 00:08:09,039
+change in some modern hardware but for
+
+210
+00:08:09,039 --> 00:08:10,570
+our purposes here assume that's not the
+
+211
+00:08:10,570 --> 00:08:13,240
+case and therefore the preferable
+
+212
+00:08:13,240 --> 00:08:15,490
+manager is really all about how deciding
+
+213
+00:08:15,490 --> 00:08:16,900
+how to move this data back and forth
+
+214
+00:08:16,900 --> 00:08:19,750
+between disk and memory as needed and we
+
+215
+00:08:19,750 --> 00:08:20,800
+want to do this in such a way that we
+
+216
+00:08:20,800 --> 00:08:23,770
+minimize the amount of stalling or the
+
+217
+00:08:23,770 --> 00:08:25,240
+amount of times we have to go out the
+
+218
+00:08:25,240 --> 00:08:28,930
+disk so this buffer pool is sort of the
+
+219
+00:08:28,930 --> 00:08:32,589
+key thing that differentiates a disk or
+
+220
+00:08:32,589 --> 00:08:33,969
+nativism with the in-memory database
+
+221
+00:08:33,969 --> 00:08:35,409
+system from terms of like the
+
+222
+00:08:35,409 --> 00:08:38,830
+architecture so what's gonna happen is
+
+223
+00:08:38,830 --> 00:08:39,700
+we'll have a query that's going to
+
+224
+00:08:39,700 --> 00:08:41,919
+execute in our system and anytime that
+
+225
+00:08:41,919 --> 00:08:43,809
+asks to access a tuple we have to go
+
+226
+00:08:43,809 --> 00:08:46,029
+find the page that our tuple is located
+
+227
+00:08:46,029 --> 00:08:49,000
+in so the data says go check to see
+
+228
+00:08:49,000 --> 00:08:50,680
+whether that page that it needs for that
+
+229
+00:08:50,680 --> 00:08:53,470
+query is already in memory if it is then
+
+230
+00:08:53,470 --> 00:08:54,850
+we just hand back the pointer to where
+
+231
+00:08:54,850 --> 00:08:55,810
+slow
+
+232
+00:08:55,810 --> 00:08:57,310
+from our proper poll and the query can
+
+233
+00:08:57,310 --> 00:09:00,160
+execute if it's not then we start need
+
+234
+00:09:00,160 --> 00:09:02,529
+to do some extra stuff so first thing we
+
+235
+00:09:02,529 --> 00:09:05,380
+have to go we have to go do is well we
+
+236
+00:09:05,380 --> 00:09:07,450
+got to decide what frame we want to copy
+
+237
+00:09:07,450 --> 00:09:10,389
+our page into our buffer pool so a frame
+
+238
+00:09:10,389 --> 00:09:12,820
+is just a location in the allocated
+
+239
+00:09:12,820 --> 00:09:14,680
+memory of our profitable manager and we
+
+240
+00:09:14,680 --> 00:09:15,940
+use this term to differentiate it
+
+241
+00:09:15,940 --> 00:09:19,060
+between a page or a block because that's
+
+242
+00:09:19,060 --> 00:09:20,680
+the same frames gonna be used over and
+
+243
+00:09:20,680 --> 00:09:23,410
+over again for different pages so if
+
+244
+00:09:23,410 --> 00:09:25,990
+there's a free frame then our job is
+
+245
+00:09:25,990 --> 00:09:27,699
+easy we just say this is that frame that
+
+246
+00:09:27,699 --> 00:09:29,529
+we're gonna put our page in we go fetch
+
+247
+00:09:29,529 --> 00:09:30,790
+it from disk and copied in and we're
+
+248
+00:09:30,790 --> 00:09:33,550
+done but now there's no free frames then
+
+249
+00:09:33,550 --> 00:09:35,170
+we gotta find a page to exists from an
+
+250
+00:09:35,170 --> 00:09:37,209
+existing frame and that's when things
+
+251
+00:09:37,209 --> 00:09:40,480
+get complicated so if the page we want
+
+252
+00:09:40,480 --> 00:09:42,190
+to we want to evict if it's never
+
+253
+00:09:42,190 --> 00:09:43,990
+modified by a transaction I mean it's
+
+254
+00:09:43,990 --> 00:09:46,180
+not dirty then our job is easy we just
+
+255
+00:09:46,180 --> 00:09:48,790
+go write it out you know we just go drop
+
+256
+00:09:48,790 --> 00:09:51,610
+it and then reuse the frame but if it is
+
+257
+00:09:51,610 --> 00:09:53,860
+dirty then we got to go now evicted so
+
+258
+00:09:53,860 --> 00:09:55,149
+we've got to write about the disk and
+
+259
+00:09:55,149 --> 00:09:57,760
+flush it and once that's done now we can
+
+260
+00:09:57,760 --> 00:10:00,970
+use our frame so again you can see sort
+
+261
+00:10:00,970 --> 00:10:02,320
+of why this is complicated because you
+
+262
+00:10:02,320 --> 00:10:03,880
+know we're running essentially you know
+
+263
+00:10:03,880 --> 00:10:06,279
+LRU or clock or whatever exhibition
+
+264
+00:10:06,279 --> 00:10:07,720
+policy you want to use to decide how to
+
+265
+00:10:07,720 --> 00:10:09,760
+evict frames and we got to balance that
+
+266
+00:10:09,760 --> 00:10:11,500
+with you know what other queries or
+
+267
+00:10:11,500 --> 00:10:12,550
+transactions are running at the same
+
+268
+00:10:12,550 --> 00:10:15,250
+time what pages are dirty right this all
+
+269
+00:10:15,250 --> 00:10:18,279
+gets very complicated so now once the
+
+270
+00:10:18,279 --> 00:10:20,560
+page is in memory then you know we can
+
+271
+00:10:20,560 --> 00:10:21,850
+try to be smart and trying to translate
+
+272
+00:10:21,850 --> 00:10:25,420
+quickly any on disk or references to to
+
+273
+00:10:25,420 --> 00:10:27,550
+our page to now an or memory address so
+
+274
+00:10:27,550 --> 00:10:28,600
+that maybe we don't have to go through
+
+275
+00:10:28,600 --> 00:10:30,310
+this whole process of checking the
+
+276
+00:10:30,310 --> 00:10:31,510
+buffer pool manager every single time
+
+277
+00:10:31,510 --> 00:10:33,310
+but not every now in every system
+
+278
+00:10:33,310 --> 00:10:35,769
+actually does that so at a high level
+
+279
+00:10:35,769 --> 00:10:37,000
+what I just talked that looks like this
+
+280
+00:10:37,000 --> 00:10:39,430
+so for our purposes here say we're doing
+
+281
+00:10:39,430 --> 00:10:40,779
+a query that's going to look up an index
+
+282
+00:10:40,779 --> 00:10:42,550
+index it wants to find a record the
+
+283
+00:10:42,550 --> 00:10:43,990
+records inside a page and we got a go
+
+284
+00:10:43,990 --> 00:10:46,630
+fetch it from disk so to simplify our
+
+285
+00:10:46,630 --> 00:10:49,329
+discussion we'll say the index is not
+
+286
+00:10:49,329 --> 00:10:52,000
+not backed by buffer pool pages it's
+
+287
+00:10:52,000 --> 00:10:54,220
+just actually sitting in memory in most
+
+288
+00:10:54,220 --> 00:10:55,990
+systems that's actually not true right
+
+289
+00:10:55,990 --> 00:10:57,490
+the index pages themselves would be
+
+290
+00:10:57,490 --> 00:10:58,690
+backed by the powerful manager so we
+
+291
+00:10:58,690 --> 00:10:59,829
+have to go check to see whether those
+
+292
+00:10:59,829 --> 00:11:01,060
+pages are in memory as well
+
+293
+00:11:01,060 --> 00:11:03,100
+and do this entire process but we'll
+
+294
+00:11:03,100 --> 00:11:04,089
+just keep it simple and say it's
+
+295
+00:11:04,089 --> 00:11:06,430
+entirely memory so the first things to
+
+296
+00:11:06,430 --> 00:11:08,050
+be do is you look up on our index to
+
+297
+00:11:08,050 --> 00:11:08,570
+find our
+
+298
+00:11:08,570 --> 00:11:11,270
+and what the index will give us is back
+
+299
+00:11:11,270 --> 00:11:13,100
+give us back as a paid ID and a slot
+
+300
+00:11:13,100 --> 00:11:15,260
+number and then we can use that page ID
+
+301
+00:11:15,260 --> 00:11:17,060
+to look do a look of an a page table and
+
+302
+00:11:17,060 --> 00:11:19,430
+find the location of the page that we're
+
+303
+00:11:19,430 --> 00:11:21,200
+looking for so let's say that we're
+
+304
+00:11:21,200 --> 00:11:24,080
+looking for page 1 and then we would not
+
+305
+00:11:24,080 --> 00:11:25,910
+find the entry in our page table or we'd
+
+306
+00:11:25,910 --> 00:11:27,290
+see an entry that says oh it's not in
+
+307
+00:11:27,290 --> 00:11:28,580
+memories on disk and here's where to go
+
+308
+00:11:28,580 --> 00:11:31,910
+find it on disk so in order to bring it
+
+309
+00:11:31,910 --> 00:11:34,490
+to memory we have to go pick a existing
+
+310
+00:11:34,490 --> 00:11:37,700
+page to vicked so we have to latch this
+
+311
+00:11:37,700 --> 00:11:39,200
+page table to make sure that nobody else
+
+312
+00:11:39,200 --> 00:11:40,550
+is trying to bring it in the same time
+
+313
+00:11:40,550 --> 00:11:42,410
+we are and then we got to pick up one of
+
+314
+00:11:42,410 --> 00:11:44,090
+these pages to evict so let's say we
+
+315
+00:11:44,090 --> 00:11:47,060
+pick page two but page two is dirty so
+
+316
+00:11:47,060 --> 00:11:48,860
+now we gotta write it out to disk and
+
+317
+00:11:48,860 --> 00:11:51,680
+flush it and then once that's done then
+
+318
+00:11:51,680 --> 00:11:53,900
+we can now use the free frame to copy in
+
+319
+00:11:53,900 --> 00:11:56,840
+page one and at this point now we update
+
+320
+00:11:56,840 --> 00:11:58,370
+our page table to say hey if you look in
+
+321
+00:11:58,370 --> 00:12:00,140
+for page one here's the frame in the
+
+322
+00:12:00,140 --> 00:12:01,880
+before manage to go find it and then
+
+323
+00:12:01,880 --> 00:12:03,020
+once that done we can release our
+
+324
+00:12:03,020 --> 00:12:05,720
+latches and anybody can access it so
+
+325
+00:12:05,720 --> 00:12:06,950
+this is a sort of a gross simplification
+
+326
+00:12:06,950 --> 00:12:10,130
+of how this eviction process works right
+
+327
+00:12:10,130 --> 00:12:11,780
+because I'm not showing it well if there
+
+328
+00:12:11,780 --> 00:12:13,190
+was an entry for page two and then you
+
+329
+00:12:13,190 --> 00:12:15,410
+can update that now in the page table to
+
+330
+00:12:15,410 --> 00:12:17,300
+say it's not on not memory now it's on
+
+331
+00:12:17,300 --> 00:12:20,510
+disk but you know at a high level every
+
+332
+00:12:20,510 --> 00:12:21,620
+single database system that's you know
+
+333
+00:12:21,620 --> 00:12:23,930
+using a buffer pool is doing something
+
+334
+00:12:23,930 --> 00:12:27,380
+similar so what's the problem this well
+
+335
+00:12:27,380 --> 00:12:30,860
+if now we get we go back to our example
+
+336
+00:12:30,860 --> 00:12:33,050
+say let's give our database system a lot
+
+337
+00:12:33,050 --> 00:12:35,270
+of memory and now everything's gonna fit
+
+338
+00:12:35,270 --> 00:12:37,400
+memory well we still going through this
+
+339
+00:12:37,400 --> 00:12:39,020
+entire process to go look up the page
+
+340
+00:12:39,020 --> 00:12:40,430
+table on try to do a translation of like
+
+341
+00:12:40,430 --> 00:12:42,080
+the record ID to its memory location
+
+342
+00:12:42,080 --> 00:12:44,590
+every single time we access a tuple and
+
+343
+00:12:44,590 --> 00:12:46,730
+we have to take latches and protect
+
+344
+00:12:46,730 --> 00:12:48,650
+things because we don't want us to be
+
+345
+00:12:48,650 --> 00:12:51,170
+accessed in the page wall and then have
+
+346
+00:12:51,170 --> 00:12:52,340
+another threat try to evict that page
+
+347
+00:12:52,340 --> 00:12:54,530
+but like I said if if we have enough
+
+348
+00:12:54,530 --> 00:12:56,090
+memory then we're never gonna actually
+
+349
+00:12:56,090 --> 00:12:58,370
+write anything out the disk so pinning
+
+350
+00:12:58,370 --> 00:13:00,020
+these pages are and latching them is
+
+351
+00:13:00,020 --> 00:13:01,520
+actually not necessary at all so just
+
+352
+00:13:01,520 --> 00:13:04,160
+sort of wasted work and then running
+
+353
+00:13:04,160 --> 00:13:05,540
+that an eviction policy to updating all
+
+354
+00:13:05,540 --> 00:13:07,040
+internal metrics about how pages are
+
+355
+00:13:07,040 --> 00:13:08,480
+being accessed that's also a waste of
+
+356
+00:13:08,480 --> 00:13:10,370
+work too because again nothing's ever
+
+357
+00:13:10,370 --> 00:13:12,890
+going to be a victim so this sort of
+
+358
+00:13:12,890 --> 00:13:14,540
+answers my strawman question at the
+
+359
+00:13:14,540 --> 00:13:16,970
+beginning that well can't we just give
+
+360
+00:13:16,970 --> 00:13:20,090
+it some a lot of memory and you know
+
+361
+00:13:20,090 --> 00:13:21,890
+traditionally dissipated in a lot of
+
+362
+00:13:21,890 --> 00:13:22,400
+memory and what
+
+363
+00:13:22,400 --> 00:13:24,080
+that'd be enough for you know getting
+
+364
+00:13:24,080 --> 00:13:25,580
+the same performance as we would get an
+
+365
+00:13:25,580 --> 00:13:27,800
+in-memory system and the answer is no
+
+366
+00:13:27,800 --> 00:13:29,240
+because you're doing this all apps you
+
+367
+00:13:29,240 --> 00:13:30,380
+know doing these extra work just go
+
+368
+00:13:30,380 --> 00:13:34,910
+access the single page now this is gonna
+
+369
+00:13:34,910 --> 00:13:36,589
+have cascading to other issues as well
+
+370
+00:13:36,589 --> 00:13:40,070
+so like in concurrent rituals so the the
+
+371
+00:13:40,070 --> 00:13:41,260
+traditional disk based systems
+
+372
+00:13:41,260 --> 00:13:43,910
+destroying the system's their designs
+
+373
+00:13:43,910 --> 00:13:45,470
+such that at any time a transaction
+
+374
+00:13:45,470 --> 00:13:47,089
+could touch memory and it's not in disk
+
+375
+00:13:47,089 --> 00:13:48,680
+and therefore that transaction has get
+
+376
+00:13:48,680 --> 00:13:51,350
+stalled while the the disk manager go
+
+377
+00:13:51,350 --> 00:13:54,230
+fetches it and so while it stalled other
+
+378
+00:13:54,230 --> 00:13:56,210
+transactions are gonna be able to run on
+
+379
+00:13:56,210 --> 00:13:58,630
+other threads or the same thread so that
+
+380
+00:13:58,630 --> 00:14:01,100
+this system can keep making forward
+
+381
+00:14:01,100 --> 00:14:02,600
+progress even though you know one
+
+382
+00:14:02,600 --> 00:14:03,680
+transaction got stalled because it has
+
+383
+00:14:03,680 --> 00:14:05,300
+to get something from disk all right we
+
+384
+00:14:05,300 --> 00:14:07,430
+do this otherwise if we can only execute
+
+385
+00:14:07,430 --> 00:14:08,900
+one transaction at a time and we stall
+
+386
+00:14:08,900 --> 00:14:10,070
+anytime we have to get from something
+
+387
+00:14:10,070 --> 00:14:11,990
+I'm disk then the system's gonna look
+
+388
+00:14:11,990 --> 00:14:13,370
+unresponsive because it's gonna keep
+
+389
+00:14:13,370 --> 00:14:15,260
+stalling and you know every single time
+
+390
+00:14:15,260 --> 00:14:18,200
+you know we have a page miss so because
+
+391
+00:14:18,200 --> 00:14:19,400
+now we're allowing other transactions
+
+392
+00:14:19,400 --> 00:14:21,350
+are run at the same time we have to use
+
+393
+00:14:21,350 --> 00:14:22,700
+a concurrent protocol that could be
+
+394
+00:14:22,700 --> 00:14:25,610
+setting locks in our own records or
+
+395
+00:14:25,610 --> 00:14:27,620
+objects in the database to make sure we
+
+396
+00:14:27,620 --> 00:14:29,150
+provide the asset guarantees that you
+
+397
+00:14:29,150 --> 00:14:31,790
+want for transactions right because if
+
+398
+00:14:31,790 --> 00:14:35,950
+now a transaction modifies a page and
+
+399
+00:14:35,950 --> 00:14:39,050
+then that page gets written on the disk
+
+400
+00:14:39,050 --> 00:14:40,880
+before that transaction commits can
+
+401
+00:14:40,880 --> 00:14:42,800
+commit because some other transaction
+
+402
+00:14:42,800 --> 00:14:44,900
+evict that page then we got to make sure
+
+403
+00:14:44,900 --> 00:14:46,010
+that we keep track all the section
+
+404
+00:14:46,010 --> 00:14:47,690
+information and that if we crash and
+
+405
+00:14:47,690 --> 00:14:49,700
+come back that the uncommitted
+
+406
+00:14:49,700 --> 00:14:53,540
+transactions changes don't persist so in
+
+407
+00:14:53,540 --> 00:14:55,940
+a disk or any system if it's using
+
+408
+00:14:55,940 --> 00:14:57,170
+locking it's going to maintain this
+
+409
+00:14:57,170 --> 00:14:58,790
+locking information in separate data
+
+410
+00:14:58,790 --> 00:15:00,740
+structures right it's an in-memory hash
+
+411
+00:15:00,740 --> 00:15:03,980
+table in the lock manager to avoid those
+
+412
+00:15:03,980 --> 00:15:05,390
+the lock information getting swapped out
+
+413
+00:15:05,390 --> 00:15:07,220
+to disks that way I don't have to
+
+414
+00:15:07,220 --> 00:15:08,870
+determine whether I can even hold the
+
+415
+00:15:08,870 --> 00:15:11,330
+lock on a tuple to go got the disk and
+
+416
+00:15:11,330 --> 00:15:12,709
+figure out you know go fetch that lock
+
+417
+00:15:12,709 --> 00:15:14,480
+information everything is always going
+
+418
+00:15:14,480 --> 00:15:18,110
+to be in memory other problems would
+
+419
+00:15:18,110 --> 00:15:20,029
+have an in memory system is with logging
+
+420
+00:15:20,029 --> 00:15:23,779
+recovery so most database systems that
+
+421
+00:15:23,779 --> 00:15:25,100
+use a buffer file manager are going to
+
+422
+00:15:25,100 --> 00:15:26,779
+be using the steal no force but football
+
+423
+00:15:26,779 --> 00:15:30,740
+manager policies and this just basically
+
+424
+00:15:30,740 --> 00:15:32,600
+means that all the transactions that a
+
+425
+00:15:32,600 --> 00:15:34,400
+transaction mates all the modifications
+
+426
+00:15:34,400 --> 00:15:36,000
+that a transaction makes
+
+427
+00:15:36,000 --> 00:15:37,379
+have to get added to a right ahead log
+
+428
+00:15:37,379 --> 00:15:39,120
+and that those entries have to get
+
+429
+00:15:39,120 --> 00:15:40,980
+flushed to disk before transactions
+
+430
+00:15:40,980 --> 00:15:43,560
+allowed to commit and then any updates
+
+431
+00:15:43,560 --> 00:15:46,139
+to a dirty page the law of records
+
+432
+00:15:46,139 --> 00:15:47,129
+correspond to those updates has
+
+433
+00:15:47,129 --> 00:15:48,480
+rewritten a disk before the dirty page
+
+434
+00:15:48,480 --> 00:15:50,759
+can be written a disk these are things
+
+435
+00:15:50,759 --> 00:15:52,019
+that we covered in the introduction
+
+436
+00:15:52,019 --> 00:15:55,319
+class last semester so now an in-memory
+
+437
+00:15:55,319 --> 00:15:57,899
+system we don't have dirty pages anymore
+
+438
+00:15:57,899 --> 00:16:00,389
+so maybe we don't need to use the exact
+
+439
+00:16:00,389 --> 00:16:03,420
+same protocol and then maybe our log
+
+440
+00:16:03,420 --> 00:16:04,709
+entries don't need to store the exact
+
+441
+00:16:04,709 --> 00:16:06,180
+same information as we had in dis
+
+442
+00:16:06,180 --> 00:16:08,399
+oriented system right if no dirty pages
+
+443
+00:16:08,399 --> 00:16:10,769
+have to ever get rid of disk then it
+
+444
+00:16:10,769 --> 00:16:12,509
+maybe doesn't make sense to store the
+
+445
+00:16:12,509 --> 00:16:15,509
+before image or the redo information I'm
+
+446
+00:16:15,509 --> 00:16:19,199
+sorry the undo information of the
+
+447
+00:16:19,199 --> 00:16:21,120
+transactions modification because that
+
+448
+00:16:21,120 --> 00:16:22,500
+page will never the dirty page never
+
+449
+00:16:22,500 --> 00:16:25,529
+gets written so there's a lot extra
+
+450
+00:16:25,529 --> 00:16:27,629
+stuff we had to do in a tyranny system
+
+451
+00:16:27,629 --> 00:16:29,519
+that maybe doesn't make sense anymore in
+
+452
+00:16:29,519 --> 00:16:32,339
+an emery system like keeping track of
+
+453
+00:16:32,339 --> 00:16:35,759
+the logs sequence numbers again again
+
+454
+00:16:35,759 --> 00:16:38,100
+maintaining the the undo information
+
+455
+00:16:38,100 --> 00:16:40,379
+because again dirty pages don't get rid
+
+456
+00:16:40,379 --> 00:16:41,370
+of discs because everything fits in
+
+457
+00:16:41,370 --> 00:16:44,430
+memory all right so to get others a
+
+458
+00:16:44,430 --> 00:16:45,509
+better understanding of what this
+
+459
+00:16:45,509 --> 00:16:47,519
+overhead is actually gonna be there's a
+
+460
+00:16:47,519 --> 00:16:51,509
+study that was done at MIT it's actually
+
+461
+00:16:51,509 --> 00:16:53,819
+2008 over 10 years ago now where they
+
+462
+00:16:53,819 --> 00:16:56,120
+took a old TV database system and
+
+463
+00:16:56,120 --> 00:16:58,709
+they've instrumented so that they can
+
+464
+00:16:58,709 --> 00:17:00,930
+measure the number instructions that the
+
+465
+00:17:00,930 --> 00:17:02,670
+data system was spending in different
+
+466
+00:17:02,670 --> 00:17:04,980
+parts of the current query execution
+
+467
+00:17:04,980 --> 00:17:07,559
+while you're running TPCC and the idea
+
+468
+00:17:07,559 --> 00:17:09,720
+here is to break down the system into
+
+469
+00:17:09,720 --> 00:17:11,520
+different components as I talked about
+
+470
+00:17:11,520 --> 00:17:13,349
+and just measure again how much time
+
+471
+00:17:13,349 --> 00:17:15,869
+we're spending in each of them it's okay
+
+472
+00:17:15,869 --> 00:17:17,669
+this is for a database where everything
+
+473
+00:17:17,669 --> 00:17:19,740
+fits in memory there's no any no reason
+
+474
+00:17:19,740 --> 00:17:20,939
+writes in memory nothing gets flushed to
+
+475
+00:17:20,939 --> 00:17:22,140
+disk and that right ahead log this is
+
+476
+00:17:22,140 --> 00:17:23,760
+just what is the cost of going access
+
+477
+00:17:23,760 --> 00:17:25,740
+data that's in memory using the disk
+
+478
+00:17:25,740 --> 00:17:28,140
+oriented architecture so the first
+
+479
+00:17:28,140 --> 00:17:30,480
+overhead is in the palpable manager this
+
+480
+00:17:30,480 --> 00:17:31,679
+is about 34 percent of the CPU
+
+481
+00:17:31,679 --> 00:17:33,659
+instructions are spent doing updates or
+
+482
+00:17:33,659 --> 00:17:34,950
+lookups into the page table doing
+
+483
+00:17:34,950 --> 00:17:37,770
+updates you keep track of all the
+
+484
+00:17:37,770 --> 00:17:39,570
+metadata you have for the eviction
+
+485
+00:17:39,570 --> 00:17:43,230
+policy 14% of the time spent doing
+
+486
+00:17:43,230 --> 00:17:44,970
+latching by this could be for the
+
+487
+00:17:44,970 --> 00:17:46,380
+internal data structures such as the
+
+488
+00:17:46,380 --> 00:17:49,049
+page table with the lock manager ran
+
+489
+00:17:49,049 --> 00:17:50,040
+anytime that's you know
+
+490
+00:17:50,040 --> 00:17:51,510
+the low-level constructor we need
+
+491
+00:17:51,510 --> 00:17:54,990
+protect 16 percent of instructions were
+
+492
+00:17:54,990 --> 00:17:57,990
+spent on locking so this particular
+
+493
+00:17:57,990 --> 00:18:00,600
+system it was called sure and uses
+
+494
+00:18:00,600 --> 00:18:02,070
+two-phase locking so this is the
+
+495
+00:18:02,070 --> 00:18:03,600
+overhead of updating the lock
+
+496
+00:18:03,600 --> 00:18:04,980
+information for transactions while they
+
+497
+00:18:04,980 --> 00:18:08,700
+run for 12 percent of the instructions
+
+498
+00:18:08,700 --> 00:18:10,590
+were spent in the log manager so this is
+
+499
+00:18:10,590 --> 00:18:11,760
+not the cost of running out the disk
+
+500
+00:18:11,760 --> 00:18:13,350
+this is the cost of preparing the law of
+
+501
+00:18:13,350 --> 00:18:15,560
+records that we're going to write out
+
+502
+00:18:15,560 --> 00:18:18,660
+then 16 percent of the time is spent
+
+503
+00:18:18,660 --> 00:18:22,290
+doing a comparison of keys doing
+
+504
+00:18:22,290 --> 00:18:24,330
+traversals in the B+ tree but this is
+
+505
+00:18:24,330 --> 00:18:25,890
+sort of unavoidable this is just saying
+
+506
+00:18:25,890 --> 00:18:27,090
+you know if I'm trying to find the
+
+507
+00:18:27,090 --> 00:18:28,230
+record that I want through the D plus
+
+508
+00:18:28,230 --> 00:18:30,260
+tree this is the cost of comparing keys
+
+509
+00:18:30,260 --> 00:18:32,610
+so this is now going to leave us with a
+
+510
+00:18:32,610 --> 00:18:35,160
+paltry 7% of the CP instructions we're
+
+511
+00:18:35,160 --> 00:18:37,290
+actually doing what what they would call
+
+512
+00:18:37,290 --> 00:18:40,860
+real work like executing the the logic
+
+513
+00:18:40,860 --> 00:18:43,730
+for transactions getting back the data
+
+514
+00:18:43,730 --> 00:18:46,410
+and then performing you know perform the
+
+515
+00:18:46,410 --> 00:18:47,550
+commit operations and things like that
+
+516
+00:18:47,550 --> 00:18:49,710
+so this is again this is showing you
+
+517
+00:18:49,710 --> 00:18:50,970
+that if you take a disk learning system
+
+518
+00:18:50,970 --> 00:18:52,860
+and you give it all the memory that it
+
+519
+00:18:52,860 --> 00:18:54,270
+wants so that everything everything fits
+
+520
+00:18:54,270 --> 00:18:56,040
+in memory you're not going to get
+
+521
+00:18:56,040 --> 00:18:57,540
+potentially the best performance because
+
+522
+00:18:57,540 --> 00:18:59,640
+everything could still you know you
+
+523
+00:18:59,640 --> 00:19:01,320
+still have pain the penalty for all this
+
+524
+00:19:01,320 --> 00:19:03,840
+internal architecture that assumes the
+
+525
+00:19:03,840 --> 00:19:05,190
+data is not on disk and there's all the
+
+526
+00:19:05,190 --> 00:19:07,020
+protection mechanisms for that
+
+527
+00:19:07,020 --> 00:19:08,760
+assumption and that are actually not
+
+528
+00:19:08,760 --> 00:19:11,330
+necessary
+
+529
+00:19:11,500 --> 00:19:15,429
+so my battery on my tablet shut down
+
+530
+00:19:15,429 --> 00:19:17,559
+earlier today when I was recording this
+
+531
+00:19:17,559 --> 00:19:20,710
+outside it got too cold and everything
+
+532
+00:19:20,710 --> 00:19:23,110
+just the whole thing to shut down I was
+
+533
+00:19:23,110 --> 00:19:25,480
+like 20 degrees Fahrenheit which is like
+
+534
+00:19:25,480 --> 00:19:28,929
+negative 7 or so degrees Celsius so that
+
+535
+00:19:28,929 --> 00:19:31,149
+was kind of weird so back inside in this
+
+536
+00:19:31,149 --> 00:19:35,950
+weird German gold deprivation chamber
+
+537
+00:19:35,950 --> 00:19:38,440
+thing that they have here again and
+
+538
+00:19:38,440 --> 00:19:39,789
+since to come in here and think about
+
+539
+00:19:39,789 --> 00:19:41,799
+deep thoughts about databases and
+
+540
+00:19:41,799 --> 00:19:43,029
+somehow become a better programmer like
+
+541
+00:19:43,029 --> 00:19:45,070
+a German I don't know if that's gonna
+
+542
+00:19:45,070 --> 00:19:46,990
+work so let's just continue with the
+
+543
+00:19:46,990 --> 00:19:51,009
+lecture so where we left off just now
+
+544
+00:19:51,009 --> 00:19:53,080
+was we were talking about how the
+
+545
+00:19:53,080 --> 00:19:56,769
+Discordian systems have because they
+
+546
+00:19:56,769 --> 00:19:58,480
+make that assumption that the
+
+547
+00:19:58,480 --> 00:19:59,799
+prime-minister education the davis could
+
+548
+00:19:59,799 --> 00:20:01,000
+be on disk there's all this architecture
+
+549
+00:20:01,000 --> 00:20:05,620
+set up so that at any time you know when
+
+550
+00:20:05,620 --> 00:20:07,629
+you read something you you have to go
+
+551
+00:20:07,629 --> 00:20:08,799
+check to see whether it's on disk and if
+
+552
+00:20:08,799 --> 00:20:10,509
+not you can install that thread and do
+
+553
+00:20:10,509 --> 00:20:12,610
+other stuff so now we're gonna switch
+
+554
+00:20:12,610 --> 00:20:13,809
+over and talk about an in-memory
+
+555
+00:20:13,809 --> 00:20:16,779
+database system so this is one where
+
+556
+00:20:16,779 --> 00:20:19,929
+that where the system's gonna zoom that
+
+557
+00:20:19,929 --> 00:20:21,460
+the primary search location is going to
+
+558
+00:20:21,460 --> 00:20:23,980
+be above all the data base is always
+
+559
+00:20:23,980 --> 00:20:25,779
+going to be permanently in memory so
+
+560
+00:20:25,779 --> 00:20:27,340
+that means that any single time a
+
+561
+00:20:27,340 --> 00:20:29,769
+transaction or a query goes and reads a
+
+562
+00:20:29,769 --> 00:20:31,929
+tuple it can assume that that thing is
+
+563
+00:20:31,929 --> 00:20:33,730
+going to be in memory and therefore it
+
+564
+00:20:33,730 --> 00:20:35,980
+doesn't have to go through all that page
+
+565
+00:20:35,980 --> 00:20:38,289
+table and in the buffalo and check
+
+566
+00:20:38,289 --> 00:20:39,669
+anything goes goes and reads whatever it
+
+567
+00:20:39,669 --> 00:20:42,929
+wants or writes whatever it wants so
+
+568
+00:20:42,929 --> 00:20:45,250
+it's not to say that everything we're
+
+569
+00:20:45,250 --> 00:20:46,840
+gonna talk about this semester is going
+
+570
+00:20:46,840 --> 00:20:48,429
+to be only targeting in-memory databases
+
+571
+00:20:48,429 --> 00:20:50,200
+but we'll see how there's be certain
+
+572
+00:20:50,200 --> 00:20:51,639
+design decisions that we're gonna make
+
+573
+00:20:51,639 --> 00:20:54,129
+that'll make our life easier if we make
+
+574
+00:20:54,129 --> 00:20:57,730
+this assumption so this idea of an
+
+575
+00:20:57,730 --> 00:20:59,950
+in-memory database is not new
+
+576
+00:20:59,950 --> 00:21:02,379
+the first proposed systems go back and
+
+577
+00:21:02,379 --> 00:21:05,799
+into the 1980s but they're not really
+
+578
+00:21:05,799 --> 00:21:08,740
+you know viable option now maybe in the
+
+579
+00:21:08,740 --> 00:21:10,870
+last 10 years because it's gotten to the
+
+580
+00:21:10,870 --> 00:21:11,980
+point where dear on prices and
+
+581
+00:21:11,980 --> 00:21:15,159
+capacities are such that you know we can
+
+582
+00:21:15,159 --> 00:21:18,299
+store really large databases in memory
+
+583
+00:21:18,299 --> 00:21:21,220
+so the you know that there was initial
+
+584
+00:21:21,220 --> 00:21:22,899
+ideas proposed in 1980s we'll talk a
+
+585
+00:21:22,899 --> 00:21:24,390
+little bit about that as we go
+
+586
+00:21:24,390 --> 00:21:27,070
+but the first commercial America
+
+587
+00:21:27,070 --> 00:21:28,420
+databases diddly didn't come out until
+
+588
+00:21:28,420 --> 00:21:31,540
+like the 1990s the most famous three are
+
+589
+00:21:31,540 --> 00:21:34,090
+probably times ten which is really
+
+590
+00:21:34,090 --> 00:21:36,160
+originally called small base and then
+
+591
+00:21:36,160 --> 00:21:38,650
+they forked off from HP and became times
+
+592
+00:21:38,650 --> 00:21:42,810
+10 and then Oracle bought them probably
+
+593
+00:21:42,810 --> 00:21:46,300
+about 2006 or so data blitz was the
+
+594
+00:21:46,300 --> 00:21:49,150
+system at a Bell Labs 1880 in the 1990s
+
+595
+00:21:49,150 --> 00:21:52,360
+it was urgent called dolly it was sold
+
+596
+00:21:52,360 --> 00:21:53,560
+for like telecom switches and things
+
+597
+00:21:53,560 --> 00:21:55,300
+like that I don't think it's still
+
+598
+00:21:55,300 --> 00:21:56,860
+around today or if it is it's sort of
+
+599
+00:21:56,860 --> 00:21:58,750
+it's obviously in legacy mode and the
+
+600
+00:21:58,750 --> 00:22:01,480
+Alta base is that a South Korea it's one
+
+601
+00:22:01,480 --> 00:22:03,040
+of these early beginners he's early game
+
+602
+00:22:03,040 --> 00:22:04,450
+every day to business which actually is
+
+603
+00:22:04,450 --> 00:22:05,890
+still around today and actually within
+
+604
+00:22:05,890 --> 00:22:07,270
+the last two or three years they're open
+
+605
+00:22:07,270 --> 00:22:09,130
+sourced it is you can go and check that
+
+606
+00:22:09,130 --> 00:22:13,750
+out of github so even though and now
+
+607
+00:22:13,750 --> 00:22:15,220
+that the Davis is gonna be entirely
+
+608
+00:22:15,220 --> 00:22:18,370
+named memory we're still gonna organize
+
+609
+00:22:18,370 --> 00:22:22,150
+data into blocks and pages does not slot
+
+610
+00:22:22,150 --> 00:22:23,890
+at pages because we don't you know what
+
+611
+00:22:23,890 --> 00:22:25,300
+the word about indirection within a page
+
+612
+00:22:25,300 --> 00:22:29,050
+itself and so the system architecture
+
+613
+00:22:29,050 --> 00:22:30,250
+would be slightly different now because
+
+614
+00:22:30,250 --> 00:22:32,470
+now instead of doing these record IDs we
+
+615
+00:22:32,470 --> 00:22:36,070
+can deal with direct memory pointers the
+
+616
+00:22:36,070 --> 00:22:37,600
+way we're gonna handle fixed length
+
+617
+00:22:37,600 --> 00:22:39,040
+versus variable length data if we
+
+618
+00:22:39,040 --> 00:22:41,080
+slightly different than a than a disk
+
+619
+00:22:41,080 --> 00:22:42,550
+based system because again we don't have
+
+620
+00:22:42,550 --> 00:22:45,100
+slotted pages and although not many
+
+621
+00:22:45,100 --> 00:22:48,970
+systems have this because some do there
+
+622
+00:22:48,970 --> 00:22:50,350
+is a concern that now because
+
+623
+00:22:50,350 --> 00:22:52,810
+everything's in memory any thread can
+
+624
+00:22:52,810 --> 00:22:55,180
+read or so you can write anything in the
+
+625
+00:22:55,180 --> 00:22:57,730
+address space of the process so to make
+
+626
+00:22:57,730 --> 00:23:00,300
+sure that we don't have you know
+
+627
+00:23:00,300 --> 00:23:02,920
+error-prone software collaborating our
+
+628
+00:23:02,920 --> 00:23:05,800
+data and causing permit damage we can
+
+629
+00:23:05,800 --> 00:23:07,300
+use check sums throughout the system of
+
+630
+00:23:07,300 --> 00:23:09,670
+these blocks to keep track of you know
+
+631
+00:23:09,670 --> 00:23:13,750
+the status of a page and you know detect
+
+632
+00:23:13,750 --> 00:23:15,820
+errors with these ever problems now
+
+633
+00:23:15,820 --> 00:23:17,500
+underneath the covers the operating
+
+634
+00:23:17,500 --> 00:23:19,540
+system and the hardware is also going to
+
+635
+00:23:19,540 --> 00:23:22,150
+be organizing memory into pages as well
+
+636
+00:23:22,150 --> 00:23:23,800
+that's not really going to be our
+
+637
+00:23:23,800 --> 00:23:25,990
+concern for most most of this semester
+
+638
+00:23:25,990 --> 00:23:28,000
+we'll talk a little bit later on and a
+
+639
+00:23:28,000 --> 00:23:29,560
+few more lectures because we need to
+
+640
+00:23:29,560 --> 00:23:30,790
+understand how it's actually going to
+
+641
+00:23:30,790 --> 00:23:32,260
+layout data so that when we start laying
+
+642
+00:23:32,260 --> 00:23:34,990
+that data we can align to what the
+
+643
+00:23:34,990 --> 00:23:35,590
+underlying
+
+644
+00:23:35,590 --> 00:23:37,780
+page representation in the OS is or the
+
+645
+00:23:37,780 --> 00:23:38,090
+hardware
+
+646
+00:23:38,090 --> 00:23:42,320
+is Roberts's now we can ignore that so
+
+647
+00:23:42,320 --> 00:23:43,460
+again let's return back to our
+
+648
+00:23:43,460 --> 00:23:44,690
+high-level example here where we were
+
+649
+00:23:44,690 --> 00:23:47,240
+had a query one of that accesses a tuple
+
+650
+00:23:47,240 --> 00:23:49,159
+lets people go through an index to look
+
+651
+00:23:49,159 --> 00:23:52,130
+it up so now in our index instead of
+
+652
+00:23:52,130 --> 00:23:54,470
+returning back a record ID or page page
+
+653
+00:23:54,470 --> 00:23:56,570
+ID in an offset we're now gonna get a
+
+654
+00:23:56,570 --> 00:23:59,840
+block ID in an offset and this block ID
+
+655
+00:23:59,840 --> 00:24:02,120
+could either be the direct memory
+
+656
+00:24:02,120 --> 00:24:04,880
+address of a fixed length block or there
+
+657
+00:24:04,880 --> 00:24:06,169
+could be an additional mechanism that
+
+658
+00:24:06,169 --> 00:24:08,330
+allows us to look it up and see you've
+
+659
+00:24:08,330 --> 00:24:10,490
+convert that block ID to a memory
+
+660
+00:24:10,490 --> 00:24:14,659
+location so the primary search locations
+
+661
+00:24:14,659 --> 00:24:16,039
+database again is in memory or every
+
+662
+00:24:16,039 --> 00:24:18,200
+tuple is in memory but we're gonna
+
+663
+00:24:18,200 --> 00:24:20,240
+organize them in these fixed length
+
+664
+00:24:20,240 --> 00:24:22,610
+through records and so for this it
+
+665
+00:24:22,610 --> 00:24:23,600
+doesn't matter what we're assuming a
+
+666
+00:24:23,600 --> 00:24:24,890
+roast or a column store but the basic
+
+667
+00:24:24,890 --> 00:24:26,720
+idea is the same and that is we're gonna
+
+668
+00:24:26,720 --> 00:24:30,520
+have a set of blocks or restore the
+
+669
+00:24:30,520 --> 00:24:33,409
+fixed length data for a tuple so
+
+670
+00:24:33,409 --> 00:24:37,070
+anything like an int dates floats reals
+
+671
+00:24:37,070 --> 00:24:38,750
+things like that all that can be stored
+
+672
+00:24:38,750 --> 00:24:42,169
+is fixed length and fixed length block
+
+673
+00:24:42,169 --> 00:24:44,240
+and that means that the size of every
+
+674
+00:24:44,240 --> 00:24:47,539
+tuple here is going to be the same and
+
+675
+00:24:47,539 --> 00:24:49,820
+so that says now if we have as block ID
+
+676
+00:24:49,820 --> 00:24:51,049
+and we convert that back to a memory
+
+677
+00:24:51,049 --> 00:24:52,940
+address when we want to do a lookup to
+
+678
+00:24:52,940 --> 00:24:54,919
+find the tuple within the offset of that
+
+679
+00:24:54,919 --> 00:24:57,890
+block we just do some simple memory
+
+680
+00:24:57,890 --> 00:25:00,500
+arithmetic to take the size of the tuple
+
+681
+00:25:00,500 --> 00:25:01,850
+multiplied by our offset and then as
+
+682
+00:25:01,850 --> 00:25:03,320
+tell us where to be jump in memory that
+
+683
+00:25:03,320 --> 00:25:06,440
+blocked and regret it now to handle very
+
+684
+00:25:06,440 --> 00:25:07,880
+length data this is gonna be much
+
+685
+00:25:07,880 --> 00:25:10,580
+different than what we would do in a
+
+686
+00:25:10,580 --> 00:25:13,159
+disk based system so variable length
+
+687
+00:25:13,159 --> 00:25:14,750
+data were instead instead of actually
+
+688
+00:25:14,750 --> 00:25:16,100
+storing the data in line the fixed
+
+689
+00:25:16,100 --> 00:25:18,529
+length data block for the most the time
+
+690
+00:25:18,529 --> 00:25:21,500
+restore point err to some other memory
+
+691
+00:25:21,500 --> 00:25:23,299
+location in a very linked data pool
+
+692
+00:25:23,299 --> 00:25:27,169
+where that's a direct access to the data
+
+693
+00:25:27,169 --> 00:25:29,419
+that corresponds to the this attribute
+
+694
+00:25:29,419 --> 00:25:31,490
+within this tuple and again the idea
+
+695
+00:25:31,490 --> 00:25:33,679
+here is that we can guarantee that all
+
+696
+00:25:33,679 --> 00:25:35,059
+the tuples and the fixed length data
+
+697
+00:25:35,059 --> 00:25:36,620
+blocks are fixed length and then for
+
+698
+00:25:36,620 --> 00:25:38,750
+anything that's variable length we shove
+
+699
+00:25:38,750 --> 00:25:40,250
+that into the very length data block
+
+700
+00:25:40,250 --> 00:25:42,169
+again this is different than the slotted
+
+701
+00:25:42,169 --> 00:25:44,270
+page design you would see in a disk
+
+702
+00:25:44,270 --> 00:25:46,220
+coordinate system because in there we're
+
+703
+00:25:46,220 --> 00:25:48,049
+trying to reduce the number of disk
+
+704
+00:25:48,049 --> 00:25:50,330
+reads so therefore we try to pack in all
+
+705
+00:25:50,330 --> 00:25:51,240
+the variable length data
+
+706
+00:25:51,240 --> 00:25:53,250
+for a tuple within you know with the
+
+707
+00:25:53,250 --> 00:25:55,430
+tuple itself all the fixed length data
+
+708
+00:25:55,430 --> 00:25:57,840
+that doesn't always happen and if it the
+
+709
+00:25:57,840 --> 00:25:59,160
+spillover to another page we can do that
+
+710
+00:25:59,160 --> 00:26:00,900
+but most the time we try to make that
+
+711
+00:26:00,900 --> 00:26:01,230
+happen
+
+712
+00:26:01,230 --> 00:26:03,210
+and in this world in memory system were
+
+713
+00:26:03,210 --> 00:26:04,200
+actually want to store the variable
+
+714
+00:26:04,200 --> 00:26:05,910
+length data separately so that way we
+
+715
+00:26:05,910 --> 00:26:08,460
+can do that deterministic lookups to
+
+716
+00:26:08,460 --> 00:26:11,820
+find memory addresses for tuples all
+
+717
+00:26:11,820 --> 00:26:12,810
+right some other things that better
+
+718
+00:26:12,810 --> 00:26:14,310
+could be different then we kind of
+
+719
+00:26:14,310 --> 00:26:15,270
+talked about quickly within memory
+
+720
+00:26:15,270 --> 00:26:17,130
+databases right and again these are the
+
+721
+00:26:17,130 --> 00:26:18,450
+things we're talk about their entire
+
+722
+00:26:18,450 --> 00:26:20,640
+semester the first one is gonna be how
+
+723
+00:26:20,640 --> 00:26:21,930
+we're actually going to store indexes
+
+724
+00:26:21,930 --> 00:26:23,250
+sort of how with data structures we're
+
+725
+00:26:23,250 --> 00:26:25,560
+gonna use for indexes so when this first
+
+726
+00:26:25,560 --> 00:26:27,510
+in memory database systems were proposed
+
+727
+00:26:27,510 --> 00:26:29,850
+in the 1980s the harbor it was a lot
+
+728
+00:26:29,850 --> 00:26:31,020
+different than the hardware we know
+
+729
+00:26:31,020 --> 00:26:32,730
+about today or how the harbor is laid
+
+730
+00:26:32,730 --> 00:26:34,950
+out today so in particular back then the
+
+731
+00:26:34,950 --> 00:26:37,350
+cache and memory access beats were about
+
+732
+00:26:37,350 --> 00:26:40,140
+the same but now this is not the case at
+
+733
+00:26:40,140 --> 00:26:42,900
+all right CPU caches are way faster than
+
+734
+00:26:42,900 --> 00:26:45,720
+main memory access so back then people
+
+735
+00:26:45,720 --> 00:26:48,180
+were designing data structures were you
+
+736
+00:26:48,180 --> 00:26:50,220
+know reading from cache was the same as
+
+737
+00:26:50,220 --> 00:26:52,440
+reading memory to be so they would
+
+738
+00:26:52,440 --> 00:26:55,140
+organize a certain way but now in the
+
+739
+00:26:55,140 --> 00:26:56,640
+modern era we don't want to do that
+
+740
+00:26:56,640 --> 00:26:59,010
+so therefore we want to use indexes that
+
+741
+00:26:59,010 --> 00:27:00,480
+know that they're dealing with memory
+
+742
+00:27:00,480 --> 00:27:01,710
+and they're and they have caches and try
+
+743
+00:27:01,710 --> 00:27:03,750
+to minimize the cache misses when when
+
+744
+00:27:03,750 --> 00:27:06,180
+he access things so the spoiler is gonna
+
+745
+00:27:06,180 --> 00:27:08,760
+be that a B+ tree is gonna turn out to
+
+746
+00:27:08,760 --> 00:27:13,680
+be a the best data structure to use for
+
+747
+00:27:13,680 --> 00:27:15,060
+a name every day but it's even though
+
+748
+00:27:15,060 --> 00:27:16,770
+d-plus trees were originally designed
+
+749
+00:27:16,770 --> 00:27:19,740
+for disk based databases they're
+
+750
+00:27:19,740 --> 00:27:20,910
+actually still really good for in-memory
+
+751
+00:27:20,910 --> 00:27:24,300
+data as well so the other major think
+
+752
+00:27:24,300 --> 00:27:25,650
+difference between the difference we're
+
+753
+00:27:25,650 --> 00:27:28,410
+gonna have indexes is that in a disk
+
+754
+00:27:28,410 --> 00:27:30,750
+based system you would also write log
+
+755
+00:27:30,750 --> 00:27:33,060
+records and write out pages for the
+
+756
+00:27:33,060 --> 00:27:34,740
+index disk so that you can recover them
+
+757
+00:27:34,740 --> 00:27:37,650
+after the system restarts an in-memory
+
+758
+00:27:37,650 --> 00:27:39,480
+system we're actually not going to
+
+759
+00:27:39,480 --> 00:27:41,040
+record any low of record to not write
+
+760
+00:27:41,040 --> 00:27:43,010
+indexes out to disk for most systems
+
+761
+00:27:43,010 --> 00:27:45,840
+because the cost of rebuilding the index
+
+762
+00:27:45,840 --> 00:27:48,570
+after restart the system is is gonna be
+
+763
+00:27:48,570 --> 00:27:51,450
+super low rise to think about this when
+
+764
+00:27:51,450 --> 00:27:53,460
+the system and the rate is when I
+
+765
+00:27:53,460 --> 00:27:55,800
+restarted I gotta bring the database
+
+766
+00:27:55,800 --> 00:27:57,660
+entirely back in the main memory and so
+
+767
+00:27:57,660 --> 00:27:59,730
+the cost of reading that there's the
+
+768
+00:27:59,730 --> 00:28:01,590
+data from from disk is super expensive
+
+769
+00:28:01,590 --> 00:28:03,820
+whereas the cost of building
+
+770
+00:28:03,820 --> 00:28:05,560
+index at once the data is already in
+
+771
+00:28:05,560 --> 00:28:09,070
+memory is is it's cheap because it's
+
+772
+00:28:09,070 --> 00:28:12,220
+just CPU computations so for this reason
+
+773
+00:28:12,220 --> 00:28:14,470
+and and gain avoiding the having to log
+
+774
+00:28:14,470 --> 00:28:18,430
+records to the log updates to records to
+
+775
+00:28:18,430 --> 00:28:20,590
+the in debt updates to the index at
+
+776
+00:28:20,590 --> 00:28:22,330
+runtime or just slow us down
+
+777
+00:28:22,330 --> 00:28:25,030
+we just rebuild the index after after we
+
+778
+00:28:25,030 --> 00:28:27,160
+restart again we'll cover this and clean
+
+779
+00:28:27,160 --> 00:28:28,120
+it's more detail when we talk about
+
+780
+00:28:28,120 --> 00:28:32,800
+indexes for query processing again now
+
+781
+00:28:32,800 --> 00:28:35,290
+in the dissapointing system the disk i/o
+
+782
+00:28:35,290 --> 00:28:37,690
+was always the most expensive thing who
+
+783
+00:28:37,690 --> 00:28:39,880
+cares what kind of for the most part how
+
+784
+00:28:39,880 --> 00:28:41,800
+you computed the data or you know the
+
+785
+00:28:41,800 --> 00:28:43,450
+organize the access of data once it was
+
+786
+00:28:43,450 --> 00:28:47,020
+in memory so in a disk wedding system or
+
+787
+00:28:47,020 --> 00:28:48,760
+so an in-memory system we are gonna care
+
+788
+00:28:48,760 --> 00:28:51,040
+about now the overhead of doing function
+
+789
+00:28:51,040 --> 00:28:52,420
+calls and branches of the things like
+
+790
+00:28:52,420 --> 00:28:54,130
+that so you need more care for how we
+
+791
+00:28:54,130 --> 00:28:56,170
+organize the system and do query
+
+792
+00:28:56,170 --> 00:28:59,410
+processing sequential scans are also not
+
+793
+00:28:59,410 --> 00:29:02,140
+significantly faster in a in memory
+
+794
+00:29:02,140 --> 00:29:03,820
+system so maybe there's certain
+
+795
+00:29:03,820 --> 00:29:06,670
+algorithms and you know join join
+
+796
+00:29:06,670 --> 00:29:08,560
+methods for doing joins and other things
+
+797
+00:29:08,560 --> 00:29:11,980
+that we don't have to worry about making
+
+798
+00:29:11,980 --> 00:29:14,800
+your optimizing or maximizing that of
+
+799
+00:29:14,800 --> 00:29:16,660
+schedule access because random access it
+
+800
+00:29:16,660 --> 00:29:18,700
+will be good enough again we'll cover
+
+801
+00:29:18,700 --> 00:29:20,790
+this in more detail as we go along for
+
+802
+00:29:20,790 --> 00:29:23,320
+logging and recovery I sort of mentioned
+
+803
+00:29:23,320 --> 00:29:25,450
+this already before but now that
+
+804
+00:29:25,450 --> 00:29:27,520
+everything is in memory there are no
+
+805
+00:29:27,520 --> 00:29:30,250
+dirty pages you to flush out the disk we
+
+806
+00:29:30,250 --> 00:29:34,120
+can be more conservative or we can end
+
+807
+00:29:34,120 --> 00:29:36,760
+up recording less data than we need then
+
+808
+00:29:36,760 --> 00:29:37,840
+we normally would need a disk or new
+
+809
+00:29:37,840 --> 00:29:39,730
+system if we know that everything is in
+
+810
+00:29:39,730 --> 00:29:42,760
+the memory so standard techniques like
+
+811
+00:29:42,760 --> 00:29:44,080
+root camp we'll use the batch of logs
+
+812
+00:29:44,080 --> 00:29:47,470
+amortize FSN cause that's that's
+
+813
+00:29:47,470 --> 00:29:48,880
+applicable for a disk warning system too
+
+814
+00:29:48,880 --> 00:29:51,820
+but being able to use a more lightweight
+
+815
+00:29:51,820 --> 00:29:54,610
+logging scheme is a definite advantage
+
+816
+00:29:54,610 --> 00:29:56,920
+for a in memory system right because
+
+817
+00:29:56,920 --> 00:29:58,750
+again there's no dirty pages we don't
+
+818
+00:29:58,750 --> 00:30:00,610
+need to do undo anything we write to
+
+819
+00:30:00,610 --> 00:30:02,770
+disk as part of a checkpoint is going to
+
+820
+00:30:02,770 --> 00:30:03,940
+be a party from a committed transaction
+
+821
+00:30:03,940 --> 00:30:08,560
+for the most part all right so now if
+
+822
+00:30:08,560 --> 00:30:12,310
+the disk i/o is not the slowest resource
+
+823
+00:30:12,310 --> 00:30:15,310
+then we can change
+
+824
+00:30:15,310 --> 00:30:17,680
+and we change what sort of protocols and
+
+825
+00:30:17,680 --> 00:30:19,600
+methods and algorithms are using the
+
+826
+00:30:19,600 --> 00:30:21,160
+process queries and transaction in a
+
+827
+00:30:21,160 --> 00:30:23,650
+database system now we can be mindful
+
+828
+00:30:23,650 --> 00:30:24,970
+with the other bottlenecks that are now
+
+829
+00:30:24,970 --> 00:30:26,140
+going to come to the forefront because
+
+830
+00:30:26,140 --> 00:30:28,390
+disk i/o is no longer in the critical
+
+831
+00:30:28,390 --> 00:30:30,550
+path so this is essentially what the
+
+832
+00:30:30,550 --> 00:30:32,530
+entire semester is about how to deal
+
+833
+00:30:32,530 --> 00:30:34,060
+with these other issues when we design
+
+834
+00:30:34,060 --> 00:30:36,670
+database systems so locking latch and
+
+835
+00:30:36,670 --> 00:30:38,200
+Sorkin kernel methods and the lone
+
+836
+00:30:38,200 --> 00:30:39,880
+low-level primitives to protect those
+
+837
+00:30:39,880 --> 00:30:43,690
+data structures cache lionesses are big
+
+838
+00:30:43,690 --> 00:30:46,030
+deal cos can memory access versus cache
+
+839
+00:30:46,030 --> 00:30:48,300
+access is is much more expensive
+
+840
+00:30:48,300 --> 00:30:50,770
+chasing pointers doing jumps to random
+
+841
+00:30:50,770 --> 00:30:52,900
+locations in memory and it will cause
+
+842
+00:30:52,900 --> 00:30:54,780
+more cache misses that's problematic
+
+843
+00:30:54,780 --> 00:30:57,430
+evaluating predicates do you know taking
+
+844
+00:30:57,430 --> 00:30:58,930
+the where clause for every for a billion
+
+845
+00:30:58,930 --> 00:31:00,850
+tuples and evaluating it that's gonna be
+
+846
+00:31:00,850 --> 00:31:05,020
+expensive moving data or copying data so
+
+847
+00:31:05,020 --> 00:31:06,670
+data movement would be if I have to move
+
+848
+00:31:06,670 --> 00:31:08,980
+data from one sock CPU socket to another
+
+849
+00:31:08,980 --> 00:31:11,280
+that's expensive copying data would be
+
+850
+00:31:11,280 --> 00:31:13,750
+materializing the intermediate results
+
+851
+00:31:13,750 --> 00:31:15,550
+or copy data between sockets to pass
+
+852
+00:31:15,550 --> 00:31:17,350
+things around those are things we want
+
+853
+00:31:17,350 --> 00:31:19,360
+to avoid and of course networking is
+
+854
+00:31:19,360 --> 00:31:22,630
+always a big issue now there be
+
+855
+00:31:22,630 --> 00:31:24,580
+primarily between the application and
+
+856
+00:31:24,580 --> 00:31:26,250
+the database system and not between
+
+857
+00:31:26,250 --> 00:31:30,000
+different nodes of the same database
+
+858
+00:31:30,000 --> 00:31:32,050
+matters were a discordant system - but
+
+859
+00:31:32,050 --> 00:31:35,650
+again now the disk is gone this is this
+
+860
+00:31:35,650 --> 00:31:37,150
+is even more problematic and an
+
+861
+00:31:37,150 --> 00:31:39,580
+in-memory system so for the rest of this
+
+862
+00:31:39,580 --> 00:31:41,230
+lecture I want to discuss locking and
+
+863
+00:31:41,230 --> 00:31:43,240
+latching um so we're gonna focus on the
+
+864
+00:31:43,240 --> 00:31:44,500
+cartridge hole here and this is just
+
+865
+00:31:44,500 --> 00:31:47,140
+mostly to set us up to understand going
+
+866
+00:31:47,140 --> 00:31:50,410
+forward how you know to think about and
+
+867
+00:31:50,410 --> 00:31:53,200
+that's it to think about you know what
+
+868
+00:31:53,200 --> 00:31:55,680
+is it that makes a game system slow and
+
+869
+00:31:55,680 --> 00:31:58,210
+when we started scaling up more CPU
+
+870
+00:31:58,210 --> 00:31:58,570
+cores
+
+871
+00:31:58,570 --> 00:31:59,860
+what does mean these other bottlenecks
+
+872
+00:31:59,860 --> 00:32:03,160
+and problems that were going to have so
+
+873
+00:32:03,160 --> 00:32:04,360
+again as we covered it in the
+
+874
+00:32:04,360 --> 00:32:05,920
+introduction class concurrent your goal
+
+875
+00:32:05,920 --> 00:32:08,560
+is essentially the protocol that the
+
+876
+00:32:08,560 --> 00:32:10,570
+deities have used that allows it to
+
+877
+00:32:10,570 --> 00:32:12,130
+execute multiple transactions at the
+
+878
+00:32:12,130 --> 00:32:14,650
+same time and each these transactions
+
+879
+00:32:14,650 --> 00:32:16,690
+are going to sort of have this illusion
+
+880
+00:32:16,690 --> 00:32:19,600
+that they're executing on the system by
+
+881
+00:32:19,600 --> 00:32:21,640
+it's by their self so they don't don't
+
+882
+00:32:21,640 --> 00:32:23,710
+worry about reading or reading the
+
+883
+00:32:23,710 --> 00:32:25,030
+effects of other transactions from at
+
+884
+00:32:25,030 --> 00:32:27,820
+the same time I this is essentially what
+
+885
+00:32:27,820 --> 00:32:29,049
+you would want to achieve in your system
+
+886
+00:32:29,049 --> 00:32:31,299
+because that's it's the easiest way to
+
+887
+00:32:31,299 --> 00:32:34,629
+program your application of course now
+
+888
+00:32:34,629 --> 00:32:35,769
+this is not easy to do if start
+
+889
+00:32:35,769 --> 00:32:37,629
+interleaving interleaving operations
+
+890
+00:32:37,629 --> 00:32:39,220
+between different transactions you could
+
+891
+00:32:39,220 --> 00:32:43,299
+violate this ordering so the kikuchiyo
+
+892
+00:32:43,299 --> 00:32:44,919
+protocol of any database system is going
+
+893
+00:32:44,919 --> 00:32:46,720
+to provide the atomicity and isolation
+
+894
+00:32:46,720 --> 00:32:52,259
+guarantees within this SSN acronym so
+
+895
+00:32:52,259 --> 00:32:55,330
+for an mme database system there's this
+
+896
+00:32:55,330 --> 00:32:56,860
+key observation we have to make about
+
+897
+00:32:56,860 --> 00:32:59,409
+how we're going to acquire locks to
+
+898
+00:32:59,409 --> 00:33:03,519
+access to poles and that is the cost of
+
+899
+00:33:03,519 --> 00:33:04,989
+a transaction acquiring a lock is
+
+900
+00:33:04,989 --> 00:33:06,399
+essentially the same thing as just
+
+901
+00:33:06,399 --> 00:33:09,369
+accessing the data so what I mean by
+
+902
+00:33:09,369 --> 00:33:12,369
+that is in a disk loading system we said
+
+903
+00:33:12,369 --> 00:33:14,019
+that all the locks would be stored in
+
+904
+00:33:14,019 --> 00:33:15,309
+memory in some kind of data structure
+
+905
+00:33:15,309 --> 00:33:18,070
+and they would be and they were separate
+
+906
+00:33:18,070 --> 00:33:19,149
+from the actual tuples but now
+
+907
+00:33:19,149 --> 00:33:21,549
+everything's in memory then the cost of
+
+908
+00:33:21,549 --> 00:33:24,009
+going and accessing the lock table is
+
+909
+00:33:24,009 --> 00:33:26,320
+going to be the same as accessing the
+
+910
+00:33:26,320 --> 00:33:29,139
+tuple so ideally I want to be able to do
+
+911
+00:33:29,139 --> 00:33:31,929
+those at the same time so that I'm not
+
+912
+00:33:31,929 --> 00:33:34,090
+paying the penalty of doing two memory
+
+913
+00:33:34,090 --> 00:33:36,700
+reads and this is the core idea that
+
+914
+00:33:36,700 --> 00:33:39,700
+furniture try to install and when we do
+
+915
+00:33:39,700 --> 00:33:42,419
+in memory data system concurrent control
+
+916
+00:33:42,419 --> 00:33:44,409
+the other important thing to understand
+
+917
+00:33:44,409 --> 00:33:47,679
+too is is in a disk running system the
+
+918
+00:33:47,679 --> 00:33:50,649
+stalls are due to transactions trying to
+
+919
+00:33:50,649 --> 00:33:52,059
+access data that wasn't memory you have
+
+920
+00:33:52,059 --> 00:33:54,190
+to go get out to disk and get them but
+
+921
+00:33:54,190 --> 00:33:55,359
+now we're not gonna have those kind of
+
+922
+00:33:55,359 --> 00:33:57,549
+stalls anymore yeah yes I'll be memory
+
+923
+00:33:57,549 --> 00:34:00,549
+stalls but those are gonna be much much
+
+924
+00:34:00,549 --> 00:34:03,759
+less than you know just stole but what
+
+925
+00:34:03,759 --> 00:34:05,919
+you think we are gonna have or that the
+
+926
+00:34:05,919 --> 00:34:08,109
+earlier assistants don't have is a way
+
+927
+00:34:08,109 --> 00:34:11,440
+more cores and so now the contention is
+
+928
+00:34:11,440 --> 00:34:14,530
+going to be in the system of many
+
+929
+00:34:14,530 --> 00:34:16,030
+transactions trying to read and write to
+
+930
+00:34:16,030 --> 00:34:17,980
+the same objects at the same time and
+
+931
+00:34:17,980 --> 00:34:20,649
+they're not stalling because there's a
+
+932
+00:34:20,649 --> 00:34:22,449
+disk there stolen because they don't we
+
+933
+00:34:22,449 --> 00:34:23,589
+can't acquire the locks on certain
+
+934
+00:34:23,589 --> 00:34:28,750
+things so do you understand again how
+
+935
+00:34:28,750 --> 00:34:29,980
+we're actually going to be able to
+
+936
+00:34:29,980 --> 00:34:31,299
+maintain locking information along with
+
+937
+00:34:31,299 --> 00:34:35,799
+the tuple we understand of this sort of
+
+938
+00:34:35,799 --> 00:34:37,389
+basic compare-and-swap primitive we're
+
+939
+00:34:37,389 --> 00:34:40,119
+going to use to modify things so we're
+
+940
+00:34:40,119 --> 00:34:42,880
+not going to use mutexes protect tuples
+
+941
+00:34:42,880 --> 00:34:44,949
+because there would be too slow instead
+
+942
+00:34:44,949 --> 00:34:46,449
+we're gonna use these atomic operations
+
+943
+00:34:46,449 --> 00:34:47,320
+called compare-and-swap
+
+944
+00:34:47,320 --> 00:34:50,080
+so I think this is primarily covered it
+
+945
+00:34:50,080 --> 00:34:52,210
+in other classes and so I just want to
+
+946
+00:34:52,210 --> 00:34:54,310
+give you a quick overview what it is and
+
+947
+00:34:54,310 --> 00:34:55,810
+because this is gonna come up multiple
+
+948
+00:34:55,810 --> 00:34:58,570
+times throughout the semester and it's
+
+949
+00:34:58,570 --> 00:35:01,150
+good to sort of see at once we're not
+
+950
+00:35:01,150 --> 00:35:02,410
+really details of actually how this is
+
+951
+00:35:02,410 --> 00:35:04,300
+implemented Hardware just know that this
+
+952
+00:35:04,300 --> 00:35:07,810
+this concept but actually exists so
+
+953
+00:35:07,810 --> 00:35:10,360
+compare swap is an atomic instruction
+
+954
+00:35:10,360 --> 00:35:13,630
+that pretty much every modern CPU will
+
+955
+00:35:13,630 --> 00:35:16,390
+provide you it's not a new concept I
+
+956
+00:35:16,390 --> 00:35:18,880
+think it goes back to the 1970s probably
+
+957
+00:35:18,880 --> 00:35:20,800
+pretty much every Zeon arm architecture
+
+958
+00:35:20,800 --> 00:35:23,770
+or a PowerPC will give me this now and
+
+959
+00:35:23,770 --> 00:35:25,180
+the idea is that it's a single
+
+960
+00:35:25,180 --> 00:35:26,740
+instruction that's gonna do a lookup in
+
+961
+00:35:26,740 --> 00:35:29,320
+a memory location and it's gonna check
+
+962
+00:35:29,320 --> 00:35:31,240
+to see where that memory location has a
+
+963
+00:35:31,240 --> 00:35:34,180
+certain value that provided and then if
+
+964
+00:35:34,180 --> 00:35:36,760
+that value is equal so the meta is a
+
+965
+00:35:36,760 --> 00:35:38,200
+value that memory location is the equal
+
+966
+00:35:38,200 --> 00:35:40,270
+to the value you're checking with then
+
+967
+00:35:40,270 --> 00:35:42,850
+you're allowed to install a new value to
+
+968
+00:35:42,850 --> 00:35:46,000
+update it otherwise the operation fails
+
+969
+00:35:46,000 --> 00:35:48,280
+and so in this example here this
+
+970
+00:35:48,280 --> 00:35:50,110
+underscore underscore sink pool compared
+
+971
+00:35:50,110 --> 00:35:54,640
+swap this is a this is a C++ or Linux
+
+972
+00:35:54,640 --> 00:35:59,530
+Lib C or Lennox did you see both flaws
+
+973
+00:35:59,530 --> 00:36:02,050
+operation or intrinsic different
+
+974
+00:36:02,050 --> 00:36:03,340
+platforms have different things and I
+
+975
+00:36:03,340 --> 00:36:05,920
+think for the most part in modern
+
+976
+00:36:05,920 --> 00:36:08,440
+systems there's there's either
+
+977
+00:36:08,440 --> 00:36:12,220
+understand or the intrinsic functions
+
+978
+00:36:12,220 --> 00:36:14,980
+that can do the same thing Daddy here is
+
+979
+00:36:14,980 --> 00:36:16,360
+that we're giving up giving in a memory
+
+980
+00:36:16,360 --> 00:36:16,600
+address
+
+981
+00:36:16,600 --> 00:36:18,370
+we're giving it a compare value and a
+
+982
+00:36:18,370 --> 00:36:20,730
+new value so the current memory address
+
+983
+00:36:20,730 --> 00:36:23,620
+that M points to contains the value 20
+
+984
+00:36:23,620 --> 00:36:25,990
+so in a single instruction now we're
+
+985
+00:36:25,990 --> 00:36:28,660
+gonna see whether 20 equals 20 in the
+
+986
+00:36:28,660 --> 00:36:31,450
+memory location and if yes one stall
+
+987
+00:36:31,450 --> 00:36:33,310
+install the new value 30 so in this case
+
+988
+00:36:33,310 --> 00:36:35,080
+here in a single instruction and we look
+
+989
+00:36:35,080 --> 00:36:38,650
+up to see that M equals 20 and it does
+
+990
+00:36:38,650 --> 00:36:41,110
+so then we can stall 30 right otherwise
+
+991
+00:36:41,110 --> 00:36:44,740
+that this would have failed so in this
+
+992
+00:36:44,740 --> 00:36:47,980
+example here the the function here
+
+993
+00:36:47,980 --> 00:36:50,740
+returns true false and saying whether is
+
+994
+00:36:50,740 --> 00:36:52,840
+succeeded or not there's all different
+
+995
+00:36:52,840 --> 00:36:55,300
+types of compare and swap instruction
+
+996
+00:36:55,300 --> 00:36:56,380
+and sometimes they'll return by
+
+997
+00:36:56,380 --> 00:36:58,479
+the the new guy that I got installed or
+
+998
+00:36:58,479 --> 00:36:59,829
+the old one if it didn't get updated
+
+999
+00:36:59,829 --> 00:37:01,839
+some and then you can change the you
+
+1000
+00:37:01,839 --> 00:37:05,079
+know the size of the memory dress that
+
+1001
+00:37:05,079 --> 00:37:07,299
+you're looking at with 32 bits or 64
+
+1002
+00:37:07,299 --> 00:37:09,880
+bits but again the basic idea is always
+
+1003
+00:37:09,880 --> 00:37:10,839
+the same thing within a single
+
+1004
+00:37:10,839 --> 00:37:12,940
+instruction we can do this check and
+
+1005
+00:37:12,940 --> 00:37:14,859
+this is we incorporate them that were to
+
+1006
+00:37:14,859 --> 00:37:17,289
+use all throughout the semester allows
+
+1007
+00:37:17,289 --> 00:37:20,829
+do these kind of lock free or latch free
+
+1008
+00:37:20,829 --> 00:37:25,299
+operations very efficiently so we want
+
+1009
+00:37:25,299 --> 00:37:28,960
+to talk about quickly sort of the tutor
+
+1010
+00:37:28,960 --> 00:37:30,999
+of categories or classes of comparable
+
+1011
+00:37:30,999 --> 00:37:32,799
+protocols that we're gonna be working
+
+1012
+00:37:32,799 --> 00:37:35,079
+with this semester and this again
+
+1013
+00:37:35,079 --> 00:37:37,359
+there's sort of a refresher from what we
+
+1014
+00:37:37,359 --> 00:37:39,489
+covered in the introduction class lesson
+
+1015
+00:37:39,489 --> 00:37:42,460
+Osterman and so the first time you two
+
+1016
+00:37:42,460 --> 00:37:44,109
+phase locking so these are pessimistic
+
+1017
+00:37:44,109 --> 00:37:45,759
+schemes where the data systems going to
+
+1018
+00:37:45,759 --> 00:37:47,680
+assume that transactions are going to
+
+1019
+00:37:47,680 --> 00:37:49,960
+conflict and therefore they have
+
+1020
+00:37:49,960 --> 00:37:51,460
+required locks on any objects before
+
+1021
+00:37:51,460 --> 00:37:53,160
+that allowed to access them
+
+1022
+00:37:53,160 --> 00:37:55,450
+timestamp ordering is an optimistic
+
+1023
+00:37:55,450 --> 00:37:57,430
+scheme where you assume conflicts are
+
+1024
+00:37:57,430 --> 00:37:59,710
+rare so you don't require transaction to
+
+1025
+00:37:59,710 --> 00:38:01,119
+acquire locks on database objects and
+
+1026
+00:38:01,119 --> 00:38:02,829
+all you do instead is that when the
+
+1027
+00:38:02,829 --> 00:38:04,869
+transaction goes to commit you see
+
+1028
+00:38:04,869 --> 00:38:06,729
+whether there there was a conflict and
+
+1029
+00:38:06,729 --> 00:38:09,579
+then you correct them as needed so let's
+
+1030
+00:38:09,579 --> 00:38:10,769
+go through each of these one by one
+
+1031
+00:38:10,769 --> 00:38:13,089
+showing really high-level examples and
+
+1032
+00:38:13,089 --> 00:38:15,039
+then we'll get into the paper discusses
+
+1033
+00:38:15,039 --> 00:38:16,210
+how do you actually implement this on
+
+1034
+00:38:16,210 --> 00:38:19,630
+modern systems so if there's a simple
+
+1035
+00:38:19,630 --> 00:38:21,640
+example for two phase locking we have a
+
+1036
+00:38:21,640 --> 00:38:24,400
+transaction t1 and it wants to do a read
+
+1037
+00:38:24,400 --> 00:38:27,460
+on a followed by a right on P so again
+
+1038
+00:38:27,460 --> 00:38:29,229
+one or two phase locking we have to
+
+1039
+00:38:29,229 --> 00:38:31,960
+acquire the locks for any object that we
+
+1040
+00:38:31,960 --> 00:38:33,789
+want to read and write so in this case
+
+1041
+00:38:33,789 --> 00:38:35,019
+here we've got to get the read on the
+
+1042
+00:38:35,019 --> 00:38:37,839
+lock on a follow up a lock on B so this
+
+1043
+00:38:37,839 --> 00:38:39,999
+is a really simple example or simplified
+
+1044
+00:38:39,999 --> 00:38:42,729
+example because I'm you know there's
+
+1045
+00:38:42,729 --> 00:38:44,920
+only this a simple one type of lock on
+
+1046
+00:38:44,920 --> 00:38:47,979
+on a and B but in a real system as we
+
+1047
+00:38:47,979 --> 00:38:51,249
+covered last semester you know you would
+
+1048
+00:38:51,249 --> 00:38:52,660
+have different lock modes you can have a
+
+1049
+00:38:52,660 --> 00:38:54,789
+shared mode the multiple transactions
+
+1050
+00:38:54,789 --> 00:38:56,349
+read the same object and exclusive mode
+
+1051
+00:38:56,349 --> 00:38:58,450
+to say that only one transaction can
+
+1052
+00:38:58,450 --> 00:39:01,450
+lock it could connect can write it at a
+
+1053
+00:39:01,450 --> 00:39:04,269
+given time so in this case here because
+
+1054
+00:39:04,269 --> 00:39:06,969
+two-phase locking the first part of the
+
+1055
+00:39:06,969 --> 00:39:08,140
+transaction is called the growing phase
+
+1056
+00:39:08,140 --> 00:39:09,940
+and this is where we're
+
+1057
+00:39:09,940 --> 00:39:14,530
+acquiring locks that we need okay sorry
+
+1058
+00:39:14,530 --> 00:39:16,180
+that we're need during during the
+
+1059
+00:39:16,180 --> 00:39:18,520
+exertion in the transaction and then
+
+1060
+00:39:18,520 --> 00:39:20,710
+soon as we release one block now we're
+
+1061
+00:39:20,710 --> 00:39:23,770
+in the shrinking phase and we're not
+
+1062
+00:39:23,770 --> 00:39:26,950
+allowed to acquire any new locks but we
+
+1063
+00:39:26,950 --> 00:39:29,800
+can do operations on the only objects we
+
+1064
+00:39:29,800 --> 00:39:32,170
+still have all the locks for so in a
+
+1065
+00:39:32,170 --> 00:39:34,630
+real system like in it's based on sequel
+
+1066
+00:39:34,630 --> 00:39:38,290
+you wouldn't actually have explicit lock
+
+1067
+00:39:38,290 --> 00:39:40,240
+and unlock commands these are something
+
+1068
+00:39:40,240 --> 00:39:41,410
+we've dated some dust where you
+
+1069
+00:39:41,410 --> 00:39:43,200
+automatically underneath the covers so
+
+1070
+00:39:43,200 --> 00:39:46,750
+typically you you don't release the
+
+1071
+00:39:46,750 --> 00:39:48,100
+locks until the transaction actually
+
+1072
+00:39:48,100 --> 00:39:50,710
+commits which is called rigorous new
+
+1073
+00:39:50,710 --> 00:39:52,510
+phase locking but for a preferences here
+
+1074
+00:39:52,510 --> 00:39:53,950
+in this example we're not doing that we
+
+1075
+00:39:53,950 --> 00:39:56,350
+can unlock a and then file and then do
+
+1076
+00:39:56,350 --> 00:39:58,630
+the write on B and that still follows
+
+1077
+00:39:58,630 --> 00:40:01,170
+the original two phase locking protocol
+
+1078
+00:40:01,170 --> 00:40:03,280
+all right so let's say now we have
+
+1079
+00:40:03,280 --> 00:40:05,280
+another transaction t2 comes along and
+
+1080
+00:40:05,280 --> 00:40:07,750
+it wants to do a write on the father I
+
+1081
+00:40:07,750 --> 00:40:11,590
+don't name and so say these transactions
+
+1082
+00:40:11,590 --> 00:40:13,030
+are running at the same time on
+
+1083
+00:40:13,030 --> 00:40:14,590
+different threads and therefore they can
+
+1084
+00:40:14,590 --> 00:40:17,170
+they can do these things in parallel
+
+1085
+00:40:17,170 --> 00:40:19,870
+with each other so in t1 we first get
+
+1086
+00:40:19,870 --> 00:40:22,240
+the lock on a on t2 and get a lock on B
+
+1087
+00:40:22,240 --> 00:40:24,460
+this is fine assuming there's no other
+
+1088
+00:40:24,460 --> 00:40:26,110
+transaction written at the same time so
+
+1089
+00:40:26,110 --> 00:40:27,640
+both these transactions can acquire
+
+1090
+00:40:27,640 --> 00:40:30,160
+those locks in the next step their
+
+1091
+00:40:30,160 --> 00:40:31,900
+transaction t1 does the read on a which
+
+1092
+00:40:31,900 --> 00:40:33,190
+is allowed to do because it holds the
+
+1093
+00:40:33,190 --> 00:40:35,440
+lock on a transaction t2 does the right
+
+1094
+00:40:35,440 --> 00:40:36,700
+on B which is a lot of do because it
+
+1095
+00:40:36,700 --> 00:40:39,370
+holds a row the lock on beam but now we
+
+1096
+00:40:39,370 --> 00:40:41,770
+get into trouble here because t1 wants
+
+1097
+00:40:41,770 --> 00:40:44,320
+to do a lock on b t2 one's gonna lock on
+
+1098
+00:40:44,320 --> 00:40:46,810
+a but each of these are held by the
+
+1099
+00:40:46,810 --> 00:40:48,450
+other transaction so they have to stall
+
+1100
+00:40:48,450 --> 00:40:50,590
+right and they've been there essentially
+
+1101
+00:40:50,590 --> 00:40:51,700
+waiting for the other transaction to
+
+1102
+00:40:51,700 --> 00:40:53,830
+give up the lock so I'm go ahead and can
+
+1103
+00:40:53,830 --> 00:40:55,570
+make forward progress but of course we
+
+1104
+00:40:55,570 --> 00:40:57,190
+have a deadlock here and so now we have
+
+1105
+00:40:57,190 --> 00:40:58,480
+to do something to break this because
+
+1106
+00:40:58,480 --> 00:40:59,800
+otherwise the system would be locked
+
+1107
+00:40:59,800 --> 00:41:02,700
+forever so there's two ways to do
+
+1108
+00:41:02,700 --> 00:41:05,320
+deadlock or handle deadlocks and if he's
+
+1109
+00:41:05,320 --> 00:41:07,180
+locking the first to do deadlock
+
+1110
+00:41:07,180 --> 00:41:08,830
+detection this is where you have a
+
+1111
+00:41:08,830 --> 00:41:10,210
+separate background thread that's just
+
+1112
+00:41:10,210 --> 00:41:12,730
+gonna occasionally or periodically wake
+
+1113
+00:41:12,730 --> 00:41:14,560
+up check to see whether the transactions
+
+1114
+00:41:14,560 --> 00:41:16,600
+are running and if it finds a deadlock
+
+1115
+00:41:16,600 --> 00:41:18,070
+then uses some kind of heuristics to
+
+1116
+00:41:18,070 --> 00:41:20,740
+decide how to kill them I could say you
+
+1117
+00:41:20,740 --> 00:41:22,600
+know kill the transaction has
+
+1118
+00:41:22,600 --> 00:41:24,250
+that has done the least amount of work
+
+1119
+00:41:24,250 --> 00:41:26,170
+or is the oldest or holds the most locks
+
+1120
+00:41:26,170 --> 00:41:29,100
+the various systems do various things
+
+1121
+00:41:29,100 --> 00:41:31,630
+different systems do all have different
+
+1122
+00:41:31,630 --> 00:41:34,320
+types of deadlock detection algorithms
+
+1123
+00:41:34,320 --> 00:41:36,670
+deadlock prevention is instead of having
+
+1124
+00:41:36,670 --> 00:41:39,390
+a separate thread you just have a way to
+
+1125
+00:41:39,390 --> 00:41:41,830
+make sure that when transaction tries
+
+1126
+00:41:41,830 --> 00:41:43,840
+acquire a lock they can't hold it then
+
+1127
+00:41:43,840 --> 00:41:45,700
+it makes a decision about what it should
+
+1128
+00:41:45,700 --> 00:41:48,880
+do other than just waiting so for
+
+1129
+00:41:48,880 --> 00:41:50,350
+example if I if a transaction tries to
+
+1130
+00:41:50,350 --> 00:41:52,480
+hold a lock acquire a lock but that lock
+
+1131
+00:41:52,480 --> 00:41:54,610
+is being held by somebody else and you
+
+1132
+00:41:54,610 --> 00:41:56,620
+can either kill itself or kill the other
+
+1133
+00:41:56,620 --> 00:41:59,070
+transaction and steals locks right again
+
+1134
+00:41:59,070 --> 00:42:01,660
+we do have to make sure we do the
+
+1135
+00:42:01,660 --> 00:42:03,460
+operations in the right order so that
+
+1136
+00:42:03,460 --> 00:42:06,280
+there's so that way there's you know
+
+1137
+00:42:06,280 --> 00:42:09,790
+there's no cycle of dependencies all
+
+1138
+00:42:09,790 --> 00:42:12,490
+right so the other type of protocol is
+
+1139
+00:42:12,490 --> 00:42:16,330
+called timestamp ordering again this is
+
+1140
+00:42:16,330 --> 00:42:17,710
+sort of category systems that are in use
+
+1141
+00:42:17,710 --> 00:42:19,210
+time stamps than a lock to figure out
+
+1142
+00:42:19,210 --> 00:42:21,160
+the right order that transactions should
+
+1143
+00:42:21,160 --> 00:42:25,030
+be allowed to complete so the sort of
+
+1144
+00:42:25,030 --> 00:42:27,220
+two basic protocols are basic time stamp
+
+1145
+00:42:27,220 --> 00:42:28,990
+ordering which is sort of confusing
+
+1146
+00:42:28,990 --> 00:42:31,810
+because it's usually referred to as the
+
+1147
+00:42:31,810 --> 00:42:33,490
+time stamp boarding protocol which is in
+
+1148
+00:42:33,490 --> 00:42:35,050
+the category of time stamp ordering
+
+1149
+00:42:35,050 --> 00:42:38,590
+protocols but it's all call it basic tio
+
+1150
+00:42:38,590 --> 00:42:40,810
+dis to differentiate it so the idea here
+
+1151
+00:42:40,810 --> 00:42:42,490
+is that we're gonna check for conflicts
+
+1152
+00:42:42,490 --> 00:42:44,440
+on every read and write and we're just
+
+1153
+00:42:44,440 --> 00:42:46,090
+gonna and use time stamps determine
+
+1154
+00:42:46,090 --> 00:42:47,800
+whether there is a conflict and then
+
+1155
+00:42:47,800 --> 00:42:50,770
+we're gonna copy tuples into a private
+
+1156
+00:42:50,770 --> 00:42:52,150
+workspace for each transaction as they
+
+1157
+00:42:52,150 --> 00:42:54,160
+read them to ensure if they go back and
+
+1158
+00:42:54,160 --> 00:42:55,660
+read the same cable they get the same
+
+1159
+00:42:55,660 --> 00:42:57,730
+value because otherwise you could be
+
+1160
+00:42:57,730 --> 00:42:58,720
+reading something that was written in
+
+1161
+00:42:58,720 --> 00:42:59,590
+the future and that shouldn't have
+
+1162
+00:42:59,590 --> 00:43:00,480
+happened
+
+1163
+00:43:00,480 --> 00:43:03,280
+optimistic cartridge role is where in
+
+1164
+00:43:03,280 --> 00:43:05,860
+addition to copying the things you read
+
+1165
+00:43:05,860 --> 00:43:09,850
+into your prior work space okay you're
+
+1166
+00:43:09,850 --> 00:43:11,440
+also gonna come make copies of any
+
+1167
+00:43:11,440 --> 00:43:13,180
+tuples you modify and and all your
+
+1168
+00:43:13,180 --> 00:43:14,530
+rights go into private workspace and
+
+1169
+00:43:14,530 --> 00:43:17,170
+then when you go to commit then you do
+
+1170
+00:43:17,170 --> 00:43:18,520
+the validation as checked as whether
+
+1171
+00:43:18,520 --> 00:43:20,290
+there were the ramming conflicts and if
+
+1172
+00:43:20,290 --> 00:43:22,210
+not then you can merge all your private
+
+1173
+00:43:22,210 --> 00:43:23,920
+workspace changes back into the global
+
+1174
+00:43:23,920 --> 00:43:26,230
+database so again we'll go through each
+
+1175
+00:43:26,230 --> 00:43:30,640
+of these one by one so say for the basic
+
+1176
+00:43:30,640 --> 00:43:31,870
+time stamp warning protocol we have a
+
+1177
+00:43:31,870 --> 00:43:34,060
+transaction t1 wants to do a read on a
+
+1178
+00:43:34,060 --> 00:43:35,980
+of write on B and there's been some kind
+
+1179
+00:43:35,980 --> 00:43:36,430
+of stole
+
+1180
+00:43:36,430 --> 00:43:39,640
+and wants to do it right on a so when a
+
+1181
+00:43:39,640 --> 00:43:41,170
+transaction starts we have to assign the
+
+1182
+00:43:41,170 --> 00:43:42,400
+timestamp because we're gonna use that
+
+1183
+00:43:42,400 --> 00:43:43,900
+to determine the serial ordering of
+
+1184
+00:43:43,900 --> 00:43:46,359
+transactions so there's different
+
+1185
+00:43:46,359 --> 00:43:48,190
+schemes you could use I can use the
+
+1186
+00:43:48,190 --> 00:43:49,930
+hardware clock I can use a logical
+
+1187
+00:43:49,930 --> 00:43:52,329
+counter I use a hypo to the tune but for
+
+1188
+00:43:52,329 --> 00:43:53,440
+simplicity let's just say we use a
+
+1189
+00:43:53,440 --> 00:43:56,230
+logical counter and we just update that
+
+1190
+00:43:56,230 --> 00:43:57,309
+counter every single time we start
+
+1191
+00:43:57,309 --> 00:43:58,539
+transaction and we sign that new
+
+1192
+00:43:58,539 --> 00:44:02,680
+timestamp to get to the to the to the to
+
+1193
+00:44:02,680 --> 00:44:04,960
+the transaction so this transaction
+
+1194
+00:44:04,960 --> 00:44:07,660
+starts and it's gonna give the timestamp
+
+1195
+00:44:07,660 --> 00:44:10,480
+10000 1 now inside the database for
+
+1196
+00:44:10,480 --> 00:44:11,920
+every single record we're storing we're
+
+1197
+00:44:11,920 --> 00:44:14,529
+gonna maintain two additional fields so
+
+1198
+00:44:14,529 --> 00:44:15,940
+we maintain the retime stamp in the
+
+1199
+00:44:15,940 --> 00:44:18,190
+flight times 2 3 times same would be the
+
+1200
+00:44:18,190 --> 00:44:19,390
+highest time stamp of the last
+
+1201
+00:44:19,390 --> 00:44:20,799
+transaction that successfully read this
+
+1202
+00:44:20,799 --> 00:44:22,779
+tuple and the write time stamp will be
+
+1203
+00:44:22,779 --> 00:44:24,490
+the last times the time stamp of the
+
+1204
+00:44:24,490 --> 00:44:26,680
+last time ii that road to this tuple the
+
+1205
+00:44:26,680 --> 00:44:27,970
+idea is that these time stamps are
+
+1206
+00:44:27,970 --> 00:44:29,740
+always going forward in time they can
+
+1207
+00:44:29,740 --> 00:44:30,910
+never go backward because that would be
+
+1208
+00:44:30,910 --> 00:44:32,710
+violating the time stamp ordering of
+
+1209
+00:44:32,710 --> 00:44:34,839
+transactions all right so our
+
+1210
+00:44:34,839 --> 00:44:36,400
+transaction starts does a read on egg so
+
+1211
+00:44:36,400 --> 00:44:38,289
+the first thing needs to do is check the
+
+1212
+00:44:38,289 --> 00:44:40,599
+write time stamp and see whether it's
+
+1213
+00:44:40,599 --> 00:44:43,690
+time stamp is greater than hours meaning
+
+1214
+00:44:43,690 --> 00:44:45,489
+we'd be trying to read something in the
+
+1215
+00:44:45,489 --> 00:44:46,839
+future that we wouldn't read me allowed
+
+1216
+00:44:46,839 --> 00:44:49,599
+to read in this case here the right time
+
+1217
+00:44:49,599 --> 00:44:53,019
+stamp for record a is 10,000 hour time
+
+1218
+00:44:53,019 --> 00:44:55,390
+stamp is 10,000 won so were we allowed
+
+1219
+00:44:55,390 --> 00:44:57,670
+to read this so we need to update now
+
+1220
+00:44:57,670 --> 00:44:59,680
+the re time stamp to check to see
+
+1221
+00:44:59,680 --> 00:45:03,309
+whether it's time stamp is is less than
+
+1222
+00:45:03,309 --> 00:45:05,170
+than hours and if it is then we want to
+
+1223
+00:45:05,170 --> 00:45:07,029
+go ahead and update it so in this case
+
+1224
+00:45:07,029 --> 00:45:09,309
+here we'll update it with 10,000 won now
+
+1225
+00:45:09,309 --> 00:45:11,019
+this is telling other transactions that
+
+1226
+00:45:11,019 --> 00:45:13,630
+may want to update this this tuple that
+
+1227
+00:45:13,630 --> 00:45:15,940
+there's was a transaction at timestamp
+
+1228
+00:45:15,940 --> 00:45:18,130
+10000 won that has read it so make sure
+
+1229
+00:45:18,130 --> 00:45:19,569
+that we don't write something in the
+
+1230
+00:45:19,569 --> 00:45:22,630
+past and this terms actually missed so
+
+1231
+00:45:22,630 --> 00:45:24,519
+then now we do the right on beat same
+
+1232
+00:45:24,519 --> 00:45:25,839
+thing we first check to see the right
+
+1233
+00:45:25,839 --> 00:45:26,470
+time stamp
+
+1234
+00:45:26,470 --> 00:45:27,730
+see if we have to see whether it's in
+
+1235
+00:45:27,730 --> 00:45:29,769
+the future from when we're at and
+
+1236
+00:45:29,769 --> 00:45:31,269
+therefore we would be overriding
+
+1237
+00:45:31,269 --> 00:45:34,450
+future data with past data which is not
+
+1238
+00:45:34,450 --> 00:45:36,249
+allowed and then we check the read time
+
+1239
+00:45:36,249 --> 00:45:38,019
+stamp and make sure someone didn't read
+
+1240
+00:45:38,019 --> 00:45:40,359
+this record in the future and if we did
+
+1241
+00:45:40,359 --> 00:45:41,859
+write to it they would end up missing it
+
+1242
+00:45:41,859 --> 00:45:45,039
+so in this case here our time stamp
+
+1243
+00:45:45,039 --> 00:45:46,720
+checks out for both of these both the
+
+1244
+00:45:46,720 --> 00:45:48,489
+reads and the rights so we go ahead and
+
+1245
+00:45:48,489 --> 00:45:51,220
+update my time stamp field
+
+1246
+00:45:51,220 --> 00:45:53,990
+then I'll say that our transaction has
+
+1247
+00:45:53,990 --> 00:45:56,060
+some kind of stall like it's computing
+
+1248
+00:45:56,060 --> 00:45:58,160
+the you know the 1 billion billionth
+
+1249
+00:45:58,160 --> 00:46:01,339
+digit of pi or its accesses remote some
+
+1250
+00:46:01,339 --> 00:46:03,260
+root system for whatever reason there's
+
+1251
+00:46:03,260 --> 00:46:05,540
+a stall and during this time another
+
+1252
+00:46:05,540 --> 00:46:07,609
+transaction comes along and modifies
+
+1253
+00:46:07,609 --> 00:46:10,520
+record a and now updates at the right
+
+1254
+00:46:10,520 --> 00:46:13,490
+time stamp with ten thousand five so now
+
+1255
+00:46:13,490 --> 00:46:15,140
+we'll see that we have a real issue
+
+1256
+00:46:15,140 --> 00:46:17,089
+because now when our transaction wakes
+
+1257
+00:46:17,089 --> 00:46:20,410
+up and tries to then write to record a
+
+1258
+00:46:20,410 --> 00:46:23,630
+that timestamp 10000 five is greater
+
+1259
+00:46:23,630 --> 00:46:26,390
+than our timestamp 10000 one so we
+
+1260
+00:46:26,390 --> 00:46:27,910
+shouldn't be allowed to do this because
+
+1261
+00:46:27,910 --> 00:46:30,790
+this would be trying to overwrite a
+
+1262
+00:46:30,790 --> 00:46:33,320
+logical record that was updated in the
+
+1263
+00:46:33,320 --> 00:46:36,170
+future with a physical record of in the
+
+1264
+00:46:36,170 --> 00:46:38,300
+past so in this case here this be
+
+1265
+00:46:38,300 --> 00:46:40,280
+violating the time symbol ring and our
+
+1266
+00:46:40,280 --> 00:46:41,690
+transaction has to get killed and aboard
+
+1267
+00:46:41,690 --> 00:46:46,310
+it and we roll back any changes so most
+
+1268
+00:46:46,310 --> 00:46:48,800
+systems that are out there don't do the
+
+1269
+00:46:48,800 --> 00:46:50,720
+basic time stamp learning protocol the
+
+1270
+00:46:50,720 --> 00:46:53,500
+more common approach is to do OCC
+
+1271
+00:46:53,500 --> 00:46:56,060
+optimistic a cartridge whole again this
+
+1272
+00:46:56,060 --> 00:47:00,380
+is confusing because time stamp ordering
+
+1273
+00:47:00,380 --> 00:47:02,540
+protocols are by themselves or
+
+1274
+00:47:02,540 --> 00:47:04,460
+optimistic schemes but there is a
+
+1275
+00:47:04,460 --> 00:47:05,540
+protocol to this figure called the
+
+1276
+00:47:05,540 --> 00:47:09,349
+Optima secure protocol scheme alright so
+
+1277
+00:47:09,349 --> 00:47:12,140
+the basic idea here is that like touch
+
+1278
+00:47:12,140 --> 00:47:16,790
+the border all right just late like time
+
+1279
+00:47:16,790 --> 00:47:19,520
+see I'm ordering there we're gonna
+
+1280
+00:47:19,520 --> 00:47:21,530
+maintain a private workspace we're gonna
+
+1281
+00:47:21,530 --> 00:47:23,660
+copy all the read data into it so that
+
+1282
+00:47:23,660 --> 00:47:25,730
+we go back and read same record you get
+
+1283
+00:47:25,730 --> 00:47:27,680
+the same value we're also going to write
+
+1284
+00:47:27,680 --> 00:47:29,359
+all our changes into that private
+
+1285
+00:47:29,359 --> 00:47:31,250
+workspace as well so now when a
+
+1286
+00:47:31,250 --> 00:47:32,900
+transaction commits we get the verify
+
+1287
+00:47:32,900 --> 00:47:34,880
+that there's no conflicts and if not
+
+1288
+00:47:34,880 --> 00:47:36,740
+then we can go ahead and install them to
+
+1289
+00:47:36,740 --> 00:47:40,430
+the global database so OCC is an old old
+
+1290
+00:47:40,430 --> 00:47:43,099
+protocol as you most most conclude your
+
+1291
+00:47:43,099 --> 00:47:46,430
+protocols the basic ones are old this
+
+1292
+00:47:46,430 --> 00:47:48,290
+one goes back to 1981 and actually was
+
+1293
+00:47:48,290 --> 00:47:49,730
+invented here at Carnegie Mellon by
+
+1294
+00:47:49,730 --> 00:47:52,760
+Professor HT Cohn HT Kong is no longer
+
+1295
+00:47:52,760 --> 00:47:56,089
+here he's now at Harvard and he's not
+
+1296
+00:47:56,089 --> 00:47:57,470
+even a Dana's professor he didn't know
+
+1297
+00:47:57,470 --> 00:47:59,450
+networking but this is sort of like his
+
+1298
+00:47:59,450 --> 00:48:01,250
+most famous work is actually a databases
+
+1299
+00:48:01,250 --> 00:48:03,020
+paper so that's kind of cool this came
+
+1300
+00:48:03,020 --> 00:48:03,620
+out of the computer
+
+1301
+00:48:03,620 --> 00:48:07,250
+department here at CMU so here's the
+
+1302
+00:48:07,250 --> 00:48:08,960
+simple transaction was to read on a on
+
+1303
+00:48:08,960 --> 00:48:11,240
+write on read on a write on a and write
+
+1304
+00:48:11,240 --> 00:48:14,810
+on B so in our database now we don't
+
+1305
+00:48:14,810 --> 00:48:16,070
+need the read time stamp field for
+
+1306
+00:48:16,070 --> 00:48:17,330
+records we only have to have the write
+
+1307
+00:48:17,330 --> 00:48:19,880
+time stamp field and so now when our
+
+1308
+00:48:19,880 --> 00:48:21,890
+transaction starts unlike in basic time
+
+1309
+00:48:21,890 --> 00:48:23,600
+stamp boarding protocol we're not gonna
+
+1310
+00:48:23,600 --> 00:48:25,610
+actually gonna assign it a time stamp
+
+1311
+00:48:25,610 --> 00:48:27,260
+we're gonna do that later
+
+1312
+00:48:27,260 --> 00:48:29,120
+so any time we're gonna read and write
+
+1313
+00:48:29,120 --> 00:48:31,160
+stuff we're gonna make a copy of it in
+
+1314
+00:48:31,160 --> 00:48:33,920
+into a private workspace and set it with
+
+1315
+00:48:33,920 --> 00:48:38,000
+the types of infinity so OCC has three
+
+1316
+00:48:38,000 --> 00:48:41,300
+phases so the first one unfortunately is
+
+1317
+00:48:41,300 --> 00:48:42,560
+called the read phase so even though
+
+1318
+00:48:42,560 --> 00:48:45,350
+we're gonna do rights and this this for
+
+1319
+00:48:45,350 --> 00:48:46,670
+whatever reason the this they call this
+
+1320
+00:48:46,670 --> 00:48:50,150
+the read phase of a transaction if I had
+
+1321
+00:48:50,150 --> 00:48:51,620
+my choice app I would call this like the
+
+1322
+00:48:51,620 --> 00:48:53,330
+run phase or in the execute phase I
+
+1323
+00:48:53,330 --> 00:48:55,610
+think that makes more sense for whatever
+
+1324
+00:48:55,610 --> 00:48:57,680
+reason it's called the read phase so
+
+1325
+00:48:57,680 --> 00:48:59,390
+again we're gonna do a read on a here in
+
+1326
+00:48:59,390 --> 00:49:02,200
+the B phase so we're gonna have to copy
+
+1327
+00:49:02,200 --> 00:49:05,630
+that record and the global database into
+
+1328
+00:49:05,630 --> 00:49:08,810
+our private work space so that again we
+
+1329
+00:49:08,810 --> 00:49:10,010
+can always read this thing over and over
+
+1330
+00:49:10,010 --> 00:49:12,770
+again at the same value so now when we
+
+1331
+00:49:12,770 --> 00:49:15,170
+do on write on a write we're not gonna
+
+1332
+00:49:15,170 --> 00:49:16,610
+modify the global database we're gonna
+
+1333
+00:49:16,610 --> 00:49:19,550
+modify the one in a private workspace so
+
+1334
+00:49:19,550 --> 00:49:21,380
+we don't have a write time stamp yet
+
+1335
+00:49:21,380 --> 00:49:23,390
+because we haven't been assigned one so
+
+1336
+00:49:23,390 --> 00:49:25,160
+we're just gonna set that to an infinity
+
+1337
+00:49:25,160 --> 00:49:26,840
+in our workspace and then update the
+
+1338
+00:49:26,840 --> 00:49:29,960
+value same thing on B here we're gonna
+
+1339
+00:49:29,960 --> 00:49:32,000
+first copy it from the global database
+
+1340
+00:49:32,000 --> 00:49:34,100
+into our private workspace and then
+
+1341
+00:49:34,100 --> 00:49:35,990
+update it with our infinity timestamp
+
+1342
+00:49:35,990 --> 00:49:40,400
+and the in our new value so now when our
+
+1343
+00:49:40,400 --> 00:49:42,140
+transaction goes to commit it's not
+
+1344
+00:49:42,140 --> 00:49:44,390
+actually gonna commit right away there's
+
+1345
+00:49:44,390 --> 00:49:46,250
+not gonna be two additional phases the
+
+1346
+00:49:46,250 --> 00:49:49,310
+validate phase in the write phase and so
+
+1347
+00:49:49,310 --> 00:49:50,810
+the validate phase is basically where
+
+1348
+00:49:50,810 --> 00:49:51,910
+we're gonna look at a private workspace
+
+1349
+00:49:51,910 --> 00:49:54,920
+see what see what what records we
+
+1350
+00:49:54,920 --> 00:49:57,800
+modified and go to see whether that
+
+1351
+00:49:57,800 --> 00:50:01,520
+would by whether there's any there's
+
+1352
+00:50:01,520 --> 00:50:04,130
+there's either transactions that are
+
+1353
+00:50:04,130 --> 00:50:05,810
+still running but have read this data
+
+1354
+00:50:05,810 --> 00:50:06,830
+and therefore they didn't see our
+
+1355
+00:50:06,830 --> 00:50:07,940
+updates because there was in a private
+
+1356
+00:50:07,940 --> 00:50:11,240
+workspace or there's transactions in the
+
+1357
+00:50:11,240 --> 00:50:13,070
+past that I've already committed that
+
+1358
+00:50:13,070 --> 00:50:15,860
+have modified this and therefore we
+
+1359
+00:50:15,860 --> 00:50:17,930
+didn't actually see their changes
+
+1360
+00:50:17,930 --> 00:50:19,460
+well and therefore we would have a
+
+1361
+00:50:19,460 --> 00:50:21,170
+conflict so that's either you're doing
+
+1362
+00:50:21,170 --> 00:50:22,339
+backwards validation a forward
+
+1363
+00:50:22,339 --> 00:50:24,770
+validation again we covered that in the
+
+1364
+00:50:24,770 --> 00:50:26,089
+introduction class it's not really
+
+1365
+00:50:26,089 --> 00:50:27,859
+important right now but basic idea is
+
+1366
+00:50:27,859 --> 00:50:29,180
+like you and you're making sure that
+
+1367
+00:50:29,180 --> 00:50:31,190
+transactions are always committing sort
+
+1368
+00:50:31,190 --> 00:50:34,700
+of in the right order so if we pass the
+
+1369
+00:50:34,700 --> 00:50:36,740
+validate phase there's no conflicts then
+
+1370
+00:50:36,740 --> 00:50:39,550
+we now enter the right phase where we
+
+1371
+00:50:39,550 --> 00:50:41,780
+now are finally assigned a time stamp
+
+1372
+00:50:41,780 --> 00:50:43,910
+and then we update the global database
+
+1373
+00:50:43,910 --> 00:50:45,800
+with our changes that we've made from
+
+1374
+00:50:45,800 --> 00:50:47,510
+our private workspace with out with our
+
+1375
+00:50:47,510 --> 00:50:49,880
+new time stamp and then and then at this
+
+1376
+00:50:49,880 --> 00:50:51,200
+point that transactions considered be
+
+1377
+00:50:51,200 --> 00:51:00,950
+done and it goes and commits so the one
+
+1378
+00:51:00,950 --> 00:51:02,119
+important thing to understand about this
+
+1379
+00:51:02,119 --> 00:51:05,990
+is that when there's not really any
+
+1380
+00:51:05,990 --> 00:51:09,050
+contention then the optimistic schemes
+
+1381
+00:51:09,050 --> 00:51:11,030
+like OCC are actually performing better
+
+1382
+00:51:11,030 --> 00:51:14,990
+than two-phase locking because since we
+
+1383
+00:51:14,990 --> 00:51:16,880
+assume that the conflicts are rare we're
+
+1384
+00:51:16,880 --> 00:51:17,960
+gonna spend less time checking for
+
+1385
+00:51:17,960 --> 00:51:20,240
+complex right we spend less time looking
+
+1386
+00:51:20,240 --> 00:51:23,089
+for for for conflicts that don't
+
+1387
+00:51:23,089 --> 00:51:24,920
+actually exist it's sort of like in the
+
+1388
+00:51:24,920 --> 00:51:26,720
+discordian system where if everything
+
+1389
+00:51:26,720 --> 00:51:28,400
+fits in memory then we're gonna waste
+
+1390
+00:51:28,400 --> 00:51:31,579
+time looking you know to see whether we
+
+1391
+00:51:31,579 --> 00:51:33,400
+have to evict something to make space in
+
+1392
+00:51:33,400 --> 00:51:36,349
+our buffer pool manager all right so
+
+1393
+00:51:36,349 --> 00:51:37,730
+it's better off just to optimistically
+
+1394
+00:51:37,730 --> 00:51:39,260
+assume everything fits and memory and
+
+1395
+00:51:39,260 --> 00:51:41,950
+jump right to get and get what we need
+
+1396
+00:51:41,950 --> 00:51:44,150
+but the issues can be now with high
+
+1397
+00:51:44,150 --> 00:51:45,619
+contention I mean we have a lot of
+
+1398
+00:51:45,619 --> 00:51:47,390
+transactions trying to tend to read and
+
+1399
+00:51:47,390 --> 00:51:50,780
+write to the same records then all the
+
+1400
+00:51:50,780 --> 00:51:52,220
+protocols that I've just talked about
+
+1401
+00:51:52,220 --> 00:51:54,020
+are essentially going to degenerate down
+
+1402
+00:51:54,020 --> 00:51:56,780
+to just being the serial execution of
+
+1403
+00:51:56,780 --> 00:51:58,700
+transactions meaning only one
+
+1404
+00:51:58,700 --> 00:52:00,770
+transaction can run at a time we're
+
+1405
+00:52:00,770 --> 00:52:03,260
+gonna waste all this extra extra these
+
+1406
+00:52:03,260 --> 00:52:05,359
+extra spend a lot of time in our
+
+1407
+00:52:05,359 --> 00:52:07,760
+protocols doing work that's essentially
+
+1408
+00:52:07,760 --> 00:52:09,079
+useless because we're transactions are
+
+1409
+00:52:09,079 --> 00:52:12,470
+never gonna be able to commit so to
+
+1410
+00:52:12,470 --> 00:52:14,839
+better understand this issue this is
+
+1411
+00:52:14,839 --> 00:52:16,760
+what this the paper had you guys read is
+
+1412
+00:52:16,760 --> 00:52:18,680
+about so this is a start the idea with a
+
+1413
+00:52:18,680 --> 00:52:22,400
+former student of mine who is now a new
+
+1414
+00:52:22,400 --> 00:52:23,690
+data to fester at the university
+
+1415
+00:52:23,690 --> 00:52:26,780
+Wisconsin we did a few years ago where
+
+1416
+00:52:26,780 --> 00:52:29,359
+we implemented a testbed system that
+
+1417
+00:52:29,359 --> 00:52:31,610
+allows to evaluate different
+
+1418
+00:52:31,610 --> 00:52:33,260
+aren't your protocols that rich green
+
+1419
+00:52:33,260 --> 00:52:36,530
+levels of parallelism and so it's kind
+
+1420
+00:52:36,530 --> 00:52:37,790
+of intrigue might this project is rather
+
+1421
+00:52:37,790 --> 00:52:39,590
+than taking like post grass on my sequel
+
+1422
+00:52:39,590 --> 00:52:40,250
+or whatever
+
+1423
+00:52:40,250 --> 00:52:41,900
+Davison you want and trying to do a
+
+1424
+00:52:41,900 --> 00:52:44,330
+bake-off between the two of them we
+
+1425
+00:52:44,330 --> 00:52:45,620
+implemented a single system that had a
+
+1426
+00:52:45,620 --> 00:52:47,510
+pluggable API that allows a plop in
+
+1427
+00:52:47,510 --> 00:52:50,240
+different cultural protocols without
+
+1428
+00:52:50,240 --> 00:52:52,430
+making major changes to the rest of the
+
+1429
+00:52:52,430 --> 00:52:54,770
+system and the idea here is that we want
+
+1430
+00:52:54,770 --> 00:52:57,440
+to strip it down to just being the bare
+
+1431
+00:52:57,440 --> 00:52:59,480
+minimum you need to execute transactions
+
+1432
+00:52:59,480 --> 00:53:01,430
+in a database system without all the
+
+1433
+00:53:01,430 --> 00:53:02,540
+additional bells and whistles and
+
+1434
+00:53:02,540 --> 00:53:04,210
+features that are yet that a
+
+1435
+00:53:04,210 --> 00:53:06,200
+full-featured system like might see what
+
+1436
+00:53:06,200 --> 00:53:08,120
+Prescott's would have we just focus on
+
+1437
+00:53:08,120 --> 00:53:09,230
+what the overhead is of these
+
+1438
+00:53:09,230 --> 00:53:10,600
+concurrency of protocols
+
+1439
+00:53:10,600 --> 00:53:13,730
+so the idea also to was that we want to
+
+1440
+00:53:13,730 --> 00:53:16,730
+run this you know this these systems in
+
+1441
+00:53:16,730 --> 00:53:21,980
+a highly parallel environment so that it
+
+1442
+00:53:21,980 --> 00:53:24,260
+would sort of really exposed as the in
+
+1443
+00:53:24,260 --> 00:53:25,910
+what the main bottlenecks are in the
+
+1444
+00:53:25,910 --> 00:53:27,110
+implementations of the different
+
+1445
+00:53:27,110 --> 00:53:29,690
+protocols in the system in a way that
+
+1446
+00:53:29,690 --> 00:53:30,860
+you couldn't get maybe running on a
+
+1447
+00:53:30,860 --> 00:53:33,290
+machine like 32 cores or 64 cores which
+
+1448
+00:53:33,290 --> 00:53:35,330
+is so the most you can get around this
+
+1449
+00:53:35,330 --> 00:53:39,680
+time in 2014 when we wrote this paper so
+
+1450
+00:53:39,680 --> 00:53:41,330
+the system we're gonna use for this
+
+1451
+00:53:41,330 --> 00:53:44,780
+evaluation is called DB X 1000 so this
+
+1452
+00:53:44,780 --> 00:53:46,820
+was again the system that the student
+
+1453
+00:53:46,820 --> 00:53:49,370
+wrote for this paper and then it was
+
+1454
+00:53:49,370 --> 00:53:51,380
+written from scratch just to have this
+
+1455
+00:53:51,380 --> 00:53:53,720
+pluggable API allows you to plop that
+
+1456
+00:53:53,720 --> 00:53:55,910
+drop in different implementations of
+
+1457
+00:53:55,910 --> 00:53:58,220
+these concurrent your protocols so it's
+
+1458
+00:53:58,220 --> 00:53:59,690
+a stripped-down system there's no
+
+1459
+00:53:59,690 --> 00:54:01,790
+network access there's no logging at
+
+1460
+00:54:01,790 --> 00:54:02,960
+least at the time that we were at this
+
+1461
+00:54:02,960 --> 00:54:04,790
+paper and a dated support concurrent
+
+1462
+00:54:04,790 --> 00:54:06,740
+indexes it really was just focusing on
+
+1463
+00:54:06,740 --> 00:54:08,540
+how fast can you do convert your
+
+1464
+00:54:08,540 --> 00:54:11,570
+protocols all the transactions are going
+
+1465
+00:54:11,570 --> 00:54:13,100
+to execute with store procedures and so
+
+1466
+00:54:13,100 --> 00:54:15,230
+that means all the server-side logic in
+
+1467
+00:54:15,230 --> 00:54:17,120
+order to execute a transaction is
+
+1468
+00:54:17,120 --> 00:54:19,130
+contained on on the data system itself
+
+1469
+00:54:19,130 --> 00:54:21,080
+so you never talk about them over the
+
+1470
+00:54:21,080 --> 00:54:22,970
+network and ask the application of the
+
+1471
+00:54:22,970 --> 00:54:24,470
+client you know what should I do next
+
+1472
+00:54:24,470 --> 00:54:27,440
+and so we're gonna run this now also in
+
+1473
+00:54:27,440 --> 00:54:32,690
+a chip simulator developed by who at MIT
+
+1474
+00:54:32,690 --> 00:54:36,950
+added my team called graphite and this
+
+1475
+00:54:36,950 --> 00:54:39,410
+was modeling a single socket table based
+
+1476
+00:54:39,410 --> 00:54:42,620
+CPU with a Nuka architecture so Nuka
+
+1477
+00:54:42,620 --> 00:54:44,890
+stands for non-uniform cache acts
+
+1478
+00:54:44,890 --> 00:54:47,290
+and we contrast that with the Neumann
+
+1479
+00:54:47,290 --> 00:54:48,640
+architecture non-uniform memory access
+
+1480
+00:54:48,640 --> 00:54:50,590
+that or mostly gonna be talking about
+
+1481
+00:54:50,590 --> 00:54:52,060
+during the semester in like you know
+
+1482
+00:54:52,060 --> 00:54:55,540
+Intel Xeon ships so Nuka basically means
+
+1483
+00:54:55,540 --> 00:55:00,670
+that the cost of one core accessing the
+
+1484
+00:55:00,670 --> 00:55:03,700
+cache of another core is not always
+
+1485
+00:55:03,700 --> 00:55:05,590
+going to be the same because it's gonna
+
+1486
+00:55:05,590 --> 00:55:07,090
+have this tile based architecture where
+
+1487
+00:55:07,090 --> 00:55:08,560
+you have to communicate over this mesh
+
+1488
+00:55:08,560 --> 00:55:11,740
+network in order do you know cache
+
+1489
+00:55:11,740 --> 00:55:13,090
+invalidation and do reason writes
+
+1490
+00:55:13,090 --> 00:55:14,860
+between different cores and so some
+
+1491
+00:55:14,860 --> 00:55:16,570
+cores are closer to you on the network
+
+1492
+00:55:16,570 --> 00:55:18,760
+and therefore your reading writing their
+
+1493
+00:55:18,760 --> 00:55:22,120
+memory locations or their caches is much
+
+1494
+00:55:22,120 --> 00:55:23,710
+faster than one that's mainland to clean
+
+1495
+00:55:23,710 --> 00:55:26,890
+the other side of this network so I'm
+
+1496
+00:55:26,890 --> 00:55:30,130
+not really an architecture person the
+
+1497
+00:55:30,130 --> 00:55:31,540
+reason why we want with this or a tile
+
+1498
+00:55:31,540 --> 00:55:34,450
+based approach is that when you talk to
+
+1499
+00:55:34,450 --> 00:55:36,550
+people that are architecture experts
+
+1500
+00:55:36,550 --> 00:55:38,620
+they said that when you start getting
+
+1501
+00:55:38,620 --> 00:55:42,160
+them to like a thousand core count sort
+
+1502
+00:55:42,160 --> 00:55:43,720
+of the conventional wisdom is that you'd
+
+1503
+00:55:43,720 --> 00:55:45,220
+want to use a table based architecture
+
+1504
+00:55:45,220 --> 00:55:47,950
+like this again the main takeaways we're
+
+1505
+00:55:47,950 --> 00:55:49,600
+gonna get from the study are not gonna
+
+1506
+00:55:49,600 --> 00:55:50,920
+be dependent on using a tile based
+
+1507
+00:55:50,920 --> 00:55:52,120
+architecture and they're still
+
+1508
+00:55:52,120 --> 00:55:54,340
+applicable to the xeon type system as we
+
+1509
+00:55:54,340 --> 00:55:56,140
+talked about for the semester it's just
+
+1510
+00:55:56,140 --> 00:55:58,630
+is what the harbor was that we had at
+
+1511
+00:55:58,630 --> 00:56:00,790
+the time to model this so another
+
+1512
+00:56:00,790 --> 00:56:01,960
+important thing to understand too is
+
+1513
+00:56:01,960 --> 00:56:04,060
+that this cpu stimulator runs really
+
+1514
+00:56:04,060 --> 00:56:06,550
+really slow all right it's it's ten
+
+1515
+00:56:06,550 --> 00:56:08,320
+thousand X slower than the wall clock
+
+1516
+00:56:08,320 --> 00:56:11,290
+time of a you know system running bare
+
+1517
+00:56:11,290 --> 00:56:13,720
+metal so that means that there's a bunch
+
+1518
+00:56:13,720 --> 00:56:15,280
+of optimizations the student had to do
+
+1519
+00:56:15,280 --> 00:56:17,680
+indeed X 1000 that get to run at a
+
+1520
+00:56:17,680 --> 00:56:19,870
+reasonable time in the simulator so if
+
+1521
+00:56:19,870 --> 00:56:21,400
+you go look at the code on github you'll
+
+1522
+00:56:21,400 --> 00:56:24,400
+find that there's a lot of them there's
+
+1523
+00:56:24,400 --> 00:56:25,780
+a lot of assembly in the different parts
+
+1524
+00:56:25,780 --> 00:56:27,430
+of the system because he had to do that
+
+1525
+00:56:27,430 --> 00:56:28,960
+to get it to run run fast and her you
+
+1526
+00:56:28,960 --> 00:56:30,550
+know get the experience to finish in
+
+1527
+00:56:30,550 --> 00:56:34,030
+time all right so the target workload
+
+1528
+00:56:34,030 --> 00:56:35,440
+we're gonna be using for this paper is
+
+1529
+00:56:35,440 --> 00:56:38,920
+going to be y CS be W Yahoo Cloud
+
+1530
+00:56:38,920 --> 00:56:41,440
+something benchmark so the it's
+
+1531
+00:56:41,440 --> 00:56:43,420
+basically a key value store workload
+
+1532
+00:56:43,420 --> 00:56:46,270
+that's sort of meant the model the sort
+
+1533
+00:56:46,270 --> 00:56:51,190
+of ESS patterns of a web services or web
+
+1534
+00:56:51,190 --> 00:56:54,070
+based applications so in the database
+
+1535
+00:56:54,070 --> 00:56:55,360
+there'd be two million tuples and each
+
+1536
+00:56:55,360 --> 00:56:58,779
+tuple is is one kilobyte so every
+
+1537
+00:56:58,779 --> 00:57:00,959
+transaction that we're gonna model our
+
+1538
+00:57:00,959 --> 00:57:04,859
+Iran in our system is gonna execute
+
+1539
+00:57:04,859 --> 00:57:06,640
+queries they're gonna read and write
+
+1540
+00:57:06,640 --> 00:57:09,069
+sixteen different tuples at a time and
+
+1541
+00:57:09,069 --> 00:57:11,109
+we're gonna vary their access patterns
+
+1542
+00:57:11,109 --> 00:57:12,609
+excu in the access pattern so sometimes
+
+1543
+00:57:12,609 --> 00:57:13,839
+they'll be hotspots and sometimes
+
+1544
+00:57:13,839 --> 00:57:16,209
+they'll be uniform access and all the
+
+1545
+00:57:16,209 --> 00:57:17,559
+transactions are so going to run a store
+
+1546
+00:57:17,559 --> 00:57:18,099
+procedure
+
+1547
+00:57:18,099 --> 00:57:19,449
+store procedure is running the
+
+1548
+00:57:19,449 --> 00:57:23,529
+serializable isolation level so the six
+
+1549
+00:57:23,529 --> 00:57:24,640
+different schemes are going to compare
+
+1550
+00:57:24,640 --> 00:57:27,459
+or based on the the different type of
+
+1551
+00:57:27,459 --> 00:57:29,859
+protocols that I talked about before so
+
+1552
+00:57:29,859 --> 00:57:31,569
+for two phase locking there's gonna be
+
+1553
+00:57:31,569 --> 00:57:33,309
+deadlock detection and then deadlock
+
+1554
+00:57:33,309 --> 00:57:34,989
+prevention with no wait and wait and die
+
+1555
+00:57:34,989 --> 00:57:37,659
+and this is emblematic of sort of the
+
+1556
+00:57:37,659 --> 00:57:39,609
+some of the biggest database systems
+
+1557
+00:57:39,609 --> 00:57:42,640
+that are out there today now in the time
+
+1558
+00:57:42,640 --> 00:57:44,319
+stamp ordering side there's a time stamp
+
+1559
+00:57:44,319 --> 00:57:46,659
+ordering and there's FCC and there's a
+
+1560
+00:57:46,659 --> 00:57:49,630
+multi version there's the original multi
+
+1561
+00:57:49,630 --> 00:57:53,229
+version protocol present or described in
+
+1562
+00:57:53,229 --> 00:57:55,659
+the 1979 paper that version described
+
+1563
+00:57:55,659 --> 00:57:58,689
+MVCC that uses time stamp whirring next
+
+1564
+00:57:58,689 --> 00:57:59,979
+class we'll see that you can have
+
+1565
+00:57:59,979 --> 00:58:01,900
+different variants of multi versioning
+
+1566
+00:58:01,900 --> 00:58:04,900
+that uses OCC or two phase locking but
+
+1567
+00:58:04,900 --> 00:58:06,819
+for this one we just went with this sort
+
+1568
+00:58:06,819 --> 00:58:08,199
+of in the original protocol for posed in
+
+1569
+00:58:08,199 --> 00:58:10,809
+the 1970s and this is emblematic about
+
+1570
+00:58:10,809 --> 00:58:13,719
+most of the newer systems today as well
+
+1571
+00:58:13,719 --> 00:58:15,519
+as some sort of classic database systems
+
+1572
+00:58:15,519 --> 00:58:19,299
+that use multi versioning alright so for
+
+1573
+00:58:19,299 --> 00:58:21,459
+the first experiment here this is sort
+
+1574
+00:58:21,459 --> 00:58:24,549
+of the sort of the baseline performance
+
+1575
+00:58:24,549 --> 00:58:25,779
+of these different protocols and a
+
+1576
+00:58:25,779 --> 00:58:28,329
+read-only workload so what you're seeing
+
+1577
+00:58:28,329 --> 00:58:30,789
+is that along the x-axis as we scale the
+
+1578
+00:58:30,789 --> 00:58:34,299
+number of cores we're adding work the
+
+1579
+00:58:34,299 --> 00:58:35,829
+more concurrent transactions running at
+
+1580
+00:58:35,829 --> 00:58:38,169
+the same time so every single time we
+
+1581
+00:58:38,169 --> 00:58:40,269
+added a core that's going to have an
+
+1582
+00:58:40,269 --> 00:58:42,069
+additional transaction running that's
+
+1583
+00:58:42,069 --> 00:58:44,019
+you know run important executing part of
+
+1584
+00:58:44,019 --> 00:58:47,890
+the workload so 200 cores there's 200
+
+1585
+00:58:47,890 --> 00:58:50,739
+current transactions at the same time so
+
+1586
+00:58:50,739 --> 00:58:52,119
+this is a read-only workload with
+
+1587
+00:58:52,119 --> 00:58:55,569
+uniform memory access or tuple access so
+
+1588
+00:58:55,569 --> 00:58:57,099
+and this is the best that these
+
+1589
+00:58:57,099 --> 00:58:58,959
+different protocols can do because
+
+1590
+00:58:58,959 --> 00:59:01,749
+there's there's zero contention so the
+
+1591
+00:59:01,749 --> 00:59:03,819
+first thing we see is that the deadlock
+
+1592
+00:59:03,819 --> 00:59:05,880
+detection and the no wait protocols
+
+1593
+00:59:05,880 --> 00:59:09,039
+actually can almost scale linearly and
+
+1594
+00:59:09,039 --> 00:59:11,229
+perform the best because these protocols
+
+1595
+00:59:11,229 --> 00:59:12,610
+are so simple there's no
+
+1596
+00:59:12,610 --> 00:59:14,740
+locks and therefore the overhead of
+
+1597
+00:59:14,740 --> 00:59:17,430
+transactions and executing is mental
+
+1598
+00:59:17,430 --> 00:59:19,480
+next thing you see is that there's me
+
+1599
+00:59:19,480 --> 00:59:23,500
+here at eight hundred cars where wait
+
+1600
+00:59:23,500 --> 00:59:25,780
+and die and MVCC start start to dip down
+
+1601
+00:59:25,780 --> 00:59:28,180
+and this is due to the overhead of
+
+1602
+00:59:28,180 --> 00:59:29,830
+allocating unique time stamps for
+
+1603
+00:59:29,830 --> 00:59:31,600
+transactions as they're running right
+
+1604
+00:59:31,600 --> 00:59:33,100
+when you're running with a million
+
+1605
+00:59:33,100 --> 00:59:34,120
+transactions at the running the same
+
+1606
+00:59:34,120 --> 00:59:36,160
+time or when you're running eight
+
+1607
+00:59:36,160 --> 00:59:38,110
+million transactions a second for this
+
+1608
+00:59:38,110 --> 00:59:39,460
+table based architecture at the time
+
+1609
+00:59:39,460 --> 00:59:40,810
+stamp allocation and coordinating across
+
+1610
+00:59:40,810 --> 00:59:41,980
+all the different threads becomes a
+
+1611
+00:59:41,980 --> 00:59:45,670
+bottleneck and lastly you see that OCC
+
+1612
+00:59:45,670 --> 00:59:47,590
+here actually does the worst and so this
+
+1613
+00:59:47,590 --> 00:59:50,410
+is a combination of of having to copy
+
+1614
+00:59:50,410 --> 00:59:52,690
+the private workspace for every single
+
+1615
+00:59:52,690 --> 00:59:54,130
+transaction and copy that back into the
+
+1616
+00:59:54,130 --> 00:59:56,170
+system that actually comes a big
+
+1617
+00:59:56,170 --> 01:00:00,130
+bottleneck so next we see here is a
+
+1618
+01:00:00,130 --> 01:00:01,420
+write intensive workload where you know
+
+1619
+01:00:01,420 --> 01:00:02,950
+I have transactions actually updating
+
+1620
+01:00:02,950 --> 01:00:04,840
+the database and this is on a medium
+
+1621
+01:00:04,840 --> 01:00:06,820
+contingent workload where 60% of
+
+1622
+01:00:06,820 --> 01:00:08,260
+transactions are going to try to access
+
+1623
+01:00:08,260 --> 01:00:11,920
+a hot spot of 20% of the database so the
+
+1624
+01:00:11,920 --> 01:00:12,730
+first thing you need to see is that
+
+1625
+01:00:12,730 --> 01:00:14,770
+deadlock detection is actually now the
+
+1626
+01:00:14,770 --> 01:00:17,380
+worst protocol used for this miss
+
+1627
+01:00:17,380 --> 01:00:19,120
+environment you know in the last slide I
+
+1628
+01:00:19,120 --> 01:00:20,920
+showed you to was actually the best but
+
+1629
+01:00:20,920 --> 01:00:22,570
+now when you have high content to higher
+
+1630
+01:00:22,570 --> 01:00:26,190
+mountain contention there's deadlocks
+
+1631
+01:00:26,190 --> 01:00:28,210
+there's more dead locks in the system
+
+1632
+01:00:28,210 --> 01:00:29,770
+and therefore it takes longer for the
+
+1633
+01:00:29,770 --> 01:00:31,270
+deadlock detection thread to come around
+
+1634
+01:00:31,270 --> 01:00:33,370
+and break these dead locks so you sent
+
+1635
+01:00:33,370 --> 01:00:34,960
+you have threads stolen and waiting for
+
+1636
+01:00:34,960 --> 01:00:36,670
+that deadlock detection threat to come
+
+1637
+01:00:36,670 --> 01:00:38,500
+through and clean things up and that
+
+1638
+01:00:38,500 --> 01:00:43,260
+hurts performance next you see that the
+
+1639
+01:00:43,260 --> 01:00:45,880
+no wait and wait I actually do the best
+
+1640
+01:00:45,880 --> 01:00:47,530
+all right and this is because these
+
+1641
+01:00:47,530 --> 01:00:50,620
+protocols are so simple so what's
+
+1642
+01:00:50,620 --> 01:00:53,410
+happening is that the you know yes
+
+1643
+01:00:53,410 --> 01:00:56,350
+there's anytime there's a conflict and
+
+1644
+01:00:56,350 --> 01:00:58,240
+there would be a deadlock these
+
+1645
+01:00:58,240 --> 01:00:59,920
+protocols immediately just kill the
+
+1646
+01:00:59,920 --> 01:01:01,810
+transaction to restart them so you don't
+
+1647
+01:01:01,810 --> 01:01:03,760
+spend any wasted time trying to figure
+
+1648
+01:01:03,760 --> 01:01:06,300
+out you know should I wait or you know
+
+1649
+01:01:06,300 --> 01:01:08,200
+hoping the other transaction could give
+
+1650
+01:01:08,200 --> 01:01:10,150
+up a slot you make some action right
+
+1651
+01:01:10,150 --> 01:01:10,420
+away
+
+1652
+01:01:10,420 --> 01:01:12,100
+no waits the simplest one writes
+
+1653
+01:01:12,100 --> 01:01:13,720
+basically says I try to acquire my trans
+
+1654
+01:01:13,720 --> 01:01:15,730
+block I couldn't get it immediately kill
+
+1655
+01:01:15,730 --> 01:01:17,680
+myself and again because we're store by
+
+1656
+01:01:17,680 --> 01:01:19,540
+seizures there's no overhead of
+
+1657
+01:01:19,540 --> 01:01:21,280
+restarting transaction and in a memory
+
+1658
+01:01:21,280 --> 01:01:23,680
+environment it's super fast
+
+1659
+01:01:23,680 --> 01:01:25,810
+all right in the middle here you see the
+
+1660
+01:01:25,810 --> 01:01:28,750
+three timestamp warning protocols basic
+
+1661
+01:01:28,750 --> 01:01:31,420
+tio MVCC and OCC they're roughly all
+
+1662
+01:01:31,420 --> 01:01:33,640
+doing about the same of CCS doing slower
+
+1663
+01:01:33,640 --> 01:01:35,320
+again because there's extra overhead of
+
+1664
+01:01:35,320 --> 01:01:37,540
+copying things into the work you know in
+
+1665
+01:01:37,540 --> 01:01:38,980
+and out of the work space over and over
+
+1666
+01:01:38,980 --> 01:01:42,040
+again but you know they're roughly about
+
+1667
+01:01:42,040 --> 01:01:46,690
+the same so now we get to this final
+
+1668
+01:01:46,690 --> 01:01:47,890
+graph here which is the most important
+
+1669
+01:01:47,890 --> 01:01:49,870
+one of the paper and this is where we're
+
+1670
+01:01:49,870 --> 01:01:51,370
+running a writing system workload where
+
+1671
+01:01:51,370 --> 01:01:54,130
+90% of the transactions are updating 10%
+
+1672
+01:01:54,130 --> 01:01:56,440
+of the database so now you see that all
+
+1673
+01:01:56,440 --> 01:01:58,210
+the protocol is basically crashed down
+
+1674
+01:01:58,210 --> 01:02:00,790
+to zero when we get up to a thousand
+
+1675
+01:02:00,790 --> 01:02:03,100
+cores okay there's none of these
+
+1676
+01:02:03,100 --> 01:02:06,190
+protocols were actually scaling sewing
+
+1677
+01:02:06,190 --> 01:02:07,570
+and the reason is that this is all this
+
+1678
+01:02:07,570 --> 01:02:09,910
+overhead of transactions having to check
+
+1679
+01:02:09,910 --> 01:02:12,010
+for conflicts or copy things around and
+
+1680
+01:02:12,010 --> 01:02:13,720
+there's so many conflicts that you just
+
+1681
+01:02:13,720 --> 01:02:15,280
+can't make any for you know for progress
+
+1682
+01:02:15,280 --> 01:02:18,040
+and get things completed so one
+
+1683
+01:02:18,040 --> 01:02:20,290
+interesting thing is that you see no
+
+1684
+01:02:20,290 --> 01:02:23,430
+wait is kind of going along doing okay
+
+1685
+01:02:23,430 --> 01:02:26,260
+relative to the other protocols until
+
+1686
+01:02:26,260 --> 01:02:28,360
+800 threads and then it crashes down to
+
+1687
+01:02:28,360 --> 01:02:31,630
+zero so it's not doing that great
+
+1688
+01:02:31,630 --> 01:02:33,400
+compared to the previous life think it's
+
+1689
+01:02:33,400 --> 01:02:35,110
+only executing 200,000 transactions a
+
+1690
+01:02:35,110 --> 01:02:37,480
+second where's the other slice I was
+
+1691
+01:02:37,480 --> 01:02:38,500
+sharing you can do millions of
+
+1692
+01:02:38,500 --> 01:02:41,350
+transactions a second but again it's
+
+1693
+01:02:41,350 --> 01:02:43,090
+it's doing okay because it's it's
+
+1694
+01:02:43,090 --> 01:02:45,880
+protocol is so simple that yes there's
+
+1695
+01:02:45,880 --> 01:02:47,950
+no way when the system identifies that
+
+1696
+01:02:47,950 --> 01:02:49,840
+there's going to be a deadlock it kills
+
+1697
+01:02:49,840 --> 01:02:51,780
+the transaction immediately restarts it
+
+1698
+01:02:51,780 --> 01:02:54,970
+where's the other ones and they cost of
+
+1699
+01:02:54,970 --> 01:02:56,320
+doing that is super cheap relative the
+
+1700
+01:02:56,320 --> 01:02:58,270
+other ones of course now at a thousand
+
+1701
+01:02:58,270 --> 01:03:02,710
+cores doing that just you just go
+
+1702
+01:03:02,710 --> 01:03:04,240
+boarding transactions so much that you
+
+1703
+01:03:04,240 --> 01:03:06,540
+can't get any work done
+
+1704
+01:03:06,540 --> 01:03:08,800
+the other interesting thing to point out
+
+1705
+01:03:08,800 --> 01:03:11,950
+is that OCC is actually the worst over
+
+1706
+01:03:11,950 --> 01:03:13,270
+here when you have a small number of
+
+1707
+01:03:13,270 --> 01:03:15,580
+cores but on the other side is actually
+
+1708
+01:03:15,580 --> 01:03:18,250
+doing the best and again this is what
+
+1709
+01:03:18,250 --> 01:03:19,810
+because it's basically des generating
+
+1710
+01:03:19,810 --> 01:03:21,490
+down to do user execution of
+
+1711
+01:03:21,490 --> 01:03:25,450
+transactions so the way the protocol
+
+1712
+01:03:25,450 --> 01:03:26,950
+works is that when you enter the
+
+1713
+01:03:26,950 --> 01:03:28,510
+validation phase you can guarantee that
+
+1714
+01:03:28,510 --> 01:03:30,730
+one transaction is in that validation
+
+1715
+01:03:30,730 --> 01:03:32,470
+phase and therefore one always always be
+
+1716
+01:03:32,470 --> 01:03:34,450
+allowed to actually commit so when
+
+1717
+01:03:34,450 --> 01:03:36,250
+you're essentially running here at a
+
+1718
+01:03:36,250 --> 01:03:37,630
+thousand thread
+
+1719
+01:03:37,630 --> 01:03:40,570
+a thousand cores is through running same
+
+1720
+01:03:40,570 --> 01:03:42,190
+thing is you're running on one course at
+
+1721
+01:03:42,190 --> 01:03:43,960
+least one transaction is gonna always be
+
+1722
+01:03:43,960 --> 01:03:46,180
+guaranteed to commit and that's why if
+
+1723
+01:03:46,180 --> 01:03:47,620
+it gets rough at the same performance it
+
+1724
+01:03:47,620 --> 01:03:49,530
+gets on the other side of the graph
+
+1725
+01:03:49,530 --> 01:03:51,670
+right but the main takeaway again is
+
+1726
+01:03:51,670 --> 01:03:53,470
+that over here at a thousand cores
+
+1727
+01:03:53,470 --> 01:03:57,640
+everything's is doing bad and roughly
+
+1728
+01:03:57,640 --> 01:03:59,980
+it's got a little bit better since 2014
+
+1729
+01:03:59,980 --> 01:04:01,810
+we were at this paper but this is
+
+1730
+01:04:01,810 --> 01:04:04,000
+roughly where we are actually today in
+
+1731
+01:04:04,000 --> 01:04:06,340
+modern systems in terms of running me in
+
+1732
+01:04:06,340 --> 01:04:10,480
+a single box there 64 32 or 64 cores so
+
+1733
+01:04:10,480 --> 01:04:11,830
+we really haven't hit in the danger zone
+
+1734
+01:04:11,830 --> 01:04:14,440
+in a modern system of of having high
+
+1735
+01:04:14,440 --> 01:04:18,820
+contention and you know without really
+
+1736
+01:04:18,820 --> 01:04:20,920
+large number core counts on a single box
+
+1737
+01:04:20,920 --> 01:04:22,390
+we're just sort of not there yet but
+
+1738
+01:04:22,390 --> 01:04:24,610
+just this graph basically shows you that
+
+1739
+01:04:24,610 --> 01:04:25,930
+the existing methods that we use out
+
+1740
+01:04:25,930 --> 01:04:31,030
+today aren't I'm gonna be scalable and
+
+1741
+01:04:31,030 --> 01:04:32,560
+so real quickly where are we actually
+
+1742
+01:04:32,560 --> 01:04:34,510
+spending our time so this is a breakdown
+
+1743
+01:04:34,510 --> 01:04:37,780
+of the different protocols while the xu
+
+1744
+01:04:37,780 --> 01:04:40,000
+transactions and you see that in the
+
+1745
+01:04:40,000 --> 01:04:41,920
+case of no wait it's spending a large
+
+1746
+01:04:41,920 --> 01:04:43,360
+percent of its time boarding
+
+1747
+01:04:43,360 --> 01:04:44,980
+transactions because can soon as it
+
+1748
+01:04:44,980 --> 01:04:47,440
+finds a conflict it says this this is
+
+1749
+01:04:47,440 --> 01:04:51,010
+bad and just restarts it or is the other
+
+1750
+01:04:51,010 --> 01:04:53,710
+protocols are spending time waiting to
+
+1751
+01:04:53,710 --> 01:04:55,360
+try to acquire locks or try to acquire
+
+1752
+01:04:55,360 --> 01:04:56,380
+time stands are waiting with a
+
+1753
+01:04:56,380 --> 01:04:58,450
+delectation thread again that's all just
+
+1754
+01:04:58,450 --> 01:05:02,350
+sort of wasted work all right so let's
+
+1755
+01:05:02,350 --> 01:05:03,400
+quickly talk about some of the
+
+1756
+01:05:03,400 --> 01:05:05,550
+bottlenecks we identified in this paper
+
+1757
+01:05:05,550 --> 01:05:10,090
+and sort of some potential solutions we
+
+1758
+01:05:10,090 --> 01:05:12,130
+can to get around them and the idea here
+
+1759
+01:05:12,130 --> 01:05:14,080
+is sort of understand these issues at
+
+1760
+01:05:14,080 --> 01:05:16,210
+high level so that again when we start
+
+1761
+01:05:16,210 --> 01:05:19,540
+talking about FVCC more detail in the
+
+1762
+01:05:19,540 --> 01:05:22,210
+next class in the back your mind should
+
+1763
+01:05:22,210 --> 01:05:23,440
+be thinking about oh well this is how
+
+1764
+01:05:23,440 --> 01:05:25,660
+they would handle this this is how this
+
+1765
+01:05:25,660 --> 01:05:26,710
+could be a problem when we see hit
+
+1766
+01:05:26,710 --> 01:05:27,790
+larger core accounts than what we
+
+1767
+01:05:27,790 --> 01:05:30,490
+actually have today so lock thrashing
+
+1768
+01:05:30,490 --> 01:05:31,840
+time some allocation memory allocations
+
+1769
+01:05:31,840 --> 01:05:34,300
+will cause each of these one by one so
+
+1770
+01:05:34,300 --> 01:05:36,340
+lock thrashing is a phenomenon that you
+
+1771
+01:05:36,340 --> 01:05:38,320
+would have in a two phase locking system
+
+1772
+01:05:38,320 --> 01:05:41,650
+where the if a transaction ends up
+
+1773
+01:05:41,650 --> 01:05:44,230
+waiting longer required locks then this
+
+1774
+01:05:44,230 --> 01:05:45,910
+causes other transactions waiting behind
+
+1775
+01:05:45,910 --> 01:05:47,500
+it end up waiting longer to acquire the
+
+1776
+01:05:47,500 --> 01:05:49,000
+locks at the first transactions holding
+
+1777
+01:05:49,000 --> 01:05:51,069
+and therefore that causes other
+
+1778
+01:05:51,069 --> 01:05:53,799
+behind that service second path of
+
+1779
+01:05:53,799 --> 01:05:56,049
+transactions to wait even longer so is
+
+1780
+01:05:56,049 --> 01:05:58,119
+this convoy effect we're cause one
+
+1781
+01:05:58,119 --> 01:05:59,589
+transaction wait longer cause everybody
+
+1782
+01:05:59,589 --> 01:06:01,690
+else wait longer and then that gets
+
+1783
+01:06:01,690 --> 01:06:03,779
+exacerbated as you add more transactions
+
+1784
+01:06:03,779 --> 01:06:06,219
+so one way we can actually measure this
+
+1785
+01:06:06,219 --> 01:06:09,849
+in our system is by removing all the
+
+1786
+01:06:09,849 --> 01:06:11,349
+overhead of doing any deadlock check
+
+1787
+01:06:11,349 --> 01:06:12,880
+prevention or deadlock detection and
+
+1788
+01:06:12,880 --> 01:06:15,940
+just having transactions just do nothing
+
+1789
+01:06:15,940 --> 01:06:18,999
+but acquire locks and just wait and so
+
+1790
+01:06:18,999 --> 01:06:20,259
+in this case here the way we can do this
+
+1791
+01:06:20,259 --> 01:06:21,999
+is that we're gonna force transactions
+
+1792
+01:06:21,999 --> 01:06:23,499
+required locks always in some kind of
+
+1793
+01:06:23,499 --> 01:06:25,329
+primary key order just think of like
+
+1794
+01:06:25,329 --> 01:06:26,890
+we're holding you know we have a lock
+
+1795
+01:06:26,890 --> 01:06:28,509
+one two three four five six and we have
+
+1796
+01:06:28,509 --> 01:06:30,279
+to acquire them in that sort of
+
+1797
+01:06:30,279 --> 01:06:32,140
+lexicographical order so in this
+
+1798
+01:06:32,140 --> 01:06:33,880
+environment deadlocks are possible so
+
+1799
+01:06:33,880 --> 01:06:36,819
+we'll never have any stalls due to dead
+
+1800
+01:06:36,819 --> 01:06:39,249
+locks it's just just the stalls waiting
+
+1801
+01:06:39,249 --> 01:06:43,089
+to acquire these locks and so if you run
+
+1802
+01:06:43,089 --> 01:06:45,309
+that experiment on the system you get a
+
+1803
+01:06:45,309 --> 01:06:47,829
+graph like this so the fader variable
+
+1804
+01:06:47,829 --> 01:06:50,079
+here is representing the amount of skew
+
+1805
+01:06:50,079 --> 01:06:52,239
+in the workload or more transactions
+
+1806
+01:06:52,239 --> 01:06:53,769
+trying to access a small number tuples
+
+1807
+01:06:53,769 --> 01:06:56,949
+so the most extreme case is stated 0.8
+
+1808
+01:06:56,949 --> 01:06:59,019
+and theta zero means there's there's no
+
+1809
+01:06:59,019 --> 01:07:01,449
+contention so what you see is are these
+
+1810
+01:07:01,449 --> 01:07:05,799
+nice curves these knee bends where the
+
+1811
+01:07:05,799 --> 01:07:07,900
+lock freshman comes into play and now
+
+1812
+01:07:07,900 --> 01:07:09,249
+transactions are end up waiting the
+
+1813
+01:07:09,249 --> 01:07:11,829
+longer and longer to acquire locks when
+
+1814
+01:07:11,829 --> 01:07:15,009
+there's more contention right and at
+
+1815
+01:07:15,009 --> 01:07:16,569
+some you know this grabs keeps going
+
+1816
+01:07:16,569 --> 01:07:18,009
+down these lines keep going down you
+
+1817
+01:07:18,009 --> 01:07:19,690
+don't recover from this thrashing effect
+
+1818
+01:07:19,690 --> 01:07:21,789
+when I really like what this experiment
+
+1819
+01:07:21,789 --> 01:07:25,569
+is because is that it shows this graph
+
+1820
+01:07:25,569 --> 01:07:28,180
+actually looks exactly like any sort of
+
+1821
+01:07:28,180 --> 01:07:29,890
+textbook that shows you were describes
+
+1822
+01:07:29,890 --> 01:07:33,130
+lock thrashing right like this is sort
+
+1823
+01:07:33,130 --> 01:07:35,049
+of one example of a textbook but they
+
+1824
+01:07:35,049 --> 01:07:36,430
+always had this sort of theoretical
+
+1825
+01:07:36,430 --> 01:07:39,279
+diagram of like oh here's the effect of
+
+1826
+01:07:39,279 --> 01:07:41,529
+lock thrashing but you know in this case
+
+1827
+01:07:41,529 --> 01:07:43,809
+here our graph matches exactly what you
+
+1828
+01:07:43,809 --> 01:07:45,039
+would expect to see according according
+
+1829
+01:07:45,039 --> 01:07:48,279
+to according to the theorem which is
+
+1830
+01:07:48,279 --> 01:07:51,999
+kind of nice I have a time stamp
+
+1831
+01:07:51,999 --> 01:07:54,069
+allocation is it not necessarily gonna
+
+1832
+01:07:54,069 --> 01:07:56,769
+be a big issue for us in our system
+
+1833
+01:07:56,769 --> 01:07:59,890
+we're gonna get by with doing either
+
+1834
+01:07:59,890 --> 01:08:03,039
+batch addition or atomic addition which
+
+1835
+01:08:03,039 --> 01:08:04,450
+is another variant
+
+1836
+01:08:04,450 --> 01:08:06,790
+swap but it's basically saying that in a
+
+1837
+01:08:06,790 --> 01:08:09,790
+really large number core counts having a
+
+1838
+01:08:09,790 --> 01:08:11,320
+transaction to opto acquired unique
+
+1839
+01:08:11,320 --> 01:08:12,460
+timestamp so they actually could be a
+
+1840
+01:08:12,460 --> 01:08:15,220
+big bottleneck so the mutex is always is
+
+1841
+01:08:15,220 --> 01:08:16,330
+gonna be bad we don't boy that
+
+1842
+01:08:16,330 --> 01:08:19,060
+impossible atomic add bash these are
+
+1843
+01:08:19,060 --> 01:08:21,310
+just compare swap methods and then for
+
+1844
+01:08:21,310 --> 01:08:24,399
+these particular cpus some cpus like
+
+1845
+01:08:24,399 --> 01:08:27,220
+intel they can have a hardware clock or
+
+1846
+01:08:27,220 --> 01:08:29,319
+you can get through some instruction but
+
+1847
+01:08:29,319 --> 01:08:32,470
+this is not clear whether intel's
+
+1848
+01:08:32,470 --> 01:08:35,319
+exigent going to keep this around and
+
+1849
+01:08:35,319 --> 01:08:37,000
+that's not something we potentially
+
+1850
+01:08:37,000 --> 01:08:39,040
+would want her lie on and then a harvard
+
+1851
+01:08:39,040 --> 01:08:41,340
+calendar approach was something that was
+
+1852
+01:08:41,340 --> 01:08:43,660
+something that the the student came up
+
+1853
+01:08:43,660 --> 01:08:45,460
+with an added to the the graphite
+
+1854
+01:08:45,460 --> 01:08:47,500
+simulation system this is not something
+
+1855
+01:08:47,500 --> 01:08:49,149
+that we would have it you know that
+
+1856
+01:08:49,149 --> 01:08:51,399
+exists today and so this graph is just
+
+1857
+01:08:51,399 --> 01:08:53,950
+showing you that the one of these
+
+1858
+01:08:53,950 --> 01:08:55,540
+bottlenecks come into play for running
+
+1859
+01:08:55,540 --> 01:08:58,029
+these different time scheme allocation
+
+1860
+01:08:58,029 --> 01:09:00,279
+schemes and again the batch atomic one
+
+1861
+01:09:00,279 --> 01:09:01,660
+is probably gonna be good enough for
+
+1862
+01:09:01,660 --> 01:09:04,630
+what we need right we're talking you
+
+1863
+01:09:04,630 --> 01:09:05,890
+know trying to allocate a hundred
+
+1864
+01:09:05,890 --> 01:09:07,779
+million time stamps for a second that's
+
+1865
+01:09:07,779 --> 01:09:12,520
+more than we'll ever need all right the
+
+1866
+01:09:12,520 --> 01:09:14,080
+memory allocation stuff
+
+1867
+01:09:14,080 --> 01:09:18,310
+the main issue here is that since we
+
+1868
+01:09:18,310 --> 01:09:22,180
+have to now copy things into private
+
+1869
+01:09:22,180 --> 01:09:24,130
+workspaces for some some protocols or
+
+1870
+01:09:24,130 --> 01:09:26,890
+you know copy tuples and make sure penal
+
+1871
+01:09:26,890 --> 01:09:30,279
+reads in public spaces that copying can
+
+1872
+01:09:30,279 --> 01:09:32,950
+be expensive and so if we use the
+
+1873
+01:09:32,950 --> 01:09:35,350
+default Lipsy malloc that's gonna always
+
+1874
+01:09:35,350 --> 01:09:37,090
+be super slow and we never want to use
+
+1875
+01:09:37,090 --> 01:09:39,609
+it so we're not gonna discuss different
+
+1876
+01:09:39,609 --> 01:09:41,290
+memory allocators too much this semester
+
+1877
+01:09:41,290 --> 01:09:43,120
+other than say we don't want to use the
+
+1878
+01:09:43,120 --> 01:09:45,220
+default malloc when we end up using GE
+
+1879
+01:09:45,220 --> 01:09:48,100
+malloc or TC malloc or these other
+
+1880
+01:09:48,100 --> 01:09:50,050
+malloc protocols their libraries that
+
+1881
+01:09:50,050 --> 01:09:55,150
+are out there all right so again I
+
+1882
+01:09:55,150 --> 01:09:56,530
+realized it's kind of weird for having
+
+1883
+01:09:56,530 --> 01:09:58,120
+me give the rest of this lecture in this
+
+1884
+01:09:58,120 --> 01:10:02,440
+this gold-plated chamber thing but I
+
+1885
+01:10:02,440 --> 01:10:03,820
+just want to get this out there so that
+
+1886
+01:10:03,820 --> 01:10:05,500
+we can start talking about MVC see more
+
+1887
+01:10:05,500 --> 01:10:07,060
+detail on on Wednesday I want to come
+
+1888
+01:10:07,060 --> 01:10:09,970
+back to come back to campus so the main
+
+1889
+01:10:09,970 --> 01:10:11,410
+takeaway what you give in this lecture
+
+1890
+01:10:11,410 --> 01:10:13,540
+is that the design of an in-memory data
+
+1891
+01:10:13,540 --> 01:10:15,220
+system has be much different than a disk
+
+1892
+01:10:15,220 --> 01:10:16,930
+writing system conceptually it's the
+
+1893
+01:10:16,930 --> 01:10:17,620
+same right you
+
+1894
+01:10:17,620 --> 01:10:19,150
+two queries their indexes will not
+
+1895
+01:10:19,150 --> 01:10:21,730
+transactions but the implementation of
+
+1896
+01:10:21,730 --> 01:10:24,130
+the protocol of these systems are gonna
+
+1897
+01:10:24,130 --> 01:10:26,650
+be much different and the good news also
+
+1898
+01:10:26,650 --> 01:10:29,110
+too is that a memory databases are not
+
+1899
+01:10:29,110 --> 01:10:33,060
+considered to be super bizarre anymore
+
+1900
+01:10:33,060 --> 01:10:35,850
+when I first started grad school maybe
+
+1901
+01:10:35,850 --> 01:10:38,620
+over ten years ago now but like 2007
+
+1902
+01:10:38,620 --> 01:10:42,160
+2006 they're considered sort of an
+
+1903
+01:10:42,160 --> 01:10:45,040
+exotic system but nowadays especially
+
+1904
+01:10:45,040 --> 01:10:48,220
+with systems like Redis they become more
+
+1905
+01:10:48,220 --> 01:10:49,690
+common if people become more comfortable
+
+1906
+01:10:49,690 --> 01:10:51,640
+with the idea of having in memory
+
+1907
+01:10:51,640 --> 01:10:54,820
+systems the one thing that I will say is
+
+1908
+01:10:54,820 --> 01:10:57,370
+that in recent years it seems like the
+
+1909
+01:10:57,370 --> 01:10:59,650
+DRAM prices and capacities have stalled
+
+1910
+01:10:59,650 --> 01:11:01,620
+compared to the games we've seen in SSDs
+
+1911
+01:11:01,620 --> 01:11:04,960
+so whereas before I was pretty bullish
+
+1912
+01:11:04,960 --> 01:11:07,810
+about oh well in memory databases are
+
+1913
+01:11:07,810 --> 01:11:08,950
+gonna take over the world of court why
+
+1914
+01:11:08,950 --> 01:11:10,360
+would you ever want to use dissapointing
+
+1915
+01:11:10,360 --> 01:11:13,720
+system I I don't think that's actually
+
+1916
+01:11:13,720 --> 01:11:18,160
+true and I think that it's worth looking
+
+1917
+01:11:18,160 --> 01:11:21,010
+to see what we can do to bring back SSDs
+
+1918
+01:11:21,010 --> 01:11:23,020
+in a database system without actually
+
+1919
+01:11:23,020 --> 01:11:24,490
+having to slow it down and bringing all
+
+1920
+01:11:24,490 --> 01:11:25,960
+the overhead of a disk oriented
+
+1921
+01:11:25,960 --> 01:11:27,760
+architecture so we'll talk about little
+
+1922
+01:11:27,760 --> 01:11:29,050
+bit at the end of the semester but
+
+1923
+01:11:29,050 --> 01:11:30,490
+that's something in the back of my mind
+
+1924
+01:11:30,490 --> 01:11:33,100
+I think it'll come up a couple of times
+
+1925
+01:11:33,100 --> 01:11:34,950
+during the semester okay
+
+1926
+01:11:34,950 --> 01:11:38,860
+all right so just to finish up this is
+
+1927
+01:11:38,860 --> 01:11:41,320
+it for today I'll be flying back this
+
+1928
+01:11:41,320 --> 01:11:43,630
+Friday and I'll be on campus on Tuesday
+
+1929
+01:11:43,630 --> 01:11:45,430
+next week and we'll have the recitation
+
+1930
+01:11:45,430 --> 01:11:48,160
+for discussing that the architecture of
+
+1931
+01:11:48,160 --> 01:11:49,870
+the system and then on Wednesdays class
+
+1932
+01:11:49,870 --> 01:11:51,340
+next week well we will start discussing
+
+1933
+01:11:51,340 --> 01:11:53,380
+multi version commercial because again
+
+1934
+01:11:53,380 --> 01:11:55,860
+this is the the dominant method or
+
+1935
+01:11:55,860 --> 01:11:58,330
+protocol that everyone uses but it's
+
+1936
+01:11:58,330 --> 01:11:59,680
+more than just compared to protocol it's
+
+1937
+01:11:59,680 --> 01:12:01,960
+gonna sort of you accomplish all
+
+1938
+01:12:01,960 --> 01:12:03,400
+different aspects of the data system so
+
+1939
+01:12:03,400 --> 01:12:04,900
+we'll start understanding that a bit
+
+1940
+01:12:04,900 --> 01:12:07,210
+more detail okay so that's it for today
+
+1941
+01:12:07,210 --> 01:12:08,680
+I'm gonna go hang out with the Germans a
+
+1942
+01:12:08,680 --> 01:12:10,990
+bit more and then I'll see everyone next
+
+1943
+01:12:10,990 --> 01:12:14,130
+week in class all right take care see ya
+
+1944
+01:12:14,130 --> 01:12:16,470
+what is this
+
+1945
+01:12:16,470 --> 01:12:19,320
+say you're here I took a sip in hand to
+
+1946
+01:12:19,320 --> 01:12:21,510
+spend tonight with Ned here called the
+
+1947
+01:12:21,510 --> 01:12:24,510
+Hokey cuz I'm og Ice Cube down with the
+
+1948
+01:12:24,510 --> 01:12:27,990
+testy you look and it was go grab me a
+
+1949
+01:12:27,990 --> 01:12:31,620
+40 song cuz I needed just a little more
+
+1950
+01:12:31,620 --> 01:12:42,330
+kick and my hunky to say I'm nice to
+
+1951
+01:12:42,330 --> 01:12:45,950
+take a say I pray
+
