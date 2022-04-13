@@ -1,0 +1,7392 @@
+1
+00:00:01,290 --> 00:00:13,119
+[Music]
+
+2
+00:00:14,469 --> 00:00:17,990
+so it's Wednesday night fights over Mack
+
+3
+00:00:17,990 --> 00:00:20,390
+banged Oakland so is the other guy I
+
+4
+00:00:20,390 --> 00:00:23,960
+decided that rather than me filming the
+
+5
+00:00:23,960 --> 00:00:25,730
+second lecture all over again in a motel
+
+6
+00:00:25,730 --> 00:00:27,710
+room I just that it would be better just
+
+7
+00:00:27,710 --> 00:00:30,019
+to show you guys what I did in 2018
+
+8
+00:00:30,019 --> 00:00:31,609
+because that was front of a live
+
+9
+00:00:31,609 --> 00:00:34,300
+audience and I felt that I did it I
+
+10
+00:00:34,300 --> 00:00:36,770
+could do a better job and whatever do by
+
+11
+00:00:36,770 --> 00:00:37,250
+myself
+
+12
+00:00:37,250 --> 00:00:39,320
+so with that that's why I'm just really
+
+13
+00:00:39,320 --> 00:00:42,230
+showing the 2018 lecture here for the
+
+14
+00:00:42,230 --> 00:00:44,120
+second lecture and then when then we'll
+
+15
+00:00:44,120 --> 00:00:45,920
+be heading back to CMU and then starting
+
+16
+00:00:45,920 --> 00:00:46,910
+Wednesday next week we'll have live
+
+17
+00:00:46,910 --> 00:00:52,040
+lectures again so take care today's
+
+18
+00:00:52,040 --> 00:00:55,790
+lecture is on advance sequel and by
+
+19
+00:00:55,790 --> 00:00:59,600
+advance I mean going beyond what you may
+
+20
+00:00:59,600 --> 00:01:00,860
+or may not already know about basic
+
+21
+00:01:00,860 --> 00:01:04,489
+sequel right it's it's 2018 sequel was
+
+22
+00:01:04,489 --> 00:01:08,150
+invented in 1973 I imagine most you have
+
+23
+00:01:08,150 --> 00:01:10,490
+seen some sequel throughout your life so
+
+24
+00:01:10,490 --> 00:01:11,750
+I don't feel it's necessary to teach you
+
+25
+00:01:11,750 --> 00:01:13,640
+the basics of it so I'm gonna spend time
+
+26
+00:01:13,640 --> 00:01:14,630
+actually talking about the more
+
+27
+00:01:14,630 --> 00:01:16,070
+complicated or interesting things you
+
+28
+00:01:16,070 --> 00:01:20,360
+can do with sequel Hey so just to pick
+
+29
+00:01:20,360 --> 00:01:22,160
+up where we left last class we were
+
+30
+00:01:22,160 --> 00:01:23,630
+discussing the relational model and
+
+31
+00:01:23,630 --> 00:01:26,270
+relational algebra and we sort of
+
+32
+00:01:26,270 --> 00:01:28,400
+mentioned that the with relational
+
+33
+00:01:28,400 --> 00:01:29,710
+algebra
+
+34
+00:01:29,710 --> 00:01:32,240
+Cerreta the goal was sort of at a high
+
+35
+00:01:32,240 --> 00:01:35,900
+level to describe what the answer we
+
+36
+00:01:35,900 --> 00:01:37,280
+wanted that the theater system would
+
+37
+00:01:37,280 --> 00:01:39,710
+compute rather than the exact steps of
+
+38
+00:01:39,710 --> 00:01:41,990
+actually how to do it all right so the
+
+39
+00:01:41,990 --> 00:01:43,490
+way to think about this is like say we
+
+40
+00:01:43,490 --> 00:01:47,090
+want to sort our data if we have to tell
+
+41
+00:01:47,090 --> 00:01:48,710
+the day system exactly what to do we
+
+42
+00:01:48,710 --> 00:01:50,450
+have to provide it you know with the
+
+43
+00:01:50,450 --> 00:01:52,940
+quick sort of bubble sort algorithm but
+
+44
+00:01:52,940 --> 00:01:54,650
+with a high level language or
+
+45
+00:01:54,650 --> 00:01:55,970
+declarative language would you say hey
+
+46
+00:01:55,970 --> 00:01:57,860
+we want you to sort this we don't care
+
+47
+00:01:57,860 --> 00:02:00,440
+how you actually do it but this is the
+
+48
+00:02:00,440 --> 00:02:02,750
+answer that we want and we'll see this
+
+49
+00:02:02,750 --> 00:02:04,400
+throughout today's lecture and then
+
+50
+00:02:04,400 --> 00:02:05,630
+going forward throughout later in the
+
+51
+00:02:05,630 --> 00:02:07,700
+semester this is one of the advantages
+
+52
+00:02:07,700 --> 00:02:09,258
+of using something like Secord or
+
+53
+00:02:09,258 --> 00:02:11,000
+declarative languages we don't have to
+
+54
+00:02:11,000 --> 00:02:12,530
+tell today's system exactly how to do
+
+55
+00:02:12,530 --> 00:02:12,870
+things
+
+56
+00:02:12,870 --> 00:02:15,150
+it can figure it out on its own and that
+
+57
+00:02:15,150 --> 00:02:17,099
+frees it up to figure out what the most
+
+58
+00:02:17,099 --> 00:02:19,019
+optimal way it is to actually execute
+
+59
+00:02:19,019 --> 00:02:21,150
+the query that you want to execute based
+
+60
+00:02:21,150 --> 00:02:23,550
+on the data that you have and and it's a
+
+61
+00:02:23,550 --> 00:02:26,640
+harbor that's available to you so we'll
+
+62
+00:02:26,640 --> 00:02:27,870
+see this later when we talk about the
+
+63
+00:02:27,870 --> 00:02:29,190
+query optimizer but the query optimizer
+
+64
+00:02:29,190 --> 00:02:32,160
+is this complicated piece of machinery
+
+65
+00:02:32,160 --> 00:02:34,019
+inside of a database system that's gonna
+
+66
+00:02:34,019 --> 00:02:36,150
+take our sequel query and convert it to
+
+67
+00:02:36,150 --> 00:02:38,280
+the most efficient plan and we'll cover
+
+68
+00:02:38,280 --> 00:02:40,860
+how they actually do this later on but I
+
+69
+00:02:40,860 --> 00:02:43,890
+will say is that if you if you you know
+
+70
+00:02:43,890 --> 00:02:45,599
+if you get involved in doing research on
+
+71
+00:02:45,599 --> 00:02:47,250
+query optimization or just help you know
+
+72
+00:02:47,250 --> 00:02:49,349
+working on Cori optimizers you can get a
+
+73
+00:02:49,349 --> 00:02:51,569
+job yesterday because this is the one
+
+74
+00:02:51,569 --> 00:02:53,099
+thing that all my friends at Davis
+
+75
+00:02:53,099 --> 00:02:54,959
+company companies email me about open
+
+76
+00:02:54,959 --> 00:02:57,000
+over again do I have any students a new
+
+77
+00:02:57,000 --> 00:02:59,220
+query optimization but has some and they
+
+78
+00:02:59,220 --> 00:03:01,730
+all get off go off and do awesome jobs
+
+79
+00:03:01,730 --> 00:03:03,629
+this is the one thing that everybody
+
+80
+00:03:03,629 --> 00:03:05,459
+wants because it's really hard to do so
+
+81
+00:03:05,459 --> 00:03:07,500
+that's not the focus here right just in
+
+82
+00:03:07,500 --> 00:03:08,940
+the back your mind will see examples as
+
+83
+00:03:08,940 --> 00:03:10,739
+we go along where a query optimizer
+
+84
+00:03:10,739 --> 00:03:12,360
+could try out different things to try to
+
+85
+00:03:12,360 --> 00:03:13,950
+come up with different plans well we'll
+
+86
+00:03:13,950 --> 00:03:15,180
+discuss how you actually do query
+
+87
+00:03:15,180 --> 00:03:21,030
+optimization later on so the the history
+
+88
+00:03:21,030 --> 00:03:22,920
+of sequel as I said goes back into the
+
+89
+00:03:22,920 --> 00:03:27,389
+early 1970s so you may notice that I say
+
+90
+00:03:27,389 --> 00:03:28,079
+sequel
+
+91
+00:03:28,079 --> 00:03:30,450
+some people say SQL write the part of
+
+92
+00:03:30,450 --> 00:03:32,340
+the reason I say sequel is because in
+
+93
+00:03:32,340 --> 00:03:34,920
+not that I was alive in 1970s but the
+
+94
+00:03:34,920 --> 00:03:36,720
+original name of the language was
+
+95
+00:03:36,720 --> 00:03:39,569
+actually spelled out as EQ UAL sequel
+
+96
+00:03:39,569 --> 00:03:42,419
+and this was invented by IBM as part of
+
+97
+00:03:42,419 --> 00:03:44,700
+the system our project right so it stood
+
+98
+00:03:44,700 --> 00:03:46,200
+for the structured English query
+
+99
+00:03:46,200 --> 00:03:49,019
+language so if you remember from the TED
+
+100
+00:03:49,019 --> 00:03:51,269
+Cod paper I said that tena Ted Cobb was
+
+101
+00:03:51,269 --> 00:03:53,340
+a mathematician right he devised that
+
+102
+00:03:53,340 --> 00:03:55,440
+relational algebra and relational model
+
+103
+00:03:55,440 --> 00:03:56,579
+but he didn't actually define the
+
+104
+00:03:56,579 --> 00:03:58,709
+programming language you would use to
+
+105
+00:03:58,709 --> 00:04:00,450
+write queries on it right you can't
+
+106
+00:04:00,450 --> 00:04:01,769
+write queries using relational algebra
+
+107
+00:04:01,769 --> 00:04:03,480
+right it's sort of you know there's
+
+108
+00:04:03,480 --> 00:04:05,220
+there's no it's very difficult to write
+
+109
+00:04:05,220 --> 00:04:07,620
+that in the keyboard to do that he did
+
+110
+00:04:07,620 --> 00:04:09,209
+later define or come up with his own
+
+111
+00:04:09,209 --> 00:04:11,790
+query language called alpha but that was
+
+112
+00:04:11,790 --> 00:04:14,040
+much later in 1970s so back then when
+
+113
+00:04:14,040 --> 00:04:15,660
+people said hey there's a relational
+
+114
+00:04:15,660 --> 00:04:16,798
+model idea we should actually try to
+
+115
+00:04:16,798 --> 00:04:18,899
+build a system to do this people had to
+
+116
+00:04:18,899 --> 00:04:20,279
+come up with their own language that
+
+117
+00:04:20,279 --> 00:04:22,320
+could implement relational calculus or
+
+118
+00:04:22,320 --> 00:04:25,169
+relational algebra so at IBM they came
+
+119
+00:04:25,169 --> 00:04:26,610
+out with sequel
+
+120
+00:04:26,610 --> 00:04:28,500
+this is part of the system our project
+
+121
+00:04:28,500 --> 00:04:30,300
+which is a sort of one of the first
+
+122
+00:04:30,300 --> 00:04:31,440
+relational database systems that people
+
+123
+00:04:31,440 --> 00:04:34,110
+were trying to build in the 1970s the
+
+124
+00:04:34,110 --> 00:04:36,870
+other major one was ingress that came
+
+125
+00:04:36,870 --> 00:04:38,550
+out of Berkeley so you've ever heard of
+
+126
+00:04:38,550 --> 00:04:40,080
+Postgres right
+
+127
+00:04:40,080 --> 00:04:41,460
+Postgres was invented by the same guy
+
+128
+00:04:41,460 --> 00:04:43,860
+that did ingress so it's called Postgres
+
+129
+00:04:43,860 --> 00:04:45,990
+as in post ingress the thing that came
+
+130
+00:04:45,990 --> 00:04:48,360
+after ingress so the ingress guys had
+
+131
+00:04:48,360 --> 00:04:51,030
+their own language called quell and this
+
+132
+00:04:51,030 --> 00:04:53,039
+was developed by one of my advisers Mike
+
+133
+00:04:53,039 --> 00:04:53,580
+Stormbreaker
+
+134
+00:04:53,580 --> 00:04:55,949
+he claims it was much better than sequel
+
+135
+00:04:55,949 --> 00:04:57,090
+and the IBM guys didn't know what they
+
+136
+00:04:57,090 --> 00:04:58,919
+were doing of course most people have
+
+137
+00:04:58,919 --> 00:05:01,020
+never heard a quell right I said it
+
+138
+00:05:01,020 --> 00:05:04,919
+didn't actually win IBM won so back then
+
+139
+00:05:04,919 --> 00:05:08,639
+again it was spelled out as eqtl IBM
+
+140
+00:05:08,639 --> 00:05:10,530
+later got sued for I think you know
+
+141
+00:05:10,530 --> 00:05:11,970
+copyright infringement trademark
+
+142
+00:05:11,970 --> 00:05:13,440
+infringement there was some guy in
+
+143
+00:05:13,440 --> 00:05:15,960
+England that had the the term sequel
+
+144
+00:05:15,960 --> 00:05:18,270
+spelt out in the full English word for
+
+145
+00:05:18,270 --> 00:05:19,830
+his programming language so it is
+
+146
+00:05:19,830 --> 00:05:25,110
+shortened it to be sq SQL so what
+
+147
+00:05:25,110 --> 00:05:26,310
+happened was the reason why we use
+
+148
+00:05:26,310 --> 00:05:29,639
+sequel today because IBM it's not back
+
+149
+00:05:29,639 --> 00:05:31,229
+then iBM is and what it is now right
+
+150
+00:05:31,229 --> 00:05:32,610
+everyone thinks the bate the big tech
+
+151
+00:05:32,610 --> 00:05:34,289
+companies like Microsoft Amazon and
+
+152
+00:05:34,289 --> 00:05:37,560
+Google back in the 1970s 1980s IBM was
+
+153
+00:05:37,560 --> 00:05:39,389
+was the juggernaut so essentially
+
+154
+00:05:39,389 --> 00:05:41,159
+whatever IBM did or said this is the way
+
+155
+00:05:41,159 --> 00:05:42,539
+we're gonna do it that ended up being
+
+156
+00:05:42,539 --> 00:05:46,500
+the standard so when IBM first released
+
+157
+00:05:46,500 --> 00:05:48,030
+their first commercial relational
+
+158
+00:05:48,030 --> 00:05:50,250
+database system db2 so they never
+
+159
+00:05:50,250 --> 00:05:51,960
+actually released system or was just
+
+160
+00:05:51,960 --> 00:05:54,150
+sort of a research prototype but then
+
+161
+00:05:54,150 --> 00:05:56,490
+then finally made db2 or at least that
+
+162
+00:05:56,490 --> 00:05:59,009
+db2 supported sequel so that essentially
+
+163
+00:05:59,009 --> 00:06:02,789
+became the standard and the reason why
+
+164
+00:06:02,789 --> 00:06:04,560
+Oracle sort of took off and got as big
+
+165
+00:06:04,560 --> 00:06:06,150
+as it is today is they were sort of
+
+166
+00:06:06,150 --> 00:06:08,870
+copying what IBM was doing in the 1970s
+
+167
+00:06:08,870 --> 00:06:11,130
+in more ways than one we could talk to
+
+168
+00:06:11,130 --> 00:06:15,060
+her that later and they did they had
+
+169
+00:06:15,060 --> 00:06:17,039
+sequel so when IBM came out with db2 and
+
+170
+00:06:17,039 --> 00:06:18,750
+had sequel Oracle was right at the right
+
+171
+00:06:18,750 --> 00:06:19,919
+place at the right time said we now
+
+172
+00:06:19,919 --> 00:06:22,949
+supports we know we support sequel - so
+
+173
+00:06:22,949 --> 00:06:25,979
+it became an ANSI standard in 1986 and
+
+174
+00:06:25,979 --> 00:06:27,780
+became an international standard in 1987
+
+175
+00:06:27,780 --> 00:06:29,820
+and now the short burden just means the
+
+176
+00:06:29,820 --> 00:06:33,750
+structured query language so sequel even
+
+177
+00:06:33,750 --> 00:06:36,810
+though it's from 1970s it's not a dead
+
+178
+00:06:36,810 --> 00:06:38,669
+language it's not certainly static it's
+
+179
+00:06:38,669 --> 00:06:40,139
+sort of like you know Steve s applause -
+
+180
+00:06:40,139 --> 00:06:40,380
+keep
+
+181
+00:06:40,380 --> 00:06:42,810
+new specifications every so often it's
+
+182
+00:06:42,810 --> 00:06:44,220
+the same thing in sequel every so often
+
+183
+00:06:44,220 --> 00:06:46,020
+there's a new specification where they
+
+184
+00:06:46,020 --> 00:06:47,100
+add in new features and new
+
+185
+00:06:47,100 --> 00:06:49,020
+functionalities to to the basic language
+
+186
+00:06:49,020 --> 00:06:52,020
+so the the latest standard is defined in
+
+187
+00:06:52,020 --> 00:06:54,990
+sequel 2016 and you can see over the
+
+188
+00:06:54,990 --> 00:06:57,000
+years at the add new versions they add
+
+189
+00:06:57,000 --> 00:06:59,190
+new features right so 2016 they added
+
+190
+00:06:59,190 --> 00:07:02,130
+JSON polymorphic tables they add XML
+
+191
+00:07:02,130 --> 00:07:05,370
+stuff and then 2003 1999 added regex and
+
+192
+00:07:05,370 --> 00:07:07,710
+triggers typically what happens is
+
+193
+00:07:07,710 --> 00:07:10,560
+there's a standards body that the
+
+194
+00:07:10,560 --> 00:07:12,660
+members are all from the major database
+
+195
+00:07:12,660 --> 00:07:14,340
+companies and the major database
+
+196
+00:07:14,340 --> 00:07:15,090
+companies come up with their own
+
+197
+00:07:15,090 --> 00:07:17,070
+proprietary features and extensions and
+
+198
+00:07:17,070 --> 00:07:18,390
+then they go in the standards body and
+
+199
+00:07:18,390 --> 00:07:20,070
+push to try to get their version of
+
+200
+00:07:20,070 --> 00:07:21,960
+certain functionality as part of the
+
+201
+00:07:21,960 --> 00:07:25,110
+standard right so this is although there
+
+202
+00:07:25,110 --> 00:07:27,390
+is a sequel standard nobody actually
+
+203
+00:07:27,390 --> 00:07:29,280
+follows it to the T right because
+
+204
+00:07:29,280 --> 00:07:30,210
+everyone sort of has their own
+
+205
+00:07:30,210 --> 00:07:31,890
+proprietary things that got invented
+
+206
+00:07:31,890 --> 00:07:33,210
+before the standard came out said this
+
+207
+00:07:33,210 --> 00:07:36,930
+is how you should do things so if you're
+
+208
+00:07:36,930 --> 00:07:38,190
+gonna claim that your database system
+
+209
+00:07:38,190 --> 00:07:40,440
+supports sequel the bare minimum you
+
+210
+00:07:40,440 --> 00:07:42,000
+need to have is actually what is defined
+
+211
+00:07:42,000 --> 00:07:44,580
+in the sequel 92 standard so this is
+
+212
+00:07:44,580 --> 00:07:46,110
+what the basic sequel that we know about
+
+213
+00:07:46,110 --> 00:07:48,000
+today select insert update delete create
+
+214
+00:07:48,000 --> 00:07:50,370
+tables transactions things like that all
+
+215
+00:07:50,370 --> 00:07:53,160
+that's defined in sequel 92 so again if
+
+216
+00:07:53,160 --> 00:07:54,450
+someone someone says their data system
+
+217
+00:07:54,450 --> 00:07:56,310
+supports equal chances are they that
+
+218
+00:07:56,310 --> 00:07:57,990
+really mean this and then the more
+
+219
+00:07:57,990 --> 00:08:00,540
+advanced databases both an open source
+
+220
+00:08:00,540 --> 00:08:02,640
+and and the commercial ones they add
+
+221
+00:08:02,640 --> 00:08:04,590
+they have a bunch of more features from
+
+222
+00:08:04,590 --> 00:08:08,940
+from from the newer standards and then
+
+223
+00:08:08,940 --> 00:08:10,230
+there's this great website here it's a
+
+224
+00:08:10,230 --> 00:08:13,560
+bit dated now but it's going at its some
+
+225
+00:08:13,560 --> 00:08:15,840
+random dude who basically looked at sort
+
+226
+00:08:15,840 --> 00:08:17,520
+of the top four top five database
+
+227
+00:08:17,520 --> 00:08:19,920
+systems and just look to see how they
+
+228
+00:08:19,920 --> 00:08:22,680
+differ on various sequel features it
+
+229
+00:08:22,680 --> 00:08:24,390
+compares sequel functionalities and
+
+230
+00:08:24,390 --> 00:08:26,400
+we'll see this as we go through today
+
+231
+00:08:26,400 --> 00:08:28,440
+there'll be some examples where the
+
+232
+00:08:28,440 --> 00:08:30,300
+standard says one thing different
+
+233
+00:08:30,300 --> 00:08:32,039
+database systems do other things it's
+
+234
+00:08:32,039 --> 00:08:36,570
+usually my sequel and this is just an
+
+235
+00:08:36,570 --> 00:08:38,460
+even though there's a standard nobody
+
+236
+00:08:38,460 --> 00:08:40,740
+actually follows it exactly right
+
+237
+00:08:40,740 --> 00:08:41,969
+there's no database system that I'm
+
+238
+00:08:41,969 --> 00:08:43,289
+aware of that would claim that they're
+
+239
+00:08:43,289 --> 00:08:46,020
+you know certify for sequel 2016 right
+
+240
+00:08:46,020 --> 00:08:48,740
+they have bits and pieces of things
+
+241
+00:08:48,740 --> 00:08:52,220
+so sequel itself technically is not a
+
+242
+00:08:52,220 --> 00:08:54,080
+single language it's sort of a
+
+243
+00:08:54,080 --> 00:08:56,630
+collection of things in a particular
+
+244
+00:08:56,630 --> 00:08:59,290
+it's a collection of a DML DDL and DCL
+
+245
+00:08:59,290 --> 00:09:02,630
+commands so DML will be would be the
+
+246
+00:09:02,630 --> 00:09:04,790
+datum innovation language would be the
+
+247
+00:09:04,790 --> 00:09:06,560
+commands like insert update delete
+
+248
+00:09:06,560 --> 00:09:08,150
+selects like the things that actually
+
+249
+00:09:08,150 --> 00:09:09,890
+manipulate the data that you can store
+
+250
+00:09:09,890 --> 00:09:12,680
+in your database the DDL is the way you
+
+251
+00:09:12,680 --> 00:09:15,980
+create tables actually define schemas to
+
+252
+00:09:15,980 --> 00:09:18,410
+actually store things and then the DCL
+
+253
+00:09:18,410 --> 00:09:20,660
+is the way you sort of do security
+
+254
+00:09:20,660 --> 00:09:22,580
+authorization to grant you know who's
+
+255
+00:09:22,580 --> 00:09:24,790
+allowed to read what you put what data
+
+256
+00:09:24,790 --> 00:09:27,590
+there's a bunch of other things like how
+
+257
+00:09:27,590 --> 00:09:29,390
+to define views how to define integrity
+
+258
+00:09:29,390 --> 00:09:32,090
+to be strange referential constraints as
+
+259
+00:09:32,090 --> 00:09:34,400
+well as transactions these are all part
+
+260
+00:09:34,400 --> 00:09:37,040
+of the umbrella of sequel right and
+
+261
+00:09:37,040 --> 00:09:38,180
+within that there's these different
+
+262
+00:09:38,180 --> 00:09:41,450
+categories of commands so the one
+
+263
+00:09:41,450 --> 00:09:43,370
+important thing that I want to point out
+
+264
+00:09:43,370 --> 00:09:44,510
+here and we'll see this throughout
+
+265
+00:09:44,510 --> 00:09:47,960
+today's lecture is unlike in relational
+
+266
+00:09:47,960 --> 00:09:50,000
+algebra which is based on set theory or
+
+267
+00:09:50,000 --> 00:09:53,390
+sets sequel is actually based on bag
+
+268
+00:09:53,390 --> 00:09:56,120
+algebra so the way it sort of thing
+
+269
+00:09:56,120 --> 00:09:57,680
+about this you could have like lists
+
+270
+00:09:57,680 --> 00:10:00,770
+sets or bags so a list can have
+
+271
+00:10:00,770 --> 00:10:03,590
+duplicates but there's there's a defined
+
+272
+00:10:03,590 --> 00:10:05,270
+orders if I push something to my list
+
+273
+00:10:05,270 --> 00:10:08,210
+that's its position in that list a set
+
+274
+00:10:08,210 --> 00:10:10,220
+is unordered meaning the elements don't
+
+275
+00:10:10,220 --> 00:10:12,890
+have a position but you can't have
+
+276
+00:10:12,890 --> 00:10:14,510
+duplicates if I try to insert the same
+
+277
+00:10:14,510 --> 00:10:16,460
+thing into a set it just gets over the
+
+278
+00:10:16,460 --> 00:10:19,520
+old run gets overwritten a bag has
+
+279
+00:10:19,520 --> 00:10:23,360
+neither a set position or ordering but
+
+280
+00:10:23,360 --> 00:10:26,840
+it also allows for duplicates right and
+
+281
+00:10:26,840 --> 00:10:29,120
+we'll see why we've got to do this as we
+
+282
+00:10:29,120 --> 00:10:31,130
+go along because if we want to actually
+
+283
+00:10:31,130 --> 00:10:34,220
+define order on our elements or if you
+
+284
+00:10:34,220 --> 00:10:35,150
+want to make sure that we don't have
+
+285
+00:10:35,150 --> 00:10:37,040
+duplicates essentially the database
+
+286
+00:10:37,040 --> 00:10:38,750
+system has to do extra work to to
+
+287
+00:10:38,750 --> 00:10:42,020
+provide that for you and so the idea is
+
+288
+00:10:42,020 --> 00:10:44,270
+that only if you explicitly ask the
+
+289
+00:10:44,270 --> 00:10:46,130
+database system to provide you ordering
+
+290
+00:10:46,130 --> 00:10:48,800
+and provide you to remove duplicates it
+
+291
+00:10:48,800 --> 00:10:50,480
+won't actually do it and this actually
+
+292
+00:10:50,480 --> 00:10:54,320
+make things be a be more efficient all
+
+293
+00:10:54,320 --> 00:10:55,850
+right so the outline for today is we're
+
+294
+00:10:55,850 --> 00:10:57,890
+going to cover aggregations group bys a
+
+295
+00:10:57,890 --> 00:11:00,080
+bunch of operations on strings dates and
+
+296
+00:11:00,080 --> 00:11:02,410
+times then we had to do output control
+
+297
+00:11:02,410 --> 00:11:04,810
+and then the more complicated things
+
+298
+00:11:04,810 --> 00:11:06,400
+have been nested queries common table
+
+299
+00:11:06,400 --> 00:11:08,860
+expressions and window functions so for
+
+300
+00:11:08,860 --> 00:11:11,830
+homework one you'll need to use all of
+
+301
+00:11:11,830 --> 00:11:13,600
+these except for the window functions
+
+302
+00:11:13,600 --> 00:11:15,520
+like it's gonna be doing homework one on
+
+303
+00:11:15,520 --> 00:11:17,380
+sequel light and only actually the
+
+304
+00:11:17,380 --> 00:11:18,790
+latest version of sequel light as of
+
+305
+00:11:18,790 --> 00:11:21,490
+last week just added support for window
+
+306
+00:11:21,490 --> 00:11:23,650
+functions but everything else sequel
+
+307
+00:11:23,650 --> 00:11:30,010
+light should be able to support okay all
+
+308
+00:11:30,010 --> 00:11:31,990
+right so for this we're needs a sample
+
+309
+00:11:31,990 --> 00:11:34,930
+database comprised of three tables so
+
+310
+00:11:34,930 --> 00:11:37,240
+sort of it's a mock University so we're
+
+311
+00:11:37,240 --> 00:11:38,380
+gonna have a student table where
+
+312
+00:11:38,380 --> 00:11:40,420
+students have student IDs names logs and
+
+313
+00:11:40,420 --> 00:11:42,850
+GPS will have a course table with course
+
+314
+00:11:42,850 --> 00:11:45,340
+IDs a name and then we'll have an enroll
+
+315
+00:11:45,340 --> 00:11:48,250
+table where we have a certain foreign
+
+316
+00:11:48,250 --> 00:11:49,900
+key reference from the student table and
+
+317
+00:11:49,900 --> 00:11:52,450
+the course table and along with the
+
+318
+00:11:52,450 --> 00:11:54,250
+grade that the student got in the class
+
+319
+00:11:54,250 --> 00:11:56,920
+all right we'll use this as our running
+
+320
+00:11:56,920 --> 00:12:00,880
+example as we go along all right so the
+
+321
+00:12:00,880 --> 00:12:02,020
+first thing we talk about our
+
+322
+00:12:02,020 --> 00:12:04,270
+aggregations right and these are pretty
+
+323
+00:12:04,270 --> 00:12:05,740
+simple to understand it's basically a
+
+324
+00:12:05,740 --> 00:12:08,560
+function that you define in the output
+
+325
+00:12:08,560 --> 00:12:10,480
+list of your select statement that's
+
+326
+00:12:10,480 --> 00:12:14,140
+going to take as input multiple tuples a
+
+327
+00:12:14,140 --> 00:12:16,960
+set of tuples and it's gonna compute
+
+328
+00:12:16,960 --> 00:12:18,880
+some kind of aggregation on top of that
+
+329
+00:12:18,880 --> 00:12:21,700
+and produced a single result right so
+
+330
+00:12:21,700 --> 00:12:24,250
+the sequel 92 standard defines average
+
+331
+00:12:24,250 --> 00:12:26,380
+min max sum and count and again think of
+
+332
+00:12:26,380 --> 00:12:28,570
+this is like in case of count you're
+
+333
+00:12:28,570 --> 00:12:30,520
+gonna take a bag of tuples as the input
+
+334
+00:12:30,520 --> 00:12:32,320
+and you're gonna count the number of
+
+335
+00:12:32,320 --> 00:12:33,310
+tuples there are and that you're a
+
+336
+00:12:33,310 --> 00:12:35,530
+produces a single output that has that
+
+337
+00:12:35,530 --> 00:12:38,710
+that count right it's again so this is
+
+338
+00:12:38,710 --> 00:12:41,650
+what's in the basic standard the the
+
+339
+00:12:41,650 --> 00:12:43,870
+later version of the standard and in
+
+340
+00:12:43,870 --> 00:12:45,100
+other database systems they'll have
+
+341
+00:12:45,100 --> 00:12:47,220
+other things like median mode standard
+
+342
+00:12:47,220 --> 00:12:51,220
+deviation right in the github different
+
+343
+00:12:51,220 --> 00:12:52,240
+aggregates and some of them actually
+
+344
+00:12:52,240 --> 00:12:53,380
+that allow you to find your own
+
+345
+00:12:53,380 --> 00:12:55,990
+aggregations as well so let's look an
+
+346
+00:12:55,990 --> 00:12:58,660
+example like this right so say we want
+
+347
+00:12:58,660 --> 00:13:00,640
+to discount the number of students in
+
+348
+00:13:00,640 --> 00:13:04,000
+this student table where the login ends
+
+349
+00:13:04,000 --> 00:13:07,210
+with at CS I'll cover what like is means
+
+350
+00:13:07,210 --> 00:13:08,170
+later on but essentially it's just
+
+351
+00:13:08,170 --> 00:13:11,410
+looking for a wild card here right so
+
+352
+00:13:11,410 --> 00:13:12,790
+the first thing the most important thing
+
+353
+00:13:12,790 --> 00:13:14,380
+to remember about aggregations is that
+
+354
+00:13:14,380 --> 00:13:16,360
+the aggregation can only appear in the
+
+355
+00:13:16,360 --> 00:13:17,290
+output list of the select statement
+
+356
+00:13:17,290 --> 00:13:20,260
+right so I have it here in the in this
+
+357
+00:13:20,260 --> 00:13:21,670
+it's saying this is I want to produce at
+
+358
+00:13:21,670 --> 00:13:23,410
+the output I can't have it in these in
+
+359
+00:13:23,410 --> 00:13:25,209
+these other parts here right cuz it
+
+360
+00:13:25,209 --> 00:13:26,170
+doesn't really make sense right because
+
+361
+00:13:26,170 --> 00:13:28,269
+you're computing aggregation after
+
+362
+00:13:28,269 --> 00:13:29,589
+you've sort of applied a filter to
+
+363
+00:13:29,589 --> 00:13:31,300
+figure out what tuples actually match
+
+364
+00:13:31,300 --> 00:13:34,959
+your where clause but the same point out
+
+365
+00:13:34,959 --> 00:13:37,959
+here is that in case of count again we
+
+366
+00:13:37,959 --> 00:13:39,149
+just want to count the number of tuples
+
+367
+00:13:39,149 --> 00:13:41,890
+the login field here doesn't actually
+
+368
+00:13:41,890 --> 00:13:45,370
+mean anything right because we're just
+
+369
+00:13:45,370 --> 00:13:46,990
+counting the number of tuples it doesn't
+
+370
+00:13:46,990 --> 00:13:48,820
+matter whether you know what the login
+
+371
+00:13:48,820 --> 00:13:50,470
+actually is at the point after we do the
+
+372
+00:13:50,470 --> 00:13:53,829
+filtering so we can rewrite this just to
+
+373
+00:13:53,829 --> 00:13:57,040
+have a star right the star is a special
+
+374
+00:13:57,040 --> 00:13:59,860
+you know special keyword in sequel the
+
+375
+00:13:59,860 --> 00:14:01,930
+basically says all attributes for the
+
+376
+00:14:01,930 --> 00:14:04,959
+tuple begin go even further and say we
+
+377
+00:14:04,959 --> 00:14:07,410
+can actually replace the star with a one
+
+378
+00:14:07,410 --> 00:14:10,660
+right count the number of tuples by just
+
+379
+00:14:10,660 --> 00:14:14,560
+adding one every single time right so
+
+380
+00:14:14,560 --> 00:14:16,149
+this is a good example where we have
+
+381
+00:14:16,149 --> 00:14:18,089
+three different queries that all produce
+
+382
+00:14:18,089 --> 00:14:20,320
+or semantically the same to produce the
+
+383
+00:14:20,320 --> 00:14:22,839
+same result but the data besom could
+
+384
+00:14:22,839 --> 00:14:24,430
+could choose different flavours or
+
+385
+00:14:24,430 --> 00:14:26,980
+different variations of this in order to
+
+386
+00:14:26,980 --> 00:14:28,269
+derive that answer and some of them may
+
+387
+00:14:28,269 --> 00:14:29,589
+have different performance differences
+
+388
+00:14:29,589 --> 00:14:33,220
+this one's pretty simple so the most
+
+389
+00:14:33,220 --> 00:14:34,420
+differences would be smart to realize I
+
+390
+00:14:34,420 --> 00:14:36,220
+don't need a copy around the login here
+
+391
+00:14:36,220 --> 00:14:38,380
+I can just replace that with a one right
+
+392
+00:14:38,380 --> 00:14:40,779
+most of them will do that but from what
+
+393
+00:14:40,779 --> 00:14:42,190
+complicating things it may not always
+
+394
+00:14:42,190 --> 00:14:45,220
+work we actually can combine the
+
+395
+00:14:45,220 --> 00:14:46,510
+aggregate multiple a grits together in a
+
+396
+00:14:46,510 --> 00:14:48,579
+single query so say for this one we want
+
+397
+00:14:48,579 --> 00:14:50,350
+to get the number of students and their
+
+398
+00:14:50,350 --> 00:14:53,500
+average GPA where their login ends with
+
+399
+00:14:53,500 --> 00:14:55,899
+at CS right so now you see I've combined
+
+400
+00:14:55,899 --> 00:14:59,769
+it average GPA and count in my output
+
+401
+00:14:59,769 --> 00:15:01,750
+output list for my select statement and
+
+402
+00:15:01,750 --> 00:15:03,790
+then it'll produce my my result like
+
+403
+00:15:03,790 --> 00:15:07,779
+that right pretty straightforward I can
+
+404
+00:15:07,779 --> 00:15:10,810
+also add the distinct keyword to tell it
+
+405
+00:15:10,810 --> 00:15:13,209
+to only count the distinct elements or
+
+406
+00:15:13,209 --> 00:15:15,850
+values of attributes for for my tuples
+
+407
+00:15:15,850 --> 00:15:18,130
+so this is saying count the number of
+
+408
+00:15:18,130 --> 00:15:22,180
+unique students with unique logins from
+
+409
+00:15:22,180 --> 00:15:23,680
+the student table where the login ends
+
+410
+00:15:23,680 --> 00:15:26,350
+with at CS right and so I had the
+
+411
+00:15:26,350 --> 00:15:28,600
+distinct side of account now this one's
+
+412
+00:15:28,600 --> 00:15:30,190
+sort of nonsensical to some way
+
+413
+00:15:30,190 --> 00:15:33,460
+because presumably no two students can
+
+414
+00:15:33,460 --> 00:15:36,340
+have the same login you know login
+
+415
+00:15:36,340 --> 00:15:38,820
+account otherwise you'd have problems
+
+416
+00:15:38,820 --> 00:15:42,790
+but in other cases you know you can
+
+417
+00:15:42,790 --> 00:15:43,900
+apply the same kind of thing for other
+
+418
+00:15:43,900 --> 00:15:45,340
+scenarios and it would work the way you
+
+419
+00:15:45,340 --> 00:15:48,580
+wanted to work in this case here we
+
+420
+00:15:48,580 --> 00:15:52,540
+produce the same result so the one thing
+
+421
+00:15:52,540 --> 00:15:54,070
+that now you want to may want to try to
+
+422
+00:15:54,070 --> 00:15:55,660
+start doing is now that I'm start doing
+
+423
+00:15:55,660 --> 00:15:57,130
+aggregations I want to get additional
+
+424
+00:15:57,130 --> 00:16:01,060
+information about my data outside of
+
+425
+00:16:01,060 --> 00:16:02,730
+just what I'm computing in my aggregate
+
+426
+00:16:02,730 --> 00:16:07,390
+right so say that I want to I want to
+
+427
+00:16:07,390 --> 00:16:09,880
+get the average GPA of the students that
+
+428
+00:16:09,880 --> 00:16:11,380
+are rolled in the course and I want to
+
+429
+00:16:11,380 --> 00:16:14,800
+know what that course ID was right so in
+
+430
+00:16:14,800 --> 00:16:16,900
+this case here I've now added the course
+
+431
+00:16:16,900 --> 00:16:18,730
+ID to my output list outside of my
+
+432
+00:16:18,730 --> 00:16:22,300
+aggregation right didn't take a guess
+
+433
+00:16:22,300 --> 00:16:28,030
+what would happen here would this work
+
+434
+00:16:28,030 --> 00:16:32,770
+or not raise your hand you think would
+
+435
+00:16:32,770 --> 00:16:35,890
+work raise your hand if you think it
+
+436
+00:16:35,890 --> 00:16:52,570
+wouldn't work see of you why correct yes
+
+437
+00:16:52,570 --> 00:16:54,640
+so Judy said is there's not a single
+
+438
+00:16:54,640 --> 00:16:58,210
+course ID for all my tuples that are
+
+439
+00:16:58,210 --> 00:17:00,280
+competing my average align right it's
+
+440
+00:17:00,280 --> 00:17:01,870
+all the students are taking all the
+
+441
+00:17:01,870 --> 00:17:03,910
+different classes what course ID to
+
+442
+00:17:03,910 --> 00:17:08,109
+actually put is the output right it's
+
+443
+00:17:08,109 --> 00:17:10,240
+the sequel standard say this is actually
+
+444
+00:17:10,240 --> 00:17:12,250
+undefined and in most systems you
+
+445
+00:17:12,250 --> 00:17:15,189
+actually will get an error with this we
+
+446
+00:17:15,189 --> 00:17:20,130
+can actually test this right so in this
+
+447
+00:17:20,130 --> 00:17:24,280
+there we go I have three three terminal
+
+448
+00:17:24,280 --> 00:17:25,480
+setup all right so this is running a
+
+449
+00:17:25,480 --> 00:17:27,189
+machine back in my office I have three
+
+450
+00:17:27,189 --> 00:17:29,440
+panels the top one is Postgres the
+
+451
+00:17:29,440 --> 00:17:30,850
+bottom one or the middle one is my
+
+452
+00:17:30,850 --> 00:17:32,110
+seagull and the bottom one is seagull
+
+453
+00:17:32,110 --> 00:17:34,260
+light
+
+454
+00:17:35,190 --> 00:17:37,230
+it's as much easier for you to type from
+
+455
+00:17:37,230 --> 00:17:40,640
+this machine here so I can log into that
+
+456
+00:17:41,600 --> 00:17:45,300
+right okay so the query was we wanted to
+
+457
+00:17:45,300 --> 00:17:49,700
+select where was it
+
+458
+00:17:49,700 --> 00:17:52,050
+just get the average GPA of students
+
+459
+00:17:52,050 --> 00:17:52,950
+enrolled in each course
+
+460
+00:17:52,950 --> 00:18:01,550
+right so select average sgpa eCourse ID
+
+461
+00:18:01,550 --> 00:18:09,120
+from enrolled as a student as s where
+
+462
+00:18:09,120 --> 00:18:14,790
+eise to deny d equals a student ID right
+
+463
+00:18:14,790 --> 00:18:16,260
+so Postgres says you can't do this
+
+464
+00:18:16,260 --> 00:18:21,960
+because as he said the course ID and I'm
+
+465
+00:18:21,960 --> 00:18:23,010
+highlighting here so you can't see it so
+
+466
+00:18:23,010 --> 00:18:26,280
+the course ID is not defined it's not
+
+467
+00:18:26,280 --> 00:18:28,470
+part of the aggregation right so it
+
+468
+00:18:28,470 --> 00:18:29,640
+doesn't know which course ID you
+
+469
+00:18:29,640 --> 00:18:32,430
+actually want so now if we go down and
+
+470
+00:18:32,430 --> 00:18:40,290
+try this in my sequel my seagull gave us
+
+471
+00:18:40,290 --> 00:18:48,630
+an answer right but is that correct no
+
+472
+00:18:48,630 --> 00:18:50,430
+right because because what course ID do
+
+473
+00:18:50,430 --> 00:18:52,710
+the pick I picked a random one right and
+
+474
+00:18:52,710 --> 00:18:55,470
+then now we can try in sequel Lite same
+
+475
+00:18:55,470 --> 00:18:59,370
+thing sequel Lite gave us a different
+
+476
+00:18:59,370 --> 00:19:00,930
+course ID so you see they both competed
+
+477
+00:19:00,930 --> 00:19:03,390
+the correct average but they chose
+
+478
+00:19:03,390 --> 00:19:06,300
+different course ID all right and just
+
+479
+00:19:06,300 --> 00:19:07,640
+because I know that my seagull guys
+
+480
+00:19:07,640 --> 00:19:12,810
+watch these videos and complain I will
+
+481
+00:19:12,810 --> 00:19:15,420
+say that so this is running my sequel in
+
+482
+00:19:15,420 --> 00:19:17,610
+and so my sequel traditionally allowed
+
+483
+00:19:17,610 --> 00:19:18,960
+you to do loosey goosey things like this
+
+484
+00:19:18,960 --> 00:19:20,880
+right so this would be running it what
+
+485
+00:19:20,880 --> 00:19:23,190
+they would call it traditional mode but
+
+486
+00:19:23,190 --> 00:19:25,260
+you can set the sequel mode to be more
+
+487
+00:19:25,260 --> 00:19:27,900
+strict so now if I run that same query
+
+488
+00:19:27,900 --> 00:19:30,420
+it throws the same air that Postgres did
+
+489
+00:19:30,420 --> 00:19:33,900
+so by default the least my sequel 5.7
+
+490
+00:19:33,900 --> 00:19:36,180
+when now throw errors in older versions
+
+491
+00:19:36,180 --> 00:19:41,869
+they didn't do that right okay
+
+492
+00:19:41,869 --> 00:19:45,860
+so a way to fix this is to do goodbye
+
+493
+00:19:45,860 --> 00:19:48,210
+so with group I what's gonna happen is
+
+494
+00:19:48,210 --> 00:19:50,700
+now we're gonna define how we want to
+
+495
+00:19:50,700 --> 00:19:54,840
+essentially buck it together the tuples
+
+496
+00:19:54,840 --> 00:19:58,080
+in our output based on one attribute and
+
+497
+00:19:58,080 --> 00:19:59,669
+then now we can then compute the
+
+498
+00:19:59,669 --> 00:20:00,419
+aggregation
+
+499
+00:20:00,419 --> 00:20:03,659
+on the tuples in each bucket right so
+
+500
+00:20:03,659 --> 00:20:05,220
+again what I wanted to do was get the
+
+501
+00:20:05,220 --> 00:20:08,460
+average GPA per course if I add now in
+
+502
+00:20:08,460 --> 00:20:10,499
+my group by clause I add the the course
+
+503
+00:20:10,499 --> 00:20:13,409
+ID what will happen is when I first
+
+504
+00:20:13,409 --> 00:20:16,529
+execute the query this is essentially
+
+505
+00:20:16,529 --> 00:20:18,869
+what I would see after the join but now
+
+506
+00:20:18,869 --> 00:20:20,879
+with the group by clause I'll combine
+
+507
+00:20:20,879 --> 00:20:24,389
+together the the two posts based on the
+
+508
+00:20:24,389 --> 00:20:27,119
+course ID and then for each of these now
+
+509
+00:20:27,119 --> 00:20:30,749
+I'll compute my aggregate right and now
+
+510
+00:20:30,749 --> 00:20:32,340
+I can group them by course ID and that
+
+511
+00:20:32,340 --> 00:20:33,960
+corresponds to the buckets are generated
+
+512
+00:20:33,960 --> 00:20:38,190
+from before right so we have to use
+
+513
+00:20:38,190 --> 00:20:39,480
+group I if we want to extract
+
+514
+00:20:39,480 --> 00:20:41,820
+information about the aggregations we're
+
+515
+00:20:41,820 --> 00:20:44,970
+computing right and so just like before
+
+516
+00:20:44,970 --> 00:20:48,179
+any time we have a attribute that we
+
+517
+00:20:48,179 --> 00:20:49,710
+won't appear in our output select clause
+
+518
+00:20:49,710 --> 00:20:51,690
+it has to appear in the group ID
+
+519
+00:20:51,690 --> 00:20:53,759
+so here the student name we're trying to
+
+520
+00:20:53,759 --> 00:20:55,799
+throw that in in our output Clause it
+
+521
+00:20:55,799 --> 00:20:58,559
+won't work because it has to be in our
+
+522
+00:20:58,559 --> 00:20:59,879
+group I'd calls
+
+523
+00:20:59,879 --> 00:21:01,350
+now this one is sorted to get
+
+524
+00:21:01,350 --> 00:21:03,509
+nonsensical it's technically correct
+
+525
+00:21:03,509 --> 00:21:05,129
+sequel it produced a result but from a
+
+526
+00:21:05,129 --> 00:21:06,360
+human standpoint we know doesn't mean
+
+527
+00:21:06,360 --> 00:21:07,529
+anything good well like what does it
+
+528
+00:21:07,529 --> 00:21:09,749
+mean to group by course ID and then the
+
+529
+00:21:09,749 --> 00:21:12,149
+student name to compute the average GPA
+
+530
+00:21:12,149 --> 00:21:14,129
+right the student's GPA is gonna be
+
+531
+00:21:14,129 --> 00:21:18,779
+their GPA okay so now you may think
+
+532
+00:21:18,779 --> 00:21:20,129
+alright well maybe I want to do them
+
+533
+00:21:20,129 --> 00:21:22,590
+with some more some additional filtering
+
+534
+00:21:22,590 --> 00:21:25,740
+all my aggregations so that I don't look
+
+535
+00:21:25,740 --> 00:21:27,509
+at you know I don't produce every single
+
+536
+00:21:27,509 --> 00:21:30,960
+result as part of the output so you may
+
+537
+00:21:30,960 --> 00:21:33,200
+think that you out want to put it
+
+538
+00:21:33,200 --> 00:21:35,249
+use the aggregations in your where
+
+539
+00:21:35,249 --> 00:21:37,320
+clause so here now I'm now I'm computing
+
+540
+00:21:37,320 --> 00:21:39,690
+every GPA but I'm added in my where
+
+541
+00:21:39,690 --> 00:21:42,360
+clause something that says filter out
+
+542
+00:21:42,360 --> 00:21:45,779
+anything where the GPA is is not you
+
+543
+00:21:45,779 --> 00:21:48,090
+know greater than 3.9 this is look only
+
+544
+00:21:48,090 --> 00:21:48,990
+trying to look at the courses with
+
+545
+00:21:48,990 --> 00:21:51,600
+average GPA is greater than 3.9 right so
+
+546
+00:21:51,600 --> 00:21:54,480
+this doesn't work because in our
+
+547
+00:21:54,480 --> 00:21:55,770
+can't access anything in our
+
+548
+00:21:55,770 --> 00:21:58,110
+aggregations in our where clause because
+
+549
+00:21:58,110 --> 00:21:59,730
+we don't have them yet in our where
+
+550
+00:21:59,730 --> 00:22:02,880
+clause right so again the way to think
+
+551
+00:22:02,880 --> 00:22:04,530
+about this is the where clause is
+
+552
+00:22:04,530 --> 00:22:06,150
+filtering tuples as we go along and
+
+553
+00:22:06,150 --> 00:22:08,220
+after we do our filtering then we can
+
+554
+00:22:08,220 --> 00:22:10,440
+actually then computer aggregation so we
+
+555
+00:22:10,440 --> 00:22:12,150
+can't compute we can't use an
+
+556
+00:22:12,150 --> 00:22:15,600
+aggregation to filter tuples because we
+
+557
+00:22:15,600 --> 00:22:17,900
+haven't computed the aggregation yet
+
+558
+00:22:17,900 --> 00:22:20,220
+right so the way to get around this is
+
+559
+00:22:20,220 --> 00:22:22,559
+to use the having clause it's
+
+560
+00:22:22,559 --> 00:22:24,419
+essentially like a where clause but now
+
+561
+00:22:24,419 --> 00:22:26,220
+you can reference anything in your
+
+562
+00:22:26,220 --> 00:22:29,070
+output list so I've taken my average GPA
+
+563
+00:22:29,070 --> 00:22:32,309
+and I've aliased it to AVG GPA and I can
+
+564
+00:22:32,309 --> 00:22:35,010
+publish that down on here and this will
+
+565
+00:22:35,010 --> 00:22:36,620
+produce the answer that I want right
+
+566
+00:22:36,620 --> 00:22:38,640
+computes the aggregation is just like
+
+567
+00:22:38,640 --> 00:22:40,080
+before and then it applies additional
+
+568
+00:22:40,080 --> 00:22:43,650
+filtering on it so now not in this
+
+569
+00:22:43,650 --> 00:22:45,900
+example but there's other examples where
+
+570
+00:22:45,900 --> 00:22:47,160
+you can do sort of certain optimizations
+
+571
+00:22:47,160 --> 00:22:50,460
+in the system based on what you know is
+
+572
+00:22:50,460 --> 00:22:52,799
+in your having clause again this is the
+
+573
+00:22:52,799 --> 00:22:54,150
+great thing about declarative language
+
+574
+00:22:54,150 --> 00:22:55,890
+you know everything all ahead of time
+
+575
+00:22:55,890 --> 00:22:58,140
+what the you know what the programmer
+
+576
+00:22:58,140 --> 00:23:00,630
+the person wants in their answer so you
+
+577
+00:23:00,630 --> 00:23:03,419
+can use hints about what you knows could
+
+578
+00:23:03,419 --> 00:23:05,820
+come later in the query plan to help you
+
+579
+00:23:05,820 --> 00:23:07,799
+do certain refinements or reduce the
+
+580
+00:23:07,799 --> 00:23:09,090
+amount of work you have to do as you run
+
+581
+00:23:09,090 --> 00:23:12,240
+the query so instead of using average
+
+582
+00:23:12,240 --> 00:23:15,960
+GPA say I wanted to do account where the
+
+583
+00:23:15,960 --> 00:23:18,600
+number of tuples are less than some you
+
+584
+00:23:18,600 --> 00:23:19,950
+know first each group less than some
+
+585
+00:23:19,950 --> 00:23:22,650
+value so as I'm going along as I'm
+
+586
+00:23:22,650 --> 00:23:24,750
+computing my aggregate if I then
+
+587
+00:23:24,750 --> 00:23:27,510
+recognize that oh my having Clause says
+
+588
+00:23:27,510 --> 00:23:29,250
+filter anything less than ten two pools
+
+589
+00:23:29,250 --> 00:23:31,590
+if not if I now hit tuple number eleven
+
+590
+00:23:31,590 --> 00:23:33,660
+for a group I know that I never need to
+
+591
+00:23:33,660 --> 00:23:36,210
+count anything else for that for that
+
+592
+00:23:36,210 --> 00:23:38,429
+tuples that come later because it'll
+
+593
+00:23:38,429 --> 00:23:40,740
+never pass that having falls so I can
+
+594
+00:23:40,740 --> 00:23:42,150
+just throw away those tuples as I go
+
+595
+00:23:42,150 --> 00:23:45,750
+along because it's wasted work right if
+
+596
+00:23:45,750 --> 00:23:47,070
+you're writing this in a procedural
+
+597
+00:23:47,070 --> 00:23:49,260
+language like Python all right well you
+
+598
+00:23:49,260 --> 00:23:51,059
+had to write these steps but it's you
+
+599
+00:23:51,059 --> 00:23:53,790
+know by by yourself the you know the
+
+600
+00:23:53,790 --> 00:23:54,870
+Davidson is not going to know what's
+
+601
+00:23:54,870 --> 00:23:56,040
+gonna come later on because it can't
+
+602
+00:23:56,040 --> 00:23:58,230
+peek ahead right but in a declarative
+
+603
+00:23:58,230 --> 00:24:02,730
+language like C code we can do that so
+
+604
+00:24:02,730 --> 00:24:03,720
+the next thing we want to talk about is
+
+605
+00:24:03,720 --> 00:24:06,259
+how to handle strings
+
+606
+00:24:06,259 --> 00:24:08,269
+so this is a table that sort of
+
+607
+00:24:08,269 --> 00:24:12,440
+summarizes the the different variations
+
+608
+00:24:12,440 --> 00:24:14,210
+of how strings are handled in different
+
+609
+00:24:14,210 --> 00:24:17,600
+database systems so the the sequel
+
+610
+00:24:17,600 --> 00:24:20,210
+standard specced says that all strings
+
+611
+00:24:20,210 --> 00:24:23,149
+like some varchars chars text fields
+
+612
+00:24:23,149 --> 00:24:26,059
+they have to be case sensitive and the
+
+613
+00:24:26,059 --> 00:24:27,979
+way you declare them is with single
+
+614
+00:24:27,979 --> 00:24:31,009
+quotes and most systems follow this
+
+615
+00:24:31,009 --> 00:24:33,019
+right the red herrings of the oddballs
+
+616
+00:24:33,019 --> 00:24:35,779
+are both my sequel and sequel light so
+
+617
+00:24:35,779 --> 00:24:38,749
+in sigil light the strings are sensitive
+
+618
+00:24:38,749 --> 00:24:40,899
+but you can have both single and double
+
+619
+00:24:40,899 --> 00:24:45,409
+double quotes - to mark them in my
+
+620
+00:24:45,409 --> 00:24:48,619
+sequel it's case insensitive and you can
+
+621
+00:24:48,619 --> 00:24:50,899
+use either single or double quotes now
+
+622
+00:24:50,899 --> 00:24:53,570
+my problem is that when I started using
+
+623
+00:24:53,570 --> 00:24:55,940
+database systems back in like 2000 I was
+
+624
+00:24:55,940 --> 00:25:00,109
+using my single three and it's like it's
+
+625
+00:25:00,109 --> 00:25:01,669
+like you know ingrained in my memory to
+
+626
+00:25:01,669 --> 00:25:03,019
+just use double quotes because that's
+
+627
+00:25:03,019 --> 00:25:04,789
+what we use back then so I'm always had
+
+628
+00:25:04,789 --> 00:25:05,899
+to correct myself every time I switch
+
+629
+00:25:05,899 --> 00:25:08,179
+over another native system to go always
+
+630
+00:25:08,179 --> 00:25:11,330
+go back and use single quotes my Seco
+
+631
+00:25:11,330 --> 00:25:13,249
+again has the mode you can say to follow
+
+632
+00:25:13,249 --> 00:25:14,749
+the stand it'll get better and they then
+
+633
+00:25:14,749 --> 00:25:17,690
+enforce the single quote requirement but
+
+634
+00:25:17,690 --> 00:25:19,450
+I think by default you don't get that
+
+635
+00:25:19,450 --> 00:25:22,159
+right so in the siegel standards say you
+
+636
+00:25:22,159 --> 00:25:24,889
+want to take the name you want to take
+
+637
+00:25:24,889 --> 00:25:27,769
+the name of kanye and have it matched
+
+638
+00:25:27,769 --> 00:25:31,629
+with kanye with you know mixed case in
+
+639
+00:25:31,629 --> 00:25:34,519
+in in the single standard you had the
+
+640
+00:25:34,519 --> 00:25:36,349
+upper case using the upper you know the
+
+641
+00:25:36,349 --> 00:25:38,269
+upper function to make this match work
+
+642
+00:25:38,269 --> 00:25:40,129
+and my sequel you don't have to do that
+
+643
+00:25:40,129 --> 00:25:41,989
+right because all all the strings are
+
+644
+00:25:41,989 --> 00:25:45,470
+matching or case insensitive now I
+
+645
+00:25:45,470 --> 00:25:47,059
+showed this before how to do light
+
+646
+00:25:47,059 --> 00:25:48,769
+clause but I think it's a lies you do
+
+647
+00:25:48,769 --> 00:25:52,309
+the first string matching alright so
+
+648
+00:25:52,309 --> 00:25:54,440
+like is basically doing you know trying
+
+649
+00:25:54,440 --> 00:25:56,960
+to match some wild card in your string
+
+650
+00:25:56,960 --> 00:26:00,919
+with with with another string so for
+
+651
+00:26:00,919 --> 00:26:02,299
+whatever reason instead of using star
+
+652
+00:26:02,299 --> 00:26:03,950
+like most other things they use the
+
+653
+00:26:03,950 --> 00:26:08,869
+print a % so % means any one or more
+
+654
+00:26:08,869 --> 00:26:11,029
+strings and then the underscore means
+
+655
+00:26:11,029 --> 00:26:13,519
+exactly match one character alright so
+
+656
+00:26:13,519 --> 00:26:14,960
+say I want to get all the course or the
+
+657
+00:26:14,960 --> 00:26:16,999
+all the course IDs from the role table
+
+658
+00:26:16,999 --> 00:26:19,260
+that start with
+
+659
+00:26:19,260 --> 00:26:23,610
+tene 215 445 721 I would use the the
+
+660
+00:26:23,610 --> 00:26:26,190
+amperes the % like that and say if I
+
+661
+00:26:26,190 --> 00:26:28,110
+want to get all the students where the
+
+662
+00:26:28,110 --> 00:26:31,230
+the login ends with at C and then some
+
+663
+00:26:31,230 --> 00:26:33,300
+wild card I will use a single underscore
+
+664
+00:26:33,300 --> 00:26:38,040
+for that so the seagull standard also
+
+665
+00:26:38,040 --> 00:26:40,520
+defines a bunch of string functions
+
+666
+00:26:40,520 --> 00:26:43,110
+there's a again the standard things you
+
+667
+00:26:43,110 --> 00:26:46,010
+would expect like substring upper lower
+
+668
+00:26:46,010 --> 00:26:48,570
+trim or these are all part of the sequel
+
+669
+00:26:48,570 --> 00:26:50,220
+9q standards and move systems will have
+
+670
+00:26:50,220 --> 00:26:51,840
+this but of course there will be a bunch
+
+671
+00:26:51,840 --> 00:26:54,450
+of other stuff that are proprietary in
+
+672
+00:26:54,450 --> 00:26:57,300
+each different database system so the
+
+673
+00:26:57,300 --> 00:26:59,280
+thing to point out unlike aggregation
+
+674
+00:26:59,280 --> 00:27:01,800
+functions with string functions and you
+
+675
+00:27:01,800 --> 00:27:03,210
+know mathematical functions and date
+
+676
+00:27:03,210 --> 00:27:05,280
+functions they can appear anywhere in
+
+677
+00:27:05,280 --> 00:27:07,950
+the in your in your queries so they can
+
+678
+00:27:07,950 --> 00:27:09,240
+be in the Select output list it can be
+
+679
+00:27:09,240 --> 00:27:10,950
+in your predicate s-- alright they don't
+
+680
+00:27:10,950 --> 00:27:13,650
+always have to be in the in the select
+
+681
+00:27:13,650 --> 00:27:14,790
+portion they can mean you're having
+
+682
+00:27:14,790 --> 00:27:18,240
+clauses so here we have you know the
+
+683
+00:27:18,240 --> 00:27:20,460
+first guy first query is gonna take the
+
+684
+00:27:20,460 --> 00:27:22,110
+name and take a substring and just get
+
+685
+00:27:22,110 --> 00:27:23,940
+just get the first five characters and
+
+686
+00:27:23,940 --> 00:27:25,650
+then the second one we did is to show
+
+687
+00:27:25,650 --> 00:27:29,250
+before of doing matching where the the
+
+688
+00:27:29,250 --> 00:27:33,140
+uppercase version of the student name is
+
+689
+00:27:33,140 --> 00:27:37,410
+begins with Kay kan so again string
+
+690
+00:27:37,410 --> 00:27:38,490
+functions are for the most part the
+
+691
+00:27:38,490 --> 00:27:39,870
+basic ones will be pretty much
+
+692
+00:27:39,870 --> 00:27:41,850
+standardized across all systems where
+
+693
+00:27:41,850 --> 00:27:43,290
+things get weird as when you want to
+
+694
+00:27:43,290 --> 00:27:45,780
+start doing a concatenation so the Seco
+
+695
+00:27:45,780 --> 00:27:47,580
+standard says that you use two double
+
+696
+00:27:47,580 --> 00:27:50,450
+bars to concatenate two strings together
+
+697
+00:27:50,450 --> 00:27:54,420
+and most systems follow this in my
+
+698
+00:27:54,420 --> 00:27:55,890
+opinion I would say Postgres in Oracle
+
+699
+00:27:55,890 --> 00:27:57,150
+probably followed the sequel standard
+
+700
+00:27:57,150 --> 00:28:00,360
+the best out of all the systems sequel
+
+701
+00:28:00,360 --> 00:28:03,660
+server and db2 are probably next single
+
+702
+00:28:03,660 --> 00:28:05,130
+light then probably my sequel is the
+
+703
+00:28:05,130 --> 00:28:09,060
+worst so you want to say to concatenate
+
+704
+00:28:09,060 --> 00:28:12,690
+the student name and add es to it do use
+
+705
+00:28:12,690 --> 00:28:15,060
+double bar in the sequel standard in
+
+706
+00:28:15,060 --> 00:28:17,190
+sequel server from Microsoft you use the
+
+707
+00:28:17,190 --> 00:28:20,010
+plus sign in my sequel they don't have a
+
+708
+00:28:20,010 --> 00:28:21,990
+plus sign they don't have the double bar
+
+709
+00:28:21,990 --> 00:28:26,160
+they only have this concat function were
+
+710
+00:28:26,160 --> 00:28:27,630
+you basically defined as the input
+
+711
+00:28:27,630 --> 00:28:28,950
+parameters the things you want to
+
+712
+00:28:28,950 --> 00:28:30,990
+concatenate together they have something
+
+713
+00:28:30,990 --> 00:28:32,490
+else that's kind of weird to where you
+
+714
+00:28:32,490 --> 00:28:33,750
+can actually
+
+715
+00:28:33,750 --> 00:28:36,000
+if you don't put anything between two
+
+716
+00:28:36,000 --> 00:28:37,620
+string literals that'll concatenate them
+
+717
+00:28:37,620 --> 00:28:39,750
+together so to show you what I mean by
+
+718
+00:28:39,750 --> 00:28:42,900
+that so here we have my Siegel so I can
+
+719
+00:28:42,900 --> 00:28:51,210
+do something like this a n dy space PA
+
+720
+00:28:51,210 --> 00:28:57,360
+VLO right nobody else does this as far
+
+721
+00:28:57,360 --> 00:28:58,470
+as I know let me double check that
+
+722
+00:28:58,470 --> 00:29:01,010
+before I lie to you
+
+723
+00:29:01,010 --> 00:29:05,370
+let's try it in huh yeah toka first
+
+724
+00:29:05,370 --> 00:29:07,640
+Chris doesn't like it
+
+725
+00:29:07,640 --> 00:29:09,480
+sequel server doesn't like it either
+
+726
+00:29:09,480 --> 00:29:13,560
+right only my sequel does that all right
+
+727
+00:29:13,560 --> 00:29:15,510
+so now we're things get really really
+
+728
+00:29:15,510 --> 00:29:18,120
+bad is when you have date and time
+
+729
+00:29:18,120 --> 00:29:21,240
+functions right so a date basically you
+
+730
+00:29:21,240 --> 00:29:22,860
+can just records the timestamp without
+
+731
+00:29:22,860 --> 00:29:25,650
+the time timestamp is is the time now
+
+732
+00:29:25,650 --> 00:29:28,080
+they vary on the granularity of the time
+
+733
+00:29:28,080 --> 00:29:29,940
+they may be tracking sometimes in
+
+734
+00:29:29,940 --> 00:29:31,500
+seconds sometimes it's in milliseconds
+
+735
+00:29:31,500 --> 00:29:33,120
+or something even more fine-grain than
+
+736
+00:29:33,120 --> 00:29:34,110
+that
+
+737
+00:29:34,110 --> 00:29:37,410
+but where things get get wonky is how
+
+738
+00:29:37,410 --> 00:29:39,330
+you actually start manipulating them and
+
+739
+00:29:39,330 --> 00:29:40,860
+extracting them extracting information
+
+740
+00:29:40,860 --> 00:29:44,700
+from them right and so the syntax for
+
+741
+00:29:44,700 --> 00:29:46,590
+all these different systems can can can
+
+742
+00:29:46,590 --> 00:29:49,080
+vary wildly so for this example we want
+
+743
+00:29:49,080 --> 00:29:51,540
+to do is I want to show you how to do
+
+744
+00:29:51,540 --> 00:29:53,280
+what I consider a seemingly easy
+
+745
+00:29:53,280 --> 00:29:56,310
+function or easy operation get the
+
+746
+00:29:56,310 --> 00:30:00,000
+number of days from today to since the
+
+747
+00:30:00,000 --> 00:30:02,130
+beginning of the year and we'll see how
+
+748
+00:30:02,130 --> 00:30:03,420
+to try to do this and on these three
+
+749
+00:30:03,420 --> 00:30:06,600
+different systems okay so the first
+
+750
+00:30:06,600 --> 00:30:08,640
+thing is that we want to get maybe what
+
+751
+00:30:08,640 --> 00:30:13,790
+the current time is now
+
+752
+00:30:18,830 --> 00:30:33,020
+I just kill my wife I okay back okay all
+
+753
+00:30:33,020 --> 00:30:37,400
+right so the seco standard defines a now
+
+754
+00:30:37,400 --> 00:30:39,650
+function can everyone see that or now in
+
+755
+00:30:39,650 --> 00:30:41,810
+the back guys can you see it okay cool
+
+756
+00:30:41,810 --> 00:30:45,710
+so you call now and it gives you the
+
+757
+00:30:45,710 --> 00:30:48,730
+current timestamp so we can do that in
+
+758
+00:30:48,730 --> 00:30:54,650
+in my sequel and we can do this in
+
+759
+00:30:54,650 --> 00:30:59,930
+sequel light what you can't do in a
+
+760
+00:30:59,930 --> 00:31:03,080
+single vibe all right all right so
+
+761
+00:31:03,080 --> 00:31:04,760
+there's another way to do this
+
+762
+00:31:04,760 --> 00:31:07,280
+they have another function called a
+
+763
+00:31:07,280 --> 00:31:11,720
+current timestamp right except Postgres
+
+764
+00:31:11,720 --> 00:31:13,610
+doesn't have it but they had the keyword
+
+765
+00:31:13,610 --> 00:31:17,240
+current time Stan my sequel has the
+
+766
+00:31:17,240 --> 00:31:23,540
+function and it has the keyword all
+
+767
+00:31:23,540 --> 00:31:24,920
+right single lane who says it has the
+
+768
+00:31:24,920 --> 00:31:29,690
+function raise your hand so who says it
+
+769
+00:31:29,690 --> 00:31:32,750
+says it has the keyword all right it's
+
+770
+00:31:32,750 --> 00:31:34,760
+mixed all right they don't have the
+
+771
+00:31:34,760 --> 00:31:37,550
+function they have a keyword all right
+
+772
+00:31:37,550 --> 00:31:39,440
+again simple thing like what's the
+
+773
+00:31:39,440 --> 00:31:40,280
+current time
+
+774
+00:31:40,280 --> 00:31:43,700
+it varies all right so now again what we
+
+775
+00:31:43,700 --> 00:31:45,020
+want to do is we want to count the
+
+776
+00:31:45,020 --> 00:31:48,500
+number of days since the since the
+
+777
+00:31:48,500 --> 00:31:53,960
+beginning of the year all right so as a
+
+778
+00:31:53,960 --> 00:31:56,110
+building block what we can try to do is
+
+779
+00:31:56,110 --> 00:31:58,310
+maybe just get what the number of days
+
+780
+00:31:58,310 --> 00:32:01,190
+is from from today so in this query what
+
+781
+00:32:01,190 --> 00:32:04,490
+I'm doing is I'm taking a date listed
+
+782
+00:32:04,490 --> 00:32:06,950
+here's a string right so I'm taking the
+
+783
+00:32:06,950 --> 00:32:08,870
+string for today's date and converting
+
+784
+00:32:08,870 --> 00:32:10,700
+it into a date and then I have the
+
+785
+00:32:10,700 --> 00:32:13,310
+extract function which will extract out
+
+786
+00:32:13,310 --> 00:32:17,330
+the the day field of the date right so
+
+787
+00:32:17,330 --> 00:32:19,840
+as expected you get you get 29 all right
+
+788
+00:32:19,840 --> 00:32:22,040
+we can try that in the and the other
+
+789
+00:32:22,040 --> 00:32:27,020
+guys it gives you 29 they don't have it
+
+790
+00:32:27,020 --> 00:32:28,430
+all right
+
+791
+00:32:28,430 --> 00:32:32,880
+so but now we can see that like alright
+
+792
+00:32:32,880 --> 00:32:36,840
+well if I can if I can cast a string for
+
+793
+00:32:36,840 --> 00:32:39,630
+the date into a date what happens if I
+
+794
+00:32:39,630 --> 00:32:43,170
+just subtract them right I said I'll
+
+795
+00:32:43,170 --> 00:32:45,540
+take today's date and subtract the it
+
+796
+00:32:45,540 --> 00:32:47,880
+from the date from the beginning of the
+
+797
+00:32:47,880 --> 00:32:51,630
+year and in Postgres we get it 240 days
+
+798
+00:32:51,630 --> 00:33:00,210
+all right my sequel 728 I don't know
+
+799
+00:33:00,210 --> 00:33:02,400
+what that means right like it's not like
+
+800
+00:33:02,400 --> 00:33:04,530
+240 times 2 or some you know some
+
+801
+00:33:04,530 --> 00:33:06,600
+multiple there right it's it's a number
+
+802
+00:33:06,600 --> 00:33:09,270
+right it ran but it's not what we want
+
+803
+00:33:09,270 --> 00:33:13,860
+right so now let's try it in in sequel
+
+804
+00:33:13,860 --> 00:33:19,590
+light sequel like give us 0 okay so it
+
+805
+00:33:19,590 --> 00:33:20,730
+works in Postgres and now we gotta
+
+806
+00:33:20,730 --> 00:33:24,210
+figure how to do this in my sequel well
+
+807
+00:33:24,210 --> 00:33:29,460
+so what we can do is we we try to
+
+808
+00:33:29,460 --> 00:33:33,120
+extract the the day from so maybe we
+
+809
+00:33:33,120 --> 00:33:34,910
+take what we'd bet 728 we had before
+
+810
+00:33:34,910 --> 00:33:37,890
+right and we extract the day from and
+
+811
+00:33:37,890 --> 00:33:39,660
+see what that means all right it came
+
+812
+00:33:39,660 --> 00:33:41,430
+back with 28 so that's not really what
+
+813
+00:33:41,430 --> 00:33:44,940
+we want so the way to do it actually is
+
+814
+00:33:44,940 --> 00:33:48,960
+a bit complicated what we're gonna do is
+
+815
+00:33:48,960 --> 00:33:51,600
+we're going to convert the dates into
+
+816
+00:33:51,600 --> 00:33:53,460
+UNIX timestamp which is the number of
+
+817
+00:33:53,460 --> 00:33:55,110
+seconds since the unit's to epoch which
+
+818
+00:33:55,110 --> 00:33:58,320
+is like some Jan refers 1970 right and
+
+819
+00:33:58,320 --> 00:33:59,640
+now we're gonna have the number of
+
+820
+00:33:59,640 --> 00:34:01,350
+seconds from from the current date
+
+821
+00:34:01,350 --> 00:34:02,850
+number seconds since beginning the day
+
+822
+00:34:02,850 --> 00:34:05,910
+we subtract them right and that gives us
+
+823
+00:34:05,910 --> 00:34:07,560
+the number of seconds between now and
+
+824
+00:34:07,560 --> 00:34:09,989
+the beginning of the year and then we're
+
+825
+00:34:09,989 --> 00:34:12,840
+gonna divide that by 60 seconds times 60
+
+826
+00:34:12,840 --> 00:34:17,520
+minutes times 24 days right we got 240
+
+827
+00:34:17,520 --> 00:34:18,590
+all right
+
+828
+00:34:18,590 --> 00:34:20,730
+turns out though after I did this the
+
+829
+00:34:20,730 --> 00:34:22,139
+first time there's actually even easier
+
+830
+00:34:22,139 --> 00:34:26,159
+way in my sequel they have a simple
+
+831
+00:34:26,159 --> 00:34:28,710
+function called date div and that
+
+832
+00:34:28,710 --> 00:34:30,690
+produces you know the same answer all
+
+833
+00:34:30,690 --> 00:34:32,260
+right
+
+834
+00:34:32,260 --> 00:34:40,940
+sico light uh-huh for Brianna I think
+
+835
+00:34:40,940 --> 00:34:41,929
+let me try make this a little bigger
+
+836
+00:34:41,929 --> 00:34:45,889
+there go in single light they don't have
+
+837
+00:34:45,889 --> 00:34:48,080
+date if you can't subtract age with each
+
+838
+00:34:48,080 --> 00:34:51,050
+other the the way I figured out to do it
+
+839
+00:34:51,050 --> 00:34:53,540
+was convert the current timestamp into
+
+840
+00:34:53,540 --> 00:34:56,540
+the to the Julian calendar which is the
+
+841
+00:34:56,540 --> 00:35:01,600
+number of days since 437 be sore for
+
+842
+00:35:01,600 --> 00:35:06,620
+4370 BC and so you subtract the more
+
+843
+00:35:06,620 --> 00:35:08,510
+days since that time it's the number
+
+844
+00:35:08,510 --> 00:35:11,210
+days beginning the year and you get
+
+845
+00:35:11,210 --> 00:35:15,860
+roughly 240 right all right and we can
+
+846
+00:35:15,860 --> 00:35:20,290
+cast it to an int and we get 240 right
+
+847
+00:35:20,290 --> 00:35:24,440
+so these are three super super widely
+
+848
+00:35:24,440 --> 00:35:26,990
+used database systems that all differ on
+
+849
+00:35:26,990 --> 00:35:28,730
+some basic functionality of doing date
+
+850
+00:35:28,730 --> 00:35:31,460
+and time right actually a quick show of
+
+851
+00:35:31,460 --> 00:35:33,590
+hands who think of these three ones
+
+852
+00:35:33,590 --> 00:35:34,850
+which one you think is the most popular
+
+853
+00:35:34,850 --> 00:35:36,410
+miss widely deployed database system
+
+854
+00:35:36,410 --> 00:35:38,270
+raise your hand you think my sequel
+
+855
+00:35:38,270 --> 00:35:42,380
+about a quarter raise your hand think
+
+856
+00:35:42,380 --> 00:35:45,620
+Postgres even less Radian think seagull
+
+857
+00:35:45,620 --> 00:35:51,970
+light even less the answer sequel light
+
+858
+00:35:51,970 --> 00:35:54,980
+so a few years ago we had Richard hippie
+
+859
+00:35:54,980 --> 00:35:56,420
+invent our sequel light so see the light
+
+860
+00:35:56,420 --> 00:35:58,940
+is amazing it's written by three dudes
+
+861
+00:35:58,940 --> 00:36:04,760
+right there they is he approximate that
+
+862
+00:36:04,760 --> 00:36:07,090
+it's been deployed on 10 billion devices
+
+863
+00:36:07,090 --> 00:36:09,650
+everyone here who has a cell phone right
+
+864
+00:36:09,650 --> 00:36:11,480
+that isn't a flip phone or an old person
+
+865
+00:36:11,480 --> 00:36:13,610
+phone is running sequel light on it
+
+866
+00:36:13,610 --> 00:36:16,070
+right now right a lot of desktop
+
+867
+00:36:16,070 --> 00:36:18,500
+applications like Photoshop and
+
+868
+00:36:18,500 --> 00:36:20,180
+illustrator they run sequel light on the
+
+869
+00:36:20,180 --> 00:36:22,250
+inside right sequel light is everywhere
+
+870
+00:36:22,250 --> 00:36:25,160
+he said that also to every single AOL CD
+
+871
+00:36:25,160 --> 00:36:26,690
+if you know what that is all right back
+
+872
+00:36:26,690 --> 00:36:28,400
+in the early 2000s when the internet was
+
+873
+00:36:28,400 --> 00:36:30,890
+sort of new in the u.s. there was
+
+874
+00:36:30,890 --> 00:36:32,660
+company called America Online and they
+
+875
+00:36:32,660 --> 00:36:35,330
+would every mail everyone CDs for ten
+
+876
+00:36:35,330 --> 00:36:37,220
+hours free on the internet right every
+
+877
+00:36:37,220 --> 00:36:38,900
+CD that they mailed out you know
+
+878
+00:36:38,900 --> 00:36:41,120
+hundreds of millions of them had sequel
+
+879
+00:36:41,120 --> 00:36:43,580
+light running on it right sequel a is
+
+880
+00:36:43,580 --> 00:36:45,290
+most widely deployed David
+
+881
+00:36:45,290 --> 00:36:46,490
+everywhere and here's the most crazy
+
+882
+00:36:46,490 --> 00:36:48,860
+part it's public domain he gives it away
+
+883
+00:36:48,860 --> 00:36:51,920
+for free right I mean Postgres and my
+
+884
+00:36:51,920 --> 00:36:53,870
+Segal are open-source but like Haytham
+
+885
+00:36:53,870 --> 00:36:56,000
+oh my sequel Oracle owns it all Co owns
+
+886
+00:36:56,000 --> 00:36:58,220
+the copyright there's no copyright on
+
+887
+00:36:58,220 --> 00:37:01,040
+sequel Lite right it's an amazing piece
+
+888
+00:37:01,040 --> 00:37:05,180
+of software okay alright so again the
+
+889
+00:37:05,180 --> 00:37:07,370
+main takeaway here was that simple
+
+890
+00:37:07,370 --> 00:37:09,530
+things are hard to do because there's no
+
+891
+00:37:09,530 --> 00:37:10,880
+stamp you know there's no standard way
+
+892
+00:37:10,880 --> 00:37:12,110
+to do things even though there is a
+
+893
+00:37:12,110 --> 00:37:15,980
+standard Tessa fication all right so now
+
+894
+00:37:15,980 --> 00:37:17,540
+maybe what you want to do is instead of
+
+895
+00:37:17,540 --> 00:37:20,600
+having the you know in my examples I had
+
+896
+00:37:20,600 --> 00:37:22,790
+the terminal open every time I ran a
+
+897
+00:37:22,790 --> 00:37:24,890
+query that the output got printed back
+
+898
+00:37:24,890 --> 00:37:27,110
+to me and my terminal but maybe what you
+
+899
+00:37:27,110 --> 00:37:29,000
+want to do is keep all the data you you
+
+900
+00:37:29,000 --> 00:37:31,100
+you generate from a query keep that
+
+901
+00:37:31,100 --> 00:37:32,990
+inside the database system so you can
+
+902
+00:37:32,990 --> 00:37:34,970
+use it in subsequent queries right this
+
+903
+00:37:34,970 --> 00:37:36,890
+is way more efficient if your if your if
+
+904
+00:37:36,890 --> 00:37:38,320
+your queries generating a lot of output
+
+905
+00:37:38,320 --> 00:37:40,280
+you don't have everything sitting down
+
+906
+00:37:40,280 --> 00:37:41,930
+to your laptop and then push it back up
+
+907
+00:37:41,930 --> 00:37:44,210
+to do more queries on it so you can do
+
+908
+00:37:44,210 --> 00:37:45,830
+output redirection to tell it to say hey
+
+909
+00:37:45,830 --> 00:37:47,840
+don't print it out to me write it out to
+
+910
+00:37:47,840 --> 00:37:48,670
+this location
+
+911
+00:37:48,670 --> 00:37:51,020
+so one thing you do is you can take the
+
+912
+00:37:51,020 --> 00:37:52,280
+output or query and you can write it
+
+913
+00:37:52,280 --> 00:37:57,020
+into another table right and so you in
+
+914
+00:37:57,020 --> 00:37:58,820
+the sequel standard you can use into and
+
+915
+00:37:58,820 --> 00:38:01,310
+this will actually will create the table
+
+916
+00:38:01,310 --> 00:38:03,500
+for you on the fly so whatever is
+
+917
+00:38:03,500 --> 00:38:06,890
+produces the output of the query right
+
+918
+00:38:06,890 --> 00:38:08,900
+again this is declarative the data
+
+919
+00:38:08,900 --> 00:38:10,280
+system already knows what the schema is
+
+920
+00:38:10,280 --> 00:38:11,870
+of the table so it knows in this case
+
+921
+00:38:11,870 --> 00:38:13,610
+here what the type is that this output
+
+922
+00:38:13,610 --> 00:38:15,170
+is going to be so he knows how to define
+
+923
+00:38:15,170 --> 00:38:17,870
+a table that has that it can handle
+
+924
+00:38:17,870 --> 00:38:20,240
+those types right so into basically
+
+925
+00:38:20,240 --> 00:38:21,560
+takes the output to select and writes it
+
+926
+00:38:21,560 --> 00:38:24,020
+into a table and in my sequel you have
+
+927
+00:38:24,020 --> 00:38:25,460
+to use the create table and then inside
+
+928
+00:38:25,460 --> 00:38:29,290
+of it you define your Select statement
+
+929
+00:38:29,290 --> 00:38:32,420
+you can also have it output data into an
+
+930
+00:38:32,420 --> 00:38:35,870
+existing table and for this you use
+
+931
+00:38:35,870 --> 00:38:38,180
+insert into which looks a lot like we
+
+932
+00:38:38,180 --> 00:38:39,860
+created into the create table from from
+
+933
+00:38:39,860 --> 00:38:41,780
+before and then instead of having the
+
+934
+00:38:41,780 --> 00:38:43,520
+value Clause you actually just have a
+
+935
+00:38:43,520 --> 00:38:45,680
+select statement just to tell it hey get
+
+936
+00:38:45,680 --> 00:38:47,810
+this data aren't right into here so the
+
+937
+00:38:47,810 --> 00:38:49,700
+important thing about this example
+
+938
+00:38:49,700 --> 00:38:51,650
+versus the previous slide this is about
+
+939
+00:38:51,650 --> 00:38:53,660
+writing tables in two tuples in two
+
+940
+00:38:53,660 --> 00:38:56,000
+tables that already exist so that means
+
+941
+00:38:56,000 --> 00:38:58,920
+that whatever the whatever
+
+942
+00:38:58,920 --> 00:39:00,720
+to type the number attributes and their
+
+943
+00:39:00,720 --> 00:39:02,490
+types that are produced by the Select
+
+944
+00:39:02,490 --> 00:39:04,380
+statement whatever table you're writing
+
+945
+00:39:04,380 --> 00:39:07,829
+it into has to match that right if the
+
+946
+00:39:07,829 --> 00:39:10,380
+the Select statement has 44 columns and
+
+947
+00:39:10,380 --> 00:39:12,089
+your table you're writing into as three
+
+948
+00:39:12,089 --> 00:39:13,829
+the days and we'll throw in air it says
+
+949
+00:39:13,829 --> 00:39:15,390
+I can't write into that because it the
+
+950
+00:39:15,390 --> 00:39:18,329
+Astros don't match up now where things
+
+951
+00:39:18,329 --> 00:39:19,920
+get weird is when you start having
+
+952
+00:39:19,920 --> 00:39:23,130
+constraints that are on the table you're
+
+953
+00:39:23,130 --> 00:39:25,710
+trying to write into and the Select
+
+954
+00:39:25,710 --> 00:39:27,540
+statement actually violates those
+
+955
+00:39:27,540 --> 00:39:30,030
+constraints so let's say that I have a
+
+956
+00:39:30,030 --> 00:39:31,890
+primary key on my table it says I can't
+
+957
+00:39:31,890 --> 00:39:34,440
+have any duplicate student IDs and then
+
+958
+00:39:34,440 --> 00:39:37,049
+my insert query here tries to start and
+
+959
+00:39:37,049 --> 00:39:39,990
+start inserting duplicates some database
+
+960
+00:39:39,990 --> 00:39:41,510
+system will throw an error immediately
+
+961
+00:39:41,510 --> 00:39:44,309
+as soon as it sees a duplicate and no
+
+962
+00:39:44,309 --> 00:39:46,049
+tuples get written some of them will
+
+963
+00:39:46,049 --> 00:39:47,670
+just keep going and ignore the ones that
+
+964
+00:39:47,670 --> 00:39:50,819
+that failed other ones will will insert
+
+965
+00:39:50,819 --> 00:39:52,650
+the ones that succeeded and just ignore
+
+966
+00:39:52,650 --> 00:39:54,630
+the ones that failed or maybe just crash
+
+967
+00:39:54,630 --> 00:39:57,480
+right away right so again the seco
+
+968
+00:39:57,480 --> 00:39:59,069
+standard says this is the syntax it to
+
+969
+00:39:59,069 --> 00:40:01,170
+use but how all the systems actually
+
+970
+00:40:01,170 --> 00:40:05,089
+implement it will vary widely in
+
+971
+00:40:05,660 --> 00:40:07,980
+addition to output redirection we can
+
+972
+00:40:07,980 --> 00:40:10,170
+also do output control remember I said
+
+973
+00:40:10,170 --> 00:40:12,359
+the beginning Seco is based on bag
+
+974
+00:40:12,359 --> 00:40:14,579
+algebra I mean it's unordered but
+
+975
+00:40:14,579 --> 00:40:15,960
+there's many times where you want the
+
+976
+00:40:15,960 --> 00:40:19,049
+ordering in your output Clause and so to
+
+977
+00:40:19,049 --> 00:40:21,119
+do this you add the order by clause I
+
+978
+00:40:21,119 --> 00:40:24,000
+have seen is basically specifying how to
+
+979
+00:40:24,000 --> 00:40:25,829
+sort the results that are being
+
+980
+00:40:25,829 --> 00:40:29,940
+generated by by this query so in this
+
+981
+00:40:29,940 --> 00:40:31,770
+example here I'm gonna sort the tuple
+
+982
+00:40:31,770 --> 00:40:33,390
+started sort of the tuple main role
+
+983
+00:40:33,390 --> 00:40:37,799
+table based on their grade and by
+
+984
+00:40:37,799 --> 00:40:40,680
+default even though I don't specify
+
+985
+00:40:40,680 --> 00:40:42,660
+whether I wanted ascending and or
+
+986
+00:40:42,660 --> 00:40:44,760
+descending the default and sequel is
+
+987
+00:40:44,760 --> 00:40:46,799
+that you get ascending now you get
+
+988
+00:40:46,799 --> 00:40:49,020
+output like this but I also can add
+
+989
+00:40:49,020 --> 00:40:51,869
+additional attributes to my order by
+
+990
+00:40:51,869 --> 00:40:54,240
+clause do more complicated things so in
+
+991
+00:40:54,240 --> 00:40:55,950
+this case here I want to do my order by
+
+992
+00:40:55,950 --> 00:40:58,619
+by grade in descending order and then
+
+993
+00:40:58,619 --> 00:41:01,170
+after that I sort them based on the
+
+994
+00:41:01,170 --> 00:41:04,290
+student ID in ascending order right and
+
+995
+00:41:04,290 --> 00:41:06,750
+I would get output like this now the
+
+996
+00:41:06,750 --> 00:41:08,369
+important thing to point out here also
+
+997
+00:41:08,369 --> 00:41:11,160
+too is that unlike there in the group by
+
+998
+00:41:11,160 --> 00:41:12,380
+clause
+
+999
+00:41:12,380 --> 00:41:14,509
+where any attribute that I wanted my
+
+1000
+00:41:14,509 --> 00:41:16,729
+output list had to appear in the group
+
+1001
+00:41:16,729 --> 00:41:18,559
+by clause in order by you don't have
+
+1002
+00:41:18,559 --> 00:41:20,900
+that restriction right it actually goes
+
+1003
+00:41:20,900 --> 00:41:23,210
+both ways in this case here I'm sorting
+
+1004
+00:41:23,210 --> 00:41:25,549
+by the grade but the grade isn't part of
+
+1005
+00:41:25,549 --> 00:41:28,880
+the output right it doesn't matter right
+
+1006
+00:41:28,880 --> 00:41:31,069
+and it knows how to how to how to find
+
+1007
+00:41:31,069 --> 00:41:33,109
+the data that it needs as its processing
+
+1008
+00:41:33,109 --> 00:41:35,390
+the query and do whatever sorting
+
+1009
+00:41:35,390 --> 00:41:36,769
+operation that you want to do on it I
+
+1010
+00:41:36,769 --> 00:41:38,779
+can also do more complicated things I
+
+1011
+00:41:38,779 --> 00:41:41,180
+can put any arbitrary expression in my
+
+1012
+00:41:41,180 --> 00:41:42,799
+order by Clause as well so I can do
+
+1013
+00:41:42,799 --> 00:41:45,890
+order by 1 plus 1 right and that's still
+
+1014
+00:41:45,890 --> 00:41:49,059
+valid it knows how to handle that
+
+1015
+00:41:49,479 --> 00:41:51,529
+another common thing you want to do is
+
+1016
+00:41:51,529 --> 00:41:53,690
+is limit the number of tuples that are
+
+1017
+00:41:53,690 --> 00:41:55,369
+produced in your output right and of
+
+1018
+00:41:55,369 --> 00:41:56,660
+course there's a there's a limit clause
+
+1019
+00:41:56,660 --> 00:41:58,940
+for this he basically specifies says I
+
+1020
+00:41:58,940 --> 00:42:01,910
+for all the results that you of Mike my
+
+1021
+00:42:01,910 --> 00:42:04,670
+query only provide me back some number
+
+1022
+00:42:04,670 --> 00:42:07,789
+of them like 10 right and this is very
+
+1023
+00:42:07,789 --> 00:42:09,650
+common for things like you know say like
+
+1024
+00:42:09,650 --> 00:42:11,900
+search results you'll see it show just
+
+1025
+00:42:11,900 --> 00:42:13,519
+10 and then you click the next button to
+
+1026
+00:42:13,519 --> 00:42:15,079
+go see the next 10 all right this is
+
+1027
+00:42:15,079 --> 00:42:16,999
+being controlled by it by limit and
+
+1028
+00:42:16,999 --> 00:42:19,219
+actually all set so limit just says
+
+1029
+00:42:19,219 --> 00:42:21,769
+limit the number of tuples all set is
+
+1030
+00:42:21,769 --> 00:42:26,539
+going to tell you that and what all set
+
+1031
+00:42:26,539 --> 00:42:27,979
+of the number of the tuples you're
+
+1032
+00:42:27,979 --> 00:42:30,650
+producing as your output should you skip
+
+1033
+00:42:30,650 --> 00:42:32,329
+before you start figuring out how many
+
+1034
+00:42:32,329 --> 00:42:34,640
+you should limit right again if you
+
+1035
+00:42:34,640 --> 00:42:35,869
+think of a webpage to show you ten
+
+1036
+00:42:35,869 --> 00:42:37,219
+results you click Next to see the next
+
+1037
+00:42:37,219 --> 00:42:39,380
+10 they're using a limit with an all set
+
+1038
+00:42:39,380 --> 00:42:42,680
+to make that work now because it's
+
+1039
+00:42:42,680 --> 00:42:45,859
+unsorted again is no guarantee that when
+
+1040
+00:42:45,859 --> 00:42:48,200
+you click Next if you're using offset
+
+1041
+00:42:48,200 --> 00:42:51,170
+you're going to see you definitely gonna
+
+1042
+00:42:51,170 --> 00:42:52,670
+see different tuples because that's
+
+1043
+00:42:52,670 --> 00:42:54,559
+another invocation of the query and the
+
+1044
+00:42:54,559 --> 00:42:55,940
+results may be different in different
+
+1045
+00:42:55,940 --> 00:42:57,950
+order the second time so in this case
+
+1046
+00:42:57,950 --> 00:42:59,390
+here you would combine that with an
+
+1047
+00:42:59,390 --> 00:43:01,099
+order by Clause so that you're
+
+1048
+00:43:01,099 --> 00:43:03,200
+guaranteed to go you know see the first
+
+1049
+00:43:03,200 --> 00:43:04,640
+10 followed by the second 10 and so
+
+1050
+00:43:04,640 --> 00:43:05,930
+forth right
+
+1051
+00:43:05,930 --> 00:43:09,039
+and there's optimizations you can apply
+
+1052
+00:43:09,039 --> 00:43:10,940
+whether you're not you have an order by
+
+1053
+00:43:10,940 --> 00:43:13,099
+Clause if you have a limit Clause so if
+
+1054
+00:43:13,099 --> 00:43:14,509
+I don't have an order by clause and I
+
+1055
+00:43:14,509 --> 00:43:17,029
+have a limit I know that as soon as I
+
+1056
+00:43:17,029 --> 00:43:19,099
+see sent 10 to polls I'm done I don't
+
+1057
+00:43:19,099 --> 00:43:21,170
+need to go look at anything else if you
+
+1058
+00:43:21,170 --> 00:43:22,400
+have an order by then you have to sort
+
+1059
+00:43:22,400 --> 00:43:23,420
+you have to see everything ahead of time
+
+1060
+00:43:23,420 --> 00:43:25,579
+to sort it then you can apply your limit
+
+1061
+00:43:25,579 --> 00:43:25,940
+and your
+
+1062
+00:43:25,940 --> 00:43:31,280
+set ice again I considered that somewhat
+
+1063
+00:43:31,280 --> 00:43:33,950
+basic sequel in previous years I
+
+1064
+00:43:33,950 --> 00:43:36,200
+actually skipped all this but I I think
+
+1065
+00:43:36,200 --> 00:43:37,609
+it's a portent maybe to go go over it a
+
+1066
+00:43:37,609 --> 00:43:38,720
+little bit cuz you have to understand
+
+1067
+00:43:38,720 --> 00:43:40,280
+this for the homework but now we want to
+
+1068
+00:43:40,280 --> 00:43:42,020
+talk about more complicated things this
+
+1069
+00:43:42,020 --> 00:43:44,230
+is what I would consider advance sequel
+
+1070
+00:43:44,230 --> 00:43:46,609
+so the first thing I want to talk about
+
+1071
+00:43:46,609 --> 00:43:49,520
+is is nested queries so the way anything
+
+1072
+00:43:49,520 --> 00:43:50,480
+about nested query it's basically
+
+1073
+00:43:50,480 --> 00:43:53,180
+allowing you to specify queries inside
+
+1074
+00:43:53,180 --> 00:43:56,180
+of queries right and you can take the
+
+1075
+00:43:56,180 --> 00:43:58,010
+output of one query and use that as the
+
+1076
+00:43:58,010 --> 00:44:01,430
+input of another query all right so a
+
+1077
+00:44:01,430 --> 00:44:05,390
+simple example like this I'm doing a
+
+1078
+00:44:05,390 --> 00:44:07,010
+select I want to get all the names of
+
+1079
+00:44:07,010 --> 00:44:08,210
+the students that are enrolled in least
+
+1080
+00:44:08,210 --> 00:44:11,240
+one course so I have my outer query is
+
+1081
+00:44:11,240 --> 00:44:13,040
+defined based on the student table and
+
+1082
+00:44:13,040 --> 00:44:15,200
+then the side of that I have inner query
+
+1083
+00:44:15,200 --> 00:44:16,460
+that's and it's gonna get the student
+
+1084
+00:44:16,460 --> 00:44:19,970
+IDs from the role table right so we
+
+1085
+00:44:19,970 --> 00:44:21,710
+could write this as a join this is sort
+
+1086
+00:44:21,710 --> 00:44:23,000
+of sudden another way to actually do
+
+1087
+00:44:23,000 --> 00:44:25,040
+this and in actuality when it comes time
+
+1088
+00:44:25,040 --> 00:44:26,720
+to actually implement this inside the
+
+1089
+00:44:26,720 --> 00:44:29,030
+system most query optimizer will try to
+
+1090
+00:44:29,030 --> 00:44:31,670
+rewrite this as a join right because it
+
+1091
+00:44:31,670 --> 00:44:33,650
+the worst way to actually execute this
+
+1092
+00:44:33,650 --> 00:44:35,750
+is to essentially have two for loops
+
+1093
+00:44:35,750 --> 00:44:37,460
+where you loop over every single tuple
+
+1094
+00:44:37,460 --> 00:44:39,920
+in the student table and for every
+
+1095
+00:44:39,920 --> 00:44:41,119
+single two but you then reimpose the
+
+1096
+00:44:41,119 --> 00:44:42,710
+same query over and over and over again
+
+1097
+00:44:42,710 --> 00:44:45,980
+my sequel used to do this the more
+
+1098
+00:44:45,980 --> 00:44:47,089
+primitive Davian systems you should do
+
+1099
+00:44:47,089 --> 00:44:48,740
+this but the the right way to do is
+
+1100
+00:44:48,740 --> 00:44:50,150
+actually just rewrite this as a join
+
+1101
+00:44:50,150 --> 00:44:52,640
+alright so you can sort of think of this
+
+1102
+00:44:52,640 --> 00:44:54,589
+inner query as like a function that's
+
+1103
+00:44:54,589 --> 00:44:56,569
+can produce some set of tuples as your
+
+1104
+00:44:56,569 --> 00:44:58,339
+output and then you can apply whatever
+
+1105
+00:44:58,339 --> 00:44:59,839
+predicate you want on that in the outer
+
+1106
+00:44:59,839 --> 00:45:02,150
+query so we'll walk through a bunch of
+
+1107
+00:45:02,150 --> 00:45:05,109
+examples of this and see how it works
+
+1108
+00:45:05,109 --> 00:45:08,359
+so the alright so the first example I
+
+1109
+00:45:08,359 --> 00:45:09,530
+want to if maybe I want to get the names
+
+1110
+00:45:09,530 --> 00:45:11,690
+of all the students exist in that
+
+1111
+00:45:11,690 --> 00:45:14,990
+enrolled in 15 for 45 so the way to
+
+1112
+00:45:14,990 --> 00:45:17,089
+construct a nested query is I think it's
+
+1113
+00:45:17,089 --> 00:45:18,020
+always important to start maybe with the
+
+1114
+00:45:18,020 --> 00:45:20,300
+outer query and think about what's the
+
+1115
+00:45:20,300 --> 00:45:21,829
+actual answer you want to produce like
+
+1116
+00:45:21,829 --> 00:45:23,329
+what are the actual attributes you what
+
+1117
+00:45:23,329 --> 00:45:25,460
+you want to see and then you worry about
+
+1118
+00:45:25,460 --> 00:45:26,540
+how you're actually going to filter them
+
+1119
+00:45:26,540 --> 00:45:29,240
+and get what you want so the outer query
+
+1120
+00:45:29,240 --> 00:45:30,920
+we know that we want the name from the
+
+1121
+00:45:30,920 --> 00:45:33,020
+student table and then where we get
+
+1122
+00:45:33,020 --> 00:45:35,180
+those values we'll figure it out
+
+1123
+00:45:35,180 --> 00:45:38,240
+so in the inner query we can write it in
+
+1124
+00:45:38,240 --> 00:45:40,579
+as English as the student ID
+
+1125
+00:45:40,579 --> 00:45:43,040
+and the set of people about take 4:15
+
+1126
+00:45:43,040 --> 00:45:47,390
+4:45 right so for that part we know how
+
+1127
+00:45:47,390 --> 00:45:49,780
+to write that query pretty easily right
+
+1128
+00:45:49,780 --> 00:45:52,010
+we just feel throw out all the tuples
+
+1129
+00:45:52,010 --> 00:45:53,930
+some enroll table or the course IDE goes
+
+1130
+00:45:53,930 --> 00:45:56,720
+15 for 45 so now the question is how do
+
+1131
+00:45:56,720 --> 00:46:00,140
+we combine them with the the outer query
+
+1132
+00:46:00,140 --> 00:46:02,030
+with the inner query again we can
+
+1133
+00:46:02,030 --> 00:46:03,380
+rewrite this as very easily with the
+
+1134
+00:46:03,380 --> 00:46:06,319
+join but for our purposes here we want
+
+1135
+00:46:06,319 --> 00:46:08,140
+to see how to do it as a nested function
+
+1136
+00:46:08,140 --> 00:46:11,650
+so for this we can use the in operator
+
+1137
+00:46:11,650 --> 00:46:14,420
+and we do a matching on the student
+
+1138
+00:46:14,420 --> 00:46:17,180
+student ID so a way to now read this is
+
+1139
+00:46:17,180 --> 00:46:20,450
+that the for every single student in the
+
+1140
+00:46:20,450 --> 00:46:21,109
+student table
+
+1141
+00:46:21,109 --> 00:46:23,059
+so this first student ID is matching up
+
+1142
+00:46:23,059 --> 00:46:25,730
+with a student table I want to see
+
+1143
+00:46:25,730 --> 00:46:28,220
+whether there's a match of that student
+
+1144
+00:46:28,220 --> 00:46:31,160
+ID in the set of all student IDs that
+
+1145
+00:46:31,160 --> 00:46:34,010
+are in the role table that take the
+
+1146
+00:46:34,010 --> 00:46:37,010
+course 15 for 45 so we exit the inner
+
+1147
+00:46:37,010 --> 00:46:39,260
+query we produce the set of all student
+
+1148
+00:46:39,260 --> 00:46:41,540
+IDs and then for every single tuple in
+
+1149
+00:46:41,540 --> 00:46:43,520
+the outer query we check to see whether
+
+1150
+00:46:43,520 --> 00:46:47,599
+it exists in that set right now this
+
+1151
+00:46:47,599 --> 00:46:49,849
+visit shows you why I was saying before
+
+1152
+00:46:49,849 --> 00:46:51,290
+the stupid way to execute this is for
+
+1153
+00:46:51,290 --> 00:46:53,059
+every single tuple in the outer query we
+
+1154
+00:46:53,059 --> 00:46:55,460
+execute the inner query over and over
+
+1155
+00:46:55,460 --> 00:46:58,220
+again like that's stupid because we only
+
+1156
+00:46:58,220 --> 00:46:59,960
+need to produce the inner query once and
+
+1157
+00:46:59,960 --> 00:47:01,400
+then we can reuse it for every single
+
+1158
+00:47:01,400 --> 00:47:06,079
+tuple and in the outer query so I show
+
+1159
+00:47:06,079 --> 00:47:07,910
+it how to in the Attic see if I used in
+
+1160
+00:47:07,910 --> 00:47:11,299
+those other operators you can use so all
+
+1161
+00:47:11,299 --> 00:47:13,520
+basically says that every single tuple
+
+1162
+00:47:13,520 --> 00:47:15,530
+that's in my inner query must must
+
+1163
+00:47:15,530 --> 00:47:17,960
+satisfy my predicate any means at least
+
+1164
+00:47:17,960 --> 00:47:20,869
+one of them needs to alright so in is
+
+1165
+00:47:20,869 --> 00:47:22,579
+essentially the same thing as equals any
+
+1166
+00:47:22,579 --> 00:47:26,089
+is there any tuple that it equals what
+
+1167
+00:47:26,089 --> 00:47:28,190
+my predicate or about my tuple attribute
+
+1168
+00:47:28,190 --> 00:47:30,770
+is checking and then exists says at
+
+1169
+00:47:30,770 --> 00:47:32,359
+least one rows returned and actually I
+
+1170
+00:47:32,359 --> 00:47:33,530
+don't care where that matches I just
+
+1171
+00:47:33,530 --> 00:47:35,329
+care what to see whether to ball got
+
+1172
+00:47:35,329 --> 00:47:41,690
+produces as a result so we can rewrite
+
+1173
+00:47:41,690 --> 00:47:43,400
+our example for getting all the students
+
+1174
+00:47:43,400 --> 00:47:46,160
+in 15 for 45 like this right instead of
+
+1175
+00:47:46,160 --> 00:47:48,559
+using in we say equals ending so now you
+
+1176
+00:47:48,559 --> 00:47:50,960
+read this as the student ID from the
+
+1177
+00:47:50,960 --> 00:47:53,180
+student table check to see
+
+1178
+00:47:53,180 --> 00:47:55,640
+whether it equals any tuple that exists
+
+1179
+00:47:55,640 --> 00:47:57,530
+in the set of student IDs that are
+
+1180
+00:47:57,530 --> 00:48:00,670
+produced by from from the enroll table
+
+1181
+00:48:00,670 --> 00:48:04,520
+right now the inner key the nested
+
+1182
+00:48:04,520 --> 00:48:06,200
+queries don't have to only appear in the
+
+1183
+00:48:06,200 --> 00:48:07,520
+where clause they actually can appear
+
+1184
+00:48:07,520 --> 00:48:10,400
+anywhere right so I can rewrite the same
+
+1185
+00:48:10,400 --> 00:48:13,520
+query like this where now I have my
+
+1186
+00:48:13,520 --> 00:48:15,079
+nested query in the output of the Select
+
+1187
+00:48:15,079 --> 00:48:17,390
+statement so this is a good example this
+
+1188
+00:48:17,390 --> 00:48:18,950
+is essentially reversing what I did
+
+1189
+00:48:18,950 --> 00:48:21,680
+before in terms of what tables are going
+
+1190
+00:48:21,680 --> 00:48:23,839
+to access so now the way to read this is
+
+1191
+00:48:23,839 --> 00:48:26,150
+that for every single tuple in the
+
+1192
+00:48:26,150 --> 00:48:29,089
+enroll table where the course ID equals
+
+1193
+00:48:29,089 --> 00:48:32,480
+15 45 15 4 45 I'm gonna then do a
+
+1194
+00:48:32,480 --> 00:48:36,500
+matchup in this student table where the
+
+1195
+00:48:36,500 --> 00:48:39,109
+student IDs are the same right there's
+
+1196
+00:48:39,109 --> 00:48:42,230
+essentially doing a join inside my
+
+1197
+00:48:42,230 --> 00:48:43,700
+output of my select statement right
+
+1198
+00:48:43,700 --> 00:48:45,710
+because now this d'un ID is being
+
+1199
+00:48:45,710 --> 00:48:47,270
+referenced here from the student table
+
+1200
+00:48:47,270 --> 00:48:49,069
+and that student ID is being referenced
+
+1201
+00:48:49,069 --> 00:48:52,069
+in there okay there's another good
+
+1202
+00:48:52,069 --> 00:48:53,960
+example again I essentially reversing
+
+1203
+00:48:53,960 --> 00:48:55,960
+the order of how I process my tables
+
+1204
+00:48:55,960 --> 00:48:58,760
+right and they produce the exact same
+
+1205
+00:48:58,760 --> 00:48:59,990
+result but they may have different
+
+1206
+00:48:59,990 --> 00:49:01,910
+performance characteristics based on
+
+1207
+00:49:01,910 --> 00:49:03,980
+what my data actually looks like it may
+
+1208
+00:49:03,980 --> 00:49:05,390
+be the case that this is actually faster
+
+1209
+00:49:05,390 --> 00:49:06,589
+to go through the enroll table first
+
+1210
+00:49:06,589 --> 00:49:09,520
+instead of the student table and
+
+1211
+00:49:09,520 --> 00:49:11,480
+therefore we could rewrite it if we
+
+1212
+00:49:11,480 --> 00:49:14,240
+wanted to to choose one versus the other
+
+1213
+00:49:14,240 --> 00:49:16,609
+and a good optimizer could do this for
+
+1214
+00:49:16,609 --> 00:49:20,960
+you okay all right let's look at
+
+1215
+00:49:20,960 --> 00:49:22,390
+something any more complicated now
+
+1216
+00:49:22,390 --> 00:49:24,740
+alright say we want to find the student
+
+1217
+00:49:24,740 --> 00:49:27,200
+record with the highest ID that enrolled
+
+1218
+00:49:27,200 --> 00:49:30,440
+in least one course right seems pretty
+
+1219
+00:49:30,440 --> 00:49:32,480
+simple but let's think we actually do
+
+1220
+00:49:32,480 --> 00:49:37,069
+this so the first approximation would be
+
+1221
+00:49:37,069 --> 00:49:39,940
+something like this select the max
+
+1222
+00:49:39,940 --> 00:49:42,410
+student ID along with the student name
+
+1223
+00:49:42,410 --> 00:49:44,809
+from from the join and rolled and
+
+1224
+00:49:44,809 --> 00:49:47,630
+student table where the student ID in
+
+1225
+00:49:47,630 --> 00:49:49,160
+the role table equals the student ID in
+
+1226
+00:49:49,160 --> 00:49:54,109
+the student table will this work why why
+
+1227
+00:49:54,109 --> 00:49:56,260
+not
+
+1228
+00:50:00,230 --> 00:50:05,610
+what's that yeah there's an aggregation
+
+1229
+00:50:05,610 --> 00:50:08,040
+function without a group I and we're
+
+1230
+00:50:08,040 --> 00:50:09,900
+referencing a column that's not in the
+
+1231
+00:50:09,900 --> 00:50:12,800
+aggregation right
+
+1232
+00:50:12,800 --> 00:50:16,470
+so again sequel standard says that this
+
+1233
+00:50:16,470 --> 00:50:30,300
+shouldn't work let's find out alright so
+
+1234
+00:50:30,300 --> 00:50:37,530
+again we have I gotta disconnect first
+
+1235
+00:50:37,530 --> 00:50:41,280
+cuss at the top so we've run our query
+
+1236
+00:50:41,280 --> 00:50:46,350
+here again Postgres and here's the
+
+1237
+00:50:46,350 --> 00:50:48,180
+standard it says get as exactly as he
+
+1238
+00:50:48,180 --> 00:50:50,700
+said so you have student ID student name
+
+1239
+00:50:50,700 --> 00:50:52,470
+appears but it's not a part of a group I
+
+1240
+00:50:52,470 --> 00:50:57,860
+so you can't use it right in my sequel
+
+1241
+00:51:00,260 --> 00:51:04,080
+same thing it produces that error but if
+
+1242
+00:51:04,080 --> 00:51:06,090
+we now run it in what they call
+
+1243
+00:51:06,090 --> 00:51:08,130
+traditional mode right so older versions
+
+1244
+00:51:08,130 --> 00:51:10,140
+of my sequel would do this now we run
+
+1245
+00:51:10,140 --> 00:51:13,590
+this query and we get an answer right
+
+1246
+00:51:13,590 --> 00:51:15,810
+we had the Mac student ID and then we
+
+1247
+00:51:15,810 --> 00:51:17,790
+say that the name best student is Tupac
+
+1248
+00:51:17,790 --> 00:51:23,330
+all right let's try it in sequel Lite
+
+1249
+00:51:23,330 --> 00:51:30,870
+run one it produced an answer it also
+
+1250
+00:51:30,870 --> 00:51:33,810
+produces 53 688 as the next to 90 but it
+
+1251
+00:51:33,810 --> 00:51:36,120
+says the that student belongs to Justin
+
+1252
+00:51:36,120 --> 00:51:39,270
+Bieber right and actually I don't know
+
+1253
+00:51:39,270 --> 00:51:42,560
+what the right answer is let's see here
+
+1254
+00:51:45,680 --> 00:51:48,150
+yeah so justin bieber is the right one
+
+1255
+00:51:48,150 --> 00:51:50,880
+right whereas my sequel make sure i'm
+
+1256
+00:51:50,880 --> 00:51:58,530
+giving you the same data right Tupac is
+
+1257
+00:51:58,530 --> 00:52:00,510
+actually the lowest alright so it got it
+
+1258
+00:52:00,510 --> 00:52:06,270
+completely wrong alright so the right so
+
+1259
+00:52:06,270 --> 00:52:08,119
+this doesn't work in the sequel standard
+
+1260
+00:52:08,119 --> 00:52:11,339
+it runs a single byte and and and my
+
+1261
+00:52:11,339 --> 00:52:12,720
+SIBO if we turn off that strict mode
+
+1262
+00:52:12,720 --> 00:52:16,109
+thing so way we can do this is a nested
+
+1263
+00:52:16,109 --> 00:52:17,520
+function as again let's build it
+
+1264
+00:52:17,520 --> 00:52:19,440
+constructively so we know do you want
+
+1265
+00:52:19,440 --> 00:52:20,730
+the student ID and the name as the
+
+1266
+00:52:20,730 --> 00:52:22,349
+output but it's the where clause that
+
+1267
+00:52:22,349 --> 00:52:24,660
+think we have to figure out and this one
+
+1268
+00:52:24,660 --> 00:52:26,339
+basically says that we want to get a
+
+1269
+00:52:26,339 --> 00:52:29,190
+matching tuple that is greater than
+
+1270
+00:52:29,190 --> 00:52:31,200
+every other student ID that that's
+
+1271
+00:52:31,200 --> 00:52:34,799
+that's in our table right so we know the
+
+1272
+00:52:34,799 --> 00:52:36,480
+inner query shall should be basically
+
+1273
+00:52:36,480 --> 00:52:38,849
+the student ID from the enroll table we
+
+1274
+00:52:38,849 --> 00:52:40,829
+can be more more sophisticated maybe put
+
+1275
+00:52:40,829 --> 00:52:42,270
+a distinct there but it's all the same
+
+1276
+00:52:42,270 --> 00:52:43,980
+but now we need to figure out how to
+
+1277
+00:52:43,980 --> 00:52:46,049
+match the student ID from the student
+
+1278
+00:52:46,049 --> 00:52:48,059
+and an outer query the student ID from
+
+1279
+00:52:48,059 --> 00:52:51,539
+from the inner query and for this we can
+
+1280
+00:52:51,539 --> 00:52:54,089
+use greater than equal to all right it
+
+1281
+00:52:54,089 --> 00:52:55,380
+has to be greater than equal to because
+
+1282
+00:52:55,380 --> 00:52:57,569
+we make sure that we match ourselves the
+
+1283
+00:52:57,569 --> 00:52:58,890
+student that actually is that does
+
+1284
+00:52:58,890 --> 00:53:01,760
+actually have that the highest one right
+
+1285
+00:53:01,760 --> 00:53:04,140
+we can rewrite this in other ways as
+
+1286
+00:53:04,140 --> 00:53:05,819
+expected right we can rewrite it with
+
+1287
+00:53:05,819 --> 00:53:07,589
+the in clause like that and actually
+
+1288
+00:53:07,589 --> 00:53:09,390
+compute the max student ID and the inner
+
+1289
+00:53:09,390 --> 00:53:11,369
+query right now basically this is saying
+
+1290
+00:53:11,369 --> 00:53:13,980
+match the student ID that is the max
+
+1291
+00:53:13,980 --> 00:53:15,750
+student ID produced from from the enroll
+
+1292
+00:53:15,750 --> 00:53:18,869
+table right we can go even further we
+
+1293
+00:53:18,869 --> 00:53:19,950
+can rewrite the inner guy to be like
+
+1294
+00:53:19,950 --> 00:53:21,690
+this right we do an order by and the
+
+1295
+00:53:21,690 --> 00:53:24,779
+student ID and just rank them in
+
+1296
+00:53:24,779 --> 00:53:26,359
+descending order and then do a limit one
+
+1297
+00:53:26,359 --> 00:53:29,359
+so some systems will actually just
+
+1298
+00:53:29,359 --> 00:53:31,589
+rewrite this one to be a max anyway just
+
+1299
+00:53:31,589 --> 00:53:33,270
+scan everything keep track of which
+
+1300
+00:53:33,270 --> 00:53:34,890
+one's the max and it produces the final
+
+1301
+00:53:34,890 --> 00:53:36,240
+output don't even bother to do them
+
+1302
+00:53:36,240 --> 00:53:39,930
+sorting right again same query rewritten
+
+1303
+00:53:39,930 --> 00:53:44,970
+in different ways one more example we're
+
+1304
+00:53:44,970 --> 00:53:46,859
+gonna find all the courses that have no
+
+1305
+00:53:46,859 --> 00:53:49,140
+students enrolled in them so we take our
+
+1306
+00:53:49,140 --> 00:53:51,329
+outer query as a Select on the courses
+
+1307
+00:53:51,329 --> 00:53:53,069
+and then we know our inner query
+
+1308
+00:53:53,069 --> 00:53:54,450
+basically says when a find note would
+
+1309
+00:53:54,450 --> 00:53:57,100
+have no tuples in the enroll table
+
+1310
+00:53:57,100 --> 00:53:58,840
+so for this one we want to use not
+
+1311
+00:53:58,840 --> 00:54:00,670
+exists basically says we don't want to
+
+1312
+00:54:00,670 --> 00:54:04,000
+match anything in our inner query and
+
+1313
+00:54:04,000 --> 00:54:05,770
+all we need to do that for the inner
+
+1314
+00:54:05,770 --> 00:54:08,890
+queries is just just grab every single
+
+1315
+00:54:08,890 --> 00:54:10,210
+tuple and here now we're actually
+
+1316
+00:54:10,210 --> 00:54:13,300
+matching up the the course ID in the
+
+1317
+00:54:13,300 --> 00:54:15,400
+inner query with the course ID from the
+
+1318
+00:54:15,400 --> 00:54:17,710
+outer query so you can only do this in
+
+1319
+00:54:17,710 --> 00:54:19,000
+one direction so if you're the inner
+
+1320
+00:54:19,000 --> 00:54:20,320
+query you can represent the outer query
+
+1321
+00:54:20,320 --> 00:54:22,240
+if you're in the outer query you can't
+
+1322
+00:54:22,240 --> 00:54:25,090
+reference the inner query right unless
+
+1323
+00:54:25,090 --> 00:54:27,130
+you pipe it out or redirect it to a
+
+1324
+00:54:27,130 --> 00:54:30,370
+table so any questions about nested
+
+1325
+00:54:30,370 --> 00:54:34,510
+queries again they're very powerful many
+
+1326
+00:54:34,510 --> 00:54:36,580
+tens you cannot write what you want to
+
+1327
+00:54:36,580 --> 00:54:40,930
+write in in in a single query without
+
+1328
+00:54:40,930 --> 00:54:50,560
+using nested queries yes her question is
+
+1329
+00:54:50,560 --> 00:54:52,090
+can you think of an inner query as a
+
+1330
+00:54:52,090 --> 00:54:58,710
+nested for loop yes but no so we'll see
+
+1331
+00:55:00,060 --> 00:55:02,440
+for loop it has a notion of like
+
+1332
+00:55:02,440 --> 00:55:06,460
+ordering it's it's really a set right so
+
+1333
+00:55:06,460 --> 00:55:09,700
+all those operators like in X exists any
+
+1334
+00:55:09,700 --> 00:55:11,650
+those are just trying to say for the
+
+1335
+00:55:11,650 --> 00:55:13,510
+entire set of tuples that are in the
+
+1336
+00:55:13,510 --> 00:55:15,460
+inner query check to see whether any of
+
+1337
+00:55:15,460 --> 00:55:17,200
+em matches you're not you're not really
+
+1338
+00:55:17,200 --> 00:55:19,840
+iterating over every single one if you
+
+1339
+00:55:19,840 --> 00:55:21,190
+think of the outer query sort of as a
+
+1340
+00:55:21,190 --> 00:55:22,300
+four because you're iterating every
+
+1341
+00:55:22,300 --> 00:55:24,610
+single tuple but then the set portion
+
+1342
+00:55:24,610 --> 00:55:27,010
+the evaluation of the inner query is
+
+1343
+00:55:27,010 --> 00:55:28,960
+always at server and a bag or set set
+
+1344
+00:55:28,960 --> 00:55:36,070
+level makes sense okay window functions
+
+1345
+00:55:36,070 --> 00:55:39,010
+so window functions are I would say
+
+1346
+00:55:39,010 --> 00:55:41,410
+they're new but they're like fifteen ten
+
+1347
+00:55:41,410 --> 00:55:42,970
+years old now so they're not like not
+
+1348
+00:55:42,970 --> 00:55:45,400
+brand new a lot of systems don't support
+
+1349
+00:55:45,400 --> 00:55:49,210
+them but the major ones do so a window
+
+1350
+00:55:49,210 --> 00:55:51,720
+function is sort of like an aggregation
+
+1351
+00:55:51,720 --> 00:55:55,030
+where you're going to compute some some
+
+1352
+00:55:55,030 --> 00:55:57,730
+function on on tuples but rather than
+
+1353
+00:55:57,730 --> 00:56:00,970
+doing it on you know a subset of the
+
+1354
+00:56:00,970 --> 00:56:03,040
+tuples and collapsing them down into a
+
+1355
+00:56:03,040 --> 00:56:05,560
+single result you sort of do this in a
+
+1356
+00:56:05,560 --> 00:56:07,540
+incremental fashion or on a moving
+
+1357
+00:56:07,540 --> 00:56:10,660
+fashion and then you still produce the
+
+1358
+00:56:10,660 --> 00:56:10,930
+two
+
+1359
+00:56:10,930 --> 00:56:13,180
+as the output but along with the value
+
+1360
+00:56:13,180 --> 00:56:14,890
+that it produced from the window
+
+1361
+00:56:14,890 --> 00:56:18,940
+function right so the basic syntax is
+
+1362
+00:56:18,940 --> 00:56:20,920
+like this you have the function name and
+
+1363
+00:56:20,920 --> 00:56:22,150
+then you have an over clause
+
+1364
+00:56:22,150 --> 00:56:23,380
+so the function name will be our
+
+1365
+00:56:23,380 --> 00:56:24,849
+aggregation functions and other special
+
+1366
+00:56:24,849 --> 00:56:26,109
+window functions we have which I'll show
+
+1367
+00:56:26,109 --> 00:56:28,690
+the next slide and then the over the
+
+1368
+00:56:28,690 --> 00:56:30,910
+over Clause defines how we actually want
+
+1369
+00:56:30,910 --> 00:56:33,040
+to slice up the data right this is sort
+
+1370
+00:56:33,040 --> 00:56:34,510
+of like combining together the
+
+1371
+00:56:34,510 --> 00:56:37,240
+aggregation and the group by but in a
+
+1372
+00:56:37,240 --> 00:56:39,280
+single clause so the function is like
+
+1373
+00:56:39,280 --> 00:56:41,170
+the aggregation function the over is
+
+1374
+00:56:41,170 --> 00:56:44,980
+like the group I so the aggregation
+
+1375
+00:56:44,980 --> 00:56:46,809
+function should be all the things in the
+
+1376
+00:56:46,809 --> 00:56:47,800
+sequel standard that we talked before
+
+1377
+00:56:47,800 --> 00:56:51,430
+min max average count some the special
+
+1378
+00:56:51,430 --> 00:56:52,839
+wind functions to do things like
+
+1379
+00:56:52,839 --> 00:56:55,180
+introduce a row number to the current
+
+1380
+00:56:55,180 --> 00:56:57,339
+row so to keep track as the tuples
+
+1381
+00:56:57,339 --> 00:56:58,930
+that's being output and it marks them
+
+1382
+00:56:58,930 --> 00:57:00,670
+with what order they're they're coming
+
+1383
+00:57:00,670 --> 00:57:03,550
+out and then rank would be the order of
+
+1384
+00:57:03,550 --> 00:57:05,440
+the position of a tuple if we're doing
+
+1385
+00:57:05,440 --> 00:57:08,470
+sorting alright so say what I want to do
+
+1386
+00:57:08,470 --> 00:57:10,150
+is I want to go do a select over the
+
+1387
+00:57:10,150 --> 00:57:12,309
+enroll table and I want to produce all
+
+1388
+00:57:12,309 --> 00:57:15,040
+the tuples as my output but I want to
+
+1389
+00:57:15,040 --> 00:57:17,049
+just mark them with the row number of
+
+1390
+00:57:17,049 --> 00:57:19,150
+the output alright so I have my row
+
+1391
+00:57:19,150 --> 00:57:21,670
+number row number function and then for
+
+1392
+00:57:21,670 --> 00:57:23,140
+my over Clause I just leave that blank
+
+1393
+00:57:23,140 --> 00:57:25,990
+and then what I end up with is a result
+
+1394
+00:57:25,990 --> 00:57:26,829
+that looks like this
+
+1395
+00:57:26,829 --> 00:57:28,180
+all right I have all the data that I had
+
+1396
+00:57:28,180 --> 00:57:30,369
+before but now I had this special column
+
+1397
+00:57:30,369 --> 00:57:33,309
+here row num that's just again the order
+
+1398
+00:57:33,309 --> 00:57:36,040
+of the tuple that that that it was
+
+1399
+00:57:36,040 --> 00:57:39,490
+produced in the output so sort of like I
+
+1400
+00:57:39,490 --> 00:57:41,410
+compute my entire query and then I do my
+
+1401
+00:57:41,410 --> 00:57:42,940
+window function to go over the results
+
+1402
+00:57:42,940 --> 00:57:45,309
+and I and then I add in whatever the
+
+1403
+00:57:45,309 --> 00:57:49,540
+computation that I want to generate so
+
+1404
+00:57:49,540 --> 00:57:52,210
+just like a group aggregations we can we
+
+1405
+00:57:52,210 --> 00:57:53,799
+can combine things together or group
+
+1406
+00:57:53,799 --> 00:57:55,359
+them together this is what the over
+
+1407
+00:57:55,359 --> 00:57:58,089
+keyword does for us so for this we would
+
+1408
+00:57:58,089 --> 00:58:00,700
+use partition by to specify how we want
+
+1409
+00:58:00,700 --> 00:58:02,440
+to group things all right so in this
+
+1410
+00:58:02,440 --> 00:58:03,819
+query here I'm doing the same thing as
+
+1411
+00:58:03,819 --> 00:58:06,130
+before where I want to combine them
+
+1412
+00:58:06,130 --> 00:58:09,609
+together based on the generate the row
+
+1413
+00:58:09,609 --> 00:58:11,290
+number and for how they produced in
+
+1414
+00:58:11,290 --> 00:58:12,910
+their output but then I'm gonna group
+
+1415
+00:58:12,910 --> 00:58:15,299
+them together based on the course ID
+
+1416
+00:58:15,299 --> 00:58:17,829
+right so my output would look like this
+
+1417
+00:58:17,829 --> 00:58:21,250
+right and so now again it looks just
+
+1418
+00:58:21,250 --> 00:58:22,809
+like the aviation where now I'm grouped
+
+1419
+00:58:22,809 --> 00:58:24,760
+together
+
+1420
+00:58:24,760 --> 00:58:29,820
+based on the order right pretty simple
+
+1421
+00:58:29,820 --> 00:58:32,050
+so let's look at something more
+
+1422
+00:58:32,050 --> 00:58:35,140
+complicated so I can also order by these
+
+1423
+00:58:35,140 --> 00:58:38,710
+I can order them instead of partitioning
+
+1424
+00:58:38,710 --> 00:58:40,420
+them and this is essentially defining
+
+1425
+00:58:40,420 --> 00:58:42,820
+how we want to do our ordering produce
+
+1426
+00:58:42,820 --> 00:58:44,020
+to produce our outputs if we do this
+
+1427
+00:58:44,020 --> 00:58:46,450
+ordering then we compute whatever this
+
+1428
+00:58:46,450 --> 00:58:47,800
+the window function is that we want to
+
+1429
+00:58:47,800 --> 00:58:50,140
+compute on that so in this case here
+
+1430
+00:58:50,140 --> 00:58:51,370
+this is a sense you can do the same
+
+1431
+00:58:51,370 --> 00:58:54,430
+thing I did in previous slide where it's
+
+1432
+00:58:54,430 --> 00:58:55,090
+going to more of us
+
+1433
+00:58:55,090 --> 00:58:57,520
+group them based on the course ID but
+
+1434
+00:58:57,520 --> 00:58:59,560
+this is doing this by using ordering
+
+1435
+00:58:59,560 --> 00:59:05,710
+rather than partitioning all right so
+
+1436
+00:59:05,710 --> 00:59:07,360
+let's say we want to compute want to
+
+1437
+00:59:07,360 --> 00:59:08,680
+find the student with the highest grade
+
+1438
+00:59:08,680 --> 00:59:11,560
+for each course so what we have here is
+
+1439
+00:59:11,560 --> 00:59:14,710
+now we have nested query so in the outer
+
+1440
+00:59:14,710 --> 00:59:18,790
+query we're just going to well on the
+
+1441
+00:59:18,790 --> 00:59:21,370
+outer query is server in the inner query
+
+1442
+00:59:21,370 --> 00:59:23,160
+we're going to produce some table result
+
+1443
+00:59:23,160 --> 00:59:25,390
+but now this is a good example we're
+
+1444
+00:59:25,390 --> 00:59:26,830
+having a nested query inside of the from
+
+1445
+00:59:26,830 --> 00:59:30,010
+clause so I have from here and then I'm
+
+1446
+00:59:30,010 --> 00:59:31,900
+taking the output of this inner query
+
+1447
+00:59:31,900 --> 00:59:35,560
+and I'm gonna map that into a sort of a
+
+1448
+00:59:35,560 --> 00:59:37,510
+temporary virtual table called ranking
+
+1449
+00:59:37,510 --> 00:59:41,050
+that only exists for this tuple right so
+
+1450
+00:59:41,050 --> 00:59:42,280
+instead of writing it to a table that
+
+1451
+00:59:42,280 --> 00:59:43,950
+are exist we're writing into a temporary
+
+1452
+00:59:43,950 --> 00:59:46,060
+table I don't stay in memory because it
+
+1453
+00:59:46,060 --> 00:59:47,470
+may actually go out the disk but a
+
+1454
+00:59:47,470 --> 00:59:49,630
+temporary tuple table for this this
+
+1455
+00:59:49,630 --> 00:59:52,900
+query that then gets discarded when the
+
+1456
+00:59:52,900 --> 00:59:55,810
+query is over so in the inner query what
+
+1457
+00:59:55,810 --> 00:59:58,330
+we're gonna do is we're going to go over
+
+1458
+00:59:58,330 --> 01:00:01,570
+the enrolled table and for every single
+
+1459
+01:00:01,570 --> 01:00:04,870
+tuple we're gonna split them up based on
+
+1460
+01:00:04,870 --> 01:00:06,400
+the course ID that's the partition
+
+1461
+01:00:06,400 --> 01:00:09,250
+clause and then we're gonna sort them by
+
+1462
+01:00:09,250 --> 01:00:12,310
+their grade in ascending order and then
+
+1463
+01:00:12,310 --> 01:00:16,030
+what we produce the window function we
+
+1464
+01:00:16,030 --> 01:00:17,980
+invoke is rank which is the order that
+
+1465
+01:00:17,980 --> 01:00:21,420
+they exist in the in the sort of ranking
+
+1466
+01:00:21,420 --> 01:00:25,660
+and then we take that output write it
+
+1467
+01:00:25,660 --> 01:00:28,240
+out to the ranking table and then in the
+
+1468
+01:00:28,240 --> 01:00:30,730
+outer query we can then do additional
+
+1469
+01:00:30,730 --> 01:00:33,790
+filtering based on the their rank so
+
+1470
+01:00:33,790 --> 01:00:35,590
+this is only produce the tuples that are
+
+1471
+01:00:35,590 --> 01:00:36,339
+that
+
+1472
+01:00:36,339 --> 01:00:39,219
+ranked first right so this is finding
+
+1473
+01:00:39,219 --> 01:00:40,299
+the students the highest grade for each
+
+1474
+01:00:40,299 --> 01:00:42,789
+course right so the thing to point out
+
+1475
+01:00:42,789 --> 01:00:45,460
+here is I have I'm referencing in my
+
+1476
+01:00:45,460 --> 01:00:48,099
+outer query this ranked attribute here
+
+1477
+01:00:48,099 --> 01:00:49,690
+which actually doesn't really exist in
+
+1478
+01:00:49,690 --> 01:00:51,640
+the database again it only exists within
+
+1479
+01:00:51,640 --> 01:00:56,950
+this query I'm seeing a lot of blank
+
+1480
+01:00:56,950 --> 01:00:59,979
+faces so let's maybe pop up in the
+
+1481
+01:00:59,979 --> 01:01:01,150
+database and see we can do all right so
+
+1482
+01:01:01,150 --> 01:01:09,519
+for this so Postgres is the only one
+
+1483
+01:01:09,519 --> 01:01:12,729
+that actually supports this my sequel
+
+1484
+01:01:12,729 --> 01:01:17,349
+eight supports window functions and the
+
+1485
+01:01:17,349 --> 01:01:18,609
+newer version sequel Lite support window
+
+1486
+01:01:18,609 --> 01:01:22,239
+functions but for simplicity what does
+
+1487
+01:01:22,239 --> 01:01:25,210
+do my and Postgres alright so this is
+
+1488
+01:01:25,210 --> 01:01:31,779
+the query that we had before right let's
+
+1489
+01:01:31,779 --> 01:01:33,880
+break it up and make it and just do the
+
+1490
+01:01:33,880 --> 01:01:36,009
+inner query first and that way it'll be
+
+1491
+01:01:36,009 --> 01:01:39,219
+sort of easy to understand right so
+
+1492
+01:01:39,219 --> 01:01:47,499
+we'll just go back and run this so again
+
+1493
+01:01:47,499 --> 01:01:50,529
+what this is gonna do is going to go
+
+1494
+01:01:50,529 --> 01:01:54,819
+over the enroll table it's going to
+
+1495
+01:01:54,819 --> 01:01:57,969
+partition each record based on the
+
+1496
+01:01:57,969 --> 01:02:01,539
+course ID so you see that here where for
+
+1497
+01:02:01,539 --> 01:02:04,390
+15 for 45 appears first then 7 21 then 8
+
+1498
+01:02:04,390 --> 01:02:08,559
+26 and then now within each of these
+
+1499
+01:02:08,559 --> 01:02:09,460
+partitions
+
+1500
+01:02:09,460 --> 01:02:11,849
+it's the N going to sort the tuples
+
+1501
+01:02:11,849 --> 01:02:15,700
+based on their grade in descending order
+
+1502
+01:02:15,700 --> 01:02:18,999
+or sorry in in ascending order so be
+
+1503
+01:02:18,999 --> 01:02:21,700
+pump comes for see Abe you'll come from
+
+1504
+01:02:21,700 --> 01:02:24,130
+C and then there's nobody else taking a
+
+1505
+01:02:24,130 --> 01:02:27,759
+26 so the B's by itself right so that's
+
+1506
+01:02:27,759 --> 01:02:31,450
+how we got that output in the form that
+
+1507
+01:02:31,450 --> 01:02:35,289
+we redefined so now the rank function is
+
+1508
+01:02:35,289 --> 01:02:38,170
+gonna be computed based on where each
+
+1509
+01:02:38,170 --> 01:02:42,569
+tuple appears in the sorted output list
+
+1510
+01:02:42,569 --> 01:02:45,160
+so in this case here this first tuple
+
+1511
+01:02:45,160 --> 01:02:48,160
+and within this partition this guy came
+
+1512
+01:02:48,160 --> 01:02:50,109
+first so he gets Rank 1 this
+
+1513
+01:02:50,109 --> 01:02:52,769
+I came second so he gets ranked too
+
+1514
+01:02:52,769 --> 01:02:57,609
+right if I change this now to be in
+
+1515
+01:02:57,609 --> 01:03:00,329
+descending order
+
+1516
+01:03:00,599 --> 01:03:03,460
+it doesn't still does the same thing but
+
+1517
+01:03:03,460 --> 01:03:09,910
+I could do an order by again and now I
+
+1518
+01:03:09,910 --> 01:03:14,619
+want to go in descending order right
+
+1519
+01:03:14,619 --> 01:03:16,029
+well this is this this is doing the
+
+1520
+01:03:16,029 --> 01:03:19,089
+order by this did the order by after I
+
+1521
+01:03:19,089 --> 01:03:20,589
+did my window function so it doesn't
+
+1522
+01:03:20,589 --> 01:03:23,049
+make sense but the the the main thing in
+
+1523
+01:03:23,049 --> 01:03:24,789
+the the rank is different rotoma because
+
+1524
+01:03:24,789 --> 01:03:25,749
+the row number two says where do you
+
+1525
+01:03:25,749 --> 01:03:27,549
+appear in the output the rank is where
+
+1526
+01:03:27,549 --> 01:03:31,950
+do you appear in the sorted order okay
+
+1527
+01:03:31,950 --> 01:03:46,569
+yes say it again sorry he says if you
+
+1528
+01:03:46,569 --> 01:03:47,920
+have a rank without an order by will
+
+1529
+01:03:47,920 --> 01:03:50,140
+just return a random order well you'll
+
+1530
+01:03:50,140 --> 01:03:53,559
+still get it ordered by what you have
+
+1531
+01:03:53,559 --> 01:03:55,239
+until get them probably split by
+
+1532
+01:03:55,239 --> 01:03:57,339
+partitions it doesn't have to be because
+
+1533
+01:03:57,339 --> 01:04:01,859
+it's unsorted but that's what you'll get
+
+1534
+01:04:01,859 --> 01:04:04,779
+but now here yeah so there in this case
+
+1535
+01:04:04,779 --> 01:04:07,720
+here there is no sort ordering anymore
+
+1536
+01:04:07,720 --> 01:04:11,099
+so everyone has the rank of one right
+
+1537
+01:04:11,099 --> 01:04:13,390
+but it still group them up together
+
+1538
+01:04:13,390 --> 01:04:14,920
+based on what I'd find it as my
+
+1539
+01:04:14,920 --> 01:04:16,930
+partition and that's more of an artifact
+
+1540
+01:04:16,930 --> 01:04:19,480
+of how the database system actually
+
+1541
+01:04:19,480 --> 01:04:21,309
+executed the query rather than the
+
+1542
+01:04:21,309 --> 01:04:27,579
+semantics of the query itself his
+
+1543
+01:04:27,579 --> 01:04:28,900
+question is what is the rank function do
+
+1544
+01:04:28,900 --> 01:04:31,299
+the rank is the rank of the rank
+
+1545
+01:04:31,299 --> 01:04:32,950
+function produces the rank of the sort
+
+1546
+01:04:32,950 --> 01:04:36,069
+order right so if I change my window
+
+1547
+01:04:36,069 --> 01:04:42,849
+function to be row number okay I have my
+
+1548
+01:04:42,849 --> 01:04:46,900
+partition but but it's one two one two
+
+1549
+01:04:46,900 --> 01:04:48,670
+one right because within each partition
+
+1550
+01:04:48,670 --> 01:04:50,410
+that's what I read peer so I've removed
+
+1551
+01:04:50,410 --> 01:04:53,079
+actually the partition by then it should
+
+1552
+01:04:53,079 --> 01:04:55,480
+go through one through five right like
+
+1553
+01:04:55,480 --> 01:04:58,019
+that if I change this now to rank
+
+1554
+01:04:58,019 --> 01:05:01,210
+everything should be one one one right
+
+1555
+01:05:01,210 --> 01:05:02,589
+because there is no soil order
+
+1556
+01:05:02,589 --> 01:05:05,249
+everyone's first
+
+1557
+01:05:05,580 --> 01:05:13,570
+yes our question is a pointless view of
+
+1558
+01:05:13,570 --> 01:05:15,430
+rank without an order by yes because
+
+1559
+01:05:15,430 --> 01:05:17,200
+there's no there's no sort order so
+
+1560
+01:05:17,200 --> 01:05:26,830
+there's no ranking all right cool all
+
+1561
+01:05:26,830 --> 01:05:27,850
+right so the last thing we want talk
+
+1562
+01:05:27,850 --> 01:05:30,130
+about is si si es complex table
+
+1563
+01:05:30,130 --> 01:05:32,410
+expressions so this is Polly again Mike
+
+1564
+01:05:32,410 --> 01:05:34,660
+this is I find this very interesting
+
+1565
+01:05:34,660 --> 01:05:36,130
+this is probably one more complicated
+
+1566
+01:05:36,130 --> 01:05:38,800
+things that you can do in sequel and
+
+1567
+01:05:38,800 --> 01:05:40,510
+it's gonna look a lot like nested
+
+1568
+01:05:40,510 --> 01:05:42,430
+queries in that you're taking the output
+
+1569
+01:05:42,430 --> 01:05:44,110
+of a query I'm using as the input for
+
+1570
+01:05:44,110 --> 01:05:45,850
+another query but we'll see in a second
+
+1571
+01:05:45,850 --> 01:05:47,350
+what you can do with CT ease that you
+
+1572
+01:05:47,350 --> 01:06:00,100
+can't do in Annessa queries yes so her
+
+1573
+01:06:00,100 --> 01:06:03,100
+question is in the case of this is it
+
+1574
+01:06:03,100 --> 01:06:04,780
+this particular query or it is in
+
+1575
+01:06:04,780 --> 01:06:11,290
+general so a question is is there a
+
+1576
+01:06:11,290 --> 01:06:14,770
+particular advantage of using rank with
+
+1577
+01:06:14,770 --> 01:06:17,760
+a window function over using a group by
+
+1578
+01:06:17,760 --> 01:06:21,040
+so again if you use a group by that's
+
+1579
+01:06:21,040 --> 01:06:23,020
+not going to generate the same you're
+
+1580
+01:06:23,020 --> 01:06:24,550
+not going to get the tuples as part of
+
+1581
+01:06:24,550 --> 01:06:29,250
+the output anymore right so if I go back
+
+1582
+01:06:29,580 --> 01:06:33,970
+so say I do this one here right row
+
+1583
+01:06:33,970 --> 01:06:35,950
+number by partition by so if I go back
+
+1584
+01:06:35,950 --> 01:06:39,340
+and I say I want to compute now like the
+
+1585
+01:06:39,340 --> 01:06:51,730
+the max grade some enrolled group by
+
+1586
+01:06:51,730 --> 01:06:56,980
+course ID like I no longer see what the
+
+1587
+01:06:56,980 --> 01:06:58,510
+original tuples were could they get
+
+1588
+01:06:58,510 --> 01:06:59,860
+collapsed together in the aggregate
+
+1589
+01:06:59,860 --> 01:07:01,630
+function the window function still
+
+1590
+01:07:01,630 --> 01:07:03,250
+produces all the tuples that word in
+
+1591
+01:07:03,250 --> 01:07:06,900
+your output but I can now see them as I
+
+1592
+01:07:06,900 --> 01:07:10,300
+can still see them as the output so if I
+
+1593
+01:07:10,300 --> 01:07:12,820
+go back here and if I this may or may
+
+1594
+01:07:12,820 --> 01:07:16,540
+not work but let's see so maybe I try
+
+1595
+01:07:16,540 --> 01:07:21,430
+max grade petition my course ID yeah so
+
+1596
+01:07:21,430 --> 01:07:25,980
+here I'm not didn't quite work either
+
+1597
+01:07:30,780 --> 01:07:38,530
+what's that sticking oh you know why it
+
+1598
+01:07:38,530 --> 01:07:48,000
+might be oat now they didn't like it
+
+1599
+01:07:50,010 --> 01:07:54,880
+there's the rank oh yeah because I'm an
+
+1600
+01:07:54,880 --> 01:07:58,030
+idiot sorry yes it did work I was what I
+
+1601
+01:07:58,030 --> 01:08:01,240
+wanted min yeah so the highest grade at
+
+1602
+01:08:01,240 --> 01:08:05,980
+15 for 45 is was was a B right so I
+
+1603
+01:08:05,980 --> 01:08:07,600
+still see my original two bows I still
+
+1604
+01:08:07,600 --> 01:08:10,060
+see one student got a C one student got
+
+1605
+01:08:10,060 --> 01:08:12,960
+a B but the max for that group was B so
+
+1606
+01:08:12,960 --> 01:08:16,420
+I didn't lose the original tuples now
+
+1607
+01:08:16,420 --> 01:08:17,920
+you and your application code have to
+
+1608
+01:08:17,920 --> 01:08:19,930
+derive meanings from this output you
+
+1609
+01:08:19,930 --> 01:08:22,359
+know get the one field that you won but
+
+1610
+01:08:22,359 --> 01:08:23,470
+this has allows you to get and still
+
+1611
+01:08:23,470 --> 01:08:26,140
+keep the tuples in a way you can't with
+
+1612
+01:08:26,140 --> 01:08:32,069
+a group I that's a good question yes
+
+1613
+01:08:33,839 --> 01:08:36,279
+this question is can you use row number
+
+1614
+01:08:36,279 --> 01:08:39,729
+after use an order by so something like
+
+1615
+01:08:39,729 --> 01:08:48,119
+this right and then maybe order by oh
+
+1616
+01:08:48,359 --> 01:08:51,009
+yeah there yeah sorry that's why there's
+
+1617
+01:08:51,009 --> 01:08:54,930
+the as rank so let's do this row num oh
+
+1618
+01:08:54,930 --> 01:08:57,540
+I'm a idiot sorry no one can see this
+
+1619
+01:08:57,540 --> 01:09:01,750
+how can you yeah sorry my screen shows
+
+1620
+01:09:01,750 --> 01:09:03,069
+one thing this shows another that shows
+
+1621
+01:09:03,069 --> 01:09:07,380
+this okay we're good right right
+
+1622
+01:09:10,328 --> 01:09:13,618
+now if we if we remove the partition by
+
+1623
+01:09:13,618 --> 01:09:17,319
+and now we can maybe put descending
+
+1624
+01:09:17,319 --> 01:09:22,500
+right so now we'll get 5 4 3 2 1 right
+
+1625
+01:09:27,540 --> 01:09:30,339
+the plate replace the rank with the row
+
+1626
+01:09:30,339 --> 01:09:43,000
+number what do you mean let's do this
+
+1627
+01:09:43,000 --> 01:09:44,559
+online because I want to get to see two
+
+1628
+01:09:44,559 --> 01:09:45,698
+E's cuz he knew it for the homework
+
+1629
+01:09:45,698 --> 01:09:48,069
+before we keep going okay we can try it
+
+1630
+01:09:48,069 --> 01:09:52,420
+afterwards okay all right so she sees
+
+1631
+01:09:52,420 --> 01:09:54,699
+the way basically is gonna work is that
+
+1632
+01:09:54,699 --> 01:09:56,349
+you have introduced to this whiffed
+
+1633
+01:09:56,349 --> 01:09:59,139
+clause there's whiffed clause it's like
+
+1634
+01:09:59,139 --> 01:10:00,369
+a query that's gonna actually before
+
+1635
+01:10:00,369 --> 01:10:03,760
+your your regular query so we have width
+
+1636
+01:10:03,760 --> 01:10:06,099
+and we're defining the name or a CTE and
+
+1637
+01:10:06,099 --> 01:10:07,869
+then we have our ask clause and whatever
+
+1638
+01:10:07,869 --> 01:10:10,030
+is inside of the parentheses after the
+
+1639
+01:10:10,030 --> 01:10:13,210
+as the output of that query would then
+
+1640
+01:10:13,210 --> 01:10:15,790
+get sort of maps to the this are the
+
+1641
+01:10:15,790 --> 01:10:18,250
+name of our CTE and then in the Select
+
+1642
+01:10:18,250 --> 01:10:20,380
+query that comes below it can reference
+
+1643
+01:10:20,380 --> 01:10:23,829
+it does it just as if it was a an
+
+1644
+01:10:23,829 --> 01:10:28,000
+existing table right so in this case
+
+1645
+01:10:28,000 --> 01:10:31,659
+here what will happen is I see te that
+
+1646
+01:10:31,659 --> 01:10:33,790
+invokes the query select one all right
+
+1647
+01:10:33,790 --> 01:10:35,020
+so let's don't have to have a from
+
+1648
+01:10:35,020 --> 01:10:36,670
+Clause this just out pollutes this
+
+1649
+01:10:36,670 --> 01:10:39,280
+produces a single tuple with a single
+
+1650
+01:10:39,280 --> 01:10:41,500
+attribute with the value one and then
+
+1651
+01:10:41,500 --> 01:10:43,599
+this other we're at the bottom to select
+
+1652
+01:10:43,599 --> 01:10:45,190
+star on it and there's outputs that
+
+1653
+01:10:45,190 --> 01:10:48,969
+single tuple so I can start doing more
+
+1654
+01:10:48,969 --> 01:10:50,619
+complicated things I can now bind the
+
+1655
+01:10:50,619 --> 01:10:53,739
+the name or the output columns from the
+
+1656
+01:10:53,739 --> 01:10:56,590
+queries inside of the CTE to given names
+
+1657
+01:10:56,590 --> 01:10:58,329
+and then I can reference them by that
+
+1658
+01:10:58,329 --> 01:11:02,469
+name down below in my in my statement at
+
+1659
+01:11:02,469 --> 01:11:05,530
+the bottom so this this CTE produces a
+
+1660
+01:11:05,530 --> 01:11:08,110
+single tuple with two attributes with
+
+1661
+01:11:08,110 --> 01:11:10,300
+the values one and two and then these
+
+1662
+01:11:10,300 --> 01:11:12,639
+get mapped to the name column 1 column 2
+
+1663
+01:11:12,639 --> 01:11:14,860
+and then in the Select statement below I
+
+1664
+01:11:14,860 --> 01:11:18,219
+can just add them together right pretty
+
+1665
+01:11:18,219 --> 01:11:20,199
+straightforward
+
+1666
+01:11:20,199 --> 01:11:21,310
+so let's go back and try to do that
+
+1667
+01:11:21,310 --> 01:11:23,050
+example we did before where we want to
+
+1668
+01:11:23,050 --> 01:11:25,420
+find the name of the student with the
+
+1669
+01:11:25,420 --> 01:11:27,160
+highest I student ID that's enrolled in
+
+1670
+01:11:27,160 --> 01:11:30,969
+least one course so for this I have my
+
+1671
+01:11:30,969 --> 01:11:33,580
+CTE and the side of that I'll do my max
+
+1672
+01:11:33,580 --> 01:11:35,170
+on the student ID on the enroll table
+
+1673
+01:11:35,170 --> 01:11:38,620
+again that produces one tuple with that
+
+1674
+01:11:38,620 --> 01:11:41,500
+max student ID and then down below I can
+
+1675
+01:11:41,500 --> 01:11:43,830
+do a join where I'm gonna reference the
+
+1676
+01:11:43,830 --> 01:11:47,679
+the CTE that was generated above me and
+
+1677
+01:11:47,679 --> 01:11:49,900
+I just combined together the max ID that
+
+1678
+01:11:49,900 --> 01:11:52,179
+came out of this which is defined here
+
+1679
+01:11:52,179 --> 01:11:54,370
+with my student ID and then that
+
+1680
+01:11:54,370 --> 01:11:56,020
+produces that produces the one tuple
+
+1681
+01:11:56,020 --> 01:11:59,140
+that I want right again this is another
+
+1682
+01:11:59,140 --> 01:12:01,300
+example of how to do the same query the
+
+1683
+01:12:01,300 --> 01:12:02,679
+same at a high level semantically the
+
+1684
+01:12:02,679 --> 01:12:04,060
+same query just written in different
+
+1685
+01:12:04,060 --> 01:12:06,489
+ways so now you may be saying well how
+
+1686
+01:12:06,489 --> 01:12:07,690
+is this any different than a nested
+
+1687
+01:12:07,690 --> 01:12:11,440
+query right the answer is you can do
+
+1688
+01:12:11,440 --> 01:12:13,900
+recursion in a common table expression
+
+1689
+01:12:13,900 --> 01:12:17,500
+that you can't do in a nested query so
+
+1690
+01:12:17,500 --> 01:12:20,230
+bear with me here but this query is
+
+1691
+01:12:20,230 --> 01:12:22,000
+going to produce a sequence of numbers
+
+1692
+01:12:22,000 --> 01:12:25,020
+from from 1 to 10 like a for loop right
+
+1693
+01:12:25,020 --> 01:12:27,820
+so now we have with recursive we have
+
+1694
+01:12:27,820 --> 01:12:30,760
+the keyword and then inside of our CTE
+
+1695
+01:12:30,760 --> 01:12:33,219
+definition we're gonna do a union
+
+1696
+01:12:33,219 --> 01:12:36,429
+between a single query that produces the
+
+1697
+01:12:36,429 --> 01:12:38,890
+value 1 all right a single tuple with a
+
+1698
+01:12:38,890 --> 01:12:41,530
+single attribute 1 and then we're gonna
+
+1699
+01:12:41,530 --> 01:12:44,380
+then Union that with another query that
+
+1700
+01:12:44,380 --> 01:12:46,449
+actually references ourselves so that
+
+1701
+01:12:46,449 --> 01:12:48,429
+seeing here we're gonna vote on our own
+
+1702
+01:12:48,429 --> 01:12:50,890
+CTE and then we're gonna take whatever
+
+1703
+01:12:50,890 --> 01:12:52,210
+the counter is that's produced by this
+
+1704
+01:12:52,210 --> 01:12:55,120
+and add 1 to it and produce that as the
+
+1705
+01:12:55,120 --> 01:13:00,310
+output all right and we keep running
+
+1706
+01:13:00,310 --> 01:13:03,270
+this until our where Clause actually
+
+1707
+01:13:03,270 --> 01:13:05,620
+gets tripped up where we try to go above
+
+1708
+01:13:05,620 --> 01:13:07,929
+10 and then now we stop producing 2
+
+1709
+01:13:07,929 --> 01:13:09,340
+pools so now we have the answer that we
+
+1710
+01:13:09,340 --> 01:13:11,050
+want that we can then reference below in
+
+1711
+01:13:11,050 --> 01:13:16,330
+our CTE yes you know it's basically
+
+1712
+01:13:16,330 --> 01:13:21,190
+Union right it's Union with you know
+
+1713
+01:13:21,190 --> 01:13:23,670
+with duplicates
+
+1714
+01:13:23,830 --> 01:13:26,540
+you mean by default sorry you need to
+
+1715
+01:13:26,540 --> 01:13:28,370
+start a union without duplicates Union
+
+1716
+01:13:28,370 --> 01:13:33,080
+with duplicates Union without all strips
+
+1717
+01:13:33,080 --> 01:13:35,480
+keeps duplicates Union with with out all
+
+1718
+01:13:35,480 --> 01:13:39,110
+removes them might be that way we can
+
+1719
+01:13:39,110 --> 01:13:42,440
+test that though okay so let's do this
+
+1720
+01:13:42,440 --> 01:13:50,870
+in Postgres so for the alright so this
+
+1721
+01:13:50,870 --> 01:13:52,970
+is this is the one query that this is
+
+1722
+01:13:52,970 --> 01:13:55,340
+the query that I showed you right and we
+
+1723
+01:13:55,340 --> 01:13:58,310
+produce the list of tuples right with a
+
+1724
+01:13:58,310 --> 01:14:03,010
+single value one dn't one does hat right
+
+1725
+01:14:03,489 --> 01:14:09,739
+let me try to kill this alright that
+
+1726
+01:14:09,739 --> 01:14:15,250
+better alright but it be careful about
+
+1727
+01:14:15,250 --> 01:14:20,120
+CTE s with recursive because again net
+
+1728
+01:14:20,120 --> 01:14:21,290
+because you can essentially have
+
+1729
+01:14:21,290 --> 01:14:23,810
+infinite loose so in this query here I
+
+1730
+01:14:23,810 --> 01:14:26,690
+no longer have that counter where it's
+
+1731
+01:14:26,690 --> 01:14:29,300
+greater than ten or produce check any
+
+1732
+01:14:29,300 --> 01:14:30,920
+tuples where they're less than ten this
+
+1733
+01:14:30,920 --> 01:14:32,930
+will run actually forever but what I did
+
+1734
+01:14:32,930 --> 01:14:36,730
+first was I define a toll Postgres to
+
+1735
+01:14:36,730 --> 01:14:38,510
+again I'm highlighting here and you
+
+1736
+01:14:38,510 --> 01:14:40,850
+can't see it at all post past that any
+
+1737
+01:14:40,850 --> 01:14:42,290
+query that runs longer than 10 seconds
+
+1738
+01:14:42,290 --> 01:14:44,930
+automatically kill it so when I ran this
+
+1739
+01:14:44,930 --> 01:14:47,570
+query now it no longer has the where
+
+1740
+01:14:47,570 --> 01:14:49,520
+clause to prevent it from going you know
+
+1741
+01:14:49,520 --> 01:14:52,250
+looking at tuples beyond ten and so
+
+1742
+01:14:52,250 --> 01:14:53,480
+essentially runs forever
+
+1743
+01:14:53,480 --> 01:14:55,610
+Postgres recognizes that we're stuck it
+
+1744
+01:14:55,610 --> 01:14:57,260
+and a query that's taking too long and
+
+1745
+01:14:57,260 --> 01:14:58,850
+go that goes head and automatically
+
+1746
+01:14:58,850 --> 01:15:06,739
+kills it yes so suits all right so
+
+1747
+01:15:06,739 --> 01:15:11,420
+select one just does this right so now
+
+1748
+01:15:11,420 --> 01:15:17,290
+if I do select one Union all select one
+
+1749
+01:15:17,290 --> 01:15:20,890
+right I get like that
+
+1750
+01:15:21,010 --> 01:15:24,100
+so if I think I remove the all yeah you
+
+1751
+01:15:24,100 --> 01:15:26,580
+get it's a without it removes duplicates
+
+1752
+01:15:26,580 --> 01:15:29,950
+right so you know will give me
+
+1753
+01:15:29,950 --> 01:15:32,560
+everything so essentially what's
+
+1754
+01:15:32,560 --> 01:15:37,600
+happening now is I'm calling my CTE say
+
+1755
+01:15:37,600 --> 01:15:39,070
+whatever the whatever tools you have in
+
+1756
+01:15:39,070 --> 01:15:42,520
+the current value take take the output
+
+1757
+01:15:42,520 --> 01:15:49,300
+and then add one to it here right the
+
+1758
+01:15:49,300 --> 01:15:52,120
+the plus one there so this is invoking
+
+1759
+01:15:52,120 --> 01:15:58,630
+on on our our our source CTE called
+
+1760
+01:15:58,630 --> 01:16:00,700
+source for every single tip one their
+
+1761
+01:16:00,700 --> 01:16:03,400
+take its output add one to it so in
+
+1762
+01:16:03,400 --> 01:16:04,630
+order to get that tuple it has to go
+
+1763
+01:16:04,630 --> 01:16:06,250
+then invoke that CTE which then produces
+
+1764
+01:16:06,250 --> 01:16:19,870
+back one yeah it won't let you in bogey
+
+1765
+01:16:19,870 --> 01:16:20,710
+because it knows you're trying to
+
+1766
+01:16:20,710 --> 01:16:23,080
+reference yourself those questions what
+
+1767
+01:16:23,080 --> 01:16:25,450
+happens if you if you try to remove the
+
+1768
+01:16:25,450 --> 01:16:28,360
+recursive calls again its sequel its
+
+1769
+01:16:28,360 --> 01:16:29,739
+declarative we know everything you're
+
+1770
+01:16:29,739 --> 01:16:30,790
+trying to do so you're trying to access
+
+1771
+01:16:30,790 --> 01:16:34,810
+a CTE table that's defined by yourself
+
+1772
+01:16:34,810 --> 01:16:36,880
+and it doesn't let you do that for
+
+1773
+01:16:36,880 --> 01:16:40,870
+cursive let you do that so let's try it
+
+1774
+01:16:40,870 --> 01:16:48,040
+now also with let's try it by removing
+
+1775
+01:16:48,040 --> 01:16:51,820
+the Union all and see what happens the
+
+1776
+01:16:51,820 --> 01:16:54,610
+call apartment and still produces the
+
+1777
+01:16:54,610 --> 01:16:57,430
+correct answer yes you don't you don't
+
+1778
+01:16:57,430 --> 01:16:59,980
+need the Union all right so in this
+
+1779
+01:16:59,980 --> 01:17:01,690
+example here again I'm synthetically
+
+1780
+01:17:01,690 --> 01:17:04,720
+generating a two table that has a single
+
+1781
+01:17:04,720 --> 01:17:07,870
+value of one and then I invoke a query
+
+1782
+01:17:07,870 --> 01:17:11,620
+to get that tuple and add one to it but
+
+1783
+01:17:11,620 --> 01:17:13,120
+then generates a new tuple which and
+
+1784
+01:17:13,120 --> 01:17:14,530
+that can then invoke again and add one
+
+1785
+01:17:14,530 --> 01:17:16,480
+to that and I keep doing that until I
+
+1786
+01:17:16,480 --> 01:17:18,340
+don't produce any more matches right
+
+1787
+01:17:18,340 --> 01:17:20,739
+because any the current ends because
+
+1788
+01:17:20,739 --> 01:17:25,560
+I've reached my limit of ten yes
+
+1789
+01:17:41,070 --> 01:17:43,630
+this question is why why are there not
+
+1790
+01:17:43,630 --> 01:17:45,790
+duplicates because the first time you
+
+1791
+01:17:45,790 --> 01:17:48,190
+devoted you had one six second time you
+
+1792
+01:17:48,190 --> 01:17:54,849
+invoke you would have one and two let's
+
+1793
+01:17:54,849 --> 01:17:57,329
+do this offline let's walk through it
+
+1794
+01:17:57,329 --> 01:17:59,469
+because again we am Braddock we're out
+
+1795
+01:17:59,469 --> 01:18:01,650
+of time
+
+1796
+01:18:01,650 --> 01:18:09,070
+all right yes quick this question is do
+
+1797
+01:18:09,070 --> 01:18:10,780
+people use for courtesy teas is that
+
+1798
+01:18:10,780 --> 01:18:14,710
+very common yes absolutely yes so this
+
+1799
+01:18:14,710 --> 01:18:16,059
+is actually finished up very nicely so
+
+1800
+01:18:16,059 --> 01:18:19,780
+the the second point I'm trying to make
+
+1801
+01:18:19,780 --> 01:18:22,869
+here is that in an ideal scenario you
+
+1802
+01:18:22,869 --> 01:18:26,829
+always want to have do to be able to
+
+1803
+01:18:26,829 --> 01:18:30,219
+compute an entire query without having
+
+1804
+01:18:30,219 --> 01:18:32,829
+to bring any data locally or not having
+
+1805
+01:18:32,829 --> 01:18:36,250
+to go back and forth right so in a it
+
+1806
+01:18:36,250 --> 01:18:37,929
+also provides by running as a single
+
+1807
+01:18:37,929 --> 01:18:38,199
+query
+
+1808
+01:18:38,199 --> 01:18:40,059
+although the complexity that makes it
+
+1809
+01:18:40,059 --> 01:18:42,099
+harder to new query optimization but if
+
+1810
+01:18:42,099 --> 01:18:44,170
+you tell the gaming system everything
+
+1811
+01:18:44,170 --> 01:18:45,940
+you want to do with this sort of piece
+
+1812
+01:18:45,940 --> 01:18:48,520
+of data then they can do a global
+
+1813
+01:18:48,520 --> 01:18:50,889
+optimization on that so by having a CTE
+
+1814
+01:18:50,889 --> 01:18:52,809
+you're not having to have additional
+
+1815
+01:18:52,809 --> 01:18:54,579
+logic be somewhere salicin outside the
+
+1816
+01:18:54,579 --> 01:18:55,570
+David system it will go back and forth
+
+1817
+01:18:55,570 --> 01:18:57,340
+you're saying here's everything I want
+
+1818
+01:18:57,340 --> 01:19:00,040
+to do so CTE are actually very common
+
+1819
+01:19:00,040 --> 01:19:02,489
+especially in newer applications
+
+1820
+01:19:02,489 --> 01:19:06,130
+recursive CDs maybe less so but
+
+1821
+01:19:06,130 --> 01:19:07,960
+definitely cetys but it's another way to
+
+1822
+01:19:07,960 --> 01:19:11,320
+write a nested query alright the other
+
+1823
+01:19:11,320 --> 01:19:12,940
+major thing that I want to point out is
+
+1824
+01:19:12,940 --> 01:19:16,179
+that again the language is from 1973 or
+
+1825
+01:19:16,179 --> 01:19:19,570
+1974 but it's still widely common you're
+
+1826
+01:19:19,570 --> 01:19:22,059
+commonly used it's being updated all the
+
+1827
+01:19:22,059 --> 01:19:25,179
+time and learning sequel is important
+
+1828
+01:19:25,179 --> 01:19:26,170
+because you're gonna see this again
+
+1829
+01:19:26,170 --> 01:19:27,909
+throughout your entire life pretty much
+
+1830
+01:19:27,909 --> 01:19:30,030
+every single system database system that
+
+1831
+01:19:30,030 --> 01:19:32,619
+you know it with some minor exceptions
+
+1832
+01:19:32,619 --> 01:19:34,420
+is going to support some variant of
+
+1833
+01:19:34,420 --> 01:19:36,960
+sequel Oh
+
+1834
+01:19:37,149 --> 01:19:40,329
+I shouted to settle the case a machine
+
+1835
+01:19:40,329 --> 01:19:42,489
+on little bits of broken bar goes in
+
+1836
+01:19:42,489 --> 01:19:43,360
+crushed up kids
+
+1837
+01:19:43,360 --> 01:19:46,809
+let the cows in the demo I'll try he's
+
+1838
+01:19:46,809 --> 01:19:49,479
+witzy nines in my system I'm blessed
+
+1839
+01:19:49,479 --> 01:19:57,489
+let's go get the next one good never be
+
+1840
+01:19:57,489 --> 01:19:59,619
+son ricochet jelly hit the deli food
+
+1841
+01:19:59,619 --> 01:20:01,570
+report one naturally bless ya what
+
+1842
+01:20:01,570 --> 01:20:03,189
+rappers like the laser beam the balls in
+
+1843
+01:20:03,189 --> 01:20:05,530
+the bush say nothing like a king wrap
+
+1844
+01:20:05,530 --> 01:20:07,329
+the bottle of us a nice sympathy goes
+
+1845
+01:20:07,329 --> 01:20:09,699
+don't feel like drinking that quality
+
+1846
+01:20:09,699 --> 01:20:11,289
+you drunk you can't drop cross he was
+
+1847
+01:20:11,289 --> 01:20:13,179
+alive and at the stake don't know your
+
+1848
+01:20:13,179 --> 01:20:15,929
+phone can tap a
+

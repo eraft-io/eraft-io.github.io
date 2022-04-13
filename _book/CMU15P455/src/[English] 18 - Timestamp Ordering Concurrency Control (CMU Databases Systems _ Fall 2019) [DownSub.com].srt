@@ -1,0 +1,7220 @@
+1
+00:00:03,640 --> 00:00:19,630
+[Music]
+
+2
+00:00:19,630 --> 00:00:24,439
+all right right so so last lecture I
+
+3
+00:00:24,439 --> 00:00:28,720
+think Matt covered two-phase locking and
+
+4
+00:00:28,720 --> 00:00:30,859
+two-piece locking is a mechanism that
+
+5
+00:00:30,859 --> 00:00:32,930
+the database can use to essentially
+
+6
+00:00:32,930 --> 00:00:35,870
+generate serializable schedules at
+
+7
+00:00:35,870 --> 00:00:36,290
+runtime
+
+8
+00:00:36,290 --> 00:00:38,450
+and it relies on locks to be able to do
+
+9
+00:00:38,450 --> 00:00:40,010
+that today we're going to be talking
+
+10
+00:00:40,010 --> 00:00:42,350
+about is a collection of protocols that
+
+11
+00:00:42,350 --> 00:00:44,000
+don't rely on locks but instead rely on
+
+12
+00:00:44,000 --> 00:00:47,539
+on time stamps at a high level maybe
+
+13
+00:00:47,539 --> 00:00:49,760
+with a good way to think about this is
+
+14
+00:00:49,760 --> 00:00:53,420
+that two phase locking assumes that
+
+15
+00:00:53,420 --> 00:00:54,500
+there's gonna be a lot of contention
+
+16
+00:00:54,500 --> 00:00:56,449
+inside of the inside of the transactions
+
+17
+00:00:56,449 --> 00:00:57,949
+that are executing inside in the
+
+18
+00:00:57,949 --> 00:01:00,199
+database right so if there's a lot of
+
+19
+00:01:00,199 --> 00:01:01,579
+contention then it's obviously I've
+
+20
+00:01:01,579 --> 00:01:05,330
+edges to be defensive and take a lot of
+
+21
+00:01:05,330 --> 00:01:06,950
+locks so anytime you want to read or
+
+22
+00:01:06,950 --> 00:01:09,890
+write into into a database object you
+
+23
+00:01:09,890 --> 00:01:12,500
+acquire these locks so in that sense
+
+24
+00:01:12,500 --> 00:01:14,540
+it's quite pessimistic on the other hand
+
+25
+00:01:14,540 --> 00:01:17,240
+you can view time stamp ordering based
+
+26
+00:01:17,240 --> 00:01:20,360
+techniques as more optimistic right you
+
+27
+00:01:20,360 --> 00:01:22,790
+allowed the database to operate and read
+
+28
+00:01:22,790 --> 00:01:23,600
+and write data without actually
+
+29
+00:01:23,600 --> 00:01:25,280
+acquiring locks and at the end of the
+
+30
+00:01:25,280 --> 00:01:26,840
+day you sort of racket you're able to
+
+31
+00:01:26,840 --> 00:01:29,450
+correctly reconcile the correct
+
+32
+00:01:29,450 --> 00:01:31,070
+serializable schedule at the end of the
+
+33
+00:01:31,070 --> 00:01:32,570
+day and we'll talk about how this is
+
+34
+00:01:32,570 --> 00:01:33,799
+actually done inside inside of the
+
+35
+00:01:33,799 --> 00:01:37,670
+database there's actually going to be
+
+36
+00:01:37,670 --> 00:01:39,740
+two times time ordering protocols we're
+
+37
+00:01:39,740 --> 00:01:41,030
+going to talk about in this lecture one
+
+38
+00:01:41,030 --> 00:01:42,500
+of them is actually called time stamp
+
+39
+00:01:42,500 --> 00:01:43,939
+ordering or basic time stamp ordering
+
+40
+00:01:43,939 --> 00:01:46,759
+and another one is gonna be called the
+
+41
+00:01:46,759 --> 00:01:48,920
+optimistic concurrency control so it's a
+
+42
+00:01:48,920 --> 00:01:49,880
+little bit confusing because they're
+
+43
+00:01:49,880 --> 00:01:50,990
+both optimistic and they're both
+
+44
+00:01:50,990 --> 00:01:53,180
+timestamp ordering this is just the the
+
+45
+00:01:53,180 --> 00:01:54,439
+nomenclature that the community has come
+
+46
+00:01:54,439 --> 00:01:58,399
+up with alright so let get started the
+
+47
+00:01:58,399 --> 00:02:00,439
+basic idea for these timestamp based
+
+48
+00:02:00,439 --> 00:02:03,200
+protocols is that it's a mechanism that
+
+49
+00:02:03,200 --> 00:02:05,899
+the database can use to assign numeric
+
+50
+00:02:05,899 --> 00:02:08,060
+values to time stamps that predefined
+
+51
+00:02:08,060 --> 00:02:09,830
+the the commit order of these
+
+52
+00:02:09,830 --> 00:02:11,960
+transactions you can assume that there's
+
+53
+00:02:11,960 --> 00:02:12,980
+going to be a new function here called
+
+54
+00:02:12,980 --> 00:02:16,430
+TS that given a transaction gives you
+
+55
+00:02:16,430 --> 00:02:18,260
+the timestamp for that transaction and
+
+56
+00:02:18,260 --> 00:02:20,810
+so what the database tries to guarantee
+
+57
+00:02:20,810 --> 00:02:22,760
+is that if a transaction TI has a
+
+58
+00:02:22,760 --> 00:02:24,050
+timestamp that's less than the
+
+59
+00:02:24,050 --> 00:02:26,240
+transaction TJ then in the serial
+
+60
+00:02:26,240 --> 00:02:28,190
+schedule it's as if TI had occurred
+
+61
+00:02:28,190 --> 00:02:32,980
+before TJ inside of the database okay so
+
+62
+00:02:32,980 --> 00:02:34,880
+how is this done like what are these
+
+63
+00:02:34,880 --> 00:02:37,250
+timestamps look like the timestamps are
+
+64
+00:02:37,250 --> 00:02:40,459
+sort of unique fixed numeric values and
+
+65
+00:02:40,459 --> 00:02:42,260
+they have a couple of interesting
+
+66
+00:02:42,260 --> 00:02:44,270
+characteristics that characteristics
+
+67
+00:02:44,270 --> 00:02:46,310
+that the database has to maintain the
+
+68
+00:02:46,310 --> 00:02:48,560
+first one is that these timestamps have
+
+69
+00:02:48,560 --> 00:02:50,420
+to be monotonically increasing okay so
+
+70
+00:02:50,420 --> 00:02:52,400
+they have to always go forward in time
+
+71
+00:02:52,400 --> 00:02:55,010
+and increase in time the second thing is
+
+72
+00:02:55,010 --> 00:02:57,410
+that they have to be unique values right
+
+73
+00:02:57,410 --> 00:02:59,150
+so you can ever have two transactions
+
+74
+00:02:59,150 --> 00:03:01,280
+have the same timestamp because of this
+
+75
+00:03:01,280 --> 00:03:03,340
+monotonically increasing characteristic
+
+76
+00:03:03,340 --> 00:03:06,170
+so again assume that the database now
+
+77
+00:03:06,170 --> 00:03:08,390
+has this new function this TS function
+
+78
+00:03:08,390 --> 00:03:10,790
+that's able to take a transaction ID and
+
+79
+00:03:10,790 --> 00:03:11,870
+return to you the timestamp for that
+
+80
+00:03:11,870 --> 00:03:16,519
+transaction and these these different x
+
+81
+00:03:16,519 --> 00:03:18,130
+time protocols have different mechanisms
+
+82
+00:03:18,130 --> 00:03:21,470
+by which and time points at which they
+
+83
+00:03:21,470 --> 00:03:23,780
+actually assign these timestamps to the
+
+84
+00:03:23,780 --> 00:03:26,570
+transactions an important characteristic
+
+85
+00:03:26,570 --> 00:03:28,340
+is that these timestamps don't
+
+86
+00:03:28,340 --> 00:03:29,989
+necessarily have to correspond to the
+
+87
+00:03:29,989 --> 00:03:32,810
+wall clock time because they could be
+
+88
+00:03:32,810 --> 00:03:34,519
+assigned to the transaction at any point
+
+89
+00:03:34,519 --> 00:03:36,769
+during its execution not necessarily
+
+90
+00:03:36,769 --> 00:03:38,120
+when it enters the system not even
+
+91
+00:03:38,120 --> 00:03:39,410
+necessarily when it's about to commit
+
+92
+00:03:39,410 --> 00:03:40,790
+right so different protocols have
+
+93
+00:03:40,790 --> 00:03:42,560
+different mechanisms by which and time
+
+94
+00:03:42,560 --> 00:03:43,850
+points at which they actually assign
+
+95
+00:03:43,850 --> 00:03:47,900
+timestamps to transactions there's a
+
+96
+00:03:47,900 --> 00:03:49,370
+there's a few different ways on how you
+
+97
+00:03:49,370 --> 00:03:52,130
+actually source a timestamp for a
+
+98
+00:03:52,130 --> 00:03:53,540
+transaction okay and I've listed this a
+
+99
+00:03:53,540 --> 00:03:55,489
+few listed here the simplest thing you
+
+100
+00:03:55,489 --> 00:03:57,769
+could do is just ask the CPU okay what
+
+101
+00:03:57,769 --> 00:03:59,030
+is the current time right because time
+
+102
+00:03:59,030 --> 00:04:00,230
+is always increasing you can assume that
+
+103
+00:04:00,230 --> 00:04:03,709
+this kind of makes sense all right but
+
+104
+00:04:03,709 --> 00:04:05,269
+there's a there's a few drawbacks can
+
+105
+00:04:05,269 --> 00:04:06,950
+anybody think about a few drawbacks for
+
+106
+00:04:06,950 --> 00:04:09,530
+using wall clock time or a real time as
+
+107
+00:04:09,530 --> 00:04:18,140
+a timestamp yeah so that doesn't really
+
+108
+00:04:18,140 --> 00:04:19,370
+matter as long as you're going to the
+
+109
+00:04:19,370 --> 00:04:21,019
+same computer and as long as the time
+
+110
+00:04:21,019 --> 00:04:22,880
+the time is monotonically increasing
+
+111
+00:04:22,880 --> 00:04:26,120
+then you should be okay right so that's
+
+112
+00:04:26,120 --> 00:04:26,990
+a good point right so if you have
+
+113
+00:04:26,990 --> 00:04:29,300
+distributed disability-based and it's
+
+114
+00:04:29,300 --> 00:04:30,650
+difficult to keep these time points in
+
+115
+00:04:30,650 --> 00:04:32,419
+sync what's another problem with using
+
+116
+00:04:32,419 --> 00:04:34,870
+wall clock time
+
+117
+00:04:37,800 --> 00:04:39,910
+you can turn back the clock when would
+
+118
+00:04:39,910 --> 00:04:48,040
+you actually turn back the clock sure
+
+119
+00:04:48,040 --> 00:04:49,600
+yeah so there could be some skew in the
+
+120
+00:04:49,600 --> 00:04:51,310
+actual ganya granularity which you took
+
+121
+00:04:51,310 --> 00:04:53,740
+track time is there another and another
+
+122
+00:04:53,740 --> 00:05:06,490
+possible drawback yeah so you don't
+
+123
+00:05:06,490 --> 00:05:07,900
+actually have to keep duration of time
+
+124
+00:05:07,900 --> 00:05:09,820
+you just need like one point like this
+
+125
+00:05:09,820 --> 00:05:12,400
+is time point one time point two and
+
+126
+00:05:12,400 --> 00:05:15,490
+it's increasing so it's not necessarily
+
+127
+00:05:15,490 --> 00:05:17,170
+by duration is just about a point in
+
+128
+00:05:17,170 --> 00:05:20,290
+time okay so a clue is that it's gonna
+
+129
+00:05:20,290 --> 00:05:24,580
+happen this weekend yeah exactly yeah so
+
+130
+00:05:24,580 --> 00:05:26,050
+a day like say day that daylight savings
+
+131
+00:05:26,050 --> 00:05:27,400
+right so it could be the case that you
+
+132
+00:05:27,400 --> 00:05:28,690
+know you're operating on the weekend and
+
+133
+00:05:28,690 --> 00:05:31,030
+then at random at a at a random point
+
+134
+00:05:31,030 --> 00:05:32,920
+your clock back goes back an hour and
+
+135
+00:05:32,920 --> 00:05:34,300
+your your timestamps are pretty much
+
+136
+00:05:34,300 --> 00:05:37,470
+screwed okay
+
+137
+00:05:37,710 --> 00:05:40,090
+another option is actually to use these
+
+138
+00:05:40,090 --> 00:05:41,800
+logical counters right so you can think
+
+139
+00:05:41,800 --> 00:05:43,660
+of having just a register register and
+
+140
+00:05:43,660 --> 00:05:45,370
+the CPU dedicated to having a mono time
+
+141
+00:05:45,370 --> 00:05:47,860
+monotonically increasing 32-bit 64-bit
+
+142
+00:05:47,860 --> 00:05:51,750
+value are there any drawbacks or
+
+143
+00:05:51,750 --> 00:05:54,610
+potential downfalls for this approach
+
+144
+00:05:54,610 --> 00:06:05,110
+yeah yeah so the distribution aspect is
+
+145
+00:06:05,110 --> 00:06:08,350
+still an important factor but assume
+
+146
+00:06:08,350 --> 00:06:09,580
+that there's one counter for the CPU and
+
+147
+00:06:09,580 --> 00:06:11,470
+it's really fast to increment it without
+
+148
+00:06:11,470 --> 00:06:13,990
+at requiring locks like you can do an
+
+149
+00:06:13,990 --> 00:06:15,280
+atomic addition or something like that
+
+150
+00:06:15,280 --> 00:06:17,170
+are there any problems with using this
+
+151
+00:06:17,170 --> 00:06:24,140
+logical counter so I said
+
+152
+00:06:24,140 --> 00:06:27,500
+two bits or 64 bits what happens if you
+
+153
+00:06:27,500 --> 00:06:30,140
+run out of 32-bit values then you
+
+154
+00:06:30,140 --> 00:06:31,640
+saturate your Edition and you roll back
+
+155
+00:06:31,640 --> 00:06:33,590
+right so your counter is now going
+
+156
+00:06:33,590 --> 00:06:35,390
+backwards in time so that's one of the
+
+157
+00:06:35,390 --> 00:06:38,300
+problems with this approach
+
+158
+00:06:38,300 --> 00:06:40,070
+so most systems actually use this hybrid
+
+159
+00:06:40,070 --> 00:06:41,270
+approach which is like a physio
+
+160
+00:06:41,270 --> 00:06:42,950
+physiological thing and it sort of
+
+161
+00:06:42,950 --> 00:06:44,660
+matches both the physical counter and a
+
+162
+00:06:44,660 --> 00:06:46,130
+logical counter to make sure that
+
+163
+00:06:46,130 --> 00:06:51,890
+everything sort of works out so the
+
+164
+00:06:51,890 --> 00:06:54,050
+system clock one problem is you have
+
+165
+00:06:54,050 --> 00:06:56,210
+daylight savings times right so at a
+
+166
+00:06:56,210 --> 00:06:57,800
+point in time one day like say daylight
+
+167
+00:06:57,800 --> 00:06:59,900
+savings occurs your time you time move
+
+168
+00:06:59,900 --> 00:07:02,960
+backs or moves back an hour so now your
+
+169
+00:07:02,960 --> 00:07:04,550
+time is not monotonically increasing
+
+170
+00:07:04,550 --> 00:07:10,570
+it's not going back in time okay
+
+171
+00:07:10,600 --> 00:07:14,420
+right so just to give you an idea of
+
+172
+00:07:14,420 --> 00:07:15,860
+what the agenda is gonna be today so
+
+173
+00:07:15,860 --> 00:07:17,270
+we're gonna talk about something called
+
+174
+00:07:17,270 --> 00:07:18,950
+the basic time stamp ordering protocol
+
+175
+00:07:18,950 --> 00:07:20,050
+then we're going to talk about
+
+176
+00:07:20,050 --> 00:07:22,370
+optimistic concurrency protocol which is
+
+177
+00:07:22,370 --> 00:07:25,040
+also a timestamp based protocol and then
+
+178
+00:07:25,040 --> 00:07:26,150
+we're going to talk about a partition
+
+179
+00:07:26,150 --> 00:07:27,560
+based time stamp hoarding protocol which
+
+180
+00:07:27,560 --> 00:07:29,450
+alleviates some of the bottlenecks then
+
+181
+00:07:29,450 --> 00:07:30,980
+regular time snowboarding protocols have
+
+182
+00:07:30,980 --> 00:07:32,360
+and then we're going to talk about
+
+183
+00:07:32,360 --> 00:07:35,090
+isolation levels okay so let's get
+
+184
+00:07:35,090 --> 00:07:35,570
+started
+
+185
+00:07:35,570 --> 00:07:37,850
+so with these times time ordering
+
+186
+00:07:37,850 --> 00:07:40,190
+schemes the general idea is that you
+
+187
+00:07:40,190 --> 00:07:41,960
+want the transactions to proceed in the
+
+188
+00:07:41,960 --> 00:07:43,820
+system reading and writing objects
+
+189
+00:07:43,820 --> 00:07:47,240
+without actually acquiring locks okay to
+
+190
+00:07:47,240 --> 00:07:49,220
+make this possible you know you have to
+
+191
+00:07:49,220 --> 00:07:51,050
+add some extra metadata to all of the
+
+192
+00:07:51,050 --> 00:07:52,840
+database objects to make this possible
+
+193
+00:07:52,840 --> 00:07:55,370
+specifically you have to add two extra
+
+194
+00:07:55,370 --> 00:07:57,680
+timestamps to every single tuple in the
+
+195
+00:07:57,680 --> 00:07:59,330
+system you have to add a read time stamp
+
+196
+00:07:59,330 --> 00:08:02,450
+which represents them time stamp of the
+
+197
+00:08:02,450 --> 00:08:04,460
+transaction the most recent transaction
+
+198
+00:08:04,460 --> 00:08:06,560
+then read this item and a write time
+
+199
+00:08:06,560 --> 00:08:07,940
+stamp which is the time stamp of the
+
+200
+00:08:07,940 --> 00:08:09,920
+most recent transaction that wrote into
+
+201
+00:08:09,920 --> 00:08:11,990
+this this tuple and in the system and
+
+202
+00:08:11,990 --> 00:08:15,380
+then as the transaction is is is going
+
+203
+00:08:15,380 --> 00:08:16,940
+through its operations it's just going
+
+204
+00:08:16,940 --> 00:08:18,740
+to make sure that it can actually read
+
+205
+00:08:18,740 --> 00:08:20,960
+this tuple by leveraging the time stamps
+
+206
+00:08:20,960 --> 00:08:23,060
+that are associated with this tuple okay
+
+207
+00:08:23,060 --> 00:08:25,270
+now and I'll talk about how this is done
+
+208
+00:08:25,270 --> 00:08:30,050
+so for reads there's an invariant that
+
+209
+00:08:30,050 --> 00:08:31,340
+you have to make sure before you're
+
+210
+00:08:31,340 --> 00:08:32,990
+actually allowed to read a value from
+
+211
+00:08:32,990 --> 00:08:34,669
+the database system you have to ensure
+
+212
+00:08:34,669 --> 00:08:36,229
+that the time stamp so you read your own
+
+213
+00:08:36,229 --> 00:08:38,500
+time stamp for this transaction TI
+
+214
+00:08:38,500 --> 00:08:40,270
+you have to make sure that it's less
+
+215
+00:08:40,270 --> 00:08:43,030
+than the right time stamp for this tuple
+
+216
+00:08:43,030 --> 00:08:46,330
+in the system okay does that make sense
+
+217
+00:08:46,330 --> 00:08:47,770
+what does that mean that me that means
+
+218
+00:08:47,770 --> 00:08:49,590
+that's essentially making sure that
+
+219
+00:08:49,590 --> 00:08:51,550
+there's no other transaction that's
+
+220
+00:08:51,550 --> 00:08:55,210
+written into the system yeah there's no
+
+221
+00:08:55,210 --> 00:08:56,890
+other transaction in the system that's
+
+222
+00:08:56,890 --> 00:08:58,960
+wrote into the into this tuple that
+
+223
+00:08:58,960 --> 00:09:01,420
+should have read your but who's to say
+
+224
+00:09:01,420 --> 00:09:03,940
+you're not reading a value of the tuple
+
+225
+00:09:03,940 --> 00:09:05,530
+from the future right so there's a
+
+226
+00:09:05,530 --> 00:09:07,030
+transact transaction in the future
+
+227
+00:09:07,030 --> 00:09:09,030
+that's overwritten the database value
+
+228
+00:09:09,030 --> 00:09:12,070
+that you should now be reading that's
+
+229
+00:09:12,070 --> 00:09:14,380
+essentially but that's a problem and
+
+230
+00:09:14,380 --> 00:09:15,850
+when this happens you essentially have
+
+231
+00:09:15,850 --> 00:09:17,560
+to abort and when you abort you have to
+
+232
+00:09:17,560 --> 00:09:18,550
+make sure that you start with a newer
+
+233
+00:09:18,550 --> 00:09:21,700
+transaction a newer timestamp than the
+
+234
+00:09:21,700 --> 00:09:22,750
+one that you had when you initially
+
+235
+00:09:22,750 --> 00:09:24,970
+began the transaction does everybody
+
+236
+00:09:24,970 --> 00:09:26,230
+sort of understand why you need to
+
+237
+00:09:26,230 --> 00:09:29,680
+assign a newer timestamp what would
+
+238
+00:09:29,680 --> 00:09:31,120
+happen if you had the same timestamp you
+
+239
+00:09:31,120 --> 00:09:35,020
+had before exactly you'd run into the
+
+240
+00:09:35,020 --> 00:09:36,460
+same problem right you have to that's
+
+241
+00:09:36,460 --> 00:09:37,900
+because mod because you have to ensure
+
+242
+00:09:37,900 --> 00:09:39,490
+timestamps are monotonically increasing
+
+243
+00:09:39,490 --> 00:09:41,350
+you have to get a new timestamp to avoid
+
+244
+00:09:41,350 --> 00:09:53,590
+this problem yeah so if your timestamp
+
+245
+00:09:53,590 --> 00:09:55,540
+is the same as a right timestamp what
+
+246
+00:09:55,540 --> 00:09:57,960
+does that mean
+
+247
+00:09:58,200 --> 00:09:59,380
+exactly
+
+248
+00:09:59,380 --> 00:10:01,570
+you can read it you can read it right it
+
+249
+00:10:01,570 --> 00:10:03,070
+should be repeatable reads it's
+
+250
+00:10:03,070 --> 00:10:15,180
+perfectly fine yeah so in this scheme
+
+251
+00:10:15,180 --> 00:10:17,770
+other times times are assigned when you
+
+252
+00:10:17,770 --> 00:10:20,730
+begin that's when begin the transaction
+
+253
+00:10:20,730 --> 00:10:23,620
+okay so if this invariant is invalidated
+
+254
+00:10:23,620 --> 00:10:25,690
+you essentially have to abort but on the
+
+255
+00:10:25,690 --> 00:10:28,600
+other hand if you're actually allowed to
+
+256
+00:10:28,600 --> 00:10:31,900
+perform the read then you you modify the
+
+257
+00:10:31,900 --> 00:10:33,550
+read time stamp for that for this tuple
+
+258
+00:10:33,550 --> 00:10:35,890
+to take the maximum of whatever the read
+
+259
+00:10:35,890 --> 00:10:37,900
+time stamp is right now and what your
+
+260
+00:10:37,900 --> 00:10:40,870
+own time stamp is does anybody know why
+
+261
+00:10:40,870 --> 00:10:43,920
+you have to take the maximum
+
+262
+00:10:47,089 --> 00:10:48,230
+times have to be monotonically
+
+263
+00:10:48,230 --> 00:10:49,910
+increasing rate you could have a
+
+264
+00:10:49,910 --> 00:10:51,920
+transaction that's newer than you update
+
+265
+00:10:51,920 --> 00:10:54,110
+the read time stamp but you can't set
+
+266
+00:10:54,110 --> 00:10:55,910
+back the time stamp back to what you
+
+267
+00:10:55,910 --> 00:10:57,709
+were because you're older right time
+
+268
+00:10:57,709 --> 00:10:58,879
+times have to be monotonically
+
+269
+00:10:58,879 --> 00:11:00,470
+increasing so you have to take the
+
+270
+00:11:00,470 --> 00:11:02,209
+maximum or whatever it is right at this
+
+271
+00:11:02,209 --> 00:11:03,800
+point in time when you read it and
+
+272
+00:11:03,800 --> 00:11:07,100
+what's your time stamp is so this is
+
+273
+00:11:07,100 --> 00:11:09,829
+important okay so once you've updated
+
+274
+00:11:09,829 --> 00:11:12,259
+the time stamp you now have to make a
+
+275
+00:11:12,259 --> 00:11:14,350
+copy of this tuple into some local
+
+276
+00:11:14,350 --> 00:11:17,209
+private workspace that's only visible to
+
+277
+00:11:17,209 --> 00:11:18,680
+you so that you can ensure that you get
+
+278
+00:11:18,680 --> 00:11:52,639
+repeatable reads so there's a assume
+
+279
+00:11:52,639 --> 00:11:54,259
+that there's some there's some tuple
+
+280
+00:11:54,259 --> 00:11:55,639
+that you want to read right and the
+
+281
+00:11:55,639 --> 00:11:57,350
+right time stamp is from a transaction
+
+282
+00:11:57,350 --> 00:11:59,179
+that's newer than you that's in the
+
+283
+00:11:59,179 --> 00:12:01,189
+future right you shouldn't be able to
+
+284
+00:12:01,189 --> 00:12:02,329
+read that value right you should be
+
+285
+00:12:02,329 --> 00:12:04,370
+reading the value that existed before it
+
+286
+00:12:04,370 --> 00:12:05,990
+wrote before the new transaction wrote
+
+287
+00:12:05,990 --> 00:12:13,370
+it so that's why it hidden validates you
+
+288
+00:12:13,370 --> 00:12:14,990
+yep yep because you now appear in a
+
+289
+00:12:14,990 --> 00:12:16,339
+different order in the serial order
+
+290
+00:12:16,339 --> 00:12:18,319
+right you shouldn't because your time
+
+291
+00:12:18,319 --> 00:12:20,059
+stamp is newer than the one that wrote
+
+292
+00:12:20,059 --> 00:12:22,730
+to it before you logically appear after
+
+293
+00:12:22,730 --> 00:12:26,259
+this transaction in the serial order
+
+294
+00:12:28,569 --> 00:12:33,069
+yeah go ahead
+
+295
+00:12:33,350 --> 00:12:35,250
+so this is not I don't think it's
+
+296
+00:12:35,250 --> 00:12:36,810
+covered in the book but you have to make
+
+297
+00:12:36,810 --> 00:12:38,610
+sure that you have to make a local copy
+
+298
+00:12:38,610 --> 00:12:41,960
+so that you can issue repeatable reads
+
+299
+00:12:43,700 --> 00:12:45,930
+so you can imagine that at rent another
+
+300
+00:12:45,930 --> 00:12:47,430
+transaction comes in and updates the
+
+301
+00:12:47,430 --> 00:12:49,800
+system but you have to be able to read
+
+302
+00:12:49,800 --> 00:12:52,250
+the same value that you read initially
+
+303
+00:12:52,250 --> 00:12:55,350
+right but if you but if the if you allow
+
+304
+00:12:55,350 --> 00:12:56,550
+it another transaction to update the
+
+305
+00:12:56,550 --> 00:12:57,839
+value here then you would invalidate
+
+306
+00:12:57,839 --> 00:13:00,420
+this this this invariant top and you
+
+307
+00:13:00,420 --> 00:13:01,290
+wouldn't able to read it but you
+
+308
+00:13:01,290 --> 00:13:02,370
+actually should be able to read it right
+
+309
+00:13:02,370 --> 00:13:04,800
+because you wrote it you read it in a
+
+310
+00:13:04,800 --> 00:13:20,760
+transaction the consistent state yeah
+
+311
+00:13:20,760 --> 00:13:22,589
+that's a that's a very good point I
+
+312
+00:13:22,589 --> 00:13:24,240
+think you're alluding to the fact that
+
+313
+00:13:24,240 --> 00:13:25,440
+there could be starvation where you have
+
+314
+00:13:25,440 --> 00:13:28,200
+consistently consistent in boards that's
+
+315
+00:13:28,200 --> 00:13:29,460
+a that's a drawback of this approach and
+
+316
+00:13:29,460 --> 00:13:31,110
+we'll get sort of get to that later in
+
+317
+00:13:31,110 --> 00:13:34,440
+the presentation okay so this is just
+
+318
+00:13:34,440 --> 00:13:36,300
+for reads you have a similar similar
+
+319
+00:13:36,300 --> 00:13:40,800
+story for writes okay so if your
+
+320
+00:13:40,800 --> 00:13:43,500
+transaction I if your timestamp is less
+
+321
+00:13:43,500 --> 00:13:47,250
+than the the read time stamp of the the
+
+322
+00:13:47,250 --> 00:13:48,510
+object that you're trying to write into
+
+323
+00:13:48,510 --> 00:13:51,660
+that means it's a newer transaction that
+
+324
+00:13:51,660 --> 00:13:54,089
+read a stale value a value that you that
+
+325
+00:13:54,089 --> 00:13:55,260
+should have been coming from you as a
+
+326
+00:13:55,260 --> 00:13:57,450
+transaction but as is not anymore so
+
+327
+00:13:57,450 --> 00:13:59,459
+that's a violation of the of this time
+
+328
+00:13:59,459 --> 00:14:02,610
+step boarding protocol similarly if you
+
+329
+00:14:02,610 --> 00:14:05,400
+have a if your time stamp is less than
+
+330
+00:14:05,400 --> 00:14:09,390
+the right time stamp of another of the
+
+331
+00:14:09,390 --> 00:14:11,130
+of the object then again there's a new a
+
+332
+00:14:11,130 --> 00:14:13,140
+transaction that essentially overrode
+
+333
+00:14:13,140 --> 00:14:15,270
+your value and again that's a violation
+
+334
+00:14:15,270 --> 00:14:17,339
+and the idea is that if either of these
+
+335
+00:14:17,339 --> 00:14:19,800
+conditions are true you have to abort
+
+336
+00:14:19,800 --> 00:14:21,900
+and again start with a newer timestamp
+
+337
+00:14:21,900 --> 00:14:24,589
+value and begin the entire process again
+
+338
+00:14:24,589 --> 00:14:27,900
+if on the other hand these this is a
+
+339
+00:14:27,900 --> 00:14:29,550
+it's a valid right then you have to
+
+340
+00:14:29,550 --> 00:14:30,959
+update the right time stamp for the
+
+341
+00:14:30,959 --> 00:14:34,230
+tuple and and you're essentially you
+
+342
+00:14:34,230 --> 00:14:37,400
+essentially done you have to also make a
+
+343
+00:14:37,760 --> 00:14:40,980
+colloquial reads you you read your local
+
+344
+00:14:40,980 --> 00:14:42,810
+copy instead of going back to the in in
+
+345
+00:14:42,810 --> 00:14:45,920
+to the databases global stay
+
+346
+00:14:46,120 --> 00:14:54,939
+okay okay so let's walk through an
+
+347
+00:14:54,939 --> 00:14:56,920
+example hopefully this will clear things
+
+348
+00:14:56,920 --> 00:14:59,319
+up a little bit so we have two
+
+349
+00:14:59,319 --> 00:15:00,999
+transactions here and it's just assumed
+
+350
+00:15:00,999 --> 00:15:02,230
+that you can only execute one
+
+351
+00:15:02,230 --> 00:15:04,120
+transaction one operation at a time so
+
+352
+00:15:04,120 --> 00:15:05,649
+you can assume single core single thread
+
+353
+00:15:05,649 --> 00:15:08,290
+and in this database
+
+354
+00:15:08,290 --> 00:15:10,269
+we now have annotated all of the the
+
+355
+00:15:10,269 --> 00:15:12,699
+tuples we have all of the objects here
+
+356
+00:15:12,699 --> 00:15:14,410
+with the read time stamp and a write
+
+357
+00:15:14,410 --> 00:15:17,259
+time stamp okay so let's get started so
+
+358
+00:15:17,259 --> 00:15:21,459
+we have t1 and t2 when they entered the
+
+359
+00:15:21,459 --> 00:15:23,230
+system they were assigned a timestamp
+
+360
+00:15:23,230 --> 00:15:25,720
+assume that T 1 is assigned a timestamp
+
+361
+00:15:25,720 --> 00:15:27,879
+of 1 and T 2 is assigned a timestamp
+
+362
+00:15:27,879 --> 00:15:31,209
+book to write pretty simple then you do
+
+363
+00:15:31,209 --> 00:15:34,360
+the read so T 1 does a read of B you
+
+364
+00:15:34,360 --> 00:15:36,040
+look at the write time stamp for B it's
+
+365
+00:15:36,040 --> 00:15:38,949
+0 1 is greater than 0 so you update and
+
+366
+00:15:38,949 --> 00:15:43,360
+the read time stamp to 1 then we do a
+
+367
+00:15:43,360 --> 00:15:45,610
+contact switched into transaction 2 and
+
+368
+00:15:45,610 --> 00:15:48,550
+T 2 now wants to do a read of B if you
+
+369
+00:15:48,550 --> 00:15:50,679
+look at the write time stamp and you're
+
+370
+00:15:50,679 --> 00:15:51,970
+good to go so you update the read times
+
+371
+00:15:51,970 --> 00:15:53,589
+time to take the maximum of what it was
+
+372
+00:15:53,589 --> 00:15:56,050
+which is 1 and the new timestamp 2 and
+
+373
+00:15:56,050 --> 00:16:00,879
+you get 2 all right now you do a write
+
+374
+00:16:00,879 --> 00:16:04,269
+so T 2 wants to do a write of B you look
+
+375
+00:16:04,269 --> 00:16:05,319
+at the write time stamp and the real
+
+376
+00:16:05,319 --> 00:16:06,999
+time stamp your greater than both so you
+
+377
+00:16:06,999 --> 00:16:10,709
+update the write time stamp of B to 2
+
+378
+00:16:10,709 --> 00:16:14,259
+okay now you do a context switch back
+
+379
+00:16:14,259 --> 00:16:17,800
+into t1 t1 wants to do a read of a it
+
+380
+00:16:17,800 --> 00:16:21,160
+looks at the the write time stamp of a 1
+
+381
+00:16:21,160 --> 00:16:22,749
+is greater than 0 so you update the read
+
+382
+00:16:22,749 --> 00:16:24,730
+time stamp to be the maximum of 0 1 and
+
+383
+00:16:24,730 --> 00:16:25,449
+you're good to go
+
+384
+00:16:25,449 --> 00:16:28,689
+sorry yeah you update the read times
+
+385
+00:16:28,689 --> 00:16:32,470
+time to 1 now you come back over to
+
+386
+00:16:32,470 --> 00:16:35,050
+transaction 2 and 2 wants to do a read
+
+387
+00:16:35,050 --> 00:16:37,360
+of a you look at the write time stamp of
+
+388
+00:16:37,360 --> 00:16:39,459
+a 2 is greater than 0 you update the
+
+389
+00:16:39,459 --> 00:16:42,029
+real-time read time stamp to 2 now and
+
+390
+00:16:42,029 --> 00:16:46,720
+then finally t2 wants to do a read of a
+
+391
+00:16:46,720 --> 00:16:48,639
+so it looks at both the read time stamp
+
+392
+00:16:48,639 --> 00:16:50,259
+on the write time stamp of a it's
+
+393
+00:16:50,259 --> 00:16:51,910
+greater than both of them so that that's
+
+394
+00:16:51,910 --> 00:16:55,660
+for the right is valid and yeah so no
+
+395
+00:16:55,660 --> 00:16:58,209
+validations exist no no no violations
+
+396
+00:16:58,209 --> 00:16:59,740
+exists so both transactions are saying
+
+397
+00:16:59,740 --> 00:17:03,280
+and you can commit both of them alright
+
+398
+00:17:03,280 --> 00:17:07,660
+this is this clear okay good so let's
+
+399
+00:17:07,660 --> 00:17:11,530
+walk through another example so it's the
+
+400
+00:17:11,530 --> 00:17:13,599
+same setup here all the trends all the
+
+401
+00:17:13,599 --> 00:17:15,819
+initial timestamps are 0 T 1 and T 2
+
+402
+00:17:15,819 --> 00:17:18,579
+enter the system T 1 gets transact gets
+
+403
+00:17:18,579 --> 00:17:21,849
+a timestamp 1 T 2 gets x times 2 all
+
+404
+00:17:21,849 --> 00:17:24,670
+right so in this scenario T 1 wants to
+
+405
+00:17:24,670 --> 00:17:27,130
+do a read it's it's it's a it's a good
+
+406
+00:17:27,130 --> 00:17:29,050
+read so it updates the the read time
+
+407
+00:17:29,050 --> 00:17:33,550
+stamp do a context switch and now T 2
+
+408
+00:17:33,550 --> 00:17:35,170
+wants to do a write of a it checks the
+
+409
+00:17:35,170 --> 00:17:36,520
+write time stamp and the wait time stamp
+
+410
+00:17:36,520 --> 00:17:38,110
+it's valid so it updates the write time
+
+411
+00:17:38,110 --> 00:17:42,460
+stamp to 2t 1 now is trying to do a
+
+412
+00:17:42,460 --> 00:17:45,940
+write of a so checks the right times
+
+413
+00:17:45,940 --> 00:17:48,070
+time at 3 times 2m it's no longer valid
+
+414
+00:17:48,070 --> 00:17:50,200
+because you have it the time stamp of 1
+
+415
+00:17:50,200 --> 00:17:53,350
+which is 1 is less than the right time
+
+416
+00:17:53,350 --> 00:17:55,210
+stamp of a which is 2 this is a
+
+417
+00:17:55,210 --> 00:17:58,960
+violation so T 1 actually can't commit
+
+418
+00:17:58,960 --> 00:18:04,180
+it has to abort is that clear
+
+419
+00:18:04,180 --> 00:18:06,280
+you can think about this as like in the
+
+420
+00:18:06,280 --> 00:18:08,050
+serial order because T 1 has time stamp
+
+421
+00:18:08,050 --> 00:18:10,360
+1 and T 2 s times n 2 T 1 should appear
+
+422
+00:18:10,360 --> 00:18:16,000
+before T 1 and the serial order so this
+
+423
+00:18:16,000 --> 00:18:17,710
+is obviously going to be a violation
+
+424
+00:18:17,710 --> 00:18:19,120
+because this read here it's gonna be
+
+425
+00:18:19,120 --> 00:18:26,760
+aborted okay sorry so there's actually
+
+426
+00:18:26,760 --> 00:18:29,620
+an optimization that we can make here to
+
+427
+00:18:29,620 --> 00:18:31,290
+avoid aborting in this specific scenario
+
+428
+00:18:31,290 --> 00:18:34,780
+right you can think about it as in
+
+429
+00:18:34,780 --> 00:18:37,240
+physical time what's happening right T 2
+
+430
+00:18:37,240 --> 00:18:38,710
+is writing to something but then it's
+
+431
+00:18:38,710 --> 00:18:41,680
+being overwritten by T 1 so do we really
+
+432
+00:18:41,680 --> 00:18:45,760
+need this right no I think the
+
+433
+00:18:45,760 --> 00:18:47,170
+observation is you actually don't need
+
+434
+00:18:47,170 --> 00:18:50,590
+it what you could have is because we've
+
+435
+00:18:50,590 --> 00:18:52,180
+maintaining a local every transaction is
+
+436
+00:18:52,180 --> 00:18:53,680
+maintaining a local copy of the soup of
+
+437
+00:18:53,680 --> 00:18:56,140
+the tuples this right here can can
+
+438
+00:18:56,140 --> 00:18:57,720
+essentially be ignored by the system
+
+439
+00:18:57,720 --> 00:19:01,360
+right because externally this right is
+
+440
+00:19:01,360 --> 00:19:04,030
+what's valid and as long as this right
+
+441
+00:19:04,030 --> 00:19:05,560
+is externally valid then you don't
+
+442
+00:19:05,560 --> 00:19:07,960
+actually need this one externally within
+
+443
+00:19:07,960 --> 00:19:08,980
+the transaction you still need this
+
+444
+00:19:08,980 --> 00:19:09,940
+right because you have to be able to
+
+445
+00:19:09,940 --> 00:19:11,100
+read your own rights
+
+446
+00:19:11,100 --> 00:19:13,040
+so this
+
+447
+00:19:13,040 --> 00:19:15,800
+observation leads to an optimization
+
+448
+00:19:15,800 --> 00:19:17,360
+that you you can apply in these time
+
+449
+00:19:17,360 --> 00:19:19,550
+stamp based systems call the Thomas
+
+450
+00:19:19,550 --> 00:19:22,430
+Wright rule and the idea is that if
+
+451
+00:19:22,430 --> 00:19:25,210
+you're trying to write into an object X
+
+452
+00:19:25,210 --> 00:19:27,770
+as before if your time stamp is less
+
+453
+00:19:27,770 --> 00:19:29,510
+than the the read time stamp for that
+
+454
+00:19:29,510 --> 00:19:31,490
+object you still have to abort and start
+
+455
+00:19:31,490 --> 00:19:32,930
+with a newer trend a new a new a time
+
+456
+00:19:32,930 --> 00:19:36,980
+stamp but if the time stamp is less than
+
+457
+00:19:36,980 --> 00:19:38,450
+the write time stamp of the object which
+
+458
+00:19:38,450 --> 00:19:39,800
+means there's a newer transaction that
+
+459
+00:19:39,800 --> 00:19:41,480
+wrote into this object you can actually
+
+460
+00:19:41,480 --> 00:19:43,670
+just ignore ignore the right altogether
+
+461
+00:19:43,670 --> 00:19:45,830
+you have a local copy of the write that
+
+462
+00:19:45,830 --> 00:19:47,420
+you can now read but externally it's
+
+463
+00:19:47,420 --> 00:19:57,370
+okay to ignore this right yeah yeah yes
+
+464
+00:20:02,140 --> 00:20:04,690
+so this right is only important to t1
+
+465
+00:20:04,690 --> 00:20:07,640
+right so it's not it doesn't really I
+
+466
+00:20:07,640 --> 00:20:08,810
+don't actually have to propagate it back
+
+467
+00:20:08,810 --> 00:20:09,920
+to the database because it's gonna be
+
+468
+00:20:09,920 --> 00:20:12,320
+overwritten by this right because in the
+
+469
+00:20:12,320 --> 00:20:14,000
+serial order this happens first and then
+
+470
+00:20:14,000 --> 00:20:16,460
+this hip this happens okay because this
+
+471
+00:20:16,460 --> 00:20:18,530
+has a transaction time stamp of 1 this
+
+472
+00:20:18,530 --> 00:20:27,110
+has a time stamp of - right yeah so this
+
+473
+00:20:27,110 --> 00:20:28,550
+optimization and it's actually quite
+
+474
+00:20:28,550 --> 00:20:31,520
+useful in specifically this specific
+
+475
+00:20:31,520 --> 00:20:35,080
+scenario it allows you to have the
+
+476
+00:20:35,080 --> 00:20:38,570
+actually actually commit this this this
+
+477
+00:20:38,570 --> 00:20:45,800
+this schedule so this is the same
+
+478
+00:20:45,800 --> 00:20:49,430
+example as before t1 begins write reads
+
+479
+00:20:49,430 --> 00:20:52,790
+a updates 3 timestamp t2 begins does a
+
+480
+00:20:52,790 --> 00:20:55,610
+right now we recognize that this right
+
+481
+00:20:55,610 --> 00:20:58,400
+should normally be invalid we actually
+
+482
+00:20:58,400 --> 00:21:00,500
+but by applying the Thomas write rule we
+
+483
+00:21:00,500 --> 00:21:02,030
+don't actually update the write time
+
+484
+00:21:02,030 --> 00:21:04,730
+stamp or the value hey but we just
+
+485
+00:21:04,730 --> 00:21:06,230
+maintain this local copy we ignore it
+
+486
+00:21:06,230 --> 00:21:08,180
+and we allow T went to continue all
+
+487
+00:21:08,180 --> 00:21:09,680
+subsequent reads for this read all
+
+488
+00:21:09,680 --> 00:21:12,980
+subsequent reads of a in times in
+
+489
+00:21:12,980 --> 00:21:15,520
+transaction one occur in the local copy
+
+490
+00:21:15,520 --> 00:21:23,290
+with this value okay
+
+491
+00:21:26,220 --> 00:21:34,900
+yeah yeah so that's essentially basic
+
+492
+00:21:34,900 --> 00:21:37,600
+time stamp ordering like two phase
+
+493
+00:21:37,600 --> 00:21:39,160
+locking is up it's a mechanism for the
+
+494
+00:21:39,160 --> 00:21:40,720
+database to generate conflict
+
+495
+00:21:40,720 --> 00:21:42,940
+serializable schedules as long as you
+
+496
+00:21:42,940 --> 00:21:44,980
+don't apply this to this Thomas Wright
+
+497
+00:21:44,980 --> 00:21:48,100
+rule okay it does you can prevent it
+
+498
+00:21:48,100 --> 00:21:50,200
+deadlocks altogether because as you're
+
+499
+00:21:50,200 --> 00:21:52,240
+similar to how two phase locking works
+
+500
+00:21:52,240 --> 00:21:54,010
+for every operation you're performing on
+
+501
+00:21:54,010 --> 00:21:54,850
+the database you're making sure that
+
+502
+00:21:54,850 --> 00:21:57,100
+there's a this is a valid operation it's
+
+503
+00:21:57,100 --> 00:21:58,300
+sort of like deadlock prevention right
+
+504
+00:21:58,300 --> 00:22:00,400
+you're incrementally generating this
+
+505
+00:22:00,400 --> 00:22:01,570
+utilisation graph and as soon as you
+
+506
+00:22:01,570 --> 00:22:02,800
+detect and detect a cycle you
+
+507
+00:22:02,800 --> 00:22:05,080
+invalidated you aborted in two phase
+
+508
+00:22:05,080 --> 00:22:06,310
+locking here
+
+509
+00:22:06,310 --> 00:22:08,200
+you're incrementally checking for every
+
+510
+00:22:08,200 --> 00:22:10,030
+operation whether it's valid or not
+
+511
+00:22:10,030 --> 00:22:11,410
+based on these timestamps and then
+
+512
+00:22:11,410 --> 00:22:13,950
+aborting eagerly as eager as possible
+
+513
+00:22:13,950 --> 00:22:17,920
+okay one drawback to you which I think
+
+514
+00:22:17,920 --> 00:22:20,530
+one of the students led to is you could
+
+515
+00:22:20,530 --> 00:22:22,000
+have a possible you have the possibility
+
+516
+00:22:22,000 --> 00:22:23,230
+of starvation right you have it you can
+
+517
+00:22:23,230 --> 00:22:25,210
+think of a long transaction that's been
+
+518
+00:22:25,210 --> 00:22:26,800
+running for a long time and then you
+
+519
+00:22:26,800 --> 00:22:28,360
+have these short transactions that are
+
+520
+00:22:28,360 --> 00:22:29,950
+performing that exist for a very short
+
+521
+00:22:29,950 --> 00:22:31,660
+period of time update a few tuples and
+
+522
+00:22:31,660 --> 00:22:33,370
+then commit and leave these are
+
+523
+00:22:33,370 --> 00:22:34,780
+essentially going to invalidate all the
+
+524
+00:22:34,780 --> 00:22:37,090
+old transactions causing conflicts
+
+525
+00:22:37,090 --> 00:22:45,850
+causing a cyclical aborts okay so so
+
+526
+00:22:45,850 --> 00:22:46,810
+another thing that we should talk about
+
+527
+00:22:46,810 --> 00:22:50,410
+here is these these time step boarding
+
+528
+00:22:50,410 --> 00:22:53,980
+protocols they allow they permit
+
+529
+00:22:53,980 --> 00:22:57,100
+schedules that are not recoverable okay
+
+530
+00:22:57,100 --> 00:22:59,350
+so what is a recoverable schedule so a
+
+531
+00:22:59,350 --> 00:23:02,980
+schedule is recoverable if a transaction
+
+532
+00:23:02,980 --> 00:23:04,840
+only commits if all the previous
+
+533
+00:23:04,840 --> 00:23:07,030
+transactions that it relied on data for
+
+534
+00:23:07,030 --> 00:23:09,490
+from also have committed you can think
+
+535
+00:23:09,490 --> 00:23:11,770
+of it as like they like Casco Attucks
+
+536
+00:23:11,770 --> 00:23:12,640
+cascading abort
+
+537
+00:23:12,640 --> 00:23:15,310
+right you want to make sure that if you
+
+538
+00:23:15,310 --> 00:23:16,930
+read a value from it that's updated by
+
+539
+00:23:16,930 --> 00:23:18,340
+another transaction that that
+
+540
+00:23:18,340 --> 00:23:20,610
+transaction commits before you commit
+
+541
+00:23:20,610 --> 00:23:23,200
+basic time stamp ordering does not
+
+542
+00:23:23,200 --> 00:23:26,470
+guarantee this for you okay so I want to
+
+543
+00:23:26,470 --> 00:23:29,560
+talk about how this the specific recover
+
+544
+00:23:29,560 --> 00:23:31,720
+the specific characteristic is violated
+
+545
+00:23:31,720 --> 00:23:35,020
+by a basic time stamp ordering so
+
+546
+00:23:35,020 --> 00:23:35,410
+imagine
+
+547
+00:23:35,410 --> 00:23:37,660
+we have the same setup here we have two
+
+548
+00:23:37,660 --> 00:23:39,790
+transactions t1 and t2 t1 has time snap
+
+549
+00:23:39,790 --> 00:23:41,290
+1 T 2's times time 2
+
+550
+00:23:41,290 --> 00:23:45,520
+so t1 does a write of a t2 does a read
+
+551
+00:23:45,520 --> 00:23:48,460
+of a and then a write of B so in this
+
+552
+00:23:48,460 --> 00:23:49,180
+serial order
+
+553
+00:23:49,180 --> 00:23:52,480
+t1 occurs first and t2 occurs second so
+
+554
+00:23:52,480 --> 00:23:55,930
+this read can now read this right and
+
+555
+00:23:55,930 --> 00:23:56,590
+that's okay
+
+556
+00:23:56,590 --> 00:23:58,900
+it does some right of B which is OK in
+
+557
+00:23:58,900 --> 00:24:01,900
+commits right so t2 has committed at
+
+558
+00:24:01,900 --> 00:24:04,930
+this point but let's say later on in the
+
+559
+00:24:04,930 --> 00:24:07,450
+in the system this transaction has
+
+560
+00:24:07,450 --> 00:24:10,180
+aborted the problem is that we've now
+
+561
+00:24:10,180 --> 00:24:11,710
+notified the client we've notified
+
+562
+00:24:11,710 --> 00:24:13,300
+externally to the world that this
+
+563
+00:24:13,300 --> 00:24:15,670
+transaction is committed but it read a
+
+564
+00:24:15,670 --> 00:24:18,060
+value from a transaction that aborted
+
+565
+00:24:18,060 --> 00:24:20,590
+right so this is actually invalid not
+
+566
+00:24:20,590 --> 00:24:21,970
+it's not a it's not a recoverable
+
+567
+00:24:21,970 --> 00:24:23,290
+schedule because when the system comes
+
+568
+00:24:23,290 --> 00:24:26,020
+back we have to recognize that this is
+
+569
+00:24:26,020 --> 00:24:27,490
+aborted and that we should not apply
+
+570
+00:24:27,490 --> 00:24:33,160
+these rights okay so this is not a
+
+571
+00:24:33,160 --> 00:24:34,930
+recoverable schedule but it is permitted
+
+572
+00:24:34,930 --> 00:24:36,220
+by the basic time stamp order and
+
+573
+00:24:36,220 --> 00:24:42,940
+concurrency protocol all right yeah so
+
+574
+00:24:42,940 --> 00:24:44,740
+so t1 aborts after t2 is committed and
+
+575
+00:24:44,740 --> 00:24:46,930
+this this violates the recoverable
+
+576
+00:24:46,930 --> 00:24:54,880
+schedule requirement okay so I think a
+
+577
+00:24:54,880 --> 00:24:55,990
+lot of people are sort of picked up on
+
+578
+00:24:55,990 --> 00:25:00,040
+this but this this these basic time
+
+579
+00:25:00,040 --> 00:25:01,630
+stamp ordering that the protocol has a
+
+580
+00:25:01,630 --> 00:25:03,940
+lot of overhead right so every time you
+
+581
+00:25:03,940 --> 00:25:06,520
+do a write or read you need to now copy
+
+582
+00:25:06,520 --> 00:25:09,280
+it into your your local workspace so if
+
+583
+00:25:09,280 --> 00:25:10,480
+you're updating or reading and writing
+
+584
+00:25:10,480 --> 00:25:11,980
+billions of two poles you have to make
+
+585
+00:25:11,980 --> 00:25:13,870
+billions of billions of copies per
+
+586
+00:25:13,870 --> 00:25:15,670
+transaction in a local memory space
+
+587
+00:25:15,670 --> 00:25:17,260
+right and that's obviously a lot of
+
+588
+00:25:17,260 --> 00:25:18,840
+overhead
+
+589
+00:25:18,840 --> 00:25:20,830
+another thing that again was picked up
+
+590
+00:25:20,830 --> 00:25:23,350
+by one of the students is that you could
+
+591
+00:25:23,350 --> 00:25:25,420
+have starvation by from long load from
+
+592
+00:25:25,420 --> 00:25:28,150
+long running transactions by short
+
+593
+00:25:28,150 --> 00:25:29,680
+running transactions that quickly update
+
+594
+00:25:29,680 --> 00:25:32,440
+one or two tuples and then require the
+
+595
+00:25:32,440 --> 00:25:33,850
+long running the long running
+
+596
+00:25:33,850 --> 00:25:37,620
+transaction to abort and we start
+
+597
+00:25:40,610 --> 00:25:45,990
+so so what can we do if you think about
+
+598
+00:25:45,990 --> 00:25:49,470
+it right so two-phase locking and this
+
+599
+00:25:49,470 --> 00:25:51,000
+basic time stamp recording protocol that
+
+600
+00:25:51,000 --> 00:25:53,030
+I just talked about they're also
+
+601
+00:25:53,030 --> 00:25:55,650
+somewhat pessimistic right so in
+
+602
+00:25:55,650 --> 00:25:58,020
+two-phase locking as soon as you read
+
+603
+00:25:58,020 --> 00:26:00,120
+and write a value from the database you
+
+604
+00:26:00,120 --> 00:26:02,039
+have to acquire some block to protect
+
+605
+00:26:02,039 --> 00:26:03,809
+yourself from other transactions in the
+
+606
+00:26:03,809 --> 00:26:06,630
+system with basic timestamp order and
+
+607
+00:26:06,630 --> 00:26:07,470
+you're kind of doing the same thing
+
+608
+00:26:07,470 --> 00:26:09,600
+right every time you want to read and
+
+609
+00:26:09,600 --> 00:26:11,340
+write a tuple you have to make sure that
+
+610
+00:26:11,340 --> 00:26:15,059
+the timestamps align just right so that
+
+611
+00:26:15,059 --> 00:26:16,289
+you can perform the operation that you
+
+612
+00:26:16,289 --> 00:26:18,570
+want to perform right so they're both
+
+613
+00:26:18,570 --> 00:26:19,919
+assuming that there's a lot of
+
+614
+00:26:19,919 --> 00:26:21,659
+contention in the system and try to
+
+615
+00:26:21,659 --> 00:26:24,900
+prevent this from prevent something
+
+616
+00:26:24,900 --> 00:26:27,419
+wrong from happening but what if you
+
+617
+00:26:27,419 --> 00:26:28,770
+make a different assumption what if you
+
+618
+00:26:28,770 --> 00:26:30,630
+assume that there's not going to be a
+
+619
+00:26:30,630 --> 00:26:32,669
+lot of contention in the system what
+
+620
+00:26:32,669 --> 00:26:34,200
+different types of optimizations can you
+
+621
+00:26:34,200 --> 00:26:36,809
+apply assuming that there that
+
+622
+00:26:36,809 --> 00:26:38,280
+transactions are essentially a very
+
+623
+00:26:38,280 --> 00:26:40,650
+short-lived and are essentially conflict
+
+624
+00:26:40,650 --> 00:26:43,230
+free right can you be even more
+
+625
+00:26:43,230 --> 00:26:44,700
+optimistic than this stuff that we've
+
+626
+00:26:44,700 --> 00:26:46,950
+talked about so far and we'll talk about
+
+627
+00:26:46,950 --> 00:26:49,140
+one example one concurrency protocol
+
+628
+00:26:49,140 --> 00:26:50,700
+that makes this assumption and applies a
+
+629
+00:26:50,700 --> 00:26:52,520
+lot of different types of optimizations
+
+630
+00:26:52,520 --> 00:26:56,130
+okay and it's called as the name
+
+631
+00:26:56,130 --> 00:26:58,409
+suggests optimistic concurrency control
+
+632
+00:26:58,409 --> 00:26:59,880
+so it takes a very optimistic view of
+
+633
+00:26:59,880 --> 00:27:01,890
+how the transactions run in the system
+
+634
+00:27:01,890 --> 00:27:05,150
+so OCC optimistic concurrency control
+
+635
+00:27:05,150 --> 00:27:08,760
+was was written here at CMU by HT Cong
+
+636
+00:27:08,760 --> 00:27:11,429
+this he's no longer professor here I
+
+637
+00:27:11,429 --> 00:27:13,559
+think he said at Harvard but it's pretty
+
+638
+00:27:13,559 --> 00:27:15,179
+cool that one of the you know premier
+
+639
+00:27:15,179 --> 00:27:16,440
+concurrency control protocols was
+
+640
+00:27:16,440 --> 00:27:20,630
+actually written here at CMU okay oops
+
+641
+00:27:20,630 --> 00:27:24,240
+the the idea is as in the basics time
+
+642
+00:27:24,240 --> 00:27:26,070
+time time step boarding protocol every
+
+643
+00:27:26,070 --> 00:27:28,260
+operation you perform what you do is you
+
+644
+00:27:28,260 --> 00:27:31,350
+first make a you first make a local copy
+
+645
+00:27:31,350 --> 00:27:34,159
+of that data into a local thread local
+
+646
+00:27:34,159 --> 00:27:37,470
+private workspace okay any time you want
+
+647
+00:27:37,470 --> 00:27:39,150
+to read a copy any time you want to read
+
+648
+00:27:39,150 --> 00:27:40,830
+an element from the database you first
+
+649
+00:27:40,830 --> 00:27:42,330
+make a copy from it and then you're good
+
+650
+00:27:42,330 --> 00:27:43,890
+to go if you want to make an update to
+
+651
+00:27:43,890 --> 00:27:45,690
+it you first make a copy of it into your
+
+652
+00:27:45,690 --> 00:27:46,919
+local workspace and then you apply the
+
+653
+00:27:46,919 --> 00:27:49,470
+update to your local copy okay you don't
+
+654
+00:27:49,470 --> 00:27:51,659
+perform an in-place update anymore all
+
+655
+00:27:51,659 --> 00:27:52,539
+right
+
+656
+00:27:52,539 --> 00:27:56,279
+then once all of this work is done that
+
+657
+00:27:56,279 --> 00:27:58,719
+and you're ready to commit you have to
+
+658
+00:27:58,719 --> 00:28:00,309
+essentially make sure you have to
+
+659
+00:28:00,309 --> 00:28:02,440
+validate that all the changes you make
+
+660
+00:28:02,440 --> 00:28:04,089
+are transactionally consistent with the
+
+661
+00:28:04,089 --> 00:28:05,199
+rest of the transactions that are gone
+
+662
+00:28:05,199 --> 00:28:06,999
+running in the system concurrently with
+
+663
+00:28:06,999 --> 00:28:08,919
+you okay and I'll talk about how this is
+
+664
+00:28:08,919 --> 00:28:10,269
+done specifically in the workspace
+
+665
+00:28:10,269 --> 00:28:14,099
+in the following slides sorry
+
+666
+00:28:14,099 --> 00:28:16,899
+so after this validation step after the
+
+667
+00:28:16,899 --> 00:28:19,119
+database has Vallot has insured yeah hey
+
+668
+00:28:19,119 --> 00:28:21,699
+listen your transaction is good to go we
+
+669
+00:28:21,699 --> 00:28:23,440
+have to now install all the changes that
+
+670
+00:28:23,440 --> 00:28:25,269
+are in your private workspace into the
+
+671
+00:28:25,269 --> 00:28:27,009
+global database system and we have to do
+
+672
+00:28:27,009 --> 00:28:29,259
+this atomically okay and again I'll talk
+
+673
+00:28:29,259 --> 00:28:32,909
+about how this is done in the system
+
+674
+00:28:32,909 --> 00:28:36,669
+okay so the way the OCC works is that
+
+675
+00:28:36,669 --> 00:28:38,469
+it's split up into three phases the
+
+676
+00:28:38,469 --> 00:28:40,019
+first phase is called the read phase
+
+677
+00:28:40,019 --> 00:28:42,039
+then you have the validation phase which
+
+678
+00:28:42,039 --> 00:28:43,299
+is essentially gonna validate that this
+
+679
+00:28:43,299 --> 00:28:44,829
+transaction is actually still valid and
+
+680
+00:28:44,829 --> 00:28:46,419
+doesn't conflict with anything else and
+
+681
+00:28:46,419 --> 00:28:48,339
+once a validation phase is done then you
+
+682
+00:28:48,339 --> 00:28:49,809
+actually have to install your changes
+
+683
+00:28:49,809 --> 00:28:51,879
+from a private workspace into the global
+
+684
+00:28:51,879 --> 00:28:54,369
+database all right so the read phase is
+
+685
+00:28:54,369 --> 00:28:55,690
+a bit of a misnomer right you're
+
+686
+00:28:55,690 --> 00:28:57,399
+actually allowed to do both reading and
+
+687
+00:28:57,399 --> 00:28:59,109
+writing in it so I didn't want to make
+
+688
+00:28:59,109 --> 00:29:01,029
+sure that that gets across I actually
+
+689
+00:29:01,029 --> 00:29:03,219
+don't even like the phrase read phase I
+
+690
+00:29:03,219 --> 00:29:04,929
+actually prefer work phase where you're
+
+691
+00:29:04,929 --> 00:29:06,279
+doing the actual work for the
+
+692
+00:29:06,279 --> 00:29:08,339
+transaction okay so in the work phase
+
+693
+00:29:08,339 --> 00:29:10,569
+you're making your reads and writes
+
+694
+00:29:10,569 --> 00:29:12,039
+you're updating values you're reading
+
+695
+00:29:12,039 --> 00:29:15,339
+values all in a private workspace in the
+
+696
+00:29:15,339 --> 00:29:16,929
+validation phase when the interaction
+
+697
+00:29:16,929 --> 00:29:19,059
+the transaction is ready to commit the
+
+698
+00:29:19,059 --> 00:29:20,859
+database does a bunch of as you know
+
+699
+00:29:20,859 --> 00:29:22,089
+sanity checks to make sure that that's
+
+700
+00:29:22,089 --> 00:29:24,129
+true this is a valid transaction and
+
+701
+00:29:24,129 --> 00:29:25,899
+then in the write phase you atomically
+
+702
+00:29:25,899 --> 00:29:27,819
+install all your changes into the into
+
+703
+00:29:27,819 --> 00:29:31,059
+the global database okay so let's just
+
+704
+00:29:31,059 --> 00:29:32,739
+quickly walk through an example of how
+
+705
+00:29:32,739 --> 00:29:35,619
+this is going to work okay so the first
+
+706
+00:29:35,619 --> 00:29:36,789
+thing is that we have the same database
+
+707
+00:29:36,789 --> 00:29:38,469
+we had before but we've removed the
+
+708
+00:29:38,469 --> 00:29:40,029
+right time the read time stamp now we
+
+709
+00:29:40,029 --> 00:29:42,339
+just have a write time stamp the second
+
+710
+00:29:42,339 --> 00:29:43,899
+thing is we've now demarcated the
+
+711
+00:29:43,899 --> 00:29:46,869
+boundaries for all the phases we've
+
+712
+00:29:46,869 --> 00:29:48,279
+we've really just done this for
+
+713
+00:29:48,279 --> 00:29:50,349
+illustration they did the transaction is
+
+714
+00:29:50,349 --> 00:29:51,969
+not going to specifically say hey I want
+
+715
+00:29:51,969 --> 00:29:52,959
+to start my read phase I'm gonna start
+
+716
+00:29:52,959 --> 00:29:54,309
+my valid a phase and then the commit
+
+717
+00:29:54,309 --> 00:29:56,289
+phase this is it's going to be done it's
+
+718
+00:29:56,289 --> 00:29:58,959
+gonna be handled for you by the database
+
+719
+00:29:58,959 --> 00:30:01,509
+system itself much like how the two
+
+720
+00:30:01,509 --> 00:30:02,859
+phase locking protocol is implemented
+
+721
+00:30:02,859 --> 00:30:03,999
+for you by the database not by the
+
+722
+00:30:03,999 --> 00:30:05,499
+transaction right the transactions just
+
+723
+00:30:05,499 --> 00:30:06,160
+doing a bunch of reads
+
+724
+00:30:06,160 --> 00:30:11,680
+right okay so another thing I think I
+
+725
+00:30:11,680 --> 00:30:13,840
+want to point out is that unlike basic
+
+726
+00:30:13,840 --> 00:30:15,250
+time stamp or during the transaction
+
+727
+00:30:15,250 --> 00:30:17,200
+that time stamps aren't necessarily
+
+728
+00:30:17,200 --> 00:30:19,390
+assigned when the transaction entered
+
+729
+00:30:19,390 --> 00:30:21,190
+the system okay they're actually
+
+730
+00:30:21,190 --> 00:30:22,570
+deferred to a later point in time and
+
+731
+00:30:22,570 --> 00:30:28,870
+we'll get into how that's done okay so
+
+732
+00:30:28,870 --> 00:30:31,750
+we're ready to get started we begin
+
+733
+00:30:31,750 --> 00:30:34,270
+transaction t1 it now wants to a read of
+
+734
+00:30:34,270 --> 00:30:37,240
+a so it constructs a private workspace
+
+735
+00:30:37,240 --> 00:30:39,400
+that is essentially somewhat of a copy
+
+736
+00:30:39,400 --> 00:30:42,580
+of the database upon read it's going to
+
+737
+00:30:42,580 --> 00:30:45,010
+read or make a copy of a into its
+
+738
+00:30:45,010 --> 00:30:47,200
+private workspace along with the the
+
+739
+00:30:47,200 --> 00:30:49,120
+write time stamp for whatever it read
+
+740
+00:30:49,120 --> 00:30:52,900
+from the database system now t2 begins
+
+741
+00:30:52,900 --> 00:30:55,570
+and it begins its read phase when it
+
+742
+00:30:55,570 --> 00:30:57,220
+begins a read phase it has to construct
+
+743
+00:30:57,220 --> 00:30:59,140
+this private workspace for transaction
+
+744
+00:30:59,140 --> 00:31:03,730
+t2 it does a read of a into its private
+
+745
+00:31:03,730 --> 00:31:05,380
+work space along with the the the write
+
+746
+00:31:05,380 --> 00:31:08,200
+time stamp and then we're good to go so
+
+747
+00:31:08,200 --> 00:31:10,420
+now we get to the rally to the
+
+748
+00:31:10,420 --> 00:31:11,890
+validation phase so this is essentially
+
+749
+00:31:11,890 --> 00:31:13,900
+t2 saying to the database hey listen I'm
+
+750
+00:31:13,900 --> 00:31:16,630
+ready to commit what it does is the the
+
+751
+00:31:16,630 --> 00:31:17,980
+database will now enter the validation
+
+752
+00:31:17,980 --> 00:31:21,880
+phase 42 it's at this point that that
+
+753
+00:31:21,880 --> 00:31:23,470
+transact that the time stamp is assigned
+
+754
+00:31:23,470 --> 00:31:26,320
+to the to the transaction okay so so far
+
+755
+00:31:26,320 --> 00:31:27,940
+this transaction doesn't yet have a
+
+756
+00:31:27,940 --> 00:31:29,260
+timestamp you can assume that its
+
+757
+00:31:29,260 --> 00:31:32,380
+timestamp is infinity here when and when
+
+758
+00:31:32,380 --> 00:31:34,720
+t2 enters the validation phase it gets a
+
+759
+00:31:34,720 --> 00:31:39,640
+timestamp of one right so what does it
+
+760
+00:31:39,640 --> 00:31:44,290
+do it now it doesn't have to do any any
+
+761
+00:31:44,290 --> 00:31:45,900
+sort of validation because there's none
+
+762
+00:31:45,900 --> 00:31:47,710
+nothing to do B the validate it's a
+
+763
+00:31:47,710 --> 00:31:50,110
+read-only transaction so it begins the
+
+764
+00:31:50,110 --> 00:31:52,440
+write it falls into the write phase
+
+765
+00:31:52,440 --> 00:31:55,120
+there's nothing to write and then it
+
+766
+00:31:55,120 --> 00:31:57,930
+commits and everything is sort of done
+
+767
+00:31:57,930 --> 00:32:02,290
+okay that's a pretty simple example and
+
+768
+00:32:02,290 --> 00:32:04,870
+we do a context switch back into t1 t1
+
+769
+00:32:04,870 --> 00:32:07,540
+now wants to do a write so it makes a
+
+770
+00:32:07,540 --> 00:32:10,630
+modification to its local copy and it
+
+771
+00:32:10,630 --> 00:32:14,620
+assigns a time stamp of infinity okay
+
+772
+00:32:14,620 --> 00:32:15,760
+why does a time stamp have to be
+
+773
+00:32:15,760 --> 00:32:18,150
+infinity
+
+774
+00:32:20,920 --> 00:32:22,940
+does this transaction have a timestamp
+
+775
+00:32:22,940 --> 00:32:27,380
+yet it doesn't have a timestamp right
+
+776
+00:32:27,380 --> 00:32:29,600
+because it has an interval edition you
+
+777
+00:32:29,600 --> 00:32:30,650
+only get a timestamp when you enter a
+
+778
+00:32:30,650 --> 00:32:32,420
+location so if it doesn't have a
+
+779
+00:32:32,420 --> 00:32:33,740
+timestamp then it doesn't know what it's
+
+780
+00:32:33,740 --> 00:32:35,300
+types of time sampling is gonna be so it
+
+781
+00:32:35,300 --> 00:32:37,940
+assumes infinity right and it will fill
+
+782
+00:32:37,940 --> 00:32:39,770
+this in when it begins a validation
+
+783
+00:32:39,770 --> 00:32:45,080
+phase which is here so it now begins a
+
+784
+00:32:45,080 --> 00:32:46,700
+validation phase it gets a timestamp
+
+785
+00:32:46,700 --> 00:32:50,750
+assigned to it too and then when there's
+
+786
+00:32:50,750 --> 00:32:52,070
+no other concurrent transactions running
+
+787
+00:32:52,070 --> 00:32:53,300
+in the system so the validation phase
+
+788
+00:32:53,300 --> 00:32:55,820
+completes and in how now has to write
+
+789
+00:32:55,820 --> 00:32:58,120
+its local copy all of its local changes
+
+790
+00:32:58,120 --> 00:33:01,790
+into the global database space when it
+
+791
+00:33:01,790 --> 00:33:04,220
+does is copy it has to update the write
+
+792
+00:33:04,220 --> 00:33:06,260
+time stamp for this tuple a to the Trent
+
+793
+00:33:06,260 --> 00:33:07,430
+to the timestamp that it was assigned
+
+794
+00:33:07,430 --> 00:33:10,760
+when it began validation so - so writes
+
+795
+00:33:10,760 --> 00:33:15,470
+the write time stamp of 2 here ok this
+
+796
+00:33:15,470 --> 00:33:16,820
+is a pretty simple example it's like a
+
+797
+00:33:16,820 --> 00:33:18,830
+happy path example of how transactions
+
+798
+00:33:18,830 --> 00:33:25,790
+work ok so the work face is sort of
+
+799
+00:33:25,790 --> 00:33:27,020
+simple right anytime you want to read
+
+800
+00:33:27,020 --> 00:33:29,180
+and write a value you make a copy of it
+
+801
+00:33:29,180 --> 00:33:30,530
+into your local workspace and then you
+
+802
+00:33:30,530 --> 00:33:33,140
+modify the local work space alone once
+
+803
+00:33:33,140 --> 00:33:34,370
+you're done the work phase you've now
+
+804
+00:33:34,370 --> 00:33:37,220
+begin the validation phase the
+
+805
+00:33:37,220 --> 00:33:38,540
+validation phase is where the database
+
+806
+00:33:38,540 --> 00:33:40,430
+ensures that the schedule that it can
+
+807
+00:33:40,430 --> 00:33:42,110
+generate is serializable right it's
+
+808
+00:33:42,110 --> 00:33:44,420
+conflict serializable the way that it
+
+809
+00:33:44,420 --> 00:33:46,150
+does this is that for every transaction
+
+810
+00:33:46,150 --> 00:33:48,470
+it has to make sure that the the read
+
+811
+00:33:48,470 --> 00:33:50,660
+write set right so the set of things
+
+812
+00:33:50,660 --> 00:33:52,850
+that it has modified doesn't conflict
+
+813
+00:33:52,850 --> 00:33:54,050
+doesn't have a read write conflict or a
+
+814
+00:33:54,050 --> 00:33:55,430
+write write conflict with all other
+
+815
+00:33:55,430 --> 00:33:57,280
+concurrent transactions in the system
+
+816
+00:33:57,280 --> 00:33:59,630
+right and there's a mechanism for how to
+
+817
+00:33:59,630 --> 00:34:00,740
+do this
+
+818
+00:34:00,740 --> 00:34:01,850
+there's actually a couple of different
+
+819
+00:34:01,850 --> 00:34:05,270
+mechanisms when these slides are a
+
+820
+00:34:05,270 --> 00:34:08,540
+little bit out of order and the way that
+
+821
+00:34:08,540 --> 00:34:10,100
+you so the way that the database can
+
+822
+00:34:10,100 --> 00:34:11,989
+ensure that these transactions don't or
+
+823
+00:34:11,989 --> 00:34:14,659
+like the the sets are you know properly
+
+824
+00:34:14,659 --> 00:34:17,030
+serializable is that it needs to have a
+
+825
+00:34:17,030 --> 00:34:19,130
+global view of all active transactions
+
+826
+00:34:19,130 --> 00:34:21,050
+running in the system if you have a
+
+827
+00:34:21,050 --> 00:34:22,639
+global view of all transactions running
+
+828
+00:34:22,639 --> 00:34:24,020
+in the system you now have a global view
+
+829
+00:34:24,020 --> 00:34:26,449
+of all of the the modifications every
+
+830
+00:34:26,449 --> 00:34:28,699
+transaction has made in the system ok
+
+831
+00:34:28,699 --> 00:34:30,770
+and then you you use these readwrite
+
+832
+00:34:30,770 --> 00:34:32,330
+sets
+
+833
+00:34:32,330 --> 00:34:34,760
+as a mechanism to determine the ordering
+
+834
+00:34:34,760 --> 00:34:40,900
+of the transactions in the system so I
+
+835
+00:34:40,900 --> 00:34:44,719
+think I think one of the things that we
+
+836
+00:34:44,719 --> 00:34:46,070
+want to try to get across here to
+
+837
+00:34:46,070 --> 00:34:47,960
+simplify the the the entire protocol is
+
+838
+00:34:47,960 --> 00:34:49,610
+said the this validation and writing
+
+839
+00:34:49,610 --> 00:34:51,980
+happens see release eerily so the entire
+
+840
+00:34:51,980 --> 00:34:54,230
+system you can think about it as there's
+
+841
+00:34:54,230 --> 00:34:56,960
+a giant latch over the the validation
+
+842
+00:34:56,960 --> 00:34:58,430
+phase quote-unquote Kuala validation
+
+843
+00:34:58,430 --> 00:34:59,600
+phase to ensure that there's only one
+
+844
+00:34:59,600 --> 00:35:01,280
+transaction performing validation at a
+
+845
+00:35:01,280 --> 00:35:02,750
+time and this will simplify some of the
+
+846
+00:35:02,750 --> 00:35:04,310
+protocols we're gonna with this
+
+847
+00:35:04,310 --> 00:35:05,300
+simplified some of the details we're
+
+848
+00:35:05,300 --> 00:35:06,920
+talking about end up in the protocol a
+
+849
+00:35:06,920 --> 00:35:11,750
+little bit later on so yes when the read
+
+850
+00:35:11,750 --> 00:35:14,300
+phase as I mentioned before whenever
+
+851
+00:35:14,300 --> 00:35:15,140
+you're trying to read and write in a
+
+852
+00:35:15,140 --> 00:35:18,890
+value you make a local copy and you only
+
+853
+00:35:18,890 --> 00:35:22,580
+update that local copy to ensure
+
+854
+00:35:22,580 --> 00:35:24,620
+repeatable reads and then in the
+
+855
+00:35:24,620 --> 00:35:27,740
+validation phase is when you get is is
+
+856
+00:35:27,740 --> 00:35:29,330
+when you get a timestamp and then you
+
+857
+00:35:29,330 --> 00:35:30,860
+use this timestamp to look at all other
+
+858
+00:35:30,860 --> 00:35:32,690
+concurrent transaction the system to
+
+859
+00:35:32,690 --> 00:35:34,280
+make sure that you don't you don't
+
+860
+00:35:34,280 --> 00:35:35,900
+intercept your read and write sets to an
+
+861
+00:35:35,900 --> 00:35:37,490
+end to intersect to make sure that you
+
+862
+00:35:37,490 --> 00:35:41,780
+have a correct serial order so you look
+
+863
+00:35:41,780 --> 00:35:43,400
+at your you look at your timestamp which
+
+864
+00:35:43,400 --> 00:35:45,740
+are it's 40 I you find all other time a
+
+865
+00:35:45,740 --> 00:35:47,510
+transactions in the system that are
+
+866
+00:35:47,510 --> 00:35:49,430
+younger than you that are newer than you
+
+867
+00:35:49,430 --> 00:35:51,050
+and you have to make sure that a set of
+
+868
+00:35:51,050 --> 00:35:53,810
+conditions holds I mean the fact that
+
+869
+00:35:53,810 --> 00:35:55,880
+we're using newer transactions isn't
+
+870
+00:35:55,880 --> 00:35:58,250
+necessarily required you could also look
+
+871
+00:35:58,250 --> 00:35:59,480
+at all the transactions right there's no
+
+872
+00:35:59,480 --> 00:36:00,680
+reason why we're specifically looking
+
+873
+00:36:00,680 --> 00:36:03,110
+younger transactions but it simplifies
+
+874
+00:36:03,110 --> 00:36:04,910
+it makes things a little bit simpler but
+
+875
+00:36:04,910 --> 00:36:06,560
+I'll talk about another approach that we
+
+876
+00:36:06,560 --> 00:36:07,850
+can use that's slightly different than
+
+877
+00:36:07,850 --> 00:36:11,060
+this one so when you when you're ready
+
+878
+00:36:11,060 --> 00:36:12,500
+to validate you essentially invoke the
+
+879
+00:36:12,500 --> 00:36:14,690
+commit and then the database performs a
+
+880
+00:36:14,690 --> 00:36:16,460
+validation phase so it finds because it
+
+881
+00:36:16,460 --> 00:36:17,300
+has a global view of all the
+
+882
+00:36:17,300 --> 00:36:18,680
+transactions in the system we can find
+
+883
+00:36:18,680 --> 00:36:20,270
+all newer transactions and all the
+
+884
+00:36:20,270 --> 00:36:21,950
+transactions and make sure that
+
+885
+00:36:21,950 --> 00:36:24,320
+everything's sort of is a fits together
+
+886
+00:36:24,320 --> 00:36:26,570
+and there's two types of validations
+
+887
+00:36:26,570 --> 00:36:28,790
+that you can perform you can perform for
+
+888
+00:36:28,790 --> 00:36:30,470
+validation or bra or backwards
+
+889
+00:36:30,470 --> 00:36:32,210
+validation right so what are the what is
+
+890
+00:36:32,210 --> 00:36:33,290
+the difference between these two types
+
+891
+00:36:33,290 --> 00:36:37,790
+of validation techniques so in in in in
+
+892
+00:36:37,790 --> 00:36:39,140
+in backwards validation what you're
+
+893
+00:36:39,140 --> 00:36:40,640
+looking at is when a transaction is
+
+894
+00:36:40,640 --> 00:36:42,080
+ready to commit let's assume that
+
+895
+00:36:42,080 --> 00:36:43,700
+transaction t2 is ready to commit you
+
+896
+00:36:43,700 --> 00:36:45,400
+look at all the older transaction
+
+897
+00:36:45,400 --> 00:36:48,100
+in the system okay so t2 is ready to
+
+898
+00:36:48,100 --> 00:36:51,340
+commit its commit point is here and
+
+899
+00:36:51,340 --> 00:36:52,420
+you're doing backwards validation you
+
+900
+00:36:52,420 --> 00:36:53,950
+have to find all the transactions so
+
+901
+00:36:53,950 --> 00:36:55,540
+transit different transactions whose
+
+902
+00:36:55,540 --> 00:36:57,360
+time stamps are less than this one and
+
+903
+00:36:57,360 --> 00:36:59,920
+perform a validation right so we call
+
+904
+00:36:59,920 --> 00:37:02,020
+this the the scope of things that we
+
+905
+00:37:02,020 --> 00:37:03,520
+have to look at a validation scope so
+
+906
+00:37:03,520 --> 00:37:05,260
+this is the validation scope for t2 if
+
+907
+00:37:05,260 --> 00:37:07,350
+we're doing backwards validation because
+
+908
+00:37:07,350 --> 00:37:10,330
+t1 and t2 are running concurrently and
+
+909
+00:37:10,330 --> 00:37:14,680
+t1 committed before t2 so t1 is older
+
+910
+00:37:14,680 --> 00:37:18,640
+than t2 all right because it could be
+
+911
+00:37:18,640 --> 00:37:22,180
+the case that t1 made an update to
+
+912
+00:37:22,180 --> 00:37:25,000
+something that should have been read by
+
+913
+00:37:25,000 --> 00:37:29,500
+t2 but we didn't because T once changes
+
+914
+00:37:29,500 --> 00:37:33,580
+are made to a private copy alright so we
+
+915
+00:37:33,580 --> 00:37:34,840
+could be the case that we read something
+
+916
+00:37:34,840 --> 00:37:36,550
+new from the database system that we
+
+917
+00:37:36,550 --> 00:37:37,960
+should have been reading reading from t1
+
+918
+00:37:37,960 --> 00:37:39,610
+but we actually read from the main
+
+919
+00:37:39,610 --> 00:37:41,950
+database because the t1 is making
+
+920
+00:37:41,950 --> 00:37:44,530
+private changes to its own space so we
+
+921
+00:37:44,530 --> 00:37:46,030
+have to make sure that this this this
+
+922
+00:37:46,030 --> 00:37:48,040
+doesn't happen and if it does we have to
+
+923
+00:37:48,040 --> 00:37:48,790
+actually abort
+
+924
+00:37:48,790 --> 00:37:52,480
+t1 so this is backwards validation we're
+
+925
+00:37:52,480 --> 00:37:55,170
+looking backwards
+
+926
+00:38:01,170 --> 00:38:03,220
+correct yeah because this is already
+
+927
+00:38:03,220 --> 00:38:05,110
+committed right at this point we can't
+
+928
+00:38:05,110 --> 00:38:09,130
+do anything about - okay similarly
+
+929
+00:38:09,130 --> 00:38:10,900
+instead of going backwards you could
+
+930
+00:38:10,900 --> 00:38:13,270
+also look forwards so again we're trying
+
+931
+00:38:13,270 --> 00:38:16,540
+to do the the validation for t2 we find
+
+932
+00:38:16,540 --> 00:38:18,370
+all concurrently running transactions
+
+933
+00:38:18,370 --> 00:38:20,920
+that have not committed yet and we do a
+
+934
+00:38:20,920 --> 00:38:22,900
+validation against those so in this
+
+935
+00:38:22,900 --> 00:38:26,650
+specific scenario t3 is currently
+
+936
+00:38:26,650 --> 00:38:28,540
+running and we have to make sure that
+
+937
+00:38:28,540 --> 00:38:31,120
+this is transactionally safe because it
+
+938
+00:38:31,120 --> 00:38:32,800
+could be the case that I made an update
+
+939
+00:38:32,800 --> 00:38:35,320
+so t2 made an update into its local
+
+940
+00:38:35,320 --> 00:38:37,150
+private space but because it occurs
+
+941
+00:38:37,150 --> 00:38:40,000
+before t3 in the serial order this one
+
+942
+00:38:40,000 --> 00:38:41,950
+has read as stale value from the
+
+943
+00:38:41,950 --> 00:38:43,690
+database it should have read something
+
+944
+00:38:43,690 --> 00:38:45,520
+that I modified like a maybe I modified
+
+945
+00:38:45,520 --> 00:38:48,460
+it here and it hasn't read it here but
+
+946
+00:38:48,460 --> 00:38:51,160
+it actually read a stale value and if
+
+947
+00:38:51,160 --> 00:38:54,999
+that happens I have to abort myself
+
+948
+00:38:54,999 --> 00:38:57,349
+ok so these are just two techniques to
+
+949
+00:38:57,349 --> 00:38:59,390
+two mechanisms in which we perform the
+
+950
+00:38:59,390 --> 00:39:01,249
+validation what's really important here
+
+951
+00:39:01,249 --> 00:39:03,049
+is that they all that the entire date
+
+952
+00:39:03,049 --> 00:39:04,460
+that all transactions perform this
+
+953
+00:39:04,460 --> 00:39:06,529
+validation in the same direction you
+
+954
+00:39:06,529 --> 00:39:07,999
+can't have t1 performing forward
+
+955
+00:39:07,999 --> 00:39:10,099
+validation and t2 performing backwards
+
+956
+00:39:10,099 --> 00:39:11,089
+validation because that's going to mess
+
+957
+00:39:11,089 --> 00:39:36,140
+up the entire system yeah so if the
+
+958
+00:39:36,140 --> 00:39:37,249
+validation completes then you're
+
+959
+00:39:37,249 --> 00:39:38,539
+essentially committed you're ready to
+
+960
+00:39:38,539 --> 00:39:48,349
+write your changes out even like a
+
+961
+00:39:48,349 --> 00:39:56,660
+system goes down no yeah because the
+
+962
+00:39:56,660 --> 00:39:58,940
+validation validation is successful that
+
+963
+00:39:58,940 --> 00:40:00,079
+the database is saying that this is a
+
+964
+00:40:00,079 --> 00:40:01,549
+valid transaction it doesn't it doesn't
+
+965
+00:40:01,549 --> 00:40:03,349
+conflict with anything else so it's a it
+
+966
+00:40:03,349 --> 00:40:04,910
+should now be installed into the
+
+967
+00:40:04,910 --> 00:40:14,299
+internet into the system all right so
+
+968
+00:40:14,299 --> 00:40:15,410
+okay so for the rest of this lecture
+
+969
+00:40:15,410 --> 00:40:16,730
+let's just assume that we're always
+
+970
+00:40:16,730 --> 00:40:18,440
+doing forward validation so anytime you
+
+971
+00:40:18,440 --> 00:40:19,970
+want to validate a transaction you find
+
+972
+00:40:19,970 --> 00:40:21,950
+all newer transactions than you and you
+
+973
+00:40:21,950 --> 00:40:26,509
+perform the Vettes validation step okay
+
+974
+00:40:26,509 --> 00:40:27,499
+so there's a couple of different
+
+975
+00:40:27,499 --> 00:40:29,809
+scenarios that we have to cover okay the
+
+976
+00:40:29,809 --> 00:40:31,130
+first scenario is that if you find a
+
+977
+00:40:31,130 --> 00:40:34,999
+transaction TJ where all your phases
+
+978
+00:40:34,999 --> 00:40:36,950
+your read your would yes or your work
+
+979
+00:40:36,950 --> 00:40:39,019
+your that your validation in your right
+
+980
+00:40:39,019 --> 00:40:42,170
+steps happen before anything that TJ has
+
+981
+00:40:42,170 --> 00:40:43,789
+done all right this is sort of like the
+
+982
+00:40:43,789 --> 00:40:46,220
+simple happy path case here here so this
+
+983
+00:40:46,220 --> 00:40:49,579
+is an example you have t1 and t2 t1
+
+984
+00:40:49,579 --> 00:40:51,950
+completes all of its steps before t2 is
+
+985
+00:40:51,950 --> 00:40:54,440
+then anything okay so this is a really
+
+986
+00:40:54,440 --> 00:40:55,579
+simple example you could essentially
+
+987
+00:40:55,579 --> 00:40:57,109
+collapse this into one and now you have
+
+988
+00:40:57,109 --> 00:40:59,779
+a serial execution so you'd only have to
+
+989
+00:40:59,779 --> 00:41:01,309
+do anything all that interesting here
+
+990
+00:41:01,309 --> 00:41:05,200
+this is sort of given to you naturally
+
+991
+00:41:05,200 --> 00:41:07,070
+the second
+
+992
+00:41:07,070 --> 00:41:09,040
+the second scenario that we have to
+
+993
+00:41:09,040 --> 00:41:13,369
+handle is that if t1 completes before TJ
+
+994
+00:41:13,369 --> 00:41:16,790
+sorry TI completes before TJ begins its
+
+995
+00:41:16,790 --> 00:41:20,119
+right phase okay and we have to make
+
+996
+00:41:20,119 --> 00:41:21,950
+sure in this scenario that the stuff
+
+997
+00:41:21,950 --> 00:41:24,320
+that we write the the right set in our
+
+998
+00:41:24,320 --> 00:41:26,690
+transaction doesn't interact intersect
+
+999
+00:41:26,690 --> 00:41:28,099
+with the read set of the other
+
+1000
+00:41:28,099 --> 00:41:29,240
+transaction so the other transaction
+
+1001
+00:41:29,240 --> 00:41:30,440
+hasn't read anything that we're going to
+
+1002
+00:41:30,440 --> 00:41:33,080
+that weird that we've written okay why
+
+1003
+00:41:33,080 --> 00:41:33,830
+is this important
+
+1004
+00:41:33,830 --> 00:41:36,589
+so let's walk through an example so in
+
+1005
+00:41:36,589 --> 00:41:37,970
+this scenario we have two transactions
+
+1006
+00:41:37,970 --> 00:41:40,460
+t1 is reading and writing a t2 is
+
+1007
+00:41:40,460 --> 00:41:44,930
+reading a and doing nothing else so so
+
+1008
+00:41:44,930 --> 00:41:46,910
+this is the state of the database so t1
+
+1009
+00:41:46,910 --> 00:41:49,040
+has read a and written to it assume that
+
+1010
+00:41:49,040 --> 00:41:51,320
+is writing the same value 1 2 3 and it's
+
+1011
+00:41:51,320 --> 00:41:55,099
+timestamp is infinity T 2 is read a so
+
+1012
+00:41:55,099 --> 00:41:56,869
+it has a timestamp of 0 there and it has
+
+1013
+00:41:56,869 --> 00:41:58,609
+a local copy in its in its private
+
+1014
+00:41:58,609 --> 00:42:00,290
+workspace and then you want to perform
+
+1015
+00:42:00,290 --> 00:42:04,609
+the the validation here right so t1 has
+
+1016
+00:42:04,609 --> 00:42:07,220
+to abort because it's read set so it has
+
+1017
+00:42:07,220 --> 00:42:09,410
+it has a lower timestamp then then t2
+
+1018
+00:42:09,410 --> 00:42:11,810
+because it begins validation first so
+
+1019
+00:42:11,810 --> 00:42:13,670
+it's write set intersects with the read
+
+1020
+00:42:13,670 --> 00:42:15,980
+set here all right so that bad that
+
+1021
+00:42:15,980 --> 00:42:17,270
+violates the invariant that we had
+
+1022
+00:42:17,270 --> 00:42:20,480
+before so we have to abort
+
+1023
+00:42:20,480 --> 00:42:24,080
+this transaction okay in the serial
+
+1024
+00:42:24,080 --> 00:42:27,290
+order t1 has to begin before t2 but t2
+
+1025
+00:42:27,290 --> 00:42:30,080
+has read a stale value so we have to
+
+1026
+00:42:30,080 --> 00:42:35,530
+abort that's that
+
+1027
+00:42:35,530 --> 00:42:39,640
+I think it's a pretty simple example but
+
+1028
+00:42:39,640 --> 00:42:41,680
+now let's that slightly tweak it and now
+
+1029
+00:42:41,680 --> 00:42:44,740
+we'll have tea to begin validation
+
+1030
+00:42:44,740 --> 00:42:48,790
+before t1 so in the serial order t2
+
+1031
+00:42:48,790 --> 00:42:51,880
+happens before t1 what's gonna happen in
+
+1032
+00:42:51,880 --> 00:42:55,330
+this in this case right so t1 reads a
+
+1033
+00:42:55,330 --> 00:42:57,609
+begins validation it doesn't have a
+
+1034
+00:42:57,609 --> 00:42:59,260
+right set so it doesn't it doesn't have
+
+1035
+00:42:59,260 --> 00:43:00,220
+anything to intersect with this
+
+1036
+00:43:00,220 --> 00:43:04,150
+transaction so so it commits t2 does the
+
+1037
+00:43:04,150 --> 00:43:11,400
+same thing it's it's right set doesn't
+
+1038
+00:43:11,400 --> 00:43:14,170
+intersect with the the read set of teeth
+
+1039
+00:43:14,170 --> 00:43:16,810
+it doesn't intersect with any other
+
+1040
+00:43:16,810 --> 00:43:18,670
+concurrent transaction because it's what
+
+1041
+00:43:18,670 --> 00:43:21,580
+this one's all revela dated so another
+
+1042
+00:43:21,580 --> 00:43:22,810
+thing at like nothing happens right so
+
+1043
+00:43:22,810 --> 00:43:24,369
+when the serial order t2 happens before
+
+1044
+00:43:24,369 --> 00:43:26,320
+t1 it reads the value of a that
+
+1045
+00:43:26,320 --> 00:43:28,060
+initially existed before this
+
+1046
+00:43:28,060 --> 00:43:30,099
+transaction is going to read the value
+
+1047
+00:43:30,099 --> 00:43:33,900
+of a there make a local copy right to it
+
+1048
+00:43:33,900 --> 00:43:40,890
+and everything's okay all right
+
+1049
+00:43:40,890 --> 00:43:51,190
+questions yes so in this in this
+
+1050
+00:43:51,190 --> 00:43:53,920
+scenario because T 2 begins validation
+
+1051
+00:43:53,920 --> 00:43:56,589
+first it appears first in the serial
+
+1052
+00:43:56,589 --> 00:44:12,300
+order yeah yeah
+
+1053
+00:44:15,710 --> 00:44:21,540
+so T so T 1 has to abort because in the
+
+1054
+00:44:21,540 --> 00:44:23,280
+serial order what should have happened
+
+1055
+00:44:23,280 --> 00:44:26,520
+is that T 2 because it begins validation
+
+1056
+00:44:26,520 --> 00:44:28,380
+first it's the first to recognize that
+
+1057
+00:44:28,380 --> 00:44:33,810
+there's something wrong so it recognizes
+
+1058
+00:44:33,810 --> 00:44:35,070
+something's wrong as soon as it begins a
+
+1059
+00:44:35,070 --> 00:44:36,780
+validation because it gets assigned a
+
+1060
+00:44:36,780 --> 00:44:38,430
+timestamp it sees a concurrent
+
+1061
+00:44:38,430 --> 00:44:40,080
+transactions that's ready stale value so
+
+1062
+00:44:40,080 --> 00:44:47,580
+it aborts well T 22 goes to validate T 1
+
+1063
+00:44:47,580 --> 00:44:49,950
+note is no longer a valid transaction so
+
+1064
+00:44:49,950 --> 00:44:51,740
+it won't see any concurrent transactions
+
+1065
+00:44:51,740 --> 00:44:53,910
+there's nothing to intersect with also
+
+1066
+00:44:53,910 --> 00:44:55,620
+it's a read-only transaction so there's
+
+1067
+00:44:55,620 --> 00:45:18,020
+nothing to intersect with T 2 couldn't
+
+1068
+00:45:18,020 --> 00:45:20,280
+no not until the stalls it's it's
+
+1069
+00:45:20,280 --> 00:45:22,320
+changes because it's a private private
+
+1070
+00:45:22,320 --> 00:45:56,160
+thing yeah yeah so when when this T 1
+
+1071
+00:45:56,160 --> 00:45:59,100
+begins it's right back oh because the
+
+1072
+00:45:59,100 --> 00:46:01,710
+validate face you don't get a timestamp
+
+1073
+00:46:01,710 --> 00:46:03,330
+yeah I don't get I don't know 1 or 2 or
+
+1074
+00:46:03,330 --> 00:46:05,430
+something but this T 2 doesn't have a
+
+1075
+00:46:05,430 --> 00:46:08,640
+right timestamp yet yeah I mean it's
+
+1076
+00:46:08,640 --> 00:46:10,590
+infinity it doesn't have any time stamp
+
+1077
+00:46:10,590 --> 00:46:13,850
+because it hasn't begun validation yet
+
+1078
+00:46:14,270 --> 00:46:19,590
+no no no so no no no no so the transact
+
+1079
+00:46:19,590 --> 00:46:20,820
+the time stamp is at assigned to the
+
+1080
+00:46:20,820 --> 00:46:23,100
+transaction it isn't assumed that it
+
+1081
+00:46:23,100 --> 00:46:24,360
+doesn't take whatever times time
+
+1082
+00:46:24,360 --> 00:46:30,780
+is from the the tuple yeah so that's
+
+1083
+00:46:30,780 --> 00:46:56,580
+just a local copy okay yeah yeah are you
+
+1084
+00:46:56,580 --> 00:47:00,750
+saying if t2 performs a right to this
+
+1085
+00:47:00,750 --> 00:47:04,800
+object eh it'll get an it'll get a it'll
+
+1086
+00:47:04,800 --> 00:47:07,020
+modify the bite time stamp of its local
+
+1087
+00:47:07,020 --> 00:47:26,400
+copy to infinity yeah so if it makes a
+
+1088
+00:47:26,400 --> 00:47:28,050
+right it will get a local time it'll get
+
+1089
+00:47:28,050 --> 00:47:29,400
+a timestamp a validation and it'll
+
+1090
+00:47:29,400 --> 00:47:31,980
+update the right time stamped there if
+
+1091
+00:47:31,980 --> 00:47:58,380
+there's no conflicts if the no no you
+
+1092
+00:47:58,380 --> 00:48:00,030
+have to you you have to have this right
+
+1093
+00:48:00,030 --> 00:48:02,310
+be atomic so you write all all your
+
+1094
+00:48:02,310 --> 00:48:03,960
+changes back into into the database in
+
+1095
+00:48:03,960 --> 00:48:06,320
+this phase
+
+1096
+00:48:11,150 --> 00:48:13,050
+that's just because of the schedule that
+
+1097
+00:48:13,050 --> 00:48:15,990
+we have here so we have the device you
+
+1098
+00:48:15,990 --> 00:48:17,070
+can think of it as like we begin the
+
+1099
+00:48:17,070 --> 00:48:18,750
+validation we finish enemy do contact
+
+1100
+00:48:18,750 --> 00:48:20,910
+switch here and now we begin the
+
+1101
+00:48:20,910 --> 00:48:28,500
+validation in the right phase all right
+
+1102
+00:48:28,500 --> 00:48:31,980
+so this is the second example there's
+
+1103
+00:48:31,980 --> 00:48:33,570
+still one more to go
+
+1104
+00:48:33,570 --> 00:48:37,200
+in this one the transaction you have to
+
+1105
+00:48:37,200 --> 00:48:40,200
+ensure that the transaction TI completes
+
+1106
+00:48:40,200 --> 00:48:42,740
+its read phase before transaction TJ
+
+1107
+00:48:42,740 --> 00:48:44,790
+begins its read phase so we have to
+
+1108
+00:48:44,790 --> 00:48:46,350
+ensure that the right set of my
+
+1109
+00:48:46,350 --> 00:48:48,660
+transaction doesn't intersect with the
+
+1110
+00:48:48,660 --> 00:48:50,550
+the read set and the right set of all
+
+1111
+00:48:50,550 --> 00:48:52,410
+these of the transactions that fall into
+
+1112
+00:48:52,410 --> 00:48:54,060
+this category or the read phases are
+
+1113
+00:48:54,060 --> 00:48:58,020
+overlapping and this is another example
+
+1114
+00:48:58,020 --> 00:49:03,330
+of how we can go through this so let's
+
+1115
+00:49:03,330 --> 00:49:05,940
+see in this scenario t1 is reading and
+
+1116
+00:49:05,940 --> 00:49:09,810
+writing a oops t2 is reading B and
+
+1117
+00:49:09,810 --> 00:49:12,990
+reading a t1 baguettes and begin that
+
+1118
+00:49:12,990 --> 00:49:15,690
+validation phase so it gets a time stamp
+
+1119
+00:49:15,690 --> 00:49:20,370
+of 1 and now I can commit it because my
+
+1120
+00:49:20,370 --> 00:49:24,210
+my right set doesn't intersect with the
+
+1121
+00:49:24,210 --> 00:49:26,640
+read set of transaction t2 at this point
+
+1122
+00:49:26,640 --> 00:49:32,640
+in time okay so I can install my changes
+
+1123
+00:49:32,640 --> 00:49:35,520
+back into the into the database I update
+
+1124
+00:49:35,520 --> 00:49:38,160
+4 5 6 or update a with value 4 5 6 and I
+
+1125
+00:49:38,160 --> 00:49:39,990
+set my write time stamp to 1 which is
+
+1126
+00:49:39,990 --> 00:49:41,640
+the time stamp that I was assigned at
+
+1127
+00:49:41,640 --> 00:49:47,910
+validation phase okay then when we come
+
+1128
+00:49:47,910 --> 00:49:49,920
+back down into we do a context switch
+
+1129
+00:49:49,920 --> 00:49:53,790
+back into t2 t2 does a read of B or
+
+1130
+00:49:53,790 --> 00:49:55,950
+sorry a read of a and now it can go back
+
+1131
+00:49:55,950 --> 00:49:57,480
+to the main it goes to the to the main
+
+1132
+00:49:57,480 --> 00:49:59,820
+database and does a local copy of the
+
+1133
+00:49:59,820 --> 00:50:05,100
+updated value of a made by t1 and then
+
+1134
+00:50:05,100 --> 00:50:06,570
+it can validate and write successfully
+
+1135
+00:50:06,570 --> 00:50:07,590
+because there are no concurrent
+
+1136
+00:50:07,590 --> 00:50:12,290
+transactions good
+
+1137
+00:50:12,290 --> 00:50:25,520
+yeah so if you if you let's go back to
+
+1138
+00:50:25,520 --> 00:50:29,540
+this example so when you want to perform
+
+1139
+00:50:29,540 --> 00:50:32,420
+a right right you make a local copy of
+
+1140
+00:50:32,420 --> 00:50:34,790
+the of the database object into your
+
+1141
+00:50:34,790 --> 00:50:36,260
+local private workspace and then that's
+
+1142
+00:50:36,260 --> 00:50:38,090
+when you set the time sent to infinity
+
+1143
+00:50:38,090 --> 00:50:40,220
+you set it to infinity because you don't
+
+1144
+00:50:40,220 --> 00:50:41,360
+know what your time stamp is going to be
+
+1145
+00:50:41,360 --> 00:50:42,530
+because you haven't been assigned one
+
+1146
+00:50:42,530 --> 00:50:47,900
+yet right it's it's zero here only for
+
+1147
+00:50:47,900 --> 00:50:49,460
+mainly for illustrative purposes you can
+
+1148
+00:50:49,460 --> 00:50:50,600
+think about like there was at some
+
+1149
+00:50:50,600 --> 00:50:51,950
+trying some transaction with timestamps
+
+1150
+00:50:51,950 --> 00:50:54,050
+arrow that bulk loaded all of these
+
+1151
+00:50:54,050 --> 00:50:55,850
+objects into into the database so that's
+
+1152
+00:50:55,850 --> 00:51:00,500
+why the right x times r0 when you read
+
+1153
+00:51:00,500 --> 00:51:02,540
+it you read whatever it right whatever
+
+1154
+00:51:02,540 --> 00:51:04,190
+timestamp is associate with associated
+
+1155
+00:51:04,190 --> 00:51:13,250
+with the object at that point yeah so t2
+
+1156
+00:51:13,250 --> 00:51:15,590
+does a read of a does a valid does a
+
+1157
+00:51:15,590 --> 00:51:17,270
+validation does a right everything is
+
+1158
+00:51:17,270 --> 00:51:18,290
+good because there's no concurrent
+
+1159
+00:51:18,290 --> 00:51:24,350
+transactions yeah yeah these are all for
+
+1160
+00:51:24,350 --> 00:51:35,480
+validation yeah correct yeah yeah you
+
+1161
+00:51:35,480 --> 00:51:36,560
+still need to rely on the same time
+
+1162
+00:51:36,560 --> 00:51:45,740
+stamps yeah so that was essentially the
+
+1163
+00:51:45,740 --> 00:51:47,870
+I'm cup we've been kind of hind wavy on
+
+1164
+00:51:47,870 --> 00:51:49,010
+a couple of things on how you actually
+
+1165
+00:51:49,010 --> 00:51:50,690
+install the right Saitama Klee and how
+
+1166
+00:51:50,690 --> 00:51:52,850
+you do the validations in a parallel way
+
+1167
+00:51:52,850 --> 00:51:54,260
+because in a real system you have to do
+
+1168
+00:51:54,260 --> 00:51:56,120
+this parallel parallel validation but I
+
+1169
+00:51:56,120 --> 00:51:58,610
+think hopefully the the main idea has
+
+1170
+00:51:58,610 --> 00:52:01,100
+gotten across right it's not too
+
+1171
+00:52:01,100 --> 00:52:02,660
+complicated there are some there's
+
+1172
+00:52:02,660 --> 00:52:03,800
+there's some trickeries here and there
+
+1173
+00:52:03,800 --> 00:52:06,940
+but generally it's it's pretty intuitive
+
+1174
+00:52:06,940 --> 00:52:08,930
+so there's a few observations that we
+
+1175
+00:52:08,930 --> 00:52:11,360
+should we should try to make all of
+
+1176
+00:52:11,360 --> 00:52:13,130
+these time supporting in optimistic
+
+1177
+00:52:13,130 --> 00:52:15,890
+concurrency protocols sort of work well
+
+1178
+00:52:15,890 --> 00:52:18,200
+when there's very little conflict right
+
+1179
+00:52:18,200 --> 00:52:20,750
+because you allowed the transactions to
+
+1180
+00:52:20,750 --> 00:52:22,490
+proceed without acquiring locks without
+
+1181
+00:52:22,490 --> 00:52:24,200
+doing that anything heavyweight it
+
+1182
+00:52:24,200 --> 00:52:25,020
+worked
+
+1183
+00:52:25,020 --> 00:52:26,490
+and at the end you do a sort of
+
+1184
+00:52:26,490 --> 00:52:28,830
+lightweight semi lightweight validation
+
+1185
+00:52:28,830 --> 00:52:29,910
+to make sure that your transaction is
+
+1186
+00:52:29,910 --> 00:52:34,260
+still valid so if you have very few very
+
+1187
+00:52:34,260 --> 00:52:38,100
+few conflicts even better if all your
+
+1188
+00:52:38,100 --> 00:52:39,750
+transactions are essentially just doing
+
+1189
+00:52:39,750 --> 00:52:41,970
+read-only work and if the access
+
+1190
+00:52:41,970 --> 00:52:43,980
+disjoint sets of data then this these
+
+1191
+00:52:43,980 --> 00:52:46,020
+protocols work very well because they're
+
+1192
+00:52:46,020 --> 00:52:47,130
+actually not doing much work at all
+
+1193
+00:52:47,130 --> 00:52:48,660
+aside from doing some local data copying
+
+1194
+00:52:48,660 --> 00:52:52,740
+right another way to think about this is
+
+1195
+00:52:52,740 --> 00:52:55,770
+that if you have a very large workspace
+
+1196
+00:52:55,770 --> 00:52:57,869
+and very small transactions and the
+
+1197
+00:52:57,869 --> 00:52:59,369
+probability of these transactions
+
+1198
+00:52:59,369 --> 00:53:00,900
+overlapping in the reader might set is
+
+1199
+00:53:00,900 --> 00:53:04,500
+very low in this specific scenario these
+
+1200
+00:53:04,500 --> 00:53:05,910
+optimistic concurrency protocols work
+
+1201
+00:53:05,910 --> 00:53:08,220
+very well on the other hand in very
+
+1202
+00:53:08,220 --> 00:53:11,610
+highly contentious workloads what ends
+
+1203
+00:53:11,610 --> 00:53:12,360
+up happening is that you have
+
+1204
+00:53:12,360 --> 00:53:14,550
+transactions consistently restarting
+
+1205
+00:53:14,550 --> 00:53:18,150
+right so they do a lot of work in their
+
+1206
+00:53:18,150 --> 00:53:20,580
+in their work phase assuming if there is
+
+1207
+00:53:20,580 --> 00:53:22,110
+no there's there is no contention and
+
+1208
+00:53:22,110 --> 00:53:23,520
+then and only at the very end do they
+
+1209
+00:53:23,520 --> 00:53:24,840
+figure out oh crap all this work that
+
+1210
+00:53:24,840 --> 00:53:26,400
+I've done is kind of useless after we
+
+1211
+00:53:26,400 --> 00:53:31,050
+start right so you're kind of deferring
+
+1212
+00:53:31,050 --> 00:53:32,700
+a lot of the the heavy lifting towards
+
+1213
+00:53:32,700 --> 00:53:34,170
+the end assuming that there won't be a
+
+1214
+00:53:34,170 --> 00:53:35,670
+lot of heavy lifting but in the
+
+1215
+00:53:35,670 --> 00:53:37,290
+contentious work though there is heavy
+
+1216
+00:53:37,290 --> 00:53:38,280
+lifting because your sense they have to
+
+1217
+00:53:38,280 --> 00:53:42,180
+abort everything you've done so really I
+
+1218
+00:53:42,180 --> 00:53:43,859
+think I think the the the research sort
+
+1219
+00:53:43,859 --> 00:53:47,750
+of shows that in contentious workloads
+
+1220
+00:53:47,750 --> 00:53:50,400
+both two-phase locking and exhausting
+
+1221
+00:53:50,400 --> 00:53:51,840
+mystic concurrency protocols generally
+
+1222
+00:53:51,840 --> 00:53:53,100
+don't work they're sort of like almost
+
+1223
+00:53:53,100 --> 00:53:55,440
+equivalent so when two plu were simply
+
+1224
+00:53:55,440 --> 00:53:57,359
+acquiring there's there's a lot of
+
+1225
+00:53:57,359 --> 00:53:59,220
+contention on locks so you have
+
+1226
+00:53:59,220 --> 00:54:01,859
+transactions waiting and these hot locks
+
+1227
+00:54:01,859 --> 00:54:03,600
+here you have transactions that are
+
+1228
+00:54:03,600 --> 00:54:05,670
+doing all their work almost wasteful
+
+1229
+00:54:05,670 --> 00:54:07,050
+work and then aborting at the very end
+
+1230
+00:54:07,050 --> 00:54:10,080
+so neither really work for contentious
+
+1231
+00:54:10,080 --> 00:54:12,480
+workloads but if your workload is it has
+
+1232
+00:54:12,480 --> 00:54:14,690
+very low contention then in general
+
+1233
+00:54:14,690 --> 00:54:17,430
+these optimistic protocols work better
+
+1234
+00:54:17,430 --> 00:54:19,950
+because they they have no overhead and
+
+1235
+00:54:19,950 --> 00:54:21,450
+very very minimal override aside from
+
+1236
+00:54:21,450 --> 00:54:24,510
+some local data copy okay whereas in the
+
+1237
+00:54:24,510 --> 00:54:26,250
+two PL protocol you actually have to
+
+1238
+00:54:26,250 --> 00:54:28,470
+acquire locks even if there's no logical
+
+1239
+00:54:28,470 --> 00:54:30,180
+reason that you should be acquiring
+
+1240
+00:54:30,180 --> 00:54:32,540
+these locks
+
+1241
+00:54:52,880 --> 00:54:55,349
+so the time stamp the time stamps are
+
+1242
+00:54:55,349 --> 00:55:20,099
+assigned at validation yeah I think what
+
+1243
+00:55:20,099 --> 00:55:21,690
+you're describing is essentially basic
+
+1244
+00:55:21,690 --> 00:55:23,340
+time stamp order right so in basic time
+
+1245
+00:55:23,340 --> 00:55:24,450
+stamp ordering you assign the time
+
+1246
+00:55:24,450 --> 00:55:27,500
+stamps when the transaction begins in
+
+1247
+00:55:27,500 --> 00:55:30,450
+OCC chat the protocol dictates that you
+
+1248
+00:55:30,450 --> 00:55:32,250
+assign the time stamps at validation
+
+1249
+00:55:32,250 --> 00:55:35,730
+time because you want to defer the work
+
+1250
+00:55:35,730 --> 00:55:38,820
+of doing the actual checking - when
+
+1251
+00:55:38,820 --> 00:55:40,109
+you're ready to commit whereas basic
+
+1252
+00:55:40,109 --> 00:55:42,030
+time step boredom is saying every
+
+1253
+00:55:42,030 --> 00:55:43,560
+operation I'm going to perform I want to
+
+1254
+00:55:43,560 --> 00:55:44,730
+do a check to make sure that this is a
+
+1255
+00:55:44,730 --> 00:55:47,970
+valid operation so just how the protocol
+
+1256
+00:55:47,970 --> 00:55:59,280
+works yeah you still need to make a
+
+1257
+00:55:59,280 --> 00:56:03,480
+local copy even if you're reading to
+
+1258
+00:56:03,480 --> 00:56:11,820
+ensure repeatable reads right so this
+
+1259
+00:56:11,820 --> 00:56:13,440
+slide is essentially just saying that
+
+1260
+00:56:13,440 --> 00:56:15,930
+for low contention workloads these
+
+1261
+00:56:15,930 --> 00:56:17,490
+optimistic concurrency protocols work
+
+1262
+00:56:17,490 --> 00:56:18,780
+very well because they have very little
+
+1263
+00:56:18,780 --> 00:56:21,510
+overhead in comparison to two-phase
+
+1264
+00:56:21,510 --> 00:56:23,390
+locking which you know even if you have
+
+1265
+00:56:23,390 --> 00:56:25,830
+disjoint working sets between between
+
+1266
+00:56:25,830 --> 00:56:27,119
+transactions you still have to have
+
+1267
+00:56:27,119 --> 00:56:29,760
+transactions require locks whereas here
+
+1268
+00:56:29,760 --> 00:56:32,960
+there's no locks at all
+
+1269
+00:56:44,410 --> 00:56:46,880
+this guy yeah you're right
+
+1270
+00:56:46,880 --> 00:56:49,099
+so you don't have to acquire like a
+
+1271
+00:56:49,099 --> 00:56:50,479
+database of a lock you still have to
+
+1272
+00:56:50,479 --> 00:56:52,430
+require latches you still have to make
+
+1273
+00:56:52,430 --> 00:56:54,680
+sure the integrity of the data structure
+
+1274
+00:56:54,680 --> 00:56:56,269
+is valid right
+
+1275
+00:56:56,269 --> 00:56:58,970
+you can't just blindly overwrite stuff
+
+1276
+00:56:58,970 --> 00:57:00,140
+in memory because there could be
+
+1277
+00:57:00,140 --> 00:57:01,609
+concurrent access to these to these
+
+1278
+00:57:01,609 --> 00:57:02,930
+structures so I think you're kind of
+
+1279
+00:57:02,930 --> 00:57:04,130
+hitting on the point that we will talk
+
+1280
+00:57:04,130 --> 00:57:05,119
+about it
+
+1281
+00:57:05,119 --> 00:57:09,319
+I think in this slide yeah so there is a
+
+1282
+00:57:09,319 --> 00:57:12,410
+little bit of work overhead in OCC right
+
+1283
+00:57:12,410 --> 00:57:13,519
+because you have to maintain local
+
+1284
+00:57:13,519 --> 00:57:15,019
+copies of everything that you want to
+
+1285
+00:57:15,019 --> 00:57:16,249
+read and write so if you're updating a
+
+1286
+00:57:16,249 --> 00:57:17,119
+billion two poles you have to make a
+
+1287
+00:57:17,119 --> 00:57:18,979
+billion copies every transaction has to
+
+1288
+00:57:18,979 --> 00:57:20,749
+make a billion copies and so there's a
+
+1289
+00:57:20,749 --> 00:57:24,079
+lot of overhead here the other thing is
+
+1290
+00:57:24,079 --> 00:57:25,489
+that the validation and the right phase
+
+1291
+00:57:25,489 --> 00:57:27,559
+is they were happening serially right
+
+1292
+00:57:27,559 --> 00:57:29,329
+the only one transaction can be
+
+1293
+00:57:29,329 --> 00:57:30,470
+validating at a time
+
+1294
+00:57:30,470 --> 00:57:33,170
+in reality you know in real systems you
+
+1295
+00:57:33,170 --> 00:57:34,819
+have parallel validation in parallel
+
+1296
+00:57:34,819 --> 00:57:36,440
+writing but again even those in those
+
+1297
+00:57:36,440 --> 00:57:38,569
+scenarios these phases become a big
+
+1298
+00:57:38,569 --> 00:57:43,999
+bottleneck and lastly because we're
+
+1299
+00:57:43,999 --> 00:57:45,589
+being optimistic we're assuming that we
+
+1300
+00:57:45,589 --> 00:57:47,479
+can perform all of the work with you
+
+1301
+00:57:47,479 --> 00:57:49,549
+know safely without being interrupted by
+
+1302
+00:57:49,549 --> 00:57:51,619
+there by them by other transactions but
+
+1303
+00:57:51,619 --> 00:57:53,269
+in contentious workloads that's not this
+
+1304
+00:57:53,269 --> 00:57:54,319
+that's not the case right that
+
+1305
+00:57:54,319 --> 00:57:55,400
+assumption is invalidated
+
+1306
+00:57:55,400 --> 00:57:57,440
+so in contentious workloads routing all
+
+1307
+00:57:57,440 --> 00:57:59,809
+this work upfront and then we could find
+
+1308
+00:57:59,809 --> 00:58:01,249
+out later that we actually have to abort
+
+1309
+00:58:01,249 --> 00:58:03,049
+so all of this work is wasted
+
+1310
+00:58:03,049 --> 00:58:04,969
+we're being optimistic and we're being
+
+1311
+00:58:04,969 --> 00:58:12,829
+wrong about that optimism so when a
+
+1312
+00:58:12,829 --> 00:58:16,640
+transaction commits they they they I
+
+1313
+00:58:16,640 --> 00:58:18,619
+think that the student was was was
+
+1314
+00:58:18,619 --> 00:58:20,650
+pointing this out correctly
+
+1315
+00:58:20,650 --> 00:58:23,150
+even if these even if the transactions
+
+1316
+00:58:23,150 --> 00:58:25,460
+logically don't overlap with each other
+
+1317
+00:58:25,460 --> 00:58:27,650
+you still have to make sure that you
+
+1318
+00:58:27,650 --> 00:58:29,749
+maintain the physical integrity of the
+
+1319
+00:58:29,749 --> 00:58:31,099
+data structure you're gonna be looking
+
+1320
+00:58:31,099 --> 00:58:33,829
+at so as part of the validation phase
+
+1321
+00:58:33,829 --> 00:58:35,329
+you have to look at oh I have you know
+
+1322
+00:58:35,329 --> 00:58:36,710
+all these other thousand Trent
+
+1323
+00:58:36,710 --> 00:58:37,969
+transactions I have to look inside the
+
+1324
+00:58:37,969 --> 00:58:39,859
+reads a read and write sets in a
+
+1325
+00:58:39,859 --> 00:58:43,239
+consistent way I make this consistent by
+
+1326
+00:58:43,239 --> 00:58:47,180
+by acquiring latches right so this latch
+
+1327
+00:58:47,180 --> 00:58:49,730
+overhead it can actually play a big role
+
+1328
+00:58:49,730 --> 00:58:52,580
+even if they're logically just disjoint
+
+1329
+00:58:52,580 --> 00:58:54,230
+physically they're still contending on
+
+1330
+00:58:54,230 --> 00:58:55,400
+the same data structures right there so
+
+1331
+00:58:55,400 --> 00:58:56,360
+contending on the read and write data
+
+1332
+00:58:56,360 --> 00:58:58,790
+sets even though logically they're
+
+1333
+00:58:58,790 --> 00:59:02,750
+disconnected yes so when I'm doing my
+
+1334
+00:59:02,750 --> 00:59:04,760
+validation right I have one transaction
+
+1335
+00:59:04,760 --> 00:59:06,290
+and me I'm ready to validate I have to
+
+1336
+00:59:06,290 --> 00:59:07,400
+go into his read and write transaction
+
+1337
+00:59:07,400 --> 00:59:09,400
+set to make sure that we don't intersect
+
+1338
+00:59:09,400 --> 00:59:11,480
+all right but he could be modifying it
+
+1339
+00:59:11,480 --> 00:59:13,580
+because he's still running he or she's
+
+1340
+00:59:13,580 --> 00:59:15,350
+still running right so I have to acquire
+
+1341
+00:59:15,350 --> 00:59:17,630
+latch read a consistent view of it
+
+1342
+00:59:17,630 --> 00:59:19,010
+perform the intersection to make sure
+
+1343
+00:59:19,010 --> 00:59:21,710
+I'm okay and he and the this other
+
+1344
+00:59:21,710 --> 00:59:23,480
+transaction can't modify that that said
+
+1345
+00:59:23,480 --> 00:59:30,470
+while I'm reading it but I'm reading the
+
+1346
+00:59:30,470 --> 00:59:32,090
+local copy I'm reading that transactions
+
+1347
+00:59:32,090 --> 00:59:37,520
+local copy of the working set because
+
+1348
+00:59:37,520 --> 00:59:38,660
+the table doesn't have all of the
+
+1349
+00:59:38,660 --> 00:59:41,390
+updates that have been applied that this
+
+1350
+00:59:41,390 --> 00:59:42,980
+transaction has read and has read and
+
+1351
+00:59:42,980 --> 00:59:44,780
+written to write the transaction has a
+
+1352
+00:59:44,780 --> 00:59:47,030
+local copy of Reason rights so to see if
+
+1353
+00:59:47,030 --> 00:59:49,610
+this transaction has read a value that
+
+1354
+00:59:49,610 --> 00:59:52,250
+I'm writing to I only know that by
+
+1355
+00:59:52,250 --> 00:59:53,480
+looking at his we didn't write said I
+
+1356
+00:59:53,480 --> 00:59:57,460
+don't know that by looking at the table
+
+1357
+00:59:59,410 --> 01:00:02,960
+so I have to look at the local the world
+
+1358
+01:00:02,960 --> 01:00:04,340
+the local working copies for all the two
+
+1359
+01:00:04,340 --> 01:00:05,540
+are the other the other transactions as
+
+1360
+01:00:05,540 --> 01:00:08,090
+part of my validation and I do that and
+
+1361
+01:00:08,090 --> 01:00:09,560
+in order to do that in a consistent way
+
+1362
+01:00:09,560 --> 01:00:11,300
+I have to acquire latches and this latch
+
+1363
+01:00:11,300 --> 01:00:13,300
+is these latches can have some overhead
+
+1364
+01:00:13,300 --> 01:00:29,900
+yeah yeah there's this yeah there's
+
+1365
+01:00:29,900 --> 01:00:31,070
+there's a lot of techniques that you can
+
+1366
+01:00:31,070 --> 01:00:32,720
+use to reduce the slash contention but
+
+1367
+01:00:32,720 --> 01:00:33,950
+at the end of the day like if you even
+
+1368
+01:00:33,950 --> 01:00:35,900
+if you have a parallel sighting there is
+
+1369
+01:00:35,900 --> 01:00:41,690
+some overhead right so what if we take a
+
+1370
+01:00:41,690 --> 01:00:45,250
+slightly different view right what if we
+
+1371
+01:00:45,250 --> 01:00:49,660
+what if we partition the entire database
+
+1372
+01:00:49,660 --> 01:00:51,860
+so that all of the stuff that one
+
+1373
+01:00:51,860 --> 01:00:53,150
+transaction has to work on is only
+
+1374
+01:00:53,150 --> 01:00:55,250
+within one transaction and then I can
+
+1375
+01:00:55,250 --> 01:00:56,900
+remove all of my locks and latches
+
+1376
+01:00:56,900 --> 01:01:00,680
+altogether is that even possible so it
+
+1377
+01:01:00,680 --> 01:01:02,480
+turns out that this is a valid technique
+
+1378
+01:01:02,480 --> 01:01:03,170
+and
+
+1379
+01:01:03,170 --> 01:01:05,660
+it's called partition based timestamp
+
+1380
+01:01:05,660 --> 01:01:06,140
+ordering
+
+1381
+01:01:06,140 --> 01:01:08,239
+the idea is that I want to split up my
+
+1382
+01:01:08,239 --> 01:01:10,579
+database into these horizontal
+
+1383
+01:01:10,579 --> 01:01:14,329
+partitions right and then I want to be
+
+1384
+01:01:14,329 --> 01:01:16,789
+able to use time stamps to order the
+
+1385
+01:01:16,789 --> 01:01:19,099
+transactions on a partition in serial
+
+1386
+01:01:19,099 --> 01:01:21,829
+order right so if I have transactions
+
+1387
+01:01:21,829 --> 01:01:23,749
+executed executing serially then there's
+
+1388
+01:01:23,749 --> 01:01:25,700
+no reason I'm sorry within a database
+
+1389
+01:01:25,700 --> 01:01:27,049
+there's no reason to have locks and
+
+1390
+01:01:27,049 --> 01:01:28,549
+latches at all because there's no
+
+1391
+01:01:28,549 --> 01:01:32,329
+concurrent activity right if they're
+
+1392
+01:01:32,329 --> 01:01:34,339
+operating single-threaded I don't need
+
+1393
+01:01:34,339 --> 01:01:34,670
+lights
+
+1394
+01:01:34,670 --> 01:01:36,880
+I don't need locks I don't need latches
+
+1395
+01:01:36,880 --> 01:01:40,940
+and then it gets a little bit
+
+1396
+01:01:40,940 --> 01:01:41,809
+complicated if you have to access
+
+1397
+01:01:41,809 --> 01:01:43,880
+multiple of these database partitions
+
+1398
+01:01:43,880 --> 01:01:46,130
+but if you're only accessing all the
+
+1399
+01:01:46,130 --> 01:01:48,349
+data within one partition then then it
+
+1400
+01:01:48,349 --> 01:01:49,640
+can be potentially really really fast
+
+1401
+01:01:49,640 --> 01:01:51,739
+and this is sort of what partition based
+
+1402
+01:01:51,739 --> 01:01:53,920
+time step ordering is trying to achieve
+
+1403
+01:01:53,920 --> 01:01:56,180
+let's let's walk through an example so
+
+1404
+01:01:56,180 --> 01:02:00,410
+imagine that I have this the schema that
+
+1405
+01:02:00,410 --> 01:02:01,759
+represents some online store that I'm
+
+1406
+01:02:01,759 --> 01:02:04,730
+running I have customers orders and the
+
+1407
+01:02:04,730 --> 01:02:07,819
+the order items the items in the order
+
+1408
+01:02:07,819 --> 01:02:10,670
+for this for for an order what I could
+
+1409
+01:02:10,670 --> 01:02:13,309
+potentially do is because I have these
+
+1410
+01:02:13,309 --> 01:02:15,019
+foreign key references I can store
+
+1411
+01:02:15,019 --> 01:02:16,970
+within one partition of the day of the
+
+1412
+01:02:16,970 --> 01:02:19,940
+table a set of customers all of their
+
+1413
+01:02:19,940 --> 01:02:22,099
+orders and all of the items for their
+
+1414
+01:02:22,099 --> 01:02:24,920
+orders by using this this this this
+
+1415
+01:02:24,920 --> 01:02:27,739
+foreign key reference structure okay so
+
+1416
+01:02:27,739 --> 01:02:29,150
+imagine that I have two databases now
+
+1417
+01:02:29,150 --> 01:02:31,999
+where I have customers one through 1001
+
+1418
+01:02:31,999 --> 01:02:35,900
+and 1002 2000 in a separate database and
+
+1419
+01:02:35,900 --> 01:02:37,759
+I want to I don't know let's say I want
+
+1420
+01:02:37,759 --> 01:02:39,890
+to update a customer's name I want to
+
+1421
+01:02:39,890 --> 01:02:42,579
+add in order to one customer's order
+
+1422
+01:02:42,579 --> 01:02:45,910
+right what do I do
+
+1423
+01:02:45,910 --> 01:02:48,619
+so a transaction I have an application
+
+1424
+01:02:48,619 --> 01:02:50,599
+here it begins a transaction and let's
+
+1425
+01:02:50,599 --> 01:02:52,029
+say that it's trying to update customer
+
+1426
+01:02:52,029 --> 01:02:54,319
+customer one it falls into this
+
+1427
+01:02:54,319 --> 01:02:58,849
+partition here so okay it's missing
+
+1428
+01:02:58,849 --> 01:02:59,150
+something
+
+1429
+01:02:59,150 --> 01:03:02,299
+so assume that in this line there's a
+
+1430
+01:03:02,299 --> 01:03:04,039
+there's an operation that says get me
+
+1431
+01:03:04,039 --> 01:03:05,869
+the name of the customer whose ID is one
+
+1432
+01:03:05,869 --> 01:03:07,910
+okay that's an operation that obviously
+
+1433
+01:03:07,910 --> 01:03:09,289
+falls into this partition because this
+
+1434
+01:03:09,289 --> 01:03:13,740
+customer belongs in this partition right
+
+1435
+01:03:13,740 --> 01:03:16,140
+and then it does commit and it can
+
+1436
+01:03:16,140 --> 01:03:18,029
+safely do that right because all of
+
+1437
+01:03:18,029 --> 01:03:19,589
+these transactions get queued up and
+
+1438
+01:03:19,589 --> 01:03:21,089
+operated in a single thread and this
+
+1439
+01:03:21,089 --> 01:03:22,230
+transit in this database
+
+1440
+01:03:22,230 --> 01:03:24,559
+there's no concurrent activity at all
+
+1441
+01:03:24,559 --> 01:03:28,170
+similarly I can have another application
+
+1442
+01:03:28,170 --> 01:03:31,130
+server that wants to update the customer
+
+1443
+01:03:31,130 --> 01:03:35,430
+1004 that'll go here and these two
+
+1444
+01:03:35,430 --> 01:03:37,259
+transactions are totally disjoint
+
+1445
+01:03:37,259 --> 01:03:38,700
+they're operating on different customers
+
+1446
+01:03:38,700 --> 01:03:40,499
+that's one way that we get parallelism
+
+1447
+01:03:40,499 --> 01:03:42,539
+even though each database is operating
+
+1448
+01:03:42,539 --> 01:03:45,329
+single threaded okay the finer grain
+
+1449
+01:03:45,329 --> 01:03:47,130
+that we can have these customers we can
+
+1450
+01:03:47,130 --> 01:03:48,630
+store these these database partitions
+
+1451
+01:03:48,630 --> 01:03:52,049
+the more parallelism we can get and that
+
+1452
+01:03:52,049 --> 01:03:54,089
+way each treats individual transaction
+
+1453
+01:03:54,089 --> 01:03:55,259
+runs much faster because we don't have
+
+1454
+01:03:55,259 --> 01:03:57,509
+to acquire locks and latches and we get
+
+1455
+01:03:57,509 --> 01:03:59,009
+parallelism by having more of these
+
+1456
+01:03:59,009 --> 01:04:00,269
+transactions when it concurrently on
+
+1457
+01:04:00,269 --> 01:04:05,509
+disjoint sets of the data is that clear
+
+1458
+01:04:05,509 --> 01:04:10,289
+all right so this turns out to be a very
+
+1459
+01:04:10,289 --> 01:04:13,470
+popular protocol you still have to
+
+1460
+01:04:13,470 --> 01:04:15,269
+assign transactions and ID and then you
+
+1461
+01:04:15,269 --> 01:04:20,450
+queue them up bye-bye-bye these IDs and
+
+1462
+01:04:20,450 --> 01:04:22,890
+the this type of partition based
+
+1463
+01:04:22,890 --> 01:04:25,769
+protocol has been actually very very
+
+1464
+01:04:25,769 --> 01:04:27,539
+very successful so Andy worked on this
+
+1465
+01:04:27,539 --> 01:04:28,589
+system called a store which is a
+
+1466
+01:04:28,589 --> 01:04:32,730
+commercial system that now get that got
+
+1467
+01:04:32,730 --> 01:04:34,200
+commercialized into volt EB and they're
+
+1468
+01:04:34,200 --> 01:04:35,789
+still using this this type of partition
+
+1469
+01:04:35,789 --> 01:04:37,950
+based timestamp ordering Andy worked
+
+1470
+01:04:37,950 --> 01:04:40,019
+with the someone called a professor
+
+1471
+01:04:40,019 --> 01:04:41,249
+called Danny body who's at I think
+
+1472
+01:04:41,249 --> 01:04:43,319
+Marilyn now who did some initial work on
+
+1473
+01:04:43,319 --> 01:04:44,819
+a system called Calvin that's now been
+
+1474
+01:04:44,819 --> 01:04:47,309
+commercialized into fauna that also uses
+
+1475
+01:04:47,309 --> 01:04:48,569
+something very similar to this and
+
+1476
+01:04:48,569 --> 01:04:50,910
+there's a system called K DB which is of
+
+1477
+01:04:50,910 --> 01:04:53,430
+like a financial database and they also
+
+1478
+01:04:53,430 --> 01:04:55,079
+use this technique and it's actually
+
+1479
+01:04:55,079 --> 01:04:56,880
+pretty successful if you if your work
+
+1480
+01:04:56,880 --> 01:04:58,619
+votes of supports this type of partition
+
+1481
+01:04:58,619 --> 01:05:03,210
+based operation the way that you can
+
+1482
+01:05:03,210 --> 01:05:04,349
+view this is that every single database
+
+1483
+01:05:04,349 --> 01:05:06,480
+essentially has a giant lock or a latch
+
+1484
+01:05:06,480 --> 01:05:08,609
+around it and when a transaction is
+
+1485
+01:05:08,609 --> 01:05:10,079
+ready to commit it acquires this latch
+
+1486
+01:05:10,079 --> 01:05:12,170
+and it begins execution within the
+
+1487
+01:05:12,170 --> 01:05:14,700
+within the database fully single
+
+1488
+01:05:14,700 --> 01:05:16,769
+threaded bare metal bare metal speed and
+
+1489
+01:05:16,769 --> 01:05:19,410
+then as other transactions come up they
+
+1490
+01:05:19,410 --> 01:05:21,420
+queue up on this latch and they
+
+1491
+01:05:21,420 --> 01:05:22,739
+essentially get assigned a timestamp and
+
+1492
+01:05:22,739 --> 01:05:24,989
+then as their timestamp gets gets ringed
+
+1493
+01:05:24,989 --> 01:05:26,430
+up they begin execution into this
+
+1494
+01:05:26,430 --> 01:05:27,510
+database
+
+1495
+01:05:27,510 --> 01:05:31,100
+into this into this database partition
+
+1496
+01:05:33,500 --> 01:05:36,030
+okay yeah so that's it
+
+1497
+01:05:36,030 --> 01:05:41,190
+so four four four four reads the
+
+1498
+01:05:41,190 --> 01:05:42,840
+database that the transactions can
+
+1499
+01:05:42,840 --> 01:05:44,700
+essentially read whatever they want
+
+1500
+01:05:44,700 --> 01:05:46,050
+right now safely without requiring
+
+1501
+01:05:46,050 --> 01:05:47,790
+latches because they came Garon the
+
+1502
+01:05:47,790 --> 01:05:49,619
+database system guarantees that there's
+
+1503
+01:05:49,619 --> 01:05:50,700
+no other transaction running in the
+
+1504
+01:05:50,700 --> 01:05:54,600
+system this is great if you only want to
+
+1505
+01:05:54,600 --> 01:05:56,550
+read stuff within the within one
+
+1506
+01:05:56,550 --> 01:05:58,590
+database partition it gets complicated
+
+1507
+01:05:58,590 --> 01:06:02,700
+when you want to try to read rows that
+
+1508
+01:06:02,700 --> 01:06:04,650
+exist across partitions so in the in the
+
+1509
+01:06:04,650 --> 01:06:06,030
+application server we had before let's
+
+1510
+01:06:06,030 --> 01:06:07,680
+say that you want to modify within one
+
+1511
+01:06:07,680 --> 01:06:09,510
+transaction customers from two different
+
+1512
+01:06:09,510 --> 01:06:11,369
+partitions that becomes complicated
+
+1513
+01:06:11,369 --> 01:06:13,290
+because now I have to acquire the lock
+
+1514
+01:06:13,290 --> 01:06:15,000
+for one partition and acquire a lock for
+
+1515
+01:06:15,000 --> 01:06:16,710
+the other partition before I can do any
+
+1516
+01:06:16,710 --> 01:06:19,050
+sort of operation okay and oftentimes
+
+1517
+01:06:19,050 --> 01:06:20,820
+it's not even possible to know a priori
+
+1518
+01:06:20,820 --> 01:06:22,740
+all of the partitions and have to touch
+
+1519
+01:06:22,740 --> 01:06:24,690
+it so some systems what they actually do
+
+1520
+01:06:24,690 --> 01:06:25,890
+is they'll run the system in sort of
+
+1521
+01:06:25,890 --> 01:06:27,900
+like a like a speculative or like
+
+1522
+01:06:27,900 --> 01:06:29,400
+reconnaissance mode to figure out all
+
+1523
+01:06:29,400 --> 01:06:31,850
+the partitions I need to access and then
+
+1524
+01:06:31,850 --> 01:06:34,380
+rollback acquire all the locks ahead of
+
+1525
+01:06:34,380 --> 01:06:38,570
+time and then begin execution all right
+
+1526
+01:06:38,570 --> 01:06:41,160
+yeah so that's essentially what this is
+
+1527
+01:06:41,160 --> 01:06:42,630
+talking about if I have to access cross
+
+1528
+01:06:42,630 --> 01:06:45,390
+partitions across partition rows I have
+
+1529
+01:06:45,390 --> 01:06:47,580
+to abort and restart and acquire the new
+
+1530
+01:06:47,580 --> 01:06:48,869
+locks the new set of locks that I've
+
+1531
+01:06:48,869 --> 01:06:51,210
+discovered during execution and this can
+
+1532
+01:06:51,210 --> 01:06:53,460
+be wasteful so if you you have to be
+
+1533
+01:06:53,460 --> 01:06:54,990
+kind of careful about when you want to
+
+1534
+01:06:54,990 --> 01:06:59,910
+apply partition based time step order so
+
+1535
+01:06:59,910 --> 01:07:02,040
+in contrast to regular time step
+
+1536
+01:07:02,040 --> 01:07:04,530
+ordering and OCC I can now apply all my
+
+1537
+01:07:04,530 --> 01:07:07,109
+updates in place right so when oasis-c
+
+1538
+01:07:07,109 --> 01:07:09,030
+and in basic timestamp ordering I had a
+
+1539
+01:07:09,030 --> 01:07:10,830
+private workspace that or data plot that
+
+1540
+01:07:10,830 --> 01:07:12,690
+I have to apply my updates so that I
+
+1541
+01:07:12,690 --> 01:07:14,820
+don't conflict with other transactions
+
+1542
+01:07:14,820 --> 01:07:17,040
+that are running concurrently that want
+
+1543
+01:07:17,040 --> 01:07:18,200
+to read the same stuff that I'm writing
+
+1544
+01:07:18,200 --> 01:07:20,760
+okay but here the goods the system
+
+1545
+01:07:20,760 --> 01:07:22,440
+guarantees that there's only one
+
+1546
+01:07:22,440 --> 01:07:24,119
+transaction running at a time I can
+
+1547
+01:07:24,119 --> 01:07:27,330
+apply my updates in place and of course
+
+1548
+01:07:27,330 --> 01:07:28,770
+I have some extra logic to ensure that
+
+1549
+01:07:28,770 --> 01:07:30,540
+when I abort I undo those changes but I
+
+1550
+01:07:30,540 --> 01:07:32,340
+can do this without making a local copy
+
+1551
+01:07:32,340 --> 01:07:34,109
+so I've reduced the data copying
+
+1552
+01:07:34,109 --> 01:07:35,369
+overhead that would normally exist in
+
+1553
+01:07:35,369 --> 01:07:38,090
+OCC systems
+
+1554
+01:07:41,160 --> 01:07:44,740
+and an ad as in the in the Greek case if
+
+1555
+01:07:44,740 --> 01:07:47,830
+I try to modify a tuple that exists in a
+
+1556
+01:07:47,830 --> 01:07:48,790
+different partition than when I'm
+
+1557
+01:07:48,790 --> 01:07:51,250
+running on right now I'll abort restart
+
+1558
+01:07:51,250 --> 01:07:53,110
+get a lock on both database systems or
+
+1559
+01:07:53,110 --> 01:07:55,150
+database partitions and then begin my
+
+1560
+01:07:55,150 --> 01:08:14,860
+execution yeah no no because every
+
+1561
+01:08:14,860 --> 01:08:16,390
+database has only one transaction
+
+1562
+01:08:16,390 --> 01:08:18,790
+actually execution thread every
+
+1563
+01:08:18,790 --> 01:08:20,259
+partition has one transaction execution
+
+1564
+01:08:20,259 --> 01:08:24,729
+thread right that's that's sort of one
+
+1565
+01:08:24,729 --> 01:08:26,290
+reason why you want to do this because
+
+1566
+01:08:26,290 --> 01:08:28,569
+you by having only one thread you don't
+
+1567
+01:08:28,569 --> 01:08:29,680
+have to copy you don't have to have a
+
+1568
+01:08:29,680 --> 01:08:49,109
+locks and latches yes yeah so I think
+
+1569
+01:08:49,109 --> 01:08:51,160
+they're ways into the remedy this way as
+
+1570
+01:08:51,160 --> 01:08:52,120
+you have if you if you have a
+
+1571
+01:08:52,120 --> 01:08:53,589
+deterministic order that you acquire the
+
+1572
+01:08:53,589 --> 01:08:54,880
+locks that's one way to alleviate this
+
+1573
+01:08:54,880 --> 01:08:56,830
+problem but I think you're sort of
+
+1574
+01:08:56,830 --> 01:08:59,049
+alluding to the fact that you could have
+
+1575
+01:08:59,049 --> 01:09:01,270
+the case where you keep learning during
+
+1576
+01:09:01,270 --> 01:09:02,589
+execution that you have that you're
+
+1577
+01:09:02,589 --> 01:09:04,990
+touching different partitions so you do
+
+1578
+01:09:04,990 --> 01:09:06,790
+a bit of work realize you have to
+
+1579
+01:09:06,790 --> 01:09:08,830
+acquire it to a lock for a partition
+
+1580
+01:09:08,830 --> 01:09:11,290
+that you don't have abort retry get
+
+1581
+01:09:11,290 --> 01:09:12,609
+further in the execution realize you
+
+1582
+01:09:12,609 --> 01:09:14,229
+have to acquire a different lock and a
+
+1583
+01:09:14,229 --> 01:09:16,180
+different partition abort and then we
+
+1584
+01:09:16,180 --> 01:09:17,920
+start and this you hope sort of
+
+1585
+01:09:17,920 --> 01:09:19,330
+incrementally grow the set of locks that
+
+1586
+01:09:19,330 --> 01:09:21,609
+you have to acquire because you don't
+
+1587
+01:09:21,609 --> 01:09:24,210
+know a priori
+
+1588
+01:09:50,549 --> 01:09:52,538
+yeah but you see so you solve that
+
+1589
+01:09:52,538 --> 01:09:53,649
+problem by having that these
+
+1590
+01:09:53,649 --> 01:09:55,750
+transactions acquire the locks in a
+
+1591
+01:09:55,750 --> 01:09:57,760
+specific order in a deterministic order
+
+1592
+01:09:57,760 --> 01:09:59,980
+so you have let's say a partition a and
+
+1593
+01:09:59,980 --> 01:10:03,760
+B you have t1 t2 20 X s a and B they
+
+1594
+01:10:03,760 --> 01:10:04,480
+realize that they need different
+
+1595
+01:10:04,480 --> 01:10:06,849
+partitions then they restart the abort
+
+1596
+01:10:06,849 --> 01:10:08,650
+and now they all acquire a and they all
+
+1597
+01:10:08,650 --> 01:10:10,329
+acquire B and then they get queued up
+
+1598
+01:10:10,329 --> 01:10:14,829
+and they get executed in that order all
+
+1599
+01:10:14,829 --> 01:10:18,480
+right all right so that's essentially
+
+1600
+01:10:18,480 --> 01:10:21,070
+partition based time step ordering this
+
+1601
+01:10:21,070 --> 01:10:22,420
+is sort of a visual illustration of
+
+1602
+01:10:22,420 --> 01:10:25,809
+what's going on let's say you have two
+
+1603
+01:10:25,809 --> 01:10:26,980
+servers that are both trying to access
+
+1604
+01:10:26,980 --> 01:10:28,929
+some customer data in this first
+
+1605
+01:10:28,929 --> 01:10:32,020
+partition the issue a begin request they
+
+1606
+01:10:32,020 --> 01:10:33,610
+get queued up in this transaction queue
+
+1607
+01:10:33,610 --> 01:10:35,530
+they get assigned time stamps assume
+
+1608
+01:10:35,530 --> 01:10:37,570
+that server one gets x times 100
+
+1609
+01:10:37,570 --> 01:10:42,159
+servitude it gets timestamp 101 and
+
+1610
+01:10:42,159 --> 01:10:44,079
+obviously the the database system will
+
+1611
+01:10:44,079 --> 01:10:45,460
+take the transaction with the lowest
+
+1612
+01:10:45,460 --> 01:10:47,170
+timestamp in this case the the one from
+
+1613
+01:10:47,170 --> 01:10:50,320
+server one it begins execution acquired
+
+1614
+01:10:50,320 --> 01:10:52,030
+by acquiring a lock on this on this
+
+1615
+01:10:52,030 --> 01:10:54,670
+database partition it finishes its
+
+1616
+01:10:54,670 --> 01:10:58,750
+execution it does it sorry it's doing a
+
+1617
+01:10:58,750 --> 01:10:59,800
+bunch of work it's getting the customer
+
+1618
+01:10:59,800 --> 01:11:00,820
+ID and it's updating the stuff the
+
+1619
+01:11:00,820 --> 01:11:02,679
+animations are a little bit wonky but
+
+1620
+01:11:02,679 --> 01:11:06,309
+then it does a commit it's safe because
+
+1621
+01:11:06,309 --> 01:11:07,840
+nothing that nothing else is running at
+
+1622
+01:11:07,840 --> 01:11:10,480
+the same time so now this this partition
+
+1623
+01:11:10,480 --> 01:11:13,539
+can now move up this this request from
+
+1624
+01:11:13,539 --> 01:11:16,599
+server 2 up in the queue begin execution
+
+1625
+01:11:16,599 --> 01:11:19,420
+acquire the lock and then the whole
+
+1626
+01:11:19,420 --> 01:11:24,210
+cycle continues all right
+
+1627
+01:11:25,500 --> 01:11:28,570
+as we've sort of talked about a little
+
+1628
+01:11:28,570 --> 01:11:31,510
+bit these systems obviously are not a
+
+1629
+01:11:31,510 --> 01:11:33,340
+silver bullet right they have they have
+
+1630
+01:11:33,340 --> 01:11:35,770
+some performance issues so these systems
+
+1631
+01:11:35,770 --> 01:11:38,409
+are very fast if the database knows what
+
+1632
+01:11:38,409 --> 01:11:41,020
+partitions the transaction needs before
+
+1633
+01:11:41,020 --> 01:11:43,179
+even beginning execution that's not
+
+1634
+01:11:43,179 --> 01:11:44,500
+really possible in a sort of an
+
+1635
+01:11:44,500 --> 01:11:45,989
+interactive transaction protocol right
+
+1636
+01:11:45,989 --> 01:11:48,909
+but you can remedy this by having stored
+
+1637
+01:11:48,909 --> 01:11:51,340
+procedures right in store procedures you
+
+1638
+01:11:51,340 --> 01:11:55,000
+declare everything on you you don't have
+
+1639
+01:11:55,000 --> 01:11:57,579
+to do round trips back and forth and the
+
+1640
+01:11:57,579 --> 01:11:58,570
+database runs everything on the server
+
+1641
+01:11:58,570 --> 01:12:00,880
+side so can determine much quicker all
+
+1642
+01:12:00,880 --> 01:12:02,770
+of the locks the system
+
+1643
+01:12:02,770 --> 01:12:09,969
+before enduring execution and if the if
+
+1644
+01:12:09,969 --> 01:12:11,469
+the transaction only touches one
+
+1645
+01:12:11,469 --> 01:12:12,940
+partition then obviously it's gonna be
+
+1646
+01:12:12,940 --> 01:12:14,200
+really fast but if it has to touch
+
+1647
+01:12:14,200 --> 01:12:16,719
+multiple partitions and you have to do
+
+1648
+01:12:16,719 --> 01:12:19,060
+some execution abort retry by acquiring
+
+1649
+01:12:19,060 --> 01:12:20,650
+more locks and then continue execution
+
+1650
+01:12:20,650 --> 01:12:23,350
+is again right so it becomes slower but
+
+1651
+01:12:23,350 --> 01:12:25,150
+if your transaction only touches data
+
+1652
+01:12:25,150 --> 01:12:26,500
+within one partition then you're
+
+1653
+01:12:26,500 --> 01:12:28,210
+essentially running had bare-metal speed
+
+1654
+01:12:28,210 --> 01:12:30,910
+because it's it's single threaded right
+
+1655
+01:12:30,910 --> 01:12:34,480
+there's no locks no latches the other
+
+1656
+01:12:34,480 --> 01:12:37,360
+drawback is that if you have this multi
+
+1657
+01:12:37,360 --> 01:12:38,980
+partition setup you could have some
+
+1658
+01:12:38,980 --> 01:12:41,140
+transact some partitions that are
+
+1659
+01:12:41,140 --> 01:12:42,520
+essentially idle because you have one
+
+1660
+01:12:42,520 --> 01:12:50,320
+hot one hot partition okay so that that
+
+1661
+01:12:50,320 --> 01:12:52,330
+was essentially partition based time
+
+1662
+01:12:52,330 --> 01:12:56,410
+stamp ordering try to get through this
+
+1663
+01:12:56,410 --> 01:12:58,450
+as fast as possible so one of the
+
+1664
+01:12:58,450 --> 01:12:59,200
+assumptions that we've been making
+
+1665
+01:12:59,200 --> 01:13:01,660
+throughout this work is that the as
+
+1666
+01:13:01,660 --> 01:13:03,660
+transactions execute they don't really
+
+1667
+01:13:03,660 --> 01:13:06,520
+insert new data they only modify data
+
+1668
+01:13:06,520 --> 01:13:09,400
+and they read data okay so when you now
+
+1669
+01:13:09,400 --> 01:13:11,410
+add the requirement the data can it can
+
+1670
+01:13:11,410 --> 01:13:14,830
+be inserted and updated and deleted and
+
+1671
+01:13:14,830 --> 01:13:18,160
+inserted during execution it violates
+
+1672
+01:13:18,160 --> 01:13:19,180
+some of the assumptions that we've been
+
+1673
+01:13:19,180 --> 01:13:20,800
+there that we've made in our protocols
+
+1674
+01:13:20,800 --> 01:13:23,920
+and we have to handle them okay and
+
+1675
+01:13:23,920 --> 01:13:26,200
+specifically introduces an interesting
+
+1676
+01:13:26,200 --> 01:13:29,020
+problem that's called the phantom
+
+1677
+01:13:29,020 --> 01:13:31,030
+problem so imagine that we have the same
+
+1678
+01:13:31,030 --> 01:13:33,100
+sequence of execution here but now I'm
+
+1679
+01:13:33,100 --> 01:13:34,239
+using sequel statements instead of
+
+1680
+01:13:34,239 --> 01:13:36,310
+regular read and write operations and we
+
+1681
+01:13:36,310 --> 01:13:38,850
+have these two transactions t1 and t2
+
+1682
+01:13:38,850 --> 01:13:41,050
+and we have the data this database here
+
+1683
+01:13:41,050 --> 01:13:42,940
+of people that have you know name and a
+
+1684
+01:13:42,940 --> 01:13:45,190
+H and some status so a transaction t1
+
+1685
+01:13:45,190 --> 01:13:46,840
+that's performing that's getting the
+
+1686
+01:13:46,840 --> 01:13:48,820
+maximum the the oldest person whose
+
+1687
+01:13:48,820 --> 01:13:52,000
+status is lit ok so let's assume that it
+
+1688
+01:13:52,000 --> 01:13:53,950
+runs and it figures out that the maximum
+
+1689
+01:13:53,950 --> 01:13:55,750
+age is 72 and then we have this
+
+1690
+01:13:55,750 --> 01:13:57,969
+transaction t2 that's essentially going
+
+1691
+01:13:57,969 --> 01:14:00,340
+to enter it into the same database with
+
+1692
+01:14:00,340 --> 01:14:02,560
+a new person whose age is 96 who also
+
+1693
+01:14:02,560 --> 01:14:05,440
+happens to be lit all right and then we
+
+1694
+01:14:05,440 --> 01:14:07,540
+get back here so it's the same t1 tries
+
+1695
+01:14:07,540 --> 01:14:11,380
+to re-execute the same query and it gets
+
+1696
+01:14:11,380 --> 01:14:14,170
+a different version it gets a different
+
+1697
+01:14:14,170 --> 01:14:16,789
+result from this query so got 96 here
+
+1698
+01:14:16,789 --> 01:14:19,460
+and it got 72 here today this is clearly
+
+1699
+01:14:19,460 --> 01:14:20,150
+a problem
+
+1700
+01:14:20,150 --> 01:14:23,210
+right kids can to phase locking solve
+
+1701
+01:14:23,210 --> 01:14:40,579
+this assume tuple axis who said no why
+
+1702
+01:14:40,579 --> 01:14:50,449
+do you say no yeah exactly that's it
+
+1703
+01:14:50,449 --> 01:14:52,429
+that's exactly right right you can only
+
+1704
+01:14:52,429 --> 01:14:54,920
+access locks on on tuples that that
+
+1705
+01:14:54,920 --> 01:15:00,769
+exists so because because there was new
+
+1706
+01:15:00,769 --> 01:15:01,909
+transaction that inserted a new tuple
+
+1707
+01:15:01,909 --> 01:15:04,340
+they didn't even have something to
+
+1708
+01:15:04,340 --> 01:15:06,710
+acquire a lock on right and that's
+
+1709
+01:15:06,710 --> 01:15:08,150
+clearly a problem and how do we solve
+
+1710
+01:15:08,150 --> 01:15:09,500
+this if I want to ensure it's a
+
+1711
+01:15:09,500 --> 01:15:11,329
+realisability I have to ensure that I
+
+1712
+01:15:11,329 --> 01:15:13,940
+can ensure I can ensure rápido reads so
+
+1713
+01:15:13,940 --> 01:15:15,679
+if you saw this phantom problem okay so
+
+1714
+01:15:15,679 --> 01:15:18,949
+what if instead of acquiring locks on
+
+1715
+01:15:18,949 --> 01:15:21,440
+tuples I can acquire locks on abstract
+
+1716
+01:15:21,440 --> 01:15:24,230
+objects what if I can acquire a lock on
+
+1717
+01:15:24,230 --> 01:15:27,079
+an expression status Lit would that
+
+1718
+01:15:27,079 --> 01:15:30,440
+solve the problem if I had a lock on all
+
+1719
+01:15:30,440 --> 01:15:32,690
+tuples that satisfy the condition status
+
+1720
+01:15:32,690 --> 01:15:38,539
+is equal to lid who says yes one person
+
+1721
+01:15:38,539 --> 01:15:43,179
+who says no who says they don't know
+
+1722
+01:15:43,179 --> 01:15:46,010
+okay so the answer is yes if you could
+
+1723
+01:15:46,010 --> 01:15:47,539
+have a powerful a powerful enough
+
+1724
+01:15:47,539 --> 01:15:48,860
+locking system that you can have an
+
+1725
+01:15:48,860 --> 01:15:51,530
+ex-con an expression that says status is
+
+1726
+01:15:51,530 --> 01:15:53,630
+equal to lid you can solve this problem
+
+1727
+01:15:53,630 --> 01:15:56,210
+that would solve it for you all right
+
+1728
+01:15:56,210 --> 01:15:59,269
+but the problem and that the term that
+
+1729
+01:15:59,269 --> 01:16:00,199
+we're talking about here is called
+
+1730
+01:16:00,199 --> 01:16:02,150
+predicate locking is that it's very very
+
+1731
+01:16:02,150 --> 01:16:04,010
+expensive to be able to do this and in
+
+1732
+01:16:04,010 --> 01:16:05,329
+fact I don't think any systems actually
+
+1733
+01:16:05,329 --> 01:16:07,579
+do that type of really complex logic
+
+1734
+01:16:07,579 --> 01:16:10,099
+because it's very complex right I gave
+
+1735
+01:16:10,099 --> 01:16:11,510
+you one example of statuses equal to lid
+
+1736
+01:16:11,510 --> 01:16:13,039
+but we're actually talking about it's a
+
+1737
+01:16:13,039 --> 01:16:14,210
+multi-dimensional problem because you
+
+1738
+01:16:14,210 --> 01:16:16,519
+could have any arbitrary complex
+
+1739
+01:16:16,519 --> 01:16:18,289
+expression and you want to ensure that
+
+1740
+01:16:18,289 --> 01:16:20,840
+the expression you're evaluating doesn't
+
+1741
+01:16:20,840 --> 01:16:22,429
+intersect with this multi-dimensional
+
+1742
+01:16:22,429 --> 01:16:24,619
+space so it's non-trivial to implement
+
+1743
+01:16:24,619 --> 01:16:28,880
+so most systems don't do that yes
+
+1744
+01:16:28,880 --> 01:16:31,499
+[Music]
+
+1745
+01:16:31,499 --> 01:16:33,909
+yeah so you could acquire like a table
+
+1746
+01:16:33,909 --> 01:16:44,289
+level lock or a page level lock yeah so
+
+1747
+01:16:44,289 --> 01:16:45,789
+you could use these hierarchy locks
+
+1748
+01:16:45,789 --> 01:16:47,349
+that's one way to definitely solve it
+
+1749
+01:16:47,349 --> 01:16:48,969
+the other way to solve it is is this
+
+1750
+01:16:48,969 --> 01:16:49,989
+predicate locking that I was talking
+
+1751
+01:16:49,989 --> 01:16:52,659
+about which is more general-purpose and
+
+1752
+01:16:52,659 --> 01:16:55,480
+there's another one called index locking
+
+1753
+01:16:55,480 --> 01:16:57,039
+so if I have an index on the system
+
+1754
+01:16:57,039 --> 01:16:58,570
+right let's say I have an index on this
+
+1755
+01:16:58,570 --> 01:17:01,210
+on the status attribute what I could do
+
+1756
+01:17:01,210 --> 01:17:04,389
+is take a lock on the slot in the index
+
+1757
+01:17:04,389 --> 01:17:07,329
+where status is equal to lid so that any
+
+1758
+01:17:07,329 --> 01:17:09,070
+new insertions have to go through the
+
+1759
+01:17:09,070 --> 01:17:10,630
+index and I make an update they can't
+
+1760
+01:17:10,630 --> 01:17:14,289
+acquire that lock okay so that's another
+
+1761
+01:17:14,289 --> 01:17:16,480
+way to solve it if the status lit
+
+1762
+01:17:16,480 --> 01:17:18,039
+doesn't even exist in the index what I
+
+1763
+01:17:18,039 --> 01:17:20,530
+have to do is acquire what's called a
+
+1764
+01:17:20,530 --> 01:17:23,289
+gap lock so a gap in the index I acquire
+
+1765
+01:17:23,289 --> 01:17:25,780
+a lock on that gap so that if another
+
+1766
+01:17:25,780 --> 01:17:27,280
+insertion comes in that tries to insert
+
+1767
+01:17:27,280 --> 01:17:29,499
+statuses is equal to lid in that space
+
+1768
+01:17:29,499 --> 01:17:33,539
+in the index it's not allowed to do that
+
+1769
+01:17:33,539 --> 01:17:37,389
+okay so this that's that's two
+
+1770
+01:17:37,389 --> 01:17:44,019
+essentially two ways to do it yeah so
+
+1771
+01:17:44,019 --> 01:17:45,280
+this essentially goes back to the point
+
+1772
+01:17:45,280 --> 01:17:46,300
+that was made earlier if you don't have
+
+1773
+01:17:46,300 --> 01:17:47,860
+an index and you don't have predicate
+
+1774
+01:17:47,860 --> 01:17:50,349
+locks you could do it by locking every
+
+1775
+01:17:50,349 --> 01:17:52,630
+every page or you could do it by locking
+
+1776
+01:17:52,630 --> 01:17:55,809
+the entire table or yeah hierarchical
+
+1777
+01:17:55,809 --> 01:17:56,230
+locks
+
+1778
+01:17:56,230 --> 01:17:59,559
+so I saw you know the last way to solve
+
+1779
+01:17:59,559 --> 01:18:00,880
+this problem is through just by
+
+1780
+01:18:00,880 --> 01:18:03,329
+repeating the scans by by the committing
+
+1781
+01:18:03,329 --> 01:18:05,739
+sorry before committing so I think one
+
+1782
+01:18:05,739 --> 01:18:07,090
+of the most popular systems that does
+
+1783
+01:18:07,090 --> 01:18:09,280
+this is hecatomb which is from Microsoft
+
+1784
+01:18:09,280 --> 01:18:10,659
+so essentially everything before you
+
+1785
+01:18:10,659 --> 01:18:11,469
+commit you have to make sure that
+
+1786
+01:18:11,469 --> 01:18:14,619
+everything you read before happens just
+
+1787
+01:18:14,619 --> 01:18:16,360
+before you commit to make sure can see
+
+1788
+01:18:16,360 --> 01:18:17,980
+you have consistent reads I think we're
+
+1789
+01:18:17,980 --> 01:18:21,130
+at a time the last section was weaker
+
+1790
+01:18:21,130 --> 01:18:22,570
+isolation levels maybe we'll cover that
+
+1791
+01:18:22,570 --> 01:18:27,460
+in the next lecture all right all right
+
+1792
+01:18:27,460 --> 01:18:29,849
+that's it
+
+1793
+01:18:30,639 --> 01:18:34,780
+a machine on them it's a broken bar goes
+
+1794
+01:18:34,780 --> 01:18:35,830
+in crushed up kids
+
+1795
+01:18:35,830 --> 01:18:39,699
+let the cows in the demo I'll try it see
+
+1796
+01:18:39,699 --> 01:18:42,070
+nights in my system I'm blessed
+
+1797
+01:18:42,070 --> 01:18:49,840
+let's go get the next one good net will
+
+1798
+01:18:49,840 --> 01:18:52,119
+be son ricochet jelly hit the deli for a
+
+1799
+01:18:52,119 --> 01:18:54,340
+boat one naturally bless ya what rappers
+
+1800
+01:18:54,340 --> 01:18:55,780
+like the laser beam the balls in the
+
+1801
+01:18:55,780 --> 01:18:58,179
+bushes say nothing like a king wrap the
+
+1802
+01:18:58,179 --> 01:19:00,460
+bottle of us a nice sympathy go don't
+
+1803
+01:19:00,460 --> 01:19:02,560
+feel like drinking a pony - you drunk
+
+1804
+01:19:02,560 --> 01:19:05,260
+you can't drop in at the stake don't
+
+1805
+01:19:05,260 --> 01:19:08,760
+know your phone can tap a cake
+

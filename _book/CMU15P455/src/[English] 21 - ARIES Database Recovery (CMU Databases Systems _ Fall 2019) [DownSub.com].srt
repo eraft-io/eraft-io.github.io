@@ -1,0 +1,7384 @@
+1
+00:00:06,920 --> 00:00:19,220
+a lot to talk about today the this is
+
+2
+00:00:19,220 --> 00:00:21,619
+sort of continuation on where we are
+
+3
+00:00:21,619 --> 00:00:23,570
+where we left off on Mondays classes
+
+4
+00:00:23,570 --> 00:00:25,609
+have a lot of recovery so DJ drop tables
+
+5
+00:00:25,609 --> 00:00:27,470
+are still in Vegas so you can't be can't
+
+6
+00:00:27,470 --> 00:00:29,599
+make it today but he'll be back on on
+
+7
+00:00:29,599 --> 00:00:31,880
+Monday and I said he's dealing with
+
+8
+00:00:31,880 --> 00:00:36,860
+girlfriends plural problems right so on
+
+9
+00:00:36,860 --> 00:00:38,480
+Monday we started talking about recovery
+
+10
+00:00:38,480 --> 00:00:40,579
+algorithms we talked about how to have
+
+11
+00:00:40,579 --> 00:00:43,070
+the database system be able to restore
+
+12
+00:00:43,070 --> 00:00:46,160
+the the database to the consistent state
+
+13
+00:00:46,160 --> 00:00:49,519
+as it existed before the the system
+
+14
+00:00:49,519 --> 00:00:51,440
+crashed and we want to do this make sure
+
+15
+00:00:51,440 --> 00:00:53,480
+that we provide the atomicity durability
+
+16
+00:00:53,480 --> 00:00:55,340
+and consistency guarantees for all our
+
+17
+00:00:55,340 --> 00:00:57,859
+transactions and I said that every
+
+18
+00:00:57,859 --> 00:00:59,210
+recovery album we're gonna have in our
+
+19
+00:00:59,210 --> 00:01:01,519
+database system that we possibly design
+
+20
+00:01:01,519 --> 00:01:03,530
+is gonna have two parts but first is are
+
+21
+00:01:03,530 --> 00:01:04,790
+the things we're gonna do while we're
+
+22
+00:01:04,790 --> 00:01:07,160
+processing transactions to record extra
+
+23
+00:01:07,160 --> 00:01:10,070
+information or to flush out data in a
+
+24
+00:01:10,070 --> 00:01:12,979
+sort of certain way to disk and such
+
+25
+00:01:12,979 --> 00:01:14,479
+that we can be able to recover after a
+
+26
+00:01:14,479 --> 00:01:16,400
+crash so now we're talking about today
+
+27
+00:01:16,400 --> 00:01:18,500
+is the second half of if there is a
+
+28
+00:01:18,500 --> 00:01:21,079
+crash pad we come back and pick our life
+
+29
+00:01:21,079 --> 00:01:22,549
+back together picking pieces our life
+
+30
+00:01:22,549 --> 00:01:23,899
+that you know back together and and
+
+31
+00:01:23,899 --> 00:01:28,340
+figure out what's going on so the the
+
+32
+00:01:28,340 --> 00:01:30,640
+protocol we're going to look at today is
+
+33
+00:01:30,640 --> 00:01:34,040
+based on this technique developed at IBM
+
+34
+00:01:34,040 --> 00:01:35,990
+called Ares so I don't think the
+
+35
+00:01:35,990 --> 00:01:38,110
+textbook is going to explicitly refer to
+
+36
+00:01:38,110 --> 00:01:39,950
+in the chapters when they talk about
+
+37
+00:01:39,950 --> 00:01:41,600
+data recovery in the the techniques
+
+38
+00:01:41,600 --> 00:01:44,180
+where we talk about today as Ares we're
+
+39
+00:01:44,180 --> 00:01:45,320
+just stood in the back of your mind to
+
+40
+00:01:45,320 --> 00:01:47,689
+understand that this is pretty much this
+
+41
+00:01:47,689 --> 00:01:50,719
+Ares is pretty much everyone does so
+
+42
+00:01:50,719 --> 00:01:53,210
+Ares was developed in at IBM research in
+
+43
+00:01:53,210 --> 00:01:56,530
+the late 1980s early 1990s for for db2
+
+44
+00:01:56,530 --> 00:01:58,939
+and there's this seminal paper that came
+
+45
+00:01:58,939 --> 00:02:01,340
+out that's that's super long if you
+
+46
+00:02:01,340 --> 00:02:03,469
+can't fall asleep it's 70 pages so go
+
+47
+00:02:03,469 --> 00:02:04,579
+ahead and give it a crack and see
+
+48
+00:02:04,579 --> 00:02:05,630
+whether you can get to the whole thing
+
+49
+00:02:05,630 --> 00:02:08,810
+you won't um but this thing is goes into
+
+50
+00:02:08,810 --> 00:02:11,990
+excruciating details of exactly all the
+
+51
+00:02:11,990 --> 00:02:13,910
+steps and failure scenarios you need to
+
+52
+00:02:13,910 --> 00:02:15,980
+handle to guarantee that your recovery
+
+53
+00:02:15,980 --> 00:02:17,660
+album is going to be correct and that
+
+54
+00:02:17,660 --> 00:02:21,050
+you're not going to lose any data so
+
+55
+00:02:21,050 --> 00:02:22,760
+it's not to say that nobody was doing
+
+56
+00:02:22,760 --> 00:02:24,830
+recovery before this paper came out in
+
+57
+00:02:24,830 --> 00:02:28,130
+1992 it's just to say that this paper is
+
+58
+00:02:28,130 --> 00:02:31,400
+the sort of was laid down or codify the
+
+59
+00:02:31,400 --> 00:02:34,130
+exact policies that need to be mindful
+
+60
+00:02:34,130 --> 00:02:36,350
+walk in order Duke recovery correctly
+
+61
+00:02:36,350 --> 00:02:38,540
+and then not every single database and
+
+62
+00:02:38,540 --> 00:02:39,740
+that's out today that's doing
+
+63
+00:02:39,740 --> 00:02:41,300
+checkpoints and write ahead logging
+
+64
+00:02:41,300 --> 00:02:44,360
+maybe not be falling to the exact letter
+
+65
+00:02:44,360 --> 00:02:46,480
+what Ares does but at a high level
+
+66
+00:02:46,480 --> 00:02:48,770
+they're essentially doing the same thing
+
+67
+00:02:48,770 --> 00:02:50,750
+right right ahead Logs with fuzzy
+
+68
+00:02:50,750 --> 00:02:52,520
+checkpoints and then a three-phase
+
+69
+00:02:52,520 --> 00:02:54,430
+analysis or three-phase recovery
+
+70
+00:02:54,430 --> 00:03:00,020
+protocol so the three main ideas of Ares
+
+71
+00:03:00,020 --> 00:03:02,350
+for database recovery are the Fallen the
+
+72
+00:03:02,350 --> 00:03:04,670
+first is that we're gonna use redhead
+
+73
+00:03:04,670 --> 00:03:07,010
+log right ahead log to record any
+
+74
+00:03:07,010 --> 00:03:09,710
+changes that transactions make to data
+
+75
+00:03:09,710 --> 00:03:13,610
+in our database in these log records and
+
+76
+00:03:13,610 --> 00:03:15,650
+that we have to flush out the logs that
+
+77
+00:03:15,650 --> 00:03:17,360
+correspond to the changes to a page
+
+78
+00:03:17,360 --> 00:03:19,870
+before the page can be written out and
+
+79
+00:03:19,870 --> 00:03:22,610
+as we said last class this is using a
+
+80
+00:03:22,610 --> 00:03:25,130
+steal no force policy so what a steal
+
+81
+00:03:25,130 --> 00:03:30,410
+mean steal says the buffer pool is
+
+82
+00:03:30,410 --> 00:03:34,310
+allowed to flush out pages to disk or a
+
+83
+00:03:34,310 --> 00:03:36,590
+dick pages to disk for that have been
+
+84
+00:03:36,590 --> 00:03:38,180
+modified by transactions that have not
+
+85
+00:03:38,180 --> 00:03:40,640
+committed yet and no force says that
+
+86
+00:03:40,640 --> 00:03:42,290
+we're not required to flush all the
+
+87
+00:03:42,290 --> 00:03:45,230
+dirty pages that that a transaction
+
+88
+00:03:45,230 --> 00:03:46,370
+modified in order to say that
+
+89
+00:03:46,370 --> 00:03:48,040
+transaction has committed correctly
+
+90
+00:03:48,040 --> 00:03:50,150
+instead what we do is we flush all the
+
+91
+00:03:50,150 --> 00:03:53,480
+log records that the transaction
+
+92
+00:03:53,480 --> 00:03:55,490
+generated out the disk make sure they're
+
+93
+00:03:55,490 --> 00:03:57,500
+durable and safe before we tell the
+
+94
+00:03:57,500 --> 00:03:59,000
+outside world that our transaction has
+
+95
+00:03:59,000 --> 00:04:02,570
+committed so this is what we do at run
+
+96
+00:04:02,570 --> 00:04:05,180
+time and we'll have a slight variation
+
+97
+00:04:05,180 --> 00:04:07,940
+on how we're gonna do this that's gonna
+
+98
+00:04:07,940 --> 00:04:09,170
+be different when we talk about on
+
+99
+00:04:09,170 --> 00:04:10,340
+Monday we'll have to see about this
+
+100
+00:04:10,340 --> 00:04:11,660
+store some extra stuff to make sure this
+
+101
+00:04:11,660 --> 00:04:14,780
+works correctly then during after after
+
+102
+00:04:14,780 --> 00:04:17,690
+a restart to recover the database we're
+
+103
+00:04:17,690 --> 00:04:20,238
+gonna first replay the history on in the
+
+104
+00:04:20,238 --> 00:04:22,970
+log to redo all the changes that
+
+105
+00:04:22,970 --> 00:04:25,790
+transactions made and this includes any
+
+106
+00:04:25,790 --> 00:04:27,560
+any changes that turns out from aborted
+
+107
+00:04:27,560 --> 00:04:29,360
+transactions we're gonna reapply them as
+
+108
+00:04:29,360 --> 00:04:32,510
+well and then we'll have to go back and
+
+109
+00:04:32,510 --> 00:04:34,520
+undo a bunch of stuff to figure out how
+
+110
+00:04:34,520 --> 00:04:34,700
+to
+
+111
+00:04:34,700 --> 00:04:36,110
+versus the changes that should be
+
+112
+00:04:36,110 --> 00:04:38,180
+persistent and then the other change
+
+113
+00:04:38,180 --> 00:04:39,470
+we're gonna make also too is that when
+
+114
+00:04:39,470 --> 00:04:42,320
+we start undoing changes both at run
+
+115
+00:04:42,320 --> 00:04:44,480
+time and during recovery we're actually
+
+116
+00:04:44,480 --> 00:04:46,910
+create log records for those undo
+
+117
+00:04:46,910 --> 00:04:49,640
+operations as well so that's something
+
+118
+00:04:49,640 --> 00:04:50,630
+we also we haven't talked about so far
+
+119
+00:04:50,630 --> 00:04:52,490
+because all the last guys I just said
+
+120
+00:04:52,490 --> 00:04:53,720
+hey here's all the updates I'm doing
+
+121
+00:04:53,720 --> 00:04:55,520
+here's the corresponding log records and
+
+122
+00:04:55,520 --> 00:04:57,590
+then when I boarded yeah you know I
+
+123
+00:04:57,590 --> 00:05:00,020
+didn't do anything special so now when
+
+124
+00:05:00,020 --> 00:05:02,900
+we do a border transaction as either
+
+125
+00:05:02,900 --> 00:05:04,910
+again at run time or apart it's recovery
+
+126
+00:05:04,910 --> 00:05:07,370
+we're gonna add extra log records to say
+
+127
+00:05:07,370 --> 00:05:09,320
+here's the change that we are reversing
+
+128
+00:05:09,320 --> 00:05:12,020
+and we are need this to ensure that we
+
+129
+00:05:12,020 --> 00:05:14,450
+can recover but if if we crash during
+
+130
+00:05:14,450 --> 00:05:16,070
+recovery we can recover from the
+
+131
+00:05:16,070 --> 00:05:18,590
+recovery right and you Majan this thing
+
+132
+00:05:18,590 --> 00:05:20,060
+being infinite so this is this is the
+
+133
+00:05:20,060 --> 00:05:21,470
+extra step we need to make sure that we
+
+134
+00:05:21,470 --> 00:05:24,590
+can we can handle all scenarios so
+
+135
+00:05:24,590 --> 00:05:26,090
+today's agenda were to first talk about
+
+136
+00:05:26,090 --> 00:05:29,060
+how the execution workload is gonna be
+
+137
+00:05:29,060 --> 00:05:30,950
+different execution process of
+
+138
+00:05:30,950 --> 00:05:33,290
+transactions during the revver normal
+
+139
+00:05:33,290 --> 00:05:35,390
+processing is me slightly different so
+
+140
+00:05:35,390 --> 00:05:36,650
+we're gonna introduce this idea of lock
+
+141
+00:05:36,650 --> 00:05:38,390
+sequence numbers and the extra steps we
+
+142
+00:05:38,390 --> 00:05:40,460
+do for commits and abort sand and fuzzy
+
+143
+00:05:40,460 --> 00:05:42,320
+checkpoints and then we'll finish up
+
+144
+00:05:42,320 --> 00:05:44,360
+talking about how we actually do the
+
+145
+00:05:44,360 --> 00:05:46,610
+three phase recovery algorithm as
+
+146
+00:05:46,610 --> 00:05:50,120
+defined by Ares okay again this is super
+
+147
+00:05:50,120 --> 00:05:52,220
+hard this is as I said this is probably
+
+148
+00:05:52,220 --> 00:05:53,600
+the third hardest part about database
+
+149
+00:05:53,600 --> 00:05:56,390
+systems so again stop me as we go along
+
+150
+00:05:56,390 --> 00:05:58,310
+if you have questions write it feel free
+
+151
+00:05:58,310 --> 00:06:01,490
+to interrupt so last class we talked
+
+152
+00:06:01,490 --> 00:06:03,260
+about writing head log records and we
+
+153
+00:06:03,260 --> 00:06:05,570
+said that for our purposes here we'll
+
+154
+00:06:05,570 --> 00:06:06,950
+just assume we're doing physical logging
+
+155
+00:06:06,950 --> 00:06:09,290
+or physiological logging and not the
+
+156
+00:06:09,290 --> 00:06:11,030
+logical logging where you just record
+
+157
+00:06:11,030 --> 00:06:12,680
+the sequel statement and so we're gonna
+
+158
+00:06:12,680 --> 00:06:14,690
+have the the transaction ID that's
+
+159
+00:06:14,690 --> 00:06:17,840
+making the change the the object that
+
+160
+00:06:17,840 --> 00:06:20,300
+they're changing and then the redo and
+
+161
+00:06:20,300 --> 00:06:22,520
+undo information but now we're include
+
+162
+00:06:22,520 --> 00:06:24,950
+additional metadata that keeps track of
+
+163
+00:06:24,950 --> 00:06:26,810
+the order in which these log records are
+
+164
+00:06:26,810 --> 00:06:29,090
+being generated so we're gonna introduce
+
+165
+00:06:29,090 --> 00:06:30,890
+this new concept called a log sequence
+
+166
+00:06:30,890 --> 00:06:33,950
+number the LSM that is just a
+
+167
+00:06:33,950 --> 00:06:35,570
+monotonically increasing counter that we
+
+168
+00:06:35,570 --> 00:06:37,520
+assign to every single blog record as it
+
+169
+00:06:37,520 --> 00:06:40,160
+gets added and so the law of sequence
+
+170
+00:06:40,160 --> 00:06:42,410
+number doesn't need to be continuous for
+
+171
+00:06:42,410 --> 00:06:43,970
+a transaction because again depending
+
+172
+00:06:43,970 --> 00:06:44,990
+what concurrent you told scene we're
+
+173
+00:06:44,990 --> 00:06:47,060
+using we can interleave these their
+
+174
+00:06:47,060 --> 00:06:48,410
+operations in any different way
+
+175
+00:06:48,410 --> 00:06:50,420
+so I might give out log sequence number
+
+176
+00:06:50,420 --> 00:06:52,760
+one - transaction 1 log 6 sequence
+
+177
+00:06:52,760 --> 00:06:54,500
+number 2 - transaction 2 and it you know
+
+178
+00:06:54,500 --> 00:06:55,880
+goes back and forth they don't need to
+
+179
+00:06:55,880 --> 00:06:58,910
+be all continuous so now with these log
+
+180
+00:06:58,910 --> 00:07:02,360
+sequence numbers we're gonna modify all
+
+181
+00:07:02,360 --> 00:07:05,300
+different parts of the system that need
+
+182
+00:07:05,300 --> 00:07:08,600
+to be aware of what log records have
+
+183
+00:07:08,600 --> 00:07:10,670
+modified data and whether or not they've
+
+184
+00:07:10,670 --> 00:07:13,790
+been written out the disk so we want to
+
+185
+00:07:13,790 --> 00:07:15,320
+extend our buffer pool even further now
+
+186
+00:07:15,320 --> 00:07:17,450
+be cognizant of what are these log
+
+187
+00:07:17,450 --> 00:07:19,670
+sequence numbers what are the local
+
+188
+00:07:19,670 --> 00:07:20,900
+sequence numbers that correspond to the
+
+189
+00:07:20,900 --> 00:07:22,610
+changes that are made to its pages that
+
+190
+00:07:22,610 --> 00:07:26,720
+it has in memory so every log record has
+
+191
+00:07:26,720 --> 00:07:28,400
+a log sequence number but then all
+
+192
+00:07:28,400 --> 00:07:29,480
+throughout the system will have these
+
+193
+00:07:29,480 --> 00:07:31,850
+other logs sequence numbers so this is
+
+194
+00:07:31,850 --> 00:07:33,380
+just a summary table for the log
+
+195
+00:07:33,380 --> 00:07:34,430
+sequence numbers were going to counter
+
+196
+00:07:34,430 --> 00:07:36,320
+throughout the rest of the class but
+
+197
+00:07:36,320 --> 00:07:37,550
+we'll go through these one by one you'll
+
+198
+00:07:37,550 --> 00:07:40,670
+see then however and abusing them so the
+
+199
+00:07:40,670 --> 00:07:42,800
+flush LSN is just an in-memory counter
+
+200
+00:07:42,800 --> 00:07:45,080
+that keeps track of the last LSN of the
+
+201
+00:07:45,080 --> 00:07:47,150
+log recovering flush to disk and this is
+
+202
+00:07:47,150 --> 00:07:48,770
+just telling us in our ready head log
+
+203
+00:07:48,770 --> 00:07:50,960
+buffer in memory how far you know how
+
+204
+00:07:50,960 --> 00:07:55,340
+far in you know the log records how far
+
+205
+00:07:55,340 --> 00:07:57,230
+back we know they're all records are
+
+206
+00:07:57,230 --> 00:07:59,360
+actually Dorobo or not and then for
+
+207
+00:07:59,360 --> 00:08:01,460
+every page we have the page LSN and the
+
+208
+00:08:01,460 --> 00:08:04,670
+reckless em so the page LSN will just be
+
+209
+00:08:04,670 --> 00:08:08,150
+the the last log record that modified
+
+210
+00:08:08,150 --> 00:08:10,250
+that page but the newest log sequence of
+
+211
+00:08:10,250 --> 00:08:13,610
+that record and then the REC LSN will be
+
+212
+00:08:13,610 --> 00:08:17,330
+the oldest log record that modify this
+
+213
+00:08:17,330 --> 00:08:20,300
+page since it was last flushed so when I
+
+214
+00:08:20,300 --> 00:08:22,520
+bring the page into memory if I go ahead
+
+215
+00:08:22,520 --> 00:08:24,890
+the first look first transaction that
+
+216
+00:08:24,890 --> 00:08:26,750
+modifies it I add that local sequence
+
+217
+00:08:26,750 --> 00:08:28,700
+number as the REC Ellison and then no
+
+218
+00:08:28,700 --> 00:08:30,320
+matter how many times I keep modifying
+
+219
+00:08:30,320 --> 00:08:32,690
+it while it's in memory they've reckless
+
+220
+00:08:32,690 --> 00:08:34,010
+and is always the same whereas the the
+
+221
+00:08:34,010 --> 00:08:37,010
+page else and it will increase and then
+
+222
+00:08:37,010 --> 00:08:38,719
+I'm gonna write this data also out to
+
+223
+00:08:38,719 --> 00:08:40,549
+disk as well like this so code is going
+
+224
+00:08:40,549 --> 00:08:41,960
+the header and this is your extra call
+
+225
+00:08:41,960 --> 00:08:43,849
+extra information to make sure that
+
+226
+00:08:43,849 --> 00:08:45,110
+we're doing the right things on during
+
+227
+00:08:45,110 --> 00:08:48,080
+recovery every transaction were to keep
+
+228
+00:08:48,080 --> 00:08:49,670
+track of the last LSN if that's that's
+
+229
+00:08:49,670 --> 00:08:51,320
+the last you know log record that it
+
+230
+00:08:51,320 --> 00:08:54,110
+added and then globally we're gonna have
+
+231
+00:08:54,110 --> 00:08:56,600
+a master record that we're gonna use to
+
+232
+00:08:56,600 --> 00:08:58,339
+keep track of the LSN the last check
+
+233
+00:08:58,339 --> 00:09:00,700
+point that we successfully took
+
+234
+00:09:00,700 --> 00:09:02,470
+right now remember I said when we take
+
+235
+00:09:02,470 --> 00:09:03,370
+these checkpoint they're actually
+
+236
+00:09:03,370 --> 00:09:05,410
+entries into the log to say hey I took a
+
+237
+00:09:05,410 --> 00:09:08,770
+checkpoint at this time so again this is
+
+238
+00:09:08,770 --> 00:09:10,030
+sort of reiterating everything I said
+
+239
+00:09:10,030 --> 00:09:12,520
+before so every page has a page LSN it's
+
+240
+00:09:12,520 --> 00:09:14,320
+just when the most recent update made to
+
+241
+00:09:14,320 --> 00:09:16,630
+that page we keep track of the flush LSN
+
+242
+00:09:16,630 --> 00:09:19,870
+to know how many what what sequence in
+
+243
+00:09:19,870 --> 00:09:21,490
+the log or what point in the log we've
+
+244
+00:09:21,490 --> 00:09:23,890
+written those things up to disk and as I
+
+245
+00:09:23,890 --> 00:09:32,770
+said last class yeah sorry question yes
+
+246
+00:09:32,770 --> 00:09:35,110
+so I said to the page LS and the
+
+247
+00:09:35,110 --> 00:09:36,600
+reckless end do they get written a disk
+
+248
+00:09:36,600 --> 00:09:40,030
+they don't have to but in general you do
+
+249
+00:09:40,030 --> 00:09:42,250
+it's just an extra safety mechanism in
+
+250
+00:09:42,250 --> 00:09:44,140
+case you end up missing listen to
+
+251
+00:09:44,140 --> 00:09:54,160
+something it's the information about the
+
+252
+00:09:54,160 --> 00:10:07,990
+log record right correct statement is if
+
+253
+00:10:07,990 --> 00:10:10,330
+you write it out the disk is if you
+
+254
+00:10:10,330 --> 00:10:11,500
+write the page up the disk with the page
+
+255
+00:10:11,500 --> 00:10:13,210
+else and Rebecca Ellison isn't that
+
+256
+00:10:13,210 --> 00:10:16,090
+essentially redundant because now the
+
+257
+00:10:16,090 --> 00:10:18,610
+the page is durable on disk it's no
+
+258
+00:10:18,610 --> 00:10:20,380
+longer dirty if it was in memory isn't
+
+259
+00:10:20,380 --> 00:10:22,510
+that fine and I'm agree with you I'm
+
+260
+00:10:22,510 --> 00:10:23,620
+just saying it's an extra safety
+
+261
+00:10:23,620 --> 00:10:25,740
+mechanism
+
+262
+00:10:25,740 --> 00:10:27,730
+because we don't want to lose any data
+
+263
+00:10:27,730 --> 00:10:30,700
+and discs are super you know they break
+
+264
+00:10:30,700 --> 00:10:32,440
+all the time we just want to make sure
+
+265
+00:10:32,440 --> 00:10:34,150
+that there's enough information around
+
+266
+00:10:34,150 --> 00:10:35,770
+that if we have to cover and recover and
+
+267
+00:10:35,770 --> 00:10:38,380
+maybe maybe our law got corrupted a
+
+268
+00:10:38,380 --> 00:10:39,280
+little better so that the page we got
+
+269
+00:10:39,280 --> 00:10:41,110
+corrupted we have enough information in
+
+270
+00:10:41,110 --> 00:10:42,460
+enough locations that we can we can
+
+271
+00:10:42,460 --> 00:10:44,980
+figure things out yeah now you'll see as
+
+272
+00:10:44,980 --> 00:10:46,540
+we do the extra bit of recovery process
+
+273
+00:10:46,540 --> 00:10:48,310
+there's me obvious things we could do to
+
+274
+00:10:48,310 --> 00:10:50,200
+speed things up and let's talk a little
+
+275
+00:10:50,200 --> 00:10:52,960
+bit about alert about them at the end we
+
+276
+00:10:52,960 --> 00:10:54,490
+are not gonna do them here because we
+
+277
+00:10:54,490 --> 00:10:57,330
+want to be super cautious all right
+
+278
+00:10:57,330 --> 00:10:59,800
+people get pissed when you lose data so
+
+279
+00:10:59,800 --> 00:11:02,830
+you don't wanna lose data right okay so
+
+280
+00:11:02,830 --> 00:11:04,900
+this is just saying what I said last
+
+281
+00:11:04,900 --> 00:11:06,460
+class member I said that the with the
+
+282
+00:11:06,460 --> 00:11:08,290
+right ahead log before we can flush out
+
+283
+00:11:08,290 --> 00:11:10,180
+a dirty page we have to flush the log
+
+284
+00:11:10,180 --> 00:11:12,430
+record that made that page that page
+
+285
+00:11:12,430 --> 00:11:14,470
+dirty right
+
+286
+00:11:14,470 --> 00:11:16,480
+and this is how we're actually going to
+
+287
+00:11:16,480 --> 00:11:18,040
+figure that out we just use these LS
+
+288
+00:11:18,040 --> 00:11:19,870
+ends as the watermark to figure out oh
+
+289
+00:11:19,870 --> 00:11:22,540
+the the last log record that modified
+
+290
+00:11:22,540 --> 00:11:24,280
+this page is this you know one two three
+
+291
+00:11:24,280 --> 00:11:27,190
+but I flushed out log sequence number
+
+292
+00:11:27,190 --> 00:11:29,500
+four five six and four five six comes
+
+293
+00:11:29,500 --> 00:11:31,690
+after one two three so therefore I know
+
+294
+00:11:31,690 --> 00:11:33,610
+that whatever log sequence or whatever
+
+295
+00:11:33,610 --> 00:11:35,950
+log record that made my page dirty that
+
+296
+00:11:35,950 --> 00:11:37,390
+also got flushed out that just as well
+
+297
+00:11:37,390 --> 00:11:38,800
+so it's safe for me to flush out this
+
+298
+00:11:38,800 --> 00:11:41,710
+page so that's how we're gonna guarantee
+
+299
+00:11:41,710 --> 00:11:44,110
+this so let's look at sort of a
+
+300
+00:11:44,110 --> 00:11:46,330
+high-level example of all this so again
+
+301
+00:11:46,330 --> 00:11:48,070
+we have in memory we have our log buffer
+
+302
+00:11:48,070 --> 00:11:49,650
+which is just always the tail of the log
+
+303
+00:11:49,650 --> 00:11:51,580
+and it's always gonna be like you know
+
+304
+00:11:51,580 --> 00:11:53,200
+the most recent changes that may or may
+
+305
+00:11:53,200 --> 00:11:54,430
+not have been written out the disk and
+
+306
+00:11:54,430 --> 00:11:58,030
+over there and then now hang we're
+
+307
+00:11:58,030 --> 00:11:58,900
+actually the other thing we're
+
+308
+00:11:58,900 --> 00:12:00,250
+introducing also is a log see what's
+
+309
+00:12:00,250 --> 00:12:01,810
+number again these are just a counter
+
+310
+00:12:01,810 --> 00:12:04,840
+we're increasing by one then over here
+
+311
+00:12:04,840 --> 00:12:08,080
+in the our page we have the page Ellison
+
+312
+00:12:08,080 --> 00:12:11,290
+again that's the most recent log
+
+313
+00:12:11,290 --> 00:12:12,730
+sequence number of the log record that
+
+314
+00:12:12,730 --> 00:12:15,670
+modified the this this this page it may
+
+315
+00:12:15,670 --> 00:12:17,170
+not be the one that made it dirty in the
+
+316
+00:12:17,170 --> 00:12:18,880
+first place right that's the wreck
+
+317
+00:12:18,880 --> 00:12:21,070
+Ellison is this is the since I brought
+
+318
+00:12:21,070 --> 00:12:22,870
+this page into memory what was the first
+
+319
+00:12:22,870 --> 00:12:24,730
+log record that made this thing dirty
+
+320
+00:12:24,730 --> 00:12:26,170
+because I need to know like what were my
+
+321
+00:12:26,170 --> 00:12:29,080
+boundary is then now we have the flush
+
+322
+00:12:29,080 --> 00:12:31,810
+LSN again this is just a pointer to
+
+323
+00:12:31,810 --> 00:12:34,270
+whatever was the last Ellison that we
+
+324
+00:12:34,270 --> 00:12:37,060
+wrote help to disk in the log the master
+
+325
+00:12:37,060 --> 00:12:39,130
+records and just pointing to the last
+
+326
+00:12:39,130 --> 00:12:42,840
+successful check point that we took yes
+
+327
+00:12:42,840 --> 00:12:44,680
+scratch the question is why do you need
+
+328
+00:12:44,680 --> 00:12:47,740
+page Ella sound here that'll come up
+
+329
+00:12:47,740 --> 00:12:52,390
+later on why we need this it has to do
+
+330
+00:12:52,390 --> 00:12:53,440
+with when you're trying to figure out
+
+331
+00:12:53,440 --> 00:12:55,810
+the as you're replaying the log is the
+
+332
+00:12:55,810 --> 00:12:58,810
+thing that I'm that did I already write
+
+333
+00:12:58,810 --> 00:13:01,000
+this thing out that then I write there
+
+334
+00:13:01,000 --> 00:13:02,200
+already write out the dirty page and
+
+335
+00:13:02,200 --> 00:13:03,880
+therefore I don't need to worry about
+
+336
+00:13:03,880 --> 00:13:05,740
+anything that comes comes and before
+
+337
+00:13:05,740 --> 00:13:07,810
+that the sequence number kingka this is
+
+338
+00:13:07,810 --> 00:13:09,250
+like a boundary like since I brought
+
+339
+00:13:09,250 --> 00:13:10,510
+this thing in the memory here's the
+
+340
+00:13:10,510 --> 00:13:12,100
+range of Ellison's that could have
+
+341
+00:13:12,100 --> 00:13:15,960
+modified my my page
+
+342
+00:13:17,230 --> 00:13:25,240
+is the one which makes the dirty yes hey
+
+343
+00:13:25,240 --> 00:13:26,710
+yellow Sanders it's the last walk
+
+344
+00:13:26,710 --> 00:13:29,290
+sequence that made the page dirty so
+
+345
+00:13:29,290 --> 00:13:33,370
+it's here so when I want to go decide
+
+346
+00:13:33,370 --> 00:13:35,890
+whether I can flush my page I need to
+
+347
+00:13:35,890 --> 00:13:39,220
+know what was the last change made to
+
+348
+00:13:39,220 --> 00:13:43,950
+that page if that last change is comes
+
+349
+00:13:43,950 --> 00:13:48,460
+before the flush LSN and the flush LSN
+
+350
+00:13:48,460 --> 00:13:52,450
+is this if I know my change is up here
+
+351
+00:13:52,450 --> 00:13:54,400
+and it comes from for the flush I'll
+
+352
+00:13:54,400 --> 00:13:56,110
+ascend if this thing's been written a
+
+353
+00:13:56,110 --> 00:13:57,340
+disk but I know anything before it's
+
+354
+00:13:57,340 --> 00:13:58,480
+been written a disk and therefore it's
+
+355
+00:13:58,480 --> 00:14:07,780
+safe for me to pick that page yeah
+
+356
+00:14:07,780 --> 00:14:10,750
+so during recovery you check in that
+
+357
+00:14:10,750 --> 00:14:12,910
+range we'll get that in a second when it
+
+358
+00:14:12,910 --> 00:14:14,290
+comes time at runtime to flush this
+
+359
+00:14:14,290 --> 00:14:19,780
+thing I check page Ellison okay again
+
+360
+00:14:19,780 --> 00:14:21,430
+the master record is just the the
+
+361
+00:14:21,430 --> 00:14:22,840
+location to the last checkpoint and we
+
+362
+00:14:22,840 --> 00:14:25,330
+use this when we recover to figure out
+
+363
+00:14:25,330 --> 00:14:26,950
+where do we want to start our analysis
+
+364
+00:14:26,950 --> 00:14:28,060
+to look at the log to figure out what
+
+365
+00:14:28,060 --> 00:14:29,500
+was running right because without the
+
+366
+00:14:29,500 --> 00:14:30,550
+master record without these checkpoints
+
+367
+00:14:30,550 --> 00:14:32,200
+we have to start from the very beginning
+
+368
+00:14:32,200 --> 00:14:33,640
+because we don't know anything about
+
+369
+00:14:33,640 --> 00:14:36,730
+what page has been written out to be
+
+370
+00:14:36,730 --> 00:14:39,790
+very clear here like I as the buffer
+
+371
+00:14:39,790 --> 00:14:41,050
+pool was writing out pages
+
+372
+00:14:41,050 --> 00:14:42,850
+sorry it's flushing out pages we're not
+
+373
+00:14:42,850 --> 00:14:45,340
+logging that so we don't know what
+
+374
+00:14:45,340 --> 00:14:47,470
+potentially you know what pages have
+
+375
+00:14:47,470 --> 00:14:49,240
+been written out the disk if we recover
+
+376
+00:14:49,240 --> 00:14:51,220
+after a crash we just know the log
+
+377
+00:14:51,220 --> 00:14:54,090
+sequence numbers that have written out
+
+378
+00:14:54,090 --> 00:14:56,500
+all right so this is actually just an
+
+379
+00:14:56,500 --> 00:14:58,060
+example what he was asking about so
+
+380
+00:14:58,060 --> 00:15:00,130
+let's say that my page Ellison points to
+
+381
+00:15:00,130 --> 00:15:03,100
+here at blocks he was number 12
+
+382
+00:15:03,100 --> 00:15:05,590
+my flush ellison points to 16 and my
+
+383
+00:15:05,590 --> 00:15:08,170
+lava flush this page out right yes
+
+384
+00:15:08,170 --> 00:15:09,550
+because the page Ellison is less than
+
+385
+00:15:09,550 --> 00:15:11,350
+the flush Ellison let's say the page
+
+386
+00:15:11,350 --> 00:15:12,670
+else hand points to 19
+
+387
+00:15:12,670 --> 00:15:15,190
+can I write that out no because I know
+
+388
+00:15:15,190 --> 00:15:17,860
+that the log record that corresponds to
+
+389
+00:15:17,860 --> 00:15:20,350
+the last change made to this page has
+
+390
+00:15:20,350 --> 00:15:21,880
+not on disk and therefore it's not safe
+
+391
+00:15:21,880 --> 00:15:24,760
+for me to evict this and again this you
+
+392
+00:15:24,760 --> 00:15:27,880
+would add this this logic inside your
+
+393
+00:15:27,880 --> 00:15:29,530
+eviction policy or replacement policy
+
+394
+00:15:29,530 --> 00:15:31,089
+you would implement in your buffer home
+
+395
+00:15:31,089 --> 00:15:33,639
+be mindful about what are the flush LS
+
+396
+00:15:33,639 --> 00:15:34,990
+ends what means pay jealous ends and
+
+397
+00:15:34,990 --> 00:15:36,579
+keep track of all these things when you
+
+398
+00:15:36,579 --> 00:15:40,350
+make a decision about what what - a bit
+
+399
+00:15:41,250 --> 00:15:43,449
+all right so just to recap everything I
+
+400
+00:15:43,449 --> 00:15:45,579
+said I all love records have an LS M
+
+401
+00:15:45,579 --> 00:15:48,790
+every single time we make a change we
+
+402
+00:15:48,790 --> 00:15:51,310
+were to first add the entry to the log
+
+403
+00:15:51,310 --> 00:15:53,709
+the log record in your local analog
+
+404
+00:15:53,709 --> 00:15:55,690
+record to the buffer in memory then we
+
+405
+00:15:55,690 --> 00:15:58,449
+give back an LS n then we can now modify
+
+406
+00:15:58,449 --> 00:16:01,180
+the page and that's where we update the
+
+407
+00:16:01,180 --> 00:16:02,649
+page l SN because we already hold the
+
+408
+00:16:02,649 --> 00:16:03,970
+right latch on the page and therefore we
+
+409
+00:16:03,970 --> 00:16:06,430
+can we can update atomically and then
+
+410
+00:16:06,430 --> 00:16:08,320
+every single time we have been a victim
+
+411
+00:16:08,320 --> 00:16:10,779
+age we just always update this flush
+
+412
+00:16:10,779 --> 00:16:12,670
+allah send to know that this is how far
+
+413
+00:16:12,670 --> 00:16:14,529
+in the law we've written things out and
+
+414
+00:16:14,529 --> 00:16:16,630
+then you can now start truncating the
+
+415
+00:16:16,630 --> 00:16:19,269
+log above that right cuz you're unlikely
+
+416
+00:16:19,269 --> 00:16:24,370
+to need it in memory so let's stop right
+
+417
+00:16:24,370 --> 00:16:27,420
+now we'll meet actually transactions so
+
+418
+00:16:27,420 --> 00:16:29,649
+again every transaction is gonna be just
+
+419
+00:16:29,649 --> 00:16:31,180
+a sequence of reads and writes at the
+
+420
+00:16:31,180 --> 00:16:32,860
+lowest level for recovery that's all we
+
+421
+00:16:32,860 --> 00:16:34,000
+really care about we don't know anything
+
+422
+00:16:34,000 --> 00:16:35,290
+about sequel statements when we're doing
+
+423
+00:16:35,290 --> 00:16:37,149
+physical or physiological logging we
+
+424
+00:16:37,149 --> 00:16:39,279
+just see reads and writes instead of
+
+425
+00:16:39,279 --> 00:16:40,990
+these when the transaction finishes it's
+
+426
+00:16:40,990 --> 00:16:43,660
+finished when it's either be either
+
+427
+00:16:43,660 --> 00:16:44,620
+commit or abort
+
+428
+00:16:44,620 --> 00:16:47,139
+so the assumptions are gonna make to
+
+429
+00:16:47,139 --> 00:16:49,480
+simplify our discussion today or the
+
+430
+00:16:49,480 --> 00:16:51,699
+following so the first is that we're
+
+431
+00:16:51,699 --> 00:16:53,380
+gonna soon that every log record can fit
+
+432
+00:16:53,380 --> 00:16:56,740
+into a single page alright and that just
+
+433
+00:16:56,740 --> 00:16:59,050
+means that we can do an atomic write on
+
+434
+00:16:59,050 --> 00:17:01,329
+a page that has an you know all the
+
+435
+00:17:01,329 --> 00:17:02,680
+contents of a single log record we don't
+
+436
+00:17:02,680 --> 00:17:04,150
+worry about our log records spanning
+
+437
+00:17:04,150 --> 00:17:06,280
+multiple pages it's not hard to handle
+
+438
+00:17:06,280 --> 00:17:07,750
+that you just have to add some checksum
+
+439
+00:17:07,750 --> 00:17:09,849
+and say this is you know this is what
+
+440
+00:17:09,849 --> 00:17:11,349
+segments of this log record is on this
+
+441
+00:17:11,349 --> 00:17:13,059
+page versus that page if you don't see
+
+442
+00:17:13,059 --> 00:17:14,470
+both of them then it's considered not to
+
+443
+00:17:14,470 --> 00:17:16,540
+be atomic but for our purposes we just
+
+444
+00:17:16,540 --> 00:17:18,189
+assume it's a single page we assume that
+
+445
+00:17:18,189 --> 00:17:20,140
+we do four kilobyte page writes that are
+
+446
+00:17:20,140 --> 00:17:22,150
+atomic we're also going to assume that
+
+447
+00:17:22,150 --> 00:17:23,890
+we're only doing single versioning in
+
+448
+00:17:23,890 --> 00:17:26,290
+the database system and we just use
+
+449
+00:17:26,290 --> 00:17:27,939
+strict to pl so we don't worry about
+
+450
+00:17:27,939 --> 00:17:31,540
+weird commercial anomalies and as I said
+
+451
+00:17:31,540 --> 00:17:32,710
+before we're also doing
+
+452
+00:17:32,710 --> 00:17:35,140
+steal no force just sort of implied is
+
+453
+00:17:35,140 --> 00:17:36,820
+you have to have that in order for all
+
+454
+00:17:36,820 --> 00:17:40,480
+this to work so when a transaction
+
+455
+00:17:40,480 --> 00:17:43,030
+commits now we do exactly what we did
+
+456
+00:17:43,030 --> 00:17:44,260
+before we're going to write a commit
+
+457
+00:17:44,260 --> 00:17:44,559
+record
+
+458
+00:17:44,559 --> 00:17:47,110
+to the law and once that commit record
+
+459
+00:17:47,110 --> 00:17:49,899
+is durable and in flush to disk we can
+
+460
+00:17:49,899 --> 00:17:51,580
+then tell the outside world that your
+
+461
+00:17:51,580 --> 00:17:52,779
+transaction has successfully committed
+
+462
+00:17:52,779 --> 00:17:54,940
+right because everything all the log
+
+463
+00:17:54,940 --> 00:17:56,649
+records that that this transaction
+
+464
+00:17:56,649 --> 00:17:58,539
+produced will have to get written to the
+
+465
+00:17:58,539 --> 00:18:01,120
+log either with before this commit
+
+466
+00:18:01,120 --> 00:18:02,620
+record so we know that everything is
+
+467
+00:18:02,620 --> 00:18:08,499
+durable the transaction internally
+
+468
+00:18:08,499 --> 00:18:10,240
+though is not actually fully completed
+
+469
+00:18:10,240 --> 00:18:12,370
+yet so even though we told the outside
+
+470
+00:18:12,370 --> 00:18:15,009
+world it's committed we could still
+
+471
+00:18:15,009 --> 00:18:17,309
+maintain some internal metadata about
+
+472
+00:18:17,309 --> 00:18:20,830
+what that transaction actually did and
+
+473
+00:18:20,830 --> 00:18:23,740
+we'll see this in a few more slides like
+
+474
+00:18:23,740 --> 00:18:25,119
+will keep maintain a table that says
+
+475
+00:18:25,119 --> 00:18:27,690
+here's all my active transactions and
+
+476
+00:18:27,690 --> 00:18:29,950
+when we actually complete all of that
+
+477
+00:18:29,950 --> 00:18:32,259
+all the whatever metadata or internal
+
+478
+00:18:32,259 --> 00:18:33,429
+bookkeeping we need to have for that
+
+479
+00:18:33,429 --> 00:18:35,950
+transaction when all that's done we're
+
+480
+00:18:35,950 --> 00:18:37,659
+going to add a new special log record
+
+481
+00:18:37,659 --> 00:18:40,119
+called the transaction end and this is
+
+482
+00:18:40,119 --> 00:18:42,730
+just telling the database system in the
+
+483
+00:18:42,730 --> 00:18:45,700
+log on recovery that we will never see
+
+484
+00:18:45,700 --> 00:18:47,049
+anything else about this transaction
+
+485
+00:18:47,049 --> 00:18:48,730
+ever again once we see this transaction
+
+486
+00:18:48,730 --> 00:18:50,139
+end and therefore we can remove it from
+
+487
+00:18:50,139 --> 00:18:53,830
+all our internal bookkeeping tables so
+
+488
+00:18:53,830 --> 00:18:56,259
+unlike in commit where we we have to
+
+489
+00:18:56,259 --> 00:18:57,970
+flush that to disk before we can tell
+
+490
+00:18:57,970 --> 00:19:00,070
+the outside we've committed we don't
+
+491
+00:19:00,070 --> 00:19:02,320
+need to do a hard flush on or fsync
+
+492
+00:19:02,320 --> 00:19:04,389
+on the transaction end we did append it
+
+493
+00:19:04,389 --> 00:19:06,519
+to a log buffer and it just gets written
+
+494
+00:19:06,519 --> 00:19:11,769
+out as part of the normal process now
+
+495
+00:19:11,769 --> 00:19:13,330
+this so just to see how this works right
+
+496
+00:19:13,330 --> 00:19:17,080
+so this is our simple demo so here we
+
+497
+00:19:17,080 --> 00:19:19,419
+see we do a transaction commit then we
+
+498
+00:19:19,419 --> 00:19:21,639
+flush up the log right now we update the
+
+499
+00:19:21,639 --> 00:19:24,850
+flushed LSN to now point to the last log
+
+500
+00:19:24,850 --> 00:19:26,259
+sequence of less log record that we
+
+501
+00:19:26,259 --> 00:19:28,389
+generated and now at this point we can
+
+502
+00:19:28,389 --> 00:19:29,409
+tell the outside world that our
+
+503
+00:19:29,409 --> 00:19:30,759
+transaction is safe our transaction is
+
+504
+00:19:30,759 --> 00:19:33,309
+durable is committed we're done but then
+
+505
+00:19:33,309 --> 00:19:34,720
+at some later point we'll do some
+
+506
+00:19:34,720 --> 00:19:36,519
+additional processing and then
+
+507
+00:19:36,519 --> 00:19:38,169
+eventually we'll write out a transaction
+
+508
+00:19:38,169 --> 00:19:40,629
+end message right and this is just
+
+509
+00:19:40,629 --> 00:19:42,399
+saying at this point in the log when we
+
+510
+00:19:42,399 --> 00:19:43,659
+do recovery we will never see this
+
+511
+00:19:43,659 --> 00:19:45,970
+transaction ever again for commit
+
+512
+00:19:45,970 --> 00:19:47,320
+there's not that much there's not really
+
+513
+00:19:47,320 --> 00:19:48,429
+anything we're gonna do special in
+
+514
+00:19:48,429 --> 00:19:49,990
+between the commits in the end for the
+
+515
+00:19:49,990 --> 00:19:51,610
+abort we'll see why we're going to need
+
+516
+00:19:51,610 --> 00:19:54,669
+this and likewise as I said before since
+
+517
+00:19:54,669 --> 00:19:56,379
+we know at this at this point there's
+
+518
+00:19:56,379 --> 00:19:58,240
+nothing really in here
+
+519
+00:19:58,240 --> 00:19:59,260
+we actually still need to have it hang
+
+520
+00:19:59,260 --> 00:20:00,460
+around like the commits already been
+
+521
+00:20:00,460 --> 00:20:02,290
+flushed out we could just trim the log
+
+522
+00:20:02,290 --> 00:20:04,240
+and and reclaim this memory and we use
+
+523
+00:20:04,240 --> 00:20:06,070
+it and that's that sort that ping pong
+
+524
+00:20:06,070 --> 00:20:07,300
+effect I thought when we talked about
+
+525
+00:20:07,300 --> 00:20:09,070
+last class when we did group commit I
+
+526
+00:20:09,070 --> 00:20:10,890
+once why I know this log buffer is empty
+
+527
+00:20:10,890 --> 00:20:12,850
+because I flushed everything out then I
+
+528
+00:20:12,850 --> 00:20:14,410
+can use that to fill it up again and
+
+529
+00:20:14,410 --> 00:20:18,970
+then I read out the other buffer so for
+
+530
+00:20:18,970 --> 00:20:20,920
+boards this is the me different than we
+
+531
+00:20:20,920 --> 00:20:30,309
+did before question no transaction and
+
+532
+00:20:30,309 --> 00:20:32,800
+just as an internal marker for the
+
+533
+00:20:32,800 --> 00:20:34,240
+recovery algorithm that's to say that
+
+534
+00:20:34,240 --> 00:20:35,950
+you will never see this transaction ever
+
+535
+00:20:35,950 --> 00:20:41,309
+again you will never see any additional
+
+536
+00:20:41,309 --> 00:20:44,230
+log records for this transaction because
+
+537
+00:20:44,230 --> 00:20:45,970
+because we've seen abort it'll make more
+
+538
+00:20:45,970 --> 00:20:47,290
+sense when we do abort because there's
+
+539
+00:20:47,290 --> 00:20:48,970
+stuff that you do after aborts that be
+
+540
+00:20:48,970 --> 00:20:51,340
+the outside world doesn't see it's not
+
+541
+00:20:51,340 --> 00:20:53,230
+like a query you executed but it's stuff
+
+542
+00:20:53,230 --> 00:20:54,309
+we have to do to reverse the changes
+
+543
+00:20:54,309 --> 00:20:58,590
+it'll yeah give me a few more slides yes
+
+544
+00:21:02,520 --> 00:21:11,110
+this race of what right so at this one
+
+545
+00:21:11,110 --> 00:21:13,179
+here when does it get flushed out and
+
+546
+00:21:13,179 --> 00:21:15,480
+it's the buffer pool replacement policy
+
+547
+00:21:15,480 --> 00:21:19,960
+right what - it's right so one is you
+
+548
+00:21:19,960 --> 00:21:21,280
+need to free up space you have to Vic to
+
+549
+00:21:21,280 --> 00:21:23,880
+page its mark dirty if you flush it out
+
+550
+00:21:23,880 --> 00:21:25,600
+the other one could be the background
+
+551
+00:21:25,600 --> 00:21:27,070
+writer which I think we talked about it
+
+552
+00:21:27,070 --> 00:21:28,870
+briefly and some database systems
+
+553
+00:21:28,870 --> 00:21:31,929
+they'll just be a separate you have a
+
+554
+00:21:31,929 --> 00:21:33,400
+separate process or thread in the
+
+555
+00:21:33,400 --> 00:21:35,050
+background that occasionally walks
+
+556
+00:21:35,050 --> 00:21:37,240
+through the buffer pool finds all the
+
+557
+00:21:37,240 --> 00:21:39,790
+dirty pages and then just write them out
+
+558
+00:21:39,790 --> 00:21:41,050
+ahead of time it doesn't a victim it
+
+559
+00:21:41,050 --> 00:21:42,429
+says hey let me write you out and then I
+
+560
+00:21:42,429 --> 00:21:43,510
+flip your bit to say you're not dirty
+
+561
+00:21:43,510 --> 00:21:44,020
+anymore
+
+562
+00:21:44,020 --> 00:21:45,429
+so that way when the buffer will replace
+
+563
+00:21:45,429 --> 00:21:48,220
+in policy runs and it wants to evict a
+
+564
+00:21:48,220 --> 00:21:49,960
+page hey I got one that's art that's
+
+565
+00:21:49,960 --> 00:21:51,820
+marked clean I can just drop it not have
+
+566
+00:21:51,820 --> 00:21:55,809
+to write it out but that's independent
+
+567
+00:21:55,809 --> 00:21:56,890
+of what we're talking about here right
+
+568
+00:21:56,890 --> 00:21:58,330
+that's again in some ways that's the
+
+569
+00:21:58,330 --> 00:22:00,190
+beauty of the right head log is that we
+
+570
+00:22:00,190 --> 00:22:03,309
+can separate the policy other than of
+
+571
+00:22:03,309 --> 00:22:04,690
+what we have we have big things other
+
+572
+00:22:04,690 --> 00:22:05,679
+than making sure we don't have big
+
+573
+00:22:05,679 --> 00:22:06,910
+things that there's no log record out
+
+574
+00:22:06,910 --> 00:22:08,890
+the disk or we can separate that
+
+575
+00:22:08,890 --> 00:22:11,140
+decision process from from
+
+576
+00:22:11,140 --> 00:22:17,820
+from the right head log part yes sorry
+
+577
+00:22:19,410 --> 00:22:21,820
+so the statement is if the flush LS n is
+
+578
+00:22:21,820 --> 00:22:24,400
+less than the page LS n then you can't
+
+579
+00:22:24,400 --> 00:22:26,140
+evict that page because you know that
+
+580
+00:22:26,140 --> 00:22:27,760
+whatever this thing the last log record
+
+581
+00:22:27,760 --> 00:22:31,570
+you wrote out is prior to this one
+
+582
+00:22:31,570 --> 00:22:33,790
+so therefore the log records that modify
+
+583
+00:22:33,790 --> 00:22:42,040
+this page is not out on disk yet so this
+
+584
+00:22:42,040 --> 00:22:44,410
+question is if your victim policy is
+
+585
+00:22:44,410 --> 00:22:48,090
+running you say oh my flush LS n is is
+
+586
+00:22:48,090 --> 00:22:51,130
+less than all the page LS ends for all
+
+587
+00:22:51,130 --> 00:22:52,360
+the picture all the dirty pages in my
+
+588
+00:22:52,360 --> 00:22:54,970
+log all our data pages my prefer pool
+
+589
+00:22:54,970 --> 00:22:58,570
+all my pages my purple are dirty what do
+
+590
+00:22:58,570 --> 00:23:00,970
+I do you have to stall you have to write
+
+591
+00:23:00,970 --> 00:23:02,410
+up a disk you can't there's nothing else
+
+592
+00:23:02,410 --> 00:23:05,620
+you could do and that's what the
+
+593
+00:23:05,620 --> 00:23:07,240
+background writer supposed to be it's
+
+594
+00:23:07,240 --> 00:23:08,830
+sort of like if I know I have some idle
+
+595
+00:23:08,830 --> 00:23:11,590
+I o cycles I could write this things out
+
+596
+00:23:11,590 --> 00:23:12,910
+ahead of time so I don't have to stall
+
+597
+00:23:12,910 --> 00:23:14,530
+I'm not on the critical path as I
+
+598
+00:23:14,530 --> 00:23:17,320
+execute transactions right again the
+
+599
+00:23:17,320 --> 00:23:19,150
+worst thing you could do is I'm running
+
+600
+00:23:19,150 --> 00:23:20,620
+a transaction it acquires a bunch of
+
+601
+00:23:20,620 --> 00:23:22,600
+locks then I have to do a bunch of disk
+
+602
+00:23:22,600 --> 00:23:24,550
+i/o because now that just the backs
+
+603
+00:23:24,550 --> 00:23:26,200
+everybody up and everything it's slower
+
+604
+00:23:26,200 --> 00:23:27,640
+so they if I can do some things in the
+
+605
+00:23:27,640 --> 00:23:29,380
+background now it's not on the critical
+
+606
+00:23:29,380 --> 00:23:30,520
+path while I'm holding locks and
+
+607
+00:23:30,520 --> 00:23:31,720
+transactions can complete more quickly
+
+608
+00:23:31,720 --> 00:23:34,570
+and but how you balance that between
+
+609
+00:23:34,570 --> 00:23:37,030
+like flushing this flushing the the log
+
+610
+00:23:37,030 --> 00:23:38,380
+flush flushing the background stuff
+
+611
+00:23:38,380 --> 00:23:39,940
+that's the tricky thing that database
+
+612
+00:23:39,940 --> 00:23:42,370
+systems have to figure out we don't let
+
+613
+00:23:42,370 --> 00:23:47,650
+the OS do it for us okay so for aborts
+
+614
+00:23:47,650 --> 00:23:52,660
+aborts are gonna be serve a special case
+
+615
+00:23:52,660 --> 00:23:55,210
+we're gonna have under Ares where we're
+
+616
+00:23:55,210 --> 00:23:58,000
+gonna reverse changes for for
+
+617
+00:23:58,000 --> 00:24:00,490
+transactions but we're actually going to
+
+618
+00:24:00,490 --> 00:24:05,110
+end up adding log records to keep track
+
+619
+00:24:05,110 --> 00:24:06,670
+of that we will we have reversed those
+
+620
+00:24:06,670 --> 00:24:09,130
+changes this is way different than we
+
+621
+00:24:09,130 --> 00:24:10,840
+talked about so far like every time he
+
+622
+00:24:10,840 --> 00:24:12,340
+said oh we abort a transaction rollback
+
+623
+00:24:12,340 --> 00:24:14,380
+says changes we just assume that we can
+
+624
+00:24:14,380 --> 00:24:16,690
+undo some stuff in memory right now we
+
+625
+00:24:16,690 --> 00:24:18,010
+need to keep track of everything that
+
+626
+00:24:18,010 --> 00:24:21,370
+we're doing as we reverse transactions
+
+627
+00:24:21,370 --> 00:24:24,010
+so we're gonna add an additional field
+
+628
+00:24:24,010 --> 00:24:25,060
+to our
+
+629
+00:24:25,060 --> 00:24:26,950
+our log records called the pre bel SM
+
+630
+00:24:26,950 --> 00:24:29,830
+and this is not required but this is
+
+631
+00:24:29,830 --> 00:24:31,390
+just gonna make your life easier at
+
+632
+00:24:31,390 --> 00:24:32,980
+runtime because now you can know how to
+
+633
+00:24:32,980 --> 00:24:34,780
+jump back to find the next thing you
+
+634
+00:24:34,780 --> 00:24:36,160
+need to reverse for a given transaction
+
+635
+00:24:36,160 --> 00:24:38,110
+I to avoid have a sort of scanning
+
+636
+00:24:38,110 --> 00:24:39,580
+scanning everything essentially you
+
+637
+00:24:39,580 --> 00:24:40,450
+think of this as like for every
+
+638
+00:24:40,450 --> 00:24:41,770
+transaction you're generating a linked
+
+639
+00:24:41,770 --> 00:24:43,930
+list to say for every aborted
+
+640
+00:24:43,930 --> 00:24:45,040
+transaction here's the linked list up
+
+641
+00:24:45,040 --> 00:24:46,540
+here's all the changes I need to reverse
+
+642
+00:24:46,540 --> 00:24:48,790
+so I need to I know how to walk back in
+
+643
+00:24:48,790 --> 00:24:52,960
+one by one and reverse them so we have
+
+644
+00:24:52,960 --> 00:24:54,640
+our simple transaction like this again
+
+645
+00:24:54,640 --> 00:24:57,040
+now we have the pls n and the previous
+
+646
+00:24:57,040 --> 00:25:00,520
+LSM and so for the first else and for
+
+647
+00:25:00,520 --> 00:25:02,050
+the first log record for this
+
+648
+00:25:02,050 --> 00:25:05,110
+transaction t4 since there's no previous
+
+649
+00:25:05,110 --> 00:25:07,690
+Ellison at the begin statement we just
+
+650
+00:25:07,690 --> 00:25:11,380
+set the the previous Ellison to null so
+
+651
+00:25:11,380 --> 00:25:13,120
+this transaction runs it makes some
+
+652
+00:25:13,120 --> 00:25:16,570
+changes but then it aborts so now what
+
+653
+00:25:16,570 --> 00:25:18,940
+we need to do is reverse those changes
+
+654
+00:25:18,940 --> 00:25:21,520
+I'm going to add log entries for these
+
+655
+00:25:21,520 --> 00:25:24,130
+and then once we know all those log
+
+656
+00:25:24,130 --> 00:25:25,960
+entries have been are durable out in a
+
+657
+00:25:25,960 --> 00:25:28,330
+disk we can then add the transaction end
+
+658
+00:25:28,330 --> 00:25:30,370
+message again this is what I was saying
+
+659
+00:25:30,370 --> 00:25:32,110
+this is saying that the transaction MS
+
+660
+00:25:32,110 --> 00:25:35,650
+is a is denoting that there's nothing
+
+661
+00:25:35,650 --> 00:25:37,780
+else that it could ever come about this
+
+662
+00:25:37,780 --> 00:25:39,220
+transaction later on we've we've
+
+663
+00:25:39,220 --> 00:25:40,570
+reversed I've done everything we've
+
+664
+00:25:40,570 --> 00:25:44,500
+needed to do so for this this part here
+
+665
+00:25:44,500 --> 00:25:45,640
+when you're talk about Nexus know how we
+
+666
+00:25:45,640 --> 00:25:48,040
+actually record the changes that were
+
+667
+00:25:48,040 --> 00:25:51,130
+reversing as we go along so these are
+
+668
+00:25:51,130 --> 00:25:53,310
+called compensation log records or CLRS
+
+669
+00:25:53,310 --> 00:25:56,290
+so CLR is just it's like an update
+
+670
+00:25:56,290 --> 00:25:58,960
+record but it's it's it's reversing the
+
+671
+00:25:58,960 --> 00:26:01,210
+change of a an actual update record when
+
+672
+00:26:01,210 --> 00:26:06,750
+the transaction actually ran yes yes
+
+673
+00:26:13,410 --> 00:26:14,730
+so your question is why do we even have
+
+674
+00:26:14,730 --> 00:26:16,170
+the previous Ellison what is this
+
+675
+00:26:16,170 --> 00:26:22,980
+actually buying us yeah her question
+
+676
+00:26:22,980 --> 00:26:24,180
+your statement is could you just check
+
+677
+00:26:24,180 --> 00:26:26,370
+for this simple example just find all
+
+678
+00:26:26,370 --> 00:26:28,560
+the things that are t4 and then just
+
+679
+00:26:28,560 --> 00:26:29,700
+figure out those things I need rivers
+
+680
+00:26:29,700 --> 00:26:32,670
+yes but what if I'm running like a
+
+681
+00:26:32,670 --> 00:26:34,110
+high-end system is doing a million
+
+682
+00:26:34,110 --> 00:26:36,810
+transactions a second and I crash now I
+
+683
+00:26:36,810 --> 00:26:39,240
+have and any given time when I crashed I
+
+684
+00:26:39,240 --> 00:26:40,590
+could have maybe a hundred thousand
+
+685
+00:26:40,590 --> 00:26:42,690
+transactions in flight so to avoid
+
+686
+00:26:42,690 --> 00:26:44,280
+having to scan everything over and over
+
+687
+00:26:44,280 --> 00:26:45,630
+again to find you know exactly what I
+
+688
+00:26:45,630 --> 00:26:48,300
+need to reverse this is just a helper to
+
+689
+00:26:48,300 --> 00:26:50,430
+get us there so it's not required for
+
+690
+00:26:50,430 --> 00:26:52,170
+correctness it's could use it for
+
+691
+00:26:52,170 --> 00:26:57,230
+convenience yes
+
+692
+00:26:57,260 --> 00:27:02,760
+why do we need to reverse so for this
+
+693
+00:27:02,760 --> 00:27:06,630
+example no but how do you know in real
+
+694
+00:27:06,630 --> 00:27:09,540
+life in real system what did I say I
+
+695
+00:27:09,540 --> 00:27:11,490
+said we we don't know we're not logging
+
+696
+00:27:11,490 --> 00:27:13,650
+what pages we write to disk we don't
+
+697
+00:27:13,650 --> 00:27:14,550
+know anything about what we've got
+
+698
+00:27:14,550 --> 00:27:16,380
+written to disk because the eviction
+
+699
+00:27:16,380 --> 00:27:19,230
+policy is doing its own thing that's why
+
+700
+00:27:19,230 --> 00:27:20,670
+we're gonna play it safe I'm just
+
+701
+00:27:20,670 --> 00:27:25,470
+reverse everything so the CLR again it's
+
+702
+00:27:25,470 --> 00:27:27,600
+gonna be like an update log record where
+
+703
+00:27:27,600 --> 00:27:30,800
+it's gonna have before and after value
+
+704
+00:27:30,800 --> 00:27:33,180
+but it's gonna be tied to an update
+
+705
+00:27:33,180 --> 00:27:34,590
+record that actually occurred during the
+
+706
+00:27:34,590 --> 00:27:37,140
+transactions regular life time and then
+
+707
+00:27:37,140 --> 00:27:38,490
+we're gonna have this undo next pointer
+
+708
+00:27:38,490 --> 00:27:40,380
+which again just for convenience who can
+
+709
+00:27:40,380 --> 00:27:42,330
+tell us what's the next LSN that we need
+
+710
+00:27:42,330 --> 00:27:46,650
+to reverse so that we know you know for
+
+711
+00:27:46,650 --> 00:27:48,090
+every given transaction we would know
+
+712
+00:27:48,090 --> 00:27:49,740
+whether we've actually processed all the
+
+713
+00:27:49,740 --> 00:27:51,150
+ones we need we need the process to
+
+714
+00:27:51,150 --> 00:27:54,630
+reverse all this changes so the CLR is
+
+715
+00:27:54,630 --> 00:27:55,890
+gonna be added to the law just like any
+
+716
+00:27:55,890 --> 00:27:57,600
+other log record but they're gonna be
+
+717
+00:27:57,600 --> 00:27:59,640
+added after the transaction gets aborted
+
+718
+00:27:59,640 --> 00:28:03,030
+and then once we went through reverse
+
+719
+00:28:03,030 --> 00:28:04,560
+everything then we add the transaction
+
+720
+00:28:04,560 --> 00:28:04,890
+end
+
+721
+00:28:04,890 --> 00:28:08,250
+so unlike commit with commit I have to
+
+722
+00:28:08,250 --> 00:28:10,770
+flush all the log records to disk before
+
+723
+00:28:10,770 --> 00:28:11,790
+I tell the outside world I've committed
+
+724
+00:28:11,790 --> 00:28:13,530
+if a transaction gets aborted we
+
+725
+00:28:13,530 --> 00:28:14,970
+immediately go back to the applications
+
+726
+00:28:14,970 --> 00:28:16,530
+that you were boarded they don't need to
+
+727
+00:28:16,530 --> 00:28:18,540
+wait around to to write anything up the
+
+728
+00:28:18,540 --> 00:28:21,720
+disk because who cares right they try to
+
+729
+00:28:21,720 --> 00:28:23,160
+go read that their changes are not going
+
+730
+00:28:23,160 --> 00:28:24,360
+to do that long as we're running with
+
+731
+00:28:24,360 --> 00:28:26,620
+the correct kernel protocol
+
+732
+00:28:26,620 --> 00:28:29,140
+so the CLR just get logged any other
+
+733
+00:28:29,140 --> 00:28:30,669
+record and then they just get flushed
+
+734
+00:28:30,669 --> 00:28:33,250
+out you know eventually it's at some
+
+735
+00:28:33,250 --> 00:28:36,490
+point so let's look an example how we're
+
+736
+00:28:36,490 --> 00:28:38,169
+gonna UCL RS and so because I'm running
+
+737
+00:28:38,169 --> 00:28:39,970
+out of space on the slide because we
+
+738
+00:28:39,970 --> 00:28:41,830
+have so many so many meditative fields
+
+739
+00:28:41,830 --> 00:28:43,390
+I'm now going to show this in a tabular
+
+740
+00:28:43,390 --> 00:28:45,880
+form so here we have one transaction t1
+
+741
+00:28:45,880 --> 00:28:48,490
+it just does an update Oh name all right
+
+742
+00:28:48,490 --> 00:28:50,710
+and then it aborts we don't care how how
+
+743
+00:28:50,710 --> 00:28:52,360
+it aborted whether the the transaction
+
+744
+00:28:52,360 --> 00:28:54,070
+application said to a border or the
+
+745
+00:28:54,070 --> 00:28:55,840
+database systems current protocol said
+
+746
+00:28:55,840 --> 00:28:57,400
+to abort it we don't care it's all the
+
+747
+00:28:57,400 --> 00:28:59,799
+same so now when we want to start
+
+748
+00:28:59,799 --> 00:29:01,990
+undoing its change right this is during
+
+749
+00:29:01,990 --> 00:29:03,789
+the regular execution time this is not
+
+750
+00:29:03,789 --> 00:29:05,110
+during recovery this as we're as
+
+751
+00:29:05,110 --> 00:29:07,149
+processing transactions we're gonna
+
+752
+00:29:07,149 --> 00:29:10,330
+create a CLR entry that's gonna be tied
+
+753
+00:29:10,330 --> 00:29:13,149
+to the the update bet it did and again
+
+754
+00:29:13,149 --> 00:29:14,620
+it looks exactly like the first one it's
+
+755
+00:29:14,620 --> 00:29:15,940
+just that the before and after values
+
+756
+00:29:15,940 --> 00:29:18,340
+were reversed so before the value was 30
+
+757
+00:29:18,340 --> 00:29:20,500
+and then after the update was 40 so now
+
+758
+00:29:20,500 --> 00:29:21,970
+what we're doing in a reversal or
+
+759
+00:29:21,970 --> 00:29:25,950
+setting the the old value back to 30
+
+760
+00:29:25,950 --> 00:29:29,740
+right and then we had this undo next
+
+761
+00:29:29,740 --> 00:29:31,809
+record that allison that says what's the
+
+762
+00:29:31,809 --> 00:29:34,179
+next thing we need to undo to completely
+
+763
+00:29:34,179 --> 00:29:35,919
+reverse this transaction but in this
+
+764
+00:29:35,919 --> 00:29:38,320
+particular example here the undo Ellison
+
+765
+00:29:38,320 --> 00:29:40,750
+goes to the begin statement so we know
+
+766
+00:29:40,750 --> 00:29:41,950
+there's nothing else for us to reverse
+
+767
+00:29:41,950 --> 00:29:43,630
+for this transaction so we can go ahead
+
+768
+00:29:43,630 --> 00:29:50,909
+and add our transaction end record yes
+
+769
+00:29:57,149 --> 00:30:00,279
+this question is did I say that when you
+
+770
+00:30:00,279 --> 00:30:02,529
+abort you community go back to the
+
+771
+00:30:02,529 --> 00:30:04,090
+application and say your transaction
+
+772
+00:30:04,090 --> 00:30:06,010
+aborted and that you don't have to write
+
+773
+00:30:06,010 --> 00:30:07,210
+flush any of these things out to disk
+
+774
+00:30:07,210 --> 00:30:19,539
+correct yes statement is I said that if
+
+775
+00:30:19,539 --> 00:30:21,159
+you really tell the outside world you
+
+776
+00:30:21,159 --> 00:30:24,700
+aborted but then you you create these
+
+777
+00:30:24,700 --> 00:30:26,890
+log records you reverse the changes but
+
+778
+00:30:26,890 --> 00:30:34,690
+then you crash up here you're right so
+
+779
+00:30:34,690 --> 00:30:38,700
+you yeah you can lose these do we care
+
+780
+00:30:39,180 --> 00:30:46,450
+he's shaking his head no why well yes
+
+781
+00:30:46,450 --> 00:30:48,460
+you're gonna bore it but like something
+
+782
+00:30:48,460 --> 00:30:52,300
+more fundamental correct
+
+783
+00:30:52,300 --> 00:30:54,280
+so the the page that got modified but
+
+784
+00:30:54,280 --> 00:30:57,460
+this transaction is not on disk so who
+
+785
+00:30:57,460 --> 00:31:13,710
+cares half of what sorry yes who cares
+
+786
+00:31:18,390 --> 00:31:20,440
+can you undo it because they didn't
+
+787
+00:31:20,440 --> 00:31:24,400
+commit right so again we'll see this
+
+788
+00:31:24,400 --> 00:31:26,320
+when we do a for example if I don't see
+
+789
+00:31:26,320 --> 00:31:29,110
+if I crash here and I don't see what was
+
+790
+00:31:29,110 --> 00:31:30,520
+the final determination of the
+
+791
+00:31:30,520 --> 00:31:31,920
+transaction where the committed aborted
+
+792
+00:31:31,920 --> 00:31:36,040
+ain't aborted right that's the beauty of
+
+793
+00:31:36,040 --> 00:31:37,120
+the right ahead log this is a single
+
+794
+00:31:37,120 --> 00:31:38,230
+source location to tell us what was the
+
+795
+00:31:38,230 --> 00:31:40,840
+final outcome of what happened in
+
+796
+00:31:40,840 --> 00:31:42,910
+transaction so we got here say we got
+
+797
+00:31:42,910 --> 00:31:46,630
+here and we aborted we tell the AUSA or
+
+798
+00:31:46,630 --> 00:31:49,180
+we aborted we crash before we do all
+
+799
+00:31:49,180 --> 00:31:51,760
+this stuff who cares because the
+
+800
+00:31:51,760 --> 00:31:54,130
+transaction got aborted we don't have to
+
+801
+00:31:54,130 --> 00:31:55,720
+guarantee anything's durable we come
+
+802
+00:31:55,720 --> 00:31:57,040
+back and is as if it wasn't there
+
+803
+00:31:57,040 --> 00:31:58,330
+because we'll reverse any changes that
+
+804
+00:31:58,330 --> 00:32:01,410
+could have gotten written up to disk
+
+805
+00:32:02,940 --> 00:32:06,520
+correct so if the page got written to
+
+806
+00:32:06,520 --> 00:32:08,050
+disk you would have seen you have to see
+
+807
+00:32:08,050 --> 00:32:11,110
+all these things anyway so we know how
+
+808
+00:32:11,110 --> 00:32:12,100
+to put it back in the correct state if
+
+809
+00:32:12,100 --> 00:32:26,110
+necessary yes here yes so so say all
+
+810
+00:32:26,110 --> 00:32:27,640
+right so say they said they told us roll
+
+811
+00:32:27,640 --> 00:32:28,990
+back from the terminal from from the
+
+812
+00:32:28,990 --> 00:32:33,640
+application then we could append this
+
+813
+00:32:33,640 --> 00:32:35,680
+log record into the redhead log in
+
+814
+00:32:35,680 --> 00:32:38,170
+memory go back and meet e tell them that
+
+815
+00:32:38,170 --> 00:32:40,420
+it aborted and then now start cleaning
+
+816
+00:32:40,420 --> 00:32:43,300
+up all its internal changes right so we
+
+817
+00:32:43,300 --> 00:32:44,590
+don't have to we don't have to wait to
+
+818
+00:32:44,590 --> 00:32:47,110
+do any clean up all the things that it
+
+819
+00:32:47,110 --> 00:32:48,970
+modified we can tell them it aboard it
+
+820
+00:32:48,970 --> 00:32:50,559
+right away
+
+821
+00:32:50,559 --> 00:32:57,370
+I commit and commit says I have commit
+
+822
+00:32:57,370 --> 00:32:58,059
+it
+
+823
+00:32:58,059 --> 00:33:00,309
+if the Davis didn't tells him tells you
+
+824
+00:33:00,309 --> 00:33:02,409
+you committed it has to guarantee that
+
+825
+00:33:02,409 --> 00:33:04,149
+everything's durable so it has to be
+
+826
+00:33:04,149 --> 00:33:07,240
+ready any log record that that
+
+827
+00:33:07,240 --> 00:33:08,740
+corresponds to the changes that it made
+
+828
+00:33:08,740 --> 00:33:10,840
+has to be written a disk up into the
+
+829
+00:33:10,840 --> 00:33:12,309
+commit we don't care about transaction
+
+830
+00:33:12,309 --> 00:33:17,470
+end that's internal for us neatly come
+
+831
+00:33:17,470 --> 00:33:19,720
+back yes I think about why like who
+
+832
+00:33:19,720 --> 00:33:21,730
+cares that I aborted why why do I care
+
+833
+00:33:21,730 --> 00:33:23,110
+that you're gonna go do much I stopped
+
+834
+00:33:23,110 --> 00:33:24,490
+to clean things up why should I wait for
+
+835
+00:33:24,490 --> 00:33:35,559
+that so this question is for any if any
+
+836
+00:33:35,559 --> 00:33:38,169
+transaction wants to modify the same
+
+837
+00:33:38,169 --> 00:33:40,119
+page that got modified by Board of
+
+838
+00:33:40,119 --> 00:33:42,340
+transaction do they need to wait until
+
+839
+00:33:42,340 --> 00:33:48,129
+the until the the log record that
+
+840
+00:33:48,129 --> 00:33:52,529
+modified it got written out the disk no
+
+841
+00:33:52,529 --> 00:33:55,809
+right because if I like say I board here
+
+842
+00:33:55,809 --> 00:33:57,909
+I say this isn't this isn't a page page
+
+843
+00:33:57,909 --> 00:34:01,210
+a I abort here I can merely release what
+
+844
+00:34:01,210 --> 00:34:02,889
+it can to assuming today's locking I
+
+845
+00:34:02,889 --> 00:34:04,570
+release the right lock I have on that
+
+846
+00:34:04,570 --> 00:34:07,360
+page any now other transaction can come
+
+847
+00:34:07,360 --> 00:34:09,520
+along start modifying it so they start
+
+848
+00:34:09,520 --> 00:34:10,719
+modifying what is that going to do
+
+849
+00:34:10,719 --> 00:34:13,599
+that's gonna create new log records bump
+
+850
+00:34:13,599 --> 00:34:16,168
+up the page LSN for my page and
+
+851
+00:34:16,168 --> 00:34:18,280
+therefore that page can't be written out
+
+852
+00:34:18,280 --> 00:34:20,589
+the disk until my new log records of
+
+853
+00:34:20,589 --> 00:34:24,129
+every not the disk so who cares who
+
+854
+00:34:24,129 --> 00:34:25,418
+cares that this is of the transaction
+
+855
+00:34:25,418 --> 00:34:44,560
+modify you you cry if I try to do if I
+
+856
+00:34:44,560 --> 00:34:48,550
+try to read the the change may if I'm an
+
+857
+00:34:48,550 --> 00:34:50,230
+aborted transaction I have to reverse
+
+858
+00:34:50,230 --> 00:34:53,849
+them yes before I'm allowed to read
+
+859
+00:34:57,730 --> 00:35:00,200
+when we say written a disk of written a
+
+860
+00:35:00,200 --> 00:35:03,290
+memory yeah sure yes you have to yes
+
+861
+00:35:03,290 --> 00:35:05,210
+you'd have to reverse that I mean he way
+
+862
+00:35:05,210 --> 00:35:12,170
+that's true always if it's single
+
+863
+00:35:12,170 --> 00:35:14,900
+version yes multi version know because
+
+864
+00:35:14,900 --> 00:35:16,820
+Multi multi versioning right who cares
+
+865
+00:35:16,820 --> 00:35:18,290
+because you now you just have a version
+
+866
+00:35:18,290 --> 00:35:21,440
+that doesn't exist anymore you you
+
+867
+00:35:21,440 --> 00:35:26,240
+ignore it yes in single version yes
+
+868
+00:35:26,240 --> 00:35:27,200
+you'd had you at the reverse these
+
+869
+00:35:27,200 --> 00:35:51,740
+things yes yes same is let's say I have
+
+870
+00:35:51,740 --> 00:35:54,110
+a transaction that makes a lot of
+
+871
+00:35:54,110 --> 00:35:58,400
+updates have the updates get you you
+
+872
+00:35:58,400 --> 00:36:01,270
+apply all the updates but half of them
+
+873
+00:36:01,270 --> 00:36:05,630
+got written out to disk how do I reverse
+
+874
+00:36:05,630 --> 00:36:07,310
+those changes now they're out on disk
+
+875
+00:36:07,310 --> 00:36:08,720
+and it because it's the steal policy I'm
+
+876
+00:36:08,720 --> 00:36:10,790
+a lot of commits right out I'm rather
+
+877
+00:36:10,790 --> 00:36:13,010
+flush out dirty pages yes you'd have to
+
+878
+00:36:13,010 --> 00:36:16,100
+bring them back in and reverse them when
+
+879
+00:36:16,100 --> 00:36:17,630
+you actually do that whether you do that
+
+880
+00:36:17,630 --> 00:36:19,940
+immediately on abort or whether you do
+
+881
+00:36:19,940 --> 00:36:23,360
+that you know lazily like oh when
+
+882
+00:36:23,360 --> 00:36:24,800
+somebody the next time someone goes to
+
+883
+00:36:24,800 --> 00:36:27,340
+reads it then I'll reverse it
+
+884
+00:36:27,340 --> 00:36:33,380
+yes I love this question there is some
+
+885
+00:36:33,380 --> 00:36:36,530
+do don't send a hit on on on YouTube
+
+886
+00:36:36,530 --> 00:36:38,420
+complain like like professor Pablo I
+
+887
+00:36:38,420 --> 00:36:40,130
+like your class I like the material but
+
+888
+00:36:40,130 --> 00:36:41,210
+all those pesky students keep
+
+889
+00:36:41,210 --> 00:36:43,040
+interrupting me asking questions bad
+
+890
+00:36:43,040 --> 00:36:46,010
+dude right let him begin to CMU and come
+
+891
+00:36:46,010 --> 00:36:50,180
+ask questions all right all right so now
+
+892
+00:36:50,180 --> 00:36:51,320
+for our board advocating we've already
+
+893
+00:36:51,320 --> 00:36:53,240
+said this we're gonna write a board
+
+894
+00:36:53,240 --> 00:36:55,040
+record to the log for every transaction
+
+895
+00:36:55,040 --> 00:36:57,590
+and then we're gonna play back the
+
+896
+00:36:57,590 --> 00:36:59,480
+transaction updates in reverse order for
+
+897
+00:36:59,480 --> 00:37:01,400
+the transaction and then for everything
+
+898
+00:37:01,400 --> 00:37:03,560
+in that we're going to reverse we add a
+
+899
+00:37:03,560 --> 00:37:05,600
+CLR entry to the log it's tied to the
+
+900
+00:37:05,600 --> 00:37:06,650
+original update that occurred during
+
+901
+00:37:06,650 --> 00:37:08,750
+normal operation and then we store the
+
+902
+00:37:08,750 --> 00:37:09,770
+version of value
+
+903
+00:37:09,770 --> 00:37:12,340
+and then once we complete all these
+
+904
+00:37:12,340 --> 00:37:15,500
+transaction these CLRS once we've done
+
+905
+00:37:15,500 --> 00:37:16,490
+them all they need to do for this
+
+906
+00:37:16,490 --> 00:37:18,140
+transaction then we can add the
+
+907
+00:37:18,140 --> 00:37:21,530
+transaction end message so CLRS will
+
+908
+00:37:21,530 --> 00:37:25,850
+never need to be undone well we could
+
+909
+00:37:25,850 --> 00:37:28,430
+only redo them during during durham
+
+910
+00:37:28,430 --> 00:37:31,550
+recovery because it's like a one-way
+
+911
+00:37:31,550 --> 00:37:36,770
+update okay so now right so what have
+
+912
+00:37:36,770 --> 00:37:37,670
+you covered so far but now we know we
+
+913
+00:37:37,670 --> 00:37:39,290
+have long sequence numbers we have these
+
+914
+00:37:39,290 --> 00:37:41,030
+CLRS and we know do how to keep track of
+
+915
+00:37:41,030 --> 00:37:42,560
+the Ellison's at various locations for
+
+916
+00:37:42,560 --> 00:37:44,090
+us to figure out what has been written
+
+917
+00:37:44,090 --> 00:37:46,610
+out the disk or not so now let's talk
+
+918
+00:37:46,610 --> 00:37:48,290
+about how we're going to bring along
+
+919
+00:37:48,290 --> 00:37:49,490
+some additional metadata to figure out
+
+920
+00:37:49,490 --> 00:37:50,690
+what was running at the system at the
+
+921
+00:37:50,690 --> 00:37:53,450
+time and use it a better checkpointing
+
+922
+00:37:53,450 --> 00:37:56,030
+scheme so in our last class i said that
+
+923
+00:37:56,030 --> 00:37:58,580
+checkpoints are necessary for us to be
+
+924
+00:37:58,580 --> 00:38:00,440
+able to figure out at what point can we
+
+925
+00:38:00,440 --> 00:38:02,090
+figure out at what point can we start
+
+926
+00:38:02,090 --> 00:38:03,680
+recovering the database because without
+
+927
+00:38:03,680 --> 00:38:05,630
+checkpoints we potentially have to go
+
+928
+00:38:05,630 --> 00:38:07,670
+look through the entire log if we have
+
+929
+00:38:07,670 --> 00:38:09,140
+one year's worth a log with no
+
+930
+00:38:09,140 --> 00:38:10,730
+checkpoints we may have the potential
+
+931
+00:38:10,730 --> 00:38:12,650
+replay one year's worth for the law
+
+932
+00:38:12,650 --> 00:38:15,560
+which could take a long time so let's
+
+933
+00:38:15,560 --> 00:38:17,210
+look at two bad ways to take checkpoints
+
+934
+00:38:17,210 --> 00:38:19,430
+and we'll see why fuzzy checkpoints are
+
+935
+00:38:19,430 --> 00:38:21,800
+the better way so if I discuss one of
+
+936
+00:38:21,800 --> 00:38:24,530
+these bad ways last class and I said the
+
+937
+00:38:24,530 --> 00:38:26,570
+technique we were going to use was to
+
+938
+00:38:26,570 --> 00:38:30,950
+just halt the execution of of any new
+
+939
+00:38:30,950 --> 00:38:34,370
+transaction and then take to take the
+
+940
+00:38:34,370 --> 00:38:35,690
+checkpoint and this will guarantee that
+
+941
+00:38:35,690 --> 00:38:38,390
+my pages they're written out the disk as
+
+942
+00:38:38,390 --> 00:38:40,430
+part of that checkpoint are are
+
+943
+00:38:40,430 --> 00:38:43,010
+consistent there's no torn updates from
+
+944
+00:38:43,010 --> 00:38:44,120
+a transaction that was running halfway
+
+945
+00:38:44,120 --> 00:38:46,520
+through right so basically what happens
+
+946
+00:38:46,520 --> 00:38:47,870
+is on the on the front end on the
+
+947
+00:38:47,870 --> 00:38:49,670
+network network layer we halt the
+
+948
+00:38:49,670 --> 00:38:51,290
+execution of any new transaction and
+
+949
+00:38:51,290 --> 00:38:53,030
+then we just wait for all our workers to
+
+950
+00:38:53,030 --> 00:38:54,950
+finish executing any transaction that's
+
+951
+00:38:54,950 --> 00:38:58,040
+already running so this is obviously bad
+
+952
+00:38:58,040 --> 00:39:01,400
+because we we have to wait until
+
+953
+00:39:01,400 --> 00:39:03,080
+everybody you know to all its
+
+954
+00:39:03,080 --> 00:39:04,220
+transaction to finish we can't start
+
+955
+00:39:04,220 --> 00:39:06,290
+executing anything new so we have one
+
+956
+00:39:06,290 --> 00:39:07,700
+transaction it's gonna take five hours
+
+957
+00:39:07,700 --> 00:39:09,770
+to run they've made the wait for the
+
+958
+00:39:09,770 --> 00:39:11,870
+five hours to finish wait for it to
+
+959
+00:39:11,870 --> 00:39:13,340
+finish before we go ahead and take our
+
+960
+00:39:13,340 --> 00:39:14,600
+check line and then during that time we
+
+961
+00:39:14,600 --> 00:39:16,760
+can't execute any other transaction so
+
+962
+00:39:16,760 --> 00:39:19,000
+our system looks completely unresponsive
+
+963
+00:39:19,000 --> 00:39:21,410
+from a recovery standpoint this is this
+
+964
+00:39:21,410 --> 00:39:23,630
+is this is great because the
+
+965
+00:39:23,630 --> 00:39:25,100
+the check point is consistent as I said
+
+966
+00:39:25,100 --> 00:39:27,110
+there's no intermediate updates it's
+
+967
+00:39:27,110 --> 00:39:28,880
+exactly as it was when you know it only
+
+968
+00:39:28,880 --> 00:39:30,260
+contains changes from committed
+
+969
+00:39:30,260 --> 00:39:34,430
+transactions so a slightly better way to
+
+970
+00:39:34,430 --> 00:39:38,690
+do this would be to pause transactions
+
+971
+00:39:38,690 --> 00:39:40,820
+while they're running while we take the
+
+972
+00:39:40,820 --> 00:39:43,070
+checkpoint so we're going to mean what
+
+973
+00:39:43,070 --> 00:39:44,540
+this is any transaction has a query
+
+974
+00:39:44,540 --> 00:39:48,140
+that's modifying the the database we
+
+975
+00:39:48,140 --> 00:39:50,180
+just pause it any time they try to
+
+976
+00:39:50,180 --> 00:39:52,610
+acquire a write latch on a page we don't
+
+977
+00:39:52,610 --> 00:39:55,150
+we prevent that and they have to stall
+
+978
+00:39:55,150 --> 00:39:57,620
+any read-only transaction can still run
+
+979
+00:39:57,620 --> 00:39:58,820
+they can read whatever they want because
+
+980
+00:39:58,820 --> 00:39:59,720
+that doesn't interfere with that
+
+981
+00:39:59,720 --> 00:40:02,510
+checkpoint and then there's concur trail
+
+982
+00:40:02,510 --> 00:40:03,920
+protocol up above to figure out whether
+
+983
+00:40:03,920 --> 00:40:04,880
+they're allowed to read certain things
+
+984
+00:40:04,880 --> 00:40:07,220
+we can ignore all that but it's all the
+
+985
+00:40:07,220 --> 00:40:08,180
+right transactions we're just gonna
+
+986
+00:40:08,180 --> 00:40:11,660
+we're just gonna pause them so it would
+
+987
+00:40:11,660 --> 00:40:13,250
+look something like this so say I have
+
+988
+00:40:13,250 --> 00:40:14,810
+in memory I have three pages I have a
+
+989
+00:40:14,810 --> 00:40:16,130
+transaction that checkpoint would occur
+
+990
+00:40:16,130 --> 00:40:18,470
+at the same time so say this transaction
+
+991
+00:40:18,470 --> 00:40:19,850
+is going to update page three and page
+
+992
+00:40:19,850 --> 00:40:21,860
+one so there's going to start at the
+
+993
+00:40:21,860 --> 00:40:24,080
+bottom here apply its change to page
+
+994
+00:40:24,080 --> 00:40:26,480
+three and then before it can update page
+
+995
+00:40:26,480 --> 00:40:29,480
+one the checkpoint starts so we have to
+
+996
+00:40:29,480 --> 00:40:30,830
+stall our transaction right because
+
+997
+00:40:30,830 --> 00:40:32,180
+gonna try to acquire the right latch on
+
+998
+00:40:32,180 --> 00:40:34,160
+that page one you can't do that because
+
+999
+00:40:34,160 --> 00:40:35,930
+the checkpoints occurring so it just
+
+1000
+00:40:35,930 --> 00:40:38,480
+stalls so now the checkpoint all it's
+
+1001
+00:40:38,480 --> 00:40:39,800
+really doing is just a sequential scan
+
+1002
+00:40:39,800 --> 00:40:42,500
+or a scan or every single page and our
+
+1003
+00:40:42,500 --> 00:40:44,480
+buffer pool and isn't it miss flushing
+
+1004
+00:40:44,480 --> 00:40:46,430
+them out the disk so our checkpoints
+
+1005
+00:40:46,430 --> 00:40:47,840
+going to write out page one to three
+
+1006
+00:40:47,840 --> 00:40:49,730
+with the modification that the
+
+1007
+00:40:49,730 --> 00:40:52,580
+transaction made to page three been the
+
+1008
+00:40:52,580 --> 00:40:54,590
+checkpoint finishes our transaction get
+
+1009
+00:40:54,590 --> 00:40:56,810
+Sun stalled and then we now update page
+
+1010
+00:40:56,810 --> 00:40:59,570
+one all right the problem is now our
+
+1011
+00:40:59,570 --> 00:41:02,120
+snapshot in our database for one query
+
+1012
+00:41:02,120 --> 00:41:03,830
+this transaction executed we saw half
+
+1013
+00:41:03,830 --> 00:41:06,740
+their changes so our checkpoint or the
+
+1014
+00:41:06,740 --> 00:41:08,330
+state of the database on disk is not is
+
+1015
+00:41:08,330 --> 00:41:13,730
+not consistent so in order to handle
+
+1016
+00:41:13,730 --> 00:41:15,260
+this we want to record some additional
+
+1017
+00:41:15,260 --> 00:41:18,320
+metadata to figure out what transactions
+
+1018
+00:41:18,320 --> 00:41:19,490
+were running at the time we took the
+
+1019
+00:41:19,490 --> 00:41:22,460
+checkpoint and what pages were dirtied
+
+1020
+00:41:22,460 --> 00:41:25,190
+in our buffer pool while we took the
+
+1021
+00:41:25,190 --> 00:41:26,870
+checkpoint so that we can use that
+
+1022
+00:41:26,870 --> 00:41:28,820
+information to figure out later on oh
+
+1023
+00:41:28,820 --> 00:41:32,420
+well this guy updated page one and I
+
+1024
+00:41:32,420 --> 00:41:33,860
+missed it or my checkpoint so I knew
+
+1025
+00:41:33,860 --> 00:41:35,450
+that I didn't make sure that I want to
+
+1026
+00:41:35,450 --> 00:41:37,320
+replay any log record of this guy
+
+1027
+00:41:37,320 --> 00:41:39,680
+to put me back in the correct state here
+
+1028
+00:41:39,680 --> 00:41:47,640
+back yes now be very careful in language
+
+1029
+00:41:47,640 --> 00:42:04,110
+here checkpoint yes yes his question is
+
+1030
+00:42:04,110 --> 00:42:07,800
+in my example here I show in wrists like
+
+1031
+00:42:07,800 --> 00:42:09,660
+a brute force or a coarse grain right
+
+1032
+00:42:09,660 --> 00:42:12,360
+latch on the entire system so this guy
+
+1033
+00:42:12,360 --> 00:42:14,400
+has to finish his checkpoint before this
+
+1034
+00:42:14,400 --> 00:42:17,520
+guy's allowed to go or could I say well
+
+1035
+00:42:17,520 --> 00:42:19,020
+I'll just release the right latch on
+
+1036
+00:42:19,020 --> 00:42:22,710
+page one and then lon update it yes but
+
+1037
+00:42:22,710 --> 00:42:23,790
+you still have the same torn up day
+
+1038
+00:42:23,790 --> 00:42:26,790
+problem I'm not serious I'm using this
+
+1039
+00:42:26,790 --> 00:42:28,860
+as a straw man to say that what you say
+
+1040
+00:42:28,860 --> 00:42:30,840
+this is a bad idea and we'll see how to
+
+1041
+00:42:30,840 --> 00:42:31,440
+do it in a better way
+
+1042
+00:42:31,440 --> 00:42:35,780
+but that's an obvious optimization yes
+
+1043
+00:42:43,310 --> 00:42:46,110
+this question is when I say we care
+
+1044
+00:42:46,110 --> 00:42:48,540
+about do we care about dirty pages which
+
+1045
+00:42:48,540 --> 00:42:51,330
+is gonna be the dirty page table do we
+
+1046
+00:42:51,330 --> 00:42:54,840
+care about transactions that are paused
+
+1047
+00:42:54,840 --> 00:42:58,410
+or any dirty page in the real system is
+
+1048
+00:42:58,410 --> 00:43:00,960
+any dirty page in there in the waiver do
+
+1049
+00:43:00,960 --> 00:43:01,950
+fuzzy checkpoints we're not actually
+
+1050
+00:43:01,950 --> 00:43:32,310
+nopales transactions yes what's his name
+
+1051
+00:43:32,310 --> 00:43:37,680
+it is you don't need the the dirty page
+
+1052
+00:43:37,680 --> 00:43:39,300
+table and the actual transaction table
+
+1053
+00:43:39,300 --> 00:43:41,510
+because if you just replayed everything
+
+1054
+00:43:41,510 --> 00:43:44,820
+and then reverse them wouldn't that put
+
+1055
+00:43:44,820 --> 00:43:47,460
+you in the correct state
+
+1056
+00:43:47,460 --> 00:43:53,190
+yes I think I agree with you but that's
+
+1057
+00:43:53,190 --> 00:43:57,180
+gonna be super slow because you cuz
+
+1058
+00:43:57,180 --> 00:43:58,380
+you're gonna have to update your gonna
+
+1059
+00:43:58,380 --> 00:44:00,450
+bring back every single page modify it
+
+1060
+00:44:00,450 --> 00:44:02,880
+right well where's with this metadata we
+
+1061
+00:44:02,880 --> 00:44:09,510
+can avoid that now not true you have to
+
+1062
+00:44:09,510 --> 00:44:12,270
+go farther back potentially give you
+
+1063
+00:44:12,270 --> 00:44:14,670
+more slides we'll get there because you
+
+1064
+00:44:14,670 --> 00:44:19,110
+don't know what's been written disk all
+
+1065
+00:44:19,110 --> 00:44:20,700
+right so right so there's the a
+
+1066
+00:44:20,700 --> 00:44:23,040
+transaction table and the the dirty page
+
+1067
+00:44:23,040 --> 00:44:24,180
+tables we're gonna record this
+
+1068
+00:44:24,180 --> 00:44:26,550
+information when we take the check when
+
+1069
+00:44:26,550 --> 00:44:28,080
+the check point starts we're gonna write
+
+1070
+00:44:28,080 --> 00:44:30,690
+it out with fuzzy check points when the
+
+1071
+00:44:30,690 --> 00:44:32,730
+check run ends and then we'll see these
+
+1072
+00:44:32,730 --> 00:44:34,230
+two cotton these two concepts come up
+
+1073
+00:44:34,230 --> 00:44:35,610
+again when we do recovery we're gonna
+
+1074
+00:44:35,610 --> 00:44:37,680
+basically replay the log and populate
+
+1075
+00:44:37,680 --> 00:44:38,760
+this information to figure out what we
+
+1076
+00:44:38,760 --> 00:44:41,850
+need to commit or undo so in the actus
+
+1077
+00:44:41,850 --> 00:44:43,500
+reus action table this is going to be
+
+1078
+00:44:43,500 --> 00:44:45,300
+for every single actively running
+
+1079
+00:44:45,300 --> 00:44:47,010
+transaction at the time the Check Point
+
+1080
+00:44:47,010 --> 00:44:49,020
+starts or to record its transaction ID
+
+1081
+00:44:49,020 --> 00:44:51,690
+its status and then the last LSN that
+
+1082
+00:44:51,690 --> 00:44:53,550
+was created by this transaction so the
+
+1083
+00:44:53,550 --> 00:44:55,800
+status is either what it's running its
+
+1084
+00:44:55,800 --> 00:44:57,630
+commits committing right so it's
+
+1085
+00:44:57,630 --> 00:44:58,860
+committed but before we get to
+
+1086
+00:44:58,860 --> 00:45:01,650
+transaction end or it's something that
+
+1087
+00:45:01,650 --> 00:45:04,740
+we think we have to undo it may have to
+
+1088
+00:45:04,740 --> 00:45:06,630
+undo we don't know yet right because we
+
+1089
+00:45:06,630 --> 00:45:09,060
+it's because it's we don't know what
+
+1090
+00:45:09,060 --> 00:45:11,340
+what its final outcome is gonna be and
+
+1091
+00:45:11,340 --> 00:45:12,900
+again when we see a transaction and
+
+1092
+00:45:12,900 --> 00:45:14,910
+message we can we could we can remove
+
+1093
+00:45:14,910 --> 00:45:16,800
+this from the ATT because we know we're
+
+1094
+00:45:16,800 --> 00:45:18,960
+never going to ever see it again so
+
+1095
+00:45:18,960 --> 00:45:20,340
+that's why there's no like completed or
+
+1096
+00:45:20,340 --> 00:45:23,940
+finished here so this would this be
+
+1097
+00:45:23,940 --> 00:45:25,380
+hanging out internal memory we can
+
+1098
+00:45:25,380 --> 00:45:27,210
+populate this while while we take the
+
+1099
+00:45:27,210 --> 00:45:28,950
+check point but then it's included in
+
+1100
+00:45:28,950 --> 00:45:30,450
+the the checkpoint and message which
+
+1101
+00:45:30,450 --> 00:45:33,660
+we'll see in a second then the dirty PA
+
+1102
+00:45:33,660 --> 00:45:35,190
+was just keeping track of all the pages
+
+1103
+00:45:35,190 --> 00:45:37,560
+that are in the buffer pool pages that
+
+1104
+00:45:37,560 --> 00:45:38,670
+have been dirtied in the buffer pool
+
+1105
+00:45:38,670 --> 00:45:40,500
+that were modified by uncommitted
+
+1106
+00:45:40,500 --> 00:45:42,300
+transactions and for this one we're just
+
+1107
+00:45:42,300 --> 00:45:44,490
+going to record the wreck LSN which is
+
+1108
+00:45:44,490 --> 00:45:47,760
+the the log record of the the first
+
+1109
+00:45:47,760 --> 00:45:49,320
+transaction that modified this page that
+
+1110
+00:45:49,320 --> 00:45:51,060
+made it dirty since it was brought into
+
+1111
+00:45:51,060 --> 00:45:55,020
+memory so let's see a slightly better
+
+1112
+00:45:55,020 --> 00:45:56,880
+version of checkpoints that's using
+
+1113
+00:45:56,880 --> 00:46:00,060
+using this information so we see now in
+
+1114
+00:46:00,060 --> 00:46:01,019
+our checkpoint entry
+
+1115
+00:46:01,019 --> 00:46:03,029
+we and our log record we're gonna have
+
+1116
+00:46:03,029 --> 00:46:05,189
+the ATT and at this point here we only
+
+1117
+00:46:05,189 --> 00:46:07,380
+have one transaction running t2 so
+
+1118
+00:46:07,380 --> 00:46:08,880
+that's the only thing we have inside
+
+1119
+00:46:08,880 --> 00:46:11,459
+there and then we have the dirty page
+
+1120
+00:46:11,459 --> 00:46:14,939
+table and we have P 11 P 23 right
+
+1121
+00:46:14,939 --> 00:46:17,509
+because there's P 11 was modified here
+
+1122
+00:46:17,509 --> 00:46:21,839
+so I peek P 11 P 22 pp11 was modified
+
+1123
+00:46:21,839 --> 00:46:23,909
+here and P 22 was modified here so the
+
+1124
+00:46:23,909 --> 00:46:25,649
+syntax I'm showing now is like here's
+
+1125
+00:46:25,649 --> 00:46:26,999
+the object that was modified and it's
+
+1126
+00:46:26,999 --> 00:46:28,319
+pointing to what what the page number
+
+1127
+00:46:28,319 --> 00:46:32,789
+was right so in this case here we don't
+
+1128
+00:46:32,789 --> 00:46:34,319
+record anything about transaction t1
+
+1129
+00:46:34,319 --> 00:46:37,349
+because transaction t1 committed before
+
+1130
+00:46:37,349 --> 00:46:39,239
+my check point started so I don't care
+
+1131
+00:46:39,239 --> 00:46:43,949
+about it at this point anymore so then
+
+1132
+00:46:43,949 --> 00:46:46,049
+now in the second checkpoint t3 is still
+
+1133
+00:46:46,049 --> 00:46:49,019
+active and then we have to two dirty
+
+1134
+00:46:49,019 --> 00:46:51,179
+pages here because t2 committed before
+
+1135
+00:46:51,179 --> 00:46:57,599
+our transaction started right so this is
+
+1136
+00:46:57,599 --> 00:46:58,799
+still not ideal because we're still
+
+1137
+00:46:58,799 --> 00:47:00,179
+stalling all our transactions in order
+
+1138
+00:47:00,179 --> 00:47:03,630
+to take this right so we're pausing
+
+1139
+00:47:03,630 --> 00:47:06,689
+everything at this point here these guys
+
+1140
+00:47:06,689 --> 00:47:08,909
+are not allowed to modify it and so this
+
+1141
+00:47:08,909 --> 00:47:10,859
+is just saying we wrote out a check
+
+1142
+00:47:10,859 --> 00:47:13,019
+point but oh by the way here's some
+
+1143
+00:47:13,019 --> 00:47:15,209
+stuff that that that could have been
+
+1144
+00:47:15,209 --> 00:47:18,269
+modified during this time to make sure
+
+1145
+00:47:18,269 --> 00:47:21,239
+that you find it so so like the first
+
+1146
+00:47:21,239 --> 00:47:23,849
+one the first check point a scheme I
+
+1147
+00:47:23,849 --> 00:47:26,309
+showed you nobody actually does this one
+
+1148
+00:47:26,309 --> 00:47:28,039
+either
+
+1149
+00:47:28,039 --> 00:47:30,989
+everyone instead does fuzzy checkpoints
+
+1150
+00:47:30,989 --> 00:47:33,089
+systems that support high performance
+
+1151
+00:47:33,089 --> 00:47:34,549
+checkpoints are doing fuzzy checkpoints
+
+1152
+00:47:34,549 --> 00:47:37,739
+so fuzzy checkpoint is just where we're
+
+1153
+00:47:37,739 --> 00:47:39,179
+gonna allow transactions to keep on
+
+1154
+00:47:39,179 --> 00:47:42,649
+running keep on modifying the database
+
+1155
+00:47:42,649 --> 00:47:45,659
+while we're taking the checkpoint and so
+
+1156
+00:47:45,659 --> 00:47:47,659
+in order to record the boundaries of
+
+1157
+00:47:47,659 --> 00:47:49,469
+when the checkpoint started when the
+
+1158
+00:47:49,469 --> 00:47:50,759
+checkpoint finishes to know whether
+
+1159
+00:47:50,759 --> 00:47:51,779
+something could have a written out that
+
+1160
+00:47:51,779 --> 00:47:54,719
+we missed we add a holistic checkpoint
+
+1161
+00:47:54,719 --> 00:47:56,880
+begin and checkpoint n log message
+
+1162
+00:47:56,880 --> 00:47:58,380
+so the begin is just telling us when the
+
+1163
+00:47:58,380 --> 00:48:00,149
+checkpoint started and the end tells us
+
+1164
+00:48:00,149 --> 00:48:01,499
+when it finishes and this will include
+
+1165
+00:48:01,499 --> 00:48:05,909
+the ATT and DBT that that that occurred
+
+1166
+00:48:05,909 --> 00:48:07,409
+during during the execution of the
+
+1167
+00:48:07,409 --> 00:48:11,909
+checkpoint so to go back here now so now
+
+1168
+00:48:11,909 --> 00:48:14,210
+we have our checkpoint begin
+
+1169
+00:48:14,210 --> 00:48:15,980
+Check Point does this thing search for
+
+1170
+00:48:15,980 --> 00:48:17,240
+any things out and then in the
+
+1171
+00:48:17,240 --> 00:48:20,210
+checkpoint end we include that we have
+
+1172
+00:48:20,210 --> 00:48:22,130
+transaction t2 because t2 started before
+
+1173
+00:48:22,130 --> 00:48:24,050
+the checkpoint started and then the
+
+1174
+00:48:24,050 --> 00:48:27,110
+dirty page table tells us that D 11 was
+
+1175
+00:48:27,110 --> 00:48:29,060
+modified during during the checkpoint as
+
+1176
+00:48:29,060 --> 00:48:31,160
+well right we don't need to include t3
+
+1177
+00:48:31,160 --> 00:48:33,140
+here because the t3 started before our
+
+1178
+00:48:33,140 --> 00:48:35,590
+checkpoint started
+
+1179
+00:48:35,590 --> 00:48:38,170
+sorry started after I check my started
+
+1180
+00:48:38,170 --> 00:48:43,910
+so the once we have the checkpoint and
+
+1181
+00:48:43,910 --> 00:48:46,520
+written out to disk successfully and we
+
+1182
+00:48:46,520 --> 00:48:48,200
+can which means we flushed all the pages
+
+1183
+00:48:48,200 --> 00:48:50,360
+out that we wanted to take you in the
+
+1184
+00:48:50,360 --> 00:48:52,310
+checkpoint then we go ahead and update
+
+1185
+00:48:52,310 --> 00:48:56,030
+our master record to now include the the
+
+1186
+00:48:56,030 --> 00:48:57,920
+point to the checkpoint begin because
+
+1187
+00:48:57,920 --> 00:48:59,150
+that's going to be our anchor point
+
+1188
+00:48:59,150 --> 00:49:00,500
+where we start our analysis during
+
+1189
+00:49:00,500 --> 00:49:03,650
+recovering because we're going to know
+
+1190
+00:49:03,650 --> 00:49:06,740
+at this point here right here's all we
+
+1191
+00:49:06,740 --> 00:49:08,690
+flushed all the dirty pages but we kept
+
+1192
+00:49:08,690 --> 00:49:10,190
+track of maybe ones that we may have
+
+1193
+00:49:10,190 --> 00:49:12,370
+missed because because they got modified
+
+1194
+00:49:12,370 --> 00:49:17,750
+yes what do you keep the checkpoint what
+
+1195
+00:49:17,750 --> 00:49:23,380
+sorry what do mean where did he keep it
+
+1196
+00:49:31,120 --> 00:49:33,170
+when you say when you mean like the
+
+1197
+00:49:33,170 --> 00:49:35,840
+wrong record it goes in the log but win
+
+1198
+00:49:35,840 --> 00:49:40,400
+it and when it ends you shove it in went
+
+1199
+00:49:40,400 --> 00:49:41,960
+and when you when you have scanned
+
+1200
+00:49:41,960 --> 00:49:43,220
+through the buffer pool and written out
+
+1201
+00:49:43,220 --> 00:49:46,070
+all the dirty pages to disk and after
+
+1202
+00:49:46,070 --> 00:49:46,850
+you flush them out
+
+1203
+00:49:46,850 --> 00:49:48,320
+you f sink right because you make sure
+
+1204
+00:49:48,320 --> 00:49:51,290
+it's durable then you add the log entry
+
+1205
+00:49:51,290 --> 00:49:53,420
+here and it's committing I'm using
+
+1206
+00:49:53,420 --> 00:49:54,500
+committing that quotes because like a
+
+1207
+00:49:54,500 --> 00:49:56,150
+regular transaction I flushed the log
+
+1208
+00:49:56,150 --> 00:50:13,370
+record for this to disk yes this
+
+1209
+00:50:13,370 --> 00:50:16,460
+question is am i holding any locks on
+
+1210
+00:50:16,460 --> 00:50:17,750
+the entire database why I write this
+
+1211
+00:50:17,750 --> 00:50:21,130
+thing out now
+
+1212
+00:50:26,070 --> 00:50:27,540
+putting me in here
+
+1213
+00:50:27,540 --> 00:50:29,490
+like while you are writing a duty a
+
+1214
+00:50:29,490 --> 00:50:35,550
+deputy to the law yes we are not writing
+
+1215
+00:50:35,550 --> 00:50:37,560
+them to the log right now that's why it
+
+1216
+00:50:37,560 --> 00:50:44,160
+does not matter like those rights or
+
+1217
+00:50:44,160 --> 00:50:52,530
+they can by your writing attn DVD then
+
+1218
+00:50:52,530 --> 00:50:55,020
+it will be long right because you wrote
+
+1219
+00:50:55,020 --> 00:51:00,240
+like transaction t2 is earning and yes I
+
+1220
+00:51:00,240 --> 00:51:01,770
+think I think what is saying there is a
+
+1221
+00:51:01,770 --> 00:51:03,870
+sort of stop the world moment here where
+
+1222
+00:51:03,870 --> 00:51:05,910
+you briefly flush this thing out but
+
+1223
+00:51:05,910 --> 00:51:07,980
+that's not that's a blip it's a minor
+
+1224
+00:51:07,980 --> 00:51:15,480
+thing correct yes they can change
+
+1225
+00:51:15,480 --> 00:51:16,620
+whatever else they want to change yeah
+
+1226
+00:51:16,620 --> 00:51:22,910
+in the regular buffer pages yes okay so
+
+1227
+00:51:22,910 --> 00:51:27,240
+now let's do recovering after all that
+
+1228
+00:51:27,240 --> 00:51:30,600
+after 40 minutes of minutiae of log
+
+1229
+00:51:30,600 --> 00:51:31,650
+scene with some murders and fuzzy
+
+1230
+00:51:31,650 --> 00:51:33,150
+checkpointing let's talk about actually
+
+1231
+00:51:33,150 --> 00:51:35,250
+recover this and then and given that
+
+1232
+00:51:35,250 --> 00:51:36,720
+everything we've set up now that we have
+
+1233
+00:51:36,720 --> 00:51:38,670
+all this extra metadata that we're
+
+1234
+00:51:38,670 --> 00:51:39,240
+recording
+
+1235
+00:51:39,240 --> 00:51:40,710
+recovery actually is not going to be
+
+1236
+00:51:40,710 --> 00:51:43,050
+that bad but the tricky part is just
+
+1237
+00:51:43,050 --> 00:51:44,580
+figuring out where you start each of
+
+1238
+00:51:44,580 --> 00:51:47,520
+these phases in the log so the analysis
+
+1239
+00:51:47,520 --> 00:51:49,050
+phase you're gonna look at your master
+
+1240
+00:51:49,050 --> 00:51:50,880
+record for the database on disk and
+
+1241
+00:51:50,880 --> 00:51:52,770
+that's gonna give you the location of
+
+1242
+00:51:52,770 --> 00:51:54,600
+where the last checkpoint began in the
+
+1243
+00:51:54,600 --> 00:51:57,780
+log so you jump to that location and you
+
+1244
+00:51:57,780 --> 00:52:00,060
+scam forward to time to time through
+
+1245
+00:52:00,060 --> 00:52:02,970
+time till you reach the end of the log
+
+1246
+00:52:02,970 --> 00:52:04,890
+and then you're just going to populate
+
+1247
+00:52:04,890 --> 00:52:08,670
+the DP te na TTE to keep track of what
+
+1248
+00:52:08,670 --> 00:52:10,800
+think what was going on in the system at
+
+1249
+00:52:10,800 --> 00:52:14,010
+the moment of the crash and then that's
+
+1250
+00:52:14,010 --> 00:52:15,300
+gonna figure out your news that to
+
+1251
+00:52:15,300 --> 00:52:16,560
+figure out what transactions you need to
+
+1252
+00:52:16,560 --> 00:52:16,950
+abort
+
+1253
+00:52:16,950 --> 00:52:17,940
+which one's actions you need to make
+
+1254
+00:52:17,940 --> 00:52:20,940
+sure that you commit then in the redo
+
+1255
+00:52:20,940 --> 00:52:23,760
+phase you're gonna jump to some
+
+1256
+00:52:23,760 --> 00:52:27,800
+appropriate location in the log where
+
+1257
+00:52:27,800 --> 00:52:30,120
+you know there's could be potential
+
+1258
+00:52:30,120 --> 00:52:31,560
+changes from transactions that did not
+
+1259
+00:52:31,560 --> 00:52:34,170
+make it safely to disk and you can start
+
+1260
+00:52:34,170 --> 00:52:36,150
+reapplying those changes until you get
+
+1261
+00:52:36,150 --> 00:52:36,960
+to the end of the law
+
+1262
+00:52:36,960 --> 00:52:39,930
+and you're gonna do this for any every
+
+1263
+00:52:39,930 --> 00:52:41,640
+transaction you see even ones that are
+
+1264
+00:52:41,640 --> 00:52:43,950
+you know rent about boarding because on
+
+1265
+00:52:43,950 --> 00:52:45,540
+the analysis phase you see everything
+
+1266
+00:52:45,540 --> 00:52:47,880
+you know to the first pass so you know
+
+1267
+00:52:47,880 --> 00:52:49,050
+what's gonna commit what's gonna abort
+
+1268
+00:52:49,050 --> 00:52:51,390
+so then in the redo phase just for
+
+1269
+00:52:51,390 --> 00:52:53,040
+safety reasons we're just gonna do you
+
+1270
+00:52:53,040 --> 00:52:56,339
+know reapply everything then then the
+
+1271
+00:52:56,339 --> 00:52:57,780
+undo phase now you're gonna go back in
+
+1272
+00:52:57,780 --> 00:52:59,670
+reverse order from the end from the
+
+1273
+00:52:59,670 --> 00:53:02,369
+beginning then the log up until some
+
+1274
+00:53:02,369 --> 00:53:05,670
+point to reverse any changes from
+
+1275
+00:53:05,670 --> 00:53:07,589
+transactions that did not come that you
+
+1276
+00:53:07,589 --> 00:53:10,859
+know did not commit and when the undo
+
+1277
+00:53:10,859 --> 00:53:13,530
+phase is done then the database is now
+
+1278
+00:53:13,530 --> 00:53:15,960
+in a state that existed existed state
+
+1279
+00:53:15,960 --> 00:53:18,059
+that existed at the moment of the crash
+
+1280
+00:53:18,059 --> 00:53:20,730
+with no partial updates from from
+
+1281
+00:53:20,730 --> 00:53:23,460
+abortive transactions and all changes
+
+1282
+00:53:23,460 --> 00:53:25,290
+from committed transactions have been
+
+1283
+00:53:25,290 --> 00:53:31,500
+applied to disk in the back yes next
+
+1284
+00:53:31,500 --> 00:53:32,960
+slide yeah okay
+
+1285
+00:53:32,960 --> 00:53:37,020
+so again three pages analysis redo and
+
+1286
+00:53:37,020 --> 00:53:38,940
+undo so the very beginning we look at
+
+1287
+00:53:38,940 --> 00:53:40,950
+the begin the figure out where the begin
+
+1288
+00:53:40,950 --> 00:53:42,660
+checkpoint is in the master record and
+
+1289
+00:53:42,660 --> 00:53:44,309
+that's where we're gonna begin our
+
+1290
+00:53:44,309 --> 00:53:46,740
+analysis right so let's say that this
+
+1291
+00:53:46,740 --> 00:53:48,299
+log record here is the start in the last
+
+1292
+00:53:48,299 --> 00:53:50,040
+checkpoint because again that's in our
+
+1293
+00:53:50,040 --> 00:53:51,150
+master a long record we know where that
+
+1294
+00:53:51,150 --> 00:53:54,030
+where that is and then now we're to scan
+
+1295
+00:53:54,030 --> 00:53:55,680
+forward through time and look at these
+
+1296
+00:53:55,680 --> 00:53:57,869
+log records and build out our ATT e and
+
+1297
+00:53:57,869 --> 00:54:01,020
+d PT and then now we got to figure out
+
+1298
+00:54:01,020 --> 00:54:04,349
+well what for the redo phase what is the
+
+1299
+00:54:04,349 --> 00:54:06,510
+smallest req Ellison in the dirty page
+
+1300
+00:54:06,510 --> 00:54:08,369
+table that we found after do our
+
+1301
+00:54:08,369 --> 00:54:11,250
+analysis right so this is telling us
+
+1302
+00:54:11,250 --> 00:54:13,559
+this is the location of the first log
+
+1303
+00:54:13,559 --> 00:54:15,690
+record the oldest log record that
+
+1304
+00:54:15,690 --> 00:54:18,900
+modified a page that may have not been
+
+1305
+00:54:18,900 --> 00:54:22,049
+written a disk so when we redo we jumped
+
+1306
+00:54:22,049 --> 00:54:24,059
+at this point and reapply all our
+
+1307
+00:54:24,059 --> 00:54:28,319
+changes and then now in the undo phase
+
+1308
+00:54:28,319 --> 00:54:31,020
+we start at the the end point and go
+
+1309
+00:54:31,020 --> 00:54:34,200
+back in time up until some point where
+
+1310
+00:54:34,200 --> 00:54:36,510
+we know that this is the oldest
+
+1311
+00:54:36,510 --> 00:54:37,890
+transaction that got a border that was
+
+1312
+00:54:37,890 --> 00:54:39,990
+actively running while we took you know
+
+1313
+00:54:39,990 --> 00:54:42,329
+took our checkpoint and we reverse all
+
+1314
+00:54:42,329 --> 00:54:44,549
+those changes so the errors are sort of
+
+1315
+00:54:44,549 --> 00:54:45,990
+showing you the boundaries of how far
+
+1316
+00:54:45,990 --> 00:54:48,960
+you get to go back in time in the log
+
+1317
+00:54:48,960 --> 00:54:51,329
+so you know I'll go through the issues
+
+1318
+00:54:51,329 --> 00:54:54,210
+more precisely in context Ellis ends one
+
+1319
+00:54:54,210 --> 00:54:56,010
+by one but is this clear at a high level
+
+1320
+00:54:56,010 --> 00:54:58,680
+what we're doing analysis goes for in a
+
+1321
+00:54:58,680 --> 00:55:01,829
+time redo goes forward a time and then
+
+1322
+00:55:01,829 --> 00:55:05,790
+undo goes backwards in time and for undo
+
+1323
+00:55:05,790 --> 00:55:08,520
+I may not be undoing every single log
+
+1324
+00:55:08,520 --> 00:55:10,740
+record I see here right it's just for
+
+1325
+00:55:10,740 --> 00:55:12,359
+just for the transactions that identify
+
+1326
+00:55:12,359 --> 00:55:15,000
+in my ATT after the analysis that should
+
+1327
+00:55:15,000 --> 00:55:20,970
+not have committed okay so this sort of
+
+1328
+00:55:20,970 --> 00:55:24,210
+summarizes are more concretely what I
+
+1329
+00:55:24,210 --> 00:55:26,069
+just said so analysis phase we're gonna
+
+1330
+00:55:26,069 --> 00:55:27,270
+scan the log forward from the last
+
+1331
+00:55:27,270 --> 00:55:29,609
+successful checkpoint anytime you find a
+
+1332
+00:55:29,609 --> 00:55:31,650
+transaction and record during an
+
+1333
+00:55:31,650 --> 00:55:33,619
+analysis we can remove it from my ATT
+
+1334
+00:55:33,619 --> 00:55:36,839
+right otherwise for any other record if
+
+1335
+00:55:36,839 --> 00:55:37,829
+it's first time I've ever seen this
+
+1336
+00:55:37,829 --> 00:55:39,420
+transaction we add it to the ATT with
+
+1337
+00:55:39,420 --> 00:55:42,720
+the status of undo because we don't know
+
+1338
+00:55:42,720 --> 00:55:44,670
+because we're going forward in time we
+
+1339
+00:55:44,670 --> 00:55:45,990
+don't know whether it's gonna abort
+
+1340
+00:55:45,990 --> 00:55:49,410
+later on if we see a commit record then
+
+1341
+00:55:49,410 --> 00:55:51,150
+we just change its status to commit like
+
+1342
+00:55:51,150 --> 00:55:52,710
+I said one is sinless and we can remove
+
+1343
+00:55:52,710 --> 00:55:55,650
+it and then for any update record we're
+
+1344
+00:55:55,650 --> 00:55:57,180
+gonna look to see whether the page that
+
+1345
+00:55:57,180 --> 00:55:58,500
+that's in the update record that's being
+
+1346
+00:55:58,500 --> 00:56:02,190
+modified is in our DBT if not then we go
+
+1347
+00:56:02,190 --> 00:56:04,079
+ahead and add it and we set the reckless
+
+1348
+00:56:04,079 --> 00:56:07,500
+end to be our Ellison because this is
+
+1349
+00:56:07,500 --> 00:56:08,790
+this again this is telling us this is
+
+1350
+00:56:08,790 --> 00:56:12,089
+the log record that first made this page
+
+1351
+00:56:12,089 --> 00:56:16,319
+dirty when it was brought into memory so
+
+1352
+00:56:16,319 --> 00:56:18,660
+now at the end of the analysis phase the
+
+1353
+00:56:18,660 --> 00:56:20,700
+ATT is gonna tell us what are all the
+
+1354
+00:56:20,700 --> 00:56:21,869
+actor transactions that we had running
+
+1355
+00:56:21,869 --> 00:56:23,160
+in the system at the moment of the crash
+
+1356
+00:56:23,160 --> 00:56:26,430
+and the DP T's are gonna tell us what
+
+1357
+00:56:26,430 --> 00:56:28,829
+are the dirty pages that could have been
+
+1358
+00:56:28,829 --> 00:56:30,210
+in our buffer pool that may have not
+
+1359
+00:56:30,210 --> 00:56:33,359
+been written a disk and we're doing this
+
+1360
+00:56:33,359 --> 00:56:34,619
+we have to we have to build this this
+
+1361
+00:56:34,619 --> 00:56:36,329
+table because again we're not logging
+
+1362
+00:56:36,329 --> 00:56:38,280
+out every time we do a buffer pool flush
+
+1363
+00:56:38,280 --> 00:56:40,950
+to a page on the disk we're not
+
+1364
+00:56:40,950 --> 00:56:44,069
+recording that in the log or the log
+
+1365
+00:56:44,069 --> 00:56:45,390
+records or not that tell us you know
+
+1366
+00:56:45,390 --> 00:56:46,619
+potential will get modified and we're
+
+1367
+00:56:46,619 --> 00:56:53,099
+trying to reconstruct it yes this
+
+1368
+00:56:53,099 --> 00:56:54,000
+question is how do I know for sure
+
+1369
+00:56:54,000 --> 00:56:55,799
+whether pages be written to disk like in
+
+1370
+00:56:55,799 --> 00:56:59,369
+the log or in the real world like on
+
+1371
+00:56:59,369 --> 00:57:02,299
+hardware or analog
+
+1372
+00:57:02,860 --> 00:57:06,530
+you can't because I there's no
+
+1373
+00:57:06,530 --> 00:57:07,850
+information that tells me that it's been
+
+1374
+00:57:07,850 --> 00:57:12,650
+written it's not entirely true when we
+
+1375
+00:57:12,650 --> 00:57:14,360
+see redo we'll seasons in a second but
+
+1376
+00:57:14,360 --> 00:57:16,340
+in general look if you know the LSN of a
+
+1377
+00:57:16,340 --> 00:57:20,750
+wall record you're looking at is less
+
+1378
+00:57:20,750 --> 00:57:24,020
+than the reckless end of the log of the
+
+1379
+00:57:24,020 --> 00:57:26,780
+page as exists on disk then you know
+
+1380
+00:57:26,780 --> 00:57:29,690
+that that your change got written out
+
+1381
+00:57:29,690 --> 00:57:32,120
+the disk but to the page the page got
+
+1382
+00:57:32,120 --> 00:57:33,590
+read not the disk then it got dirty
+
+1383
+00:57:33,590 --> 00:57:35,300
+again by another one but your thing got
+
+1384
+00:57:35,300 --> 00:57:39,890
+written out before then all right so
+
+1385
+00:57:39,890 --> 00:57:43,460
+quick overview of the analysis phase and
+
+1386
+00:57:43,460 --> 00:57:45,530
+so here I'm just showing you the with
+
+1387
+00:57:45,530 --> 00:57:47,360
+the ATT into DP t or gonna look like at
+
+1388
+00:57:47,360 --> 00:57:49,940
+these different for these different LS
+
+1389
+00:57:49,940 --> 00:57:52,370
+ends so begin our checkpoint we don't
+
+1390
+00:57:52,370 --> 00:57:54,380
+know anything so the ATT and GPT are
+
+1391
+00:57:54,380 --> 00:57:57,980
+empty then we do an update in bulk
+
+1392
+00:57:57,980 --> 00:58:00,350
+sequence 20 so for this one here we have
+
+1393
+00:58:00,350 --> 00:58:02,630
+transaction T 96 it's the first time
+
+1394
+00:58:02,630 --> 00:58:04,520
+we've ever seen it right because again
+
+1395
+00:58:04,520 --> 00:58:05,660
+we don't have a begin record here
+
+1396
+00:58:05,660 --> 00:58:07,250
+because it began before a checkpoint
+
+1397
+00:58:07,250 --> 00:58:13,510
+started so we see that and we update our
+
+1398
+00:58:13,510 --> 00:58:15,950
+ATT to say hey we ever turns out in here
+
+1399
+00:58:15,950 --> 00:58:18,200
+RT 96 and the status is a candidate for
+
+1400
+00:58:18,200 --> 00:58:19,400
+undo because we don't know whether it's
+
+1401
+00:58:19,400 --> 00:58:21,620
+going to commit or not and then we see
+
+1402
+00:58:21,620 --> 00:58:24,350
+that it modified page 33 so we add that
+
+1403
+00:58:24,350 --> 00:58:27,380
+to our dirty page table with there with
+
+1404
+00:58:27,380 --> 00:58:31,270
+the req Ellison of our log record here
+
+1405
+00:58:31,270 --> 00:58:34,340
+then now our transaction ends and now we
+
+1406
+00:58:34,340 --> 00:58:36,530
+get more information about the what's in
+
+1407
+00:58:36,530 --> 00:58:38,330
+the extras actual table on T V T so now
+
+1408
+00:58:38,330 --> 00:58:39,890
+we see that there was a t97
+
+1409
+00:58:39,890 --> 00:58:41,630
+that we didn't see in between our
+
+1410
+00:58:41,630 --> 00:58:43,700
+checkpoint so we know that there's some
+
+1411
+00:58:43,700 --> 00:58:46,090
+one transaction up above this checkpoint
+
+1412
+00:58:46,090 --> 00:58:50,240
+the checkpoint start point that did some
+
+1413
+00:58:50,240 --> 00:58:51,860
+stuff that we may need to go look at as
+
+1414
+00:58:51,860 --> 00:58:55,640
+well and then there's also a new a new
+
+1415
+00:58:55,640 --> 00:58:58,100
+page 20 that was also modified so you
+
+1416
+00:58:58,100 --> 00:58:59,930
+want to include that in our our DPT as
+
+1417
+00:58:59,930 --> 00:59:04,670
+well so now we see T 96 commits here so
+
+1418
+00:59:04,670 --> 00:59:08,080
+we flip its status to be committing and
+
+1419
+00:59:08,080 --> 00:59:10,220
+then when we see the transaction and
+
+1420
+00:59:10,220 --> 00:59:13,820
+message here then we know that we can we
+
+1421
+00:59:13,820 --> 00:59:15,010
+can remove it from ATT
+
+1422
+00:59:15,010 --> 00:59:17,960
+but now at the point of the crash you
+
+1423
+00:59:17,960 --> 00:59:19,790
+see that there is t97 still hanging out
+
+1424
+00:59:19,790 --> 00:59:22,130
+here with it with a new candidate status
+
+1425
+00:59:22,130 --> 00:59:24,650
+so we know that this transaction made
+
+1426
+00:59:24,650 --> 00:59:26,540
+some changes up above our checkpoint
+
+1427
+00:59:26,540 --> 00:59:29,060
+that we didn't see in our log that we
+
+1428
+00:59:29,060 --> 00:59:30,380
+need to go back and make sure we reverse
+
+1429
+00:59:30,380 --> 00:59:31,970
+because we don't know whether those
+
+1430
+00:59:31,970 --> 00:59:38,260
+pages got written out to just yet yes
+
+1431
+00:59:46,150 --> 00:59:48,800
+your question is is it possible for the
+
+1432
+00:59:48,800 --> 00:59:51,890
+after the analysis phase the ATT and EPT
+
+1433
+00:59:51,890 --> 00:59:53,390
+are empty so therefore you know that
+
+1434
+00:59:53,390 --> 00:59:55,910
+nothing there's nothing was dirty could
+
+1435
+00:59:55,910 --> 00:59:57,200
+you just say I'm good
+
+1436
+00:59:57,200 --> 01:00:00,710
+yes yeah and actually you would just
+
+1437
+01:00:00,710 --> 01:00:01,790
+sort of see that because it would be
+
+1438
+01:00:01,790 --> 01:00:05,360
+nothing yeah if it's empty then you know
+
+1439
+01:00:05,360 --> 01:00:06,320
+there's nothing everything it made it
+
+1440
+01:00:06,320 --> 01:00:20,300
+out yes your question is if during the
+
+1441
+01:00:20,300 --> 01:00:23,720
+in between the checkpoint is do I am I
+
+1442
+01:00:23,720 --> 01:00:25,100
+not a lot of right out dirty pages out
+
+1443
+01:00:25,100 --> 01:00:34,430
+to disk the boobies at the desk yes I
+
+1444
+01:00:34,430 --> 01:00:36,530
+don't I think yes but I actually don't
+
+1445
+01:00:36,530 --> 01:00:38,900
+know the answer that I think yes because
+
+1446
+01:00:38,900 --> 01:00:41,210
+like why wouldn't why would the the
+
+1447
+01:00:41,210 --> 01:00:42,170
+bomber pool manager ever need to write
+
+1448
+01:00:42,170 --> 01:00:43,580
+out dirty pages well I need to Vic some
+
+1449
+01:00:43,580 --> 01:00:45,050
+stuff to make space where the checkpoint
+
+1450
+01:00:45,050 --> 01:00:56,420
+essentially is just doing that yeah I I
+
+1451
+01:00:56,420 --> 01:00:58,790
+think the answer is yes but I should
+
+1452
+01:00:58,790 --> 01:00:59,320
+double-check that
+
+1453
+01:00:59,320 --> 01:01:01,370
+so his statement is that during the
+
+1454
+01:01:01,370 --> 01:01:03,050
+checkpoint the powerful manager is not
+
+1455
+01:01:03,050 --> 01:01:04,370
+all the rotten loud to write out dirty
+
+1456
+01:01:04,370 --> 01:01:10,100
+pages to disk because you may not
+
+1457
+01:01:10,100 --> 01:01:12,290
+missing the term hey feel like answer is
+
+1458
+01:01:12,290 --> 01:01:13,880
+yes but I actually don't know I mean you
+
+1459
+01:01:13,880 --> 01:01:18,770
+think about that all right so again
+
+1460
+01:01:18,770 --> 01:01:20,630
+after the analysis phase we have ATT and
+
+1461
+01:01:20,630 --> 01:01:22,040
+DBT that's telling us what's what what
+
+1462
+01:01:22,040 --> 01:01:24,440
+was going on at the time of the crash so
+
+1463
+01:01:24,440 --> 01:01:25,940
+now in the redo phase we want to repeat
+
+1464
+01:01:25,940 --> 01:01:28,450
+history so we're gonna
+
+1465
+01:01:28,450 --> 01:01:31,600
+apply all the changes from some point in
+
+1466
+01:01:31,600 --> 01:01:33,250
+the law where we know that there was a
+
+1467
+01:01:33,250 --> 01:01:35,290
+dirty page that was modified that was
+
+1468
+01:01:35,290 --> 01:01:37,210
+potentially not made about to disk so
+
+1469
+01:01:37,210 --> 01:01:38,800
+we're gonna reapply all these changes
+
+1470
+01:01:38,800 --> 01:01:40,600
+for even the even the aborted
+
+1471
+01:01:40,600 --> 01:01:43,180
+transactions and any CRR we see from an
+
+1472
+01:01:43,180 --> 01:01:44,680
+aborted transaction we're gonna redo
+
+1473
+01:01:44,680 --> 01:01:49,420
+them as well so this as I said before
+
+1474
+01:01:49,420 --> 01:01:51,670
+this is gonna seem very expensive
+
+1475
+01:01:51,670 --> 01:01:54,250
+because we're gonna be reapplying
+
+1476
+01:01:54,250 --> 01:01:56,530
+changes we may technically need may not
+
+1477
+01:01:56,530 --> 01:01:59,320
+need have to reapply you know for
+
+1478
+01:01:59,320 --> 01:02:00,700
+example for a transaction we know it's
+
+1479
+01:02:00,700 --> 01:02:04,000
+gonna board who cares about you know
+
+1480
+01:02:04,000 --> 01:02:06,850
+bringing a page in making doing update
+
+1481
+01:02:06,850 --> 01:02:08,530
+and then reversing in the CLRS
+
+1482
+01:02:08,530 --> 01:02:09,970
+and then you know if that was the only
+
+1483
+01:02:09,970 --> 01:02:11,590
+transaction that modified that page I
+
+1484
+01:02:11,590 --> 01:02:14,290
+could just skip that transaction so
+
+1485
+01:02:14,290 --> 01:02:15,430
+there are optimizations like that you
+
+1486
+01:02:15,430 --> 01:02:17,590
+can do but again we're just going to
+
+1487
+01:02:17,590 --> 01:02:18,550
+ignore that because you want to make
+
+1488
+01:02:18,550 --> 01:02:20,410
+sure that everything is is sort of clean
+
+1489
+01:02:20,410 --> 01:02:24,850
+and correct so as we do the read who
+
+1490
+01:02:24,850 --> 01:02:27,430
+pays then we start from the log record
+
+1491
+01:02:27,430 --> 01:02:29,290
+containing the smallest reckless and the
+
+1492
+01:02:29,290 --> 01:02:31,540
+DPT because again that's the that's the
+
+1493
+01:02:31,540 --> 01:02:33,940
+first log record that modified a page
+
+1494
+01:02:33,940 --> 01:02:35,980
+that dirtied it up that we may not have
+
+1495
+01:02:35,980 --> 01:02:38,260
+made it out to disk then as we scan
+
+1496
+01:02:38,260 --> 01:02:39,700
+through for every single ball record of
+
+1497
+01:02:39,700 --> 01:02:42,070
+CLR we look at all LSN and we're gonna
+
+1498
+01:02:42,070 --> 01:02:44,980
+redo the action unless the page is not
+
+1499
+01:02:44,980 --> 01:02:47,320
+in the dirty page table in which case we
+
+1500
+01:02:47,320 --> 01:02:51,040
+know that our our modifications are
+
+1501
+01:02:51,040 --> 01:02:52,780
+flushed out the discs at some prior
+
+1502
+01:02:52,780 --> 01:02:55,300
+point or if it is in our dirty page
+
+1503
+01:02:55,300 --> 01:02:57,250
+table but our records
+
+1504
+01:02:57,250 --> 01:03:01,660
+LSN is is less than the pages record
+
+1505
+01:03:01,660 --> 01:03:04,510
+lawson and that would mean that we made
+
+1506
+01:03:04,510 --> 01:03:06,520
+some change to the page then the page
+
+1507
+01:03:06,520 --> 01:03:08,440
+got written out the disc but then some
+
+1508
+01:03:08,440 --> 01:03:10,150
+other transaction made you know maybe
+
+1509
+01:03:10,150 --> 01:03:12,460
+that made it change of the same page and
+
+1510
+01:03:12,460 --> 01:03:14,260
+then that second change didn't get rid
+
+1511
+01:03:14,260 --> 01:03:16,570
+not the disc and so that's why again we
+
+1512
+01:03:16,570 --> 01:03:18,760
+if we record the reckless end write out
+
+1513
+01:03:18,760 --> 01:03:20,890
+the disc we can recognize what actually
+
+1514
+01:03:20,890 --> 01:03:22,930
+got you know what changes actually got
+
+1515
+01:03:22,930 --> 01:03:28,540
+modified so to undo an action we just
+
+1516
+01:03:28,540 --> 01:03:31,600
+reapply the the change and we set the
+
+1517
+01:03:31,600 --> 01:03:33,730
+page LSN to to the records love worker
+
+1518
+01:03:33,730 --> 01:03:35,080
+sells n it's just as we would normally
+
+1519
+01:03:35,080 --> 01:03:38,770
+do during regular execution of you know
+
+1520
+01:03:38,770 --> 01:03:41,590
+the transaction but
+
+1521
+01:03:41,590 --> 01:03:42,580
+during the normal operation we're not
+
+1522
+01:03:42,580 --> 01:03:44,470
+doing any additional logging we don't
+
+1523
+01:03:44,470 --> 01:03:45,820
+worry about flushing it and you anything
+
+1524
+01:03:45,820 --> 01:03:47,650
+extra right we can sort of do everything
+
+1525
+01:03:47,650 --> 01:03:50,470
+asynchronously so then when we get to
+
+1526
+01:03:50,470 --> 01:03:52,780
+the transaction end message we'll just
+
+1527
+01:03:52,780 --> 01:03:55,780
+go ahead and and remove it from the ATT
+
+1528
+01:03:55,780 --> 01:03:58,630
+and if we want to be super careful we
+
+1529
+01:03:58,630 --> 01:04:03,250
+could flush everything at that point so
+
+1530
+01:04:03,250 --> 01:04:05,590
+now the last phase is the undo so this
+
+1531
+01:04:05,590 --> 01:04:07,000
+is just undoing all the transactions
+
+1532
+01:04:07,000 --> 01:04:08,500
+that we saw at the ATT after the
+
+1533
+01:04:08,500 --> 01:04:10,570
+analysis phase that are hanging out with
+
+1534
+01:04:10,570 --> 01:04:14,320
+the the undo flag or undo Canada flag so
+
+1535
+01:04:14,320 --> 01:04:17,010
+we're gonna go back and reverse order in
+
+1536
+01:04:17,010 --> 01:04:19,330
+in we're going to reverse their changes
+
+1537
+01:04:19,330 --> 01:04:22,600
+in log sequence order see even though
+
+1538
+01:04:22,600 --> 01:04:26,260
+transaction t1 ran before tt her t1
+
+1539
+01:04:26,260 --> 01:04:28,840
+abortive and t3 aborted if we see the
+
+1540
+01:04:28,840 --> 01:04:31,210
+look the the log records 43 first well
+
+1541
+01:04:31,210 --> 01:04:33,670
+we will reverse them first before we get
+
+1542
+01:04:33,670 --> 01:04:38,440
+to t1 and every single time we reverse a
+
+1543
+01:04:38,440 --> 01:04:40,960
+change we're gonna add a CLR message
+
+1544
+01:04:40,960 --> 01:04:42,520
+this is the allows to recover database
+
+1545
+01:04:42,520 --> 01:04:44,680
+if we're crashed during recovery because
+
+1546
+01:04:44,680 --> 01:04:48,070
+we know what we actually reversed so
+
+1547
+01:04:48,070 --> 01:04:49,540
+this gives a lot of hand waving a lot of
+
+1548
+01:04:49,540 --> 01:04:51,040
+text look let's look walk through a
+
+1549
+01:04:51,040 --> 01:04:53,830
+simple example here so here we have now
+
+1550
+01:04:53,830 --> 01:04:56,200
+a right ahead log going forward in time
+
+1551
+01:04:56,200 --> 01:04:58,600
+and we see that we did a checkpoint and
+
+1552
+01:04:58,600 --> 01:05:01,090
+it finished and then we have t1 did a
+
+1553
+01:05:01,090 --> 01:05:04,360
+modification on page five t2 to
+
+1554
+01:05:04,360 --> 01:05:06,040
+modification page three but then t1
+
+1555
+01:05:06,040 --> 01:05:08,440
+aborts so during the normal execution
+
+1556
+01:05:08,440 --> 01:05:11,980
+what do we do to abort this we create
+
+1557
+01:05:11,980 --> 01:05:13,750
+the CLR that says we want to undo the
+
+1558
+01:05:13,750 --> 01:05:16,930
+change from this this one here and then
+
+1559
+01:05:16,930 --> 01:05:18,340
+once we know that that's been applied
+
+1560
+01:05:18,340 --> 01:05:20,890
+then we go ahead and add our transaction
+
+1561
+01:05:20,890 --> 01:05:22,630
+and message to say that this transaction
+
+1562
+01:05:22,630 --> 01:05:26,140
+is fully done so now I'm also not
+
+1563
+01:05:26,140 --> 01:05:27,280
+showing the previous Ellison but that
+
+1564
+01:05:27,280 --> 01:05:28,510
+you can think of that this is a linked
+
+1565
+01:05:28,510 --> 01:05:29,680
+list to tell you for a given transaction
+
+1566
+01:05:29,680 --> 01:05:32,500
+how to walk back through its updates and
+
+1567
+01:05:32,500 --> 01:05:35,140
+be able to reverse them so now let's say
+
+1568
+01:05:35,140 --> 01:05:37,990
+at here we do a bunch of changes for t3
+
+1569
+01:05:37,990 --> 01:05:43,330
+and t2 but then we crash so in the
+
+1570
+01:05:43,330 --> 01:05:45,520
+analysis phase we would come back and
+
+1571
+01:05:45,520 --> 01:05:48,700
+populate the ATT into DP team so this is
+
+1572
+01:05:48,700 --> 01:05:49,810
+I'm running out of space so this is a
+
+1573
+01:05:49,810 --> 01:05:51,910
+truncated version of a log so for
+
+1574
+01:05:51,910 --> 01:05:54,760
+example here I had 40 45 inches upper
+
+1575
+01:05:54,760 --> 01:05:55,390
+lines now
+
+1576
+01:05:55,390 --> 01:05:57,910
+14:45 on one line right and there's
+
+1577
+01:05:57,910 --> 01:05:59,769
+there is the CLR followed by the
+
+1578
+01:05:59,769 --> 01:06:03,130
+transaction and message so let me come
+
+1579
+01:06:03,130 --> 01:06:03,460
+back
+
+1580
+01:06:03,460 --> 01:06:05,079
+are you a TD tells us that we had two
+
+1581
+01:06:05,079 --> 01:06:07,960
+active transactions t2 and t3 and then
+
+1582
+01:06:07,960 --> 01:06:10,510
+we have the last LS ends that point to
+
+1583
+01:06:10,510 --> 01:06:14,140
+the last modification that they made so
+
+1584
+01:06:14,140 --> 01:06:15,190
+we're going to look at the transaction
+
+1585
+01:06:15,190 --> 01:06:21,390
+that has the be the greatest req Ellison
+
+1586
+01:06:21,390 --> 01:06:23,559
+to start doing on deuce so assuming
+
+1587
+01:06:23,559 --> 01:06:24,819
+we've already we've already done
+
+1588
+01:06:24,819 --> 01:06:27,430
+everything right and now we're going to
+
+1589
+01:06:27,430 --> 01:06:29,049
+undo this thing and we're to add new log
+
+1590
+01:06:29,049 --> 01:06:31,000
+entries to reverse these changes because
+
+1591
+01:06:31,000 --> 01:06:32,109
+these transactions aren't allowed to
+
+1592
+01:06:32,109 --> 01:06:34,599
+commit so we look at this and say t2 is
+
+1593
+01:06:34,599 --> 01:06:38,349
+last LSN it's 60 t3 s less LS n is 50 so
+
+1594
+01:06:38,349 --> 01:06:41,529
+we're going to we want to reverse the LS
+
+1595
+01:06:41,529 --> 01:06:44,769
+n 60 first so we go ahead and create the
+
+1596
+01:06:44,769 --> 01:06:48,160
+the CLR write this to reverse this
+
+1597
+01:06:48,160 --> 01:06:51,789
+change and then we add this undo next LS
+
+1598
+01:06:51,789 --> 01:06:54,039
+n the point to that the next LS and we
+
+1599
+01:06:54,039 --> 01:06:55,329
+would need to reverse for this for this
+
+1600
+01:06:55,329 --> 01:06:57,069
+transaction here right and again the
+
+1601
+01:06:57,069 --> 01:06:58,630
+thing is a logical pointer for
+
+1602
+01:06:58,630 --> 01:07:00,220
+convenience to tell us where we need to
+
+1603
+01:07:00,220 --> 01:07:05,049
+jump to next then maybe we add the CLR
+
+1604
+01:07:05,049 --> 01:07:08,410
+for for transaction t3 right and this is
+
+1605
+01:07:08,410 --> 01:07:09,640
+the last thing we actually need to undo
+
+1606
+01:07:09,640 --> 01:07:11,619
+for this transaction so therefore we can
+
+1607
+01:07:11,619 --> 01:07:13,000
+go ahead and create the transaction end
+
+1608
+01:07:13,000 --> 01:07:15,130
+message right away right and at that
+
+1609
+01:07:15,130 --> 01:07:17,559
+point we're going to flush all the dirty
+
+1610
+01:07:17,559 --> 01:07:19,569
+pages that this shows actually modified
+
+1611
+01:07:19,569 --> 01:07:22,240
+and the right have log to disk so at
+
+1612
+01:07:22,240 --> 01:07:24,190
+this point we know that we never need to
+
+1613
+01:07:24,190 --> 01:07:25,900
+recover or undo this transaction ever
+
+1614
+01:07:25,900 --> 01:07:28,299
+again to reverse anything because the
+
+1615
+01:07:28,299 --> 01:07:29,559
+log already contains everything you need
+
+1616
+01:07:29,559 --> 01:07:32,319
+you to reverse it so we'll redo it if we
+
+1617
+01:07:32,319 --> 01:07:34,509
+crash again but we want to undo it
+
+1618
+01:07:34,509 --> 01:07:38,019
+anything so now I say we crash here
+
+1619
+01:07:38,019 --> 01:07:39,880
+right we're doing recovery we're in the
+
+1620
+01:07:39,880 --> 01:07:43,210
+undo phase we crashed and restart all
+
+1621
+01:07:43,210 --> 01:07:44,650
+this gets blown away because this is
+
+1622
+01:07:44,650 --> 01:07:46,809
+just hanging out in memory so when we
+
+1623
+01:07:46,809 --> 01:07:49,779
+come back we and our ATT would say well
+
+1624
+01:07:49,779 --> 01:07:51,309
+we only have t2 sitting around at the
+
+1625
+01:07:51,309 --> 01:07:52,829
+end we make sure we need to reverse that
+
+1626
+01:07:52,829 --> 01:07:55,809
+so and the next thing we need to reverse
+
+1627
+01:07:55,809 --> 01:07:57,730
+the starting point for our reversal is
+
+1628
+01:07:57,730 --> 01:08:00,700
+here so for this we just we've already
+
+1629
+01:08:00,700 --> 01:08:02,140
+applied it during the undo phase so
+
+1630
+01:08:02,140 --> 01:08:03,250
+there's nothing to undo because you
+
+1631
+01:08:03,250 --> 01:08:06,309
+can't undo an undo you just redo them so
+
+1632
+01:08:06,309 --> 01:08:08,610
+you redo undos but you don't
+
+1633
+01:08:08,610 --> 01:08:11,670
+undo undo okay so the undo next tells us
+
+1634
+01:08:11,670 --> 01:08:12,900
+the next thing we need reverses up here
+
+1635
+01:08:12,900 --> 01:08:14,880
+at 20 so we add and you see all around
+
+1636
+01:08:14,880 --> 01:08:16,710
+for that then we have our transaction
+
+1637
+01:08:16,710 --> 01:08:17,729
+end message because it's the last thing
+
+1638
+01:08:17,729 --> 01:08:20,130
+we need to do we flush the log and then
+
+1639
+01:08:20,130 --> 01:08:22,319
+we're done at this point here after this
+
+1640
+01:08:22,319 --> 01:08:23,370
+has been flushed that your new pages
+
+1641
+01:08:23,370 --> 01:08:25,140
+been flush we know at the database is in
+
+1642
+01:08:25,140 --> 01:08:27,660
+a consistent state as it existed at the
+
+1643
+01:08:27,660 --> 01:08:29,760
+moment of the first crash with no
+
+1644
+01:08:29,760 --> 01:08:31,470
+partial effects from any aborted
+
+1645
+01:08:31,470 --> 01:08:38,310
+transactions yes this question is would
+
+1646
+01:08:38,310 --> 01:08:39,779
+it be worth doing a checkpoint at the
+
+1647
+01:08:39,779 --> 01:08:46,680
+redo phase that would so that would make
+
+1648
+01:08:46,680 --> 01:08:48,930
+it so you would do that if you assume
+
+1649
+01:08:48,930 --> 01:08:51,960
+you're gonna crash very soon in the near
+
+1650
+01:08:51,960 --> 01:08:54,390
+future again otherwise it's just
+
+1651
+01:08:54,390 --> 01:08:56,310
+excessive disk writes so nobody does
+
+1652
+01:08:56,310 --> 01:09:00,840
+that if it's if it's 1970s porto rico
+
+1653
+01:09:00,840 --> 01:09:04,790
+and you don't have power yes you do that
+
+1654
+01:09:13,640 --> 01:09:16,800
+the question is is it we required to do
+
+1655
+01:09:16,800 --> 01:09:18,390
+this flush here now that's an
+
+1656
+01:09:18,390 --> 01:09:21,229
+optimization become amid that yes yeah
+
+1657
+01:09:21,229 --> 01:09:26,250
+well next slide alright so i in this
+
+1658
+01:09:26,250 --> 01:09:27,479
+example here i showed what happens if
+
+1659
+01:09:27,479 --> 01:09:30,450
+you crash during undo if we crash during
+
+1660
+01:09:30,450 --> 01:09:33,560
+the analysis phase what do we have to do
+
+1661
+01:09:33,560 --> 01:09:37,050
+with that nothing right there's nothing
+
+1662
+01:09:37,050 --> 01:09:38,430
+to do because it's already of just
+
+1663
+01:09:38,430 --> 01:09:39,810
+breathing log we just come back and do
+
+1664
+01:09:39,810 --> 01:09:41,790
+it all over again if we crash during
+
+1665
+01:09:41,790 --> 01:09:49,109
+redo what do we have to do in the back
+
+1666
+01:09:49,109 --> 01:09:51,330
+nothing exactly yes right because you
+
+1667
+01:09:51,330 --> 01:09:53,220
+just come back again redo it all over
+
+1668
+01:09:53,220 --> 01:09:55,410
+again including the CLRS that you
+
+1669
+01:09:55,410 --> 01:09:57,120
+generated front from if you if you undo
+
+1670
+01:09:57,120 --> 01:10:00,420
+things previously so it's only on the
+
+1671
+01:10:00,420 --> 01:10:01,710
+undo phase where you potentially have to
+
+1672
+01:10:01,710 --> 01:10:03,720
+go figure out what was i undoing at this
+
+1673
+01:10:03,720 --> 01:10:09,300
+given time so related his question is is
+
+1674
+01:10:09,300 --> 01:10:13,530
+there a way to avoid all those extra
+
+1675
+01:10:13,530 --> 01:10:14,850
+disk flush every single time we have a
+
+1676
+01:10:14,850 --> 01:10:16,740
+transaction end right and it sort of
+
+1677
+01:10:16,740 --> 01:10:18,570
+related his question as well right you
+
+1678
+01:10:18,570 --> 01:10:19,620
+just assume that you're not going to
+
+1679
+01:10:19,620 --> 01:10:21,960
+crash during recovery and there
+
+1680
+01:10:21,960 --> 01:10:23,790
+or you're just gonna flush the changes
+
+1681
+01:10:23,790 --> 01:10:26,940
+from the in the in the look in the dirty
+
+1682
+01:10:26,940 --> 01:10:29,489
+pages use a a sacred maybe flush them
+
+1683
+01:10:29,489 --> 01:10:33,300
+out the disk when I think you finally
+
+1684
+01:10:33,300 --> 01:10:34,710
+say the data says online and ready to
+
+1685
+01:10:34,710 --> 01:10:37,340
+start processing new transactions I I
+
+1686
+01:10:37,340 --> 01:10:40,469
+think most systems would do take another
+
+1687
+01:10:40,469 --> 01:10:42,360
+checkpoint then but you don't have to
+
+1688
+01:10:42,360 --> 01:10:46,050
+correctness reasons you don't have to so
+
+1689
+01:10:46,050 --> 01:10:47,010
+how can we another way to produce
+
+1690
+01:10:47,010 --> 01:10:48,810
+improve performance during the undo
+
+1691
+01:10:48,810 --> 01:10:50,489
+phase well we've already talked about a
+
+1692
+01:10:50,489 --> 01:10:52,080
+couple of these we talked about you know
+
+1693
+01:10:52,080 --> 01:10:53,940
+figuring out that this transaction
+
+1694
+01:10:53,940 --> 01:10:55,260
+aborted it's the only thing that
+
+1695
+01:10:55,260 --> 01:10:56,850
+modified this page therefore I don't
+
+1696
+01:10:56,850 --> 01:10:59,570
+need to reverse any changes on that page
+
+1697
+01:10:59,570 --> 01:11:03,239
+another approach would be to actually
+
+1698
+01:11:03,239 --> 01:11:06,560
+lazily replot apply the the roll backs
+
+1699
+01:11:06,560 --> 01:11:11,400
+for transactions o at runtime so you do
+
+1700
+01:11:11,400 --> 01:11:14,130
+the you do the analysis you do the redo
+
+1701
+01:11:14,130 --> 01:11:16,020
+then you figure out what you need to
+
+1702
+01:11:16,020 --> 01:11:18,960
+undo for every single page but then
+
+1703
+01:11:18,960 --> 01:11:20,910
+rather than applying those changes you
+
+1704
+01:11:20,910 --> 01:11:22,230
+just sort of keep them around somewhere
+
+1705
+01:11:22,230 --> 01:11:25,590
+in memory and then anytime a new
+
+1706
+01:11:25,590 --> 01:11:27,030
+transaction comes along and it wants to
+
+1707
+01:11:27,030 --> 01:11:30,330
+read that page then you go ahead and ply
+
+1708
+01:11:30,330 --> 01:11:34,020
+the log so the idea here is like you
+
+1709
+01:11:34,020 --> 01:11:35,280
+must have like instant recovery that you
+
+1710
+01:11:35,280 --> 01:11:36,620
+say alright I'm back online
+
+1711
+01:11:36,620 --> 01:11:39,330
+even though my Davis is not in an
+
+1712
+01:11:39,330 --> 01:11:42,270
+incorrect State no transaction can read
+
+1713
+01:11:42,270 --> 01:11:44,010
+those pages that have not been rolled
+
+1714
+01:11:44,010 --> 01:11:46,440
+back yet correctly and only when you go
+
+1715
+01:11:46,440 --> 01:11:47,880
+ahead and read them then you actually
+
+1716
+01:11:47,880 --> 01:11:50,730
+apply them the idea there is like if you
+
+1717
+01:11:50,730 --> 01:11:53,940
+have a large database and the the undo
+
+1718
+01:11:53,940 --> 01:11:56,700
+the you'll for the undo phase you only
+
+1719
+01:11:56,700 --> 01:11:59,070
+modify a small portion of it rather than
+
+1720
+01:11:59,070 --> 01:12:00,780
+blocking access to the entire database
+
+1721
+01:12:00,780 --> 01:12:02,730
+why you undo this small number of pages
+
+1722
+01:12:02,730 --> 01:12:05,160
+you merely come back right away and let
+
+1723
+01:12:05,160 --> 01:12:06,450
+anybody read whatever they want it's
+
+1724
+01:12:06,450 --> 01:12:07,650
+just you block them when they try to
+
+1725
+01:12:07,650 --> 01:12:08,940
+read things you haven't rolled back yet
+
+1726
+01:12:08,940 --> 01:12:12,480
+I don't think anybody actually does this
+
+1727
+01:12:12,480 --> 01:12:15,090
+optimization and then the last one would
+
+1728
+01:12:15,090 --> 01:12:18,360
+be just the rewrite your application so
+
+1729
+01:12:18,360 --> 01:12:19,530
+you don't have long-running transactions
+
+1730
+01:12:19,530 --> 01:12:21,810
+as you minimize how far back on the log
+
+1731
+01:12:21,810 --> 01:12:23,280
+after the last check point you have to
+
+1732
+01:12:23,280 --> 01:12:25,590
+go and then replay that if you can cut
+
+1733
+01:12:25,590 --> 01:12:28,350
+that back down then the redo phase and
+
+1734
+01:12:28,350 --> 01:12:34,030
+undo pay is will much faster okay
+
+1735
+01:12:34,030 --> 01:12:36,230
+everyone everyone you know ready to kill
+
+1736
+01:12:36,230 --> 01:12:38,420
+me or fall asleep or what or go out and
+
+1737
+01:12:38,420 --> 01:12:42,980
+build your own database all right so the
+
+1738
+01:12:42,980 --> 01:12:44,600
+main idea is for areas we covered our
+
+1739
+01:12:44,600 --> 01:12:47,600
+against right ahead log using steel no
+
+1740
+01:12:47,600 --> 01:12:49,460
+force with fuzzy checkpoints which is
+
+1741
+01:12:49,460 --> 01:12:50,480
+essentially just taking a snapshot of
+
+1742
+01:12:50,480 --> 01:12:52,580
+all the dirty page IDs so we think we
+
+1743
+01:12:52,580 --> 01:12:54,950
+know which one's got modified and then
+
+1744
+01:12:54,950 --> 01:12:56,480
+we're gonna redo everything since the
+
+1745
+01:12:56,480 --> 01:12:58,700
+earliest paid dirty page we had in our
+
+1746
+01:12:58,700 --> 01:13:00,260
+right head log and then we undo the
+
+1747
+01:13:00,260 --> 01:13:01,850
+transactions that did not end up
+
+1748
+01:13:01,850 --> 01:13:03,410
+committing before before the right head
+
+1749
+01:13:03,410 --> 01:13:05,750
+log finished and then we add these CLR
+
+1750
+01:13:05,750 --> 01:13:07,910
+so make sure we record all the undo
+
+1751
+01:13:07,910 --> 01:13:09,950
+operations were doing for for updates to
+
+1752
+01:13:09,950 --> 01:13:11,870
+the database and the log sequence
+
+1753
+01:13:11,870 --> 01:13:12,710
+numbers are the way we're going to use
+
+1754
+01:13:12,710 --> 01:13:16,190
+to figure out whether the log record
+
+1755
+01:13:16,190 --> 01:13:17,900
+that modified a page has been
+
+1756
+01:13:17,900 --> 01:13:22,190
+successfully written to disk or not all
+
+1757
+01:13:22,190 --> 01:13:25,490
+right we have like three minutes let's
+
+1758
+01:13:25,490 --> 01:13:26,600
+just do a quick demo to show you that
+
+1759
+01:13:26,600 --> 01:13:29,300
+this actually does work so there's gonna
+
+1760
+01:13:29,300 --> 01:13:32,060
+be my sequel and we're gonna have one
+
+1761
+01:13:32,060 --> 01:13:43,460
+table let me turn this off too so sorry
+
+1762
+01:13:43,460 --> 01:13:50,680
+let's suck so we're gonna have one table
+
+1763
+01:13:50,680 --> 01:13:58,190
+that just has a single row that has ten
+
+1764
+01:13:58,190 --> 01:14:00,520
+columns
+
+1765
+01:14:03,800 --> 01:14:07,139
+right one two three four five six seven
+
+1766
+01:14:07,139 --> 01:14:08,699
+eight nine and then we're gonna have a
+
+1767
+01:14:08,699 --> 01:14:10,979
+simple Python program that is in a
+
+1768
+01:14:10,979 --> 01:14:13,429
+single transaction it's gonna take the
+
+1769
+01:14:13,429 --> 01:14:17,340
+first column and just slide it over to
+
+1770
+01:14:17,340 --> 01:14:20,280
+the next one and then you know it's
+
+1771
+01:14:20,280 --> 01:14:21,959
+gonna increment every column by one and
+
+1772
+01:14:21,959 --> 01:14:31,709
+so we're gonna let this run oh right and
+
+1773
+01:14:31,709 --> 01:14:32,579
+just to prove that it's actually working
+
+1774
+01:14:32,579 --> 01:14:34,439
+we go select again right we see it's
+
+1775
+01:14:34,439 --> 01:14:37,050
+incrementing one by one all right so our
+
+1776
+01:14:37,050 --> 01:14:38,519
+transact it's running in an infinite
+
+1777
+01:14:38,519 --> 01:14:40,679
+loop I mean down here we have the log
+
+1778
+01:14:40,679 --> 01:14:42,570
+message the log from my sequel to tell
+
+1779
+01:14:42,570 --> 01:14:44,669
+us that it is actually running so what
+
+1780
+01:14:44,669 --> 01:14:47,219
+we're gonna do is a hard kill on my
+
+1781
+01:14:47,219 --> 01:14:51,389
+sequel kill - nine all right that's
+
+1782
+01:14:51,389 --> 01:14:53,280
+going to kill everything and lo and
+
+1783
+01:14:53,280 --> 01:14:55,380
+behold you see that the log actually got
+
+1784
+01:14:55,380 --> 01:14:56,760
+tripped it says that we crash and then
+
+1785
+01:14:56,760 --> 01:14:58,530
+this is running Ubuntu it has a service
+
+1786
+01:14:58,530 --> 01:15:00,209
+that says if like my sequel crashes it
+
+1787
+01:15:00,209 --> 01:15:01,800
+automatically restarts it for you but
+
+1788
+01:15:01,800 --> 01:15:03,209
+you can see we got disconnected up here
+
+1789
+01:15:03,209 --> 01:15:04,530
+and then our Python code got
+
+1790
+01:15:04,530 --> 01:15:06,149
+disconnected here so this proves that
+
+1791
+01:15:06,149 --> 01:15:07,979
+when I did the kill - nine that like it
+
+1792
+01:15:07,979 --> 01:15:10,229
+killed everything so let's actually go
+
+1793
+01:15:10,229 --> 01:15:18,209
+look in the log and see what it says the
+
+1794
+01:15:18,209 --> 01:15:20,010
+details all this doesn't matter but Lona
+
+1795
+01:15:20,010 --> 01:15:24,599
+holed up in here says database was not
+
+1796
+01:15:24,599 --> 01:15:25,800
+shut down normally starting crash
+
+1797
+01:15:25,800 --> 01:15:27,300
+recovery start apply a batch old walk
+
+1798
+01:15:27,300 --> 01:15:29,550
+records in the data so this is just
+
+1799
+01:15:29,550 --> 01:15:32,130
+percentages so this is doing Aires this
+
+1800
+01:15:32,130 --> 01:15:33,360
+is saying like hey and they go look a
+
+1801
+01:15:33,360 --> 01:15:35,820
+log figure out what's running and go
+
+1802
+01:15:35,820 --> 01:15:37,889
+ahead and reply them so now when we go
+
+1803
+01:15:37,889 --> 01:15:40,709
+back and look inside of our database we
+
+1804
+01:15:40,709 --> 01:15:43,979
+connect it to prove that we don't have
+
+1805
+01:15:43,979 --> 01:15:45,389
+any torn up dates for our transactions
+
+1806
+01:15:45,389 --> 01:15:46,709
+we should be guaranteed that every
+
+1807
+01:15:46,709 --> 01:15:48,780
+column is one more greater than the
+
+1808
+01:15:48,780 --> 01:15:51,300
+previous column right and lo and behold
+
+1809
+01:15:51,300 --> 01:15:56,789
+in this case it is my sequel works okay
+
+1810
+01:15:56,789 --> 01:15:58,769
+I don't know what other way to show you
+
+1811
+01:15:58,769 --> 01:16:01,559
+a demo of the database crash other than
+
+1812
+01:16:01,559 --> 01:16:03,929
+that it's the best best I could come up
+
+1813
+01:16:03,929 --> 01:16:07,130
+with okay yes
+
+1814
+01:16:09,870 --> 01:16:11,950
+like what when I killed it why did they
+
+1815
+01:16:11,950 --> 01:16:13,900
+recover right away that's a Ubuntu thing
+
+1816
+01:16:13,900 --> 01:16:16,540
+it's your bunch of has a service it says
+
+1817
+01:16:16,540 --> 01:16:18,040
+this if this thing crashes it'll restart
+
+1818
+01:16:18,040 --> 01:16:20,260
+it yeah it's not special to my sequel
+
+1819
+01:16:20,260 --> 01:16:21,360
+it's the operating system doing that
+
+1820
+01:16:21,360 --> 01:16:29,320
+yeah okay all right so this point you
+
+1821
+01:16:29,320 --> 01:16:31,240
+can say you know you could quit CMU you
+
+1822
+01:16:31,240 --> 01:16:33,130
+have enough information in your brain to
+
+1823
+01:16:33,130 --> 01:16:35,440
+go out and fake build a reliable
+
+1824
+01:16:35,440 --> 01:16:36,910
+transactional database minute system
+
+1825
+01:16:36,910 --> 01:16:38,590
+because you knew recovering new
+
+1826
+01:16:38,590 --> 01:16:39,760
+transactions you knew query optimization
+
+1827
+01:16:39,760 --> 01:16:42,460
+you can do database storage right this
+
+1828
+01:16:42,460 --> 01:16:44,170
+is this is what I've at this point in
+
+1829
+01:16:44,170 --> 01:16:45,970
+the semester these are the core things
+
+1830
+01:16:45,970 --> 01:16:48,450
+you need to know of what a database does
+
+1831
+01:16:48,450 --> 01:16:51,850
+so starting next week on Monday now
+
+1832
+01:16:51,850 --> 01:16:53,200
+start talking my distributed databases
+
+1833
+01:16:53,200 --> 01:16:55,630
+all the same concepts that we talked
+
+1834
+01:16:55,630 --> 01:16:57,970
+about so far the semester still still
+
+1835
+01:16:57,970 --> 01:16:59,350
+have the same problems the same same
+
+1836
+01:16:59,350 --> 01:17:00,610
+issues that we think account for
+
+1837
+01:17:00,610 --> 01:17:02,500
+internship and database just now we have
+
+1838
+01:17:02,500 --> 01:17:03,610
+to account for the network which can be
+
+1839
+01:17:03,610 --> 01:17:07,090
+slightly more tricky ok so again at this
+
+1840
+01:17:07,090 --> 01:17:09,430
+point even though like say oh I won or
+
+1841
+01:17:09,430 --> 01:17:10,510
+contributed databases you need to
+
+1842
+01:17:10,510 --> 01:17:11,860
+unchain the single node databases first
+
+1843
+01:17:11,860 --> 01:17:16,120
+and this is the point you know what
+
+1844
+01:17:16,120 --> 01:17:21,240
+they're actually doing ok guys
+
+1845
+01:17:34,470 --> 01:17:37,549
+[Music]
+
+1846
+01:17:53,960 --> 01:17:57,050
+[Music]
+

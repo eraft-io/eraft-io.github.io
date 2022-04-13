@@ -1,0 +1,7564 @@
+1
+00:00:01,280 --> 00:00:04,460
+[Music]
+
+2
+00:00:05,980 --> 00:00:21,400
+Oh guys let's get started again hit it
+
+3
+00:00:21,400 --> 00:00:23,060
+up for DJ chop tables
+
+4
+00:00:23,060 --> 00:00:25,919
+[Applause]
+
+5
+00:00:25,919 --> 00:00:33,579
+how would you weekend who's having
+
+6
+00:00:33,579 --> 00:00:42,970
+whippets don't do that okay all right so
+
+7
+00:00:42,970 --> 00:00:44,920
+other announcements other than huffing
+
+8
+00:00:44,920 --> 00:00:49,120
+whippets is that homework one is due on
+
+9
+00:00:49,120 --> 00:00:51,670
+Monday at midnight it should be a little
+
+10
+00:00:51,670 --> 00:00:53,170
+spin oh great script a bunch of you've
+
+11
+00:00:53,170 --> 00:00:53,920
+already completed it
+
+12
+00:00:53,920 --> 00:00:59,020
+who has not started Wednesday what did I
+
+13
+00:00:59,020 --> 00:01:00,310
+say Monday yeah it is Monday
+
+14
+00:01:00,310 --> 00:01:04,720
+Wednesday whenever the 11th is right who
+
+15
+00:01:04,720 --> 00:01:09,820
+is not starting start just make sure
+
+16
+00:01:09,820 --> 00:01:10,469
+okay
+
+17
+00:01:10,469 --> 00:01:12,869
+and the other thing we will be releasing
+
+18
+00:01:12,869 --> 00:01:16,899
+project number one on on on Wednesday as
+
+19
+00:01:16,899 --> 00:01:19,539
+well again the lecture on Wednesday will
+
+20
+00:01:19,539 --> 00:01:21,880
+be all about what your toes to implement
+
+21
+00:01:21,880 --> 00:01:23,770
+in project one and then so at the end
+
+22
+00:01:23,770 --> 00:01:25,420
+we'll talk about those sort of logistics
+
+23
+00:01:25,420 --> 00:01:26,770
+of how you're gonna go about and do this
+
+24
+00:01:26,770 --> 00:01:30,369
+in the source code and then again that
+
+25
+00:01:30,369 --> 00:01:31,990
+will be spending on great scope as well
+
+26
+00:01:31,990 --> 00:01:34,990
+okay all right so the other things that
+
+27
+00:01:34,990 --> 00:01:36,579
+might be interesting to you or we have
+
+28
+00:01:36,579 --> 00:01:38,529
+some upcoming database talks that are
+
+29
+00:01:38,529 --> 00:01:39,999
+sort of somewhat relevant to what we
+
+30
+00:01:39,999 --> 00:01:42,999
+talked about in the course this Friday
+
+31
+00:01:42,999 --> 00:01:45,549
+over in the CIC building we will have a
+
+32
+00:01:45,549 --> 00:01:48,630
+talk from people from from Salesforce
+
+33
+00:01:48,630 --> 00:01:51,340
+this is public Salesforce is building a
+
+34
+00:01:51,340 --> 00:01:53,409
+brand new database manager system to
+
+35
+00:01:53,409 --> 00:01:54,429
+shoot at database system based on
+
+36
+00:01:54,429 --> 00:01:56,920
+Postgres a lot of my former students
+
+37
+00:01:56,920 --> 00:01:58,840
+people have taken this class are now
+
+38
+00:01:58,840 --> 00:01:59,799
+working on it
+
+39
+00:01:59,799 --> 00:02:02,109
+in San Francisco in the brand-new
+
+40
+00:02:02,109 --> 00:02:04,389
+buildings which are amazing and then
+
+41
+00:02:04,389 --> 00:02:06,819
+next week at the database group meeting
+
+42
+00:02:06,819 --> 00:02:09,788
+on Monday we'll have our Goa who is
+
+43
+00:02:09,788 --> 00:02:12,459
+senior alum he was the former VP of
+
+44
+00:02:12,459 --> 00:02:13,989
+engineering at mem sequel which is an
+
+45
+00:02:13,989 --> 00:02:15,760
+in-memory database that we can talk
+
+46
+00:02:15,760 --> 00:02:17,860
+about later and semester she has a new
+
+47
+00:02:17,860 --> 00:02:19,180
+startup doing
+
+48
+00:02:19,180 --> 00:02:21,519
+analytic database stuff and he'll be
+
+49
+00:02:21,519 --> 00:02:23,739
+talking on on Monday next week and then
+
+50
+00:02:23,739 --> 00:02:25,030
+the following Monday so two weeks from
+
+51
+00:02:25,030 --> 00:02:28,030
+now we'll have somebody from Vertica
+
+52
+00:02:28,030 --> 00:02:29,980
+come give a talks to Vertica is a
+
+53
+00:02:29,980 --> 00:02:31,510
+columnstore database system one of the
+
+54
+00:02:31,510 --> 00:02:34,659
+more famous ones that was invented by my
+
+55
+00:02:34,659 --> 00:02:36,760
+my grad school advisors and got sold by
+
+56
+00:02:36,760 --> 00:02:39,400
+HP and they got sold off to a holding
+
+57
+00:02:39,400 --> 00:02:41,260
+company a few years ago but believe it
+
+58
+00:02:41,260 --> 00:02:42,310
+not they actually have an office in
+
+59
+00:02:42,310 --> 00:02:44,469
+Pittsburgh and so he's gonna come and
+
+60
+00:02:44,469 --> 00:02:45,879
+give a talk about what what you know the
+
+61
+00:02:45,879 --> 00:02:47,560
+kind of stuff they're doing here and
+
+62
+00:02:47,560 --> 00:02:49,060
+when we one of the newer things Vertica
+
+63
+00:02:49,060 --> 00:02:51,400
+is doing so if i have stated work
+
+64
+00:02:51,400 --> 00:02:52,480
+columnstore it won't make sense right
+
+65
+00:02:52,480 --> 00:02:54,069
+now it should make sense by the end of
+
+66
+00:02:54,069 --> 00:02:55,659
+this this lecture okay because what will
+
+67
+00:02:55,659 --> 00:02:57,730
+describe what that is and actually try
+
+68
+00:02:57,730 --> 00:02:58,930
+to give it up and running to give a demo
+
+69
+00:02:58,930 --> 00:03:01,299
+like too many installation errors I gave
+
+70
+00:03:01,299 --> 00:03:01,989
+up okay
+
+71
+00:03:01,989 --> 00:03:03,700
+so again these are all free to the
+
+72
+00:03:03,700 --> 00:03:05,109
+public there's pizza at this one and
+
+73
+00:03:05,109 --> 00:03:07,480
+these like fruit so you can plan your
+
+74
+00:03:07,480 --> 00:03:11,769
+meals accordingly all right so last
+
+75
+00:03:11,769 --> 00:03:15,010
+class we we started talking about how we
+
+76
+00:03:15,010 --> 00:03:17,349
+would want to design a disc cornea
+
+77
+00:03:17,349 --> 00:03:19,209
+database system and again I said a disc
+
+78
+00:03:19,209 --> 00:03:20,709
+coordinate system is one where the data
+
+79
+00:03:20,709 --> 00:03:22,780
+system assumes that the primary search
+
+80
+00:03:22,780 --> 00:03:25,060
+location of the database is on disk and
+
+81
+00:03:25,060 --> 00:03:26,409
+so we spent time talking on how we're
+
+82
+00:03:26,409 --> 00:03:28,479
+actually going to organize the the
+
+83
+00:03:28,479 --> 00:03:30,099
+database at different levels within
+
+84
+00:03:30,099 --> 00:03:32,199
+files within pages and then within those
+
+85
+00:03:32,199 --> 00:03:34,689
+pages within tuples and so the reason
+
+86
+00:03:34,689 --> 00:03:36,489
+why we want to do all this is because we
+
+87
+00:03:36,489 --> 00:03:38,139
+want to be able to support databases
+
+88
+00:03:38,139 --> 00:03:39,669
+that are larger than the amount of
+
+89
+00:03:39,669 --> 00:03:41,530
+memory that's available to us on a
+
+90
+00:03:41,530 --> 00:03:43,449
+single machine and yes I know you can go
+
+91
+00:03:43,449 --> 00:03:44,889
+distribute it you can go across multiple
+
+92
+00:03:44,889 --> 00:03:46,989
+nodes for now we can ignore all that
+
+93
+00:03:46,989 --> 00:03:48,970
+just saying you have a single box how do
+
+94
+00:03:48,970 --> 00:03:51,280
+we bring data in when we can't fit it
+
+95
+00:03:51,280 --> 00:03:53,739
+all in d trance and so we finished up
+
+96
+00:03:53,739 --> 00:03:56,949
+talking about a lot of pages this just a
+
+97
+00:03:56,949 --> 00:03:59,500
+quick refresher so a slotted page was
+
+98
+00:03:59,500 --> 00:04:01,569
+how we're gonna organize tuples inside
+
+99
+00:04:01,569 --> 00:04:04,900
+of a page so that we we can move things
+
+100
+00:04:04,900 --> 00:04:06,459
+around and we start packing in as many
+
+101
+00:04:06,459 --> 00:04:08,709
+tuples as possible so we have the slot
+
+102
+00:04:08,709 --> 00:04:10,720
+rate at the top the fix and a very lank
+
+103
+00:04:10,720 --> 00:04:12,370
+to potat at the bottom and we just keep
+
+104
+00:04:12,370 --> 00:04:15,159
+adding things from from the Gynt from
+
+105
+00:04:15,159 --> 00:04:16,238
+the end to the beginning and from
+
+106
+00:04:16,238 --> 00:04:17,769
+beginning to the end until we reach the
+
+107
+00:04:17,769 --> 00:04:20,349
+middle we don't have any more space and
+
+108
+00:04:20,349 --> 00:04:22,509
+so I said this is the primary way most
+
+109
+00:04:22,509 --> 00:04:24,789
+database minute systems out there that
+
+110
+00:04:24,789 --> 00:04:27,130
+are roasts or systems which again I'll
+
+111
+00:04:27,130 --> 00:04:28,630
+explain where that is in a second this
+
+112
+00:04:28,630 --> 00:04:30,430
+is this is primarily the way most
+
+113
+00:04:30,430 --> 00:04:32,299
+database systems actually do
+
+114
+00:04:32,299 --> 00:04:35,339
+but it's not the only way and we ran out
+
+115
+00:04:35,339 --> 00:04:37,049
+of time we didn't discuss the other way
+
+116
+00:04:37,049 --> 00:04:38,549
+and so I'm gonna briefly talk about that
+
+117
+00:04:38,549 --> 00:04:40,709
+so just again this is put it in context
+
+118
+00:04:40,709 --> 00:04:42,149
+most what we'll talk about this semester
+
+119
+00:04:42,149 --> 00:04:44,189
+will be this organization the database
+
+120
+00:04:44,189 --> 00:04:45,269
+system you'll be working on for your
+
+121
+00:04:45,269 --> 00:04:46,439
+projects will use this type of
+
+122
+00:04:46,439 --> 00:04:48,599
+organization but again it's not the only
+
+123
+00:04:48,599 --> 00:04:51,599
+way another way is to do is called log
+
+124
+00:04:51,599 --> 00:04:54,839
+structured file organization so the way
+
+125
+00:04:54,839 --> 00:04:56,459
+this works is that instead of storing
+
+126
+00:04:56,459 --> 00:05:00,889
+the full tuple insider and set our pages
+
+127
+00:05:00,889 --> 00:05:03,449
+we're instead just going to store the
+
+128
+00:05:03,449 --> 00:05:06,149
+the information about how that tuple was
+
+129
+00:05:06,149 --> 00:05:10,860
+created or modified right so what I mean
+
+130
+00:05:10,860 --> 00:05:12,839
+by bad so let's say in our page we're
+
+131
+00:05:12,839 --> 00:05:14,819
+just going to start appending these log
+
+132
+00:05:14,819 --> 00:05:16,469
+records and I'll think of it like mall
+
+133
+00:05:16,469 --> 00:05:18,089
+records like a text file that are read
+
+134
+00:05:18,089 --> 00:05:19,889
+by humans think whistle is a log record
+
+135
+00:05:19,889 --> 00:05:22,469
+that's a some binary representation of
+
+136
+00:05:22,469 --> 00:05:25,289
+what the change was so we record like I
+
+137
+00:05:25,289 --> 00:05:26,909
+inserted this tuple I updated this tube
+
+138
+00:05:26,909 --> 00:05:30,089
+I deleted this tuple right and we just
+
+139
+00:05:30,089 --> 00:05:31,559
+all we have to do is just keep appending
+
+140
+00:05:31,559 --> 00:05:33,239
+every you know every time you flip the
+
+141
+00:05:33,239 --> 00:05:35,099
+page we could go create a new one and
+
+142
+00:05:35,099 --> 00:05:37,339
+start pending more leverage to that
+
+143
+00:05:37,339 --> 00:05:39,269
+anybody I guess why you want to do
+
+144
+00:05:39,269 --> 00:05:46,619
+something like this yes it's easy to
+
+145
+00:05:46,619 --> 00:05:51,739
+what he says it's easy to roll back
+
+146
+00:05:53,329 --> 00:05:56,249
+potentially yes yeah like if I have a
+
+147
+00:05:56,249 --> 00:05:58,529
+thousand if I have a thousand columns
+
+148
+00:05:58,529 --> 00:06:00,929
+and I update one if I need to roll back
+
+149
+00:06:00,929 --> 00:06:02,099
+I didn't blow away the single update
+
+150
+00:06:02,099 --> 00:06:05,329
+record yeah that's that's one yes
+
+151
+00:06:05,329 --> 00:06:08,159
+she says fast right absolutely yes so
+
+152
+00:06:08,159 --> 00:06:10,979
+memory said that in specially spinning
+
+153
+00:06:10,979 --> 00:06:12,569
+discs hard drives but even modern SSDs
+
+154
+00:06:12,569 --> 00:06:15,089
+it's much faster to do sequential right
+
+155
+00:06:15,089 --> 00:06:16,349
+since we want to read source quench with
+
+156
+00:06:16,349 --> 00:06:19,589
+access then random access so if I'm back
+
+157
+00:06:19,589 --> 00:06:22,469
+in this mode and let's say I update you
+
+158
+00:06:22,469 --> 00:06:24,089
+know ten two pools but they're all in
+
+159
+00:06:24,089 --> 00:06:25,949
+different pages now I have to go write
+
+160
+00:06:25,949 --> 00:06:28,229
+and update the the tuple owned across
+
+161
+00:06:28,229 --> 00:06:30,360
+ten different pages but if I'm doing the
+
+162
+00:06:30,360 --> 00:06:32,879
+logs structure organization then I put
+
+163
+00:06:32,879 --> 00:06:34,829
+my ten writes into my single page and I
+
+164
+00:06:34,829 --> 00:06:38,369
+can write that out in one go so you see
+
+165
+00:06:38,369 --> 00:06:40,349
+so this idea is not new like it came out
+
+166
+00:06:40,349 --> 00:06:42,269
+late 1980s early 1990s
+
+167
+00:06:42,269 --> 00:06:43,739
+log structured file systems or
+
+168
+00:06:43,739 --> 00:06:45,509
+volkskammer trees but it's really
+
+169
+00:06:45,509 --> 00:06:46,010
+applying the
+
+170
+00:06:46,010 --> 00:06:49,430
+ten years that this has taken off and
+
+171
+00:06:49,430 --> 00:06:53,030
+part this is because there you know
+
+172
+00:06:53,030 --> 00:06:56,330
+things like HDFS or s3 right there's all
+
+173
+00:06:56,330 --> 00:06:58,010
+these - distributed file systems where
+
+174
+00:06:58,010 --> 00:07:00,350
+there are pend only you can't do random
+
+175
+00:07:00,350 --> 00:07:01,760
+updates you can only keep appending
+
+176
+00:07:01,760 --> 00:07:04,490
+records so this style of storing your
+
+177
+00:07:04,490 --> 00:07:07,610
+tuples is it works great for that so
+
+178
+00:07:07,610 --> 00:07:11,260
+what's one obvious downside with this
+
+179
+00:07:11,260 --> 00:07:14,090
+she said read it absolutely yes so if I
+
+180
+00:07:14,090 --> 00:07:16,610
+have to read a tuple now I gotta go back
+
+181
+00:07:16,610 --> 00:07:18,380
+in time and look at the logs and try to
+
+182
+00:07:18,380 --> 00:07:20,570
+figure out what is what if the people
+
+183
+00:07:20,570 --> 00:07:23,150
+look like wait what what was the final
+
+184
+00:07:23,150 --> 00:07:25,700
+result of the tuple right so if my look
+
+185
+00:07:25,700 --> 00:07:27,440
+see I'm updating so tuple here and I
+
+186
+00:07:27,440 --> 00:07:28,520
+have a thousand columns but I don't
+
+187
+00:07:28,520 --> 00:07:30,320
+update one of them I got to go back and
+
+188
+00:07:30,320 --> 00:07:32,720
+try to find where it inserted updated
+
+189
+00:07:32,720 --> 00:07:34,220
+the other thousand columns to put it
+
+190
+00:07:34,220 --> 00:07:37,130
+back into the form that you want alright
+
+191
+00:07:37,130 --> 00:07:39,380
+so there's ways to sort of speed that up
+
+192
+00:07:39,380 --> 00:07:41,240
+all right you can build indexes and say
+
+193
+00:07:41,240 --> 00:07:42,140
+well if I'm looking for a particular
+
+194
+00:07:42,140 --> 00:07:44,810
+tuple here's how to jump to the
+
+195
+00:07:44,810 --> 00:07:46,160
+particular offset in the log that has
+
+196
+00:07:46,160 --> 00:07:48,920
+the data that I want or another thing
+
+197
+00:07:48,920 --> 00:07:50,900
+you could do is say just go actually
+
+198
+00:07:50,900 --> 00:07:54,290
+replay the log and compact it down and
+
+199
+00:07:54,290 --> 00:07:57,590
+to just it's you know just the one
+
+200
+00:07:57,590 --> 00:07:59,840
+record per per tuple right so I can take
+
+201
+00:07:59,840 --> 00:08:01,970
+all these guys and then just convert it
+
+202
+00:08:01,970 --> 00:08:04,250
+back into just you know is there a tuple
+
+203
+00:08:04,250 --> 00:08:07,250
+form so as I said this is more common in
+
+204
+00:08:07,250 --> 00:08:08,420
+more recent systems some of these you
+
+205
+00:08:08,420 --> 00:08:10,670
+probably heard about HBase Cassandra
+
+206
+00:08:10,670 --> 00:08:12,410
+there's a bunch of these distributive
+
+207
+00:08:12,410 --> 00:08:13,370
+systems that are out there that I
+
+208
+00:08:13,370 --> 00:08:14,180
+written and go
+
+209
+00:08:14,180 --> 00:08:15,800
+things like cockroach DB where they're
+
+210
+00:08:15,800 --> 00:08:18,500
+all using rocks DB as the underlying
+
+211
+00:08:18,500 --> 00:08:19,490
+Storage Manager
+
+212
+00:08:19,490 --> 00:08:20,510
+alright so the distributed execution
+
+213
+00:08:20,510 --> 00:08:22,880
+layer is all and go but then underneath
+
+214
+00:08:22,880 --> 00:08:25,220
+the covers rocks DBS and C++ and so
+
+215
+00:08:25,220 --> 00:08:26,240
+rather than writing their own storage
+
+216
+00:08:26,240 --> 00:08:27,920
+manager that is relying on this like as
+
+217
+00:08:27,920 --> 00:08:31,010
+an embedded system so rocks DB came from
+
+218
+00:08:31,010 --> 00:08:32,870
+came from Facebook Facebook actually
+
+219
+00:08:32,870 --> 00:08:34,460
+rusty B is rigidly based on level DB
+
+220
+00:08:34,460 --> 00:08:36,830
+level DB was written by Google then
+
+221
+00:08:36,830 --> 00:08:38,630
+Facebook took it first thing they did
+
+222
+00:08:38,630 --> 00:08:41,450
+was remove M map right and then they
+
+223
+00:08:41,450 --> 00:08:43,970
+really released it as Roxy be so level
+
+224
+00:08:43,970 --> 00:08:45,110
+DB still out there but pretty much
+
+225
+00:08:45,110 --> 00:08:48,380
+everyone uses rocks DB so again like so
+
+226
+00:08:48,380 --> 00:08:49,760
+we're not really going to cover this the
+
+227
+00:08:49,760 --> 00:08:52,040
+rest of this semester it'll show up when
+
+228
+00:08:52,040 --> 00:08:53,120
+we talk about distributed databases
+
+229
+00:08:53,120 --> 00:08:55,790
+later on at the end but for our purposes
+
+230
+00:08:55,790 --> 00:08:56,930
+we'll just assume that we're dealing
+
+231
+00:08:56,930 --> 00:08:59,480
+with tirely slotted page systems
+
+232
+00:08:59,480 --> 00:09:03,800
+okay all right so for today's class we
+
+233
+00:09:03,800 --> 00:09:05,300
+want to now go a little bit deeper and
+
+234
+00:09:05,300 --> 00:09:07,639
+talk about how we're actually gonna
+
+235
+00:09:07,639 --> 00:09:10,130
+represent the data in tuples so again
+
+236
+00:09:10,130 --> 00:09:11,329
+again we said the database is
+
+237
+00:09:11,329 --> 00:09:13,610
+represented by a bunch of pages so then
+
+238
+00:09:13,610 --> 00:09:14,899
+we discussed up or how to break up the
+
+239
+00:09:14,899 --> 00:09:16,970
+heap file into pages and then when these
+
+240
+00:09:16,970 --> 00:09:17,959
+page we talked about how to represent
+
+241
+00:09:17,959 --> 00:09:20,540
+the slotted array and then we said
+
+242
+00:09:20,540 --> 00:09:22,040
+roughly inside each slot of the array
+
+243
+00:09:22,040 --> 00:09:23,630
+you have these slots then then you have
+
+244
+00:09:23,630 --> 00:09:25,550
+your tuples have a header and now inside
+
+245
+00:09:25,550 --> 00:09:27,019
+the tuples we want to say what does the
+
+246
+00:09:27,019 --> 00:09:28,579
+data actually look like for individual
+
+247
+00:09:28,579 --> 00:09:30,529
+attributes or columns how are we
+
+248
+00:09:30,529 --> 00:09:32,899
+actually gonna represent that then we'll
+
+249
+00:09:32,899 --> 00:09:34,579
+go on and talk about how we actually
+
+250
+00:09:34,579 --> 00:09:36,800
+store the metadata about what our what
+
+251
+00:09:36,800 --> 00:09:38,930
+our tables look like and then we'll talk
+
+252
+00:09:38,930 --> 00:09:40,130
+about the storage model the rows store
+
+253
+00:09:40,130 --> 00:09:43,970
+versus column store stuff okay so at a
+
+254
+00:09:43,970 --> 00:09:47,240
+high level a tuple is just a sequence of
+
+255
+00:09:47,240 --> 00:09:50,720
+bytes it's just a byte array right and
+
+256
+00:09:50,720 --> 00:09:52,130
+it's up to the database management
+
+257
+00:09:52,130 --> 00:09:53,630
+system to be able to interpret that byte
+
+258
+00:09:53,630 --> 00:09:55,160
+array and make sense of it and say oh
+
+259
+00:09:55,160 --> 00:09:56,930
+yeah it's if this is an integer this is
+
+260
+00:09:56,930 --> 00:09:58,850
+a this is a float this is a string care
+
+261
+00:09:58,850 --> 00:10:01,459
+you know attribute so that's essentially
+
+262
+00:10:01,459 --> 00:10:02,810
+all what we're doing here we're just
+
+263
+00:10:02,810 --> 00:10:04,639
+organizing our tuples as if these byte
+
+264
+00:10:04,639 --> 00:10:06,769
+arrays and then when it comes time to
+
+265
+00:10:06,769 --> 00:10:08,060
+execute a query we need to interpret
+
+266
+00:10:08,060 --> 00:10:09,740
+what's actually in those byte arrays to
+
+267
+00:10:09,740 --> 00:10:10,790
+produce the answer that we're looking
+
+268
+00:10:10,790 --> 00:10:13,370
+for and so if this is what the catalog
+
+269
+00:10:13,370 --> 00:10:14,480
+stuff will talk about in a second this
+
+270
+00:10:14,480 --> 00:10:15,680
+is how they're gonna figure out oh I
+
+271
+00:10:15,680 --> 00:10:17,779
+have 10 columns what first one is a
+
+272
+00:10:17,779 --> 00:10:19,459
+32-bit integer the next one is 64-bit
+
+273
+00:10:19,459 --> 00:10:21,740
+float it uses that information decide
+
+274
+00:10:21,740 --> 00:10:23,600
+how to interpret and decipher those
+
+275
+00:10:23,600 --> 00:10:29,750
+bytes so the way we're gonna use for
+
+276
+00:10:29,750 --> 00:10:30,980
+most database systems away we're going
+
+277
+00:10:30,980 --> 00:10:33,889
+to represent data is for fixed length
+
+278
+00:10:33,889 --> 00:10:36,260
+things like integers and floats is
+
+279
+00:10:36,260 --> 00:10:38,000
+usually the same way that we would
+
+280
+00:10:38,000 --> 00:10:41,480
+represent this in like C or C++ this is
+
+281
+00:10:41,480 --> 00:10:43,160
+usually defined by what's called I
+
+282
+00:10:43,160 --> 00:10:45,920
+Triple E 754 standard who here is heard
+
+283
+00:10:45,920 --> 00:10:46,610
+of that before
+
+284
+00:10:46,610 --> 00:10:49,490
+the 754 standard all right a little bit
+
+285
+00:10:49,490 --> 00:10:52,190
+less than last year so the I took the 74
+
+286
+00:10:52,190 --> 00:10:55,430
+standards basically it's a for the
+
+287
+00:10:55,430 --> 00:10:57,829
+industry it's the specification of how
+
+288
+00:10:57,829 --> 00:11:01,370
+to represent numbers and CPUs like
+
+289
+00:11:01,370 --> 00:11:02,779
+integers and floats and things like that
+
+290
+00:11:02,779 --> 00:11:05,269
+how many bits you know where you know is
+
+291
+00:11:05,269 --> 00:11:07,730
+it in big-endian little-endian you know
+
+292
+00:11:07,730 --> 00:11:09,019
+have the two's complement in the front
+
+293
+00:11:09,019 --> 00:11:11,540
+all that is represented in that in that
+
+294
+00:11:11,540 --> 00:11:12,880
+standard
+
+295
+00:11:12,880 --> 00:11:14,740
+so for fixed-length types and integers
+
+296
+00:11:14,740 --> 00:11:16,240
+big and small and tiny ends and then
+
+297
+00:11:16,240 --> 00:11:19,330
+floating reels we'll just follow the 754
+
+298
+00:11:19,330 --> 00:11:21,340
+standard we'll discuss in a second about
+
+299
+00:11:21,340 --> 00:11:23,260
+the fixed point decimals but basically
+
+300
+00:11:23,260 --> 00:11:24,940
+these are floating point and then these
+
+301
+00:11:24,940 --> 00:11:26,380
+are fixed point and this is something we
+
+302
+00:11:26,380 --> 00:11:27,460
+and the data system will have to
+
+303
+00:11:27,460 --> 00:11:30,400
+implement for very length things
+
+304
+00:11:30,400 --> 00:11:32,670
+varchars of our binary techs and blobs
+
+305
+00:11:32,670 --> 00:11:36,160
+typically there's a header that says you
+
+306
+00:11:36,160 --> 00:11:38,590
+know you know here's here's the the
+
+307
+00:11:38,590 --> 00:11:40,570
+length of the blob I'm storing or the
+
+308
+00:11:40,570 --> 00:11:42,580
+bar at the very lengthy odom storing may
+
+309
+00:11:42,580 --> 00:11:44,380
+be a checksum if it's a really big big
+
+310
+00:11:44,380 --> 00:11:46,750
+value and then you have the the sequence
+
+311
+00:11:46,750 --> 00:11:48,580
+of bytes so this is different than
+
+312
+00:11:48,580 --> 00:11:50,320
+representing strings and sees where you
+
+313
+00:11:50,320 --> 00:11:52,120
+have the null Terminator character we're
+
+314
+00:11:52,120 --> 00:11:53,380
+instead could have a prefix that tells
+
+315
+00:11:53,380 --> 00:11:55,500
+us how big it is actually going to be
+
+316
+00:11:55,500 --> 00:11:59,020
+for dates and time stamps this varies
+
+317
+00:11:59,020 --> 00:12:00,820
+wildly across different database systems
+
+318
+00:12:00,820 --> 00:12:02,200
+right there's no one way to actually do
+
+319
+00:12:02,200 --> 00:12:02,560
+this
+
+320
+00:12:02,560 --> 00:12:05,020
+most of the systems usually just store
+
+321
+00:12:05,020 --> 00:12:08,770
+the you know the number of seconds or
+
+322
+00:12:08,770 --> 00:12:10,930
+microseconds or milliseconds since the
+
+323
+00:12:10,930 --> 00:12:12,970
+UNIX epoch which is like January 1st
+
+324
+00:12:12,970 --> 00:12:15,970
+1970 for Windows I don't know what they
+
+325
+00:12:15,970 --> 00:12:18,010
+do and so in a bunch of systems - also
+
+326
+00:12:18,010 --> 00:12:19,780
+you can say oh I want the date without
+
+327
+00:12:19,780 --> 00:12:21,250
+the time or I want the time without the
+
+328
+00:12:21,250 --> 00:12:23,560
+date underneath the covers are still
+
+329
+00:12:23,560 --> 00:12:26,560
+going to store the full timestamp it's
+
+330
+00:12:26,560 --> 00:12:28,930
+just the API that you use to access that
+
+331
+00:12:28,930 --> 00:12:30,910
+data knows that strip out whatever part
+
+332
+00:12:30,910 --> 00:12:32,920
+you don't need all right so some systems
+
+333
+00:12:32,920 --> 00:12:34,090
+will actually just pack in just the date
+
+334
+00:12:34,090 --> 00:12:35,350
+and we store that as a smaller smaller
+
+335
+00:12:35,350 --> 00:12:37,270
+value a bunch of systems actually don't
+
+336
+00:12:37,270 --> 00:12:41,530
+do anything so again this is something
+
+337
+00:12:41,530 --> 00:12:43,270
+we have in our database system this is
+
+338
+00:12:43,270 --> 00:12:44,170
+something we implement our database
+
+339
+00:12:44,170 --> 00:12:45,910
+system but the for the fixed point
+
+340
+00:12:45,910 --> 00:12:48,160
+values this will just rely on you know
+
+341
+00:12:48,160 --> 00:12:49,810
+whatever c++ gives us which should be
+
+342
+00:12:49,810 --> 00:12:52,810
+underlying hardware all right so the
+
+343
+00:12:52,810 --> 00:12:54,490
+thing we're gonna go talk about now
+
+344
+00:12:54,490 --> 00:12:55,840
+there's more interesting is again how do
+
+345
+00:12:55,840 --> 00:12:57,790
+we actually compare these to the fixed
+
+346
+00:12:57,790 --> 00:12:59,730
+point versus floating wooden decimals so
+
+347
+00:12:59,730 --> 00:13:01,870
+if you want to have floating my decimals
+
+348
+00:13:01,870 --> 00:13:04,390
+or very precision numbers I these are in
+
+349
+00:13:04,390 --> 00:13:07,810
+exact numbers that the CPU gives us or
+
+350
+00:13:07,810 --> 00:13:10,240
+like your c++ gives us because i you
+
+351
+00:13:10,240 --> 00:13:11,710
+have a c program and i call you know a
+
+352
+00:13:11,710 --> 00:13:13,360
+declared variable float whatever and
+
+353
+00:13:13,360 --> 00:13:15,550
+give it a verbal verbal name that's what
+
+354
+00:13:15,550 --> 00:13:18,040
+we're getting when we claire a real or
+
+355
+00:13:18,040 --> 00:13:20,350
+double or float in our database system
+
+356
+00:13:20,350 --> 00:13:22,930
+as like the sequel type again this is
+
+357
+00:13:22,930 --> 00:13:24,460
+specified how you actually represent
+
+358
+00:13:24,460 --> 00:13:26,290
+this like the decimal point and the
+
+359
+00:13:26,290 --> 00:13:27,970
+scope in the precision all that's
+
+360
+00:13:27,970 --> 00:13:32,380
+defined by the 754 standard so these are
+
+361
+00:13:32,380 --> 00:13:34,930
+gonna be much faster to executors to
+
+362
+00:13:34,930 --> 00:13:37,389
+operate on then the fix point decimals
+
+363
+00:13:37,389 --> 00:13:40,750
+the potato system provides because the
+
+364
+00:13:40,750 --> 00:13:42,759
+CPU has instructions to operate on these
+
+365
+00:13:42,759 --> 00:13:45,490
+very efficiently writes one instruction
+
+366
+00:13:45,490 --> 00:13:46,870
+to take to float floats and add them
+
+367
+00:13:46,870 --> 00:13:49,959
+together or subtract them but when we
+
+368
+00:13:49,959 --> 00:13:52,389
+talk about dealing with the fixed point
+
+369
+00:13:52,389 --> 00:13:53,680
+ones that's a whole bunch of stuff we
+
+370
+00:13:53,680 --> 00:13:54,790
+have to write and that's mean way more
+
+371
+00:13:54,790 --> 00:13:58,329
+instructions so this sounds like what
+
+372
+00:13:58,329 --> 00:13:59,829
+we'd want to use right because it's fast
+
+373
+00:13:59,829 --> 00:14:01,779
+the palm is though there's gonna be
+
+374
+00:14:01,779 --> 00:14:05,139
+rounding errors because the 74 standard
+
+375
+00:14:05,139 --> 00:14:07,149
+like there's no way to exactly store
+
+376
+00:14:07,149 --> 00:14:10,149
+decimals in in hardware so they have to
+
+377
+00:14:10,149 --> 00:14:12,850
+approximate this right so here's a
+
+378
+00:14:12,850 --> 00:14:14,829
+really simple C program I normally don't
+
+379
+00:14:14,829 --> 00:14:16,300
+like the show code in class other than
+
+380
+00:14:16,300 --> 00:14:18,310
+sequel but this is simple enough I think
+
+381
+00:14:18,310 --> 00:14:19,800
+you know you should be able to
+
+382
+00:14:19,800 --> 00:14:22,089
+comprehend it from your seat so all
+
+383
+00:14:22,089 --> 00:14:23,980
+we're gonna do is we have two floats x
+
+384
+00:14:23,980 --> 00:14:26,259
+and y and then we're gonna print out the
+
+385
+00:14:26,259 --> 00:14:28,300
+value of X plus y and then we're just
+
+386
+00:14:28,300 --> 00:14:31,420
+gonna print out the constant 0.3 so you
+
+387
+00:14:31,420 --> 00:14:33,459
+pick your favorite compiler I use GCC
+
+388
+00:14:33,459 --> 00:14:35,199
+and when you compile it you get this
+
+389
+00:14:35,199 --> 00:14:37,690
+answer here right that looks you know
+
+390
+00:14:37,690 --> 00:14:39,010
+that's correct right that's we would
+
+391
+00:14:39,010 --> 00:14:43,930
+expect but all I'm doing is just doing
+
+392
+00:14:43,930 --> 00:14:45,579
+your percent time app I'm just asking
+
+393
+00:14:45,579 --> 00:14:47,560
+that the languages to print out the the
+
+394
+00:14:47,560 --> 00:14:49,300
+floating-point and let it do whatever
+
+395
+00:14:49,300 --> 00:14:52,510
+rounding it wants to do when you specify
+
+396
+00:14:52,510 --> 00:14:55,269
+what precision you actually want so I'm
+
+397
+00:14:55,269 --> 00:14:57,730
+gonna go into 20 decimal points then you
+
+398
+00:14:57,730 --> 00:14:58,810
+see that you get a totally different
+
+399
+00:14:58,810 --> 00:15:02,800
+number same exact code same exact values
+
+400
+00:15:02,800 --> 00:15:05,350
+it's just when I represent it in a human
+
+401
+00:15:05,350 --> 00:15:07,540
+readable form now I'm seeing I'm way off
+
+402
+00:15:07,540 --> 00:15:12,160
+right I can't even get 0.3 correct I can
+
+403
+00:15:12,160 --> 00:15:14,490
+this is because the harbor can't exactly
+
+404
+00:15:14,490 --> 00:15:17,680
+represent floating-point numbers too you
+
+405
+00:15:17,680 --> 00:15:22,389
+know precisely right so again this will
+
+406
+00:15:22,389 --> 00:15:23,740
+be faster for us to execute but we're
+
+407
+00:15:23,740 --> 00:15:26,139
+gonna have rounding errors so now you
+
+408
+00:15:26,139 --> 00:15:27,130
+know this means you may think all right
+
+409
+00:15:27,130 --> 00:15:28,839
+0.3 my little example here who cares
+
+410
+00:15:28,839 --> 00:15:30,639
+where there's a rounding error but if
+
+411
+00:15:30,639 --> 00:15:32,949
+it's your bank account then you start to
+
+412
+00:15:32,949 --> 00:15:34,770
+care right
+
+413
+00:15:34,770 --> 00:15:36,630
+or if it's a scientific you know
+
+414
+00:15:36,630 --> 00:15:38,430
+instrument where you trying to send
+
+415
+00:15:38,430 --> 00:15:40,529
+something into space these round hairs
+
+416
+00:15:40,529 --> 00:15:43,680
+cause real problems so to avoid this you
+
+417
+00:15:43,680 --> 00:15:45,420
+use what are called fixed precision
+
+418
+00:15:45,420 --> 00:15:48,020
+numbers or picks point decimal numbers
+
+419
+00:15:48,020 --> 00:15:50,339
+so again these are something that the
+
+420
+00:15:50,339 --> 00:15:51,690
+ATM system has to implement to represent
+
+421
+00:15:51,690 --> 00:15:53,670
+these values it's a bunch of extra code
+
+422
+00:15:53,670 --> 00:15:56,430
+that can take care of all the you know
+
+423
+00:15:56,430 --> 00:15:58,980
+arithmetic operations or aggregations
+
+424
+00:15:58,980 --> 00:16:00,750
+you normally wouldn't want to do on any
+
+425
+00:16:00,750 --> 00:16:04,920
+kind of number right so the way you know
+
+426
+00:16:04,920 --> 00:16:06,810
+show how Postgres is gonna do this in a
+
+427
+00:16:06,810 --> 00:16:08,370
+second but the basic idea to think about
+
+428
+00:16:08,370 --> 00:16:11,550
+this is you're gonna store that value as
+
+429
+00:16:11,550 --> 00:16:14,010
+like a varchar' the actual like human
+
+430
+00:16:14,010 --> 00:16:16,950
+readable representation of the value and
+
+431
+00:16:16,950 --> 00:16:19,020
+then some extra metadata to say here's
+
+432
+00:16:19,020 --> 00:16:20,310
+what the decimal point is here is what
+
+433
+00:16:20,310 --> 00:16:21,810
+the scope is here's the rounding
+
+434
+00:16:21,810 --> 00:16:23,880
+information right and that's all packed
+
+435
+00:16:23,880 --> 00:16:26,580
+in with the tuple itself just as part of
+
+436
+00:16:26,580 --> 00:16:29,790
+that that byte array so I always give
+
+437
+00:16:29,790 --> 00:16:31,440
+this demo every year of Postgres and
+
+438
+00:16:31,440 --> 00:16:33,690
+sequel server right normally I nobody's
+
+439
+00:16:33,690 --> 00:16:35,630
+given Postgres
+
+440
+00:16:35,630 --> 00:16:37,920
+but we'll try for Oracle and single
+
+441
+00:16:37,920 --> 00:16:39,810
+server as well so let's see what the
+
+442
+00:16:39,810 --> 00:16:40,890
+performance difference is from these
+
+443
+00:16:40,890 --> 00:16:46,040
+different for these different types
+
+444
+00:16:46,040 --> 00:16:50,040
+turns off why is that readable all right
+
+445
+00:16:50,040 --> 00:16:53,399
+so what I've done is I've created a I
+
+446
+00:16:53,399 --> 00:16:56,520
+wrote a simple Python script and all it
+
+447
+00:16:56,520 --> 00:17:02,310
+did was create a giant CSV file that has
+
+448
+00:17:02,310 --> 00:17:04,500
+ten million rows of to floating-point
+
+449
+00:17:04,500 --> 00:17:06,449
+numbers right that's all it is
+
+450
+00:17:06,449 --> 00:17:09,150
+you just put random numbers so I can
+
+451
+00:17:09,150 --> 00:17:11,069
+load this I'm gonna create two tables in
+
+452
+00:17:11,069 --> 00:17:15,000
+Postgres I'm gonna create one that uses
+
+453
+00:17:15,000 --> 00:17:18,000
+reals and one that uses the the fixed
+
+454
+00:17:18,000 --> 00:17:21,300
+point decimals alright so there's one
+
+455
+00:17:21,300 --> 00:17:24,209
+for reals there's one for decimals and
+
+456
+00:17:24,209 --> 00:17:27,809
+then Postgres has a nice command called
+
+457
+00:17:27,809 --> 00:17:32,010
+copy that will take a file that's on
+
+458
+00:17:32,010 --> 00:17:34,140
+local disk and then take the output and
+
+459
+00:17:34,140 --> 00:17:38,370
+write it into the table various database
+
+460
+00:17:38,370 --> 00:17:40,590
+systems have various commands and secret
+
+461
+00:17:40,590 --> 00:17:43,559
+servers called bulk in in my sequel it's
+
+462
+00:17:43,559 --> 00:17:46,830
+called load into whatever Oracle was was
+
+463
+00:17:46,830 --> 00:17:48,450
+a pain to set up but I got it working
+
+464
+00:17:48,450 --> 00:17:51,179
+so now we're going to do is we're gonna
+
+465
+00:17:51,179 --> 00:17:55,230
+run a query that just takes the two
+
+466
+00:17:55,230 --> 00:17:56,700
+numbers and add them together so let me
+
+467
+00:17:56,700 --> 00:17:59,789
+turn on timing as well and then because
+
+468
+00:17:59,789 --> 00:18:02,399
+this is Postgres 10 Postgres 10 added
+
+469
+00:18:02,399 --> 00:18:05,190
+support for parallel queries so like you
+
+470
+00:18:05,190 --> 00:18:06,419
+know take a single single query and
+
+471
+00:18:06,419 --> 00:18:07,889
+split up across multiple CPUs and run
+
+472
+00:18:07,889 --> 00:18:09,629
+them in parallel so I'm gonna turn that
+
+473
+00:18:09,629 --> 00:18:11,730
+off as well just so we see like the
+
+474
+00:18:11,730 --> 00:18:13,169
+performance of a row you know a single
+
+475
+00:18:13,169 --> 00:18:15,450
+CPU I'm gonna do this for all the other
+
+476
+00:18:15,450 --> 00:18:18,389
+systems as well so let's see how long
+
+477
+00:18:18,389 --> 00:18:24,899
+would take if I do it with the reals so
+
+478
+00:18:24,899 --> 00:18:26,489
+if you've never seen this let me go back
+
+479
+00:18:26,489 --> 00:18:30,779
+to the syntax sorry so populate says
+
+480
+00:18:30,779 --> 00:18:32,850
+explain analyze so if you never seen
+
+481
+00:18:32,850 --> 00:18:35,159
+explain what explain does and put it in
+
+482
+00:18:35,159 --> 00:18:37,049
+front of any sequel query and instead of
+
+483
+00:18:37,049 --> 00:18:38,340
+actually running the sequel query it
+
+484
+00:18:38,340 --> 00:18:40,109
+tells you what query plan it's gonna use
+
+485
+00:18:40,109 --> 00:18:42,629
+to execute this query all right doesn't
+
+486
+00:18:42,629 --> 00:18:43,590
+actually run it says here's what I'm
+
+487
+00:18:43,590 --> 00:18:45,989
+gonna do if I ran it different data
+
+488
+00:18:45,989 --> 00:18:47,399
+systems have different syntax that's
+
+489
+00:18:47,399 --> 00:18:49,590
+what Postgres and my sequel do right
+
+490
+00:18:49,590 --> 00:18:51,239
+we'll explain what a query plan is well
+
+491
+00:18:51,239 --> 00:18:52,950
+I'm gonna optimize it maze optimizer
+
+492
+00:18:52,950 --> 00:18:55,350
+optimizer is late in the semester but
+
+493
+00:18:55,350 --> 00:18:56,850
+basically what happened you know just
+
+494
+00:18:56,850 --> 00:18:57,720
+saying like you wanna run this query
+
+495
+00:18:57,720 --> 00:18:59,879
+here's how we're gonna do it so but if I
+
+496
+00:18:59,879 --> 00:19:02,239
+add the analyse calls in front of it
+
+497
+00:19:02,239 --> 00:19:04,499
+then this is actually gonna give you the
+
+498
+00:19:04,499 --> 00:19:09,389
+query plan and also run it for real so
+
+499
+00:19:09,389 --> 00:19:11,429
+you see that it basically took twelve
+
+500
+00:19:11,429 --> 00:19:13,379
+twelve twelve hundred milliseconds so
+
+501
+00:19:13,379 --> 00:19:15,509
+1.2 seconds to run this and then to show
+
+502
+00:19:15,509 --> 00:19:17,220
+you if it's not a caching effect I can
+
+503
+00:19:17,220 --> 00:19:18,539
+just keep executing over and over again
+
+504
+00:19:18,539 --> 00:19:21,149
+and the performance I got little faster
+
+505
+00:19:21,149 --> 00:19:22,950
+because it got in the cache but it
+
+506
+00:19:22,950 --> 00:19:24,539
+should stabilize yeah about 800
+
+507
+00:19:24,539 --> 00:19:27,359
+milliseconds all right so let's do the
+
+508
+00:19:27,359 --> 00:19:31,100
+same thing now for the decimal one
+
+509
+00:19:34,670 --> 00:19:36,950
+so 2.4 seconds I run it again we should
+
+510
+00:19:36,950 --> 00:19:39,560
+get a little faster cuz it's in cash not
+
+511
+00:19:39,560 --> 00:19:43,700
+much right so again to same values same
+
+512
+00:19:43,700 --> 00:19:45,350
+data set loaded it as different data
+
+513
+00:19:45,350 --> 00:19:48,940
+types but though the one query is is
+
+514
+00:19:48,940 --> 00:19:52,310
+twice as slow because we're doing all
+
+515
+00:19:52,310 --> 00:19:53,630
+this extra stuff to deal with the
+
+516
+00:19:53,630 --> 00:19:56,050
+rounding and other things all right and
+
+517
+00:19:56,050 --> 00:19:58,220
+you see that let me see if I try to run
+
+518
+00:19:58,220 --> 00:20:01,370
+skin are getting the same values all
+
+519
+00:20:01,370 --> 00:20:02,450
+right they're getting given values here
+
+520
+00:20:02,450 --> 00:20:03,680
+right because it's because there's some
+
+521
+00:20:03,680 --> 00:20:05,690
+rounding issue issues so we can try to
+
+522
+00:20:05,690 --> 00:20:11,030
+cast this there's a desk mole and then
+
+523
+00:20:11,030 --> 00:20:16,730
+it'll be human readable right so this is
+
+524
+00:20:16,730 --> 00:20:19,220
+this is much different than this one
+
+525
+00:20:19,220 --> 00:20:22,100
+here right this is you know one and this
+
+526
+00:20:22,100 --> 00:20:25,430
+starts with it with a nine so the the
+
+527
+00:20:25,430 --> 00:20:29,120
+real one is having rounding issues so
+
+528
+00:20:29,120 --> 00:20:31,580
+let's try the same thing in in sequel
+
+529
+00:20:31,580 --> 00:20:33,650
+server the data is already loaded so we
+
+530
+00:20:33,650 --> 00:20:35,480
+don't we don't need to bother loading it
+
+531
+00:20:35,480 --> 00:20:41,240
+again so let me run this so this will be
+
+532
+00:20:41,240 --> 00:20:46,670
+with the reals produced as a result and
+
+533
+00:20:46,670 --> 00:20:49,610
+told me it took 1.5 seconds just try it
+
+534
+00:20:49,610 --> 00:20:50,030
+again
+
+535
+00:20:50,030 --> 00:20:54,100
+just see whether it gets faster not much
+
+536
+00:20:54,100 --> 00:20:57,680
+and then I'll run the same thing now
+
+537
+00:20:57,680 --> 00:21:01,970
+with the on decimals and it should be
+
+538
+00:21:01,970 --> 00:21:07,700
+slower yeah twice as slow we run again
+
+539
+00:21:07,700 --> 00:21:12,020
+disapprove right and there's this little
+
+540
+00:21:12,020 --> 00:21:14,690
+max dop it's the degree of parallelism
+
+541
+00:21:14,690 --> 00:21:16,070
+it's basically telling sequel silver
+
+542
+00:21:16,070 --> 00:21:19,070
+again run it with one one thread the
+
+543
+00:21:19,070 --> 00:21:21,830
+last one on my show is Oracle and I had
+
+544
+00:21:21,830 --> 00:21:23,030
+a breakthrough this weekend I figured
+
+545
+00:21:23,030 --> 00:21:25,690
+out how to get the up keyed at work so
+
+546
+00:21:25,690 --> 00:21:29,420
+it was not not by default
+
+547
+00:21:29,420 --> 00:21:31,700
+alright so it's already loaded I'll do
+
+548
+00:21:31,700 --> 00:21:35,870
+the same thing where is it Oracle so
+
+549
+00:21:35,870 --> 00:21:39,070
+we'll turn timing on
+
+550
+00:21:39,800 --> 00:21:46,180
+run it with the reels and you get 0.53
+
+551
+00:21:46,180 --> 00:21:56,090
+runabout decimals the same slightly
+
+552
+00:21:56,090 --> 00:22:01,040
+faster even so the way what's happening
+
+553
+00:22:01,040 --> 00:22:02,540
+here is that Oracle actually gives you
+
+554
+00:22:02,540 --> 00:22:04,340
+the fixed point decimal no matter what
+
+555
+00:22:04,340 --> 00:22:06,830
+you need ask you with the real or the
+
+556
+00:22:06,830 --> 00:22:08,870
+the decimal it always just gives you the
+
+557
+00:22:08,870 --> 00:22:12,320
+decimal right and before you say oh look
+
+558
+00:22:12,320 --> 00:22:13,760
+how much faster Oracle is any other ones
+
+559
+00:22:13,760 --> 00:22:16,130
+again for this one here like I didn't
+
+560
+00:22:16,130 --> 00:22:18,980
+turn off multi-threading but also looks
+
+561
+00:22:18,980 --> 00:22:21,380
+like is rounding off a lot right this
+
+562
+00:22:21,380 --> 00:22:22,790
+looks way off than what we'd expect from
+
+563
+00:22:22,790 --> 00:22:24,500
+Postgres and seagull server and that's
+
+564
+00:22:24,500 --> 00:22:26,510
+because Oracle has this thing where if
+
+565
+00:22:26,510 --> 00:22:30,680
+the size of the output is not doesn't
+
+566
+00:22:30,680 --> 00:22:32,990
+fit in whatever characters you specify
+
+567
+00:22:32,990 --> 00:22:34,340
+but there's none with thing then it
+
+568
+00:22:34,340 --> 00:22:36,320
+rounds it for you automatically took me
+
+569
+00:22:36,320 --> 00:22:37,340
+a while to figure that one out but
+
+570
+00:22:37,340 --> 00:22:38,360
+here's actually what you get when you
+
+571
+00:22:38,360 --> 00:22:39,650
+have the real number so that looks like
+
+572
+00:22:39,650 --> 00:22:41,540
+what we expect so again this is
+
+573
+00:22:41,540 --> 00:22:43,970
+something that just be mindful that you
+
+574
+00:22:43,970 --> 00:22:45,560
+know this is we have to implement in our
+
+575
+00:22:45,560 --> 00:22:47,030
+database system this is not something
+
+576
+00:22:47,030 --> 00:22:51,020
+that you know will magic go faster it's
+
+577
+00:22:51,020 --> 00:22:52,070
+not something that we can rely on hard
+
+578
+00:22:52,070 --> 00:22:59,150
+to provide for us yes question is it
+
+579
+00:22:59,150 --> 00:23:00,620
+doing rounding along the way is it only
+
+580
+00:23:00,620 --> 00:23:02,750
+at the end as far as a note here but
+
+581
+00:23:02,750 --> 00:23:04,820
+this stupid numb lip thing it's rounding
+
+582
+00:23:04,820 --> 00:23:06,770
+on the client side so the server is
+
+583
+00:23:06,770 --> 00:23:09,380
+giving you this and then it rounds when
+
+584
+00:23:09,380 --> 00:23:11,960
+it lands on the client why for whatever
+
+585
+00:23:11,960 --> 00:23:14,840
+reason I don't know right and in
+
+586
+00:23:14,840 --> 00:23:16,460
+Postgres in my sequel you can are so
+
+587
+00:23:16,460 --> 00:23:17,930
+Postgres in siegel server like you can
+
+588
+00:23:17,930 --> 00:23:19,700
+specify the round there's a round
+
+589
+00:23:19,700 --> 00:23:24,050
+function we could do on the server side
+
+590
+00:23:24,050 --> 00:23:25,010
+so I think we can do something like this
+
+591
+00:23:25,010 --> 00:23:28,490
+round and then you say what - what
+
+592
+00:23:28,490 --> 00:23:35,380
+precision you wants it like - nope
+
+593
+00:23:35,380 --> 00:23:37,040
+difference isn't that different thing is
+
+594
+00:23:37,040 --> 00:23:38,570
+that I think that's my sequel syntax I
+
+595
+00:23:38,570 --> 00:23:39,500
+don't know I don't know what Postgres
+
+596
+00:23:39,500 --> 00:23:43,820
+alright so you do neut but in your
+
+597
+00:23:43,820 --> 00:23:44,780
+application you want to do it
+
+598
+00:23:44,780 --> 00:23:46,460
+client-side or sorry server-side you
+
+599
+00:23:46,460 --> 00:23:47,510
+want the server to do for you don't want
+
+600
+00:23:47,510 --> 00:23:48,590
+to assume the clients gonna be
+
+601
+00:23:48,590 --> 00:23:51,400
+formatting whatever for you yes
+
+602
+00:23:51,400 --> 00:23:53,680
+so it looks like in the Oracle one that
+
+603
+00:23:53,680 --> 00:23:57,870
+the decimals is giving the same values
+
+604
+00:23:58,230 --> 00:24:00,550
+here so his question is it looks like
+
+605
+00:24:00,550 --> 00:24:02,860
+Oracle is giving us the value of the
+
+606
+00:24:02,860 --> 00:24:06,580
+real and not the floating box yeah hold
+
+607
+00:24:06,580 --> 00:24:10,480
+up let's see those three that that's
+
+608
+00:24:10,480 --> 00:24:15,870
+Oracle and this
+
+609
+00:24:16,410 --> 00:24:29,710
+let's try sequel server sis that's who
+
+610
+00:24:29,710 --> 00:24:31,450
+we'll assume that's correct because it's
+
+611
+00:24:31,450 --> 00:24:33,640
+sequel server but so that was nine
+
+612
+00:24:33,640 --> 00:24:35,410
+something and let's see what this gives
+
+613
+00:24:35,410 --> 00:24:39,580
+us nine something it looks the same
+
+614
+00:24:39,580 --> 00:24:46,030
+right yeah that's that's that's
+
+615
+00:24:46,030 --> 00:24:47,980
+different than what the reals gave us
+
+616
+00:24:47,980 --> 00:24:50,440
+I think reals was giving us like seven
+
+617
+00:24:50,440 --> 00:24:53,910
+point seven and this is seven point five
+
+618
+00:24:53,910 --> 00:25:03,100
+so going back to Oracle are say that's
+
+619
+00:25:03,100 --> 00:25:13,090
+press press too many terminals yeah but
+
+620
+00:25:13,090 --> 00:25:20,830
+it's the same hmm I don't I don't just
+
+621
+00:25:20,830 --> 00:25:25,860
+type it as live but link to
+
+622
+00:25:25,860 --> 00:25:27,870
+so maybe that it that is it's always a
+
+623
+00:25:27,870 --> 00:25:29,880
+decimal sorry it's always a real not the
+
+624
+00:25:29,880 --> 00:25:33,029
+fix point okay
+
+625
+00:25:33,029 --> 00:25:36,779
+I'll double-check that I declare it yeah
+
+626
+00:25:36,779 --> 00:25:39,720
+I definitely declare it as a decimal all
+
+627
+00:25:39,720 --> 00:25:41,159
+right let me figure what's going on I'll
+
+628
+00:25:41,159 --> 00:25:45,390
+play some Piazza okay any questions all
+
+629
+00:25:45,390 --> 00:25:46,610
+right cool
+
+630
+00:25:46,610 --> 00:25:49,019
+so let's look so what if poster is
+
+631
+00:25:49,019 --> 00:25:50,850
+actually doing can Postgres sequel
+
+632
+00:25:50,850 --> 00:25:52,110
+server an Oracle or not and the source
+
+633
+00:25:52,110 --> 00:25:53,760
+Postgres is if we can't look at it so
+
+634
+00:25:53,760 --> 00:25:54,960
+this is actually from the post go source
+
+635
+00:25:54,960 --> 00:25:57,360
+code version 9.6 I think
+
+636
+00:25:57,360 --> 00:26:00,330
+and so when you declare a fixed point
+
+637
+00:26:00,330 --> 00:26:02,309
+decimal this is what it stores it stores
+
+638
+00:26:02,309 --> 00:26:04,710
+this struct so you again you have all
+
+639
+00:26:04,710 --> 00:26:07,590
+this extra metadata about what the where
+
+640
+00:26:07,590 --> 00:26:09,269
+the decimal is what the sign is and so
+
+641
+00:26:09,269 --> 00:26:11,549
+forth and then this part here as I said
+
+642
+00:26:11,549 --> 00:26:14,000
+this is just a string representation of
+
+643
+00:26:14,000 --> 00:26:18,000
+what the real value actually is and then
+
+644
+00:26:18,000 --> 00:26:19,679
+at runtime they know how to take this
+
+645
+00:26:19,679 --> 00:26:21,750
+and decipher it based on what these
+
+646
+00:26:21,750 --> 00:26:24,779
+values are set to to ensure that you
+
+647
+00:26:24,779 --> 00:26:28,860
+have the correct commutation so now why
+
+648
+00:26:28,860 --> 00:26:30,600
+is it running twice as slow so we're
+
+649
+00:26:30,600 --> 00:26:31,649
+gonna yak again and look at the source
+
+650
+00:26:31,649 --> 00:26:33,090
+code to say how is actually doing
+
+651
+00:26:33,090 --> 00:26:35,460
+addition you see it's not just you know
+
+652
+00:26:35,460 --> 00:26:37,169
+one instruction you know number plus
+
+653
+00:26:37,169 --> 00:26:39,510
+number it's just giant switched a bunch
+
+654
+00:26:39,510 --> 00:26:41,010
+of stuff to try to figure out you know
+
+655
+00:26:41,010 --> 00:26:42,720
+if it's negative or non-negative it's
+
+656
+00:26:42,720 --> 00:26:44,010
+zero or if they're equal to each other
+
+657
+00:26:44,010 --> 00:26:46,409
+right so we're executing this for every
+
+658
+00:26:46,409 --> 00:26:47,940
+single time we compute those you know
+
+659
+00:26:47,940 --> 00:26:50,220
+number plus number whereas if it's a
+
+660
+00:26:50,220 --> 00:26:51,630
+real is if it's a floating point number
+
+661
+00:26:51,630 --> 00:26:56,220
+it's one instruction than the CPU so you
+
+662
+00:26:56,220 --> 00:26:57,389
+know we don't have the source code for
+
+663
+00:26:57,389 --> 00:26:58,470
+sequel server an Oracle but I guarantee
+
+664
+00:26:58,470 --> 00:26:59,760
+they're doing something something
+
+665
+00:26:59,760 --> 00:27:00,590
+similar
+
+666
+00:27:00,590 --> 00:27:05,940
+roughly okay so is this clear okay so if
+
+667
+00:27:05,940 --> 00:27:08,429
+we don't want to lose data due to
+
+668
+00:27:08,429 --> 00:27:10,350
+imprecision we use a fixed point decimal
+
+669
+00:27:10,350 --> 00:27:11,580
+but this is something we have to
+
+670
+00:27:11,580 --> 00:27:14,450
+implement in our database system for us
+
+671
+00:27:14,450 --> 00:27:15,630
+okay
+
+672
+00:27:15,630 --> 00:27:17,940
+so now we will talk about what happens
+
+673
+00:27:17,940 --> 00:27:20,399
+when the value of the trying to store is
+
+674
+00:27:20,399 --> 00:27:22,260
+too large and doesn't fit in a single
+
+675
+00:27:22,260 --> 00:27:25,380
+page there's two ways to do this so in
+
+676
+00:27:25,380 --> 00:27:28,080
+general as I said last time the size of
+
+677
+00:27:28,080 --> 00:27:29,669
+a page is going to be fixed throughout
+
+678
+00:27:29,669 --> 00:27:31,260
+the entire table mostly throughout the
+
+679
+00:27:31,260 --> 00:27:32,639
+entire database this is something you
+
+680
+00:27:32,639 --> 00:27:33,929
+set when you turn the system all and you
+
+681
+00:27:33,929 --> 00:27:36,090
+say I want to have you know 4qi pages or
+
+682
+00:27:36,090 --> 00:27:38,309
+8 kilobyte pages db2 allows you to play
+
+683
+00:27:38,309 --> 00:27:39,510
+around with the page saw
+
+684
+00:27:39,510 --> 00:27:41,940
+per buffer pool but in general for let's
+
+685
+00:27:41,940 --> 00:27:44,010
+assume that's the case so now what do we
+
+686
+00:27:44,010 --> 00:27:46,140
+do if the thing we're trying to store
+
+687
+00:27:46,140 --> 00:27:49,530
+doesn't fit in a single page right well
+
+688
+00:27:49,530 --> 00:27:50,790
+an obvious thing to do is have what's
+
+689
+00:27:50,790 --> 00:27:53,040
+called an overflow page so basically in
+
+690
+00:27:53,040 --> 00:27:54,270
+our tube let's say this value this
+
+691
+00:27:54,270 --> 00:27:56,670
+attribute C here doesn't fit in the page
+
+692
+00:27:56,670 --> 00:28:00,510
+so we'll just have a pointer now to some
+
+693
+00:28:00,510 --> 00:28:02,610
+other overflow page that'll have the
+
+694
+00:28:02,610 --> 00:28:05,190
+data that we want so this could just be
+
+695
+00:28:05,190 --> 00:28:07,830
+another record ID like a page number and
+
+696
+00:28:07,830 --> 00:28:09,960
+an offset to tell us where to find this
+
+697
+00:28:09,960 --> 00:28:13,050
+particular data that we need so then if
+
+698
+00:28:13,050 --> 00:28:15,780
+we now have a query and we need this
+
+699
+00:28:15,780 --> 00:28:17,940
+attribute or value as part of the output
+
+700
+00:28:17,940 --> 00:28:19,320
+we'd have to follow this pointer and go
+
+701
+00:28:19,320 --> 00:28:20,790
+bring that page and copy the data out
+
+702
+00:28:20,790 --> 00:28:23,610
+and produces an output now this data
+
+703
+00:28:23,610 --> 00:28:27,210
+isn't fit in this page by itself - you
+
+704
+00:28:27,210 --> 00:28:28,590
+can have another you know overflow page
+
+705
+00:28:28,590 --> 00:28:30,330
+pointer to some other thing out you know
+
+706
+00:28:30,330 --> 00:28:31,950
+some other page and we just you know
+
+707
+00:28:31,950 --> 00:28:33,330
+chain them all together to produce the
+
+708
+00:28:33,330 --> 00:28:35,850
+output that we're looking for so
+
+709
+00:28:35,850 --> 00:28:36,810
+different database systems have
+
+710
+00:28:36,810 --> 00:28:38,400
+different names for this in Postgres is
+
+711
+00:28:38,400 --> 00:28:40,770
+called toast in sequel server and my
+
+712
+00:28:40,770 --> 00:28:43,320
+Siegel the card overflow pages and they
+
+713
+00:28:43,320 --> 00:28:44,700
+have different specifications that when
+
+714
+00:28:44,700 --> 00:28:46,380
+they would actually use use something
+
+715
+00:28:46,380 --> 00:28:50,130
+like this so in in Postgres if the value
+
+716
+00:28:50,130 --> 00:28:51,240
+trying to store is larger than two
+
+717
+00:28:51,240 --> 00:28:53,490
+kilobytes then it always goes to this
+
+718
+00:28:53,490 --> 00:28:56,280
+other thing in sequel server it's just
+
+719
+00:28:56,280 --> 00:28:58,380
+two per doesn't fit in the page it pulls
+
+720
+00:28:58,380 --> 00:29:00,500
+it out and put them to another page and
+
+721
+00:29:00,500 --> 00:29:06,210
+my Siegel is half the page so the reason
+
+722
+00:29:06,210 --> 00:29:07,560
+why you'd want to do something like this
+
+723
+00:29:07,560 --> 00:29:10,620
+is because you get all the protections
+
+724
+00:29:10,620 --> 00:29:12,330
+you normally would get when these
+
+725
+00:29:12,330 --> 00:29:13,940
+overflow pages with your regular data
+
+726
+00:29:13,940 --> 00:29:16,080
+meaning if I'm writing to this overflow
+
+727
+00:29:16,080 --> 00:29:17,970
+page and I crash and come back I don't I
+
+728
+00:29:17,970 --> 00:29:20,550
+don't want to lose anything right
+
+729
+00:29:20,550 --> 00:29:22,020
+there's all the optimizations you can do
+
+730
+00:29:22,020 --> 00:29:23,670
+with the overflow pages that aren't easy
+
+731
+00:29:23,670 --> 00:29:25,710
+to do in the regular a lot of pages as
+
+732
+00:29:25,710 --> 00:29:28,080
+well like in Postgres for example since
+
+733
+00:29:28,080 --> 00:29:29,730
+most of the time these overflow pages
+
+734
+00:29:29,730 --> 00:29:32,850
+are read-only or read mostly like you
+
+735
+00:29:32,850 --> 00:29:34,590
+know think of like a Wikipedia you
+
+736
+00:29:34,590 --> 00:29:36,540
+update the you know an article or update
+
+737
+00:29:36,540 --> 00:29:38,070
+an entry but most the time people just
+
+738
+00:29:38,070 --> 00:29:40,740
+reading it so therefore I could just
+
+739
+00:29:40,740 --> 00:29:42,180
+compress this when I put out the disk
+
+740
+00:29:42,180 --> 00:29:44,400
+for keeping in memory and because the
+
+741
+00:29:44,400 --> 00:29:45,540
+most the time I'm never gonna have to
+
+742
+00:29:45,540 --> 00:29:48,240
+decompress it to update it so the month
+
+743
+00:29:48,240 --> 00:29:49,410
+of optimizations like that and they all
+
+744
+00:29:49,410 --> 00:29:51,060
+come under the same protections as you
+
+745
+00:29:51,060 --> 00:29:53,290
+normally would with regular data pages
+
+746
+00:29:53,290 --> 00:29:56,230
+or regular tuple pages another
+
+747
+00:29:56,230 --> 00:29:57,490
+alternative instead of storing it
+
+748
+00:29:57,490 --> 00:29:59,470
+directly inside the database is the use
+
+749
+00:29:59,470 --> 00:30:02,080
+what's called external storage and the
+
+750
+00:30:02,080 --> 00:30:04,240
+basic idea here is that we're not
+
+751
+00:30:04,240 --> 00:30:05,890
+actually gonna store the data for this
+
+752
+00:30:05,890 --> 00:30:08,020
+particular attribute in the tuple itself
+
+753
+00:30:08,020 --> 00:30:10,480
+we're just gonna store a pointer or a
+
+754
+00:30:10,480 --> 00:30:12,640
+file path to somewhere in on the local
+
+755
+00:30:12,640 --> 00:30:14,770
+disk or a network storage or some
+
+756
+00:30:14,770 --> 00:30:17,680
+external storage device where this this
+
+757
+00:30:17,680 --> 00:30:20,980
+data can be found right so in this case
+
+758
+00:30:20,980 --> 00:30:23,350
+here going from C this could be a file
+
+759
+00:30:23,350 --> 00:30:25,330
+path on the local disk so say you know
+
+760
+00:30:25,330 --> 00:30:27,040
+here's where to find this particular
+
+761
+00:30:27,040 --> 00:30:28,450
+attribute if you ever if you ever need
+
+762
+00:30:28,450 --> 00:30:31,540
+it right so in the systems that do
+
+763
+00:30:31,540 --> 00:30:34,330
+support this like Oracle and db2 and
+
+764
+00:30:34,330 --> 00:30:37,900
+Microsoft you can't actually modify
+
+765
+00:30:37,900 --> 00:30:40,960
+what's in this file right you can read
+
+766
+00:30:40,960 --> 00:30:47,280
+it but you can't manipulate it right yes
+
+767
+00:30:56,370 --> 00:30:58,960
+so his great question is or statement is
+
+768
+00:30:58,960 --> 00:31:00,850
+for the over lo page disk is brought
+
+769
+00:31:00,850 --> 00:31:03,010
+into memory just like a regular tuple to
+
+770
+00:31:03,010 --> 00:31:05,440
+page correct in the case of these
+
+771
+00:31:05,440 --> 00:31:07,420
+external files where do these things
+
+772
+00:31:07,420 --> 00:31:11,440
+reside music so if if you if you run a
+
+773
+00:31:11,440 --> 00:31:13,330
+query like select star run this tuple
+
+774
+00:31:13,330 --> 00:31:15,820
+here and sees in this external file if I
+
+775
+00:31:15,820 --> 00:31:17,500
+need to produce it as an output I gotta
+
+776
+00:31:17,500 --> 00:31:20,380
+go read it in so it could page it in
+
+777
+00:31:20,380 --> 00:31:22,540
+just like another another tuple or other
+
+778
+00:31:22,540 --> 00:31:23,230
+tuple pages
+
+779
+00:31:23,230 --> 00:31:25,360
+it could be ephemeral meaning like I'm
+
+780
+00:31:25,360 --> 00:31:26,260
+gonna read it and then immediately
+
+781
+00:31:26,260 --> 00:31:28,530
+discard it rather than polluting my cash
+
+782
+00:31:28,530 --> 00:31:30,430
+there's a bunch of different ways to do
+
+783
+00:31:30,430 --> 00:31:32,740
+this but the key thing to think about is
+
+784
+00:31:32,740 --> 00:31:35,890
+like if someone in now outside the
+
+785
+00:31:35,890 --> 00:31:39,130
+database modifies this file will see
+
+786
+00:31:39,130 --> 00:31:40,630
+that change inside of our database any
+
+787
+00:31:40,630 --> 00:31:42,190
+time we go to read it because there's
+
+788
+00:31:42,190 --> 00:31:43,690
+outside the control or the protections
+
+789
+00:31:43,690 --> 00:31:49,200
+of our database system all right so
+
+790
+00:31:49,200 --> 00:31:51,190
+everything I guess why do you want to do
+
+791
+00:31:51,190 --> 00:31:53,620
+something like this well what's an
+
+792
+00:31:53,620 --> 00:31:54,880
+example of a file maybe don't want to
+
+793
+00:31:54,880 --> 00:31:59,590
+store in the database system say you're
+
+794
+00:31:59,590 --> 00:32:00,880
+building website right and you have you
+
+795
+00:32:00,880 --> 00:32:03,400
+have a bunch of video files you want to
+
+796
+00:32:03,400 --> 00:32:04,840
+you know and you have a tuple that says
+
+797
+00:32:04,840 --> 00:32:06,280
+you know this person uploaded this video
+
+798
+00:32:06,280 --> 00:32:07,180
+you don't
+
+799
+00:32:07,180 --> 00:32:08,590
+store the video in the database itself
+
+800
+00:32:08,590 --> 00:32:09,760
+because that could be you know gigabytes
+
+801
+00:32:09,760 --> 00:32:12,370
+I said it's very common to see that and
+
+802
+00:32:12,370 --> 00:32:15,670
+those kind of things right the the
+
+803
+00:32:15,670 --> 00:32:16,740
+application frameworks like Django
+
+804
+00:32:16,740 --> 00:32:18,910
+nodejs and things like that they have
+
+805
+00:32:18,910 --> 00:32:21,480
+they have you know built-in ways to
+
+806
+00:32:21,480 --> 00:32:23,640
+store data outside the database system
+
+807
+00:32:23,640 --> 00:32:27,520
+for images and other things so there's
+
+808
+00:32:27,520 --> 00:32:30,730
+no there's there's no sort of set in
+
+809
+00:32:30,730 --> 00:32:34,720
+stone rule to say how big a file should
+
+810
+00:32:34,720 --> 00:32:37,300
+be but when you know to put it out as an
+
+811
+00:32:37,300 --> 00:32:38,650
+external file versus keeping it an
+
+812
+00:32:38,650 --> 00:32:41,050
+overflow page I'll say also to for the
+
+813
+00:32:41,050 --> 00:32:43,030
+overload pages this is transparent to
+
+814
+00:32:43,030 --> 00:32:44,620
+you as the application so you don't know
+
+815
+00:32:44,620 --> 00:32:45,850
+that you've gone to an overflow page
+
+816
+00:32:45,850 --> 00:32:48,280
+like you can go do what we did before
+
+817
+00:32:48,280 --> 00:32:51,280
+and look at the actual layout of in
+
+818
+00:32:51,280 --> 00:32:54,370
+low-level information about where our
+
+819
+00:32:54,370 --> 00:32:55,510
+data is actually stored like we did with
+
+820
+00:32:55,510 --> 00:32:57,430
+the CT ID and Postgres and the other
+
+821
+00:32:57,430 --> 00:33:00,340
+systems but most applications don't know
+
+822
+00:33:00,340 --> 00:33:01,480
+don't care that's stored in an overflow
+
+823
+00:33:01,480 --> 00:33:03,720
+page like I wanted to get my data out
+
+824
+00:33:03,720 --> 00:33:06,880
+for this thing again you depending on
+
+825
+00:33:06,880 --> 00:33:08,230
+how you actually house actually
+
+826
+00:33:08,230 --> 00:33:10,180
+implemented you could go through the
+
+827
+00:33:10,180 --> 00:33:11,380
+Davison or you could just jump to the
+
+828
+00:33:11,380 --> 00:33:13,330
+file and go get it directly if you
+
+829
+00:33:13,330 --> 00:33:18,670
+wanted to so the there was a paper
+
+830
+00:33:18,670 --> 00:33:21,970
+written almost 10 years ago over ten
+
+831
+00:33:21,970 --> 00:33:24,460
+years ago by some famous davidís people
+
+832
+00:33:24,460 --> 00:33:27,640
+at Microsoft miss the the name of the
+
+833
+00:33:27,640 --> 00:33:29,080
+article was to blob or not the blob or
+
+834
+00:33:29,080 --> 00:33:31,540
+blob is a binary large object I just
+
+835
+00:33:31,540 --> 00:33:33,930
+it's a variable length binary data and
+
+836
+00:33:33,930 --> 00:33:36,790
+they basically found back in the 2000s
+
+837
+00:33:36,790 --> 00:33:40,240
+that anything below 256 kilobytes you
+
+838
+00:33:40,240 --> 00:33:41,710
+want to store as an overflow page
+
+839
+00:33:41,710 --> 00:33:43,780
+anything larger than that you want to
+
+840
+00:33:43,780 --> 00:33:47,200
+store in the you know an external file
+
+841
+00:33:47,200 --> 00:33:47,640
+storage
+
+842
+00:33:47,640 --> 00:33:50,650
+we had the guy that mented sequel Lite
+
+843
+00:33:50,650 --> 00:33:53,080
+come to CMU a few years ago came give a
+
+844
+00:33:53,080 --> 00:33:56,230
+talk here and he said that for a lot of
+
+845
+00:33:56,230 --> 00:33:57,550
+cell phone applications is actually
+
+846
+00:33:57,550 --> 00:33:59,620
+better off to store the the thumbnails
+
+847
+00:33:59,620 --> 00:34:02,430
+from images even up to one megabyte
+
+848
+00:34:02,430 --> 00:34:05,050
+inside the database system because it
+
+849
+00:34:05,050 --> 00:34:06,970
+would that that was much faster to read
+
+850
+00:34:06,970 --> 00:34:08,469
+those records from the database system
+
+851
+00:34:08,469 --> 00:34:09,880
+because they already had the file open
+
+852
+00:34:09,880 --> 00:34:11,770
+rather than having to follow this
+
+853
+00:34:11,770 --> 00:34:14,170
+pointer to the file system and then do
+
+854
+00:34:14,170 --> 00:34:16,500
+the you do the F open to go get the data
+
+855
+00:34:16,500 --> 00:34:19,330
+so again there's no hard and fast rule
+
+856
+00:34:19,330 --> 00:34:20,650
+what to do
+
+857
+00:34:20,650 --> 00:34:23,260
+this is also more common when when
+
+858
+00:34:23,260 --> 00:34:24,850
+you're you know the database storage is
+
+859
+00:34:24,850 --> 00:34:26,860
+super expensive right if you really care
+
+860
+00:34:26,860 --> 00:34:28,870
+about your data or your database your
+
+861
+00:34:28,870 --> 00:34:29,800
+views you're gonna run out on high-end
+
+862
+00:34:29,800 --> 00:34:32,739
+hardware and therefore storing like a
+
+863
+00:34:32,739 --> 00:34:34,840
+bunch of video files in some really
+
+864
+00:34:34,840 --> 00:34:36,730
+high-end enterprise this is probably not
+
+865
+00:34:36,730 --> 00:34:38,560
+a good use of your money so you can take
+
+866
+00:34:38,560 --> 00:34:40,659
+this you know these files chuck it in
+
+867
+00:34:40,659 --> 00:34:42,610
+HDFS or cheaper stores I guess three and
+
+868
+00:34:42,610 --> 00:34:44,860
+then now the days hasn't is not
+
+869
+00:34:44,860 --> 00:34:46,300
+overburdened with trying to maintain
+
+870
+00:34:46,300 --> 00:34:50,290
+your files so again it's not just not
+
+871
+00:34:50,290 --> 00:34:51,760
+just performance reasons the other
+
+872
+00:34:51,760 --> 00:34:53,380
+economical reasons why'd you want to do
+
+873
+00:34:53,380 --> 00:34:55,120
+something like this but this paper I
+
+874
+00:34:55,120 --> 00:34:56,590
+think summarizes a bunch of the issues
+
+875
+00:34:56,590 --> 00:34:57,640
+that's why I like it
+
+876
+00:34:57,640 --> 00:34:59,890
+so again so any questions have a good
+
+877
+00:34:59,890 --> 00:35:02,530
+represent data most of the times you
+
+878
+00:35:02,530 --> 00:35:03,880
+know for fixed length data it's just
+
+879
+00:35:03,880 --> 00:35:05,650
+whatever the programming environment
+
+880
+00:35:05,650 --> 00:35:08,350
+gives us for anything that's variable
+
+881
+00:35:08,350 --> 00:35:11,680
+length or if we want fixed point
+
+882
+00:35:11,680 --> 00:35:13,420
+precision that stuff will help implement
+
+883
+00:35:13,420 --> 00:35:19,840
+ourselves okay so now let's talk about
+
+884
+00:35:19,840 --> 00:35:22,750
+how what how we actually figure out what
+
+885
+00:35:22,750 --> 00:35:24,790
+our tuples look like so again this is
+
+886
+00:35:24,790 --> 00:35:26,980
+what the system catalogs are for it's
+
+887
+00:35:26,980 --> 00:35:29,440
+the metadata about the data metadata
+
+888
+00:35:29,440 --> 00:35:31,570
+about the database what comes I have
+
+889
+00:35:31,570 --> 00:35:33,220
+whether table names or indexes I have
+
+890
+00:35:33,220 --> 00:35:34,810
+and so forth as well as some other
+
+891
+00:35:34,810 --> 00:35:37,510
+things like you know user permissions
+
+892
+00:35:37,510 --> 00:35:38,860
+and security stuff which I don't care
+
+893
+00:35:38,860 --> 00:35:41,320
+about and then this will come up later
+
+894
+00:35:41,320 --> 00:35:42,400
+on when we talk about query optimization
+
+895
+00:35:42,400 --> 00:35:44,590
+but also internal statistics about what
+
+896
+00:35:44,590 --> 00:35:46,810
+your data looks like how many you know
+
+897
+00:35:46,810 --> 00:35:48,610
+how many unique values do I have what
+
+898
+00:35:48,610 --> 00:35:49,660
+does the distribution of those values
+
+899
+00:35:49,660 --> 00:35:53,290
+look like so pretty much every single
+
+900
+00:35:53,290 --> 00:35:55,680
+database system is going to store their
+
+901
+00:35:55,680 --> 00:35:59,740
+catalog inside itself as just just
+
+902
+00:35:59,740 --> 00:36:02,080
+another table so like eating your own
+
+903
+00:36:02,080 --> 00:36:03,820
+dog food so I'm gonna store all the
+
+904
+00:36:03,820 --> 00:36:06,340
+metadata about my tables in just tables
+
+905
+00:36:06,340 --> 00:36:10,150
+themselves all right and so inside the
+
+906
+00:36:10,150 --> 00:36:11,800
+source code you obviously don't want to
+
+907
+00:36:11,800 --> 00:36:13,090
+write sequel query to say you know
+
+908
+00:36:13,090 --> 00:36:14,230
+what's the name of this table because
+
+909
+00:36:14,230 --> 00:36:15,820
+it's chicken for the egg problem like
+
+910
+00:36:15,820 --> 00:36:17,770
+how do I do a sequel query on a table to
+
+911
+00:36:17,770 --> 00:36:19,210
+find out the table name if I need to
+
+912
+00:36:19,210 --> 00:36:21,700
+know a table name right so you usually
+
+913
+00:36:21,700 --> 00:36:24,340
+have like some you know C+ clip sepals
+
+914
+00:36:24,340 --> 00:36:26,110
+code whatever your theater system is
+
+915
+00:36:26,110 --> 00:36:28,270
+programmed in to wrap around the
+
+916
+00:36:28,270 --> 00:36:30,160
+low-level access methods to go access
+
+917
+00:36:30,160 --> 00:36:32,700
+the catalog
+
+918
+00:36:32,700 --> 00:36:37,720
+so the most David assistant will expose
+
+919
+00:36:37,720 --> 00:36:39,910
+the catalog through the standard
+
+920
+00:36:39,910 --> 00:36:43,780
+information schema API so in the 1980s
+
+921
+00:36:43,780 --> 00:36:45,339
+all these different database systems all
+
+922
+00:36:45,339 --> 00:36:46,569
+had their own way of saying here's my
+
+923
+00:36:46,569 --> 00:36:48,130
+catalog here so here's how to access it
+
+924
+00:36:48,130 --> 00:36:49,569
+and that became a real pain in the ass
+
+925
+00:36:49,569 --> 00:36:50,710
+now if you want to take your application
+
+926
+00:36:50,710 --> 00:36:52,480
+and port it to there from one database
+
+927
+00:36:52,480 --> 00:36:54,250
+system to another because now all the
+
+928
+00:36:54,250 --> 00:36:56,200
+catalog stuff is different and you got
+
+929
+00:36:56,200 --> 00:36:58,359
+to rewrite all your code again so in the
+
+930
+00:36:58,359 --> 00:37:00,220
+ANSI standard and I think also in the
+
+931
+00:37:00,220 --> 00:37:02,230
+sequel standard by now they'd specify
+
+932
+00:37:02,230 --> 00:37:03,849
+this thing called the information schema
+
+933
+00:37:03,849 --> 00:37:06,069
+that that every data system has to
+
+934
+00:37:06,069 --> 00:37:08,410
+support to say here's the the metadata
+
+935
+00:37:08,410 --> 00:37:11,319
+that about my tables but we'll see in a
+
+936
+00:37:11,319 --> 00:37:12,880
+second bail always exposed the same
+
+937
+00:37:12,880 --> 00:37:16,150
+information in these tables that all the
+
+938
+00:37:16,150 --> 00:37:17,260
+Davises was all gonna have their own
+
+939
+00:37:17,260 --> 00:37:20,109
+what sort of shortcut ways to go get
+
+940
+00:37:20,109 --> 00:37:23,829
+this information as well so for example
+
+941
+00:37:23,829 --> 00:37:26,170
+say if you want to get the all the
+
+942
+00:37:26,170 --> 00:37:28,359
+tables we have so the sequel standard
+
+943
+00:37:28,359 --> 00:37:29,980
+would say you write it with this
+
+944
+00:37:29,980 --> 00:37:31,839
+information about tables which is just a
+
+945
+00:37:31,839 --> 00:37:34,270
+view on top of the real catalog and you
+
+946
+00:37:34,270 --> 00:37:36,190
+give it the catalog name right or the
+
+947
+00:37:36,190 --> 00:37:39,099
+database name in Postgres you use /d and
+
+948
+00:37:39,099 --> 00:37:40,750
+my sequel you shoot tables sequel edits
+
+949
+00:37:40,750 --> 00:37:43,150
+dot tables and then again all the data
+
+950
+00:37:43,150 --> 00:37:44,619
+systems all have their own shortcuts and
+
+951
+00:37:44,619 --> 00:37:46,089
+essentially what they're doing
+
+952
+00:37:46,089 --> 00:37:47,890
+underneath the covers is converting this
+
+953
+00:37:47,890 --> 00:37:52,630
+command into something like this same
+
+954
+00:37:52,630 --> 00:37:53,770
+thing now if I want to get this schema
+
+955
+00:37:53,770 --> 00:37:56,859
+for a table so again this is how we do
+
+956
+00:37:56,859 --> 00:37:58,510
+it in the ANSI standard and then the
+
+957
+00:37:58,510 --> 00:38:01,630
+various systems all have their own own
+
+958
+00:38:01,630 --> 00:38:03,760
+way of doing this so I want to go a
+
+959
+00:38:03,760 --> 00:38:08,250
+quick demo of Postgres and my sequel
+
+960
+00:38:08,250 --> 00:38:10,359
+again just to show you what's actually
+
+961
+00:38:10,359 --> 00:38:12,869
+going on
+
+962
+00:38:20,300 --> 00:38:23,349
+[Music]
+
+963
+00:38:27,460 --> 00:38:32,270
+all right so it's again Postgres if I do
+
+964
+00:38:32,270 --> 00:38:34,910
+dash D I get the list of all my tables I
+
+965
+00:38:34,910 --> 00:38:37,520
+can do dash D plus and get more
+
+966
+00:38:37,520 --> 00:38:40,240
+information and then if I pick a table
+
+967
+00:38:40,240 --> 00:38:42,770
+it'll tell me what you know what the
+
+968
+00:38:42,770 --> 00:38:44,990
+metadata looks like so here's all the
+
+969
+00:38:44,990 --> 00:38:46,640
+columns that I have here's the types I
+
+970
+00:38:46,640 --> 00:38:48,710
+have something now when I run my query I
+
+971
+00:38:48,710 --> 00:38:50,210
+look at this information say all right
+
+972
+00:38:50,210 --> 00:38:52,400
+at the first attribute is an integer I
+
+973
+00:38:52,400 --> 00:38:54,170
+asking me 32 bits the next attribute is
+
+974
+00:38:54,170 --> 00:38:55,940
+also an integer that's gonna be 32 bits
+
+975
+00:38:55,940 --> 00:38:58,880
+and then I have code inside to say all
+
+976
+00:38:58,880 --> 00:39:00,109
+right if I'm operating ones tuple what
+
+977
+00:39:00,109 --> 00:39:01,910
+is the schema I know how to again do
+
+978
+00:39:01,910 --> 00:39:04,609
+that do the conversion of the raw bytes
+
+979
+00:39:04,609 --> 00:39:06,800
+of the byte array for that tuple and put
+
+980
+00:39:06,800 --> 00:39:09,730
+it to the form that it expect all right
+
+981
+00:39:09,730 --> 00:39:12,619
+so let me see if I can do this for my
+
+982
+00:39:12,619 --> 00:39:14,240
+sequel I think I just destroyed my
+
+983
+00:39:14,240 --> 00:39:23,480
+sequel let me do this on a another
+
+984
+00:39:23,480 --> 00:39:33,410
+machine so I can say show tables and
+
+985
+00:39:33,410 --> 00:39:36,260
+tells me tables I have I can say show
+
+986
+00:39:36,260 --> 00:39:41,150
+databases same thing here's all the
+
+987
+00:39:41,150 --> 00:39:42,369
+different different databases they have
+
+988
+00:39:42,369 --> 00:39:46,670
+and then for a given table I can say
+
+989
+00:39:46,670 --> 00:39:51,080
+describe knobs right and I'll just say
+
+990
+00:39:51,080 --> 00:39:52,790
+again same information here's the name
+
+991
+00:39:52,790 --> 00:39:54,589
+of the field here's the type and then
+
+992
+00:39:54,589 --> 00:39:58,150
+some extra metadata so this is my sequel
+
+993
+00:39:58,150 --> 00:40:02,300
+5.7 the newer version actually stores
+
+994
+00:40:02,300 --> 00:40:04,369
+the tables in the catalog itself or they
+
+995
+00:40:04,369 --> 00:40:05,869
+start service the catalog and the tables
+
+996
+00:40:05,869 --> 00:40:08,330
+itself in this version here they didn't
+
+997
+00:40:08,330 --> 00:40:10,760
+do that all they would do for the cowell
+
+998
+00:40:10,760 --> 00:40:13,700
+is just read the directory of where the
+
+999
+00:40:13,700 --> 00:40:16,070
+the database is stored and use that to
+
+1000
+00:40:16,070 --> 00:40:18,740
+figure out what databases are there and
+
+1001
+00:40:18,740 --> 00:40:20,960
+what what tables are there and so we can
+
+1002
+00:40:20,960 --> 00:40:22,369
+actually break it or fake it out by
+
+1003
+00:40:22,369 --> 00:40:24,859
+putting things that shouldn't be there
+
+1004
+00:40:24,859 --> 00:40:27,140
+in that directory alright so if you go
+
+1005
+00:40:27,140 --> 00:40:31,150
+back here let's split it
+
+1006
+00:40:31,610 --> 00:40:36,480
+so do show databases and it thinks I
+
+1007
+00:40:36,480 --> 00:40:37,470
+thinks I have a bunch of these here
+
+1008
+00:40:37,470 --> 00:40:39,870
+right so now if I go back to this
+
+1009
+00:40:39,870 --> 00:40:48,570
+machine login as root go into where my
+
+1010
+00:40:48,570 --> 00:40:51,350
+sequel stores its data live my sequel
+
+1011
+00:40:51,350 --> 00:40:53,520
+right and roughly you see that there's a
+
+1012
+00:40:53,520 --> 00:40:54,990
+bunch of you know there's a bunch of
+
+1013
+00:40:54,990 --> 00:40:58,140
+directories here for the databases that
+
+1014
+00:40:58,140 --> 00:40:59,640
+it knows about but the data is called
+
+1015
+00:40:59,640 --> 00:41:01,950
+tests there's a directory called test so
+
+1016
+00:41:01,950 --> 00:41:03,300
+what happens if I call now make
+
+1017
+00:41:03,300 --> 00:41:07,080
+directory xxx well I want to go back up
+
+1018
+00:41:07,080 --> 00:41:08,790
+here my sequel thinks there's a
+
+1019
+00:41:08,790 --> 00:41:13,170
+directory called xxx so so this is a
+
+1020
+00:41:13,170 --> 00:41:15,600
+good example of where if we rely on
+
+1021
+00:41:15,600 --> 00:41:17,280
+things X terms of the database system we
+
+1022
+00:41:17,280 --> 00:41:20,940
+can't fully control that so my Siegel
+
+1023
+00:41:20,940 --> 00:41:22,560
+can't prevent anybody from going to that
+
+1024
+00:41:22,560 --> 00:41:24,300
+directory and putting better at once in
+
+1025
+00:41:24,300 --> 00:41:27,060
+there but if it's but it's relying on
+
+1026
+00:41:27,060 --> 00:41:29,450
+that to figure out what's in my database
+
+1027
+00:41:29,450 --> 00:41:32,400
+so from an implementation standpoint it
+
+1028
+00:41:32,400 --> 00:41:34,320
+might be easier but from a correctness
+
+1029
+00:41:34,320 --> 00:41:36,390
+standpoint that's problematic
+
+1030
+00:41:36,390 --> 00:41:37,620
+they may say who's gonna be stupid
+
+1031
+00:41:37,620 --> 00:41:39,420
+enough to go create directories to screw
+
+1032
+00:41:39,420 --> 00:41:41,160
+around with my sequel well what about
+
+1033
+00:41:41,160 --> 00:41:42,440
+other things like I'm writing the files
+
+1034
+00:41:42,440 --> 00:41:45,810
+then you know that I don't have the
+
+1035
+00:41:45,810 --> 00:41:46,890
+regular protection I would for my
+
+1036
+00:41:46,890 --> 00:41:48,030
+regular data because I'm not logging
+
+1037
+00:41:48,030 --> 00:41:50,670
+things correctly right we want to put as
+
+1038
+00:41:50,670 --> 00:41:51,750
+much as possible inside the database
+
+1039
+00:41:51,750 --> 00:41:54,090
+system because then we can rely on that
+
+1040
+00:41:54,090 --> 00:41:58,710
+to perform correctly for us okay all
+
+1041
+00:41:58,710 --> 00:42:00,830
+right
+
+1042
+00:42:02,250 --> 00:42:05,340
+so that's it that's all we really need a
+
+1043
+00:42:05,340 --> 00:42:07,950
+cover for catalogs this semester just
+
+1044
+00:42:07,950 --> 00:42:09,540
+kidding just be aware that there's
+
+1045
+00:42:09,540 --> 00:42:12,000
+something that inside the dating system
+
+1046
+00:42:12,000 --> 00:42:14,550
+wherever of what our schema looks like
+
+1047
+00:42:14,550 --> 00:42:16,440
+and that's we're gonna use that when we
+
+1048
+00:42:16,440 --> 00:42:17,760
+ask you queries use that when we build
+
+1049
+00:42:17,760 --> 00:42:20,160
+indexes to determine you know what
+
+1050
+00:42:20,160 --> 00:42:22,920
+should we actually be doing and the way
+
+1051
+00:42:22,920 --> 00:42:24,690
+to think about this the different types
+
+1052
+00:42:24,690 --> 00:42:29,790
+is that in the and there's easiest way
+
+1053
+00:42:29,790 --> 00:42:31,260
+to implement this and you'll see this in
+
+1054
+00:42:31,260 --> 00:42:32,760
+the bus hub code that you guys work on
+
+1055
+00:42:32,760 --> 00:42:34,590
+when you look at the type system it's me
+
+1056
+00:42:34,590 --> 00:42:37,170
+a giant switch statement right if the
+
+1057
+00:42:37,170 --> 00:42:38,670
+type is integer do this if the type is
+
+1058
+00:42:38,670 --> 00:42:41,250
+to float do that and so you're doing
+
+1059
+00:42:41,250 --> 00:42:42,720
+that for every single tuple and that's
+
+1060
+00:42:42,720 --> 00:42:43,710
+actually gonna be really slow because
+
+1061
+00:42:43,710 --> 00:42:45,660
+they're actually interpreting you know
+
+1062
+00:42:45,660 --> 00:42:48,390
+what the layout should be and in the
+
+1063
+00:42:48,390 --> 00:42:49,950
+more advanced systems you can actually
+
+1064
+00:42:49,950 --> 00:42:51,840
+compile or do code generation to compile
+
+1065
+00:42:51,840 --> 00:42:53,970
+on the fly like just-in-time compilation
+
+1066
+00:42:53,970 --> 00:42:56,010
+in the JVM to actually compile those
+
+1067
+00:42:56,010 --> 00:42:57,480
+operations so that you don't have to do
+
+1068
+00:42:57,480 --> 00:42:59,790
+that interpretation every single time my
+
+1069
+00:42:59,790 --> 00:43:01,050
+C code doesn't do that new versions
+
+1070
+00:43:01,050 --> 00:43:03,810
+Postgres does that but Oracle and sequel
+
+1071
+00:43:03,810 --> 00:43:05,160
+server should do that as well all the
+
+1072
+00:43:05,160 --> 00:43:06,869
+major commercial systems do that that's
+
+1073
+00:43:06,869 --> 00:43:07,650
+not something we're to cover in this
+
+1074
+00:43:07,650 --> 00:43:09,450
+class but when we cover a query
+
+1075
+00:43:09,450 --> 00:43:11,339
+execution I'll bring that up to say this
+
+1076
+00:43:11,339 --> 00:43:12,359
+is a way to write to make this run
+
+1077
+00:43:12,359 --> 00:43:18,930
+faster all right so the next thing we'll
+
+1078
+00:43:18,930 --> 00:43:20,609
+talk about is this for storage models is
+
+1079
+00:43:20,609 --> 00:43:22,170
+the first thing if they realize that
+
+1080
+00:43:22,170 --> 00:43:23,880
+we'd covered in the first lecture is
+
+1081
+00:43:23,880 --> 00:43:28,050
+that the the relational model doesn't
+
+1082
+00:43:28,050 --> 00:43:30,270
+say anything about how we actually want
+
+1083
+00:43:30,270 --> 00:43:32,520
+to store data doesn't know about types
+
+1084
+00:43:32,520 --> 00:43:34,859
+doesn't know about you know byte up byte
+
+1085
+00:43:34,859 --> 00:43:37,950
+arrays and so forth and it doesn't
+
+1086
+00:43:37,950 --> 00:43:39,660
+necessarily even say that we have to
+
+1087
+00:43:39,660 --> 00:43:42,390
+store all the attributes of a tuple
+
+1088
+00:43:42,390 --> 00:43:45,390
+together either in memory or on disk
+
+1089
+00:43:45,390 --> 00:43:49,800
+right and so again anytime we you know
+
+1090
+00:43:49,800 --> 00:43:51,300
+so far in the class when we visualize
+
+1091
+00:43:51,300 --> 00:43:53,369
+databases now I'm saying here's the row
+
+1092
+00:43:53,369 --> 00:43:55,140
+here's all the attributes for it right
+
+1093
+00:43:55,140 --> 00:43:57,930
+for a tuple but that's not that may not
+
+1094
+00:43:57,930 --> 00:43:59,040
+be the best way to do that for some
+
+1095
+00:43:59,040 --> 00:44:01,710
+workloads so let's look at a really
+
+1096
+00:44:01,710 --> 00:44:03,540
+simple database example here right this
+
+1097
+00:44:03,540 --> 00:44:05,609
+is actually derived from the MediaWiki
+
+1098
+00:44:05,609 --> 00:44:07,530
+software that runs wikipedia like if you
+
+1099
+00:44:07,530 --> 00:44:08,670
+go look at look at their source code
+
+1100
+00:44:08,670 --> 00:44:11,190
+it's all PHP with my sequel you look at
+
+1101
+00:44:11,190 --> 00:44:13,380
+the DDL file the sequel file it'll look
+
+1102
+00:44:13,380 --> 00:44:15,210
+roughly like this so we have three
+
+1103
+00:44:15,210 --> 00:44:15,810
+tables
+
+1104
+00:44:15,810 --> 00:44:17,490
+we have user account pages and revisions
+
+1105
+00:44:17,490 --> 00:44:20,340
+and so the revisions table is where
+
+1106
+00:44:20,340 --> 00:44:21,960
+we're going to store all the new updates
+
+1107
+00:44:21,960 --> 00:44:24,120
+for every single article so it's a kind
+
+1108
+00:44:24,120 --> 00:44:25,410
+of a foreign key reference to the user
+
+1109
+00:44:25,410 --> 00:44:27,240
+that created that made the change and
+
+1110
+00:44:27,240 --> 00:44:29,280
+then a page ID that corresponds to the
+
+1111
+00:44:29,280 --> 00:44:32,010
+article or the page and this guy then
+
+1112
+00:44:32,010 --> 00:44:33,900
+also has a foreign key preference to say
+
+1113
+00:44:33,900 --> 00:44:36,510
+here's the latest revision for this
+
+1114
+00:44:36,510 --> 00:44:38,130
+particular page so you don't to do a
+
+1115
+00:44:38,130 --> 00:44:39,750
+scan you just can jump in directly to it
+
+1116
+00:44:39,750 --> 00:44:41,730
+again this is a certain approximation a
+
+1117
+00:44:41,730 --> 00:44:43,020
+cleaned up version of what Wikipedia
+
+1118
+00:44:43,020 --> 00:44:45,480
+actually does but for our purposes in
+
+1119
+00:44:45,480 --> 00:44:50,550
+this lecture here it's fine so there's
+
+1120
+00:44:50,550 --> 00:44:52,680
+two sort of general class of workloads
+
+1121
+00:44:52,680 --> 00:44:53,790
+we're gonna care about in database
+
+1122
+00:44:53,790 --> 00:44:55,110
+systems you know they're certainly not
+
+1123
+00:44:55,110 --> 00:44:56,910
+the only ones as machine learning and
+
+1124
+00:44:56,910 --> 00:44:59,370
+streaming stuff but for now is this
+
+1125
+00:44:59,370 --> 00:45:02,520
+focus on just two so the first is called
+
+1126
+00:45:02,520 --> 00:45:04,680
+online transaction processing or OLTP
+
+1127
+00:45:04,680 --> 00:45:06,600
+who here has ever heard that term before
+
+1128
+00:45:06,600 --> 00:45:11,970
+OLTP phew okay good so this is usually
+
+1129
+00:45:11,970 --> 00:45:13,590
+what you're gonna get end up with this
+
+1130
+00:45:13,590 --> 00:45:15,120
+type of application any single time you
+
+1131
+00:45:15,120 --> 00:45:16,560
+you're building your you know building a
+
+1132
+00:45:16,560 --> 00:45:18,930
+new application and if I'm building a
+
+1133
+00:45:18,930 --> 00:45:20,640
+new website I'm building a new iPhone
+
+1134
+00:45:20,640 --> 00:45:22,710
+app or whatever you're typically gonna
+
+1135
+00:45:22,710 --> 00:45:25,230
+building one of these and so for a
+
+1136
+00:45:25,230 --> 00:45:27,630
+transaction OLTP online transaction
+
+1137
+00:45:27,630 --> 00:45:29,340
+processing the idea is that this is
+
+1138
+00:45:29,340 --> 00:45:30,210
+where we're getting new information
+
+1139
+00:45:30,210 --> 00:45:32,100
+we're ingesting new data from the
+
+1140
+00:45:32,100 --> 00:45:33,600
+outside world and putting it to our
+
+1141
+00:45:33,600 --> 00:45:36,300
+database system right so these queries
+
+1142
+00:45:36,300 --> 00:45:38,070
+can be really simple they're only gonna
+
+1143
+00:45:38,070 --> 00:45:40,290
+read a small amount of data or update a
+
+1144
+00:45:40,290 --> 00:45:42,690
+small amount of data every - do be doing
+
+1145
+00:45:42,690 --> 00:45:44,100
+those same operations over and over
+
+1146
+00:45:44,100 --> 00:45:46,350
+again so the example I always like to
+
+1147
+00:45:46,350 --> 00:45:48,840
+give is it's like the Amazon storefront
+
+1148
+00:45:48,840 --> 00:45:50,400
+all right the website you go to when you
+
+1149
+00:45:50,400 --> 00:45:52,650
+buy stuff that's considered an ode to
+
+1150
+00:45:52,650 --> 00:45:54,690
+the application because I'm adding stuff
+
+1151
+00:45:54,690 --> 00:45:56,850
+to my cart I'm making purchases I'm
+
+1152
+00:45:56,850 --> 00:45:59,520
+updating my account information I'm you
+
+1153
+00:45:59,520 --> 00:46:00,930
+know for each of those single operations
+
+1154
+00:46:00,930 --> 00:46:02,220
+they're doing a lot of them because I
+
+1155
+00:46:02,220 --> 00:46:03,990
+have a lot of people buying stuff but
+
+1156
+00:46:03,990 --> 00:46:05,790
+for you as just you as one customer
+
+1157
+00:46:05,790 --> 00:46:07,710
+you're not updating a lot of data you
+
+1158
+00:46:07,710 --> 00:46:08,700
+know you're updating your account
+
+1159
+00:46:08,700 --> 00:46:10,020
+information you're updating things are
+
+1160
+00:46:10,020 --> 00:46:12,180
+your shopping cart so the queries that
+
+1161
+00:46:12,180 --> 00:46:14,370
+are running are only doing a small you
+
+1162
+00:46:14,370 --> 00:46:15,750
+know the only you know accessing the
+
+1163
+00:46:15,750 --> 00:46:20,040
+small portion of the database so then I
+
+1164
+00:46:20,040 --> 00:46:21,120
+said the type of queries you would see
+
+1165
+00:46:21,120 --> 00:46:23,730
+again going back to the BPD example so
+
+1166
+00:46:23,730 --> 00:46:26,970
+here's go get the here's ago get the
+
+1167
+00:46:26,970 --> 00:46:29,519
+current revision forgiven page here
+
+1168
+00:46:29,519 --> 00:46:31,649
+update my user account to say that when
+
+1169
+00:46:31,649 --> 00:46:33,599
+I logged in and here's here's a you know
+
+1170
+00:46:33,599 --> 00:46:34,799
+simple insert query to insert a new
+
+1171
+00:46:34,799 --> 00:46:37,109
+revision write each of those the these
+
+1172
+00:46:37,109 --> 00:46:39,349
+things are accessing a small number
+
+1173
+00:46:39,349 --> 00:46:41,489
+smaller number two goes at a time and
+
+1174
+00:46:41,489 --> 00:46:43,169
+we're but we're doing these things over
+
+1175
+00:46:43,169 --> 00:46:46,289
+and over again so now the other type of
+
+1176
+00:46:46,289 --> 00:46:47,599
+workload is called OLAP or online
+
+1177
+00:46:47,599 --> 00:46:50,429
+analytical processing and this is when
+
+1178
+00:46:50,429 --> 00:46:51,659
+you've already collected a bunch of data
+
+1179
+00:46:51,659 --> 00:46:54,149
+from your OTP application and now you
+
+1180
+00:46:54,149 --> 00:46:56,669
+want to analyze it and extrapolate new
+
+1181
+00:46:56,669 --> 00:46:57,719
+information from it
+
+1182
+00:46:57,719 --> 00:47:02,159
+right this is sometimes called you know
+
+1183
+00:47:02,159 --> 00:47:04,859
+not only say data science but that realm
+
+1184
+00:47:04,859 --> 00:47:06,419
+of like taking a bunch of data you have
+
+1185
+00:47:06,419 --> 00:47:08,549
+and trying to derive new information
+
+1186
+00:47:08,549 --> 00:47:15,630
+from it with that yeah I mean it's in
+
+1187
+00:47:15,630 --> 00:47:17,039
+the name online amical processing a
+
+1188
+00:47:17,039 --> 00:47:19,349
+business intelligence there's another
+
+1189
+00:47:19,349 --> 00:47:21,509
+phrase for this decision support is
+
+1190
+00:47:21,509 --> 00:47:24,059
+another one big data if you want to call
+
+1191
+00:47:24,059 --> 00:47:27,989
+it that right again I've in this
+
+1192
+00:47:27,989 --> 00:47:29,789
+workload in this environment were not
+
+1193
+00:47:29,789 --> 00:47:32,759
+updating data right there's a whole tree
+
+1194
+00:47:32,759 --> 00:47:34,199
+saw it's getting that new information
+
+1195
+00:47:34,199 --> 00:47:35,729
+for us and now we're trying to make
+
+1196
+00:47:35,729 --> 00:47:39,329
+sense of it so a query might be on a
+
+1197
+00:47:39,329 --> 00:47:41,699
+Wikipedia example say you want to count
+
+1198
+00:47:41,699 --> 00:47:43,619
+the number of people that have logged in
+
+1199
+00:47:43,619 --> 00:47:46,559
+per month that where their host name and
+
+1200
+00:47:46,559 --> 00:47:48,839
+what ended with dot-gov there was a
+
+1201
+00:47:48,839 --> 00:47:51,659
+scandal a few years ago where they found
+
+1202
+00:47:51,659 --> 00:47:52,859
+members of Congress were painting or
+
+1203
+00:47:52,859 --> 00:47:55,049
+having their employees go to Wikipedia
+
+1204
+00:47:55,049 --> 00:47:56,669
+and scrub them clean to remove all like
+
+1205
+00:47:56,669 --> 00:47:57,959
+you know whatever scandals the
+
+1206
+00:47:57,959 --> 00:48:00,929
+congressman was involved in right so you
+
+1207
+00:48:00,929 --> 00:48:01,829
+want to figure out all the people that
+
+1208
+00:48:01,829 --> 00:48:03,689
+are logging in from from sitting at the
+
+1209
+00:48:03,689 --> 00:48:07,380
+at the government doing this so these
+
+1210
+00:48:07,380 --> 00:48:09,589
+types of queries are gonna be read-only
+
+1211
+00:48:09,589 --> 00:48:12,089
+they're gonna read a lot of data like
+
+1212
+00:48:12,089 --> 00:48:14,729
+I'm gonna scan the entire table right as
+
+1213
+00:48:14,729 --> 00:48:16,409
+opposed to OLTP where I'm updating one
+
+1214
+00:48:16,409 --> 00:48:18,989
+thing I'm gonna just do a lot of joins
+
+1215
+00:48:18,989 --> 00:48:21,419
+right I know it's me you you you you
+
+1216
+00:48:21,419 --> 00:48:26,880
+usually don't see a lot of joins so one
+
+1217
+00:48:26,880 --> 00:48:28,679
+way to get to grossly characterize these
+
+1218
+00:48:28,679 --> 00:48:30,929
+workloads is that on one end the we know
+
+1219
+00:48:30,929 --> 00:48:33,209
+one acts as you say house how complex
+
+1220
+00:48:33,209 --> 00:48:33,989
+are the queries are they're really
+
+1221
+00:48:33,989 --> 00:48:35,909
+simple like they're you know you're only
+
+1222
+00:48:35,909 --> 00:48:37,859
+accessing a single table or are they
+
+1223
+00:48:37,859 --> 00:48:39,959
+doing complex joins and then what are
+
+1224
+00:48:39,959 --> 00:48:42,059
+their right heavy or read heavy so all
+
+1225
+00:48:42,059 --> 00:48:43,380
+of TP would be down on this
+
+1226
+00:48:43,380 --> 00:48:45,600
+this and the spectrum they're pretty
+
+1227
+00:48:45,600 --> 00:48:47,160
+simple queries and but they're doing a
+
+1228
+00:48:47,160 --> 00:48:49,650
+lot of Rights oh that would be doing a
+
+1229
+00:48:49,650 --> 00:48:50,970
+lot of reads but they're more complex
+
+1230
+00:48:50,970 --> 00:48:52,650
+and then this sort of this new class of
+
+1231
+00:48:52,650 --> 00:48:54,240
+workload called H tab or hyper
+
+1232
+00:48:54,240 --> 00:48:56,100
+transaction analytical processing that's
+
+1233
+00:48:56,100 --> 00:48:58,020
+sort of is trying to do both of them
+
+1234
+00:48:58,020 --> 00:49:00,000
+right you still want to ingest new data
+
+1235
+00:49:00,000 --> 00:49:01,470
+but you want to analyze it as it comes
+
+1236
+00:49:01,470 --> 00:49:05,370
+in now you see this a lot in anybody
+
+1237
+00:49:05,370 --> 00:49:07,320
+wants to do decision-making on the fly
+
+1238
+00:49:07,320 --> 00:49:09,120
+you know as people are browsing websites
+
+1239
+00:49:09,120 --> 00:49:10,470
+you see this a lot in like internet
+
+1240
+00:49:10,470 --> 00:49:16,080
+advertising companies so so now given
+
+1241
+00:49:16,080 --> 00:49:17,160
+that we know about these different
+
+1242
+00:49:17,160 --> 00:49:19,200
+workloads now we can talk about what is
+
+1243
+00:49:19,200 --> 00:49:22,980
+the right storage model to support these
+
+1244
+00:49:22,980 --> 00:49:25,800
+workloads more efficiently so again the
+
+1245
+00:49:25,800 --> 00:49:27,240
+relational model doesn't say anything
+
+1246
+00:49:27,240 --> 00:49:31,380
+about the layout but we can be mindful
+
+1247
+00:49:31,380 --> 00:49:32,610
+of this when we decide how we want to
+
+1248
+00:49:32,610 --> 00:49:46,350
+build our data system yes okay so this
+
+1249
+00:49:46,350 --> 00:49:48,330
+question is what is the relation of OLAP
+
+1250
+00:49:48,330 --> 00:49:52,650
+to no sequel or new sequel systems so I
+
+1251
+00:49:52,650 --> 00:49:54,830
+would say so
+
+1252
+00:49:54,830 --> 00:49:58,200
+then wonder what no sequel is who here
+
+1253
+00:49:58,200 --> 00:50:01,740
+doesn't know what no sequence ok so and
+
+1254
+00:50:01,740 --> 00:50:03,630
+most we haven't heard of no sequel or
+
+1255
+00:50:03,630 --> 00:50:07,190
+new sequel so these are workload types
+
+1256
+00:50:07,190 --> 00:50:10,140
+so so and what you're describing new
+
+1257
+00:50:10,140 --> 00:50:12,990
+sequel versus no sequel those are sort
+
+1258
+00:50:12,990 --> 00:50:16,500
+of system categories so the other
+
+1259
+00:50:16,500 --> 00:50:18,300
+question is we know what is MongoDB for
+
+1260
+00:50:18,300 --> 00:50:20,190
+what you know what is the know see good
+
+1261
+00:50:20,190 --> 00:50:22,170
+for so that the traditional no sequel
+
+1262
+00:50:22,170 --> 00:50:25,170
+systems MongoDB Cassandra Redis they
+
+1263
+00:50:25,170 --> 00:50:26,520
+would be at this end of the spectrum
+
+1264
+00:50:26,520 --> 00:50:30,290
+they're about ingesting new data right
+
+1265
+00:50:30,290 --> 00:50:33,000
+ has some support to do some
+
+1266
+00:50:33,000 --> 00:50:36,590
+analytics but when we talk about the the
+
+1267
+00:50:36,590 --> 00:50:39,060
+column store stuff there not a column
+
+1268
+00:50:39,060 --> 00:50:41,370
+store they're gonna get crushed by it by
+
+1269
+00:50:41,370 --> 00:50:42,810
+any you know column store database you
+
+1270
+00:50:42,810 --> 00:50:44,100
+wouldn't want to do hardcore analytics
+
+1271
+00:50:44,100 --> 00:50:46,290
+on a MongoDB you can will support some
+
+1272
+00:50:46,290 --> 00:50:48,000
+queries to do this my sequel post
+
+1273
+00:50:48,000 --> 00:50:49,680
+personal support some queries that that
+
+1274
+00:50:49,680 --> 00:50:51,300
+would would fall under the OLAP category
+
+1275
+00:50:51,300 --> 00:50:53,040
+but they're not going to be as efficient
+
+1276
+00:50:53,040 --> 00:50:54,950
+as as running on a column store system
+
+1277
+00:50:54,950 --> 00:50:57,210
+so no sequel
+
+1278
+00:50:57,210 --> 00:50:59,960
+basically there was this movement in the
+
+1279
+00:50:59,960 --> 00:51:04,800
+in the late 2000s where all these all
+
+1280
+00:51:04,800 --> 00:51:07,530
+these all these companies are basically
+
+1281
+00:51:07,530 --> 00:51:09,089
+saying look Google made it make is
+
+1282
+00:51:09,089 --> 00:51:11,280
+making a ton of money and they put out
+
+1283
+00:51:11,280 --> 00:51:12,780
+this system called HBase or some
+
+1284
+00:51:12,780 --> 00:51:15,569
+knowledge with BigTable and this thing
+
+1285
+00:51:15,569 --> 00:51:17,190
+called Hadoop and they're not doing
+
+1286
+00:51:17,190 --> 00:51:18,599
+sequel they're not doing transactions
+
+1287
+00:51:18,599 --> 00:51:20,609
+they're not doing joins and that's how
+
+1288
+00:51:20,609 --> 00:51:22,290
+the able to scale so all these people
+
+1289
+00:51:22,290 --> 00:51:23,880
+ended up building these no sequel
+
+1290
+00:51:23,880 --> 00:51:25,920
+systems like and Cassandra that
+
+1291
+00:51:25,920 --> 00:51:27,690
+sort of fall dunder you know to try to
+
+1292
+00:51:27,690 --> 00:51:29,609
+follow those EDX or design patterns and
+
+1293
+00:51:29,609 --> 00:51:33,690
+to support you know sort of modern you
+
+1294
+00:51:33,690 --> 00:51:35,400
+know software 2.0 or web 2.0
+
+1295
+00:51:35,400 --> 00:51:37,380
+applications right but they would follow
+
+1296
+00:51:37,380 --> 00:51:41,069
+on fall under this Hadoop is OLAP but
+
+1297
+00:51:41,069 --> 00:51:43,950
+like BigTable saundra MongoDB and those
+
+1298
+00:51:43,950 --> 00:51:47,190
+guys are over here then what happened is
+
+1299
+00:51:47,190 --> 00:51:49,200
+people realize oh well I actually do
+
+1300
+00:51:49,200 --> 00:51:51,930
+want transactions I do want sequel I do
+
+1301
+00:51:51,930 --> 00:51:54,150
+want to do some joins and that's where
+
+1302
+00:51:54,150 --> 00:51:55,650
+the new sequel movement came along and
+
+1303
+00:51:55,650 --> 00:51:57,059
+this is what I was working on when I was
+
+1304
+00:51:57,059 --> 00:51:58,950
+in grad school and actually if you go
+
+1305
+00:51:58,950 --> 00:52:00,240
+read the Wikipedia article for a new
+
+1306
+00:52:00,240 --> 00:52:02,520
+sequel he talked about my system was the
+
+1307
+00:52:02,520 --> 00:52:03,809
+first one of the one of the first new
+
+1308
+00:52:03,809 --> 00:52:05,730
+sequel systems right and this is because
+
+1309
+00:52:05,730 --> 00:52:07,440
+I wrote the new sequel article Wikipedia
+
+1310
+00:52:07,440 --> 00:52:10,270
+so I could say whatever I wanted
+
+1311
+00:52:10,270 --> 00:52:13,330
+but the idea was they were trying to do
+
+1312
+00:52:13,330 --> 00:52:14,950
+you know they're trying to do fast
+
+1313
+00:52:14,950 --> 00:52:18,070
+transaction processing and OLTP without
+
+1314
+00:52:18,070 --> 00:52:19,510
+giving up transactions or giving up
+
+1315
+00:52:19,510 --> 00:52:21,420
+joins the way the no sequel guys did
+
+1316
+00:52:21,420 --> 00:52:23,650
+now there's other no sequel systems you
+
+1317
+00:52:23,650 --> 00:52:26,010
+could say or like you know again the
+
+1318
+00:52:26,010 --> 00:52:27,670
+there's a bunch of systems out there
+
+1319
+00:52:27,670 --> 00:52:30,910
+that don't do relational model that you
+
+1320
+00:52:30,910 --> 00:52:32,530
+wanna do analytic so on but primarily
+
+1321
+00:52:32,530 --> 00:52:33,850
+most people think of it thinking of
+
+1322
+00:52:33,850 --> 00:52:39,720
+these guys down here I would say that
+
+1323
+00:52:39,720 --> 00:52:42,520
+the claim no sequel they you know first
+
+1324
+00:52:42,520 --> 00:52:43,270
+they're like oh we're not gonna do
+
+1325
+00:52:43,270 --> 00:52:44,980
+sequel sequel stupid and then it came
+
+1326
+00:52:44,980 --> 00:52:47,110
+out everybody but now supports
+
+1327
+00:52:47,110 --> 00:52:49,000
+some variant of sequel so then they said
+
+1328
+00:52:49,000 --> 00:52:52,110
+oh no seek overly me is not only sequel
+
+1329
+00:52:52,110 --> 00:52:53,369
+[Music]
+
+1330
+00:52:53,369 --> 00:52:55,990
+but and some of them actually are
+
+1331
+00:52:55,990 --> 00:52:57,460
+starting at transactions like MongoDB
+
+1332
+00:52:57,460 --> 00:52:59,440
+has support for a full fledge distribute
+
+1333
+00:52:59,440 --> 00:53:01,330
+transactions so all the things they
+
+1334
+00:53:01,330 --> 00:53:03,369
+claimed that were a bad idea you know
+
+1335
+00:53:03,369 --> 00:53:05,680
+ten years ago turns out it is a good
+
+1336
+00:53:05,680 --> 00:53:06,130
+idea
+
+1337
+00:53:06,130 --> 00:53:08,380
+Siegel's not gonna die anytime soon
+
+1338
+00:53:08,380 --> 00:53:10,500
+people have tried to replace it right
+
+1339
+00:53:10,500 --> 00:53:12,520
+they've been people are thought with a
+
+1340
+00:53:12,520 --> 00:53:14,830
+bad idea in the 1970s 80s 90s and 2000's
+
+1341
+00:53:14,830 --> 00:53:17,650
+it always comes back right it's what
+
+1342
+00:53:17,650 --> 00:53:20,920
+people want it's not the grim I like it
+
+1343
+00:53:20,920 --> 00:53:22,060
+because you know this is what I would I
+
+1344
+00:53:22,060 --> 00:53:24,160
+grew up with but there's certainly ways
+
+1345
+00:53:24,160 --> 00:53:25,630
+to improvements people try to do this
+
+1346
+00:53:25,630 --> 00:53:28,480
+but it's a core idea of declarative
+
+1347
+00:53:28,480 --> 00:53:30,640
+language on top of your data is I think
+
+1348
+00:53:30,640 --> 00:53:32,320
+this is even one of the major
+
+1349
+00:53:32,320 --> 00:53:34,810
+contributions of Ted Cod's work in the
+
+1350
+00:53:34,810 --> 00:53:38,980
+1970s yeah I did that there's a long
+
+1351
+00:53:38,980 --> 00:53:40,390
+soliloquy does that answer your question
+
+1352
+00:53:40,390 --> 00:53:43,750
+okay we can talk offline about if you
+
+1353
+00:53:43,750 --> 00:53:46,560
+want my opinion of other systems okay
+
+1354
+00:53:46,560 --> 00:53:47,740
+okay
+
+1355
+00:53:47,740 --> 00:53:50,080
+everything we talked about so far when
+
+1356
+00:53:50,080 --> 00:53:51,790
+we took when we show rows and tuples
+
+1357
+00:53:51,790 --> 00:53:53,500
+sorted tuples like this is why I'd want
+
+1358
+00:53:53,500 --> 00:53:54,910
+to use a turn row because when we talk
+
+1359
+00:53:54,910 --> 00:53:56,170
+about a column store it doesn't make any
+
+1360
+00:53:56,170 --> 00:53:56,560
+sense
+
+1361
+00:53:56,560 --> 00:53:58,960
+but every time I showed a tuple I showed
+
+1362
+00:53:58,960 --> 00:54:01,390
+it as a row right and this is called the
+
+1363
+00:54:01,390 --> 00:54:04,960
+n Airy storage model and so basically
+
+1364
+00:54:04,960 --> 00:54:06,520
+idea here is that we ran take all the
+
+1365
+00:54:06,520 --> 00:54:08,530
+attributes for a single tuple and we
+
+1366
+00:54:08,530 --> 00:54:10,240
+restore them continuously in our pages
+
+1367
+00:54:10,240 --> 00:54:12,550
+now again we can have the overflow pages
+
+1368
+00:54:12,550 --> 00:54:15,609
+- you know for large larger objects but
+
+1369
+00:54:15,609 --> 00:54:18,040
+in general it's all going to be aligned
+
+1370
+00:54:18,040 --> 00:54:21,190
+together right so this is going to be an
+
+1371
+00:54:21,190 --> 00:54:23,770
+idea 400 TP because
+
+1372
+00:54:23,770 --> 00:54:25,720
+began the amount of data we're going to
+
+1373
+00:54:25,720 --> 00:54:28,690
+access is gonna be small in these old
+
+1374
+00:54:28,690 --> 00:54:29,740
+speed queries and it's gonna be
+
+1375
+00:54:29,740 --> 00:54:32,260
+accessing for single entities go get my
+
+1376
+00:54:32,260 --> 00:54:34,750
+account information go get my orders and
+
+1377
+00:54:34,750 --> 00:54:37,119
+I want all the data for that you know
+
+1378
+00:54:37,119 --> 00:54:39,490
+you know for my account I don't care
+
+1379
+00:54:39,490 --> 00:54:40,570
+about all the other you know millions of
+
+1380
+00:54:40,570 --> 00:54:42,730
+customers I did want my information so
+
+1381
+00:54:42,730 --> 00:54:44,170
+if a roast or that's actually really
+
+1382
+00:54:44,170 --> 00:54:46,000
+efficient because I just jump to the one
+
+1383
+00:54:46,000 --> 00:54:48,220
+page that has my data I get it and I'm
+
+1384
+00:54:48,220 --> 00:54:50,560
+done all right so let's see what this
+
+1385
+00:54:50,560 --> 00:54:52,480
+looks like so again using the Wikipedia
+
+1386
+00:54:52,480 --> 00:54:55,750
+example so say this is a single page so
+
+1387
+00:54:55,750 --> 00:54:58,060
+we have a header I can assume this is in
+
+1388
+00:54:58,060 --> 00:55:00,910
+the slotted slotted page format we have
+
+1389
+00:55:00,910 --> 00:55:02,710
+our header and then we have the user ID
+
+1390
+00:55:02,710 --> 00:55:04,780
+username user past host name it Lazlo
+
+1391
+00:55:04,780 --> 00:55:07,270
+again and so when we add only after that
+
+1392
+00:55:07,270 --> 00:55:10,480
+we have the last attribute for our tuple
+
+1393
+00:55:10,480 --> 00:55:12,670
+then we have all the other tuple tuple
+
+1394
+00:55:12,670 --> 00:55:15,670
+data right everything is continuous to
+
+1395
+00:55:15,670 --> 00:55:17,950
+each other so again so now if I store
+
+1396
+00:55:17,950 --> 00:55:19,660
+this in my database I can represent this
+
+1397
+00:55:19,660 --> 00:55:22,240
+in a single page so now if I have a
+
+1398
+00:55:22,240 --> 00:55:23,980
+query that says get all the account
+
+1399
+00:55:23,980 --> 00:55:25,450
+information for a given user name and
+
+1400
+00:55:25,450 --> 00:55:28,480
+password I can do a lookup and an index
+
+1401
+00:55:28,480 --> 00:55:30,609
+which we'll cover in in lecture seven
+
+1402
+00:55:30,609 --> 00:55:32,349
+but that's basically they tell me hey
+
+1403
+00:55:32,349 --> 00:55:34,540
+here's the page ID and slot number that
+
+1404
+00:55:34,540 --> 00:55:36,760
+has the tuple that you want I do one
+
+1405
+00:55:36,760 --> 00:55:38,680
+seek I do one reading fetch that page
+
+1406
+00:55:38,680 --> 00:55:40,599
+bring him to memory and I can jump to
+
+1407
+00:55:40,599 --> 00:55:41,890
+exactly to the location that has the
+
+1408
+00:55:41,890 --> 00:55:45,609
+data that I want right so again although
+
+1409
+00:55:45,609 --> 00:55:46,750
+it's we workloads are gonna look a lot
+
+1410
+00:55:46,750 --> 00:55:48,940
+like this go getting the data for single
+
+1411
+00:55:48,940 --> 00:55:50,950
+entities or small number entities so
+
+1412
+00:55:50,950 --> 00:55:54,460
+having all the data for a tuple
+
+1413
+00:55:54,460 --> 00:55:56,290
+contiguously each other is the most
+
+1414
+00:55:56,290 --> 00:55:59,349
+efficient way to do this alright same
+
+1415
+00:55:59,349 --> 00:56:01,900
+thing about one do an insert I my insert
+
+1416
+00:56:01,900 --> 00:56:02,920
+query is gonna have all the data
+
+1417
+00:56:02,920 --> 00:56:05,050
+contiguous anyway so I just find a free
+
+1418
+00:56:05,050 --> 00:56:06,970
+slot and there's right at all all at
+
+1419
+00:56:06,970 --> 00:56:09,670
+once and then flush this this out and
+
+1420
+00:56:09,670 --> 00:56:10,660
+it's one disk right
+
+1421
+00:56:10,660 --> 00:56:18,760
+ignoring a log yes so this question is
+
+1422
+00:56:18,760 --> 00:56:20,440
+from what purpose would be useful to
+
+1423
+00:56:20,440 --> 00:56:23,820
+segregate the data into pages okay so
+
+1424
+00:56:23,820 --> 00:56:26,200
+let's look at why this is the bad idea
+
+1425
+00:56:26,200 --> 00:56:27,400
+for some queries and then we'll see why
+
+1426
+00:56:27,400 --> 00:56:29,170
+it's a good idea to segregate it alright
+
+1427
+00:56:29,170 --> 00:56:30,220
+when we talk about the decomposition
+
+1428
+00:56:30,220 --> 00:56:31,660
+storage model at the columns for stuff
+
+1429
+00:56:31,660 --> 00:56:34,810
+all right so let's look at example where
+
+1430
+00:56:34,810 --> 00:56:35,890
+the row store is a bad idea
+
+1431
+00:56:35,890 --> 00:56:37,119
+so let's
+
+1432
+00:56:37,119 --> 00:56:37,900
+taking that query I showed in the
+
+1433
+00:56:37,900 --> 00:56:39,190
+beginning where we want to get all the
+
+1434
+00:56:39,190 --> 00:56:41,519
+people from the government that are no
+
+1435
+00:56:41,519 --> 00:56:43,599
+modifying Wikipedia pages when they
+
+1436
+00:56:43,599 --> 00:56:45,730
+shouldn't so we break down this query
+
+1437
+00:56:45,730 --> 00:56:48,759
+right we look at it we realize we're
+
+1438
+00:56:48,759 --> 00:56:49,839
+actually gonna need to touch all the
+
+1439
+00:56:49,839 --> 00:56:51,160
+data right because there's a full
+
+1440
+00:56:51,160 --> 00:56:53,980
+sequential scan across the user account
+
+1441
+00:56:53,980 --> 00:56:57,460
+table to find all the people that you
+
+1442
+00:56:57,460 --> 00:56:58,869
+know look at all the user accounts look
+
+1443
+00:56:58,869 --> 00:57:00,190
+at their host names I assume we don't
+
+1444
+00:57:00,190 --> 00:57:02,170
+have an index for OLAP you usually don't
+
+1445
+00:57:02,170 --> 00:57:05,650
+have indexes for for these types of
+
+1446
+00:57:05,650 --> 00:57:08,769
+queries all right so now if I go read
+
+1447
+00:57:08,769 --> 00:57:10,720
+say the first page I read is this one
+
+1448
+00:57:10,720 --> 00:57:13,630
+again we're in a row store here so I
+
+1449
+00:57:13,630 --> 00:57:15,759
+look at my query I want to first do a
+
+1450
+00:57:15,759 --> 00:57:17,470
+where clause is to look up the host name
+
+1451
+00:57:17,470 --> 00:57:19,480
+and try to match up my pattern if it
+
+1452
+00:57:19,480 --> 00:57:21,849
+ends with gov so that means I basically
+
+1453
+00:57:21,849 --> 00:57:24,609
+just want you know these values here so
+
+1454
+00:57:24,609 --> 00:57:26,710
+as I'm scanning along I look at my
+
+1455
+00:57:26,710 --> 00:57:28,930
+catalog and says well I know I have for
+
+1456
+00:57:28,930 --> 00:57:31,749
+this table I have five attributes and
+
+1457
+00:57:31,749 --> 00:57:33,369
+you want the host name so that's that
+
+1458
+00:57:33,369 --> 00:57:34,660
+this all set so I go read them but I
+
+1459
+00:57:34,660 --> 00:57:37,059
+want and then I get to the end and I'll
+
+1460
+00:57:37,059 --> 00:57:39,730
+jump to the next one and so forth the
+
+1461
+00:57:39,730 --> 00:57:40,960
+other part of my query is that I have
+
+1462
+00:57:40,960 --> 00:57:42,880
+this group I where I want to aggregate
+
+1463
+00:57:42,880 --> 00:57:45,309
+them together based on the login because
+
+1464
+00:57:45,309 --> 00:57:49,930
+I want to get it per month and then all
+
+1465
+00:57:49,930 --> 00:57:51,009
+right and then produced that as my final
+
+1466
+00:57:51,009 --> 00:57:52,390
+output it's the count number of
+
+1467
+00:57:52,390 --> 00:57:53,529
+government employees that are logging in
+
+1468
+00:57:53,529 --> 00:57:56,380
+for each month so satisfy this part of
+
+1469
+00:57:56,380 --> 00:57:58,539
+the query I only need this column here
+
+1470
+00:57:58,539 --> 00:58:01,259
+this attribute just the last login field
+
+1471
+00:58:01,259 --> 00:58:10,049
+so what's the problem what's that
+
+1472
+00:58:10,680 --> 00:58:12,789
+exactly so so I had to read this whole
+
+1473
+00:58:12,789 --> 00:58:15,910
+entire page again I can't and in memory
+
+1474
+00:58:15,910 --> 00:58:18,069
+I said in non-volatile storage devices
+
+1475
+00:58:18,069 --> 00:58:21,130
+it's a block based API so I can't just
+
+1476
+00:58:21,130 --> 00:58:24,099
+say just get me exactly these this data
+
+1477
+00:58:24,099 --> 00:58:26,859
+I gotta go bring in the entire page so
+
+1478
+00:58:26,859 --> 00:58:29,109
+now you have all this these columns here
+
+1479
+00:58:29,109 --> 00:58:30,910
+that I'd never even access at all
+
+1480
+00:58:30,910 --> 00:58:32,470
+in order to exit this query but I had to
+
+1481
+00:58:32,470 --> 00:58:35,739
+bring it into memory from disk to in
+
+1482
+00:58:35,739 --> 00:58:37,450
+order to get to get the two columns that
+
+1483
+00:58:37,450 --> 00:58:41,769
+I actually needed so doing analytics on
+
+1484
+00:58:41,769 --> 00:58:44,440
+a row store is is gonna be painful if
+
+1485
+00:58:44,440 --> 00:58:46,599
+you have a lot of data right my example
+
+1486
+00:58:46,599 --> 00:58:49,509
+here I have six pages who cares but if I
+
+1487
+00:58:49,509 --> 00:58:50,560
+have you know petabyte
+
+1488
+00:58:50,560 --> 00:58:53,590
+and in this case here three out of the
+
+1489
+00:58:53,590 --> 00:58:55,120
+five columns that I'm bringing in or
+
+1490
+00:58:55,120 --> 00:58:56,650
+atrás I'm bringing in is useless for the
+
+1491
+00:58:56,650 --> 00:58:58,810
+particular query then that's a bad idea
+
+1492
+00:58:58,810 --> 00:59:01,690
+that's an inefficient use of the
+
+1493
+00:59:01,690 --> 00:59:05,020
+hardware so again the NRI storage model
+
+1494
+00:59:05,020 --> 00:59:08,710
+the rostral row storage model is we
+
+1495
+00:59:08,710 --> 00:59:10,840
+really fast or any inserts or updates or
+
+1496
+00:59:10,840 --> 00:59:12,850
+deletes when we're accessing the entire
+
+1497
+00:59:12,850 --> 00:59:15,310
+tuple all right we want all the at rates
+
+1498
+00:59:15,310 --> 00:59:16,660
+for a single tuple and is usually just a
+
+1499
+00:59:16,660 --> 00:59:19,090
+small number of tuples at a time but if
+
+1500
+00:59:19,090 --> 00:59:20,710
+you have to do analytical queries and
+
+1501
+00:59:20,710 --> 00:59:22,360
+the OLAP workloads we want to scan large
+
+1502
+00:59:22,360 --> 00:59:24,310
+portions at the table then this is gonna
+
+1503
+00:59:24,310 --> 00:59:25,990
+suck because we're gonna bring a bunch
+
+1504
+00:59:25,990 --> 00:59:27,250
+of data in that we don't may not
+
+1505
+00:59:27,250 --> 00:59:30,910
+actually need for for our query so now
+
+1506
+00:59:30,910 --> 00:59:32,320
+it should be a sort of obvious that this
+
+1507
+00:59:32,320 --> 00:59:33,610
+is where the comps or stuff comes in
+
+1508
+00:59:33,610 --> 00:59:37,540
+where instead of storing the all the
+
+1509
+00:59:37,540 --> 00:59:39,220
+attributes for a single tuple together
+
+1510
+00:59:39,220 --> 00:59:41,320
+in a single page we're actually going to
+
+1511
+00:59:41,320 --> 00:59:43,840
+store all the values for a single
+
+1512
+00:59:43,840 --> 00:59:45,970
+attribute across all tuples in a single
+
+1513
+00:59:45,970 --> 00:59:48,670
+page I sort it's in this is where the
+
+1514
+00:59:48,670 --> 00:59:50,020
+column name is we're just storing all
+
+1515
+00:59:50,020 --> 00:59:52,240
+the columns together continuously sorry
+
+1516
+00:59:52,240 --> 00:59:53,860
+all the values within a single column
+
+1517
+00:59:53,860 --> 00:59:57,100
+continuously so this is me fantastic for
+
+1518
+00:59:57,100 --> 00:59:59,200
+our OLAP workloads where we're read-only
+
+1519
+00:59:59,200 --> 01:00:01,510
+and we only want to read up a subset of
+
+1520
+01:00:01,510 --> 01:00:05,290
+the the of the theatrics for a given
+
+1521
+01:00:05,290 --> 01:00:08,830
+table right so again going back to our
+
+1522
+01:00:08,830 --> 01:00:10,330
+example here so this is what it looks
+
+1523
+01:00:10,330 --> 01:00:12,970
+like as a row store but so say now we
+
+1524
+01:00:12,970 --> 01:00:15,700
+just take every single column and we're
+
+1525
+01:00:15,700 --> 01:00:16,960
+going to split that up and now then
+
+1526
+01:00:16,960 --> 01:00:19,690
+within a single page we have just the
+
+1527
+01:00:19,690 --> 01:00:21,520
+data for that column so here's all the
+
+1528
+01:00:21,520 --> 01:00:23,680
+host names together and we had the same
+
+1529
+01:00:23,680 --> 01:00:25,210
+thing where user ID last login and the
+
+1530
+01:00:25,210 --> 01:00:26,580
+other attributes for this table here
+
+1531
+01:00:26,580 --> 01:00:30,580
+alright so forth like that so now I come
+
+1532
+01:00:30,580 --> 01:00:32,980
+back to this query we had before so the
+
+1533
+01:00:32,980 --> 01:00:34,720
+first thing I need to do is do my where
+
+1534
+01:00:34,720 --> 01:00:37,000
+clause on hostname so now I just need to
+
+1535
+01:00:37,000 --> 01:00:38,710
+know all I have to do is go bring in the
+
+1536
+01:00:38,710 --> 01:00:42,040
+hostname page wrong color but ignore
+
+1537
+01:00:42,040 --> 01:00:44,770
+that I just bring the hostname page in I
+
+1538
+01:00:44,770 --> 01:00:46,780
+can then rip through that quickly say
+
+1539
+01:00:46,780 --> 01:00:48,910
+look at every single hostname and do my
+
+1540
+01:00:48,910 --> 01:00:51,630
+my predicates now I have a bunch of
+
+1541
+01:00:51,630 --> 01:00:54,310
+tuples that matched so then I go back
+
+1542
+01:00:54,310 --> 01:00:57,430
+and bring in the bring in the last of
+
+1543
+01:00:57,430 --> 01:00:59,620
+all game page and just jump to the
+
+1544
+01:00:59,620 --> 01:01:01,210
+locations that I need within that and
+
+1545
+01:01:01,210 --> 01:01:02,770
+get the last login information that I
+
+1546
+01:01:02,770 --> 01:01:03,369
+did I
+
+1547
+01:01:03,369 --> 01:01:06,430
+I want to produce my answer so say in a
+
+1548
+01:01:06,430 --> 01:01:07,960
+real simple case here that the last
+
+1549
+01:01:07,960 --> 01:01:09,880
+login page is one last login data is one
+
+1550
+01:01:09,880 --> 01:01:12,640
+page the host name is another page so
+
+1551
+01:01:12,640 --> 01:01:14,680
+before I had to scan all the pages and
+
+1552
+01:01:14,680 --> 01:01:16,180
+this one I didn't only have to scan to I
+
+1553
+01:01:16,180 --> 01:01:18,249
+can't think of in extremes if I'm
+
+1554
+01:01:18,249 --> 01:01:21,039
+talking about billions of pages I then
+
+1555
+01:01:21,039 --> 01:01:22,210
+that that's a big difference
+
+1556
+01:01:22,210 --> 01:01:27,730
+yes so this question is are we storing
+
+1557
+01:01:27,730 --> 01:01:29,380
+the primary key with each columns is
+
+1558
+01:01:29,380 --> 01:01:31,269
+your real question is how do I figure
+
+1559
+01:01:31,269 --> 01:01:33,430
+out I had the host names that match how
+
+1560
+01:01:33,430 --> 01:01:35,230
+do I then go look up in the last login
+
+1561
+01:01:35,230 --> 01:01:36,730
+column and figure out how they match
+
+1562
+01:01:36,730 --> 01:01:37,869
+next slide
+
+1563
+01:01:37,869 --> 01:01:43,569
+perfect and you have questions so the
+
+1564
+01:01:43,569 --> 01:01:44,589
+blows are other stuff we can do with
+
+1565
+01:01:44,589 --> 01:01:45,940
+this that we're not gonna cover in this
+
+1566
+01:01:45,940 --> 01:01:47,529
+class but the most of other advantages
+
+1567
+01:01:47,529 --> 01:01:49,240
+you can get and actually if you come to
+
+1568
+01:01:49,240 --> 01:01:51,099
+the vertical talk in two weeks Vertica
+
+1569
+01:01:51,099 --> 01:01:55,119
+is super famous for this so with the the
+
+1570
+01:01:55,119 --> 01:01:59,650
+row stored model all the values within
+
+1571
+01:01:59,650 --> 01:02:01,240
+or the attributes within the tuple
+
+1572
+01:02:01,240 --> 01:02:03,279
+they're all you know roughly different
+
+1573
+01:02:03,279 --> 01:02:05,230
+domains right this is gonna be a
+
+1574
+01:02:05,230 --> 01:02:06,910
+username this is gonna be host names
+
+1575
+01:02:06,910 --> 01:02:08,410
+it's me last login we're just gonna look
+
+1576
+01:02:08,410 --> 01:02:10,869
+a timestamp right it's all sort of
+
+1577
+01:02:10,869 --> 01:02:14,289
+jumbled together and so if I can then
+
+1578
+01:02:14,289 --> 01:02:16,480
+pack them all this data together that
+
+1579
+01:02:16,480 --> 01:02:18,609
+are the same column now that's one of
+
+1580
+01:02:18,609 --> 01:02:21,579
+compression techniques I can do because
+
+1581
+01:02:21,579 --> 01:02:23,440
+I know they're gonna be all the the same
+
+1582
+01:02:23,440 --> 01:02:28,539
+type right so let's say let's say that
+
+1583
+01:02:28,539 --> 01:02:30,309
+I'm storing temperatures of the room and
+
+1584
+01:02:30,309 --> 01:02:32,920
+you know it's it's 70 degrees now maybe
+
+1585
+01:02:32,920 --> 01:02:34,630
+70 point one seven eight seventy point
+
+1586
+01:02:34,630 --> 01:02:36,339
+two like it's not gonna fluctuate that
+
+1587
+01:02:36,339 --> 01:02:38,410
+much instead of storing that that's the
+
+1588
+01:02:38,410 --> 01:02:40,450
+full temperature every single time what
+
+1589
+01:02:40,450 --> 01:02:43,089
+right is shorter a small Delta of of
+
+1590
+01:02:43,089 --> 01:02:44,470
+what the base temperature was when we
+
+1591
+01:02:44,470 --> 01:02:45,759
+first started taking measurements and
+
+1592
+01:02:45,759 --> 01:02:47,470
+now I don't need to store the entire
+
+1593
+01:02:47,470 --> 01:02:49,239
+value all over again I just store you
+
+1594
+01:02:49,239 --> 01:02:51,299
+know that's smaller representation I
+
+1595
+01:02:51,299 --> 01:02:53,739
+think I mean think of like you know if
+
+1596
+01:02:53,739 --> 01:02:55,960
+you run like gzip or snappy or whatever
+
+1597
+01:02:55,960 --> 01:02:57,069
+your favorite compression algorithm is
+
+1598
+01:02:57,069 --> 01:02:59,710
+you can't compress an mp3 really well
+
+1599
+01:02:59,710 --> 01:03:00,579
+because there's already sort of
+
+1600
+01:03:00,579 --> 01:03:02,829
+compressed but if it's a text file that
+
+1601
+01:03:02,829 --> 01:03:04,329
+you can compress the hell out of that
+
+1602
+01:03:04,329 --> 01:03:05,410
+because there's gonna be a bunch of
+
+1603
+01:03:05,410 --> 01:03:06,609
+characters repeating over and over again
+
+1604
+01:03:06,609 --> 01:03:10,299
+so if you have repeated values in in
+
+1605
+01:03:10,299 --> 01:03:12,640
+your in your attribute then you can
+
+1606
+01:03:12,640 --> 01:03:13,720
+compress the hell out of it and get much
+
+1607
+01:03:13,720 --> 01:03:15,579
+better performance so now when I go want
+
+1608
+01:03:15,579 --> 01:03:17,190
+to go to a read again
+
+1609
+01:03:17,190 --> 01:03:19,259
+with every page fetch instead of maybe
+
+1610
+01:03:19,259 --> 01:03:20,549
+getting a thousand tuples I could get
+
+1611
+01:03:20,549 --> 01:03:22,319
+like ten thousand two books because in
+
+1612
+01:03:22,319 --> 01:03:24,509
+compressed form and some systems
+
+1613
+01:03:24,509 --> 01:03:25,529
+actually can operate directly on
+
+1614
+01:03:25,529 --> 01:03:26,670
+compressed data without you without
+
+1615
+01:03:26,670 --> 01:03:29,670
+getting hung compressor which is the big
+
+1616
+01:03:29,670 --> 01:03:33,420
+win okay we don't cover we're not gonna
+
+1617
+01:03:33,420 --> 01:03:35,670
+cover compression in this class we spent
+
+1618
+01:03:35,670 --> 01:03:36,690
+a whole lecture in it in the advanced
+
+1619
+01:03:36,690 --> 01:03:37,859
+class but I'm happy to talk about more
+
+1620
+01:03:37,859 --> 01:03:41,460
+about it if you want okay so now the his
+
+1621
+01:03:41,460 --> 01:03:44,549
+question is how do I figure out I had a
+
+1622
+01:03:44,549 --> 01:03:46,380
+match in one page how do I find a match
+
+1623
+01:03:46,380 --> 01:03:48,630
+in another page so in general there's
+
+1624
+01:03:48,630 --> 01:03:51,000
+two approaches but everyone pretty much
+
+1625
+01:03:51,000 --> 01:03:54,000
+does the first one so the first choice
+
+1626
+01:03:54,000 --> 01:03:56,400
+is to have fixed length all sets so that
+
+1627
+01:03:56,400 --> 01:04:00,240
+means that for every single value in a
+
+1628
+01:04:00,240 --> 01:04:02,549
+column it's always going to be a fixed
+
+1629
+01:04:02,549 --> 01:04:06,210
+length so again think simple a 32-bit
+
+1630
+01:04:06,210 --> 01:04:07,890
+integer so all these are going to be
+
+1631
+01:04:07,890 --> 01:04:10,019
+each of these values to be 32 bits so
+
+1632
+01:04:10,019 --> 01:04:12,859
+now if I have a match say in this column
+
+1633
+01:04:12,859 --> 01:04:16,170
+at offset 1 and i'm agai need to find
+
+1634
+01:04:16,170 --> 01:04:18,390
+the corresponding tuple in in this
+
+1635
+01:04:18,390 --> 01:04:20,490
+column i know that say this comes also
+
+1636
+01:04:20,490 --> 01:04:22,289
+32 bits and i can just do a simple
+
+1637
+01:04:22,289 --> 01:04:25,769
+arithmetic and say I want offset 1 times
+
+1638
+01:04:25,769 --> 01:04:27,509
+the size of each attribute and then I
+
+1639
+01:04:27,509 --> 01:04:29,400
+know exactly where I need to jump to or
+
+1640
+01:04:29,400 --> 01:04:31,950
+translate that to the row ID or the the
+
+1641
+01:04:31,950 --> 01:04:33,569
+page number and slot number that has the
+
+1642
+01:04:33,569 --> 01:04:36,059
+data that I'm looking for so that this
+
+1643
+01:04:36,059 --> 01:04:37,200
+is probably the most standard approach
+
+1644
+01:04:37,200 --> 01:04:38,759
+of course now the tricky thing is say
+
+1645
+01:04:38,759 --> 01:04:40,019
+well what if I have a bunch of strings
+
+1646
+01:04:40,019 --> 01:04:42,089
+that are varying like the old then you
+
+1647
+01:04:42,089 --> 01:04:43,589
+get into like alright can I compress it
+
+1648
+01:04:43,589 --> 01:04:45,240
+to a fixed length field or kind it's
+
+1649
+01:04:45,240 --> 01:04:46,799
+padded outs as always fits in whatever
+
+1650
+01:04:46,799 --> 01:04:49,349
+the max size is different data systems
+
+1651
+01:04:49,349 --> 01:04:50,970
+do different things but overall this is
+
+1652
+01:04:50,970 --> 01:04:52,859
+this is the most business common
+
+1653
+01:04:52,859 --> 01:04:56,339
+approach the other approach which I
+
+1654
+01:04:56,339 --> 01:04:58,140
+forget there's like one system that does
+
+1655
+01:04:58,140 --> 01:04:59,400
+this which i think is a bad idea
+
+1656
+01:04:59,400 --> 01:05:00,450
+they might have gotten rid of it but I
+
+1657
+01:05:00,450 --> 01:05:02,730
+forget who it is where you actually
+
+1658
+01:05:02,730 --> 01:05:05,640
+store in each for each value in the
+
+1659
+01:05:05,640 --> 01:05:09,089
+column you store a the primary key or an
+
+1660
+01:05:09,089 --> 01:05:11,160
+identifier for it so then you say
+
+1661
+01:05:11,160 --> 01:05:13,079
+alright I'm at it for the column one I'm
+
+1662
+01:05:13,079 --> 01:05:15,089
+looking at tuple 1 and I want to get to
+
+1663
+01:05:15,089 --> 01:05:17,220
+tuple 1 and column B I have another map
+
+1664
+01:05:17,220 --> 01:05:18,960
+or going to do a lookup and say how to
+
+1665
+01:05:18,960 --> 01:05:21,990
+go find the offset location for that for
+
+1666
+01:05:21,990 --> 01:05:25,319
+that particular tuple in this column of
+
+1667
+01:05:25,319 --> 01:05:26,819
+course obviously this has huge storage
+
+1668
+01:05:26,819 --> 01:05:28,049
+overhead because you're storing this for
+
+1669
+01:05:28,049 --> 01:05:30,789
+there's you know this extra 32 bit or 64
+
+1670
+01:05:30,789 --> 01:05:34,509
+that value or our ID for every single
+
+1671
+01:05:34,509 --> 01:05:40,539
+value which is wasteful all right all
+
+1672
+01:05:40,539 --> 01:05:43,029
+right so the advantages of the
+
+1673
+01:05:43,029 --> 01:05:45,699
+columnstore is that we can reduce amount
+
+1674
+01:05:45,699 --> 01:05:47,140
+of waste I owe for these OLAP queries
+
+1675
+01:05:47,140 --> 01:05:49,089
+because we're only reading the the
+
+1676
+01:05:49,089 --> 01:05:50,529
+bearment amount of data we actually need
+
+1677
+01:05:50,529 --> 01:05:51,759
+we're not bringing in things we're never
+
+1678
+01:05:51,759 --> 01:05:54,219
+gonna need it all will get better
+
+1679
+01:05:54,219 --> 01:05:56,199
+compression will give it a bet better
+
+1680
+01:05:56,199 --> 01:05:57,969
+query processing which we will cover and
+
+1681
+01:05:57,969 --> 01:06:00,130
+a few more lectures because we're know
+
+1682
+01:06:00,130 --> 01:06:03,359
+we know we're operating on columnar data
+
+1683
+01:06:03,359 --> 01:06:06,849
+the the downside is obviously that for
+
+1684
+01:06:06,849 --> 01:06:08,439
+anything that needs access a single
+
+1685
+01:06:08,439 --> 01:06:11,079
+tuple it becomes more expensive because
+
+1686
+01:06:11,079 --> 01:06:12,789
+now you essentially need to put together
+
+1687
+01:06:12,789 --> 01:06:15,910
+the the tuple from the different columns
+
+1688
+01:06:15,910 --> 01:06:17,469
+back together whereas in the row store
+
+1689
+01:06:17,469 --> 01:06:19,119
+it's all just in one location for you
+
+1690
+01:06:19,119 --> 01:06:21,609
+and anytime you update or in sort of
+
+1691
+01:06:21,609 --> 01:06:22,599
+delete this becomes more expensive
+
+1692
+01:06:22,599 --> 01:06:23,859
+because again because it you get to
+
+1693
+01:06:23,859 --> 01:06:26,919
+split it all up so I would say that
+
+1694
+01:06:26,919 --> 01:06:30,279
+column stores are not a new idea they go
+
+1695
+01:06:30,279 --> 01:06:32,559
+back to the 1970s there was like the
+
+1696
+01:06:32,559 --> 01:06:35,829
+Swedish military division built this
+
+1697
+01:06:35,829 --> 01:06:37,299
+thing called Cantor which essentially
+
+1698
+01:06:37,299 --> 01:06:38,679
+was they didn't call it a database
+
+1699
+01:06:38,679 --> 01:06:39,579
+system because they used different
+
+1700
+01:06:39,579 --> 01:06:41,890
+language back 1970s but if you go sort
+
+1701
+01:06:41,890 --> 01:06:43,959
+of read between the lines it at his
+
+1702
+01:06:43,959 --> 01:06:45,579
+essence it is a column store database
+
+1703
+01:06:45,579 --> 01:06:48,279
+system it was never released never made
+
+1704
+01:06:48,279 --> 01:06:50,259
+pop made public was this it was the only
+
+1705
+01:06:50,259 --> 01:06:51,400
+this internal project but that's the
+
+1706
+01:06:51,400 --> 01:06:53,469
+first known implementation of a column
+
+1707
+01:06:53,469 --> 01:06:56,769
+store the 1980s there was a paper that
+
+1708
+01:06:56,769 --> 01:06:58,299
+describes the decomposition storage
+
+1709
+01:06:58,299 --> 01:07:00,099
+model and more for more details to say
+
+1710
+01:07:00,099 --> 01:07:01,659
+you know what what are the what's the
+
+1711
+01:07:01,659 --> 01:07:03,009
+short format look like what is the
+
+1712
+01:07:03,009 --> 01:07:04,749
+implications of having this storage
+
+1713
+01:07:04,749 --> 01:07:07,150
+model the some of the probably most
+
+1714
+01:07:07,150 --> 01:07:08,890
+famous commercial implementation among
+
+1715
+01:07:08,890 --> 01:07:10,659
+the first commercial implementations was
+
+1716
+01:07:10,659 --> 01:07:13,150
+this thing called sybase IQ it was an
+
+1717
+01:07:13,150 --> 01:07:14,709
+in-memory columnstore that Sybase
+
+1718
+01:07:14,709 --> 01:07:16,390
+released as an accelerator for their
+
+1719
+01:07:16,390 --> 01:07:19,299
+regular row store database system sort
+
+1720
+01:07:19,299 --> 01:07:20,979
+of have had have you actually worked at
+
+1721
+01:07:20,979 --> 01:07:23,979
+HEPA - and in sync and there never
+
+1722
+01:07:23,979 --> 01:07:25,539
+really got big adoption because again it
+
+1723
+01:07:25,539 --> 01:07:28,029
+was sold as a add-on to the rows store
+
+1724
+01:07:28,029 --> 01:07:29,619
+database rather than a standalone thing
+
+1725
+01:07:29,619 --> 01:07:32,049
+but it was the 2000s when the column
+
+1726
+01:07:32,049 --> 01:07:34,029
+store stuff really took off Vertica
+
+1727
+01:07:34,029 --> 01:07:35,769
+again was founded by mike Stormbreaker
+
+1728
+01:07:35,769 --> 01:07:37,539
+the guy admitted Postgres and ingress
+
+1729
+01:07:37,539 --> 01:07:40,089
+that was his company that got bought by
+
+1730
+01:07:40,089 --> 01:07:43,419
+HP vector wise is a in-memory version of
+
+1731
+01:07:43,419 --> 01:07:44,530
+mo'ne to be monie be
+
+1732
+01:07:44,530 --> 01:07:46,900
+they out of Europe it's academic project
+
+1733
+01:07:46,900 --> 01:07:48,760
+but still around today I see he's
+
+1734
+01:07:48,760 --> 01:07:50,140
+asserted the first sort of columns for
+
+1735
+01:07:50,140 --> 01:07:51,700
+our systems that were ever made in
+
+1736
+01:07:51,700 --> 01:07:54,610
+2000's but then it quickly became
+
+1737
+01:07:54,610 --> 01:07:55,750
+obvious that this is the right way to
+
+1738
+01:07:55,750 --> 01:07:58,570
+build data systems to for analytics so
+
+1739
+01:07:58,570 --> 01:08:00,660
+pretty much everyone now has their own
+
+1740
+01:08:00,660 --> 01:08:03,460
+column store system and actually I
+
+1741
+01:08:03,460 --> 01:08:05,410
+wanted to give a demo of Vertica today I
+
+1742
+01:08:05,410 --> 01:08:07,210
+couldn't get it running I did get the
+
+1743
+01:08:07,210 --> 01:08:09,580
+Maria DB column store working and
+
+1744
+01:08:09,580 --> 01:08:11,200
+stephannie column store doesn't mean
+
+1745
+01:08:11,200 --> 01:08:13,810
+it's actually good so there's a bunch of
+
+1746
+01:08:13,810 --> 01:08:15,220
+stuff we'll cover as we go along for
+
+1747
+01:08:15,220 --> 01:08:16,689
+query optimization in Korea execution
+
+1748
+01:08:16,689 --> 01:08:18,549
+just because I cut your comms or doesn't
+
+1749
+01:08:18,549 --> 01:08:20,740
+mean you're magically gonna go faster I
+
+1750
+01:08:20,740 --> 01:08:22,630
+was actually able to get Postgres to
+
+1751
+01:08:22,630 --> 01:08:24,250
+beat the column store for analytical
+
+1752
+01:08:24,250 --> 01:08:27,640
+queries because you know of how you
+
+1753
+01:08:27,640 --> 01:08:29,649
+actually queries how you actually look
+
+1754
+01:08:29,649 --> 01:08:31,750
+at the data and what the query plan
+
+1755
+01:08:31,750 --> 01:08:33,580
+looks like so the bunch of stuff we have
+
+1756
+01:08:33,580 --> 01:08:34,630
+to do it that we'll cover throughout the
+
+1757
+01:08:34,630 --> 01:08:36,520
+semester that you have to that you want
+
+1758
+01:08:36,520 --> 01:08:37,600
+to do if you know dirt if you're a
+
+1759
+01:08:37,600 --> 01:08:41,609
+column store that not everyone does okay
+
+1760
+01:08:41,609 --> 01:08:43,930
+so any question about column stores so
+
+1761
+01:08:43,930 --> 01:08:45,819
+if you go off and me graduate from CMU
+
+1762
+01:08:45,819 --> 01:08:48,130
+and you want to do analytics and some
+
+1763
+01:08:48,130 --> 01:08:49,390
+was like let's do it on post grass but
+
+1764
+01:08:49,390 --> 01:08:51,939
+it's a roast or don't do that right
+
+1765
+01:08:51,939 --> 01:08:53,529
+there's enough columns for systems that
+
+1766
+01:08:53,529 --> 01:08:56,439
+are out there that will they do you want
+
+1767
+01:08:56,439 --> 01:08:58,120
+to look at they're not cheap though at
+
+1768
+01:08:58,120 --> 01:08:59,560
+least for the commercial ones but
+
+1769
+01:08:59,560 --> 01:09:01,140
+there's some decent open-source ones
+
+1770
+01:09:01,140 --> 01:09:06,370
+okay all right cool so the the main
+
+1771
+01:09:06,370 --> 01:09:08,290
+takeaways from this is that as we show
+
+1772
+01:09:08,290 --> 01:09:12,850
+the the underlying representation of the
+
+1773
+01:09:12,850 --> 01:09:14,819
+of the storage of the database is not
+
+1774
+01:09:14,819 --> 01:09:17,109
+something we can just sort of put in our
+
+1775
+01:09:17,109 --> 01:09:19,390
+storage manager and not expose to any
+
+1776
+01:09:19,390 --> 01:09:21,430
+other part of the system as we go out
+
+1777
+01:09:21,430 --> 01:09:22,839
+the rest of the semester you'll see that
+
+1778
+01:09:22,839 --> 01:09:24,850
+a lot of times I'll say like alright
+
+1779
+01:09:24,850 --> 01:09:25,839
+this is the way to do it if you're a row
+
+1780
+01:09:25,839 --> 01:09:27,250
+store this is the way to do it if you're
+
+1781
+01:09:27,250 --> 01:09:29,799
+a column store and that's because again
+
+1782
+01:09:29,799 --> 01:09:31,870
+we if we know the data system knows more
+
+1783
+01:09:31,870 --> 01:09:33,220
+about what it's actually doing what what
+
+1784
+01:09:33,220 --> 01:09:35,080
+the data looks like it's gonna make
+
+1785
+01:09:35,080 --> 01:09:36,370
+better decisions and better design
+
+1786
+01:09:36,370 --> 01:09:38,710
+choices and in order to get you know
+
+1787
+01:09:38,710 --> 01:09:41,589
+more efficient execution the other thing
+
+1788
+01:09:41,589 --> 01:09:43,510
+to also remember to basically for osep
+
+1789
+01:09:43,510 --> 01:09:45,460
+you want to use a row store for OLAP you
+
+1790
+01:09:45,460 --> 01:09:46,990
+want to use a column store but these
+
+1791
+01:09:46,990 --> 01:09:49,750
+this simple rule will carry carry you
+
+1792
+01:09:49,750 --> 01:09:52,180
+out through the rest your life and make
+
+1793
+01:09:52,180 --> 01:09:56,080
+your life easier alright so now the last
+
+1794
+01:09:56,080 --> 01:09:58,449
+two classes we covered the
+
+1795
+01:09:58,449 --> 01:09:59,949
+this problem here how to actually
+
+1796
+01:09:59,949 --> 01:10:01,719
+represent the data in the database so
+
+1797
+01:10:01,719 --> 01:10:04,869
+now on starting on Wednesday we'll talk
+
+1798
+01:10:04,869 --> 01:10:06,100
+about what do we add we actually bring
+
+1799
+01:10:06,100 --> 01:10:08,980
+the data in and bring them to memory and
+
+1800
+01:10:08,980 --> 01:10:13,960
+manage that yes this question is there
+
+1801
+01:10:13,960 --> 01:10:15,070
+any good reason to do a mix of the two
+
+1802
+01:10:15,070 --> 01:10:17,739
+so we actually built our Davidson that
+
+1803
+01:10:17,739 --> 01:10:21,250
+did did a mix of the two we threw that
+
+1804
+01:10:21,250 --> 01:10:22,719
+away and started over because it's a bad
+
+1805
+01:10:22,719 --> 01:10:23,889
+idea it was too much engineering
+
+1806
+01:10:23,889 --> 01:10:26,080
+overhead there are some database systems
+
+1807
+01:10:26,080 --> 01:10:28,300
+will give you both they'll expose like
+
+1808
+01:10:28,300 --> 01:10:30,070
+some M sequel for example you can say
+
+1809
+01:10:30,070 --> 01:10:31,389
+create this table in it and it's a roast
+
+1810
+01:10:31,389 --> 01:10:32,860
+or create this other table on its a
+
+1811
+01:10:32,860 --> 01:10:35,440
+column store and they have essentially
+
+1812
+01:10:35,440 --> 01:10:36,790
+two separate storage managers two
+
+1813
+01:10:36,790 --> 01:10:38,679
+separate execution engines to operate on
+
+1814
+01:10:38,679 --> 01:10:42,429
+them so those are sort of called hybrid
+
+1815
+01:10:42,429 --> 01:10:45,280
+storage systems hybrid data systems we
+
+1816
+01:10:45,280 --> 01:10:46,690
+were all in I thought that was a good
+
+1817
+01:10:46,690 --> 01:10:51,280
+idea I think it's a bad idea now I for n
+
+1818
+01:10:51,280 --> 01:10:53,409
+memory we actually can do we think we
+
+1819
+01:10:53,409 --> 01:10:55,150
+can do fast enough transactions on a
+
+1820
+01:10:55,150 --> 01:10:57,219
+column store for disk it's a little more
+
+1821
+01:10:57,219 --> 01:11:00,639
+complicated so there are systems that do
+
+1822
+01:11:00,639 --> 01:11:05,199
+both they're not they didn't really take
+
+1823
+01:11:05,199 --> 01:11:07,239
+off as much so usually you see things
+
+1824
+01:11:07,239 --> 01:11:09,639
+like you'll have you could have a single
+
+1825
+01:11:09,639 --> 01:11:12,969
+interface where they have you write one
+
+1826
+01:11:12,969 --> 01:11:14,500
+query and then underneath it covers it
+
+1827
+01:11:14,500 --> 01:11:15,760
+figures out what you want to go the row
+
+1828
+01:11:15,760 --> 01:11:17,590
+store comscore aside there's ways to do
+
+1829
+01:11:17,590 --> 01:11:21,070
+that but having a single single single
+
+1830
+01:11:21,070 --> 01:11:22,150
+cell for architecture that can manage
+
+1831
+01:11:22,150 --> 01:11:27,850
+both I think is is rough he says why
+
+1832
+01:11:27,850 --> 01:11:28,840
+don't we store two copies of the same
+
+1833
+01:11:28,840 --> 01:11:29,260
+data
+
+1834
+01:11:29,260 --> 01:11:30,699
+great think of it extremes my database
+
+1835
+01:11:30,699 --> 01:11:36,520
+is one petabyte so well I'm slides ready
+
+1836
+01:11:36,520 --> 01:11:40,570
+but like I can easily find but I can
+
+1837
+01:11:40,570 --> 01:11:42,010
+cover this next class but basically with
+
+1838
+01:11:42,010 --> 01:11:44,199
+what people do is you have your front
+
+1839
+01:11:44,199 --> 01:11:47,020
+end OTP systems and that's running my
+
+1840
+01:11:47,020 --> 01:11:48,820
+sequel or whatever you want and
+
+1841
+01:11:48,820 --> 01:11:51,880
+then you stream the data out over time
+
+1842
+01:11:51,880 --> 01:11:53,920
+to a back-end data warehouse and then
+
+1843
+01:11:53,920 --> 01:11:56,320
+you basically can prune out the latest
+
+1844
+01:11:56,320 --> 01:11:58,119
+data on the old or old data on the HP
+
+1845
+01:11:58,119 --> 01:12:00,070
+side when you don't you know you don't
+
+1846
+01:12:00,070 --> 01:12:02,409
+need it anymore so you see this in like
+
+1847
+01:12:02,409 --> 01:12:05,650
+eBay eBay only retains the last 90 days
+
+1848
+01:12:05,650 --> 01:12:08,260
+of auctions and after that they print it
+
+1849
+01:12:08,260 --> 01:12:09,760
+out and that's because they want to keep
+
+1850
+01:12:09,760 --> 01:12:12,070
+the OTP side nice and trim and fast
+
+1851
+01:12:12,070 --> 01:12:13,329
+but then they still retain everything
+
+1852
+01:12:13,329 --> 01:12:14,650
+else in the backend data warehouse would
+
+1853
+01:12:14,650 --> 01:12:15,940
+they do all the analytics to figure out
+
+1854
+01:12:15,940 --> 01:12:17,050
+what people are buying what when what
+
+1855
+01:12:17,050 --> 01:12:19,000
+they're doing that's the that's the
+
+1856
+01:12:19,000 --> 01:12:21,550
+standard setup everyone does right and
+
+1857
+01:12:21,550 --> 01:12:23,530
+whether or not that's like montant you
+
+1858
+01:12:23,530 --> 01:12:25,869
+know my Segal plus plus vertical like
+
+1859
+01:12:25,869 --> 01:12:27,550
+two separate database installations or
+
+1860
+01:12:27,550 --> 01:12:29,260
+whether it's a single hybrid database
+
+1861
+01:12:29,260 --> 01:12:31,480
+like splice machine can do this or mem
+
+1862
+01:12:31,480 --> 01:12:35,320
+Siegel could do this depends on what you
+
+1863
+01:12:35,320 --> 01:12:36,280
+want you know how much money you have
+
+1864
+01:12:36,280 --> 01:12:39,190
+what you're willing to do I think that
+
+1865
+01:12:39,190 --> 01:12:40,810
+what we found for our own system is that
+
+1866
+01:12:40,810 --> 01:12:44,739
+building having a super single Storage
+
+1867
+01:12:44,739 --> 01:12:46,449
+Manager try to man both of these things
+
+1868
+01:12:46,449 --> 01:12:51,880
+was a bad idea among other things okay
+
+1869
+01:12:51,880 --> 01:12:54,040
+someone brought up testing last time and
+
+1870
+01:12:54,040 --> 01:12:55,420
+I really want to spend time to talk
+
+1871
+01:12:55,420 --> 01:12:57,670
+about that but I wouldn't have any time
+
+1872
+01:12:57,670 --> 01:12:59,710
+today but again next class we'll start
+
+1873
+01:12:59,710 --> 01:13:00,670
+talking on the buffer pool and hopefully
+
+1874
+01:13:00,670 --> 01:13:01,780
+we talk about testing a little bit at
+
+1875
+01:13:01,780 --> 01:13:05,980
+the end okay and the other questions hit
+
+1876
+01:13:05,980 --> 01:13:06,219
+it
+
+1877
+01:13:06,219 --> 01:13:12,190
+oh cool Michelle in the mix of broken
+
+1878
+01:13:12,190 --> 01:13:14,139
+bottles and crushed up kids let the cows
+
+1879
+01:13:14,139 --> 01:13:16,099
+in the
+
+1880
+01:13:16,099 --> 01:13:19,019
+he's witzy nights in my system racking
+
+1881
+01:13:19,019 --> 01:13:19,889
+up I'm blessed
+
+1882
+01:13:19,889 --> 01:13:21,419
+let's go get the next one then get over
+
+1883
+01:13:21,419 --> 01:13:27,630
+time I'll be dressed down good net will
+
+1884
+01:13:27,630 --> 01:13:29,909
+be son ricochet jelly hit the deli photo
+
+1885
+01:13:29,909 --> 01:13:32,010
+put one naturally bless ya my rap is
+
+1886
+01:13:32,010 --> 01:13:33,479
+like the laser beam the fools in the
+
+1887
+01:13:33,479 --> 01:13:35,969
+bush say nothing like a chicken wrap the
+
+1888
+01:13:35,969 --> 01:13:38,280
+bottle of us a nice Tiffany go you don't
+
+1889
+01:13:38,280 --> 01:13:40,349
+feel like drinking it only to you talk
+
+1890
+01:13:40,349 --> 01:13:42,719
+you can't try using life and if the sake
+
+1891
+01:13:42,719 --> 01:13:46,189
+don't know your phone can tap a
+
