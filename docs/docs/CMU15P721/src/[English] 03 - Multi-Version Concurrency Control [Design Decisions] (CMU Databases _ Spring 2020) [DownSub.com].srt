@@ -1,0 +1,8804 @@
+1
+00:00:01,300 --> 00:00:05,129
+[Music]
+
+2
+00:00:05,200 --> 00:00:05,930
+[Applause]
+
+3
+00:00:05,930 --> 00:00:08,630
+[Music]
+
+4
+00:00:08,630 --> 00:00:10,020
+[Applause]
+
+5
+00:00:10,020 --> 00:00:12,170
+[Music]
+
+6
+00:00:12,170 --> 00:00:18,330
+right yes all right so today we're talk
+
+7
+00:00:18,330 --> 00:00:21,449
+about MVCC multi version control and so
+
+8
+00:00:21,449 --> 00:00:23,130
+this is actually the first part of a
+
+9
+00:00:23,130 --> 00:00:25,500
+three part lecture or three part series
+
+10
+00:00:25,500 --> 00:00:27,750
+where we're gonna go into really a much
+
+11
+00:00:27,750 --> 00:00:29,130
+greater detail than we did in the
+
+12
+00:00:29,130 --> 00:00:30,390
+interruption class and actually talk
+
+13
+00:00:30,390 --> 00:00:31,430
+about how do you how do you implement
+
+14
+00:00:31,430 --> 00:00:34,290
+MVC on a modern system
+
+15
+00:00:34,290 --> 00:00:36,030
+we're just against everyone's on the
+
+16
+00:00:36,030 --> 00:00:38,579
+same page at a high level what multi
+
+17
+00:00:38,579 --> 00:00:42,540
+version control is is a not so much a
+
+18
+00:00:42,540 --> 00:00:44,730
+specific incur to a protocol but it's a
+
+19
+00:00:44,730 --> 00:00:48,030
+way of designing a database system where
+
+20
+00:00:48,030 --> 00:00:49,860
+you're gonna maintain multiple physical
+
+21
+00:00:49,860 --> 00:00:53,670
+versions of a single logical object in
+
+22
+00:00:53,670 --> 00:00:56,190
+the database and so by object I'm being
+
+23
+00:00:56,190 --> 00:00:58,050
+vague here it could be anything it could
+
+24
+00:00:58,050 --> 00:01:00,750
+be a table it could be a block of tuple
+
+25
+00:01:00,750 --> 00:01:02,730
+a single tuple it even could be a single
+
+26
+00:01:02,730 --> 00:01:04,979
+attribute within a tuple and practice
+
+27
+00:01:04,979 --> 00:01:07,260
+most people just do it on a on a per
+
+28
+00:01:07,260 --> 00:01:09,360
+table basis but again the idea is that
+
+29
+00:01:09,360 --> 00:01:11,010
+for a single logical object that we see
+
+30
+00:01:11,010 --> 00:01:13,549
+in from the applications perspective
+
+31
+00:01:13,549 --> 00:01:16,140
+we're going to have multiple physical
+
+32
+00:01:16,140 --> 00:01:18,450
+versions underneath the covers so what's
+
+33
+00:01:18,450 --> 00:01:19,830
+gonna happen is when a transaction
+
+34
+00:01:19,830 --> 00:01:21,570
+writes to an object or doesn't update to
+
+35
+00:01:21,570 --> 00:01:24,330
+an object then the instead of overriding
+
+36
+00:01:24,330 --> 00:01:27,270
+the the original value of the existing
+
+37
+00:01:27,270 --> 00:01:29,009
+values it's going to create a new
+
+38
+00:01:29,009 --> 00:01:31,049
+version and that new version is going to
+
+39
+00:01:31,049 --> 00:01:33,659
+have the change that we just made again
+
+40
+00:01:33,659 --> 00:01:35,159
+the idea is that we have to keep track
+
+41
+00:01:35,159 --> 00:01:38,990
+of yeses pardon
+
+42
+00:01:40,040 --> 00:01:42,750
+all right we'll fix that later what fix
+
+43
+00:01:42,750 --> 00:01:45,240
+that next time all right to the end the
+
+44
+00:01:45,240 --> 00:01:47,820
+idea is that when we do an insert it's
+
+45
+00:01:47,820 --> 00:01:49,409
+obviously just the version doesn't exist
+
+46
+00:01:49,409 --> 00:01:50,880
+we're just putting in the database when
+
+47
+00:01:50,880 --> 00:01:52,500
+we do a delete or an update we need to
+
+48
+00:01:52,500 --> 00:01:54,840
+keep track of that we had previous
+
+49
+00:01:54,840 --> 00:01:56,100
+versions and we're creating a new
+
+50
+00:01:56,100 --> 00:01:58,229
+version and then when we try to go read
+
+51
+00:01:58,229 --> 00:02:00,440
+that object again at the logical level
+
+52
+00:02:00,440 --> 00:02:02,520
+underneath the covers the database
+
+53
+00:02:02,520 --> 00:02:04,409
+system has to figure out well what is
+
+54
+00:02:04,409 --> 00:02:06,119
+the correct version that we need to read
+
+55
+00:02:06,119 --> 00:02:08,818
+and it's going to be the one that is
+
+56
+00:02:08,818 --> 00:02:10,949
+that existed when it transactions
+
+57
+00:02:10,949 --> 00:02:14,940
+started so MVCC is not a new idea it
+
+58
+00:02:14,940 --> 00:02:17,340
+goes back into the nineteenth late 1970s
+
+59
+00:02:17,340 --> 00:02:18,540
+it was first proposed in this
+
+60
+00:02:18,540 --> 00:02:21,530
+dissertation at by this guy Reed at MIT
+
+61
+00:02:21,530 --> 00:02:23,519
+alright and this is sort of the first
+
+62
+00:02:23,519 --> 00:02:26,239
+like description of how MVCC would work
+
+63
+00:02:26,239 --> 00:02:29,459
+the first real implementation as far as
+
+64
+00:02:29,459 --> 00:02:31,019
+we know was in this system called inner
+
+65
+00:02:31,019 --> 00:02:35,580
+base at a deck inner base is actually
+
+66
+00:02:35,580 --> 00:02:37,680
+still around today it sort of changed
+
+67
+00:02:37,680 --> 00:02:39,090
+hands couple of times it got bought by
+
+68
+00:02:39,090 --> 00:02:41,069
+Borland with the ole compiler company
+
+69
+00:02:41,069 --> 00:02:43,380
+and now it's bought by some mobile phone
+
+70
+00:02:43,380 --> 00:02:45,060
+company or so it's now that's been your
+
+71
+00:02:45,060 --> 00:02:46,220
+sort of rebranded as in global database
+
+72
+00:02:46,220 --> 00:02:48,720
+but the when Borland had it they did
+
+73
+00:02:48,720 --> 00:02:50,280
+they did actually fork the source code
+
+74
+00:02:50,280 --> 00:02:53,310
+and open sourced it as as Firebird I
+
+75
+00:02:53,310 --> 00:02:55,470
+said that that actually exists today I
+
+76
+00:02:55,470 --> 00:02:57,420
+don't know I've never really come across
+
+77
+00:02:57,420 --> 00:02:58,950
+anybody using it but they're still
+
+78
+00:02:58,950 --> 00:03:00,540
+maintaining it still working on it if
+
+79
+00:03:00,540 --> 00:03:02,160
+you ever wondered why Firefox is called
+
+80
+00:03:02,160 --> 00:03:04,470
+Firefox because when Mozilla went under
+
+81
+00:03:04,470 --> 00:03:07,260
+and they took the netscape browser they
+
+82
+00:03:07,260 --> 00:03:08,880
+were originally gonna call it Firebird
+
+83
+00:03:08,880 --> 00:03:10,980
+but that that you know that conflicted
+
+84
+00:03:10,980 --> 00:03:12,690
+with this system so then they had to
+
+85
+00:03:12,690 --> 00:03:16,440
+rename it to Firefox right so which
+
+86
+00:03:16,440 --> 00:03:19,109
+interesting that NBCC is that pretty
+
+87
+00:03:19,109 --> 00:03:20,910
+much almost every single database system
+
+88
+00:03:20,910 --> 00:03:22,680
+that's been developed or released in the
+
+89
+00:03:22,680 --> 00:03:25,290
+last ten years including the the two
+
+90
+00:03:25,290 --> 00:03:26,780
+we've been working on here at CMU
+
+91
+00:03:26,780 --> 00:03:30,269
+they've all been using MVCC right it's
+
+92
+00:03:30,269 --> 00:03:31,769
+super common so it's kind of important
+
+93
+00:03:31,769 --> 00:03:33,150
+for us to figure out you know how we
+
+94
+00:03:33,150 --> 00:03:35,489
+actually want to build resistant okay
+
+95
+00:03:35,489 --> 00:03:37,440
+let's we should keep it like a jar as
+
+96
+00:03:37,440 --> 00:03:40,200
+possible yeah sorry I'll figure out how
+
+97
+00:03:40,200 --> 00:03:42,690
+we get a key to this all right so the
+
+98
+00:03:42,690 --> 00:03:43,890
+main idea of mzc
+
+99
+00:03:43,890 --> 00:03:45,720
+the benefit we're gonna get that is that
+
+100
+00:03:45,720 --> 00:03:47,400
+the writers aren't going to block the
+
+101
+00:03:47,400 --> 00:03:48,959
+readers and the readers aren't going to
+
+102
+00:03:48,959 --> 00:03:50,879
+block the writers so that means that
+
+103
+00:03:50,879 --> 00:03:53,610
+when we go and update a tuple
+
+104
+00:03:53,610 --> 00:03:54,930
+writing transaction and writing thread
+
+105
+00:03:54,930 --> 00:03:57,810
+is gonna update the tuple unlike in two
+
+106
+00:03:57,810 --> 00:03:59,640
+phase locking where you'd have to you
+
+107
+00:03:59,640 --> 00:04:01,200
+know take an exclusive lock on the tuple
+
+108
+00:04:01,200 --> 00:04:02,850
+and block anybody from doing anything
+
+109
+00:04:02,850 --> 00:04:05,940
+even from reading it under MVCC we don't
+
+110
+00:04:05,940 --> 00:04:06,810
+have that problem
+
+111
+00:04:06,810 --> 00:04:08,640
+we don't right we can how we can create
+
+112
+00:04:08,640 --> 00:04:10,770
+a new version and other transactions can
+
+113
+00:04:10,770 --> 00:04:12,960
+can read the older versions without them
+
+114
+00:04:12,960 --> 00:04:15,720
+without any conflicts now for write
+
+115
+00:04:15,720 --> 00:04:17,399
+write conflict well have a simple rule
+
+116
+00:04:17,399 --> 00:04:19,410
+says the first writer always wins that's
+
+117
+00:04:19,410 --> 00:04:20,970
+the simplest way to do this right that's
+
+118
+00:04:20,970 --> 00:04:22,230
+you know you obviously don't want that
+
+119
+00:04:22,230 --> 00:04:23,790
+or you can't have write write complex
+
+120
+00:04:23,790 --> 00:04:26,070
+but this is gonna be allow us to do some
+
+121
+00:04:26,070 --> 00:04:27,510
+things that we couldn't normally do on a
+
+122
+00:04:27,510 --> 00:04:29,400
+single version system like have a
+
+123
+00:04:29,400 --> 00:04:31,200
+long-running analytical query run in the
+
+124
+00:04:31,200 --> 00:04:33,180
+background and we told versions while
+
+125
+00:04:33,180 --> 00:04:36,030
+newer transactions are updating updating
+
+126
+00:04:36,030 --> 00:04:40,110
+database so for read-only transactions
+
+127
+00:04:40,110 --> 00:04:43,860
+what we're gonna get is a it's gonna
+
+128
+00:04:43,860 --> 00:04:45,060
+also be able to read a consistent
+
+129
+00:04:45,060 --> 00:04:46,950
+snapshot the database everybody's gonna
+
+130
+00:04:46,950 --> 00:04:48,180
+have a consistent snapshot and I'll
+
+131
+00:04:48,180 --> 00:04:49,500
+define what that is in the next slide
+
+132
+00:04:49,500 --> 00:04:51,780
+but the big advantage of this is that if
+
+133
+00:04:51,780 --> 00:04:53,280
+we declare our transaction as being
+
+134
+00:04:53,280 --> 00:04:56,070
+read-only at the very beginning then we
+
+135
+00:04:56,070 --> 00:04:57,570
+don't actually have to acquire any locks
+
+136
+00:04:57,570 --> 00:04:59,700
+to read anything because we know we can
+
+137
+00:04:59,700 --> 00:05:01,080
+always read a consistent snapshot in
+
+138
+00:05:01,080 --> 00:05:03,120
+some systems like my C code you don't
+
+139
+00:05:03,120 --> 00:05:05,340
+even acquire a transaction ID because
+
+140
+00:05:05,340 --> 00:05:06,900
+that's a for them that's a centralized
+
+141
+00:05:06,900 --> 00:05:09,060
+bottleneck handing out those transaction
+
+142
+00:05:09,060 --> 00:05:10,919
+IDs so you just skip that entirely and
+
+143
+00:05:10,919 --> 00:05:12,660
+so the way we're gonna use to determine
+
+144
+00:05:12,660 --> 00:05:14,550
+what is visible to us is through
+
+145
+00:05:14,550 --> 00:05:16,770
+timestamps again we'll go over this more
+
+146
+00:05:16,770 --> 00:05:20,160
+in more detail the rest of the class but
+
+147
+00:05:20,160 --> 00:05:21,180
+then we're also now gonna be able
+
+148
+00:05:21,180 --> 00:05:22,860
+support MVC or to call it time travel
+
+149
+00:05:22,860 --> 00:05:24,960
+queries so again in the single version
+
+150
+00:05:24,960 --> 00:05:27,270
+system what happens I update a tuple the
+
+151
+00:05:27,270 --> 00:05:29,850
+old version is gone right the old field
+
+152
+00:05:29,850 --> 00:05:31,620
+values it's in the log in case I need to
+
+153
+00:05:31,620 --> 00:05:33,750
+undo it but when queries run they're not
+
+154
+00:05:33,750 --> 00:05:35,340
+looking at the log they're looking at
+
+155
+00:05:35,340 --> 00:05:38,250
+the tuple but with MVC see if we don't
+
+156
+00:05:38,250 --> 00:05:39,750
+do any garbage collection and keep all
+
+157
+00:05:39,750 --> 00:05:42,300
+the old versions around then some
+
+158
+00:05:42,300 --> 00:05:43,590
+systems will lie to you time travel
+
+159
+00:05:43,590 --> 00:05:45,870
+queries to say you know run this query
+
+160
+00:05:45,870 --> 00:05:47,430
+on the snapshot of the database that
+
+161
+00:05:47,430 --> 00:05:49,290
+existed at you know two years ago or
+
+162
+00:05:49,290 --> 00:05:52,800
+three years ago so this a bunch of
+
+163
+00:05:52,800 --> 00:05:54,330
+systems claim they support this that's
+
+164
+00:05:54,330 --> 00:05:55,620
+not a new idea either
+
+165
+00:05:55,620 --> 00:05:58,140
+like Postgres had this in the 1980s you
+
+166
+00:05:58,140 --> 00:05:59,250
+basically just don't do garbage
+
+167
+00:05:59,250 --> 00:06:00,690
+collection and you do a little extra
+
+168
+00:06:00,690 --> 00:06:02,190
+work to allow queries to specify what
+
+169
+00:06:02,190 --> 00:06:04,289
+snapshot they're looking at Postgres
+
+170
+00:06:04,289 --> 00:06:05,760
+again Postgres inferred you proposed
+
+171
+00:06:05,760 --> 00:06:07,560
+this it wasn't
+
+172
+00:06:07,560 --> 00:06:09,120
+I actually started getting used outside
+
+173
+00:06:09,120 --> 00:06:10,500
+of academia in like the late nineteen
+
+174
+00:06:10,500 --> 00:06:12,330
+ninety nineteen nineties that they
+
+175
+00:06:12,330 --> 00:06:13,860
+realized that this is the feature nobody
+
+176
+00:06:13,860 --> 00:06:15,240
+wants and you run out of disk space for
+
+177
+00:06:15,240 --> 00:06:17,280
+it quickly and so this is one of the
+
+178
+00:06:17,280 --> 00:06:18,630
+first things they did when they they
+
+179
+00:06:18,630 --> 00:06:21,150
+made Postgres be actually usable outside
+
+180
+00:06:21,150 --> 00:06:22,919
+of Berkeley was you know get rid of this
+
+181
+00:06:22,919 --> 00:06:25,110
+support put a bud gets that bunch of
+
+182
+00:06:25,110 --> 00:06:26,280
+newer systems claim they support time
+
+183
+00:06:26,280 --> 00:06:28,440
+travel queries today I have yet to see
+
+184
+00:06:28,440 --> 00:06:30,750
+any any sort of real use case for this
+
+185
+00:06:30,750 --> 00:06:34,860
+alright alright so we need to find what
+
+186
+00:06:34,860 --> 00:06:36,660
+what snapshot isolation or snapshots
+
+187
+00:06:36,660 --> 00:06:39,389
+mean so in the intro interruption class
+
+188
+00:06:39,389 --> 00:06:41,160
+we talked about isolation levels we
+
+189
+00:06:41,160 --> 00:06:42,450
+actually never really talked about this
+
+190
+00:06:42,450 --> 00:06:43,830
+because this is actually something
+
+191
+00:06:43,830 --> 00:06:46,290
+that's not exactly defined in the sequel
+
+192
+00:06:46,290 --> 00:06:48,200
+standard but this is something you get
+
+193
+00:06:48,200 --> 00:06:52,229
+in some systems when you use MPC C so
+
+194
+00:06:52,229 --> 00:06:53,520
+the way it's going to work is that when
+
+195
+00:06:53,520 --> 00:06:56,010
+a transaction starts it's gonna see a
+
+196
+00:06:56,010 --> 00:06:58,380
+consistent snapshot of the database that
+
+197
+00:06:58,380 --> 00:06:59,940
+existed at the time when that
+
+198
+00:06:59,940 --> 00:07:02,400
+transaction started so what that means
+
+199
+00:07:02,400 --> 00:07:05,820
+is that you only see versions of tuples
+
+200
+00:07:05,820 --> 00:07:09,360
+that existed that were created by
+
+201
+00:07:09,360 --> 00:07:10,950
+transactions that committed before you
+
+202
+00:07:10,950 --> 00:07:14,400
+started so if if my transaction starts
+
+203
+00:07:14,400 --> 00:07:15,810
+and there's another transaction that
+
+204
+00:07:15,810 --> 00:07:16,919
+started before me but they haven't
+
+205
+00:07:16,919 --> 00:07:18,840
+committed yet and say they updated tend
+
+206
+00:07:18,840 --> 00:07:20,490
+to pools or they updated five before I
+
+207
+00:07:20,490 --> 00:07:22,979
+started and five after I started I won't
+
+208
+00:07:22,979 --> 00:07:24,600
+see any of their changes because that
+
+209
+00:07:24,600 --> 00:07:25,830
+because none of those versions actually
+
+210
+00:07:25,830 --> 00:07:28,320
+got committed before my my first
+
+211
+00:07:28,320 --> 00:07:30,450
+transaction started all right so that's
+
+212
+00:07:30,450 --> 00:07:31,560
+what I mean Mike assistant you're not
+
+213
+00:07:31,560 --> 00:07:32,850
+gonna see any torn right so many actual
+
+214
+00:07:32,850 --> 00:07:34,740
+transactions you only see things that
+
+215
+00:07:34,740 --> 00:07:35,789
+you know have committed before you
+
+216
+00:07:35,789 --> 00:07:39,210
+started so then also as I said before if
+
+217
+00:07:39,210 --> 00:07:40,440
+we have two transactions the running at
+
+218
+00:07:40,440 --> 00:07:41,850
+the same time and they tried to update
+
+219
+00:07:41,850 --> 00:07:43,800
+from the same object then we'll just use
+
+220
+00:07:43,800 --> 00:07:45,690
+a simple rule that says the first writer
+
+221
+00:07:45,690 --> 00:07:47,970
+wins right under like two phase locking
+
+222
+00:07:47,970 --> 00:07:49,560
+when you do deadlock prevention or
+
+223
+00:07:49,560 --> 00:07:50,910
+deadlock detection right there's all
+
+224
+00:07:50,910 --> 00:07:52,530
+these different rules to say who's older
+
+225
+00:07:52,530 --> 00:07:54,060
+than this when should I wait should I
+
+226
+00:07:54,060 --> 00:07:56,190
+abort who holds the most locks maybe I
+
+227
+00:07:56,190 --> 00:07:58,350
+let them go before the other guy goes we
+
+228
+00:07:58,350 --> 00:07:59,520
+don't do any of that so that's too
+
+229
+00:07:59,520 --> 00:08:01,500
+complex for us just to kind of run in in
+
+230
+00:08:01,500 --> 00:08:03,389
+a marine environment we just say whoever
+
+231
+00:08:03,389 --> 00:08:05,430
+who wrote it first they win second guy
+
+232
+00:08:05,430 --> 00:08:06,810
+tries to write the same object well we
+
+233
+00:08:06,810 --> 00:08:08,160
+needed up some tech that we're trying to
+
+234
+00:08:08,160 --> 00:08:10,620
+write to the same object and if so then
+
+235
+00:08:10,620 --> 00:08:13,979
+we just kill ourselves and abort so you
+
+236
+00:08:13,979 --> 00:08:17,159
+may be thinking alright well this seems
+
+237
+00:08:17,159 --> 00:08:19,229
+like you know awesome synaptic isolation
+
+238
+00:08:19,229 --> 00:08:21,090
+gives us exactly what you want yeah
+
+239
+00:08:21,090 --> 00:08:23,130
+we able to achieve certainly a question
+
+240
+00:08:23,130 --> 00:08:30,630
+yes right so this question is what I
+
+241
+00:08:30,630 --> 00:08:32,159
+mean by the first rider wins is it based
+
+242
+00:08:32,159 --> 00:08:33,690
+on the time that they started or is it
+
+243
+00:08:33,690 --> 00:08:35,190
+based on the time that they wrote it's
+
+244
+00:08:35,190 --> 00:08:37,169
+based on the time they wrote so you can
+
+245
+00:08:37,169 --> 00:08:38,640
+actually start before I do but if I
+
+246
+00:08:38,640 --> 00:08:39,990
+write to this tuple and then you try to
+
+247
+00:08:39,990 --> 00:08:42,240
+write to the tuple like you have but you
+
+248
+00:08:42,240 --> 00:08:44,400
+have to go board right didn't think of
+
+249
+00:08:44,400 --> 00:08:46,290
+it like it's the simplest thing you do
+
+250
+00:08:46,290 --> 00:08:48,630
+because I as I'm as I look at the tube
+
+251
+00:08:48,630 --> 00:08:49,860
+were trying to write it I would see Oh
+
+252
+00:08:49,860 --> 00:08:51,600
+someone got to me before got so before I
+
+253
+00:08:51,600 --> 00:08:53,550
+did you just go ahead and kill yourself
+
+254
+00:08:53,550 --> 00:08:55,410
+I don't know whether you're gonna write
+
+255
+00:08:55,410 --> 00:08:57,510
+to the same thing so how would I abort
+
+256
+00:08:57,510 --> 00:09:01,110
+before you wrote to it right that's
+
+257
+00:09:01,110 --> 00:09:03,060
+important question Rico question alright
+
+258
+00:09:03,060 --> 00:09:05,339
+so snapshot isolation is not
+
+259
+00:09:05,339 --> 00:09:10,230
+serializable right II and I'll show you
+
+260
+00:09:10,230 --> 00:09:11,520
+why because it's susceptible to what's
+
+261
+00:09:11,520 --> 00:09:13,020
+called the right skew anomaly but it's
+
+262
+00:09:13,020 --> 00:09:15,210
+it's it's sort of it has different
+
+263
+00:09:15,210 --> 00:09:17,160
+anomalies then like repeatable reads and
+
+264
+00:09:17,160 --> 00:09:20,670
+and read committed and what's also sort
+
+265
+00:09:20,670 --> 00:09:21,810
+of confusing about this is like if you
+
+266
+00:09:21,810 --> 00:09:23,850
+take Oracle for example with Oracle if
+
+267
+00:09:23,850 --> 00:09:25,830
+you declare that you want your isolation
+
+268
+00:09:25,830 --> 00:09:28,110
+level to be serializable which are
+
+269
+00:09:28,110 --> 00:09:29,790
+really getting underneath the covers is
+
+270
+00:09:29,790 --> 00:09:31,560
+snapshot isolation but they don't tell
+
+271
+00:09:31,560 --> 00:09:32,310
+you that unless you read the
+
+272
+00:09:32,310 --> 00:09:35,250
+documentation so it's sort of important
+
+273
+00:09:35,250 --> 00:09:36,420
+understand what the distinction is and
+
+274
+00:09:36,420 --> 00:09:38,190
+you'll see why this is not going to be
+
+275
+00:09:38,190 --> 00:09:40,110
+serializable and the next class we'll
+
+276
+00:09:40,110 --> 00:09:42,270
+see methods to go to actually add add
+
+277
+00:09:42,270 --> 00:09:44,490
+add additional things that davis isn't
+
+278
+00:09:44,490 --> 00:09:46,110
+to make snapshot isolation sterilizable
+
+279
+00:09:46,110 --> 00:09:49,890
+yes questions are faint as possible does
+
+280
+00:09:49,890 --> 00:09:52,140
+under this yes but in particularly it's
+
+281
+00:09:52,140 --> 00:09:53,730
+susceptible this right skew anomaly
+
+282
+00:09:53,730 --> 00:09:56,520
+which repeatable reads doesn't have all
+
+283
+00:09:56,520 --> 00:09:58,350
+right so the easiest way to understand
+
+284
+00:09:58,350 --> 00:09:59,820
+the right skew anomaly again so remember
+
+285
+00:09:59,820 --> 00:10:01,260
+from the interruption class we talked
+
+286
+00:10:01,260 --> 00:10:04,529
+about dirty reads unrepeatable reads and
+
+287
+00:10:04,529 --> 00:10:07,040
+and the other conflicts you can have
+
+288
+00:10:07,040 --> 00:10:08,970
+right skew is actually something that's
+
+289
+00:10:08,970 --> 00:10:11,010
+very specific to snaps snaps not
+
+290
+00:10:11,010 --> 00:10:12,300
+isolation that you get in a multi
+
+291
+00:10:12,300 --> 00:10:14,279
+version system so the easiest way to
+
+292
+00:10:14,279 --> 00:10:15,660
+understand this is to this simple
+
+293
+00:10:15,660 --> 00:10:18,900
+visualization that supposedly was was
+
+294
+00:10:18,900 --> 00:10:21,000
+created by Jim Gray the guy that and
+
+295
+00:10:21,000 --> 00:10:23,160
+then two-phase locking so let's say I
+
+296
+00:10:23,160 --> 00:10:25,770
+have a database of marbles and marbles
+
+297
+00:10:25,770 --> 00:10:26,940
+gonna have two colors it can either be
+
+298
+00:10:26,940 --> 00:10:29,730
+black or white and so I have a
+
+299
+00:10:29,730 --> 00:10:31,380
+transaction two transactions that want
+
+300
+00:10:31,380 --> 00:10:32,640
+to change all the white marbles the
+
+301
+00:10:32,640 --> 00:10:35,010
+black and all the black marbles to wipe
+
+302
+00:10:35,010 --> 00:10:36,570
+so let's say these two transactions
+
+303
+00:10:36,570 --> 00:10:39,029
+start at the exact same time right and
+
+304
+00:10:39,029 --> 00:10:41,670
+so again they will have under nbcc
+
+305
+00:10:41,670 --> 00:10:43,139
+they'll have snapped or under snapshot
+
+306
+00:10:43,139 --> 00:10:44,250
+isolation they'll have a consistent
+
+307
+00:10:44,250 --> 00:10:46,980
+snapshot of the database that existed
+
+308
+00:10:46,980 --> 00:10:48,630
+when they started right so they each of
+
+309
+00:10:48,630 --> 00:10:50,250
+them have two black marbles and two
+
+310
+00:10:50,250 --> 00:10:53,490
+white marbles so the first guy here he's
+
+311
+00:10:53,490 --> 00:10:54,540
+going to switch all the white marbles to
+
+312
+00:10:54,540 --> 00:10:56,220
+black and the bottom guy here wants to
+
+313
+00:10:56,220 --> 00:10:58,019
+switch all the black marbles of white so
+
+314
+00:10:58,019 --> 00:11:00,329
+they go ahead and do that there's no
+
+315
+00:11:00,329 --> 00:11:01,440
+right right conflicts because they
+
+316
+00:11:01,440 --> 00:11:03,750
+updated different things and then now
+
+317
+00:11:03,750 --> 00:11:06,600
+they commit but what happens now we have
+
+318
+00:11:06,600 --> 00:11:07,860
+two white marbles in two black mambas
+
+319
+00:11:07,860 --> 00:11:09,620
+they'd essentially just got reversed is
+
+320
+00:11:09,620 --> 00:11:13,920
+that sterilizable your shaking head note
+
+321
+00:11:13,920 --> 00:11:18,800
+why what you're just drinking your drink
+
+322
+00:11:18,800 --> 00:11:30,660
+okay so he said if it was truly sir lies
+
+323
+00:11:30,660 --> 00:11:33,300
+bowl then it would have to be equivalent
+
+324
+00:11:33,300 --> 00:11:35,610
+to a cereal ordering of the transactions
+
+325
+00:11:35,610 --> 00:11:38,010
+so that would either be they be all
+
+326
+00:11:38,010 --> 00:11:40,110
+black or all white but in my example
+
+327
+00:11:40,110 --> 00:11:43,139
+here right we ended up with two white
+
+328
+00:11:43,139 --> 00:11:45,420
+and two black so under sterilizable
+
+329
+00:11:45,420 --> 00:11:51,829
+isolation right this could not occur yes
+
+330
+00:12:02,329 --> 00:12:05,399
+your question your question is sorry
+
+331
+00:12:05,399 --> 00:12:06,810
+you're saying that like I'm working on
+
+332
+00:12:06,810 --> 00:12:07,829
+the assumption that I only need to
+
+333
+00:12:07,829 --> 00:12:11,850
+update but like these two here yeah well
+
+334
+00:12:11,850 --> 00:12:13,620
+II the query is update everything find
+
+335
+00:12:13,620 --> 00:12:15,420
+everything that that's white trying
+
+336
+00:12:15,420 --> 00:12:16,410
+everything that's black and make it
+
+337
+00:12:16,410 --> 00:12:17,699
+white find everything that's white make
+
+338
+00:12:17,699 --> 00:12:21,990
+a black right so when I looked at this
+
+339
+00:12:21,990 --> 00:12:24,149
+when this guy ran it when he looks at a
+
+340
+00:12:24,149 --> 00:12:27,120
+snapshot he doesn't see you know he sees
+
+341
+00:12:27,120 --> 00:12:29,130
+that these guys are white so nose knows
+
+342
+00:12:29,130 --> 00:12:31,560
+it doesn't need to update them but then
+
+343
+00:12:31,560 --> 00:12:33,569
+when I when I commit them then I end up
+
+344
+00:12:33,569 --> 00:12:37,699
+with that you know that anomaly yes
+
+345
+00:12:38,270 --> 00:12:39,800
+essentially reading all of the tuples
+
+346
+00:12:39,800 --> 00:12:42,170
+for turtle marbles yes and only writes
+
+347
+00:12:42,170 --> 00:12:44,210
+into the ones that are black or white
+
+348
+00:12:44,210 --> 00:12:46,490
+yes effectively wins this issue be fixed
+
+349
+00:12:46,490 --> 00:12:48,440
+if they just blindly broke into every
+
+350
+00:12:48,440 --> 00:12:50,090
+tuple and then under snapshot isolation
+
+351
+00:12:50,090 --> 00:12:51,410
+you get an equivalent to the
+
+352
+00:12:51,410 --> 00:12:55,250
+serializable since david is saving is in
+
+353
+00:12:55,250 --> 00:12:57,110
+this case here we would read everything
+
+354
+00:12:57,110 --> 00:12:58,910
+find the ones we do need to update and
+
+355
+00:12:58,910 --> 00:13:00,260
+that's our right set and then we then we
+
+356
+00:13:00,260 --> 00:13:02,900
+write that out you're saying what if we
+
+357
+00:13:02,900 --> 00:13:04,820
+just blindly wrote everything so this
+
+358
+00:13:04,820 --> 00:13:06,860
+guy was already white make it white this
+
+359
+00:13:06,860 --> 00:13:08,420
+guy was already black make it black and
+
+360
+00:13:08,420 --> 00:13:10,900
+then try to review that as our right set
+
+361
+00:13:10,900 --> 00:13:13,910
+well in that case it would one of them
+
+362
+00:13:13,910 --> 00:13:16,970
+on a billboard right it said so then
+
+363
+00:13:16,970 --> 00:13:19,910
+yeah so so yes it's a one would abort
+
+364
+00:13:19,910 --> 00:13:22,280
+retry but then your then your then your
+
+365
+00:13:22,280 --> 00:13:35,120
+this yeah I think so
+
+366
+00:13:35,120 --> 00:13:38,030
+the issue here is my this is written in
+
+367
+00:13:38,030 --> 00:13:40,910
+English change black marbles to white so
+
+368
+00:13:40,910 --> 00:13:43,190
+that could mean like I mean you can
+
+369
+00:13:43,190 --> 00:13:44,840
+infer that find the black marbles and
+
+370
+00:13:44,840 --> 00:13:47,450
+make them white you could in theory also
+
+371
+00:13:47,450 --> 00:13:50,000
+say I just make everything white because
+
+372
+00:13:50,000 --> 00:13:51,470
+that's what I want assuming I only have
+
+373
+00:13:51,470 --> 00:13:53,120
+two colors doesn't matter what's white
+
+374
+00:13:53,120 --> 00:13:54,890
+now make it white you know white make
+
+375
+00:13:54,890 --> 00:13:58,460
+sure that it's white no Davison would
+
+376
+00:13:58,460 --> 00:14:00,740
+actually do that because one there might
+
+377
+00:14:00,740 --> 00:14:03,020
+be higher-level semantics about what
+
+378
+00:14:03,020 --> 00:14:04,580
+this query is trying to do like my case
+
+379
+00:14:04,580 --> 00:14:06,140
+is super simple so like you can say oh
+
+380
+00:14:06,140 --> 00:14:07,280
+yeah of course if it's way to make it
+
+381
+00:14:07,280 --> 00:14:10,640
+white that's fine but for in a real
+
+382
+00:14:10,640 --> 00:14:12,140
+database that's probably too difficult
+
+383
+00:14:12,140 --> 00:14:14,750
+to do furthermore you're also keep
+
+384
+00:14:14,750 --> 00:14:16,820
+always in extremes if my database is a
+
+385
+00:14:16,820 --> 00:14:20,000
+billion or marbles I don't want to have
+
+386
+00:14:20,000 --> 00:14:21,650
+to write out things they don't I need to
+
+387
+00:14:21,650 --> 00:14:23,780
+write out because otherwise they might
+
+388
+00:14:23,780 --> 00:14:25,670
+just I'm better off just executing this
+
+389
+00:14:25,670 --> 00:14:28,640
+as a one thread after another all right
+
+390
+00:14:28,640 --> 00:14:29,960
+all right the main takeaway is that
+
+391
+00:14:29,960 --> 00:14:30,920
+again I want to point out here that
+
+392
+00:14:30,920 --> 00:14:33,560
+under snaps isolation this anomaly can
+
+393
+00:14:33,560 --> 00:14:36,500
+occur right and the end result is from
+
+394
+00:14:36,500 --> 00:14:38,330
+from a higher level perspective what we
+
+395
+00:14:38,330 --> 00:14:39,590
+how we understand what the data should
+
+396
+00:14:39,590 --> 00:14:42,680
+look like is wrong and that it's not
+
+397
+00:14:42,680 --> 00:14:44,300
+equivalent to executing them in serial
+
+398
+00:14:44,300 --> 00:14:47,500
+water yes
+
+399
+00:14:53,380 --> 00:14:56,330
+no sterilizable means that again this
+
+400
+00:14:56,330 --> 00:14:57,700
+was covered in interruption class
+
+401
+00:14:57,700 --> 00:15:00,040
+sterilizable means that you generate a
+
+402
+00:15:00,040 --> 00:15:02,420
+the the final state of the database is
+
+403
+00:15:02,420 --> 00:15:04,670
+equivalent to any serial ordering of
+
+404
+00:15:04,670 --> 00:15:07,670
+transactions all right so this case here
+
+405
+00:15:07,670 --> 00:15:10,420
+I had t1 go first of all by t2
+
+406
+00:15:10,420 --> 00:15:12,800
+but I could reverse that t2 Google first
+
+407
+00:15:12,800 --> 00:15:14,089
+of all by t1 and both will consider
+
+408
+00:15:14,089 --> 00:15:20,690
+correct yes questions this anomaly can
+
+409
+00:15:20,690 --> 00:15:24,250
+also occur in recommitted yes but not I
+
+410
+00:15:24,250 --> 00:15:26,899
+don't think repeatable reads has this
+
+411
+00:15:26,899 --> 00:15:37,610
+issue yeah so it's this picture here
+
+412
+00:15:37,610 --> 00:15:41,870
+right so under the like the like the in
+
+413
+00:15:41,870 --> 00:15:43,160
+like the textbook definition of
+
+414
+00:15:43,160 --> 00:15:44,690
+isolation levels and the ANSI standard
+
+415
+00:15:44,690 --> 00:15:47,360
+least set I think still now like you
+
+416
+00:15:47,360 --> 00:15:48,470
+sort of have this one path up to
+
+417
+00:15:48,470 --> 00:15:50,060
+serialize a read uncommitted committed
+
+418
+00:15:50,060 --> 00:15:51,560
+repeat over read to sterilizable but
+
+419
+00:15:51,560 --> 00:15:52,820
+snapshot isolation is this other thing
+
+420
+00:15:52,820 --> 00:15:55,130
+here with its right skew anomaly cannot
+
+421
+00:15:55,130 --> 00:15:57,500
+occur for this and then this is repeater
+
+422
+00:15:57,500 --> 00:16:01,970
+reads are susceptible to I mean dirty
+
+423
+00:16:01,970 --> 00:16:03,709
+reads I forget yes
+
+424
+00:16:03,709 --> 00:16:05,959
+and therefore that can't happen in this
+
+425
+00:16:05,959 --> 00:16:07,610
+you can't read you can have a dirty read
+
+426
+00:16:07,610 --> 00:16:08,839
+and snaps isolation because you only see
+
+427
+00:16:08,839 --> 00:16:11,300
+things that committed when you know it
+
+428
+00:16:11,300 --> 00:16:13,459
+you only see that versions of tuples
+
+429
+00:16:13,459 --> 00:16:15,170
+that were created by transactions that
+
+430
+00:16:15,170 --> 00:16:16,610
+committed before you start you can't
+
+431
+00:16:16,610 --> 00:16:22,459
+have a dirty read but it's again the
+
+432
+00:16:22,459 --> 00:16:23,660
+main point of this I would just showing
+
+433
+00:16:23,660 --> 00:16:26,350
+this is it like snaps an isolation is
+
+434
+00:16:26,350 --> 00:16:29,709
+you don't get it by default with MVCC
+
+435
+00:16:29,709 --> 00:16:32,420
+right so like Postgres uses MCC but
+
+436
+00:16:32,420 --> 00:16:33,980
+default you get I think read committed
+
+437
+00:16:33,980 --> 00:16:37,100
+I think same thing for my sequel but
+
+438
+00:16:37,100 --> 00:16:38,600
+like if you sort of follow the strict
+
+439
+00:16:38,600 --> 00:16:40,570
+definition of how we're gonna do
+
+440
+00:16:40,570 --> 00:16:42,920
+currency toll and determine versions
+
+441
+00:16:42,920 --> 00:16:44,269
+all right identify what versions are
+
+442
+00:16:44,269 --> 00:16:46,040
+visible to us when our transaction is
+
+443
+00:16:46,040 --> 00:16:48,050
+run as far as I know you end up with
+
+444
+00:16:48,050 --> 00:16:50,089
+snaps of isolation and then our next
+
+445
+00:16:50,089 --> 00:16:52,760
+class on on Monday we'll see a bunch of
+
+446
+00:16:52,760 --> 00:16:54,380
+extra stuff you can do in the database
+
+447
+00:16:54,380 --> 00:16:55,970
+system to make this actually be
+
+448
+00:16:55,970 --> 00:16:59,820
+serializable sometime
+
+449
+00:16:59,820 --> 00:17:05,390
+alright so the paper had you guys read
+
+450
+00:17:05,390 --> 00:17:08,880
+is a sort overview of the different
+
+451
+00:17:08,880 --> 00:17:10,619
+design decisions you have to make when
+
+452
+00:17:10,619 --> 00:17:15,240
+you build a modern MVCC system and so
+
+453
+00:17:15,240 --> 00:17:17,670
+despite having the name cartridge hole
+
+454
+00:17:17,670 --> 00:17:20,040
+you know that the words can hurt it's
+
+455
+00:17:20,040 --> 00:17:23,280
+all in the name of MVCC it's more than
+
+456
+00:17:23,280 --> 00:17:25,829
+just concurrent control right the idea
+
+457
+00:17:25,829 --> 00:17:27,690
+of multi verging actually permeates
+
+458
+00:17:27,690 --> 00:17:28,980
+through all we have throughout the
+
+459
+00:17:28,980 --> 00:17:32,400
+entire architecture of the system so
+
+460
+00:17:32,400 --> 00:17:33,540
+it's not this matter saying I'm gonna
+
+461
+00:17:33,540 --> 00:17:35,280
+pick two phase locking and then and
+
+462
+00:17:35,280 --> 00:17:36,600
+you're done there's all these other
+
+463
+00:17:36,600 --> 00:17:37,860
+things you have to be worried about and
+
+464
+00:17:37,860 --> 00:17:41,640
+and the the implications of these design
+
+465
+00:17:41,640 --> 00:17:43,530
+decisions can can be quite significant
+
+466
+00:17:43,530 --> 00:17:45,300
+based on what your application are based
+
+467
+00:17:45,300 --> 00:17:46,710
+on what your workload is that that
+
+468
+00:17:46,710 --> 00:17:49,290
+you're trying to support so the paper I
+
+469
+00:17:49,290 --> 00:17:50,790
+had you guys read actually came out of
+
+470
+00:17:50,790 --> 00:17:52,560
+this class so when I first first
+
+471
+00:17:52,560 --> 00:17:56,100
+teaching this class in 2016 we were like
+
+472
+00:17:56,100 --> 00:17:57,300
+you know I wanted to cover
+
+473
+00:17:57,300 --> 00:17:59,820
+MVCC or modern MVCC and actually we were
+
+474
+00:17:59,820 --> 00:18:01,440
+building our own database system here
+
+475
+00:18:01,440 --> 00:18:03,510
+that was gonna be multi version and a
+
+476
+00:18:03,510 --> 00:18:05,520
+bunch you know a bunch of questions came
+
+477
+00:18:05,520 --> 00:18:06,720
+up with like how should we do virgin
+
+478
+00:18:06,720 --> 00:18:08,040
+storage hashmi new garbage collection
+
+479
+00:18:08,040 --> 00:18:09,990
+and when you go read the literature and
+
+480
+00:18:09,990 --> 00:18:12,330
+go read the documentation for all these
+
+481
+00:18:12,330 --> 00:18:14,490
+other systems that are doing MVCC they
+
+482
+00:18:14,490 --> 00:18:17,040
+just usually just say this is what we do
+
+483
+00:18:17,040 --> 00:18:19,080
+they don't justify why they would do
+
+484
+00:18:19,080 --> 00:18:21,150
+certain things and all these different
+
+485
+00:18:21,150 --> 00:18:22,560
+systems were doing something you know
+
+486
+00:18:22,560 --> 00:18:25,020
+slightly different so the idea of this
+
+487
+00:18:25,020 --> 00:18:26,940
+paper was to go through and actually
+
+488
+00:18:26,940 --> 00:18:28,770
+understand all the different trade-offs
+
+489
+00:18:28,770 --> 00:18:30,720
+for these different design stations and
+
+490
+00:18:30,720 --> 00:18:33,450
+then eventually then do a bake-off and
+
+491
+00:18:33,450 --> 00:18:34,770
+then whatever turned out to be the best
+
+492
+00:18:34,770 --> 00:18:36,120
+one that's we wanted to put in our
+
+493
+00:18:36,120 --> 00:18:40,620
+system peloton so the original name of
+
+494
+00:18:40,620 --> 00:18:43,320
+the paper that I had you guys read was
+
+495
+00:18:43,320 --> 00:18:45,060
+actually this is the best paper ever on
+
+496
+00:18:45,060 --> 00:18:47,150
+in-memory multiverse kernel and so
+
+497
+00:18:47,150 --> 00:18:49,320
+papers are sort of like your children
+
+498
+00:18:49,320 --> 00:18:50,610
+you're not just to pick your favorites
+
+499
+00:18:50,610 --> 00:18:52,470
+this one is actually one of my favorite
+
+500
+00:18:52,470 --> 00:18:54,600
+ones I had a lot of fun writing it and I
+
+501
+00:18:54,600 --> 00:18:56,250
+and I think the results are very
+
+502
+00:18:56,250 --> 00:18:59,040
+interesting so this we literally submit
+
+503
+00:18:59,040 --> 00:19:00,870
+the paper with this title the reviews
+
+504
+00:19:00,870 --> 00:19:02,700
+were very positive but the very first
+
+505
+00:19:02,700 --> 00:19:04,770
+thing they said was removed this the
+
+506
+00:19:04,770 --> 00:19:06,750
+best paper ever right now
+
+507
+00:19:06,750 --> 00:19:09,360
+they were quite adamant about that so
+
+508
+00:19:09,360 --> 00:19:11,400
+I'm like alright well you know I
+
+509
+00:19:11,400 --> 00:19:13,470
+understand the point like it we we
+
+510
+00:19:13,470 --> 00:19:16,200
+didn't want to be sort of flip or you
+
+511
+00:19:16,200 --> 00:19:18,690
+know subjective in in our in our paper
+
+512
+00:19:18,690 --> 00:19:20,370
+you know I still think it's the best
+
+513
+00:19:20,370 --> 00:19:22,500
+paper but you know would always be I
+
+514
+00:19:22,500 --> 00:19:22,919
+don't know
+
+515
+00:19:22,919 --> 00:19:25,740
+so then we changed the title to if you
+
+516
+00:19:25,740 --> 00:19:27,299
+only read one empirical valuation paper
+
+517
+00:19:27,299 --> 00:19:28,830
+on a memo diversion atoll make it this
+
+518
+00:19:28,830 --> 00:19:32,909
+one exclamation point that one they
+
+519
+00:19:32,909 --> 00:19:34,350
+didn't like they came back again they
+
+520
+00:19:34,350 --> 00:19:36,299
+said this is subjective this is your
+
+521
+00:19:36,299 --> 00:19:38,220
+opinion you have to make the title be
+
+522
+00:19:38,220 --> 00:19:41,159
+more scientific or you know a more you
+
+523
+00:19:41,159 --> 00:19:44,100
+know more precise and so the third name
+
+524
+00:19:44,100 --> 00:19:45,360
+the paper was we think you're really
+
+525
+00:19:45,360 --> 00:19:48,929
+enjoying this and it's true because it's
+
+526
+00:19:48,929 --> 00:19:51,690
+true I did I did think they would enjoy
+
+527
+00:19:51,690 --> 00:19:53,880
+it that's that's a factual statement so
+
+528
+00:19:53,880 --> 00:19:56,549
+at this point the paper got accepted but
+
+529
+00:19:56,549 --> 00:19:57,929
+they were starting to get pissed off and
+
+530
+00:19:57,929 --> 00:19:59,280
+they were like if you don't change the
+
+531
+00:19:59,280 --> 00:20:01,980
+title we're gonna flat out reject it and
+
+532
+00:20:01,980 --> 00:20:03,809
+so I didn't have tenure I still don't
+
+533
+00:20:03,809 --> 00:20:05,039
+but like I didn't have tenure the
+
+534
+00:20:05,039 --> 00:20:06,419
+students needed the paper to graduate
+
+535
+00:20:06,419 --> 00:20:08,610
+and and you know get jobs so we
+
+536
+00:20:08,610 --> 00:20:10,289
+capitulated and so that's why that the
+
+537
+00:20:10,289 --> 00:20:12,450
+title the paper is is what you guys read
+
+538
+00:20:12,450 --> 00:20:14,250
+it was why we had to make it real dry
+
+539
+00:20:14,250 --> 00:20:17,010
+and boring I'm I feel like I could have
+
+540
+00:20:17,010 --> 00:20:19,409
+fought bit more and gotten this one but
+
+541
+00:20:19,409 --> 00:20:22,429
+I was I caved and it is what it is okay
+
+542
+00:20:22,429 --> 00:20:25,080
+all right forget the four design stages
+
+543
+00:20:25,080 --> 00:20:26,370
+we're gonna discuss are concurrent
+
+544
+00:20:26,370 --> 00:20:27,780
+retold version storage garbage
+
+545
+00:20:27,780 --> 00:20:29,909
+collection and index management so let's
+
+546
+00:20:29,909 --> 00:20:33,299
+go to each of these one by one so for a
+
+547
+00:20:33,299 --> 00:20:35,309
+concurrency troll protocol there's in
+
+548
+00:20:35,309 --> 00:20:37,380
+it's all the same methods you guys I
+
+549
+00:20:37,380 --> 00:20:39,059
+read about last class or we talked about
+
+550
+00:20:39,059 --> 00:20:41,280
+in the last lecture right there there is
+
+551
+00:20:41,280 --> 00:20:42,809
+not anything special that you do
+
+552
+00:20:42,809 --> 00:20:44,789
+differently because you're using a multi
+
+553
+00:20:44,789 --> 00:20:46,559
+version system right but these are just
+
+554
+00:20:46,559 --> 00:20:49,200
+adaptations on how you do use those
+
+555
+00:20:49,200 --> 00:20:51,179
+classic protocols to make them work in a
+
+556
+00:20:51,179 --> 00:20:53,370
+multi version system and in particular
+
+557
+00:20:53,370 --> 00:20:54,510
+we're gonna discuss is how do you
+
+558
+00:20:54,510 --> 00:20:57,150
+actually want to do this in a in memory
+
+559
+00:20:57,150 --> 00:20:59,340
+database system right again remember the
+
+560
+00:20:59,340 --> 00:21:01,740
+for the Discordian system we would
+
+561
+00:21:01,740 --> 00:21:04,080
+separate the locks and the locking
+
+562
+00:21:04,080 --> 00:21:05,700
+information from the actual tuples
+
+563
+00:21:05,700 --> 00:21:07,799
+themselves the extra stores because we
+
+564
+00:21:07,799 --> 00:21:09,179
+wanted to keep the lock information in
+
+565
+00:21:09,179 --> 00:21:11,700
+memory so that if the two boots get
+
+566
+00:21:11,700 --> 00:21:13,350
+swapped out the disk right we can still
+
+567
+00:21:13,350 --> 00:21:15,510
+know who holds locks on what but now
+
+568
+00:21:15,510 --> 00:21:17,940
+everything is in memory so we don't want
+
+569
+00:21:17,940 --> 00:21:19,169
+separate data structure so we're gonna
+
+570
+00:21:19,169 --> 00:21:20,850
+try to be clever and actually store in
+
+571
+00:21:20,850 --> 00:21:23,309
+the tuples all the information we need
+
+572
+00:21:23,309 --> 00:21:24,780
+about what's going on in Akko new
+
+573
+00:21:24,780 --> 00:21:27,090
+protocol in addition to all in
+
+574
+00:21:27,090 --> 00:21:29,280
+we need to know about the versioning of
+
+575
+00:21:29,280 --> 00:21:31,620
+our tuples so we want to store anything
+
+576
+00:21:31,620 --> 00:21:34,380
+separate so time skateboarding OCC and
+
+577
+00:21:34,380 --> 00:21:38,220
+and 2pl so we're going to discuss the
+
+578
+00:21:38,220 --> 00:21:39,540
+first and the last one
+
+579
+00:21:39,540 --> 00:21:42,540
+OCC as I said is just a variant of time
+
+580
+00:21:42,540 --> 00:21:44,580
+stamp ordering where you just put
+
+581
+00:21:44,580 --> 00:21:47,400
+everything in in all your rights end up
+
+582
+00:21:47,400 --> 00:21:49,440
+going into this private workspace that's
+
+583
+00:21:49,440 --> 00:21:50,730
+not immediately visible
+
+584
+00:21:50,730 --> 00:21:52,560
+whereas in time stamp ordering it will
+
+585
+00:21:52,560 --> 00:21:54,930
+be immediately visible but we use some
+
+586
+00:21:54,930 --> 00:21:56,520
+extra metadata to keep to make sure that
+
+587
+00:21:56,520 --> 00:21:57,630
+people don't read things they shouldn't
+
+588
+00:21:57,630 --> 00:22:00,090
+be reading okay they also think to the
+
+589
+00:22:00,090 --> 00:22:02,850
+but I apologize about the paper from
+
+590
+00:22:02,850 --> 00:22:04,830
+last class we wrote that before we wrote
+
+591
+00:22:04,830 --> 00:22:07,380
+this one and in that paper about the
+
+592
+00:22:07,380 --> 00:22:11,130
+thousand cores we described MVCC as sort
+
+593
+00:22:11,130 --> 00:22:12,870
+of being a single commercial protocol
+
+594
+00:22:12,870 --> 00:22:13,980
+that was using time stamp boarding
+
+595
+00:22:13,980 --> 00:22:15,750
+because that's what it was defined in
+
+596
+00:22:15,750 --> 00:22:18,120
+the the original MIT dissertation but in
+
+597
+00:22:18,120 --> 00:22:20,280
+actuality again under MVCC you can use
+
+598
+00:22:20,280 --> 00:22:22,830
+all these different approaches so time
+
+599
+00:22:22,830 --> 00:22:25,140
+stamp ordering the mvto is what we used
+
+600
+00:22:25,140 --> 00:22:27,030
+in the thousand core paper but you can
+
+601
+00:22:27,030 --> 00:22:31,320
+still use GPL all right so the first
+
+602
+00:22:31,320 --> 00:22:32,460
+thing we need to scoffs is water
+
+603
+00:22:32,460 --> 00:22:33,450
+reaction how we're actually going to
+
+604
+00:22:33,450 --> 00:22:34,920
+maintain information about what we're
+
+605
+00:22:34,920 --> 00:22:38,990
+storing in our and our tuples so the
+
+606
+00:22:38,990 --> 00:22:42,030
+every tuple is gonna have a header where
+
+607
+00:22:42,030 --> 00:22:44,400
+you store again additional metadata for
+
+608
+00:22:44,400 --> 00:22:46,290
+simplicity assume it's a it's a row
+
+609
+00:22:46,290 --> 00:22:47,970
+store but if it's a column store you
+
+610
+00:22:47,970 --> 00:22:49,290
+just have a separate column with this
+
+611
+00:22:49,290 --> 00:22:52,380
+metadata so the way that is there's some
+
+612
+00:22:52,380 --> 00:22:54,690
+offset into the fixed length data pool
+
+613
+00:22:54,690 --> 00:22:56,670
+and the first couple number of bytes
+
+614
+00:22:56,670 --> 00:22:59,520
+will be this metadata so the first thing
+
+615
+00:22:59,520 --> 00:23:00,600
+we're gonna do is gonna have a unique
+
+616
+00:23:00,600 --> 00:23:02,730
+transaction and identifier right this is
+
+617
+00:23:02,730 --> 00:23:04,320
+just what is that what is the ID of the
+
+618
+00:23:04,320 --> 00:23:06,120
+transaction that either created this
+
+619
+00:23:06,120 --> 00:23:08,250
+version or is currently operating on a
+
+620
+00:23:08,250 --> 00:23:10,890
+host the lock on it then we'll have to
+
+621
+00:23:10,890 --> 00:23:12,750
+begin and time stamps and these can be
+
+622
+00:23:12,750 --> 00:23:14,760
+used to determine the lifetime of the
+
+623
+00:23:14,760 --> 00:23:16,830
+visibility of this particular version
+
+624
+00:23:16,830 --> 00:23:20,280
+and these timestamps could be logical
+
+625
+00:23:20,280 --> 00:23:22,200
+counters like a single counter or they
+
+626
+00:23:22,200 --> 00:23:25,860
+could be a really high precision like
+
+627
+00:23:25,860 --> 00:23:28,080
+hardware clock like in nanoseconds
+
+628
+00:23:28,080 --> 00:23:32,700
+typically people use people people use a
+
+629
+00:23:32,700 --> 00:23:33,900
+counter because it needs to sort of be
+
+630
+00:23:33,900 --> 00:23:35,310
+followed the same under same domain as
+
+631
+00:23:35,310 --> 00:23:38,190
+transaction IDs then we're also now
+
+632
+00:23:38,190 --> 00:23:39,780
+going to have a pointer to either the
+
+633
+00:23:39,780 --> 00:23:40,340
+next
+
+634
+00:23:40,340 --> 00:23:41,929
+or previous version in the version chain
+
+635
+00:23:41,929 --> 00:23:46,400
+for our tuples right so again when we do
+
+636
+00:23:46,400 --> 00:23:48,770
+a lookup to find a tuple like say
+
+637
+00:23:48,770 --> 00:23:50,720
+through an index we're gonna land at the
+
+638
+00:23:50,720 --> 00:23:52,220
+head of this version chain versions of
+
+639
+00:23:52,220 --> 00:23:54,230
+linked lists that we can then traverse
+
+640
+00:23:54,230 --> 00:23:56,539
+to either go back or forward in time to
+
+641
+00:23:56,539 --> 00:23:58,070
+find the right version of the tuple
+
+642
+00:23:58,070 --> 00:23:59,809
+that's visible to us so we need to
+
+643
+00:23:59,809 --> 00:24:02,299
+maintain a 64-bit pointer in our header
+
+644
+00:24:02,299 --> 00:24:04,549
+to say here you know here's the next
+
+645
+00:24:04,549 --> 00:24:05,809
+tube or heard the previous two ball and
+
+646
+00:24:05,809 --> 00:24:07,010
+it was the next thing she look at in the
+
+647
+00:24:07,010 --> 00:24:09,260
+Virgin chain and then some other
+
+648
+00:24:09,260 --> 00:24:10,850
+constraint protocols might have some
+
+649
+00:24:10,850 --> 00:24:12,500
+additional metadata here followed by
+
+650
+00:24:12,500 --> 00:24:16,159
+like the actual tuple tuple datum so the
+
+651
+00:24:16,159 --> 00:24:17,870
+first thing I'd point out is that these
+
+652
+00:24:17,870 --> 00:24:19,460
+are all going to be 64-bit integers
+
+653
+00:24:19,460 --> 00:24:23,240
+right so eight bytes so in this example
+
+654
+00:24:23,240 --> 00:24:25,039
+here right if you just ignore the
+
+655
+00:24:25,039 --> 00:24:25,730
+additional metadata
+
+656
+00:24:25,730 --> 00:24:29,899
+I have 460 64-bit 64-bit values or
+
+657
+00:24:29,899 --> 00:24:31,190
+energies I'm storing here so I four
+
+658
+00:24:31,190 --> 00:24:33,500
+eight byte dice so that's 32 bytes I'm
+
+659
+00:24:33,500 --> 00:24:36,770
+storing for every single tuple it
+
+660
+00:24:36,770 --> 00:24:38,149
+doesn't seem like a lot but if I have a
+
+661
+00:24:38,149 --> 00:24:39,559
+lot of tuples this can start to add up
+
+662
+00:24:39,559 --> 00:24:42,740
+if I have a billion tuples then this
+
+663
+00:24:42,740 --> 00:24:44,240
+these four fields are gonna store
+
+664
+00:24:44,240 --> 00:24:47,539
+underneath 32 gigabytes before there's
+
+665
+00:24:47,539 --> 00:24:50,000
+one day to post that's a lot but it's
+
+666
+00:24:50,000 --> 00:24:51,440
+unavoidable right because it's just this
+
+667
+00:24:51,440 --> 00:24:53,799
+trade-off between compute and storage
+
+668
+00:24:53,799 --> 00:24:55,730
+it's sort of classic and computer
+
+669
+00:24:55,730 --> 00:24:57,380
+science already hit a lot this semester
+
+670
+00:24:57,380 --> 00:24:59,840
+so I could be a bit smarter and maybe
+
+671
+00:24:59,840 --> 00:25:02,390
+store these beginning and timestamps on
+
+672
+00:25:02,390 --> 00:25:04,580
+a block level right so I have a batch of
+
+673
+00:25:04,580 --> 00:25:06,470
+tuples can have begin end timestamps but
+
+674
+00:25:06,470 --> 00:25:07,730
+now that means that when I start doing
+
+675
+00:25:07,730 --> 00:25:08,270
+lookups
+
+676
+00:25:08,270 --> 00:25:10,549
+I'm spending more CPU power to go find
+
+677
+00:25:10,549 --> 00:25:11,779
+the actual version and I'm looking for
+
+678
+00:25:11,779 --> 00:25:14,899
+so for for this reason pretty much
+
+679
+00:25:14,899 --> 00:25:16,159
+everyone always stores this for every
+
+680
+00:25:16,159 --> 00:25:17,690
+single tuple and that that's good enough
+
+681
+00:25:17,690 --> 00:25:19,159
+because it gives you that the the fine
+
+682
+00:25:19,159 --> 00:25:22,070
+granularity you need to you know achieve
+
+683
+00:25:22,070 --> 00:25:23,980
+high concurrency or high parallelism
+
+684
+00:25:23,980 --> 00:25:34,130
+alright sorry mmm that was weird oh all
+
+685
+00:25:34,130 --> 00:25:36,520
+right sorry
+
+686
+00:25:42,010 --> 00:25:47,169
+we'll cut this out sorry this is gonna
+
+687
+00:25:47,169 --> 00:25:49,380
+take forever
+
+688
+00:25:51,990 --> 00:25:56,760
+sorry alright yup you have great paper
+
+689
+00:25:56,760 --> 00:25:58,420
+two bowls
+
+690
+00:25:58,420 --> 00:26:03,580
+okay Tyson for him alright so the first
+
+691
+00:26:03,580 --> 00:26:04,960
+thing we're point out it said we're
+
+692
+00:26:04,960 --> 00:26:06,610
+gonna store this in our table the first
+
+693
+00:26:06,610 --> 00:26:07,840
+thing to point out is that I have this
+
+694
+00:26:07,840 --> 00:26:09,850
+sort of column here of like the version
+
+695
+00:26:09,850 --> 00:26:11,650
+IDs this is just for illustration
+
+696
+00:26:11,650 --> 00:26:14,080
+illustration purposes we're not actually
+
+697
+00:26:14,080 --> 00:26:15,250
+going to store this in our real system
+
+698
+00:26:15,250 --> 00:26:16,870
+right because we use the begin and end
+
+699
+00:26:16,870 --> 00:26:17,980
+time stamp to figure out what the actual
+
+700
+00:26:17,980 --> 00:26:20,020
+version this is just for us to
+
+701
+00:26:20,020 --> 00:26:26,320
+understand this visually so the no there
+
+702
+00:26:26,320 --> 00:26:27,640
+we go alright yeah there's that
+
+703
+00:26:27,640 --> 00:26:30,580
+right so the transaction ID again it's
+
+704
+00:26:30,580 --> 00:26:32,170
+gonna be a 64-bit integer and we're to
+
+705
+00:26:32,170 --> 00:26:33,310
+use that to keep track of
+
+706
+00:26:33,310 --> 00:26:36,100
+does anybody hold the lock on this tuple
+
+707
+00:26:36,100 --> 00:26:38,380
+right so at the very beginning it's
+
+708
+00:26:38,380 --> 00:26:40,960
+going to be 0 then we have our beginning
+
+709
+00:26:40,960 --> 00:26:43,270
+and time stamps so this again this is
+
+710
+00:26:43,270 --> 00:26:46,120
+going to termina bility of our of each
+
+711
+00:26:46,120 --> 00:26:48,070
+version so in this case here there were
+
+712
+00:26:48,070 --> 00:26:49,330
+some transaction that created this
+
+713
+00:26:49,330 --> 00:26:51,880
+version at time stamp 1 and because this
+
+714
+00:26:51,880 --> 00:26:54,310
+is the the this is the latest version of
+
+715
+00:26:54,310 --> 00:26:56,230
+our tuple we set the end time stamp to
+
+716
+00:26:56,230 --> 00:26:58,180
+infinity right because it's visible to
+
+717
+00:26:58,180 --> 00:27:01,020
+anybody that comes after time stamp 1
+
+718
+00:27:01,020 --> 00:27:04,870
+all right and then for FP 2 oh we need
+
+719
+00:27:04,870 --> 00:27:06,060
+to also include the read time stamp
+
+720
+00:27:06,060 --> 00:27:09,040
+right and this is me a time stamp is
+
+721
+00:27:09,040 --> 00:27:11,770
+gonna keep track of the last transaction
+
+722
+00:27:11,770 --> 00:27:14,410
+that read this version and because we
+
+723
+00:27:14,410 --> 00:27:15,820
+have to use this to figure out if we try
+
+724
+00:27:15,820 --> 00:27:18,070
+to write a new version for this tuple if
+
+725
+00:27:18,070 --> 00:27:21,220
+the re time stamp is greater than our
+
+726
+00:27:21,220 --> 00:27:23,110
+time stamp that we our write time stamp
+
+727
+00:27:23,110 --> 00:27:25,210
+then we know that somebody in the future
+
+728
+00:27:25,210 --> 00:27:27,130
+read is to boil and what have missed our
+
+729
+00:27:27,130 --> 00:27:28,960
+newer version so therefore we have to
+
+730
+00:27:28,960 --> 00:27:31,930
+abort so this is this is a good example
+
+731
+00:27:31,930 --> 00:27:34,930
+of another overarching theme if we have
+
+732
+00:27:34,930 --> 00:27:36,010
+throughout the entire semester is that
+
+733
+00:27:36,010 --> 00:27:38,890
+we want to minimize the amount of global
+
+734
+00:27:38,890 --> 00:27:40,600
+data structures we have to coordinate
+
+735
+00:27:40,600 --> 00:27:43,030
+between our different transactions so by
+
+736
+00:27:43,030 --> 00:27:45,040
+recording the V time stamp with in the
+
+737
+00:27:45,040 --> 00:27:47,710
+tuple itself I don't have to do a lookup
+
+738
+00:27:47,710 --> 00:27:48,970
+at some you know what would that
+
+739
+00:27:48,970 --> 00:27:50,620
+occurred and say you know what
+
+740
+00:27:50,620 --> 00:27:52,210
+transaction capacity I've read this
+
+741
+00:27:52,210 --> 00:27:53,860
+tuple I look at the tuple and I merely
+
+742
+00:27:53,860 --> 00:27:57,060
+know exactly the you know what happened
+
+743
+00:27:57,060 --> 00:27:58,810
+alright so now we have a transaction
+
+744
+00:27:58,810 --> 00:28:01,060
+comes along and say it's out its given
+
+745
+00:28:01,060 --> 00:28:03,520
+time stamp 10 and let's do a read on a a
+
+746
+00:28:03,520 --> 00:28:05,440
+followed by a right on beam
+
+747
+00:28:05,440 --> 00:28:07,690
+so the reeds pretty easy right you go
+
+748
+00:28:07,690 --> 00:28:11,680
+check to see whether the the the
+
+749
+00:28:11,680 --> 00:28:13,810
+transaction ID is zero meaning you know
+
+750
+00:28:13,810 --> 00:28:15,640
+nobody is actually writing to this
+
+751
+00:28:15,640 --> 00:28:17,860
+transaction or to this tuple and then
+
+752
+00:28:17,860 --> 00:28:19,830
+you check to see whether the visibility
+
+753
+00:28:19,830 --> 00:28:23,320
+is is within the range that of your your
+
+754
+00:28:23,320 --> 00:28:25,990
+time stamp so our time stamp is 10 10 is
+
+755
+00:28:25,990 --> 00:28:27,760
+between 1 and affinity so we know that
+
+756
+00:28:27,760 --> 00:28:30,850
+this version is invisible to us so then
+
+757
+00:28:30,850 --> 00:28:32,650
+all we need to do now is a compare and
+
+758
+00:28:32,650 --> 00:28:35,590
+swap on the re time stamp to update it
+
+759
+00:28:35,590 --> 00:28:38,440
+with our time stamp right andthe compare
+
+760
+00:28:38,440 --> 00:28:41,290
+and swap fails who cares because that
+
+761
+00:28:41,290 --> 00:28:43,120
+just means that somebody you know either
+
+762
+00:28:43,120 --> 00:28:45,370
+in the after that somebody in the future
+
+763
+00:28:45,370 --> 00:28:47,650
+or in the past I've also read this so we
+
+764
+00:28:47,650 --> 00:28:49,450
+just check it again and and try to
+
+765
+00:28:49,450 --> 00:28:51,190
+update it right if it's less than
+
+766
+00:28:51,190 --> 00:28:53,830
+awesome so it's ok if this we try to
+
+767
+00:28:53,830 --> 00:28:56,500
+read it and say someone comes along with
+
+768
+00:28:56,500 --> 00:28:58,720
+time stamp 11 and we do compare-and-swap
+
+769
+00:28:58,720 --> 00:29:00,340
+and it fails and we come back and time
+
+770
+00:29:00,340 --> 00:29:02,830
+stamp 10 is less than 11 that's fine we
+
+771
+00:29:02,830 --> 00:29:04,540
+don't have to update it like who cares
+
+772
+00:29:04,540 --> 00:29:05,860
+of another thread read this read the
+
+773
+00:29:05,860 --> 00:29:08,530
+same thing we read all right so now
+
+774
+00:29:08,530 --> 00:29:11,050
+we're gonna do the right so for the
+
+775
+00:29:11,050 --> 00:29:12,490
+right we're gonna do it right on B so
+
+776
+00:29:12,490 --> 00:29:13,990
+again the first thing we need to do is
+
+777
+00:29:13,990 --> 00:29:16,300
+do a compare and swap in the transaction
+
+778
+00:29:16,300 --> 00:29:19,780
+ID so that we can take the lock on it so
+
+779
+00:29:19,780 --> 00:29:21,310
+that we can prevent anybody from chronic
+
+780
+00:29:21,310 --> 00:29:23,770
+create the new version while we are so
+
+781
+00:29:23,770 --> 00:29:25,840
+we do a compare and swap set it to our
+
+782
+00:29:25,840 --> 00:29:26,500
+time stamp
+
+783
+00:29:26,500 --> 00:29:28,300
+now that simplicity means that we hold
+
+784
+00:29:28,300 --> 00:29:30,490
+the lock on this tuple and then we can
+
+785
+00:29:30,490 --> 00:29:32,110
+go ahead and create a new version and
+
+786
+00:29:32,110 --> 00:29:34,150
+implicitly this also means we hold a
+
+787
+00:29:34,150 --> 00:29:35,980
+lock on it as well because assume
+
+788
+00:29:35,980 --> 00:29:37,750
+there's a pointer from this to this and
+
+789
+00:29:37,750 --> 00:29:39,760
+no one can get to B 2 without going
+
+790
+00:29:39,760 --> 00:29:42,370
+through b1 but I hold the lock on b1 so
+
+791
+00:29:42,370 --> 00:29:44,440
+no one can follow along so I can do
+
+792
+00:29:44,440 --> 00:29:46,570
+whatever update I need here and then now
+
+793
+00:29:46,570 --> 00:29:49,450
+I just flip this end time stamp to be 10
+
+794
+00:29:49,450 --> 00:29:51,910
+and that sets the visibility of this
+
+795
+00:29:51,910 --> 00:29:55,630
+transaction right and when I'm done I
+
+796
+00:29:55,630 --> 00:29:58,030
+really do a compare and swap well this
+
+797
+00:29:58,030 --> 00:29:59,110
+doesn't need me a compare and swap but
+
+798
+00:29:59,110 --> 00:30:00,880
+this one does I should not need to do
+
+799
+00:30:00,880 --> 00:30:02,950
+you just set it to 0 and you're done and
+
+800
+00:30:02,950 --> 00:30:05,500
+now this new version is installed if
+
+801
+00:30:05,500 --> 00:30:07,330
+anybody comes along with the time stamp
+
+802
+00:30:07,330 --> 00:30:09,790
+say greater than 10 they would be able
+
+803
+00:30:09,790 --> 00:30:12,940
+to feet you know see this version is
+
+804
+00:30:12,940 --> 00:30:16,830
+that clear yes
+
+805
+00:30:25,330 --> 00:30:37,970
+with what ARB okay yes now so the read
+
+806
+00:30:37,970 --> 00:30:39,140
+time stamp is always going forward in
+
+807
+00:30:39,140 --> 00:30:41,000
+time so that's time since you're back
+
+808
+00:30:41,000 --> 00:30:43,220
+here the reach time stamp is one say I
+
+809
+00:30:43,220 --> 00:30:45,409
+do a compare and swap right compare swap
+
+810
+00:30:45,409 --> 00:30:46,909
+says you have to read the value first
+
+811
+00:30:46,909 --> 00:30:48,830
+then you do compare and swap and say I
+
+812
+00:30:48,830 --> 00:30:50,360
+think the value should be one if it's
+
+813
+00:30:50,360 --> 00:30:51,529
+one set it to ten
+
+814
+00:30:51,529 --> 00:30:53,690
+so if I do that and it fails because
+
+815
+00:30:53,690 --> 00:30:55,669
+fifteen came along then I would loop
+
+816
+00:30:55,669 --> 00:30:58,340
+back around see that now the value is
+
+817
+00:30:58,340 --> 00:31:01,429
+fifteen right then that's 15 is greater
+
+818
+00:31:01,429 --> 00:31:03,260
+than ten so I don't try to update it if
+
+819
+00:31:03,260 --> 00:31:05,630
+it was eight ten is greater than eight
+
+820
+00:31:05,630 --> 00:31:22,159
+so yes the new value of the entire row
+
+821
+00:31:22,159 --> 00:31:23,929
+back in I guess I'm just kind of
+
+822
+00:31:23,929 --> 00:31:25,309
+confused it's like toilet you actually
+
+823
+00:31:25,309 --> 00:31:26,510
+go through this link imagine a case
+
+824
+00:31:26,510 --> 00:31:27,799
+where like if you're like reading
+
+825
+00:31:27,799 --> 00:31:29,480
+through these memory locations and then
+
+826
+00:31:29,480 --> 00:31:31,220
+somehow some other thread comes along
+
+827
+00:31:31,220 --> 00:31:32,929
+and like jumps around you in exactly the
+
+828
+00:31:32,929 --> 00:31:34,539
+right order so you read the right thing
+
+829
+00:31:34,539 --> 00:31:38,059
+okay so these question is how am I
+
+830
+00:31:38,059 --> 00:31:41,029
+actually doing this atomically right and
+
+831
+00:31:41,029 --> 00:31:42,350
+it really starts off with this
+
+832
+00:31:42,350 --> 00:31:45,559
+transaction ID so if I do compare and
+
+833
+00:31:45,559 --> 00:31:48,529
+swap on this I said to my transaction ID
+
+834
+00:31:48,529 --> 00:31:51,440
+then nobody else can come along and do
+
+835
+00:31:51,440 --> 00:31:53,480
+the right the same time I do right I
+
+836
+00:31:53,480 --> 00:31:55,429
+hold the lock and the whole thing so I
+
+837
+00:31:55,429 --> 00:31:57,649
+don't this is 64-bit so I just you
+
+838
+00:31:57,649 --> 00:32:00,529
+compare and swap on 64 bits the I think
+
+839
+00:32:00,529 --> 00:32:01,669
+what you were proposing is sort of
+
+840
+00:32:01,669 --> 00:32:04,760
+taking a lock on the entire piece of
+
+841
+00:32:04,760 --> 00:32:07,549
+memory for this tuple and for that one
+
+842
+00:32:07,549 --> 00:32:08,809
+you would happen and that's essentially
+
+843
+00:32:08,809 --> 00:32:11,899
+what this is doing right you can't do a
+
+844
+00:32:11,899 --> 00:32:14,510
+compare and swap more than 128 bits on
+
+845
+00:32:14,510 --> 00:32:17,120
+Intel so this is thing is way larger
+
+846
+00:32:17,120 --> 00:32:18,770
+that so you can't do a Tomic stuff at
+
+847
+00:32:18,770 --> 00:32:22,039
+that granularity so by setting this now
+
+848
+00:32:22,039 --> 00:32:23,299
+this will prevent anybody else when
+
+849
+00:32:23,299 --> 00:32:25,880
+writing a new version you know before
+
+850
+00:32:25,880 --> 00:32:28,429
+I'm done so now you say well what if
+
+851
+00:32:28,429 --> 00:32:29,389
+some comes along
+
+852
+00:32:29,389 --> 00:32:30,979
+and tried to read this well the first
+
+853
+00:32:30,979 --> 00:32:32,989
+thing the reader would do is see that
+
+854
+00:32:32,989 --> 00:32:34,700
+this thing is not zero and back away
+
+855
+00:32:34,700 --> 00:32:37,399
+because it's it's this thing is under no
+
+856
+00:32:37,399 --> 00:32:39,379
+it's being written to now and I don't
+
+857
+00:32:39,379 --> 00:32:41,690
+know what the end time stands gonna be
+
+858
+00:32:41,690 --> 00:32:43,219
+yet so I don't know whether I should be
+
+859
+00:32:43,219 --> 00:32:44,749
+reading this version or the next version
+
+860
+00:32:44,749 --> 00:32:46,879
+he's about to create so now you say all
+
+861
+00:32:46,879 --> 00:32:48,079
+right well what if the reader comes
+
+862
+00:32:48,079 --> 00:32:52,609
+along see zero right and then starts
+
+863
+00:32:52,609 --> 00:32:55,129
+doing the read then this thing does ten
+
+864
+00:32:55,129 --> 00:32:57,979
+and while the other guys still reading
+
+865
+00:32:57,979 --> 00:33:00,320
+what happens well who cares right
+
+866
+00:33:00,320 --> 00:33:03,079
+because this version this person is not
+
+867
+00:33:03,079 --> 00:33:03,619
+going away
+
+868
+00:33:03,619 --> 00:33:05,959
+that reader who got him before I I did
+
+869
+00:33:05,959 --> 00:33:08,479
+they can still read this right and we're
+
+870
+00:33:08,479 --> 00:33:10,070
+fine because this is not gonna corrupt
+
+871
+00:33:10,070 --> 00:33:11,209
+that data or do anything weird
+
+872
+00:33:11,209 --> 00:33:13,639
+it could it'll miss potentially this new
+
+873
+00:33:13,639 --> 00:33:16,899
+version but then meets my next question
+
+874
+00:33:16,899 --> 00:33:19,879
+how do we actually know this how I'm
+
+875
+00:33:19,879 --> 00:33:20,869
+actually keeping track of this thing
+
+876
+00:33:20,869 --> 00:33:22,879
+actually committed right because all I
+
+877
+00:33:22,879 --> 00:33:25,309
+should was that when I update the
+
+878
+00:33:25,309 --> 00:33:26,779
+virgin's I flipped the transaction ID to
+
+879
+00:33:26,779 --> 00:33:30,169
+zero that means I released the lock but
+
+880
+00:33:30,169 --> 00:33:32,690
+now how do I know whether I should if
+
+881
+00:33:32,690 --> 00:33:34,159
+this transaction is actually going to
+
+882
+00:33:34,159 --> 00:33:36,559
+commit and therefore I should actually
+
+883
+00:33:36,559 --> 00:33:42,019
+read this version right so what's
+
+884
+00:33:42,019 --> 00:33:44,029
+missing here is an auxilary data
+
+885
+00:33:44,029 --> 00:33:46,339
+structure that basically has to keep
+
+886
+00:33:46,339 --> 00:33:48,859
+track of the status of transactions so
+
+887
+00:33:48,859 --> 00:33:51,679
+that when I go do a read and I say I
+
+888
+00:33:51,679 --> 00:33:55,879
+read in this case here I would well you
+
+889
+00:33:55,879 --> 00:33:57,289
+keep track of it I read this version
+
+890
+00:33:57,289 --> 00:34:00,950
+here you need a way to know later on oh
+
+891
+00:34:00,950 --> 00:34:02,570
+the transaction that created that
+
+892
+00:34:02,570 --> 00:34:05,149
+version did they actually commit right
+
+893
+00:34:05,149 --> 00:34:06,950
+because you the begin timestamp was the
+
+894
+00:34:06,950 --> 00:34:08,839
+same transaction ID that I set up here
+
+895
+00:34:08,839 --> 00:34:10,039
+so I'd know that transaction at
+
+896
+00:34:10,039 --> 00:34:13,219
+timestamp 10 creating this version when
+
+897
+00:34:13,219 --> 00:34:14,839
+I go to commit I need to know whether
+
+898
+00:34:14,839 --> 00:34:16,309
+they committed as well because if they
+
+899
+00:34:16,309 --> 00:34:17,960
+don't they haven't committed and I read
+
+900
+00:34:17,960 --> 00:34:19,069
+something I shouldn't have read I need
+
+901
+00:34:19,069 --> 00:34:21,980
+abort so what's missing here and what
+
+902
+00:34:21,980 --> 00:34:24,349
+we'll see in hackathon on Monday next
+
+903
+00:34:24,349 --> 00:34:26,089
+week for Microsoft in their version of
+
+904
+00:34:26,089 --> 00:34:28,489
+MVCC is that there's a separate data
+
+905
+00:34:28,489 --> 00:34:29,569
+structure that you have on the side
+
+906
+00:34:29,569 --> 00:34:31,399
+think of a giant hash table we just keep
+
+907
+00:34:31,399 --> 00:34:32,960
+track of what are they all what are the
+
+908
+00:34:32,960 --> 00:34:35,239
+different transactions that are running
+
+909
+00:34:35,239 --> 00:34:38,348
+and whether they've committed or not
+
+910
+00:34:41,960 --> 00:34:46,020
+this question is if I did this if I just
+
+911
+00:34:46,020 --> 00:34:48,869
+left this as ten then wouldn't that
+
+912
+00:34:48,869 --> 00:34:53,489
+somebody like so but for that basically
+
+913
+00:34:53,489 --> 00:34:55,199
+holding the lock on this version forever
+
+914
+00:34:55,199 --> 00:34:58,680
+until I commit by releasing it now
+
+915
+00:34:58,680 --> 00:34:59,910
+anybody come along and read stuff
+
+916
+00:34:59,910 --> 00:35:02,760
+because you're assuming transactions
+
+917
+00:35:02,760 --> 00:35:06,900
+aren't going to conflict or are not
+
+918
+00:35:06,900 --> 00:35:08,130
+going to abort and therefore you won't
+
+919
+00:35:08,130 --> 00:35:16,770
+you want to use speculative reads yes so
+
+920
+00:35:16,770 --> 00:35:18,240
+this question is why not embed another
+
+921
+00:35:18,240 --> 00:35:21,390
+commit ID so that's what Microsoft's
+
+922
+00:35:21,390 --> 00:35:23,220
+gonna do it's two ways to do that so one
+
+923
+00:35:23,220 --> 00:35:24,810
+you just have another commit IDE but
+
+924
+00:35:24,810 --> 00:35:27,000
+that's another 64-bit field and now
+
+925
+00:35:27,000 --> 00:35:29,070
+you're adding a way more space what
+
+926
+00:35:29,070 --> 00:35:30,810
+Microsoft is gonna do we'll see you next
+
+927
+00:35:30,810 --> 00:35:33,630
+class is that they'll piggyback off of
+
+928
+00:35:33,630 --> 00:35:36,210
+the I think I think the end times damn
+
+929
+00:35:36,210 --> 00:35:38,369
+though actually use one bit in the
+
+930
+00:35:38,369 --> 00:35:39,660
+timestamp to say this transaction
+
+931
+00:35:39,660 --> 00:35:42,150
+actually has committed or not and that's
+
+932
+00:35:42,150 --> 00:35:44,400
+how they that's how they avoid you
+
+933
+00:35:44,400 --> 00:35:45,650
+should have to go back and update things
+
+934
+00:35:45,650 --> 00:35:48,950
+but that avoids having a separate column
+
+935
+00:35:48,950 --> 00:35:51,240
+all right so I wanna jump ahead to two
+
+936
+00:35:51,240 --> 00:35:52,380
+phase locking there's still a lot to
+
+937
+00:35:52,380 --> 00:35:57,480
+cover so with MP 2 PL we get rid of
+
+938
+00:35:57,480 --> 00:35:58,859
+three timestamp but now we're gonna add
+
+939
+00:35:58,859 --> 00:36:01,290
+this recount and the recount essentially
+
+940
+00:36:01,290 --> 00:36:04,470
+is gonna act as a the shared lock on on
+
+941
+00:36:04,470 --> 00:36:06,990
+the tuple right so my transaction comes
+
+942
+00:36:06,990 --> 00:36:10,230
+along and it wants to read a I'll do a
+
+943
+00:36:10,230 --> 00:36:12,630
+compare and swap on these two fields at
+
+944
+00:36:12,630 --> 00:36:14,520
+the same time alright so these are both
+
+945
+00:36:14,520 --> 00:36:17,310
+gonna be 64-bit fields x86 allows you to
+
+946
+00:36:17,310 --> 00:36:20,550
+do 128-bit compare and swap so I'll
+
+947
+00:36:20,550 --> 00:36:22,560
+check to see that transaction ID is 0
+
+948
+00:36:22,560 --> 00:36:24,900
+and then I'll and I'll also atomically
+
+949
+00:36:24,900 --> 00:36:27,270
+update this to be 1 so the way you do
+
+950
+00:36:27,270 --> 00:36:29,790
+that is you set this also to be 0 and
+
+951
+00:36:29,790 --> 00:36:31,830
+then you increment this by 1 as the
+
+952
+00:36:31,830 --> 00:36:35,820
+result right so if I do that then that
+
+953
+00:36:35,820 --> 00:36:38,310
+means I have a shared lock on on this on
+
+954
+00:36:38,310 --> 00:36:41,369
+this tuple right and I can read it along
+
+955
+00:36:41,369 --> 00:36:43,020
+with other reader other readers running
+
+956
+00:36:43,020 --> 00:36:45,300
+at the same time but now when I do the
+
+957
+00:36:45,300 --> 00:36:47,970
+right same thing I'll do an atomic 120
+
+958
+00:36:47,970 --> 00:36:50,220
+bit compare and swap to
+
+959
+00:36:50,220 --> 00:36:52,080
+set the transaction ID and the recount
+
+960
+00:36:52,080 --> 00:36:53,760
+to one I actually don't think you need
+
+961
+00:36:53,760 --> 00:36:56,640
+to set the recount but you definitely
+
+962
+00:36:56,640 --> 00:36:58,800
+ought to set the transaction ID so now I
+
+963
+00:36:58,800 --> 00:37:00,870
+have the exclusive lock on this tuple I
+
+964
+00:37:00,870 --> 00:37:03,060
+can go ahead and create a new version I
+
+965
+00:37:03,060 --> 00:37:04,830
+update the end timestamp with my
+
+966
+00:37:04,830 --> 00:37:06,480
+timestamp and then a new
+
+967
+00:37:06,480 --> 00:37:08,850
+compare-and-swap to revert it back to
+
+968
+00:37:08,850 --> 00:37:29,280
+zero and that unlocks it yes I think the
+
+969
+00:37:29,280 --> 00:37:34,860
+starting what are you saying sorry no no
+
+970
+00:37:34,860 --> 00:37:37,290
+no no today's lock acquire locks as
+
+971
+00:37:37,290 --> 00:37:41,340
+needed you acquire them in the growing
+
+972
+00:37:41,340 --> 00:37:43,530
+phase but it doesn't necessarily mean
+
+973
+00:37:43,530 --> 00:37:45,030
+you're gonna acquire them exactly when
+
+974
+00:37:45,030 --> 00:37:54,570
+the transaction starts how the last
+
+975
+00:37:54,570 --> 00:37:58,380
+writer win the first writer wins it's
+
+976
+00:37:58,380 --> 00:38:00,500
+always first writer wins yeah
+
+977
+00:38:00,500 --> 00:38:04,110
+how would it win this guy got to this he
+
+978
+00:38:04,110 --> 00:38:05,940
+wrote to it anybody else that would come
+
+979
+00:38:05,940 --> 00:38:10,320
+along in this case here like so if
+
+980
+00:38:10,320 --> 00:38:12,030
+another transaction comes along and say
+
+981
+00:38:12,030 --> 00:38:14,190
+they have time-stamped five well they
+
+982
+00:38:14,190 --> 00:38:17,280
+would see that the this versions
+
+983
+00:38:17,280 --> 00:38:19,710
+visibility is one to ten five is in
+
+984
+00:38:19,710 --> 00:38:22,560
+between one to ten so that it knows that
+
+985
+00:38:22,560 --> 00:38:24,630
+there's some other some other version
+
+986
+00:38:24,630 --> 00:38:27,480
+that came after timestamp ten that
+
+987
+00:38:27,480 --> 00:38:29,910
+physically got wrote before I did
+
+988
+00:38:29,910 --> 00:38:32,190
+although logically logically it's in the
+
+989
+00:38:32,190 --> 00:38:34,800
+future but in actuality it's in the past
+
+990
+00:38:34,800 --> 00:38:39,330
+in physical time so I might intersect
+
+991
+00:38:39,330 --> 00:38:41,580
+with this this range therefore there's
+
+992
+00:38:41,580 --> 00:38:42,840
+another writer before it got here before
+
+993
+00:38:42,840 --> 00:38:44,790
+I did and I have to abort first writer
+
+994
+00:38:44,790 --> 00:38:50,060
+wins these timestamps tell us everything
+
+995
+00:38:51,490 --> 00:38:54,820
+okay so in the paper ahead you guys read
+
+996
+00:38:54,820 --> 00:38:57,790
+then when we wrote it originally the
+
+997
+00:38:57,790 --> 00:38:59,350
+transaction ID in the recount we're
+
+998
+00:38:59,350 --> 00:39:01,780
+actually set to be 32-bit integers right
+
+999
+00:39:01,780 --> 00:39:03,460
+because at the time when we wrote it
+
+1000
+00:39:03,460 --> 00:39:05,410
+I don't list x86 we were looking at
+
+1001
+00:39:05,410 --> 00:39:07,800
+didn't support 128-bit compare-and-swap
+
+1002
+00:39:07,800 --> 00:39:11,230
+so we put these two together right if
+
+1003
+00:39:11,230 --> 00:39:12,190
+you think about it there's probably not
+
+1004
+00:39:12,190 --> 00:39:14,170
+going to be two to the 32 minus one
+
+1005
+00:39:14,170 --> 00:39:16,180
+threads reading the same to board the
+
+1006
+00:39:16,180 --> 00:39:18,400
+exact same time so setting this to be 32
+
+1007
+00:39:18,400 --> 00:39:21,640
+bits is is kind of an overkill but we
+
+1008
+00:39:21,640 --> 00:39:23,020
+still would want this thing to be you
+
+1009
+00:39:23,020 --> 00:39:24,220
+know a large as possible so we have to
+
+1010
+00:39:24,220 --> 00:39:27,610
+make this thing be you know at least 32
+
+1011
+00:39:27,610 --> 00:39:30,910
+bits maybe 48 but even then although
+
+1012
+00:39:30,910 --> 00:39:33,130
+it's a large number on if your system is
+
+1013
+00:39:33,130 --> 00:39:34,600
+running for a long time you can burn
+
+1014
+00:39:34,600 --> 00:39:35,980
+through these transaction IDs pretty
+
+1015
+00:39:35,980 --> 00:39:36,480
+quickly
+
+1016
+00:39:36,480 --> 00:39:39,670
+all right and what's gonna happen if you
+
+1017
+00:39:39,670 --> 00:39:42,580
+if if you get to the end of transaction
+
+1018
+00:39:42,580 --> 00:39:45,820
+IDs you wrap around right and then you
+
+1019
+00:39:45,820 --> 00:39:47,530
+start to have problems all right so
+
+1020
+00:39:47,530 --> 00:39:50,440
+let's say that we have a simple table
+
+1021
+00:39:50,440 --> 00:39:53,530
+with one tuple and we have this this
+
+1022
+00:39:53,530 --> 00:39:56,200
+this one version here so we have some
+
+1023
+00:39:56,200 --> 00:39:57,370
+transaction ID that's gonna get
+
+1024
+00:39:57,370 --> 00:39:58,840
+transactions of insurance actually be
+
+1025
+00:39:58,840 --> 00:40:02,050
+two - 31 - 1 so it does it right on a
+
+1026
+00:40:02,050 --> 00:40:03,730
+break and do all you know set the
+
+1027
+00:40:03,730 --> 00:40:05,110
+transaction ID do all the lock stuff
+
+1028
+00:40:05,110 --> 00:40:07,390
+that we just talked about and then it
+
+1029
+00:40:07,390 --> 00:40:09,070
+creates a new version here right and
+
+1030
+00:40:09,070 --> 00:40:11,740
+that sets the the the range now to be
+
+1031
+00:40:11,740 --> 00:40:15,340
+232 to the 31 minus 1 except it's the 0
+
+1032
+00:40:15,340 --> 00:40:17,500
+but now another transaction comes along
+
+1033
+00:40:17,500 --> 00:40:20,140
+and now it has time stamp 1 because it
+
+1034
+00:40:20,140 --> 00:40:22,480
+wrapped around and now I create a new
+
+1035
+00:40:22,480 --> 00:40:25,510
+version but now the the ranges that are
+
+1036
+00:40:25,510 --> 00:40:27,820
+all messed up because this is between 1
+
+1037
+00:40:27,820 --> 00:40:30,460
+and infinity and physically that's in
+
+1038
+00:40:30,460 --> 00:40:32,560
+the future but based on these timestamps
+
+1039
+00:40:32,560 --> 00:40:35,020
+it's illogically in the past so now
+
+1040
+00:40:35,020 --> 00:40:37,240
+someone could come along try to find the
+
+1041
+00:40:37,240 --> 00:40:39,460
+wants to look for this version and it
+
+1042
+00:40:39,460 --> 00:40:41,070
+could end up you know going nowhere
+
+1043
+00:40:41,070 --> 00:40:44,010
+right because this thing is in a
+
+1044
+00:40:44,010 --> 00:40:49,960
+disjoint range right so this is
+
+1045
+00:40:49,960 --> 00:40:52,210
+problematic and so if you have a 32-bit
+
+1046
+00:40:52,210 --> 00:40:54,250
+integer for your transaction ID which
+
+1047
+00:40:54,250 --> 00:40:57,010
+Postgres does you can wrap you get
+
+1048
+00:40:57,010 --> 00:40:58,090
+through this pretty quickly even if it's
+
+1049
+00:40:58,090 --> 00:40:59,680
+a 64-bit integer at some point you'll
+
+1050
+00:40:59,680 --> 00:41:01,690
+run out and you need to wrap around and
+
+1051
+00:41:01,690 --> 00:41:04,480
+handle that so there's a couple
+
+1052
+00:41:04,480 --> 00:41:05,520
+different ways to do
+
+1053
+00:41:05,520 --> 00:41:08,410
+I like describing what Postgres does
+
+1054
+00:41:08,410 --> 00:41:09,790
+because it's so simple and easy to
+
+1055
+00:41:09,790 --> 00:41:11,850
+understand and some way that makes it
+
+1056
+00:41:11,850 --> 00:41:15,070
+sort of elegant so what they're gonna do
+
+1057
+00:41:15,070 --> 00:41:17,080
+is that they're gonna add a additional
+
+1058
+00:41:17,080 --> 00:41:19,120
+bit in the header of every single tubule
+
+1059
+00:41:19,120 --> 00:41:21,250
+right usually four tuple headers they
+
+1060
+00:41:21,250 --> 00:41:23,080
+always Pat it out as symmetric bit space
+
+1061
+00:41:23,080 --> 00:41:25,000
+so like if in the future if you decide
+
+1062
+00:41:25,000 --> 00:41:26,350
+oh we need to keep track of some
+
+1063
+00:41:26,350 --> 00:41:27,790
+additional information about each tuple
+
+1064
+00:41:27,790 --> 00:41:29,590
+we just add an extra bit in there we
+
+1065
+00:41:29,590 --> 00:41:31,630
+have space for it so they're gonna add
+
+1066
+00:41:31,630 --> 00:41:34,150
+extra bit that says that a particular
+
+1067
+00:41:34,150 --> 00:41:35,950
+version or Pickler tuple is instead of
+
+1068
+00:41:35,950 --> 00:41:39,850
+frozen and any any version that's
+
+1069
+00:41:39,850 --> 00:41:42,610
+considered frozen means that it's always
+
+1070
+00:41:42,610 --> 00:41:44,680
+gonna be deemed as in the past no matter
+
+1071
+00:41:44,680 --> 00:41:47,230
+what transaction ID you have timestamp
+
+1072
+00:41:47,230 --> 00:41:49,480
+you compare it with so even in this this
+
+1073
+00:41:49,480 --> 00:41:52,300
+case here even though this one could
+
+1074
+00:41:52,300 --> 00:41:54,010
+have a timestamp that's greater your two
+
+1075
+00:41:54,010 --> 00:41:57,070
+- 31 - 1 is greater than 1 if I set the
+
+1076
+00:41:57,070 --> 00:42:00,310
+frozen bit then then this will always be
+
+1077
+00:42:00,310 --> 00:42:04,210
+deemed older than this so the way they
+
+1078
+00:42:04,210 --> 00:42:07,000
+do this is that they if they the system
+
+1079
+00:42:07,000 --> 00:42:08,920
+recognizes that you're gonna about the
+
+1080
+00:42:08,920 --> 00:42:11,770
+wrap-around they'll run the vacuum their
+
+1081
+00:42:11,770 --> 00:42:14,140
+garbage collector scan through and find
+
+1082
+00:42:14,140 --> 00:42:16,900
+old versions and set this bit flag so
+
+1083
+00:42:16,900 --> 00:42:19,810
+there's a lot of there's not a lot of
+
+1084
+00:42:19,810 --> 00:42:21,850
+there's a couple posts on the internet
+
+1085
+00:42:21,850 --> 00:42:23,110
+you go look around for like Postgres
+
+1086
+00:42:23,110 --> 00:42:25,090
+trent transaction rep transaction ID
+
+1087
+00:42:25,090 --> 00:42:26,950
+wrap around problem there's a bunch of
+
+1088
+00:42:26,950 --> 00:42:28,750
+cases where people will actually turn
+
+1089
+00:42:28,750 --> 00:42:30,220
+off the garbage collector on Postgres
+
+1090
+00:42:30,220 --> 00:42:31,810
+during the day because it adds some
+
+1091
+00:42:31,810 --> 00:42:33,520
+overhead so you trying to get the system
+
+1092
+00:42:33,520 --> 00:42:34,960
+running as fast fast as possible during
+
+1093
+00:42:34,960 --> 00:42:35,980
+the day because that's when you have
+
+1094
+00:42:35,980 --> 00:42:37,120
+most your customers using your website
+
+1095
+00:42:37,120 --> 00:42:39,700
+and then all sudden you start hitting
+
+1096
+00:42:39,700 --> 00:42:41,230
+this wrap around problem and the system
+
+1097
+00:42:41,230 --> 00:42:42,940
+freaks out because it has to stop
+
+1098
+00:42:42,940 --> 00:42:44,200
+holding you know accepting new
+
+1099
+00:42:44,200 --> 00:42:45,700
+connections inspecting new transactions
+
+1100
+00:42:45,700 --> 00:42:47,620
+because it doesn't it has to wrap around
+
+1101
+00:42:47,620 --> 00:42:50,890
+but the vacuum you can't run because
+
+1102
+00:42:50,890 --> 00:42:53,410
+you've turned it off and then you
+
+1103
+00:42:53,410 --> 00:42:54,430
+basically have to run the vacuum
+
+1104
+00:42:54,430 --> 00:42:56,020
+manually and that that can do a you know
+
+1105
+00:42:56,020 --> 00:42:59,110
+full compaction or full vacuum pass and
+
+1106
+00:42:59,110 --> 00:43:00,910
+that can take hours and hours or even
+
+1107
+00:43:00,910 --> 00:43:05,590
+days right so the post goes way it is
+
+1108
+00:43:05,590 --> 00:43:07,330
+pretty pretty simple like the vac and
+
+1109
+00:43:07,330 --> 00:43:08,650
+you'll do what you wanted to do and
+
+1110
+00:43:08,650 --> 00:43:14,130
+unless you turn it off so this clear
+
+1111
+00:43:14,130 --> 00:43:15,310
+okay
+
+1112
+00:43:15,310 --> 00:43:17,650
+so when you read the academic literature
+
+1113
+00:43:17,650 --> 00:43:18,850
+about concurrency show
+
+1114
+00:43:18,850 --> 00:43:21,280
+or transactional database systems the
+
+1115
+00:43:21,280 --> 00:43:23,260
+emphasis really is always on these
+
+1116
+00:43:23,260 --> 00:43:25,150
+concurrent protocols right it is two
+
+1117
+00:43:25,150 --> 00:43:27,070
+phase locking better than OCC II or
+
+1118
+00:43:27,070 --> 00:43:29,800
+timestamp ordering but what we actually
+
+1119
+00:43:29,800 --> 00:43:32,500
+found out in his paper was that it's
+
+1120
+00:43:32,500 --> 00:43:33,700
+actually the other things that actually
+
+1121
+00:43:33,700 --> 00:43:36,700
+matter a lot more in in particular what
+
+1122
+00:43:36,700 --> 00:43:39,450
+mattered a lot was the the Virgen stores
+
+1123
+00:43:39,450 --> 00:43:41,770
+mechanism or the architecture the
+
+1124
+00:43:41,770 --> 00:43:43,950
+virtual storage component of the system
+
+1125
+00:43:43,950 --> 00:43:46,510
+so again as he said that we have for
+
+1126
+00:43:46,510 --> 00:43:47,740
+every single physical version we're
+
+1127
+00:43:47,740 --> 00:43:48,790
+going to search every single logical
+
+1128
+00:43:48,790 --> 00:43:50,680
+object will have multiple physical
+
+1129
+00:43:50,680 --> 00:43:52,750
+versions so there's different ways we're
+
+1130
+00:43:52,750 --> 00:43:55,540
+also actually store these versions but
+
+1131
+00:43:55,540 --> 00:43:56,770
+at a high level they're gonna be
+
+1132
+00:43:56,770 --> 00:43:59,560
+organized as a latch free link less
+
+1133
+00:43:59,560 --> 00:44:02,050
+single direction and the head of the
+
+1134
+00:44:02,050 --> 00:44:03,430
+link link list is always going to be
+
+1135
+00:44:03,430 --> 00:44:04,870
+what the indexes point to or sort of
+
+1136
+00:44:04,870 --> 00:44:06,640
+what if I'm doing a look-up on a tuple
+
+1137
+00:44:06,640 --> 00:44:08,530
+I'm always gonna land at the head and
+
+1138
+00:44:08,530 --> 00:44:09,610
+then that can you traverse along the
+
+1139
+00:44:09,610 --> 00:44:11,350
+version chain to try and try to find the
+
+1140
+00:44:11,350 --> 00:44:13,210
+right the right version that's visible
+
+1141
+00:44:13,210 --> 00:44:17,170
+to me so the again the index always
+
+1142
+00:44:17,170 --> 00:44:18,130
+point to the head but the head could
+
+1143
+00:44:18,130 --> 00:44:19,390
+either be the oldest to the newest
+
+1144
+00:44:19,390 --> 00:44:21,610
+depending on what what what approach are
+
+1145
+00:44:21,610 --> 00:44:25,330
+using so the the different schemes will
+
+1146
+00:44:25,330 --> 00:44:27,760
+talk about here will determine where
+
+1147
+00:44:27,760 --> 00:44:29,530
+we're gonna actually store and what Rex
+
+1148
+00:44:29,530 --> 00:44:30,610
+you're going to store for each version
+
+1149
+00:44:30,610 --> 00:44:32,680
+that we create all right sometimes will
+
+1150
+00:44:32,680 --> 00:44:34,090
+store Delta sometimes we'll store the
+
+1151
+00:44:34,090 --> 00:44:37,690
+actual entire tuple so the three
+
+1152
+00:44:37,690 --> 00:44:39,160
+approaches are append only time travel
+
+1153
+00:44:39,160 --> 00:44:41,050
+storage and deathless storage and the
+
+1154
+00:44:41,050 --> 00:44:43,390
+spoiler would be that that the Delta
+
+1155
+00:44:43,390 --> 00:44:45,970
+storage is the best way to go but
+
+1156
+00:44:45,970 --> 00:44:46,900
+there's still a lot of systems like
+
+1157
+00:44:46,900 --> 00:44:49,090
+Postgres in particular that do append
+
+1158
+00:44:49,090 --> 00:44:52,390
+only so what's gonna happen here because
+
+1159
+00:44:52,390 --> 00:44:54,490
+we're in an in-memory system again we
+
+1160
+00:44:54,490 --> 00:44:56,050
+want to avoid having global data
+
+1161
+00:44:56,050 --> 00:44:58,570
+structures so we want to avoid having to
+
+1162
+00:44:58,570 --> 00:45:01,750
+allocate space for new versions in some
+
+1163
+00:45:01,750 --> 00:45:03,910
+you know in a global space of global
+
+1164
+00:45:03,910 --> 00:45:05,770
+memory chunk so instead what we'll do is
+
+1165
+00:45:05,770 --> 00:45:08,110
+as threads create new versions they'll
+
+1166
+00:45:08,110 --> 00:45:09,970
+create the versions inside of like
+
+1167
+00:45:09,970 --> 00:45:11,740
+thread local storage or memory that's
+
+1168
+00:45:11,740 --> 00:45:14,050
+allocated for just that thread you know
+
+1169
+00:45:14,050 --> 00:45:15,460
+that means the Virgin chain could
+
+1170
+00:45:15,460 --> 00:45:17,050
+traverse the storage across multiple
+
+1171
+00:45:17,050 --> 00:45:18,730
+threads but that's okay right because
+
+1172
+00:45:18,730 --> 00:45:20,110
+everything is always always just in
+
+1173
+00:45:20,110 --> 00:45:22,720
+memory so the other thing we also need
+
+1174
+00:45:22,720 --> 00:45:24,850
+to think about too as we describe these
+
+1175
+00:45:24,850 --> 00:45:27,460
+different approaches is you know not
+
+1176
+00:45:27,460 --> 00:45:30,250
+just how fast they are but also how much
+
+1177
+00:45:30,250 --> 00:45:31,570
+storage space they're gonna require to
+
+1178
+00:45:31,570 --> 00:45:32,440
+store these versions
+
+1179
+00:45:32,440 --> 00:45:34,119
+and what's the engineering effort to
+
+1180
+00:45:34,119 --> 00:45:35,800
+actually implement it because some are
+
+1181
+00:45:35,800 --> 00:45:38,260
+obviously easier than others and we need
+
+1182
+00:45:38,260 --> 00:45:39,550
+to think about it's in both in terms of
+
+1183
+00:45:39,550 --> 00:45:42,069
+what is the overhead of finding the
+
+1184
+00:45:42,069 --> 00:45:43,450
+right version that we need for our query
+
+1185
+00:45:43,450 --> 00:45:45,400
+but also the overhead of actually
+
+1186
+00:45:45,400 --> 00:45:48,069
+cleaning up older versions over time as
+
+1187
+00:45:48,069 --> 00:45:49,660
+they accumulate like in the garbage
+
+1188
+00:45:49,660 --> 00:45:52,780
+collector all right so go to each is one
+
+1189
+00:45:52,780 --> 00:45:55,089
+by one so append-only storage the idea
+
+1190
+00:45:55,089 --> 00:45:57,520
+is that we have a single table like a
+
+1191
+00:45:57,520 --> 00:45:59,079
+single physical space where we're
+
+1192
+00:45:59,079 --> 00:46:01,480
+storing ro tuples and any time a
+
+1193
+00:46:01,480 --> 00:46:06,160
+transaction updates a tuple what does
+
+1194
+00:46:06,160 --> 00:46:09,250
+create a new physical tuple in the in
+
+1195
+00:46:09,250 --> 00:46:11,920
+that same tablespace right so say our
+
+1196
+00:46:11,920 --> 00:46:14,290
+transactions can update a 1 right we
+
+1197
+00:46:14,290 --> 00:46:16,900
+just make a copy of a1 append into some
+
+1198
+00:46:16,900 --> 00:46:19,000
+new space or a free slot in the table
+
+1199
+00:46:19,000 --> 00:46:21,520
+and then we just update now the pointer
+
+1200
+00:46:21,520 --> 00:46:22,869
+to our version chain to say you know
+
+1201
+00:46:22,869 --> 00:46:26,829
+here's the new version right so it's
+
+1202
+00:46:26,829 --> 00:46:28,930
+pretty simple to do and this is what how
+
+1203
+00:46:28,930 --> 00:46:30,730
+Postgres originally designed it in the
+
+1204
+00:46:30,730 --> 00:46:33,490
+the 1980s think interbase did the same
+
+1205
+00:46:33,490 --> 00:46:34,660
+thing
+
+1206
+00:46:34,660 --> 00:46:37,930
+the downside obviously is that you know
+
+1207
+00:46:37,930 --> 00:46:40,119
+I'm making a lot of copies right
+
+1208
+00:46:40,119 --> 00:46:41,760
+you know I'm copying the entire tuple
+
+1209
+00:46:41,760 --> 00:46:44,230
+even though it may only update a single
+
+1210
+00:46:44,230 --> 00:46:46,990
+field so another important thing that
+
+1211
+00:46:46,990 --> 00:46:49,660
+was a point out too is the order in
+
+1212
+00:46:49,660 --> 00:46:52,079
+which were traversing the virgin chain
+
+1213
+00:46:52,079 --> 00:46:54,670
+for our tuples so in this example here
+
+1214
+00:46:54,670 --> 00:46:57,160
+I'm going going oldest to newest so I
+
+1215
+00:46:57,160 --> 00:46:59,619
+started off like this I have a 0 a 1 and
+
+1216
+00:46:59,619 --> 00:47:01,359
+then a 0 was the head of the chain and
+
+1217
+00:47:01,359 --> 00:47:03,010
+it pointed at a 1 and then when I
+
+1218
+00:47:03,010 --> 00:47:05,980
+created a 2 a 1 now pointed at that but
+
+1219
+00:47:05,980 --> 00:47:07,390
+I would still have my indexes still
+
+1220
+00:47:07,390 --> 00:47:09,730
+point a 0 so they want to find a 2 I
+
+1221
+00:47:09,730 --> 00:47:12,430
+have to jump to a 0 check that there's
+
+1222
+00:47:12,430 --> 00:47:14,050
+begin n time stands to see whether it's
+
+1223
+00:47:14,050 --> 00:47:16,150
+visible to me if not then I jump to a 1
+
+1224
+00:47:16,150 --> 00:47:18,420
+do the same thing and they jump to a 2
+
+1225
+00:47:18,420 --> 00:47:21,010
+so that may not be the best approach
+
+1226
+00:47:21,010 --> 00:47:24,670
+depending on your application right so
+
+1227
+00:47:24,670 --> 00:47:26,170
+again that was oldest to newest you
+
+1228
+00:47:26,170 --> 00:47:27,910
+always have traversed the the chain to
+
+1229
+00:47:27,910 --> 00:47:30,339
+find the newest version you could also
+
+1230
+00:47:30,339 --> 00:47:33,490
+go newest to oldest where the head of
+
+1231
+00:47:33,490 --> 00:47:35,109
+the version chain is always the latest
+
+1232
+00:47:35,109 --> 00:47:37,930
+version that just got created so you
+
+1233
+00:47:37,930 --> 00:47:39,339
+know you don't need to update any
+
+1234
+00:47:39,339 --> 00:47:41,380
+previous versions you just add your new
+
+1235
+00:47:41,380 --> 00:47:43,630
+version and then have its pointer point
+
+1236
+00:47:43,630 --> 00:47:44,859
+to the old version the head of the
+
+1237
+00:47:44,859 --> 00:47:46,270
+version chain
+
+1238
+00:47:46,270 --> 00:47:49,670
+what's one obvious problem with that so
+
+1239
+00:47:49,670 --> 00:47:50,930
+it's faster doing lookups obviously
+
+1240
+00:47:50,930 --> 00:47:53,750
+right because you it's it's you want the
+
+1241
+00:47:53,750 --> 00:47:55,280
+newest version I'll and the head of her
+
+1242
+00:47:55,280 --> 00:48:01,430
+G chain and I'm done yes no yes I'll
+
+1243
+00:48:01,430 --> 00:48:04,790
+bear the indexes correct yes so again
+
+1244
+00:48:04,790 --> 00:48:06,410
+we'll talk if you more slides but like
+
+1245
+00:48:06,410 --> 00:48:07,970
+all the indexes are pointing to the head
+
+1246
+00:48:07,970 --> 00:48:09,920
+of virgin Jane if for every single
+
+1247
+00:48:09,920 --> 00:48:11,119
+update the head of version change
+
+1248
+00:48:11,119 --> 00:48:12,710
+changes because its newest to oldest
+
+1249
+00:48:12,710 --> 00:48:14,720
+then I have to update all the indexes
+
+1250
+00:48:14,720 --> 00:48:17,560
+now to point to the new virgin Jane
+
+1251
+00:48:17,560 --> 00:48:20,240
+right and actually that's what purpose
+
+1252
+00:48:20,240 --> 00:48:23,000
+does and compared to my Siegel that's
+
+1253
+00:48:23,000 --> 00:48:26,570
+problematic so again I'm not saying one
+
+1254
+00:48:26,570 --> 00:48:28,280
+is better than another in most cases
+
+1255
+00:48:28,280 --> 00:48:29,810
+newest to oldest poly is the better way
+
+1256
+00:48:29,810 --> 00:48:31,790
+to go because most of the times most
+
+1257
+00:48:31,790 --> 00:48:33,589
+transactions most queries want the
+
+1258
+00:48:33,589 --> 00:48:38,140
+newest version if you care about doing
+
+1259
+00:48:38,140 --> 00:48:39,710
+depending on how you do garbage
+
+1260
+00:48:39,710 --> 00:48:41,900
+collection or depending how you do like
+
+1261
+00:48:41,900 --> 00:48:43,250
+look if you have queries that look at
+
+1262
+00:48:43,250 --> 00:48:45,349
+old data this actually made me maybe
+
+1263
+00:48:45,349 --> 00:49:05,900
+better yes so that so it's a way to
+
+1264
+00:49:05,900 --> 00:49:07,849
+avoid this overhead having to update
+
+1265
+00:49:07,849 --> 00:49:10,130
+every single index every single time by
+
+1266
+00:49:10,130 --> 00:49:13,700
+lately doing no because that could give
+
+1267
+00:49:13,700 --> 00:49:15,890
+you false negatives and then the other
+
+1268
+00:49:15,890 --> 00:49:17,869
+picture is what if you have an
+
+1269
+00:49:17,869 --> 00:49:19,160
+indirection layer we'll see in a second
+
+1270
+00:49:19,160 --> 00:49:21,050
+that will avoid that problem but you
+
+1271
+00:49:21,050 --> 00:49:22,160
+have to maintain that that's additional
+
+1272
+00:49:22,160 --> 00:49:24,260
+you know again additional storage
+
+1273
+00:49:24,260 --> 00:49:27,400
+overhead it to have that indirection
+
+1274
+00:49:27,400 --> 00:49:31,250
+okay again so again the in practice I
+
+1275
+00:49:31,250 --> 00:49:33,800
+think this is the better way to go if
+
+1276
+00:49:33,800 --> 00:49:35,780
+you're doing a pen only but this does
+
+1277
+00:49:35,780 --> 00:49:37,609
+have have some benefits that you don't
+
+1278
+00:49:37,609 --> 00:49:41,150
+have to update the indexes all right so
+
+1279
+00:49:41,150 --> 00:49:43,190
+the other that the next approach is to
+
+1280
+00:49:43,190 --> 00:49:45,830
+do time travel storage and the idea here
+
+1281
+00:49:45,830 --> 00:49:47,089
+is that as we create new versions
+
+1282
+00:49:47,089 --> 00:49:49,130
+instead of appending the new versions
+
+1283
+00:49:49,130 --> 00:49:51,710
+into our main tablespace we will have
+
+1284
+00:49:51,710 --> 00:49:54,260
+this other table that looks exactly the
+
+1285
+00:49:54,260 --> 00:49:55,820
+same as the first one but it has the
+
+1286
+00:49:55,820 --> 00:49:57,710
+same scheme on the same allocation of
+
+1287
+00:49:57,710 --> 00:49:59,360
+columns
+
+1288
+00:49:59,360 --> 00:50:01,570
+and rows but that's we're going to put
+
+1289
+00:50:01,570 --> 00:50:04,580
+put virgins as we create them so in this
+
+1290
+00:50:04,580 --> 00:50:07,490
+case here we're doing newest to oldest
+
+1291
+00:50:07,490 --> 00:50:09,680
+so a2 is in the main table space and it
+
+1292
+00:50:09,680 --> 00:50:12,230
+has a pointer to a one in the in time
+
+1293
+00:50:12,230 --> 00:50:14,000
+travel space so now if I'm going to
+
+1294
+00:50:14,000 --> 00:50:16,340
+update this guy I first gonna copy it
+
+1295
+00:50:16,340 --> 00:50:18,710
+into the time travel space have the
+
+1296
+00:50:18,710 --> 00:50:22,370
+pointer point back to a1 and now to
+
+1297
+00:50:22,370 --> 00:50:23,990
+overwrite the master version with the
+
+1298
+00:50:23,990 --> 00:50:26,690
+new version that I wanted to create I am
+
+1299
+00:50:26,690 --> 00:50:29,480
+and again first writer wins I don't
+
+1300
+00:50:29,480 --> 00:50:31,640
+worry about two transactions trying to
+
+1301
+00:50:31,640 --> 00:50:33,380
+update this master version the same time
+
+1302
+00:50:33,380 --> 00:50:35,570
+I do the right here and then anybody
+
+1303
+00:50:35,570 --> 00:50:37,070
+tries to update the same thing will have
+
+1304
+00:50:37,070 --> 00:50:38,450
+to get aborted because they'll conflict
+
+1305
+00:50:38,450 --> 00:50:42,560
+with me alright so then now if I rights
+
+1306
+00:50:42,560 --> 00:50:44,030
+and then update the version pointer to
+
+1307
+00:50:44,030 --> 00:50:47,300
+now point to a2 so this is actually
+
+1308
+00:50:47,300 --> 00:50:49,160
+which what Hana does and this is
+
+1309
+00:50:49,160 --> 00:50:50,570
+actually what sequel server does well so
+
+1310
+00:50:50,570 --> 00:50:52,850
+we'll see sequel server how they do
+
+1311
+00:50:52,850 --> 00:50:56,900
+login with NPC see in a few weeks and I
+
+1312
+00:50:56,900 --> 00:50:59,120
+think they do it this way because it's a
+
+1313
+00:50:59,120 --> 00:51:01,910
+byproduct of the system was not
+
+1314
+00:51:01,910 --> 00:51:03,200
+originally designed to be multi
+
+1315
+00:51:03,200 --> 00:51:05,660
+versioned and so by adding this it
+
+1316
+00:51:05,660 --> 00:51:07,730
+requires the least amount of changes in
+
+1317
+00:51:07,730 --> 00:51:10,370
+the overall architecture the other
+
+1318
+00:51:10,370 --> 00:51:11,750
+engine thing you can do to also is that
+
+1319
+00:51:11,750 --> 00:51:14,510
+you could have the tank that the the
+
+1320
+00:51:14,510 --> 00:51:18,620
+main table actually be a different use a
+
+1321
+00:51:18,620 --> 00:51:20,570
+different storage model than the time
+
+1322
+00:51:20,570 --> 00:51:21,980
+travel table right because you're doing
+
+1323
+00:51:21,980 --> 00:51:24,020
+a lot of updates into this you could
+
+1324
+00:51:24,020 --> 00:51:26,330
+have this be like a roast or or a delta
+
+1325
+00:51:26,330 --> 00:51:29,780
+store roast or and then the time travel
+
+1326
+00:51:29,780 --> 00:51:31,280
+tape because these are like older
+
+1327
+00:51:31,280 --> 00:51:33,080
+versions you can maybe over time convert
+
+1328
+00:51:33,080 --> 00:51:34,940
+them to a column store and that way if
+
+1329
+00:51:34,940 --> 00:51:36,860
+you need to read old data right you can
+
+1330
+00:51:36,860 --> 00:51:38,810
+you can access it through a columnar
+
+1331
+00:51:38,810 --> 00:51:42,650
+layout which is faster all right and
+
+1332
+00:51:42,650 --> 00:51:44,300
+again so the last one is gonna be what I
+
+1333
+00:51:44,300 --> 00:51:45,970
+think it's the better approach is to do
+
+1334
+00:51:45,970 --> 00:51:48,950
+Delta storage and the idea here is that
+
+1335
+00:51:48,950 --> 00:51:52,040
+instead of having to copy the original
+
+1336
+00:51:52,040 --> 00:51:54,020
+version every single time and then make
+
+1337
+00:51:54,020 --> 00:51:56,510
+our change to it we only need to record
+
+1338
+00:51:56,510 --> 00:51:58,460
+what was the change we made and
+
+1339
+00:51:58,460 --> 00:52:00,950
+destroyed that information right so if
+
+1340
+00:52:00,950 --> 00:52:03,440
+I'm gonna update a one and set a copy in
+
+1341
+00:52:03,440 --> 00:52:04,040
+it
+
+1342
+00:52:04,040 --> 00:52:06,520
+I'll just have a Delta record in some
+
+1343
+00:52:06,520 --> 00:52:09,770
+some space in memory that says here's
+
+1344
+00:52:09,770 --> 00:52:11,150
+the change that I made so here's here's
+
+1345
+00:52:11,150 --> 00:52:13,110
+the old value for
+
+1346
+00:52:13,110 --> 00:52:15,210
+for this for this table and update that
+
+1347
+00:52:15,210 --> 00:52:17,430
+and now the pointer points to that sit
+
+1348
+00:52:17,430 --> 00:52:19,950
+again for this Delta information I'm
+
+1349
+00:52:19,950 --> 00:52:21,450
+gonna maintain the same begin and
+
+1350
+00:52:21,450 --> 00:52:22,920
+time-stamped just as I would before and
+
+1351
+00:52:22,920 --> 00:52:25,530
+a regular tuple but the only thing I'm
+
+1352
+00:52:25,530 --> 00:52:27,330
+starting is this Delta information think
+
+1353
+00:52:27,330 --> 00:52:30,990
+of like a DIF and you get that so now if
+
+1354
+00:52:30,990 --> 00:52:32,610
+I want to do a lookup and say find an
+
+1355
+00:52:32,610 --> 00:52:34,740
+older version I just follow that the
+
+1356
+00:52:34,740 --> 00:52:37,230
+Virgin chain and replay all the log
+
+1357
+00:52:37,230 --> 00:52:39,840
+entries or the Delta records to put me
+
+1358
+00:52:39,840 --> 00:52:41,340
+back into the state that I should have
+
+1359
+00:52:41,340 --> 00:52:43,710
+been for that version so again if I have
+
+1360
+00:52:43,710 --> 00:52:45,960
+a thousand say or sailor got a thousand
+
+1361
+00:52:45,960 --> 00:52:48,720
+columns in my table and I only update
+
+1362
+00:52:48,720 --> 00:52:51,270
+one of them then instead of having a
+
+1363
+00:52:51,270 --> 00:52:53,220
+copy all thousand columns every single
+
+1364
+00:52:53,220 --> 00:52:56,130
+time I can just store the the one
+
+1365
+00:52:56,130 --> 00:52:58,340
+attributed one column that got changed
+
+1366
+00:52:58,340 --> 00:53:01,200
+so this is what Oracle does is what my
+
+1367
+00:53:01,200 --> 00:53:03,450
+Siegel does I think this this is and is
+
+1368
+00:53:03,450 --> 00:53:04,950
+what we now do in our system this this
+
+1369
+00:53:04,950 --> 00:53:07,400
+is the better approach right these again
+
+1370
+00:53:07,400 --> 00:53:09,090
+computationally it's more expensive
+
+1371
+00:53:09,090 --> 00:53:11,910
+because I got to essentially replay the
+
+1372
+00:53:11,910 --> 00:53:14,400
+the log or the deltas to put me back in
+
+1373
+00:53:14,400 --> 00:53:15,420
+the correct state I should be for my
+
+1374
+00:53:15,420 --> 00:53:18,150
+tuple when I want to do a lookup most of
+
+1375
+00:53:18,150 --> 00:53:19,470
+the time though you only need to read
+
+1376
+00:53:19,470 --> 00:53:21,420
+the latest version and that's just you
+
+1377
+00:53:21,420 --> 00:53:22,710
+know all the data is just there you're
+
+1378
+00:53:22,710 --> 00:53:25,020
+done but you ended up also storing less
+
+1379
+00:53:25,020 --> 00:53:26,490
+space which also can improve your cash
+
+1380
+00:53:26,490 --> 00:53:28,920
+cash locality or have less pressure on
+
+1381
+00:53:28,920 --> 00:53:30,990
+the cache keep much data in memory as
+
+1382
+00:53:30,990 --> 00:53:33,390
+possible so there's a big benefit to
+
+1383
+00:53:33,390 --> 00:53:39,960
+that yes the question is what if a lot
+
+1384
+00:53:39,960 --> 00:53:41,430
+of my transaction are doing scans and
+
+1385
+00:53:41,430 --> 00:53:45,870
+some of them are updating why would it
+
+1386
+00:53:45,870 --> 00:53:56,940
+be very slow so again like so in a real
+
+1387
+00:53:56,940 --> 00:54:01,100
+database system most of the time the the
+
+1388
+00:54:01,100 --> 00:54:03,360
+you're not updating every single tuple
+
+1389
+00:54:03,360 --> 00:54:05,460
+so say I'm doing special scan across the
+
+1390
+00:54:05,460 --> 00:54:08,340
+entire table most of the time I'm just
+
+1391
+00:54:08,340 --> 00:54:10,050
+gonna rip through the main tablespace
+
+1392
+00:54:10,050 --> 00:54:11,820
+and I don't have to follow the Virgin
+
+1393
+00:54:11,820 --> 00:54:14,010
+chain in the event I have to follow the
+
+1394
+00:54:14,010 --> 00:54:16,410
+Virgin yes on the pay a little you know
+
+1395
+00:54:16,410 --> 00:54:18,750
+computational penalty to now follow this
+
+1396
+00:54:18,750 --> 00:54:21,270
+pointer and replay the deltas to put me
+
+1397
+00:54:21,270 --> 00:54:23,220
+back to the correct state most the time
+
+1398
+00:54:23,220 --> 00:54:24,550
+I don't do that
+
+1399
+00:54:24,550 --> 00:54:27,440
+right I would say also two of the I
+
+1400
+00:54:27,440 --> 00:54:31,100
+think depending on any architect the
+
+1401
+00:54:31,100 --> 00:54:34,580
+system but like you went to do an update
+
+1402
+00:54:34,580 --> 00:54:35,780
+anyway you're already started generating
+
+1403
+00:54:35,780 --> 00:54:37,880
+this Delta and actually this is what
+
+1404
+00:54:37,880 --> 00:54:39,680
+you're gonna log out the disk anyway so
+
+1405
+00:54:39,680 --> 00:54:41,210
+you might as well just just record that
+
+1406
+00:54:41,210 --> 00:54:44,840
+you know in memory as a Delta record so
+
+1407
+00:54:44,840 --> 00:54:46,400
+you not to do any extra work to make the
+
+1408
+00:54:46,400 --> 00:54:48,950
+copy when you you know when you create a
+
+1409
+00:54:48,950 --> 00:54:50,630
+version so there's this trade-off
+
+1410
+00:54:50,630 --> 00:54:52,520
+absolutely right that like resources
+
+1411
+00:54:52,520 --> 00:54:53,840
+right which ones you want a favor I
+
+1412
+00:54:53,840 --> 00:54:56,060
+think the science turns out that that
+
+1413
+00:54:56,060 --> 00:54:59,180
+this approach actually it'll make the
+
+1414
+00:54:59,180 --> 00:55:00,800
+rice go faster and the pen or you're
+
+1415
+00:55:00,800 --> 00:55:03,230
+paying for reads is not is not
+
+1416
+00:55:03,230 --> 00:55:04,580
+significant then it's not worth it to
+
+1417
+00:55:04,580 --> 00:55:06,470
+get the right benefit plus you have less
+
+1418
+00:55:06,470 --> 00:55:09,110
+storage space garbage collection is also
+
+1419
+00:55:09,110 --> 00:55:10,880
+easier in this world too because I only
+
+1420
+00:55:10,880 --> 00:55:12,560
+need to go through this thing clean this
+
+1421
+00:55:12,560 --> 00:55:14,000
+up I never touched the main table
+
+1422
+00:55:14,000 --> 00:55:16,780
+because that's always the latest version
+
+1423
+00:55:16,780 --> 00:55:37,190
+yes so it makes a good point
+
+1424
+00:55:37,190 --> 00:55:42,260
+so if say I have a thousand tuples and I
+
+1425
+00:55:42,260 --> 00:55:45,050
+have a bunch of Delta's that each update
+
+1426
+00:55:45,050 --> 00:55:47,420
+a separ attribute do I need to go back
+
+1427
+00:55:47,420 --> 00:55:49,070
+in time super far to find the correct
+
+1428
+00:55:49,070 --> 00:55:52,970
+version so way you handle that is
+
+1429
+00:55:52,970 --> 00:55:54,770
+garbage collection you try to you trick
+
+1430
+00:55:54,770 --> 00:55:58,040
+down the or compact even the the Delta
+
+1431
+00:55:58,040 --> 00:55:59,740
+the Virgin Jane as quickly as possible
+
+1432
+00:55:59,740 --> 00:56:05,530
+we'll cover that next week yeah yes
+
+1433
+00:56:07,590 --> 00:56:09,060
+question is if you're training multiple
+
+1434
+00:56:09,060 --> 00:56:10,230
+adroit skeet sure that it's one Delta
+
+1435
+00:56:10,230 --> 00:56:11,940
+yes so I'm there's only one actually we
+
+1436
+00:56:11,940 --> 00:56:13,860
+would value but yes for every single
+
+1437
+00:56:13,860 --> 00:56:16,110
+attribute I modify it will be within one
+
+1438
+00:56:16,110 --> 00:56:27,900
+one does a record yes so so this could
+
+1439
+00:56:27,900 --> 00:56:30,090
+be uncommitted right and this also could
+
+1440
+00:56:30,090 --> 00:56:32,550
+be written in the future that's not that
+
+1441
+00:56:32,550 --> 00:56:34,140
+I haven't but I shouldn't see cuz it's
+
+1442
+00:56:34,140 --> 00:56:35,670
+not my snapshot so therefore I have to
+
+1443
+00:56:35,670 --> 00:56:37,110
+go back a time if I'm what is actually
+
+1444
+00:56:37,110 --> 00:56:43,620
+visible to me all right cool
+
+1445
+00:56:43,620 --> 00:56:48,260
+so um so one additional problem though
+
+1446
+00:56:48,260 --> 00:56:51,840
+if you're doing a pen only and this is
+
+1447
+00:56:51,840 --> 00:56:53,040
+why I think the Delta story is better is
+
+1448
+00:56:53,040 --> 00:56:58,380
+that if now you have if you have string
+
+1449
+00:56:58,380 --> 00:57:00,600
+values that are stored in the verbal ink
+
+1450
+00:57:00,600 --> 00:57:03,870
+data pool every single time I create a
+
+1451
+00:57:03,870 --> 00:57:08,190
+new version I I have to make a copy of
+
+1452
+00:57:08,190 --> 00:57:12,060
+this tuple or that sort of the the very
+
+1453
+00:57:12,060 --> 00:57:16,020
+length data so that my next my next
+
+1454
+00:57:16,020 --> 00:57:20,010
+version can have its own pointer because
+
+1455
+00:57:20,010 --> 00:57:22,680
+if I start if I start doing garbage
+
+1456
+00:57:22,680 --> 00:57:24,690
+collection and I clean up a one cuz a
+
+1457
+00:57:24,690 --> 00:57:26,730
+tuna is now the latest version if this
+
+1458
+00:57:26,730 --> 00:57:29,070
+thing is pointing to this and I go clean
+
+1459
+00:57:29,070 --> 00:57:31,680
+that up then now my pointer points to
+
+1460
+00:57:31,680 --> 00:57:34,140
+nothing and that's bad right so that
+
+1461
+00:57:34,140 --> 00:57:35,100
+sucks right so that means for every
+
+1462
+00:57:35,100 --> 00:57:36,990
+single time even if I don't update this
+
+1463
+00:57:36,990 --> 00:57:39,900
+I don't take this string at all I'm
+
+1464
+00:57:39,900 --> 00:57:41,580
+still making a copy of all the string
+
+1465
+00:57:41,580 --> 00:57:44,760
+values so one way to handle this
+
+1466
+00:57:44,760 --> 00:57:46,500
+obviously is just add a reference
+
+1467
+00:57:46,500 --> 00:57:48,870
+counter in the verbal link data so that
+
+1468
+00:57:48,870 --> 00:57:51,660
+when I know that how many pointers how
+
+1469
+00:57:51,660 --> 00:57:52,860
+many versions actually pointing to this
+
+1470
+00:57:52,860 --> 00:57:56,130
+so if I go clean up this this the first
+
+1471
+00:57:56,130 --> 00:57:58,260
+version and I decrement the counter and
+
+1472
+00:57:58,260 --> 00:57:59,550
+still greater than zero that I know that
+
+1473
+00:57:59,550 --> 00:58:01,620
+someone out there is pointing to this
+
+1474
+00:58:01,620 --> 00:58:03,840
+this string my very unlike data pool and
+
+1475
+00:58:03,840 --> 00:58:08,310
+I shouldn't go ahead and clean it up the
+
+1476
+00:58:08,310 --> 00:58:10,080
+downside though is and this is actually
+
+1477
+00:58:10,080 --> 00:58:12,630
+what we tried in in our old peloton
+
+1478
+00:58:12,630 --> 00:58:15,630
+system the downside is that because now
+
+1479
+00:58:15,630 --> 00:58:18,900
+I keep track of the if I had multiple
+
+1480
+00:58:18,900 --> 00:58:21,070
+versions pointing to this
+
+1481
+00:58:21,070 --> 00:58:22,830
+I actually don't know where they are so
+
+1482
+00:58:22,830 --> 00:58:25,660
+if I ever need to move this this piece
+
+1483
+00:58:25,660 --> 00:58:27,250
+of data around in memory like I started
+
+1484
+00:58:27,250 --> 00:58:30,130
+compacting my my favor length data pool
+
+1485
+00:58:30,130 --> 00:58:32,260
+then I have to do a sequential scan and
+
+1486
+00:58:32,260 --> 00:58:34,330
+try to find the one version of the tuple
+
+1487
+00:58:34,330 --> 00:58:35,950
+or the book version of the two are
+
+1488
+00:58:35,950 --> 00:58:38,350
+actually pointing to this so this
+
+1489
+00:58:38,350 --> 00:58:39,820
+actually turns out to be a bad idea it's
+
+1490
+00:58:39,820 --> 00:58:41,460
+something we abandoned pretty quickly
+
+1491
+00:58:41,460 --> 00:58:43,450
+this is a synergy sort of what
+
+1492
+00:58:43,450 --> 00:58:44,800
+dictionary compression does as well
+
+1493
+00:58:44,800 --> 00:58:46,300
+because instead of storing the pointer
+
+1494
+00:58:46,300 --> 00:58:48,400
+to something in the very like data pool
+
+1495
+00:58:48,400 --> 00:58:50,710
+I would have a dictionary code that I
+
+1496
+00:58:50,710 --> 00:58:51,970
+could then do another look up and find
+
+1497
+00:58:51,970 --> 00:58:56,200
+find what the actual value was but at
+
+1498
+00:58:56,200 --> 00:58:59,500
+least in that case you know if you're
+
+1499
+00:58:59,500 --> 00:59:01,660
+compressing the data then it's it's it's
+
+1500
+00:59:01,660 --> 00:59:04,570
+usually cold data and therefore you're
+
+1501
+00:59:04,570 --> 00:59:05,950
+not gonna you have to clean things out
+
+1502
+00:59:05,950 --> 00:59:06,520
+very often
+
+1503
+00:59:06,520 --> 00:59:22,900
+yes No so again member last class I
+
+1504
+00:59:22,900 --> 00:59:26,350
+talked about how there's the fixed
+
+1505
+00:59:26,350 --> 00:59:27,850
+length data pool and the verbally dated
+
+1506
+00:59:27,850 --> 00:59:29,050
+pools so all our tuples
+
+1507
+00:59:29,050 --> 00:59:30,670
+alright I'm gonna try to reside in the
+
+1508
+00:59:30,670 --> 00:59:32,080
+fix link okay I have to reside the fixed
+
+1509
+00:59:32,080 --> 00:59:33,310
+length data pools that's like the
+
+1510
+00:59:33,310 --> 00:59:36,100
+location of them but because we want all
+
+1511
+00:59:36,100 --> 00:59:37,630
+the size of every single tuple to be
+
+1512
+00:59:37,630 --> 00:59:39,640
+fixed length anything it could be
+
+1513
+00:59:39,640 --> 00:59:41,200
+variable length has to be stored in a
+
+1514
+00:59:41,200 --> 00:59:43,840
+separate data pool so inside my my fixed
+
+1515
+00:59:43,840 --> 00:59:44,980
+length data instead actually storing the
+
+1516
+00:59:44,980 --> 00:59:48,420
+string I store a pointer to the string
+
+1517
+00:59:48,420 --> 00:59:50,410
+right and that's another piece of memory
+
+1518
+00:59:50,410 --> 00:59:52,210
+that's managed separately and the point
+
+1519
+00:59:52,210 --> 00:59:54,190
+I'm trying to make here is that one on
+
+1520
+00:59:54,190 --> 00:59:56,710
+one hand we could just duplicate the
+
+1521
+00:59:56,710 --> 00:59:58,150
+string over and over again every sperm
+
+1522
+00:59:58,150 --> 00:59:59,380
+is single note version because each of
+
+1523
+00:59:59,380 --> 01:00:00,810
+these guys need to have a unique pointer
+
+1524
+01:00:00,810 --> 01:00:02,950
+but that's obviously gonna be wasteful
+
+1525
+01:00:02,950 --> 01:00:04,150
+because if I don't update the string
+
+1526
+01:00:04,150 --> 01:00:05,920
+that I'm copying for no reason and if my
+
+1527
+01:00:05,920 --> 01:00:07,990
+string is huge then that's gonna get
+
+1528
+01:00:07,990 --> 01:00:10,390
+expensive very quickly so you could try
+
+1529
+01:00:10,390 --> 01:00:12,670
+to share pointers by adding a reference
+
+1530
+01:00:12,670 --> 01:00:14,260
+counter into that to the reference to
+
+1531
+01:00:14,260 --> 01:00:15,880
+the fare blank data pool for every
+
+1532
+01:00:15,880 --> 01:00:18,130
+single thing you're storing but now the
+
+1533
+01:00:18,130 --> 01:00:19,600
+problem is if I ever try to move this
+
+1534
+01:00:19,600 --> 01:00:21,400
+data around I don't know what else is
+
+1535
+01:00:21,400 --> 01:00:23,320
+pointing to it and I could have you know
+
+1536
+01:00:23,320 --> 01:00:27,390
+broken pointers yes
+
+1537
+01:00:27,960 --> 01:00:29,800
+say especially couldn't use a logic
+
+1538
+01:00:29,800 --> 01:00:30,700
+warrant that's what dictionary
+
+1539
+01:00:30,700 --> 01:00:32,050
+compression essentially does we'll cover
+
+1540
+01:00:32,050 --> 01:00:35,140
+that in like a few weeks it's hard for
+
+1541
+01:00:35,140 --> 01:00:36,790
+me to balance like like when you guys
+
+1542
+01:00:36,790 --> 01:00:38,680
+need to know now which what's going to
+
+1543
+01:00:38,680 --> 01:00:39,280
+come in the future
+
+1544
+01:00:39,280 --> 01:00:41,050
+so the dictionary confession you solve
+
+1545
+01:00:41,050 --> 01:00:47,140
+this okay probably need to get two
+
+1546
+01:00:47,140 --> 01:00:50,530
+carbons motion so the idea of carbon
+
+1547
+01:00:50,530 --> 01:00:52,510
+suction again it's just like GCE under
+
+1548
+01:00:52,510 --> 01:00:55,560
+under for the JVM we need to find
+
+1549
+01:00:55,560 --> 01:00:57,370
+physical versions that are reclaimed
+
+1550
+01:00:57,370 --> 01:00:59,320
+bold and physical version is one where
+
+1551
+01:00:59,320 --> 01:01:01,150
+we know there's no active transactions
+
+1552
+01:01:01,150 --> 01:01:03,880
+running that can see that version right
+
+1553
+01:01:03,880 --> 01:01:05,860
+because it's in the past and and all new
+
+1554
+01:01:05,860 --> 01:01:07,060
+time stain all new transactions have a
+
+1555
+01:01:07,060 --> 01:01:08,590
+time Sam in the future and they can't
+
+1556
+01:01:08,590 --> 01:01:10,780
+get to it or the version was created by
+
+1557
+01:01:10,780 --> 01:01:12,250
+transaction that later got aborted and
+
+1558
+01:01:12,250 --> 01:01:14,440
+we know and no one's gonna read it we
+
+1559
+01:01:14,440 --> 01:01:16,420
+gotta go ahead and clean it up so the
+
+1560
+01:01:16,420 --> 01:01:18,400
+much different design stages we need be
+
+1561
+01:01:18,400 --> 01:01:20,590
+mindful of how to find the expired
+
+1562
+01:01:20,590 --> 01:01:22,360
+versions what to do how to determine
+
+1563
+01:01:22,360 --> 01:01:23,830
+whether it's safe to reclaim a piece of
+
+1564
+01:01:23,830 --> 01:01:25,720
+memory and where to actually look for
+
+1565
+01:01:25,720 --> 01:01:27,910
+them so we're gonna focus on this how
+
+1566
+01:01:27,910 --> 01:01:30,700
+how to look for them we'll cover this a
+
+1567
+01:01:30,700 --> 01:01:32,380
+little bit but we'll do next Wednesday
+
+1568
+01:01:32,380 --> 01:01:34,870
+Wednesday next Wednesday next week we'll
+
+1569
+01:01:34,870 --> 01:01:36,280
+spend the entire lecture discussing on
+
+1570
+01:01:36,280 --> 01:01:37,570
+how we actually do garbage collection in
+
+1571
+01:01:37,570 --> 01:01:39,990
+MVCC and go to more details about this
+
+1572
+01:01:39,990 --> 01:01:42,730
+right so the two ways to do this is at
+
+1573
+01:01:42,730 --> 01:01:43,990
+the tuple level or the transaction level
+
+1574
+01:01:43,990 --> 01:01:46,170
+so the tuple level the idea is that
+
+1575
+01:01:46,170 --> 01:01:48,280
+there's not going to be any central
+
+1576
+01:01:48,280 --> 01:01:49,780
+location that says here's all the
+
+1577
+01:01:49,780 --> 01:01:51,190
+versions of the tuples that we can go
+
+1578
+01:01:51,190 --> 01:01:53,500
+clean up the idea is instead we're gonna
+
+1579
+01:01:53,500 --> 01:01:56,290
+have threads run and do scans and when
+
+1580
+01:01:56,290 --> 01:01:57,820
+they come across data or come across
+
+1581
+01:01:57,820 --> 01:01:59,140
+versions that are we claimed a little
+
+1582
+01:01:59,140 --> 01:02:01,720
+they go ahead and we clean them up we
+
+1583
+01:02:01,720 --> 01:02:03,040
+can either do this with separate threads
+
+1584
+01:02:03,040 --> 01:02:04,780
+or cooperative threads as a running
+
+1585
+01:02:04,780 --> 01:02:06,790
+queries and then transaction level the
+
+1586
+01:02:06,790 --> 01:02:09,340
+idea is that each transaction is gonna
+
+1587
+01:02:09,340 --> 01:02:11,260
+keep track of every single version that
+
+1588
+01:02:11,260 --> 01:02:13,420
+they that they invalidate and therefore
+
+1589
+01:02:13,420 --> 01:02:15,520
+could be reclaimed and then when they go
+
+1590
+01:02:15,520 --> 01:02:18,550
+to commit they hand off is this set of
+
+1591
+01:02:18,550 --> 01:02:21,400
+pointers to this garbage bucket says hey
+
+1592
+01:02:21,400 --> 01:02:22,930
+by the way here are some things I
+
+1593
+01:02:22,930 --> 01:02:24,340
+invalidated you should go ahead and
+
+1594
+01:02:24,340 --> 01:02:27,130
+clean them up and that's a voice having
+
+1595
+01:02:27,130 --> 01:02:29,620
+to do that the sequential scan so let's
+
+1596
+01:02:29,620 --> 01:02:30,760
+go through tuple level first
+
+1597
+01:02:30,760 --> 01:02:33,040
+so with back I'm vacuuming again the
+
+1598
+01:02:33,040 --> 01:02:34,180
+idea is that there's separate threads
+
+1599
+01:02:34,180 --> 01:02:37,000
+that are gonna run that are going to do
+
+1600
+01:02:37,000 --> 01:02:38,440
+special scans and try to find old
+
+1601
+01:02:38,440 --> 01:02:40,690
+versions so when the vacuum starts
+
+1602
+01:02:40,690 --> 01:02:41,710
+we have to look and say well what are
+
+1603
+01:02:41,710 --> 01:02:43,390
+the actual transactions what are their
+
+1604
+01:02:43,390 --> 01:02:46,380
+time stamps and then now when we scan
+
+1605
+01:02:46,380 --> 01:02:48,400
+we're gonna we're going to compare the
+
+1606
+01:02:48,400 --> 01:02:49,780
+beginning and time stance for all the
+
+1607
+01:02:49,780 --> 01:02:52,180
+versions that we see and see whether
+
+1608
+01:02:52,180 --> 01:02:55,030
+that the range is specified them do not
+
+1609
+01:02:55,030 --> 01:02:58,240
+intersect with any active transaction so
+
+1610
+01:02:58,240 --> 01:03:00,069
+in this case here we have transactions
+
+1611
+01:03:00,069 --> 01:03:03,099
+with time stamp 12 times at 25 so we
+
+1612
+01:03:03,099 --> 01:03:06,280
+know that for the range 1 to 9 these two
+
+1613
+01:03:06,280 --> 01:03:08,410
+transactions can't see that so therefore
+
+1614
+01:03:08,410 --> 01:03:10,359
+no one can see this and therefore it's
+
+1615
+01:03:10,359 --> 01:03:12,339
+safe for us to go ahead and reclaim this
+
+1616
+01:03:12,339 --> 01:03:16,750
+memory right so this can be expensive to
+
+1617
+01:03:16,750 --> 01:03:18,430
+do likes winchell scans across the
+
+1618
+01:03:18,430 --> 01:03:19,660
+entire system especially if you want
+
+1619
+01:03:19,660 --> 01:03:22,810
+this thing to run all the time so a
+
+1620
+01:03:22,810 --> 01:03:25,210
+simple trick is just to keep track of a
+
+1621
+01:03:25,210 --> 01:03:28,240
+bitmap that says here's all the blocks
+
+1622
+01:03:28,240 --> 01:03:31,359
+that got modified logically since the
+
+1623
+01:03:31,359 --> 01:03:34,180
+last time I ran so therefore when I just
+
+1624
+01:03:34,180 --> 01:03:35,650
+need to scan through that and I can skip
+
+1625
+01:03:35,650 --> 01:03:38,710
+anything that wasn't modified so I mean
+
+1626
+01:03:38,710 --> 01:03:40,869
+by logically is that depending on what
+
+1627
+01:03:40,869 --> 01:03:42,609
+I'm doing oldest newest renews to oldest
+
+1628
+01:03:42,609 --> 01:03:46,180
+I may update say I have two versions in
+
+1629
+01:03:46,180 --> 01:03:49,720
+two separate blocks and it's almost the
+
+1630
+01:03:49,720 --> 01:03:52,210
+newest and I add a new version that's in
+
+1631
+01:03:52,210 --> 01:03:54,400
+the second block but now I could reclaim
+
+1632
+01:03:54,400 --> 01:03:56,710
+that old version that's in the first
+
+1633
+01:03:56,710 --> 01:03:59,319
+block so I need to know logically that
+
+1634
+01:03:59,319 --> 01:04:01,780
+back going back in the version change
+
+1635
+01:04:01,780 --> 01:04:03,280
+here's the block that has the thing I
+
+1636
+01:04:03,280 --> 01:04:07,240
+should examine all right whereas newest
+
+1637
+01:04:07,240 --> 01:04:10,150
+to oldest you would know I add my new
+
+1638
+01:04:10,150 --> 01:04:11,680
+version I know but I need to point to as
+
+1639
+01:04:11,680 --> 01:04:13,119
+the previous head so I know where that
+
+1640
+01:04:13,119 --> 01:04:15,130
+thing is located and I can update that
+
+1641
+01:04:15,130 --> 01:04:19,329
+bit easily so cooperative cleaning the
+
+1642
+01:04:19,329 --> 01:04:20,740
+idea is that we're not gonna have any
+
+1643
+01:04:20,740 --> 01:04:22,420
+separate threads potentially if we're
+
+1644
+01:04:22,420 --> 01:04:24,280
+back on the beckoning it's just now as
+
+1645
+01:04:24,280 --> 01:04:26,440
+our transactions or query start running
+
+1646
+01:04:26,440 --> 01:04:28,630
+if they come across all versions we go
+
+1647
+01:04:28,630 --> 01:04:30,760
+ahead and clean them up alright so say
+
+1648
+01:04:30,760 --> 01:04:32,589
+this guy runs he's gonna do a lookup and
+
+1649
+01:04:32,589 --> 01:04:36,190
+the index to find key a and we're gonna
+
+1650
+01:04:36,190 --> 01:04:38,079
+get to the head of the virgin chain so
+
+1651
+01:04:38,079 --> 01:04:39,970
+then now as I'm scanning along to find
+
+1652
+01:04:39,970 --> 01:04:41,349
+the right version that I want I check
+
+1653
+01:04:41,349 --> 01:04:42,970
+the time stamp which I'm doing anyway to
+
+1654
+01:04:42,970 --> 01:04:44,980
+see whether it's visible to me but I
+
+1655
+01:04:44,980 --> 01:04:46,450
+also know what is the sort of the
+
+1656
+01:04:46,450 --> 01:04:50,020
+high-water mark for the or the low-water
+
+1657
+01:04:50,020 --> 01:04:52,150
+mark for the oldest time stamp of any
+
+1658
+01:04:52,150 --> 01:04:54,250
+active transaction and if I know
+
+1659
+01:04:54,250 --> 01:04:56,890
+that thing is not visible this tuple is
+
+1660
+01:04:56,890 --> 01:04:58,480
+not visible to that oldest transaction I
+
+1661
+01:04:58,480 --> 01:05:00,400
+can go ahead and Garba collect it right
+
+1662
+01:05:00,400 --> 01:05:02,530
+there and I keep scanning along and can
+
+1663
+01:05:02,530 --> 01:05:04,630
+print out anything and I also then have
+
+1664
+01:05:04,630 --> 01:05:06,130
+to update the index now point to the my
+
+1665
+01:05:06,130 --> 01:05:09,250
+new version chain so the benefit of this
+
+1666
+01:05:09,250 --> 01:05:10,960
+approach is that you don't have to
+
+1667
+01:05:10,960 --> 01:05:11,950
+maintain these separate background
+
+1668
+01:05:11,950 --> 01:05:13,990
+threads but now your queries could
+
+1669
+01:05:13,990 --> 01:05:15,850
+potentially run slower because they may
+
+1670
+01:05:15,850 --> 01:05:18,370
+come across a long version chain and you
+
+1671
+01:05:18,370 --> 01:05:19,720
+had to clean things up before you can
+
+1672
+01:05:19,720 --> 01:05:21,130
+actually finish running your action your
+
+1673
+01:05:21,130 --> 01:05:24,250
+query what's another problem with the
+
+1674
+01:05:24,250 --> 01:05:28,840
+cooperative cleaning yes correct
+
+1675
+01:05:28,840 --> 01:05:30,520
+well one it says that there only were
+
+1676
+01:05:30,520 --> 01:05:33,520
+stores near us but even then there could
+
+1677
+01:05:33,520 --> 01:05:35,430
+be another problem
+
+1678
+01:05:35,430 --> 01:05:38,200
+bingo yes so let's say I create a new
+
+1679
+01:05:38,200 --> 01:05:40,030
+version and then no one ever goes back
+
+1680
+01:05:40,030 --> 01:05:42,310
+and reads that logical tuple again but
+
+1681
+01:05:42,310 --> 01:05:43,780
+now I had that over and sitting around
+
+1682
+01:05:43,780 --> 01:05:46,150
+that no one's ever gonna get so
+
+1683
+01:05:46,150 --> 01:05:48,240
+Microsoft calls these dusty corners and
+
+1684
+01:05:48,240 --> 01:05:50,140
+basically the way to handle that is you
+
+1685
+01:05:50,140 --> 01:05:51,940
+peer out if he also had stuff to run the
+
+1686
+01:05:51,940 --> 01:05:53,710
+background thread just go find things
+
+1687
+01:05:53,710 --> 01:05:58,650
+that could be still sitting around yes
+
+1688
+01:06:10,200 --> 01:06:13,300
+yes overstatement is is there a notion
+
+1689
+01:06:13,300 --> 01:06:15,760
+of cleanliness in our system it could
+
+1690
+01:06:15,760 --> 01:06:18,700
+quantify that so the example I was
+
+1691
+01:06:18,700 --> 01:06:20,620
+saying before like the the garbage
+
+1692
+01:06:20,620 --> 01:06:23,620
+suction takes time right so Microsoft
+
+1693
+01:06:23,620 --> 01:06:25,900
+roughly estimates in their paper that
+
+1694
+01:06:25,900 --> 01:06:27,640
+garbage suction adds but a fifteen
+
+1695
+01:06:27,640 --> 01:06:30,760
+fifteen percent overhead if during the
+
+1696
+01:06:30,760 --> 01:06:32,350
+day I want Mitra's actually run fast as
+
+1697
+01:06:32,350 --> 01:06:33,610
+possible I could maybe potentially
+
+1698
+01:06:33,610 --> 01:06:35,950
+disable garbage collection the system
+
+1699
+01:06:35,950 --> 01:06:38,740
+becomes more dirty and then when I want
+
+1700
+01:06:38,740 --> 01:06:41,260
+you know maybe in the day then I run the
+
+1701
+01:06:41,260 --> 01:06:43,180
+garbage cutting and burning more cycles
+
+1702
+01:06:43,180 --> 01:06:44,500
+but I have spare ones that you know I
+
+1703
+01:06:44,500 --> 01:06:47,320
+can use to clean things up it's usually
+
+1704
+01:06:47,320 --> 01:06:48,910
+the storage overhead people care about
+
+1705
+01:06:48,910 --> 01:06:50,050
+the you run out of space pretty quickly
+
+1706
+01:06:50,050 --> 01:06:51,910
+if you have a lot of virgin in your
+
+1707
+01:06:51,910 --> 01:06:54,970
+turning through them I always say that
+
+1708
+01:06:54,970 --> 01:06:56,620
+like the the the notion of cleanliness
+
+1709
+01:06:56,620 --> 01:06:58,510
+would be something better to have to be
+
+1710
+01:06:58,510 --> 01:07:03,070
+human to find like I usually use fewer
+
+1711
+01:07:03,070 --> 01:07:04,600
+threads from garbage question because I
+
+1712
+01:07:04,600 --> 01:07:06,850
+want queries run faster but then there's
+
+1713
+01:07:06,850 --> 01:07:07,660
+sort of a push back
+
+1714
+01:07:07,660 --> 01:07:08,500
+to say while I'm running out of space
+
+1715
+01:07:08,500 --> 01:07:10,660
+especially if I ran memory so I want to
+
+1716
+01:07:10,660 --> 01:07:11,740
+be more aggressive and cleaning things
+
+1717
+01:07:11,740 --> 01:07:24,369
+up so with the overhead like that 15
+
+1718
+01:07:24,369 --> 01:07:27,490
+percent is that like what about yeah
+
+1719
+01:07:27,490 --> 01:07:29,349
+because think about it like my careers
+
+1720
+01:07:29,349 --> 01:07:31,630
+are running slower now because this guy
+
+1721
+01:07:31,630 --> 01:07:33,010
+could have just said well I don't care
+
+1722
+01:07:33,010 --> 01:07:34,780
+that these versions aren't or reclaim a
+
+1723
+01:07:34,780 --> 01:07:36,339
+little let me just go get what I want
+
+1724
+01:07:36,339 --> 01:07:38,230
+but it's implemented such that you clean
+
+1725
+01:07:38,230 --> 01:07:44,410
+things up as you find them okay the the
+
+1726
+01:07:44,410 --> 01:07:46,420
+other one is transaction level again
+
+1727
+01:07:46,420 --> 01:07:48,130
+we'll discuss this more on on Wednesday
+
+1728
+01:07:48,130 --> 01:07:49,809
+next week again the idea is that my
+
+1729
+01:07:49,809 --> 01:07:51,700
+transaction runs I'm creating the
+
+1730
+01:07:51,700 --> 01:07:53,859
+versions because I think the tuples so I
+
+1731
+01:07:53,859 --> 01:07:55,900
+know what was the old version before and
+
+1732
+01:07:55,900 --> 01:07:58,030
+so I just record to say hey by the way
+
+1733
+01:07:58,030 --> 01:07:59,619
+here's this transaction or here's this
+
+1734
+01:07:59,619 --> 01:08:01,569
+this version here's the beginning end
+
+1735
+01:08:01,569 --> 01:08:02,859
+timestamp which I know because I had to
+
+1736
+01:08:02,859 --> 01:08:05,799
+read it I if I commit go ahead and
+
+1737
+01:08:05,799 --> 01:08:08,530
+reclaim this and then we put this in a
+
+1738
+01:08:08,530 --> 01:08:09,910
+queue and then the garbage collector
+
+1739
+01:08:09,910 --> 01:08:12,190
+will go at some kickoff and some some
+
+1740
+01:08:12,190 --> 01:08:14,170
+background threads to clean this up over
+
+1741
+01:08:14,170 --> 01:08:19,179
+time so for this one the garbage dungeon
+
+1742
+01:08:19,179 --> 01:08:20,350
+is no longer on the critical path of
+
+1743
+01:08:20,350 --> 01:08:21,399
+queries like it is in cooperative
+
+1744
+01:08:21,399 --> 01:08:23,500
+cleaning so that means that our queries
+
+1745
+01:08:23,500 --> 01:08:24,819
+gonna run faster it could end up
+
+1746
+01:08:24,819 --> 01:08:26,410
+creating order verges more quickly than
+
+1747
+01:08:26,410 --> 01:08:28,270
+before so we actually may need to use
+
+1748
+01:08:28,270 --> 01:08:29,620
+multiple threads and make sure we clean
+
+1749
+01:08:29,620 --> 01:08:32,410
+things up and in timely fashion so in
+
+1750
+01:08:32,410 --> 01:08:36,250
+our current system today we do this but
+
+1751
+01:08:36,250 --> 01:08:37,899
+we only can do a single thread garbage
+
+1752
+01:08:37,899 --> 01:08:39,460
+collection and in some of the
+
+1753
+01:08:39,460 --> 01:08:41,439
+experiments that man has done we can
+
+1754
+01:08:41,439 --> 01:08:43,689
+burn through transactions pretty quickly
+
+1755
+01:08:43,689 --> 01:08:45,339
+and we started running out of space and
+
+1756
+01:08:45,339 --> 01:08:47,279
+the single thread actually can't keep up
+
+1757
+01:08:47,279 --> 01:08:50,290
+so we'll discuss more about this next
+
+1758
+01:08:50,290 --> 01:08:52,810
+week all right the last one is super
+
+1759
+01:08:52,810 --> 01:08:54,640
+important is index management and we
+
+1760
+01:08:54,640 --> 01:08:56,290
+sorted our talk to us a little bit but
+
+1761
+01:08:56,290 --> 01:08:58,060
+basically how do we find the right
+
+1762
+01:08:58,060 --> 01:09:00,189
+version and this depends on what the
+
+1763
+01:09:00,189 --> 01:09:01,988
+version scheme is and how much work we
+
+1764
+01:09:01,988 --> 01:09:04,390
+have to do to baby replay deltas or what
+
+1765
+01:09:04,390 --> 01:09:06,520
+the ordering of the version chain is so
+
+1766
+01:09:06,520 --> 01:09:08,589
+the primary key index is always going to
+
+1767
+01:09:08,589 --> 01:09:09,698
+point to the head of the virgin chain
+
+1768
+01:09:09,698 --> 01:09:11,198
+doesn't matter whether it's oldest to
+
+1769
+01:09:11,198 --> 01:09:12,939
+newest or newest oldest or time travel
+
+1770
+01:09:12,939 --> 01:09:15,630
+or Delta storage it's always the head
+
+1771
+01:09:15,630 --> 01:09:19,089
+right and so that just means that
+
+1772
+01:09:19,089 --> 01:09:20,738
+depending on what what you know whatever
+
+1773
+01:09:20,738 --> 01:09:21,640
+we do we
+
+1774
+01:09:21,640 --> 01:09:23,200
+they end up on exactly the right away
+
+1775
+01:09:23,200 --> 01:09:24,939
+the first version that we want is the
+
+1776
+01:09:24,939 --> 01:09:26,170
+head or may have to traverse the whole
+
+1777
+01:09:26,170 --> 01:09:28,960
+thing so now if any transaction tries to
+
+1778
+01:09:28,960 --> 01:09:31,450
+update and the attribute in the tuple
+
+1779
+01:09:31,450 --> 01:09:34,120
+that's in the primary key rather than
+
+1780
+01:09:34,120 --> 01:09:35,229
+trying to get clever and trying to
+
+1781
+01:09:35,229 --> 01:09:38,350
+maintain different versions or or you
+
+1782
+01:09:38,350 --> 01:09:40,569
+know different version chains for the
+
+1783
+01:09:40,569 --> 01:09:43,240
+same logical entry in the index we're
+
+1784
+01:09:43,240 --> 01:09:44,859
+just gonna treat this followed by as a
+
+1785
+01:09:44,859 --> 01:09:47,050
+delete followed by an insert so even
+
+1786
+01:09:47,050 --> 01:09:48,520
+though sort of conceptually the same
+
+1787
+01:09:48,520 --> 01:09:51,550
+tuple its from the database systems
+
+1788
+01:09:51,550 --> 01:09:53,590
+perspective it's now two discrete
+
+1789
+01:09:53,590 --> 01:09:57,580
+logical tuples secondary index is more
+
+1790
+01:09:57,580 --> 01:09:59,380
+complicated because as I sort of already
+
+1791
+01:09:59,380 --> 01:10:01,780
+said before cuz depending whether
+
+1792
+01:10:01,780 --> 01:10:03,820
+reporting the Virgin chain or not every
+
+1793
+01:10:03,820 --> 01:10:05,080
+single time we create a new version that
+
+1794
+01:10:05,080 --> 01:10:07,570
+could get really expensive and so
+
+1795
+01:10:07,570 --> 01:10:09,760
+there's this great blog article that
+
+1796
+01:10:09,760 --> 01:10:11,200
+came out actually exactly when we were
+
+1797
+01:10:11,200 --> 01:10:12,850
+writing this paper from uber and it
+
+1798
+01:10:12,850 --> 01:10:14,500
+talked about their journey from going
+
+1799
+01:10:14,500 --> 01:10:16,960
+from Postgres to my sequel the true
+
+1800
+01:10:16,960 --> 01:10:19,570
+story was they originally start with my
+
+1801
+01:10:19,570 --> 01:10:21,220
+sequel they hired some guy that really
+
+1802
+01:10:21,220 --> 01:10:22,660
+loved Postgres so he switched a Postgres
+
+1803
+01:10:22,660 --> 01:10:24,340
+then they realized it was a mistake and
+
+1804
+01:10:24,340 --> 01:10:26,260
+had switched back to my sequel so that
+
+1805
+01:10:26,260 --> 01:10:28,390
+was super expensive they just took this
+
+1806
+01:10:28,390 --> 01:10:30,100
+course they were saved a lot of money
+
+1807
+01:10:30,100 --> 01:10:32,380
+right so they talked about a bunch of
+
+1808
+01:10:32,380 --> 01:10:33,730
+different things about how Postgres does
+
+1809
+01:10:33,730 --> 01:10:35,470
+things different than my sequel but one
+
+1810
+01:10:35,470 --> 01:10:36,970
+of the main things they stress is how
+
+1811
+01:10:36,970 --> 01:10:38,980
+they actually manage secondary indexes
+
+1812
+01:10:38,980 --> 01:10:42,130
+in a multi version system because
+
+1813
+01:10:42,130 --> 01:10:43,990
+Postgres would actually point to the
+
+1814
+01:10:43,990 --> 01:10:45,760
+head of the virgin chain whereas my
+
+1815
+01:10:45,760 --> 01:10:49,150
+sequel uses a logical pointer right so
+
+1816
+01:10:49,150 --> 01:10:50,290
+that's the two difference so a logical
+
+1817
+01:10:50,290 --> 01:10:51,850
+pointer would be some kind of identifier
+
+1818
+01:10:51,850 --> 01:10:56,140
+that's fixed for the tuple that we can
+
+1819
+01:10:56,140 --> 01:10:58,030
+then don't have to update in our
+
+1820
+01:10:58,030 --> 01:11:00,640
+secondary indexes anytime the the
+
+1821
+01:11:00,640 --> 01:11:02,890
+physical location of the version change
+
+1822
+01:11:02,890 --> 01:11:05,800
+changes and you can either be a primary
+
+1823
+01:11:05,800 --> 01:11:08,760
+key or some kind of synthetic tuple ID
+
+1824
+01:11:08,760 --> 01:11:11,020
+like in case up so primary key is what
+
+1825
+01:11:11,020 --> 01:11:12,790
+my sequel does but if you don't declare
+
+1826
+01:11:12,790 --> 01:11:15,550
+a primary key my sequel they will
+
+1827
+01:11:15,550 --> 01:11:17,050
+actually generate one for you called the
+
+1828
+01:11:17,050 --> 01:11:19,270
+row ID or we just have some kind of
+
+1829
+01:11:19,270 --> 01:11:20,770
+global counter says you know this tuple
+
+1830
+01:11:20,770 --> 01:11:22,270
+one two three four five six and then
+
+1831
+01:11:22,270 --> 01:11:23,680
+have an indirection layer to do look up
+
+1832
+01:11:23,680 --> 01:11:26,500
+to get the physical address write the
+
+1833
+01:11:26,500 --> 01:11:28,300
+physical point is what I said is always
+
+1834
+01:11:28,300 --> 01:11:30,310
+pointed at the head of virgin chain so
+
+1835
+01:11:30,310 --> 01:11:33,340
+let's look at this visually so so assume
+
+1836
+01:11:33,340 --> 01:11:35,530
+we have a we're using a penalty store
+
+1837
+01:11:35,530 --> 01:11:39,250
+oldest we don't look up on key a and the
+
+1838
+01:11:39,250 --> 01:11:41,050
+primary index again the primary index
+
+1839
+01:11:41,050 --> 01:11:42,970
+always points to the physical version no
+
+1840
+01:11:42,970 --> 01:11:44,620
+problem just jump here and then scan
+
+1841
+01:11:44,620 --> 01:11:46,060
+along to try to find the version we're
+
+1842
+01:11:46,060 --> 01:11:49,420
+looking for the secondary index if it's
+
+1843
+01:11:49,420 --> 01:11:51,700
+using a physical pointer right same
+
+1844
+01:11:51,700 --> 01:11:54,400
+thing you land here and scan along if I
+
+1845
+01:11:54,400 --> 01:11:56,500
+only have one index then it's no kind of
+
+1846
+01:11:56,500 --> 01:11:58,660
+no big deal every single time this thing
+
+1847
+01:11:58,660 --> 01:12:01,060
+changes because I just go update that
+
+1848
+01:12:01,060 --> 01:12:03,730
+one index but if I have a lot of indexes
+
+1849
+01:12:03,730 --> 01:12:05,710
+and they're all pointing to the physical
+
+1850
+01:12:05,710 --> 01:12:07,660
+address any time I create a new version
+
+1851
+01:12:07,660 --> 01:12:10,060
+and going newest to oldest I gotta have
+
+1852
+01:12:10,060 --> 01:12:12,070
+to update all of these and this is what
+
+1853
+01:12:12,070 --> 01:12:13,990
+Postgres does in the case of that the
+
+1854
+01:12:13,990 --> 01:12:16,030
+example with uber their application had
+
+1855
+01:12:16,030 --> 01:12:18,250
+a lot of secondary indexes and it got
+
+1856
+01:12:18,250 --> 01:12:20,530
+really expensive to update the Virgin
+
+1857
+01:12:20,530 --> 01:12:21,760
+chain every single time you created a
+
+1858
+01:12:21,760 --> 01:12:25,210
+new version of a tuple so how can you
+
+1859
+01:12:25,210 --> 01:12:26,380
+handle this well if you have an
+
+1860
+01:12:26,380 --> 01:12:28,120
+indirection layer either by drawing the
+
+1861
+01:12:28,120 --> 01:12:30,220
+primary key and then now just do a look
+
+1862
+01:12:30,220 --> 01:12:31,690
+second lookup in the primary key index
+
+1863
+01:12:31,690 --> 01:12:33,850
+that get the physical address now if I
+
+1864
+01:12:33,850 --> 01:12:36,010
+update the the physical address I only
+
+1865
+01:12:36,010 --> 01:12:37,240
+have to update this index and nothing
+
+1866
+01:12:37,240 --> 01:12:40,240
+else so if your primary key is not that
+
+1867
+01:12:40,240 --> 01:12:42,550
+big if it's like a 64-bit integer no big
+
+1868
+01:12:42,550 --> 01:12:43,930
+deal but if it's a large text field
+
+1869
+01:12:43,930 --> 01:12:46,450
+you're storing that as the value in your
+
+1870
+01:12:46,450 --> 01:12:48,490
+and your index over and over again and
+
+1871
+01:12:48,490 --> 01:12:49,380
+that can be expensive
+
+1872
+01:12:49,380 --> 01:12:51,580
+the alternative again is to use a
+
+1873
+01:12:51,580 --> 01:12:53,980
+synthetic tuple IDE but now you need
+
+1874
+01:12:53,980 --> 01:12:55,420
+some kind of hash table or some one kind
+
+1875
+01:12:55,420 --> 01:12:57,940
+of other lookup table to map that tuple
+
+1876
+01:12:57,940 --> 01:12:59,740
+ID to a physical address so now anytime
+
+1877
+01:12:59,740 --> 01:13:01,330
+the physical address changes you just
+
+1878
+01:13:01,330 --> 01:13:03,610
+update this map and you know you don't
+
+1879
+01:13:03,610 --> 01:13:07,690
+update the the symbols themselves just
+
+1880
+01:13:07,690 --> 01:13:11,430
+like yeah
+
+1881
+01:13:31,880 --> 01:13:34,410
+this question is for doing time travel
+
+1882
+01:13:34,410 --> 01:13:38,910
+storage let's I think the next few
+
+1883
+01:13:38,910 --> 01:13:40,410
+slides actually into a question like is
+
+1884
+01:13:40,410 --> 01:13:42,660
+there a way to avoid having to to update
+
+1885
+01:13:42,660 --> 01:13:43,980
+this is there anything what you're
+
+1886
+01:13:43,980 --> 01:13:46,010
+asking right
+
+1887
+01:13:46,010 --> 01:13:48,450
+well short of time will take it outwards
+
+1888
+01:13:48,450 --> 01:13:50,730
+all right all right
+
+1889
+01:13:50,730 --> 01:13:52,770
+so another new nasty thing this actually
+
+1890
+01:13:52,770 --> 01:13:53,970
+wasn't in the paper that you read but
+
+1891
+01:13:53,970 --> 01:13:54,810
+this is something we've encountered
+
+1892
+01:13:54,810 --> 01:13:57,560
+actually building our own system is that
+
+1893
+01:13:57,560 --> 01:13:59,520
+the NDB it'll support
+
+1894
+01:13:59,520 --> 01:14:02,970
+duplicate keys that could exist in just
+
+1895
+01:14:02,970 --> 01:14:08,160
+disjoint snapshots so the issues gonna
+
+1896
+01:14:08,160 --> 01:14:09,870
+be is that in our indexes we're not
+
+1897
+01:14:09,870 --> 01:14:11,790
+actually restore the version information
+
+1898
+01:14:11,790 --> 01:14:14,580
+about our tuples right so for our B+
+
+1899
+01:14:14,580 --> 01:14:16,110
+tree we don't want to store like here's
+
+1900
+01:14:16,110 --> 01:14:17,460
+the key for Virgin one here's the keeper
+
+1901
+01:14:17,460 --> 01:14:19,230
+version two because that would be super
+
+1902
+01:14:19,230 --> 01:14:21,450
+expensive to maintain every single time
+
+1903
+01:14:21,450 --> 01:14:23,220
+I update the version I've got to go
+
+1904
+01:14:23,220 --> 01:14:24,450
+update the index and I have the storage
+
+1905
+01:14:24,450 --> 01:14:27,210
+Nishal metadata so nobody most systems
+
+1906
+01:14:27,210 --> 01:14:28,920
+don't actually do this if you're using
+
+1907
+01:14:28,920 --> 01:14:30,810
+an index organized table like my sequel
+
+1908
+01:14:30,810 --> 01:14:33,180
+in ODB where they store the tuples in
+
+1909
+01:14:33,180 --> 01:14:34,710
+the leaf nodes of the index themself
+
+1910
+01:14:34,710 --> 01:14:37,170
+then you kind of get this for free but
+
+1911
+01:14:37,170 --> 01:14:40,980
+most systems don't don't do this so the
+
+1912
+01:14:40,980 --> 01:14:43,500
+issues gonna be now I could have a the
+
+1913
+01:14:43,500 --> 01:14:45,600
+same key could exist in different
+
+1914
+01:14:45,600 --> 01:14:48,270
+different snapshots and therefore in my
+
+1915
+01:14:48,270 --> 01:14:50,130
+index I need to store that same key
+
+1916
+01:14:50,130 --> 01:14:51,660
+multiple times and have have but
+
+1917
+01:14:51,660 --> 01:14:54,900
+pointers to different version chains so
+
+1918
+01:14:54,900 --> 01:14:56,280
+the middle certain example so I say
+
+1919
+01:14:56,280 --> 01:14:59,130
+every simple tuple with a have a single
+
+1920
+01:14:59,130 --> 01:15:01,140
+version my first transaction comes along
+
+1921
+01:15:01,140 --> 01:15:03,540
+and does a read on a we'll cover what
+
+1922
+01:15:03,540 --> 01:15:05,430
+beginning end time stamps mean in a sec
+
+1923
+01:15:05,430 --> 01:15:07,170
+next last next class but just assume
+
+1924
+01:15:07,170 --> 01:15:08,610
+this is the time say it's given to one
+
+1925
+01:15:08,610 --> 01:15:11,340
+to start him so this guy does a read on
+
+1926
+01:15:11,340 --> 01:15:13,470
+a no big deal I follow the fellow might
+
+1927
+01:15:13,470 --> 01:15:15,900
+my my pointer in my index and I land
+
+1928
+01:15:15,900 --> 01:15:18,780
+here this guy does an update on a same
+
+1929
+01:15:18,780 --> 01:15:20,850
+thing I follow the pointer I create the
+
+1930
+01:15:20,850 --> 01:15:22,200
+new version and update the virgin chain
+
+1931
+01:15:22,200 --> 01:15:23,610
+right so that's fine
+
+1932
+01:15:23,610 --> 01:15:26,300
+but now I do a delete or net
+
+1933
+01:15:26,300 --> 01:15:28,430
+and so what needs to happen well I'm
+
+1934
+01:15:28,430 --> 01:15:30,500
+gonna mark this thing is deleted right
+
+1935
+01:15:30,500 --> 01:15:32,420
+there's a little bit you can set in the
+
+1936
+01:15:32,420 --> 01:15:35,390
+header as well and Tibet so that's fine
+
+1937
+01:15:35,390 --> 01:15:37,790
+this guy who goes ahead and commits we
+
+1938
+01:15:37,790 --> 01:15:41,960
+update our our timestamps to say that
+
+1939
+01:15:41,960 --> 01:15:43,370
+you know here's here's when this thing
+
+1940
+01:15:43,370 --> 01:15:45,140
+actually finished so this is setting the
+
+1941
+01:15:45,140 --> 01:15:47,570
+begin time attends time is 25 they're
+
+1942
+01:15:47,570 --> 01:15:48,860
+the same so this is saying this thing's
+
+1943
+01:15:48,860 --> 01:15:52,670
+been deleted right so now this other
+
+1944
+01:15:52,670 --> 01:15:54,860
+transaction comes along and he does an
+
+1945
+01:15:54,860 --> 01:15:57,740
+insert on a a timestamp 30 so now I have
+
+1946
+01:15:57,740 --> 01:16:00,800
+to create a new a new entry into my
+
+1947
+01:16:00,800 --> 01:16:02,870
+index and now points to this other other
+
+1948
+01:16:02,870 --> 01:16:05,390
+this new version chain here because I
+
+1949
+01:16:05,390 --> 01:16:07,310
+can't give it to the old one because
+
+1950
+01:16:07,310 --> 01:16:09,050
+this guy is still running a timestamp 10
+
+1951
+01:16:09,050 --> 01:16:11,300
+so now when I do a read on a on the
+
+1952
+01:16:11,300 --> 01:16:12,650
+index I've got to make sure that I get
+
+1953
+01:16:12,650 --> 01:16:15,560
+this one and not this one even though
+
+1954
+01:16:15,560 --> 01:16:17,570
+the value of the end of the key is
+
+1955
+01:16:17,570 --> 01:16:19,760
+exactly the same and this is allowed to
+
+1956
+01:16:19,760 --> 01:16:22,580
+happen because this guy committed so
+
+1957
+01:16:22,580 --> 01:16:25,520
+he's gone so he starts after this guy
+
+1958
+01:16:25,520 --> 01:16:27,590
+committed so he can he's allowed to do a
+
+1959
+01:16:27,590 --> 01:16:30,350
+write on a conceptually it's not a
+
+1960
+01:16:30,350 --> 01:16:32,390
+conflict because a is gone at this point
+
+1961
+01:16:32,390 --> 01:16:35,630
+for this snapshot so I'm creating two
+
+1962
+01:16:35,630 --> 01:16:40,040
+entries for a in the same index so
+
+1963
+01:16:40,040 --> 01:16:41,360
+that's kind of weird right that's the
+
+1964
+01:16:41,360 --> 01:16:43,100
+idea that the same key can exist
+
+1965
+01:16:43,100 --> 01:16:45,080
+multiple time even though it's with your
+
+1966
+01:16:45,080 --> 01:16:46,400
+unique index because it's the primary
+
+1967
+01:16:46,400 --> 01:16:50,560
+key index but at different snapshots so
+
+1968
+01:16:50,560 --> 01:16:53,120
+the ways one way to handle this you just
+
+1969
+01:16:53,120 --> 01:16:58,010
+to remain you could you maintain you
+
+1970
+01:16:58,010 --> 01:17:01,520
+could maintain some like that actually
+
+1971
+01:17:01,520 --> 01:17:06,140
+how do we do this but how do we have two
+
+1972
+01:17:06,140 --> 01:17:09,710
+entries for the same key I don't think
+
+1973
+01:17:09,710 --> 01:17:10,010
+so
+
+1974
+01:17:10,010 --> 01:17:13,370
+anyway but it has two different virgin
+
+1975
+01:17:13,370 --> 01:17:17,120
+Jane's I think we store some extra
+
+1976
+01:17:17,120 --> 01:17:18,500
+metadata in the key right to say that
+
+1977
+01:17:18,500 --> 01:17:19,190
+this is unique
+
+1978
+01:17:19,190 --> 01:17:25,550
+we don't okay yeah what do we do this is
+
+1979
+01:17:25,550 --> 01:17:29,260
+the problem then they come back to
+
+1980
+01:17:29,260 --> 01:17:32,600
+discuss this next time or maybe we don't
+
+1981
+01:17:32,600 --> 01:17:35,770
+he knows we're broken
+
+1982
+01:17:35,770 --> 01:17:37,940
+we had this different hit department
+
+1983
+01:17:37,940 --> 01:17:39,590
+peloton in the old system and I think
+
+1984
+01:17:39,590 --> 01:17:40,910
+the way we got around it was we would
+
+1985
+01:17:40,910 --> 01:17:44,780
+store we were we were oldest to newest
+
+1986
+01:17:44,780 --> 01:17:48,230
+so he could store the you'd have to
+
+1987
+01:17:48,230 --> 01:17:53,120
+store I know I know how we did this so
+
+1988
+01:17:53,120 --> 01:17:56,000
+the same key could produce even though
+
+1989
+01:17:56,000 --> 01:17:57,470
+it's a unique index so unique index you
+
+1990
+01:17:57,470 --> 01:17:58,760
+would think all right for a single key
+
+1991
+01:17:58,760 --> 01:18:00,980
+has one value you would get back a list
+
+1992
+01:18:00,980 --> 01:18:02,450
+of values and there's list of values we
+
+1993
+01:18:02,450 --> 01:18:03,680
+different pointers different virgin
+
+1994
+01:18:03,680 --> 01:18:05,260
+chains and then you have to traverse
+
+1995
+01:18:05,260 --> 01:18:08,570
+every single virgin chain to find the
+
+1996
+01:18:08,570 --> 01:18:10,060
+version that is actually visible to you
+
+1997
+01:18:10,060 --> 01:18:13,780
+all right that's how we do this so it's
+
+1998
+01:18:13,780 --> 01:18:16,250
+H they shouldn't be should be on top of
+
+1999
+01:18:16,250 --> 01:18:17,540
+each other so if we're single key you
+
+2000
+01:18:17,540 --> 01:18:19,970
+get back a list of pointers and put you
+
+2001
+01:18:19,970 --> 01:18:21,140
+have to traverse each of those pointers
+
+2002
+01:18:21,140 --> 01:18:22,340
+virgin chains the fly man tree that's
+
+2003
+01:18:22,340 --> 01:18:31,940
+invisible to you yes even though this
+
+2004
+01:18:31,940 --> 01:18:34,250
+guy got deleted why not just have this
+
+2005
+01:18:34,250 --> 01:18:36,140
+thing pointed this thing and I can
+
+2006
+01:18:36,140 --> 01:18:46,370
+traverse that because you need a
+
+2007
+01:18:46,370 --> 01:18:48,770
+sentinel value right that says don't
+
+2008
+01:18:48,770 --> 01:18:50,420
+like you need a way to say there's
+
+2009
+01:18:50,420 --> 01:18:51,770
+nothing else comes after this virgin
+
+2010
+01:18:51,770 --> 01:18:53,270
+chain you don't need to skin anything
+
+2011
+01:18:53,270 --> 01:18:55,220
+more but I guess if this is not no you'd
+
+2012
+01:18:55,220 --> 01:19:02,440
+still do that yeah that you might work -
+
+2013
+01:19:02,440 --> 01:19:07,250
+I'd have to think about that though this
+
+2014
+01:19:07,250 --> 01:19:17,090
+is what you actually maybe yeah he's
+
+2015
+01:19:17,090 --> 01:19:18,320
+right you may actually either think with
+
+2016
+01:19:18,320 --> 01:19:19,520
+a certain mayor should be need to need
+
+2017
+01:19:19,520 --> 01:19:21,830
+to do this I think what we do is we give
+
+2018
+01:19:21,830 --> 01:19:26,960
+you back multiple pointers we don't
+
+2019
+01:19:26,960 --> 01:19:29,470
+wonder at all
+
+2020
+01:19:32,250 --> 01:19:34,420
+but you're not you're not updating the
+
+2021
+01:19:34,420 --> 01:19:42,670
+attributes you deleted the entry like me
+
+2022
+01:19:42,670 --> 01:19:43,960
+to not pay pay act we didn't update the
+
+2023
+01:19:43,960 --> 01:19:46,060
+key we didn't updated the tuple
+
+2024
+01:19:46,060 --> 01:19:49,540
+somewhere and then you delete it it gets
+
+2025
+01:19:49,540 --> 01:19:50,590
+marks let's delete it and then this guy
+
+2026
+01:19:50,590 --> 01:19:51,280
+inserts
+
+2027
+01:19:51,280 --> 01:19:53,320
+I thought we added we add a new add
+
+2028
+01:19:53,320 --> 01:19:56,710
+another entry the details not important
+
+2029
+01:19:56,710 --> 01:19:58,120
+you just understand that this issue can
+
+2030
+01:19:58,120 --> 01:20:00,130
+occur right because the act this guy
+
+2031
+01:20:00,130 --> 01:20:01,330
+wants do a redo make sure we get the
+
+2032
+01:20:01,330 --> 01:20:03,100
+right version all right wherever time so
+
+2033
+01:20:03,100 --> 01:20:06,370
+I'm gonna skip all this just come to the
+
+2034
+01:20:06,370 --> 01:20:08,410
+evaluation well quickly so again this
+
+2035
+01:20:08,410 --> 01:20:11,110
+was came out of his paper pal town is
+
+2036
+01:20:11,110 --> 01:20:12,400
+dead because it had a bunch of other
+
+2037
+01:20:12,400 --> 01:20:15,430
+problems which covered many times this
+
+2038
+01:20:15,430 --> 01:20:17,680
+semester but the main experiments
+
+2039
+01:20:17,680 --> 01:20:18,730
+basically just trying to bake off the
+
+2040
+01:20:18,730 --> 01:20:19,930
+different Alliance Asians and then the
+
+2041
+01:20:19,930 --> 01:20:21,610
+goal was whatever which one was the best
+
+2042
+01:20:21,610 --> 01:20:24,400
+one we would keep that in peloton this
+
+2043
+01:20:24,400 --> 01:20:25,660
+pissed me off because we did not do that
+
+2044
+01:20:25,660 --> 01:20:27,970
+right like if you look at this graph
+
+2045
+01:20:27,970 --> 01:20:30,700
+here I'll come back to this right this
+
+2046
+01:20:30,700 --> 01:20:31,990
+is this is the main graph that don't
+
+2047
+01:20:31,990 --> 01:20:35,260
+understand so this is scaling up the
+
+2048
+01:20:35,260 --> 01:20:38,130
+number of threads running TPCC
+
+2049
+01:20:38,130 --> 01:20:42,910
+and what we did we implemented based on
+
+2050
+01:20:42,910 --> 01:20:44,500
+this previous table here for all these
+
+2051
+01:20:44,500 --> 01:20:46,420
+different systems for u21 we we
+
+2052
+01:20:46,420 --> 01:20:48,400
+configured the system to match what real
+
+2053
+01:20:48,400 --> 01:20:51,400
+systems actually do and so Oracle neo DP
+
+2054
+01:20:51,400 --> 01:20:52,950
+and hyper actually do it the best way
+
+2055
+01:20:52,950 --> 01:20:55,270
+Postgres actually does it the worst way
+
+2056
+01:20:55,270 --> 01:20:58,450
+and it's not just you know progress and
+
+2057
+01:20:58,450 --> 01:21:00,490
+new DB are doing the same comércio
+
+2058
+01:21:00,490 --> 01:21:02,350
+protocol the verge of storage and
+
+2059
+01:21:02,350 --> 01:21:03,280
+garbage collection and the index
+
+2060
+01:21:03,280 --> 01:21:04,510
+management are different and the other
+
+2061
+01:21:04,510 --> 01:21:06,940
+things actually matter more so I was
+
+2062
+01:21:06,940 --> 01:21:09,250
+like fantastic Oracle new DB a hyper the
+
+2063
+01:21:09,250 --> 01:21:10,600
+best let's do it the way it they did it
+
+2064
+01:21:10,600 --> 01:21:11,950
+the student that was writing the paper
+
+2065
+01:21:11,950 --> 01:21:15,220
+just left us with this and he went back
+
+2066
+01:21:15,220 --> 01:21:16,300
+to Singapore and didn't actually finish
+
+2067
+01:21:16,300 --> 01:21:18,250
+it so he ended up after all this work we
+
+2068
+01:21:18,250 --> 01:21:19,690
+ended up in pals on was the worst way of
+
+2069
+01:21:19,690 --> 01:21:22,120
+doing it not the best way the new system
+
+2070
+01:21:22,120 --> 01:21:26,080
+is the best way right right so let's go
+
+2071
+01:21:26,080 --> 01:21:27,490
+back to this real quick game this is in
+
+2072
+01:21:27,490 --> 01:21:29,080
+the paper this is just showing you that
+
+2073
+01:21:29,080 --> 01:21:30,460
+all these different systems are doing
+
+2074
+01:21:30,460 --> 01:21:33,700
+all these things differently and the day
+
+2075
+01:21:33,700 --> 01:21:35,560
+I think the main takeaway was the virgin
+
+2076
+01:21:35,560 --> 01:21:38,380
+storage and indexes turned out to matter
+
+2077
+01:21:38,380 --> 01:21:41,010
+the most and current retool not so much
+
+2078
+01:21:41,010 --> 01:21:44,250
+okay so
+
+2079
+01:21:44,250 --> 01:21:46,860
+not saying because of our paper I think
+
+2080
+01:21:46,860 --> 01:21:48,570
+Postgres recognized that they had some
+
+2081
+01:21:48,570 --> 01:21:51,090
+issues but there's a blog article came
+
+2082
+01:21:51,090 --> 01:21:54,540
+out in 2018 that I think I think this
+
+2083
+01:21:54,540 --> 01:21:57,000
+link is our paper but they basically
+
+2084
+01:21:57,000 --> 01:21:58,980
+said that oh this the way we're doing a
+
+2085
+01:21:58,980 --> 01:22:00,330
+pen Nolan kind of sucks cuz you have
+
+2086
+01:22:00,330 --> 01:22:01,710
+this vacuum and it's a lot of overhead
+
+2087
+01:22:01,710 --> 01:22:03,870
+and this guy is one of the main
+
+2088
+01:22:03,870 --> 01:22:05,400
+developers opposed to us now so they
+
+2089
+01:22:05,400 --> 01:22:06,480
+talked about how they're heard they're
+
+2090
+01:22:06,480 --> 01:22:08,640
+gonna switch to dental storage in the
+
+2091
+01:22:08,640 --> 01:22:10,680
+newer versions I don't know whether it's
+
+2092
+01:22:10,680 --> 01:22:12,360
+coming out in version 13 or 14
+
+2093
+01:22:12,360 --> 01:22:14,760
+they're called Z heaps and this is
+
+2094
+01:22:14,760 --> 01:22:16,500
+something that they want to get you know
+
+2095
+01:22:16,500 --> 01:22:20,780
+get to so alright we're well over time I
+
+2096
+01:22:20,780 --> 01:22:23,130
+can briefly talk about project 1 before
+
+2097
+01:22:23,130 --> 01:22:26,070
+you guys run just do it now and then
+
+2098
+01:22:26,070 --> 01:22:28,530
+we'll release this on on on later today
+
+2099
+01:22:28,530 --> 01:22:32,400
+ok target 1 the idea is here to get you
+
+2100
+01:22:32,400 --> 01:22:33,480
+comfortable to the system so we're
+
+2101
+01:22:33,480 --> 01:22:35,219
+asking you to welcome someone very
+
+2102
+01:22:35,219 --> 01:22:37,020
+specific part and that's to do
+
+2103
+01:22:37,020 --> 01:22:39,630
+sequential scans or parallel or current
+
+2104
+01:22:39,630 --> 01:22:42,930
+sequential scans so the task itself is
+
+2105
+01:22:42,930 --> 01:22:45,060
+not overly difficult we'll have sort of
+
+2106
+01:22:45,060 --> 01:22:46,440
+different levels of complexity that you
+
+2107
+01:22:46,440 --> 01:22:49,770
+that you can try to achieve it's mostly
+
+2108
+01:22:49,770 --> 01:22:50,820
+teach you how to actually work in the
+
+2109
+01:22:50,820 --> 01:22:52,949
+system and actually do profiling and
+
+2110
+01:22:52,949 --> 01:22:54,360
+performance measurements in the system
+
+2111
+01:22:54,360 --> 01:22:57,540
+okay so Matt covered this yesterday
+
+2112
+01:22:57,540 --> 01:22:59,310
+here's what our system does Beauvoir
+
+2113
+01:22:59,310 --> 01:23:01,770
+right so we're gonna bind you with a
+
+2114
+01:23:01,770 --> 01:23:03,330
+bunch of super close benchmarks written
+
+2115
+01:23:03,330 --> 01:23:05,280
+in G benchmark from Google but there's
+
+2116
+01:23:05,280 --> 01:23:06,660
+one in particular called concurrent slot
+
+2117
+01:23:06,660 --> 01:23:08,910
+iterator micro benchmark that this is
+
+2118
+01:23:08,910 --> 01:23:10,290
+the bottleneck or the thing that you're
+
+2119
+01:23:10,290 --> 01:23:12,000
+going to investigate basically when we
+
+2120
+01:23:12,000 --> 01:23:13,739
+when you deal with a a scan in the
+
+2121
+01:23:13,739 --> 01:23:16,199
+system you get this iterator and it has
+
+2122
+01:23:16,199 --> 01:23:18,030
+a latch on it and so if you start
+
+2123
+01:23:18,030 --> 01:23:19,620
+scaling up and adding more threads and
+
+2124
+01:23:19,620 --> 01:23:20,850
+they all try to acquire the same latch
+
+2125
+01:23:20,850 --> 01:23:23,219
+and this becomes a bottleneck so the
+
+2126
+01:23:23,219 --> 01:23:25,500
+idea is that we will ship we will learn
+
+2127
+01:23:25,500 --> 01:23:27,090
+how to use perf and call grind to
+
+2128
+01:23:27,090 --> 01:23:28,739
+understand what are the main conflict
+
+2129
+01:23:28,739 --> 01:23:30,630
+points in the system and then you try to
+
+2130
+01:23:30,630 --> 01:23:32,760
+try to fix it so this is a single
+
+2131
+01:23:32,760 --> 01:23:34,739
+project system but it expose you to you
+
+2132
+01:23:34,739 --> 01:23:36,660
+know give you the full system you want
+
+2133
+01:23:36,660 --> 01:23:38,100
+try out different workloads and threads
+
+2134
+01:23:38,100 --> 01:23:39,960
+and access patterns beyond with just
+
+2135
+01:23:39,960 --> 01:23:42,060
+what the the micro benchmark that we're
+
+2136
+01:23:42,060 --> 01:23:45,000
+providing you okay so the way we're
+
+2137
+01:23:45,000 --> 01:23:47,940
+gonna do grading is that your grade will
+
+2138
+01:23:47,940 --> 01:23:50,460
+be bait your score will be based on how
+
+2139
+01:23:50,460 --> 01:23:52,199
+much faster than you are then our
+
+2140
+01:23:52,199 --> 01:23:54,960
+implementation so we're we will have a
+
+2141
+01:23:54,960 --> 01:23:56,310
+basic implementation that tries to
+
+2142
+01:23:56,310 --> 01:23:57,330
+improve this
+
+2143
+01:23:57,330 --> 01:23:58,530
+all right we'll have the before and
+
+2144
+01:23:58,530 --> 01:24:00,240
+after so your score read based on how
+
+2145
+01:24:00,240 --> 01:24:01,800
+much faster you can get over what Matt
+
+2146
+01:24:01,800 --> 01:24:06,300
+writes okay Matt talked about yesterday
+
+2147
+01:24:06,300 --> 01:24:07,860
+- we either on clang formant Clank tidy
+
+2148
+01:24:07,860 --> 01:24:09,240
+you make sure that your code is all
+
+2149
+01:24:09,240 --> 01:24:10,830
+clean you you want to use Google
+
+2150
+01:24:10,830 --> 01:24:12,660
+sanitizer stuff as much as you'll get
+
+2151
+01:24:12,660 --> 01:24:13,590
+this automatically and make sure you
+
+2152
+01:24:13,590 --> 01:24:15,300
+don't you don't have any memory leaks we
+
+2153
+01:24:15,300 --> 01:24:17,310
+talked about this before it runs on
+
+2154
+01:24:17,310 --> 01:24:19,770
+anything greater than 1804 for Ubuntu in
+
+2155
+01:24:19,770 --> 01:24:22,350
+OS X you can also do a vm on docker this
+
+2156
+01:24:22,350 --> 01:24:24,210
+is CMU I assume that I want to has
+
+2157
+01:24:24,210 --> 01:24:25,800
+access to a machine the new development
+
+2158
+01:24:25,800 --> 01:24:27,930
+locally if not email me and we can fix
+
+2159
+01:24:27,930 --> 01:24:30,360
+this the main important thing though is
+
+2160
+01:24:30,360 --> 01:24:32,640
+the way our new grading is not going to
+
+2161
+01:24:32,640 --> 01:24:34,140
+be like your suite upgrade scope and
+
+2162
+01:24:34,140 --> 01:24:35,550
+that'll do it like a smoke test to see
+
+2163
+01:24:35,550 --> 01:24:38,220
+whether your thing actually compiles but
+
+2164
+01:24:38,220 --> 01:24:39,420
+you're not going to identify this
+
+2165
+01:24:39,420 --> 01:24:40,980
+bottleneck if you try to run it on a
+
+2166
+01:24:40,980 --> 01:24:42,960
+machine with less than eight cores most
+
+2167
+01:24:42,960 --> 01:24:45,240
+your laptops have you know four cores or
+
+2168
+01:24:45,240 --> 01:24:48,150
+eight cores or less so what we're gonna
+
+2169
+01:24:48,150 --> 01:24:51,390
+give you is 50 bucks on Amazon that you
+
+2170
+01:24:51,390 --> 01:24:54,000
+can go get one of the c59 x-large it has
+
+2171
+01:24:54,000 --> 01:24:58,230
+I think 32 cores or 36 cores and you can
+
+2172
+01:24:58,230 --> 01:25:00,540
+do the your analysis on on that machine
+
+2173
+01:25:00,540 --> 01:25:02,640
+because that that's how you be able to
+
+2174
+01:25:02,640 --> 01:25:05,010
+identify the bottleneck okay so everyone
+
+2175
+01:25:05,010 --> 01:25:06,990
+get 50 bucks if you go get this
+
+2176
+01:25:06,990 --> 01:25:08,850
+on-demand one it says all at fifty an
+
+2177
+01:25:08,850 --> 01:25:10,770
+hour if you get the spot instance which
+
+2178
+01:25:10,770 --> 01:25:12,080
+means that like you're saying hey these
+
+2179
+01:25:12,080 --> 01:25:14,850
+machines are idle I'll use them they
+
+2180
+01:25:14,850 --> 01:25:15,870
+could take them away from you at any
+
+2181
+01:25:15,870 --> 01:25:16,410
+time
+
+2182
+01:25:16,410 --> 01:25:18,990
+but you pay a fraction of the price so I
+
+2183
+01:25:18,990 --> 01:25:20,400
+encourage you to use this because if you
+
+2184
+01:25:20,400 --> 01:25:23,280
+blow through your 50 bucks you I can't I
+
+2185
+01:25:23,280 --> 01:25:24,840
+can't reimburse you okay
+
+2186
+01:25:24,840 --> 01:25:26,640
+so I'll send an email out to everyone
+
+2187
+01:25:26,640 --> 01:25:28,800
+who's enrolled in the class like here's
+
+2188
+01:25:28,800 --> 01:25:30,420
+your code for Amazon you need to have a
+
+2189
+01:25:30,420 --> 01:25:32,130
+credit card to sign up for Amazon for
+
+2190
+01:25:32,130 --> 01:25:34,560
+ec2 or a AWS if that's a problem let me
+
+2191
+01:25:34,560 --> 01:25:35,850
+know we'll figure out how to fake one or
+
+2192
+01:25:35,850 --> 01:25:37,950
+something like that right like but
+
+2193
+01:25:37,950 --> 01:25:40,320
+anyway all right so this we do the 16th
+
+2194
+01:25:40,320 --> 01:25:43,080
+we'll post this later today and then
+
+2195
+01:25:43,080 --> 01:25:45,090
+next class we'll discuss more and easy
+
+2196
+01:25:45,090 --> 01:25:48,320
+implementation okay bye guys see you
+
+2197
+01:25:48,320 --> 01:25:50,520
+wank it in the side park
+
+2198
+01:25:50,520 --> 01:25:51,260
+what is this
+
+2199
+01:25:51,260 --> 01:26:13,529
+[Music]
+
+2200
+01:26:14,359 --> 01:26:18,329
+and my hood won't be to say I think it's
+
+2201
+01:26:18,329 --> 01:26:21,439
+a prey
+

@@ -1,0 +1,7160 @@
+1
+00:00:01,300 --> 00:00:05,129
+[Music]
+
+2
+00:00:05,200 --> 00:00:05,930
+[Applause]
+
+3
+00:00:05,930 --> 00:00:08,630
+[Music]
+
+4
+00:00:08,630 --> 00:00:10,020
+[Applause]
+
+5
+00:00:10,020 --> 00:00:11,210
+[Music]
+
+6
+00:00:11,210 --> 00:00:13,799
+today we're gonna talk about parallel
+
+7
+00:00:13,799 --> 00:00:17,010
+sort merge-join algorithms just again me
+
+8
+00:00:17,010 --> 00:00:19,050
+here in my home office although I did my
+
+9
+00:00:19,050 --> 00:00:21,029
+I did up my lighting game quite a bit
+
+10
+00:00:21,029 --> 00:00:24,240
+and I have the terior down here who's
+
+11
+00:00:24,240 --> 00:00:25,949
+gonna be asking questions as we go along
+
+12
+00:00:25,949 --> 00:00:28,890
+so let's get right into this so before
+
+13
+00:00:28,890 --> 00:00:31,140
+we get into the material for today we
+
+14
+00:00:31,140 --> 00:00:32,969
+want to talk about some logistics about
+
+15
+00:00:32,969 --> 00:00:35,280
+what's expected for you for the going
+
+16
+00:00:35,280 --> 00:00:37,950
+forward starting next week so next week
+
+17
+00:00:37,950 --> 00:00:40,829
+we're gonna be doing the project 3
+
+18
+00:00:40,829 --> 00:00:43,649
+status updates so did the same setup we
+
+19
+00:00:43,649 --> 00:00:45,360
+did last time we'll do it over zoom and
+
+20
+00:00:45,360 --> 00:00:47,340
+then everybody will go for 5 minutes
+
+21
+00:00:47,340 --> 00:00:48,870
+just to sort of give it update to the
+
+22
+00:00:48,870 --> 00:00:50,700
+class of where they're at with their
+
+23
+00:00:50,700 --> 00:00:53,760
+project prior to that though I want
+
+24
+00:00:53,760 --> 00:00:55,550
+every group to reach out to me and
+
+25
+00:00:55,550 --> 00:00:58,770
+schedule a time later this week to meet
+
+26
+00:00:58,770 --> 00:01:00,449
+one-on-one to discuss the current
+
+27
+00:01:00,449 --> 00:01:02,910
+progress of your your project to see
+
+28
+00:01:02,910 --> 00:01:04,019
+where you're having trouble is when you
+
+29
+00:01:04,019 --> 00:01:06,299
+need help with and give you a sense of
+
+30
+00:01:06,299 --> 00:01:07,590
+get a sense of what you'll present to
+
+31
+00:01:07,590 --> 00:01:10,770
+the class on on next week so those those
+
+32
+00:01:10,770 --> 00:01:13,020
+in class project presentations will be
+
+33
+00:01:13,020 --> 00:01:16,710
+on Wednesday April 8th so in addition to
+
+34
+00:01:16,710 --> 00:01:18,240
+doing the presentation they're also
+
+35
+00:01:18,240 --> 00:01:21,540
+going to provide a design document that
+
+36
+00:01:21,540 --> 00:01:23,670
+discusses you know a bit more detail of
+
+37
+00:01:23,670 --> 00:01:25,170
+what your implementation is gonna look
+
+38
+00:01:25,170 --> 00:01:27,570
+like you're also going to need to submit
+
+39
+00:01:27,570 --> 00:01:30,960
+the your what you've written so far for
+
+40
+00:01:30,960 --> 00:01:33,450
+your project I'll submit it as a pull
+
+41
+00:01:33,450 --> 00:01:36,150
+request to us on github so that we can
+
+42
+00:01:36,150 --> 00:01:38,310
+do the first round of code reviews how
+
+43
+00:01:38,310 --> 00:01:39,900
+can I explain what's expected in a code
+
+44
+00:01:39,900 --> 00:01:41,850
+review next week but the idea is that
+
+45
+00:01:41,850 --> 00:01:45,299
+you will be assigned another group to
+
+46
+00:01:45,299 --> 00:01:46,530
+look at their project and they'll look
+
+47
+00:01:46,530 --> 00:01:48,960
+at your project and you'll go through
+
+48
+00:01:48,960 --> 00:01:51,210
+and you know try to understand whether
+
+49
+00:01:51,210 --> 00:01:52,500
+what their implementation is trying to
+
+50
+00:01:52,500 --> 00:01:54,360
+do and then give them feedback on the
+
+51
+00:01:54,360 --> 00:01:56,790
+quality and and sort of ideas that
+
+52
+00:01:56,790 --> 00:01:59,219
+they're pursuing so again that'll be
+
+53
+00:01:59,219 --> 00:02:00,509
+sort of part of the participation grade
+
+54
+00:02:00,509 --> 00:02:02,310
+for this project every team member is
+
+55
+00:02:02,310 --> 00:02:05,850
+expected to participate and when we do
+
+56
+00:02:05,850 --> 00:02:07,290
+the second round of code reviews you'll
+
+57
+00:02:07,290 --> 00:02:09,840
+be looking at the same groups code again
+
+58
+00:02:09,840 --> 00:02:10,800
+so that way you're not starting over
+
+59
+00:02:10,800 --> 00:02:12,450
+from scratch like you've looked at it
+
+60
+00:02:12,450 --> 00:02:13,480
+the code
+
+61
+00:02:13,480 --> 00:02:14,920
+and now you're looking at it the second
+
+62
+00:02:14,920 --> 00:02:16,180
+time as they're getting ready to submit
+
+63
+00:02:16,180 --> 00:02:18,790
+the final the final implementation to
+
+64
+00:02:18,790 --> 00:02:21,370
+get a grade and so again you'll provide
+
+65
+00:02:21,370 --> 00:02:23,680
+them an additional feedback on on what
+
+66
+00:02:23,680 --> 00:02:25,180
+what things they can do to fix them well
+
+67
+00:02:25,180 --> 00:02:26,319
+what could they can do to fix up their
+
+68
+00:02:26,319 --> 00:02:28,840
+code okay so I'll post those on Piazza
+
+69
+00:02:28,840 --> 00:02:31,150
+about reaching out and setting up
+
+70
+00:02:31,150 --> 00:02:34,540
+meeting time I will pull or sign up for
+
+71
+00:02:34,540 --> 00:02:37,180
+slots on the administration move
+
+72
+00:02:37,180 --> 00:02:39,730
+spreadsheet for the class and then we'll
+
+73
+00:02:39,730 --> 00:02:41,769
+go in reverse order next Wednesday or
+
+74
+00:02:41,769 --> 00:02:43,450
+next week we'll go in the reverse order
+
+75
+00:02:43,450 --> 00:02:45,850
+that we did in the first time when we
+
+76
+00:02:45,850 --> 00:02:47,950
+when we did the project proposals so if
+
+77
+00:02:47,950 --> 00:02:49,180
+you went first last time you get to go
+
+78
+00:02:49,180 --> 00:02:53,380
+last next time okay so this lecture and
+
+79
+00:02:53,380 --> 00:02:55,350
+the previous lecture have been about
+
+80
+00:02:55,350 --> 00:02:57,880
+payload joint algorithms and so last
+
+81
+00:02:57,880 --> 00:02:59,830
+class again we focused on hash joins
+
+82
+00:02:59,830 --> 00:03:01,510
+because I said that was the most
+
+83
+00:03:01,510 --> 00:03:04,150
+commonly used joint algorithm in OLAP
+
+84
+00:03:04,150 --> 00:03:06,069
+system and that's the one we're gonna
+
+85
+00:03:06,069 --> 00:03:07,510
+try to get the get the best performance
+
+86
+00:03:07,510 --> 00:03:10,030
+benefit by paralyzing or vectorizing it
+
+87
+00:03:10,030 --> 00:03:12,220
+because again in most developed systems
+
+88
+00:03:12,220 --> 00:03:15,730
+those the times to be executing hashed
+
+89
+00:03:15,730 --> 00:03:18,310
+ones the other major approach to do
+
+90
+00:03:18,310 --> 00:03:20,769
+joins is the sort merge join and that
+
+91
+00:03:20,769 --> 00:03:23,530
+sort of focus of will be on today and so
+
+92
+00:03:23,530 --> 00:03:24,670
+we'll first start off with a little
+
+93
+00:03:24,670 --> 00:03:27,489
+background information about what a sort
+
+94
+00:03:27,489 --> 00:03:29,260
+merge one looks like again this would
+
+95
+00:03:29,260 --> 00:03:30,760
+just be a refresher from what we
+
+96
+00:03:30,760 --> 00:03:33,160
+discussed in the introduction class then
+
+97
+00:03:33,160 --> 00:03:34,510
+we'll talk about different sorting
+
+98
+00:03:34,510 --> 00:03:36,370
+algorithms you can use or - the one in
+
+99
+00:03:36,370 --> 00:03:38,470
+particular approach will focus on from
+
+100
+00:03:38,470 --> 00:03:40,810
+Intel which would be how to vectorize
+
+101
+00:03:40,810 --> 00:03:43,810
+and paralyze the sorting algorithm which
+
+102
+00:03:43,810 --> 00:03:45,549
+is possible then we'll talk about how to
+
+103
+00:03:45,549 --> 00:03:47,739
+combine it together to do a parallel
+
+104
+00:03:47,739 --> 00:03:49,780
+sort version and then we'll finish up
+
+105
+00:03:49,780 --> 00:03:52,269
+with the evaluation that was provided
+
+106
+00:03:52,269 --> 00:03:53,980
+that was in the assigned reading from
+
+107
+00:03:53,980 --> 00:04:01,540
+ETH okay so the the sorbets join
+
+108
+00:04:01,540 --> 00:04:03,430
+basically has two phases it's the same
+
+109
+00:04:03,430 --> 00:04:05,859
+thing as the as the hash drawing right
+
+110
+00:04:05,859 --> 00:04:08,230
+you prepare that the data in the first
+
+111
+00:04:08,230 --> 00:04:11,049
+phase in such a way that in the second
+
+112
+00:04:11,049 --> 00:04:12,130
+phase when you want to go try to find
+
+113
+00:04:12,130 --> 00:04:15,010
+matches the data is laid out or indexed
+
+114
+00:04:15,010 --> 00:04:17,289
+in the case of the hash join and laid
+
+115
+00:04:17,289 --> 00:04:18,310
+out in such a way that you can easily
+
+116
+00:04:18,310 --> 00:04:20,320
+find matches without having to do that
+
+117
+00:04:20,320 --> 00:04:22,840
+brute force sequential scan that you
+
+118
+00:04:22,840 --> 00:04:25,909
+would have to do in a nested loop join
+
+119
+00:04:25,909 --> 00:04:29,400
+so again in the first phase we're just
+
+120
+00:04:29,400 --> 00:04:31,770
+going to sort the tuples on the r NS
+
+121
+00:04:31,770 --> 00:04:35,219
+based on the join key or the join keys
+
+122
+00:04:35,219 --> 00:04:37,860
+if it's multiple keys and then in the
+
+123
+00:04:37,860 --> 00:04:39,900
+merge phase we'll just scan through the
+
+124
+00:04:39,900 --> 00:04:43,169
+two tables in the sorted order in with
+
+125
+00:04:43,169 --> 00:04:44,340
+these two iterators that are sort of
+
+126
+00:04:44,340 --> 00:04:47,009
+going in lockstep and doing comparisons
+
+127
+00:04:47,009 --> 00:04:49,439
+between them and the idea here is
+
+128
+00:04:49,439 --> 00:04:51,539
+because we sort of things ahead of time
+
+129
+00:04:51,539 --> 00:04:54,360
+as the iterators are walking through we
+
+130
+00:04:54,360 --> 00:04:56,310
+we would know that we don't have to ever
+
+131
+00:04:56,310 --> 00:04:59,569
+backtrack to look for a matching tuple
+
+132
+00:04:59,569 --> 00:05:02,279
+or sorry it was scanning down farther
+
+133
+00:05:02,279 --> 00:05:04,139
+than we actually need to if we come
+
+134
+00:05:04,139 --> 00:05:06,719
+across a tuple or a key that is
+
+135
+00:05:06,719 --> 00:05:08,610
+different than the last key we saw then
+
+136
+00:05:08,610 --> 00:05:10,500
+we know that you know that that key
+
+137
+00:05:10,500 --> 00:05:12,629
+can't exist any results it's again the
+
+138
+00:05:12,629 --> 00:05:15,599
+idea is that we are by sorting this it's
+
+139
+00:05:15,599 --> 00:05:17,969
+just avoiding having to do a boot for
+
+140
+00:05:17,969 --> 00:05:19,620
+search to find the matching key we know
+
+141
+00:05:19,620 --> 00:05:22,409
+that as the iterative boost down we have
+
+142
+00:05:22,409 --> 00:05:23,569
+everything that we need
+
+143
+00:05:23,569 --> 00:05:27,479
+so the at a high level conceptually
+
+144
+00:05:27,479 --> 00:05:32,009
+looks like this again so the table our
+
+145
+00:05:32,009 --> 00:05:34,979
+table s first phase is I'm gonna sort
+
+146
+00:05:34,979 --> 00:05:37,319
+them by the join key I'm not gonna
+
+147
+00:05:37,319 --> 00:05:38,610
+describe what that sorting algorithm is
+
+148
+00:05:38,610 --> 00:05:40,050
+just now but this is what we'll cover
+
+149
+00:05:40,050 --> 00:05:43,110
+today and then now once we things are
+
+150
+00:05:43,110 --> 00:05:45,810
+sorted will now do the merge phase well
+
+151
+00:05:45,810 --> 00:05:47,279
+we'll have again these two iterators
+
+152
+00:05:47,279 --> 00:05:50,699
+will go down and scan through the the
+
+153
+00:05:50,699 --> 00:05:53,039
+tables usually once but depending on
+
+154
+00:05:53,039 --> 00:05:54,539
+whether there's it's an equijoin what
+
+155
+00:05:54,539 --> 00:05:55,529
+kind of joint you're doing you may think
+
+156
+00:05:55,529 --> 00:05:57,150
+it's cancer multiple times we can ignore
+
+157
+00:05:57,150 --> 00:05:58,800
+that for now just every single time it
+
+158
+00:05:58,800 --> 00:06:00,000
+will come one tuple when I'm done with
+
+159
+00:06:00,000 --> 00:06:02,729
+it I'd be one to the next tuple and then
+
+160
+00:06:02,729 --> 00:06:06,360
+I just left before in the hash join if I
+
+161
+00:06:06,360 --> 00:06:08,039
+have matching tuples on the inner and
+
+162
+00:06:08,039 --> 00:06:10,050
+the outer table combine them they're
+
+163
+00:06:10,050 --> 00:06:11,789
+combined their attributes together and
+
+164
+00:06:11,789 --> 00:06:14,339
+write it into my output buffer now the
+
+165
+00:06:14,339 --> 00:06:16,259
+confusing thing that we're going to hit
+
+166
+00:06:16,259 --> 00:06:19,020
+today is that we're gonna be doing a
+
+167
+00:06:19,020 --> 00:06:21,389
+sort merge join and the algorithm we're
+
+168
+00:06:21,389 --> 00:06:24,000
+gonna do to do the sort will be a merge
+
+169
+00:06:24,000 --> 00:06:27,539
+sort so I'll try to get careful when I
+
+170
+00:06:27,539 --> 00:06:29,819
+use the term marriage to make sure that
+
+171
+00:06:29,819 --> 00:06:32,410
+I'm telling you whether it is the
+
+172
+00:06:32,410 --> 00:06:35,380
+the merge phase of the merge sort or the
+
+173
+00:06:35,380 --> 00:06:37,450
+merge phase of the sort merge-join
+
+174
+00:06:37,450 --> 00:06:39,550
+it's a lot of taken out as we go along
+
+175
+00:06:39,550 --> 00:06:41,350
+to try to make it clear what what kind
+
+176
+00:06:41,350 --> 00:06:42,910
+of merger we're talking about but a high
+
+177
+00:06:42,910 --> 00:06:44,170
+level of essentially doing the same
+
+178
+00:06:44,170 --> 00:06:47,890
+thing so this would have you know in the
+
+179
+00:06:47,890 --> 00:06:49,510
+introduction class we talk discuss how
+
+180
+00:06:49,510 --> 00:06:52,200
+to do this in a you know sort of basic
+
+181
+00:06:52,200 --> 00:06:54,580
+high-level approach and we don't worry
+
+182
+00:06:54,580 --> 00:06:55,600
+about workers we don't worry about
+
+183
+00:06:55,600 --> 00:06:59,530
+threads or newman's but now in in a
+
+184
+00:06:59,530 --> 00:07:01,090
+modern system we need to be aware of
+
+185
+00:07:01,090 --> 00:07:02,620
+these things so we need to talk about
+
+186
+00:07:02,620 --> 00:07:03,820
+how we're actually gonna speed things up
+
+187
+00:07:03,820 --> 00:07:06,850
+by paralyzing everything so of course
+
+188
+00:07:06,850 --> 00:07:08,710
+we're gonna want to paralyze the sorting
+
+189
+00:07:08,710 --> 00:07:09,790
+because that's going to be the most
+
+190
+00:07:09,790 --> 00:07:12,130
+expensive part and again just like we
+
+191
+00:07:12,130 --> 00:07:14,380
+saw in when we talk about factorization
+
+192
+00:07:14,380 --> 00:07:18,580
+we can paralyze the this step of the
+
+193
+00:07:18,580 --> 00:07:20,860
+algorithm both in terms of having it
+
+194
+00:07:20,860 --> 00:07:22,570
+execute on multiple threads at the same
+
+195
+00:07:22,570 --> 00:07:25,330
+time but then on each thread try to use
+
+196
+00:07:25,330 --> 00:07:27,940
+vectorized operations so that you know
+
+197
+00:07:27,940 --> 00:07:29,980
+we're operating on multiple keys or
+
+198
+00:07:29,980 --> 00:07:32,800
+multiple elements of data in parallel
+
+199
+00:07:32,800 --> 00:07:34,570
+with a single instruction or single set
+
+200
+00:07:34,570 --> 00:07:38,650
+of instructions so the there's some
+
+201
+00:07:38,650 --> 00:07:39,880
+basic rules that we're gonna try to
+
+202
+00:07:39,880 --> 00:07:41,980
+apply in our algorithm to try to get the
+
+203
+00:07:41,980 --> 00:07:44,170
+best performance as much as possible and
+
+204
+00:07:44,170 --> 00:07:46,180
+again this is also relevant to the hash
+
+205
+00:07:46,180 --> 00:07:47,590
+join but I just want to bring this up
+
+206
+00:07:47,590 --> 00:07:50,920
+here again so we obviously want to use
+
+207
+00:07:50,920 --> 00:07:53,860
+as many CPU cores as possible that our
+
+208
+00:07:53,860 --> 00:07:55,840
+database system is allotted to us for
+
+209
+00:07:55,840 --> 00:07:59,470
+this execution some systems only execute
+
+210
+00:07:59,470 --> 00:08:01,330
+one query at a time so you'll get all
+
+211
+00:08:01,330 --> 00:08:03,580
+the cores that are available on your
+
+212
+00:08:03,580 --> 00:08:05,200
+machine as you're doing the join and
+
+213
+00:08:05,200 --> 00:08:06,610
+then when your queries done it then
+
+214
+00:08:06,610 --> 00:08:09,610
+switches over to the next query in other
+
+215
+00:08:09,610 --> 00:08:11,880
+systems they'll want to try to run
+
+216
+00:08:11,880 --> 00:08:14,920
+multiple queries at the same time so you
+
+217
+00:08:14,920 --> 00:08:17,350
+just want to be the system's scheduler
+
+218
+00:08:17,350 --> 00:08:18,580
+has to be aware of how many threads that
+
+219
+00:08:18,580 --> 00:08:21,210
+are allowed to a lot to do a sort and
+
+220
+00:08:21,210 --> 00:08:23,290
+make sure that it only runs on those
+
+221
+00:08:23,290 --> 00:08:25,780
+cores obviously also we need to be
+
+222
+00:08:25,780 --> 00:08:28,210
+mindful of the Numa boundaries because
+
+223
+00:08:28,210 --> 00:08:31,300
+again we don't want to pay this big
+
+224
+00:08:31,300 --> 00:08:33,159
+penalty you have reads and writes go
+
+225
+00:08:33,159 --> 00:08:34,539
+across new regions because that's been
+
+226
+00:08:34,539 --> 00:08:36,610
+much more expensive than reading data
+
+227
+00:08:36,610 --> 00:08:39,880
+that's local to our threads so we'll see
+
+228
+00:08:39,880 --> 00:08:43,150
+in the case of hyper they're actually
+
+229
+00:08:43,150 --> 00:08:45,590
+gonna go against this second goal here
+
+230
+00:08:45,590 --> 00:08:47,660
+and they're gonna argue that because
+
+231
+00:08:47,660 --> 00:08:49,100
+they're doing sequential needs when
+
+232
+00:08:49,100 --> 00:08:51,410
+you're doing the merge phase of the of
+
+233
+00:08:51,410 --> 00:08:54,110
+the join that hardware is actually gonna
+
+234
+00:08:54,110 --> 00:08:56,960
+help hide these latencies of going
+
+235
+00:08:56,960 --> 00:08:59,120
+across Neiman's but when we look at the
+
+236
+00:08:59,120 --> 00:09:00,770
+results from the edge paper we'll see
+
+237
+00:09:00,770 --> 00:09:03,590
+that it's actually not the case and then
+
+238
+00:09:03,590 --> 00:09:05,660
+the last one again we said before I want
+
+239
+00:09:05,660 --> 00:09:07,610
+to be we're trying to use in the simian
+
+240
+00:09:07,610 --> 00:09:09,470
+structures as much as possible so that
+
+241
+00:09:09,470 --> 00:09:12,230
+the amount of data were processing per
+
+242
+00:09:12,230 --> 00:09:14,900
+instruction a per cycle is is maximized
+
+243
+00:09:14,900 --> 00:09:16,820
+all right I'm going to try to do it
+
+244
+00:09:16,820 --> 00:09:18,200
+you'll compare this with assisting
+
+245
+00:09:18,200 --> 00:09:19,640
+instructions where you know can only
+
+246
+00:09:19,640 --> 00:09:24,800
+operate on one one key at a time so the
+
+247
+00:09:24,800 --> 00:09:26,150
+parallel sort merge-join
+
+248
+00:09:26,150 --> 00:09:27,860
+is like the parallel hash joint where
+
+249
+00:09:27,860 --> 00:09:29,630
+hand you have now three phases because
+
+250
+00:09:29,630 --> 00:09:31,940
+now the first phase is this partitioning
+
+251
+00:09:31,940 --> 00:09:34,040
+step where you're gonna divide the data
+
+252
+00:09:34,040 --> 00:09:38,320
+up across it across the workers or cores
+
+253
+00:09:38,320 --> 00:09:42,830
+but unlike in the in the hash one case
+
+254
+00:09:42,830 --> 00:09:44,450
+where you you would partition both sides
+
+255
+00:09:44,450 --> 00:09:45,950
+in this case here we could just
+
+256
+00:09:45,950 --> 00:09:48,650
+partition one side and some algorithms
+
+257
+00:09:48,650 --> 00:09:50,110
+will partition both some items well
+
+258
+00:09:50,110 --> 00:09:53,540
+partition one and then for this one
+
+259
+00:09:53,540 --> 00:09:54,680
+again we'll stay in a second but you can
+
+260
+00:09:54,680 --> 00:09:56,060
+do the same kind of partitioning you saw
+
+261
+00:09:56,060 --> 00:10:00,170
+last time the next one will be the the
+
+262
+00:10:00,170 --> 00:10:02,990
+sorting sorting phase and again this is
+
+263
+00:10:02,990 --> 00:10:04,640
+now where we take both the inner table
+
+264
+00:10:04,640 --> 00:10:05,780
+and the outer table and we just sort
+
+265
+00:10:05,780 --> 00:10:08,060
+them on our join key then in the last
+
+266
+00:10:08,060 --> 00:10:09,710
+phase we do the merge where we just scan
+
+267
+00:10:09,710 --> 00:10:11,650
+through the sort of relations and
+
+268
+00:10:11,650 --> 00:10:13,430
+compare the tuples and if we have a
+
+269
+00:10:13,430 --> 00:10:15,050
+match let me write them into our output
+
+270
+00:10:15,050 --> 00:10:17,030
+buffer so for today we're gonna spend
+
+271
+00:10:17,030 --> 00:10:19,250
+most of our time on these two okay
+
+272
+00:10:19,250 --> 00:10:21,350
+there's not much more else we can say
+
+273
+00:10:21,350 --> 00:10:22,700
+about this but we'll see how it's gonna
+
+274
+00:10:22,700 --> 00:10:24,470
+what choice we can make in here with the
+
+275
+00:10:24,470 --> 00:10:26,390
+pen on what kind of merge we want to do
+
+276
+00:10:26,390 --> 00:10:30,580
+later on so I didn't talk about
+
+277
+00:10:30,580 --> 00:10:34,910
+partitioning at a conceptual level last
+
+278
+00:10:34,910 --> 00:10:36,860
+class but what I'll say here is also
+
+279
+00:10:36,860 --> 00:10:40,310
+still relevant for hash joins so there's
+
+280
+00:10:40,310 --> 00:10:42,770
+this notion of sort implicit and
+
+281
+00:10:42,770 --> 00:10:44,420
+explicit partitioning when we want to do
+
+282
+00:10:44,420 --> 00:10:47,800
+a join so implicit partitioning would be
+
+283
+00:10:47,800 --> 00:10:51,230
+how the data is already partitioned when
+
+284
+00:10:51,230 --> 00:10:53,750
+it got loaded into the database and then
+
+285
+00:10:53,750 --> 00:10:57,350
+if we know that the data was partitioned
+
+286
+00:10:57,350 --> 00:10:58,980
+on our join key for the
+
+287
+00:10:58,980 --> 00:11:01,050
+query we're trying to run right now then
+
+288
+00:11:01,050 --> 00:11:02,639
+we don't actually need to do an extra
+
+289
+00:11:02,639 --> 00:11:03,959
+step of partitioning because the data is
+
+290
+00:11:03,959 --> 00:11:05,490
+already partition on our join team and
+
+291
+00:11:05,490 --> 00:11:08,310
+we're good to go so this would be like
+
+292
+00:11:08,310 --> 00:11:11,250
+if I load the table and I do as I load
+
+293
+00:11:11,250 --> 00:11:12,269
+the table or create the table I can
+
+294
+00:11:12,269 --> 00:11:16,079
+declare in the in the DDL that I want a
+
+295
+00:11:16,079 --> 00:11:18,660
+partition like my table over some set of
+
+296
+00:11:18,660 --> 00:11:20,910
+attributes or some kind of join key it
+
+297
+00:11:20,910 --> 00:11:23,070
+might be like in the case of teh PCC
+
+298
+00:11:23,070 --> 00:11:27,570
+like the where else ID or in in in TP CH
+
+299
+00:11:27,570 --> 00:11:29,310
+could be like country or whatever the
+
+300
+00:11:29,310 --> 00:11:30,829
+longer you have in the light on potato
+
+301
+00:11:30,829 --> 00:11:34,230
+so this is something that the the the
+
+302
+00:11:34,230 --> 00:11:36,029
+the application or the database
+
+303
+00:11:36,029 --> 00:11:37,440
+administrator has to do for us they have
+
+304
+00:11:37,440 --> 00:11:39,089
+to be have to be told the database
+
+305
+00:11:39,089 --> 00:11:40,410
+doesn't has to be told here's how I want
+
+306
+00:11:40,410 --> 00:11:42,630
+to partition things and in our catalogs
+
+307
+00:11:42,630 --> 00:11:44,339
+we can keep track of what that
+
+308
+00:11:44,339 --> 00:11:46,139
+partitioning key was because since since
+
+309
+00:11:46,139 --> 00:11:47,339
+we had to write the data out through
+
+310
+00:11:47,339 --> 00:11:49,410
+different new merchants and so now the
+
+311
+00:11:49,410 --> 00:11:51,600
+query optimizer can say oh where I see
+
+312
+00:11:51,600 --> 00:11:53,790
+that you're trying to do a join on the
+
+313
+00:11:53,790 --> 00:11:56,100
+key that I've already partitioned my my
+
+314
+00:11:56,100 --> 00:11:58,019
+table one so therefore I don't need to
+
+315
+00:11:58,019 --> 00:12:00,420
+do the an extra step to partition things
+
+316
+00:12:00,420 --> 00:12:03,990
+because it's already partition but this
+
+317
+00:12:03,990 --> 00:12:06,959
+always won't always work for us in a an
+
+318
+00:12:06,959 --> 00:12:09,600
+OLAP environment because people want I'm
+
+319
+00:12:09,600 --> 00:12:12,060
+going to want to join their tables on
+
+320
+00:12:12,060 --> 00:12:14,160
+all sorts of columns and attributes
+
+321
+00:12:14,160 --> 00:12:16,529
+where it may not be may not know that
+
+322
+00:12:16,529 --> 00:12:17,670
+ahead of time and you may not actually
+
+323
+00:12:17,670 --> 00:12:19,829
+be able to declare what the me the right
+
+324
+00:12:19,829 --> 00:12:21,149
+partition key for a particular query
+
+325
+00:12:21,149 --> 00:12:23,220
+because it may change from one crate to
+
+326
+00:12:23,220 --> 00:12:25,649
+the next you don't see this so much in
+
+327
+00:12:25,649 --> 00:12:28,019
+OLAP queries because our sorry OTP and
+
+328
+00:12:28,019 --> 00:12:32,339
+workloads because typically the the
+
+329
+00:12:32,339 --> 00:12:35,100
+partitioning key is sort of the
+
+330
+00:12:35,100 --> 00:12:37,110
+partitioning scheme of the table follows
+
+331
+00:12:37,110 --> 00:12:40,470
+a sort of hierarchy you say you know
+
+332
+00:12:40,470 --> 00:12:41,910
+here's the customer and for a given
+
+333
+00:12:41,910 --> 00:12:43,380
+customer ID here's all the order so that
+
+334
+00:12:43,380 --> 00:12:44,970
+customer ID and here's a order items for
+
+335
+00:12:44,970 --> 00:12:47,310
+that customer that order ID so you have
+
+336
+00:12:47,310 --> 00:12:48,510
+this nice hierarchy where you can take
+
+337
+00:12:48,510 --> 00:12:49,949
+sort of the slice of the data across
+
+338
+00:12:49,949 --> 00:12:50,880
+tables and put them on a single
+
+339
+00:12:50,880 --> 00:12:52,920
+partition and most of the times you're
+
+340
+00:12:52,920 --> 00:12:55,050
+joining across those you know foreign
+
+341
+00:12:55,050 --> 00:12:57,480
+key dependencies and oh that queries
+
+342
+00:12:57,480 --> 00:12:59,370
+like I said people join on all sorts of
+
+343
+00:12:59,370 --> 00:13:00,959
+crazy things so it's hard to actually
+
+344
+00:13:00,959 --> 00:13:02,519
+get this right you know to cover all
+
+345
+00:13:02,519 --> 00:13:04,230
+possible queries it's actually
+
+346
+00:13:04,230 --> 00:13:06,959
+impossible so what we're talking about
+
+347
+00:13:06,959 --> 00:13:08,730
+instead when we say the partitioning
+
+348
+00:13:08,730 --> 00:13:10,470
+phase of a join algorithm would be
+
+349
+00:13:10,470 --> 00:13:12,050
+explicit partitioning
+
+350
+00:13:12,050 --> 00:13:15,769
+where we're going to divide the the
+
+351
+00:13:15,769 --> 00:13:18,679
+relations based on the join key and then
+
+352
+00:13:18,679 --> 00:13:20,600
+redistributed them across the post open
+
+353
+00:13:20,600 --> 00:13:24,499
+course right so you could use the radix
+
+354
+00:13:24,499 --> 00:13:25,790
+partitioning that we talked about last
+
+355
+00:13:25,790 --> 00:13:28,459
+class in practice though for the sort
+
+356
+00:13:28,459 --> 00:13:32,569
+join for the merge sort the sort merge
+
+357
+00:13:32,569 --> 00:13:35,629
+join algorithm that's not going to be a
+
+358
+00:13:35,629 --> 00:13:36,980
+good idea because typically you want to
+
+359
+00:13:36,980 --> 00:13:38,239
+do range partitioning because you know
+
+360
+00:13:38,239 --> 00:13:40,069
+how to divide up the data and you know
+
+361
+00:13:40,069 --> 00:13:41,689
+what the boundaries are of that data
+
+362
+00:13:41,689 --> 00:13:43,399
+from one partition to the next and then
+
+363
+00:13:43,399 --> 00:13:46,489
+carefully you know that there's no key
+
+364
+00:13:46,489 --> 00:13:50,179
+with the same the same partition sorry
+
+365
+00:13:50,179 --> 00:13:52,549
+there's no key with the same with a
+
+366
+00:13:52,549 --> 00:13:53,929
+different value could be in a different
+
+367
+00:13:53,929 --> 00:13:55,040
+partition than you aren't that you don't
+
+368
+00:13:55,040 --> 00:13:58,610
+expect all right so that's again the
+
+369
+00:13:58,610 --> 00:13:59,720
+partitioning phase we can do rate a
+
+370
+00:13:59,720 --> 00:14:01,639
+partitioning range partitioning it
+
+371
+00:14:01,639 --> 00:14:02,779
+doesn't really matter it's the same
+
+372
+00:14:02,779 --> 00:14:05,019
+stuff that we talked about last time
+
+373
+00:14:05,019 --> 00:14:07,040
+there's nothing really different that we
+
+374
+00:14:07,040 --> 00:14:09,290
+would be doing then because we're doing
+
+375
+00:14:09,290 --> 00:14:11,959
+a you know sort merge joined versus a
+
+376
+00:14:11,959 --> 00:14:15,019
+hashed one all right so now we get into
+
+377
+00:14:15,019 --> 00:14:16,999
+the sort phase again this is this is the
+
+378
+00:14:16,999 --> 00:14:18,230
+gonna be the most expensive part for us
+
+379
+00:14:18,230 --> 00:14:20,809
+so the key thing to understand about
+
+380
+00:14:20,809 --> 00:14:23,360
+sorting here is in the introduction
+
+381
+00:14:23,360 --> 00:14:27,759
+class when we talked about sorting the
+
+382
+00:14:27,759 --> 00:14:30,470
+the main bottleneck the main thing we
+
+383
+00:14:30,470 --> 00:14:33,619
+had to deal with was writing pages in
+
+384
+00:14:33,619 --> 00:14:35,689
+and out from disk and so we would want
+
+385
+00:14:35,689 --> 00:14:39,259
+to use a an algorithm like external
+
+386
+00:14:39,259 --> 00:14:43,069
+merge sort that was designed to do as
+
+387
+00:14:43,069 --> 00:14:44,779
+much sequential access to special reads
+
+388
+00:14:44,779 --> 00:14:48,079
+and writes to to disk as possible and it
+
+389
+00:14:48,079 --> 00:14:51,259
+made sure that when it brought a page or
+
+390
+00:14:51,259 --> 00:14:54,919
+chunk of data from disk into memory we
+
+391
+00:14:54,919 --> 00:14:57,709
+did all the operations we needed to do
+
+392
+00:14:57,709 --> 00:15:00,499
+on that that chunk of data before we
+
+393
+00:15:00,499 --> 00:15:01,850
+moved on to the next chunk so we didn't
+
+394
+00:15:01,850 --> 00:15:03,290
+have to go read or write it back
+
+395
+00:15:03,290 --> 00:15:06,589
+multiple times but the key thing though
+
+396
+00:15:06,589 --> 00:15:09,470
+is that when we brought the block of
+
+397
+00:15:09,470 --> 00:15:11,959
+memory block it you know from from disk
+
+398
+00:15:11,959 --> 00:15:14,629
+into memory and then maybe he needed to
+
+399
+00:15:14,629 --> 00:15:17,389
+sort that that that that data that was
+
+400
+00:15:17,389 --> 00:15:20,480
+in memory we said that you know
+
+401
+00:15:20,480 --> 00:15:21,799
+something like quicksort was good enough
+
+402
+00:15:21,799 --> 00:15:23,689
+for what we needed to do begins we
+
+403
+00:15:23,689 --> 00:15:25,670
+weren't going to little details
+
+404
+00:15:25,670 --> 00:15:27,820
+learning about cache cache locality and
+
+405
+00:15:27,820 --> 00:15:30,590
+parallelization for those algorithms in
+
+406
+00:15:30,590 --> 00:15:32,510
+the induction class it was all about
+
+407
+00:15:32,510 --> 00:15:36,590
+minimizing disk i/o but now in this
+
+408
+00:15:36,590 --> 00:15:37,820
+semester when we're talking about a
+
+409
+00:15:37,820 --> 00:15:40,100
+memory databases and now our database is
+
+410
+00:15:40,100 --> 00:15:43,190
+already in memory now we need a sorting
+
+411
+00:15:43,190 --> 00:15:46,340
+algorithm that is aware of where the day
+
+412
+00:15:46,340 --> 00:15:48,770
+is located and what our hardware looks
+
+413
+00:15:48,770 --> 00:15:50,870
+like meaning it needs nowhere you know
+
+414
+00:15:50,870 --> 00:15:52,940
+if it's reading writing to a certain
+
+415
+00:15:52,940 --> 00:15:54,980
+memory location is that memory location
+
+416
+00:15:54,980 --> 00:15:57,080
+in the same Numa region as where my
+
+417
+00:15:57,080 --> 00:16:01,010
+thread is running so it also means that
+
+418
+00:16:01,010 --> 00:16:03,200
+we need to be aware of what the size the
+
+419
+00:16:03,200 --> 00:16:05,090
+data that we're dealing with and what
+
+420
+00:16:05,090 --> 00:16:06,500
+our Karma looks like in terms of the
+
+421
+00:16:06,500 --> 00:16:09,710
+cache sizes so we may end up choosing a
+
+422
+00:16:09,710 --> 00:16:13,760
+different algorithm for chunks of data
+
+423
+00:16:13,760 --> 00:16:16,820
+of a certain size right if things can
+
+424
+00:16:16,820 --> 00:16:19,340
+fit in my l1 cache I maybe want to do
+
+425
+00:16:19,340 --> 00:16:20,630
+one thing differently than if I'm
+
+426
+00:16:20,630 --> 00:16:23,060
+spilling out 2d Ram because again that's
+
+427
+00:16:23,060 --> 00:16:24,500
+an order magnitude slower going from the
+
+428
+00:16:24,500 --> 00:16:28,520
+cache to derail so I would be very clear
+
+429
+00:16:28,520 --> 00:16:31,010
+that like what we're talk about today is
+
+430
+00:16:31,010 --> 00:16:36,320
+a better way in some cases the doing to
+
+431
+00:16:36,320 --> 00:16:39,080
+do sorting for a join if your data looks
+
+432
+00:16:39,080 --> 00:16:40,910
+a certain way in particular if your data
+
+433
+00:16:40,910 --> 00:16:45,800
+is gonna fit into 64 bit 64 bit values
+
+434
+00:16:45,800 --> 00:16:50,270
+or quicksort is still very very good it
+
+435
+00:16:50,270 --> 00:16:52,970
+can be paralyzed it can be implemented
+
+436
+00:16:52,970 --> 00:16:55,010
+to avoid branch mispredictions which is
+
+437
+00:16:55,010 --> 00:16:55,850
+one of the things we're gonna try to
+
+438
+00:16:55,850 --> 00:16:59,600
+overcome today it like I said it's
+
+439
+00:16:59,600 --> 00:17:01,070
+almost like the pickup truck of sort
+
+440
+00:17:01,070 --> 00:17:03,020
+algorithms it's can almost handle
+
+441
+00:17:03,020 --> 00:17:05,660
+everything pretty good and certainly you
+
+442
+00:17:05,660 --> 00:17:07,849
+can do better and so what we'll talk
+
+443
+00:17:07,849 --> 00:17:09,589
+about today is is a way to actually do
+
+444
+00:17:09,589 --> 00:17:16,250
+better over over over a quicksort so the
+
+445
+00:17:16,250 --> 00:17:17,930
+thing we need to understand though going
+
+446
+00:17:17,930 --> 00:17:20,540
+forward is this notion of essentially
+
+447
+00:17:20,540 --> 00:17:21,770
+doing gonna do divide and conquer
+
+448
+00:17:21,770 --> 00:17:23,900
+similar to quicksort where we're gonna
+
+449
+00:17:23,900 --> 00:17:26,180
+split the data up into smaller smaller
+
+450
+00:17:26,180 --> 00:17:28,910
+chunks called runs which is sort of a
+
+451
+00:17:28,910 --> 00:17:31,430
+disjoint segment of the total table that
+
+452
+00:17:31,430 --> 00:17:32,780
+have some number of elements that will
+
+453
+00:17:32,780 --> 00:17:36,260
+then now sort and then over time what
+
+454
+00:17:36,260 --> 00:17:39,510
+will happen is as we accumulate
+
+455
+00:17:39,510 --> 00:17:41,760
+or more these sort of runs will start
+
+456
+00:17:41,760 --> 00:17:43,200
+combining them together into larger
+
+457
+00:17:43,200 --> 00:17:46,170
+shorter runs and then combine other you
+
+458
+00:17:46,170 --> 00:17:47,190
+know larger sort of runs with others
+
+459
+00:17:47,190 --> 00:17:48,480
+larger shorter runs till we get
+
+460
+00:17:48,480 --> 00:17:50,520
+progressively larger and at some point
+
+461
+00:17:50,520 --> 00:17:52,830
+now we have the entire table or retired
+
+462
+00:17:52,830 --> 00:17:55,290
+key space for our join completely sorted
+
+463
+00:17:55,290 --> 00:17:57,960
+so this is sort of the the the atomic
+
+464
+00:17:57,960 --> 00:17:58,980
+unit we're dealing with when these
+
+465
+00:17:58,980 --> 00:18:00,660
+notion of runs but these runs are gonna
+
+466
+00:18:00,660 --> 00:18:03,450
+grow in size as we get you know as we
+
+467
+00:18:03,450 --> 00:18:05,190
+get further along in our execution of
+
+468
+00:18:05,190 --> 00:18:09,030
+the sorting so the approach we're gonna
+
+469
+00:18:09,030 --> 00:18:12,000
+focus on is this cache caution sorting
+
+470
+00:18:12,000 --> 00:18:15,330
+from Intel so remember last class I
+
+471
+00:18:15,330 --> 00:18:17,700
+talked about there was these six papers
+
+472
+00:18:17,700 --> 00:18:21,990
+going back from 2009 discussing the so
+
+473
+00:18:21,990 --> 00:18:23,490
+the various progressions on doing modern
+
+474
+00:18:23,490 --> 00:18:25,980
+sorting on today's hardware and the
+
+475
+00:18:25,980 --> 00:18:27,390
+first paper was this collaboration
+
+476
+00:18:27,390 --> 00:18:30,120
+between Intel and Oracle on doing hash
+
+477
+00:18:30,120 --> 00:18:34,050
+joins or swimmer's joins with Cyndi so
+
+478
+00:18:34,050 --> 00:18:35,550
+that's where this technique that comes
+
+479
+00:18:35,550 --> 00:18:37,830
+from and so the reason why it's called
+
+480
+00:18:37,830 --> 00:18:40,050
+cache conscious is because the algorithm
+
+481
+00:18:40,050 --> 00:18:43,920
+is aware of how big the runs are as is
+
+482
+00:18:43,920 --> 00:18:45,780
+going along and then it's going to use a
+
+483
+00:18:45,780 --> 00:18:49,400
+different algorithm to sort those runs
+
+484
+00:18:49,400 --> 00:18:51,990
+that's been the target the fastest
+
+485
+00:18:51,990 --> 00:18:53,640
+storage level that's available that can
+
+486
+00:18:53,640 --> 00:18:58,710
+store the run in its entirety so then
+
+487
+00:18:58,710 --> 00:19:00,900
+when they when a run gets too big then
+
+488
+00:19:00,900 --> 00:19:02,910
+we move to the next level in our storage
+
+489
+00:19:02,910 --> 00:19:05,010
+hierarchy by going from registers to
+
+490
+00:19:05,010 --> 00:19:08,430
+caches to to memory and you know well
+
+491
+00:19:08,430 --> 00:19:09,330
+how there you have a different
+
+492
+00:19:09,330 --> 00:19:12,290
+algorithms designed or optimized for
+
+493
+00:19:12,290 --> 00:19:18,840
+that that that approach so the the at
+
+494
+00:19:18,840 --> 00:19:20,880
+the first level we're gonna do in
+
+495
+00:19:20,880 --> 00:19:22,680
+register sorting because again CPU
+
+496
+00:19:22,680 --> 00:19:24,060
+registers are the fastest memory you can
+
+497
+00:19:24,060 --> 00:19:26,130
+have but of course there's very limited
+
+498
+00:19:26,130 --> 00:19:28,800
+in size so we're gonna deal with runs
+
+499
+00:19:28,800 --> 00:19:30,960
+that can fit into our CB registers sort
+
+500
+00:19:30,960 --> 00:19:33,120
+the entire table space into these small
+
+501
+00:19:33,120 --> 00:19:35,190
+chunks and then now we'll then spill
+
+502
+00:19:35,190 --> 00:19:38,700
+into in cache sorting at the next level
+
+503
+00:19:38,700 --> 00:19:40,410
+where we're taking all the runs we
+
+504
+00:19:40,410 --> 00:19:42,150
+generate from the first one and have it
+
+505
+00:19:42,150 --> 00:19:44,610
+fit into and sort them into runs that
+
+506
+00:19:44,610 --> 00:19:46,590
+fit into our CPU caches in this case
+
+507
+00:19:46,590 --> 00:19:47,760
+here we're going to target the last
+
+508
+00:19:47,760 --> 00:19:50,400
+level cache like l3 and therefore we
+
+509
+00:19:50,400 --> 00:19:53,100
+need to make sure that the
+
+510
+00:19:53,100 --> 00:19:55,830
+the we're gonna keep using this approach
+
+511
+00:19:55,830 --> 00:19:58,559
+level two until our rungs are half the
+
+512
+00:19:58,559 --> 00:20:01,500
+size of our l3 cache because again you
+
+513
+00:20:01,500 --> 00:20:02,910
+for this for this particular algorithm
+
+514
+00:20:02,910 --> 00:20:06,000
+you to store you know the the input data
+
+515
+00:20:06,000 --> 00:20:07,830
+and then an output buffer the same size
+
+516
+00:20:07,830 --> 00:20:10,799
+that contains the sorted run so for this
+
+517
+00:20:10,799 --> 00:20:12,750
+one also too as I said we're targeting
+
+518
+00:20:12,750 --> 00:20:15,960
+l3 cache which is you know roughly on
+
+519
+00:20:15,960 --> 00:20:17,010
+mono Zeon's
+
+520
+00:20:17,010 --> 00:20:20,850
+maybe up to forty megabytes we're not
+
+521
+00:20:20,850 --> 00:20:24,179
+gonna be worried about China's target l1
+
+522
+00:20:24,179 --> 00:20:26,730
+versus l2 l3 we'll let the harbor take
+
+523
+00:20:26,730 --> 00:20:28,559
+care of that for us we'll just say long
+
+524
+00:20:28,559 --> 00:20:30,870
+as we don't spill into DRAM and we're
+
+525
+00:20:30,870 --> 00:20:32,250
+still hanging out l3 then we're good to
+
+526
+00:20:32,250 --> 00:20:35,850
+go once we go we go go beyond l3 then
+
+527
+00:20:35,850 --> 00:20:39,299
+we'll use at a cache sorting where now
+
+528
+00:20:39,299 --> 00:20:44,390
+we're going to do a completely parallel
+
+529
+00:20:44,390 --> 00:20:49,169
+execution of the sorting where we're
+
+530
+00:20:49,169 --> 00:20:51,630
+gonna be aware of what's in cache which
+
+531
+00:20:51,630 --> 00:20:53,700
+is what's not in cache and we're gonna
+
+532
+00:20:53,700 --> 00:20:54,809
+have our threads actually be able to
+
+533
+00:20:54,809 --> 00:20:56,370
+jump around and operate on different
+
+534
+00:20:56,370 --> 00:20:59,220
+parts of the run or the tablespace
+
+535
+00:20:59,220 --> 00:21:01,530
+depending on you know what what what's
+
+536
+00:21:01,530 --> 00:21:03,870
+in what's in cache monopoly I mean we'll
+
+537
+00:21:03,870 --> 00:21:05,270
+go through the each of these one by one
+
+538
+00:21:05,270 --> 00:21:08,580
+we also say too that there's an idea of
+
+539
+00:21:08,580 --> 00:21:10,740
+level one level two level three this is
+
+540
+00:21:10,740 --> 00:21:12,990
+not actually in the original Intel paper
+
+541
+00:21:12,990 --> 00:21:15,990
+I think Intel calls them phases or
+
+542
+00:21:15,990 --> 00:21:18,570
+stages and that obviously conflicts with
+
+543
+00:21:18,570 --> 00:21:20,490
+the term I'm using to describe or join
+
+544
+00:21:20,490 --> 00:21:23,130
+our relevant phases so I'm using this
+
+545
+00:21:23,130 --> 00:21:26,909
+term level here so again let's look at a
+
+546
+00:21:26,909 --> 00:21:28,440
+higher high level what it looks at what
+
+547
+00:21:28,440 --> 00:21:30,510
+happens so here's our unsorted key space
+
+548
+00:21:30,510 --> 00:21:33,770
+and then in level one we're gonna do
+
+549
+00:21:33,770 --> 00:21:37,260
+we're gonna sort these now into four
+
+550
+00:21:37,260 --> 00:21:40,620
+element runs then once that exceeds our
+
+551
+00:21:40,620 --> 00:21:42,870
+CP register sizes then we switch into l2
+
+552
+00:21:42,870 --> 00:21:44,929
+we're now going to combine together
+
+553
+00:21:44,929 --> 00:21:47,669
+multiple sort of runs or at least two
+
+554
+00:21:47,669 --> 00:21:48,780
+sort of runs at a time and they combine
+
+555
+00:21:48,780 --> 00:21:50,429
+them the larger sort of runs until we
+
+556
+00:21:50,429 --> 00:21:51,809
+have ones that don't fit in our CPU
+
+557
+00:21:51,809 --> 00:21:52,260
+caches
+
+558
+00:21:52,260 --> 00:21:54,809
+and which point we enter l3 where now we
+
+559
+00:21:54,809 --> 00:21:57,120
+want to start using a different sorting
+
+560
+00:21:57,120 --> 00:21:58,980
+approach do you combine them together
+
+561
+00:21:58,980 --> 00:22:01,320
+until we get to some point where we have
+
+562
+00:22:01,320 --> 00:22:04,130
+our complete key space in sorted order
+
+563
+00:22:04,130 --> 00:22:06,330
+nice again high level heroes will go
+
+564
+00:22:06,330 --> 00:22:09,149
+we're going to focus on these two the
+
+565
+00:22:09,149 --> 00:22:13,640
+level three is a it's a bit more of a
+
+566
+00:22:13,640 --> 00:22:16,169
+architectural approach to doing sorting
+
+567
+00:22:16,169 --> 00:22:18,090
+across multiple cores rather than an
+
+568
+00:22:18,090 --> 00:22:21,419
+actual sorting algorithm itself and so
+
+569
+00:22:21,419 --> 00:22:22,620
+again like I said we'll go through these
+
+570
+00:22:22,620 --> 00:22:28,080
+one by one all right so the the in the
+
+571
+00:22:28,080 --> 00:22:29,700
+first level and what we're gonna do here
+
+572
+00:22:29,700 --> 00:22:31,500
+is we're going to combine together or
+
+573
+00:22:31,500 --> 00:22:32,730
+we're going to sort together runs
+
+574
+00:22:32,730 --> 00:22:35,700
+containing four elements here and we're
+
+575
+00:22:35,700 --> 00:22:36,990
+to use what is called a sorting Network
+
+576
+00:22:36,990 --> 00:22:40,620
+so a sorting network is an old idea it
+
+577
+00:22:40,620 --> 00:22:44,159
+goes back to the 1940s but some of the
+
+578
+00:22:44,159 --> 00:22:46,740
+first computers but back then when they
+
+579
+00:22:46,740 --> 00:22:48,960
+describe sorting networks they use the
+
+580
+00:22:48,960 --> 00:22:51,360
+term wires that carry values they
+
+581
+00:22:51,360 --> 00:22:55,110
+literally meant like physical wires like
+
+582
+00:22:55,110 --> 00:22:56,880
+actually you know in the copper wires in
+
+583
+00:22:56,880 --> 00:22:58,950
+Hardware in our case we're obviously not
+
+584
+00:22:58,950 --> 00:23:00,630
+doing that everything's all transistors
+
+585
+00:23:00,630 --> 00:23:03,240
+so this is just this is a conceptual
+
+586
+00:23:03,240 --> 00:23:05,100
+model and described this approach but
+
+587
+00:23:05,100 --> 00:23:06,659
+the hilum ideas the same thing just
+
+588
+00:23:06,659 --> 00:23:09,720
+we're just doing this in software now so
+
+589
+00:23:09,720 --> 00:23:11,159
+what's gonna happen is we'd have our
+
+590
+00:23:11,159 --> 00:23:15,049
+input sequence of four keys and then the
+
+591
+00:23:15,049 --> 00:23:17,669
+output buffer for sorry they for each
+
+592
+00:23:17,669 --> 00:23:19,440
+key element there's a they'll be this
+
+593
+00:23:19,440 --> 00:23:21,690
+wire coming out of it that's gonna carry
+
+594
+00:23:21,690 --> 00:23:25,100
+the value of whatever came before it
+
+595
+00:23:25,100 --> 00:23:28,169
+across until we get to an output buffer
+
+596
+00:23:28,169 --> 00:23:29,220
+or one of these compare rate or
+
+597
+00:23:29,220 --> 00:23:31,740
+operations so in this case here we have
+
+598
+00:23:31,740 --> 00:23:34,769
+nine five three six so in the first step
+
+599
+00:23:34,769 --> 00:23:36,690
+right well again we're all just gonna
+
+600
+00:23:36,690 --> 00:23:38,309
+carry the value going forward so in this
+
+601
+00:23:38,309 --> 00:23:40,230
+first compare Raider here we're gonna
+
+602
+00:23:40,230 --> 00:23:43,320
+it's we're gonna see which value is the
+
+603
+00:23:43,320 --> 00:23:44,850
+min which values the max it will write
+
+604
+00:23:44,850 --> 00:23:47,279
+the min value on the top wire and then
+
+605
+00:23:47,279 --> 00:23:49,529
+the max value will go on the bottom wire
+
+606
+00:23:49,529 --> 00:23:52,440
+so in this case here 5 is less than nine
+
+607
+00:23:52,440 --> 00:23:55,080
+so we're gonna swap swap the location so
+
+608
+00:23:55,080 --> 00:23:56,580
+now five will be carried on this wire
+
+609
+00:23:56,580 --> 00:23:58,620
+and nine is carry to own on the wire
+
+610
+00:23:58,620 --> 00:24:00,750
+below it same thing down from here for
+
+611
+00:24:00,750 --> 00:24:03,510
+three and six three is less than six so
+
+612
+00:24:03,510 --> 00:24:04,889
+this three will be carried out from this
+
+613
+00:24:04,889 --> 00:24:06,600
+wire and six will be carried along on
+
+614
+00:24:06,600 --> 00:24:09,179
+this water so now we repeat this down
+
+615
+00:24:09,179 --> 00:24:10,860
+but now we're gonna do comparisons
+
+616
+00:24:10,860 --> 00:24:13,320
+across different sets of wires so now
+
+617
+00:24:13,320 --> 00:24:14,820
+we're gonna do a comparison between five
+
+618
+00:24:14,820 --> 00:24:17,370
+and three 3 is less than 5 so 3 comes
+
+619
+00:24:17,370 --> 00:24:17,940
+out here
+
+620
+00:24:17,940 --> 00:24:20,250
+five comes out here and now in the case
+
+621
+00:24:20,250 --> 00:24:22,710
+of this wire here there's no other
+
+622
+00:24:22,710 --> 00:24:24,419
+comparator we have to do so we can write
+
+623
+00:24:24,419 --> 00:24:27,240
+out three to our output buffer in the
+
+624
+00:24:27,240 --> 00:24:30,269
+case of the next competitor is nine and
+
+625
+00:24:30,269 --> 00:24:33,149
+six same thing six and nine nine has no
+
+626
+00:24:33,149 --> 00:24:34,980
+other compare a generic comparators we
+
+627
+00:24:34,980 --> 00:24:36,600
+need to do so we read that to the output
+
+628
+00:24:36,600 --> 00:24:39,600
+buffer then we compare with five to six
+
+629
+00:24:39,600 --> 00:24:41,669
+and we produce our output here so we
+
+630
+00:24:41,669 --> 00:24:43,139
+were able to mount again through the
+
+631
+00:24:43,139 --> 00:24:44,610
+sorting Network we're able to take an
+
+632
+00:24:44,610 --> 00:24:48,179
+arbitrarily ordered set of keys and then
+
+633
+00:24:48,179 --> 00:24:52,860
+produce a sorted output buffer right so
+
+634
+00:24:52,860 --> 00:24:54,629
+what's really interesting and cool about
+
+635
+00:24:54,629 --> 00:24:57,750
+this is that no matter what our input
+
+636
+00:24:57,750 --> 00:25:00,029
+sequence looks like what keys there are
+
+637
+00:25:00,029 --> 00:25:01,919
+what went in what sort of sort of order
+
+638
+00:25:01,919 --> 00:25:04,049
+they they start off with we're always
+
+639
+00:25:04,049 --> 00:25:06,350
+gonna do the same set of compare
+
+640
+00:25:06,350 --> 00:25:09,269
+comparisons in the same order every
+
+641
+00:25:09,269 --> 00:25:13,409
+single time because again it's this
+
+642
+00:25:13,409 --> 00:25:15,059
+sorting Network a set up to do work this
+
+643
+00:25:15,059 --> 00:25:17,370
+way so if you now take this sort of
+
+644
+00:25:17,370 --> 00:25:18,629
+conceptual model and actually write up
+
+645
+00:25:18,629 --> 00:25:20,519
+code I've got a really simple
+
+646
+00:25:20,519 --> 00:25:23,070
+implementation like I said like you're
+
+647
+00:25:23,070 --> 00:25:25,379
+gonna do the exact same steps no matter
+
+648
+00:25:25,379 --> 00:25:27,110
+what our input sequence actually is
+
+649
+00:25:27,110 --> 00:25:30,210
+right so you know here's the first set
+
+650
+00:25:30,210 --> 00:25:32,580
+of comparisons right and the second and
+
+651
+00:25:32,580 --> 00:25:35,789
+the third like that so what does this
+
+652
+00:25:35,789 --> 00:25:37,889
+mean this means that it's super fast to
+
+653
+00:25:37,889 --> 00:25:39,659
+do because there's no branches there's
+
+654
+00:25:39,659 --> 00:25:42,360
+no if clauses like you have to do in
+
+655
+00:25:42,360 --> 00:25:43,860
+quicksort we have conditionals to decide
+
+656
+00:25:43,860 --> 00:25:45,750
+where the pivot point is you just are
+
+657
+00:25:45,750 --> 00:25:48,330
+you always going to execute this in the
+
+658
+00:25:48,330 --> 00:25:50,610
+exact same order every single time all
+
+659
+00:25:50,610 --> 00:25:52,889
+right so you sort of think of this as
+
+660
+00:25:52,889 --> 00:25:54,990
+like loop unrolling right instead of
+
+661
+00:25:54,990 --> 00:25:58,590
+having you know instead of looking at
+
+662
+00:25:58,590 --> 00:26:00,149
+one iteration from one level to the next
+
+663
+00:26:00,149 --> 00:26:01,769
+I just unroll it he has the exact
+
+664
+00:26:01,769 --> 00:26:04,529
+instructions I want to execute so why
+
+665
+00:26:04,529 --> 00:26:06,690
+does this matter well now this means
+
+666
+00:26:06,690 --> 00:26:08,190
+that we can actually vectorize this
+
+667
+00:26:08,190 --> 00:26:10,799
+because as I said before the vectorized
+
+668
+00:26:10,799 --> 00:26:13,230
+instructions assembly instructions don't
+
+669
+00:26:13,230 --> 00:26:15,960
+support conditional branches and so
+
+670
+00:26:15,960 --> 00:26:17,370
+here's a simple here's some you know a
+
+671
+00:26:17,370 --> 00:26:19,549
+sequence of code we can execute that
+
+672
+00:26:19,549 --> 00:26:21,419
+that doesn't require a conditional
+
+673
+00:26:21,419 --> 00:26:23,100
+branches it's gonna always require to
+
+674
+00:26:23,100 --> 00:26:24,629
+execute the same instructions and in the
+
+675
+00:26:24,629 --> 00:26:26,190
+exact same order every single time just
+
+676
+00:26:26,190 --> 00:26:28,379
+for just removing values around so we
+
+677
+00:26:28,379 --> 00:26:30,090
+can easily vectorize this
+
+678
+00:26:30,090 --> 00:26:32,920
+so this is how we did that so now what's
+
+679
+00:26:32,920 --> 00:26:35,880
+gonna happen is instead of sorting one
+
+680
+00:26:35,880 --> 00:26:38,620
+you know one Cindy register of four keys
+
+681
+00:26:38,620 --> 00:26:41,560
+we're going to sort four registers
+
+682
+00:26:41,560 --> 00:26:46,030
+containing four keys in parallel and so
+
+683
+00:26:46,030 --> 00:26:47,230
+for this one we're going to assume that
+
+684
+00:26:47,230 --> 00:26:52,300
+we have 512 bits in d registers we're
+
+685
+00:26:52,300 --> 00:26:54,520
+going to have 128-bit lanes
+
+686
+00:26:54,520 --> 00:26:56,470
+so every Lane is hundred eight bits so
+
+687
+00:26:56,470 --> 00:26:59,350
+if you store four keys in one 512 bit
+
+688
+00:26:59,350 --> 00:27:01,870
+register and so in this example here
+
+689
+00:27:01,870 --> 00:27:04,660
+right I'm only showing the key hi and
+
+690
+00:27:04,660 --> 00:27:05,710
+that's our that's our joined key
+
+691
+00:27:05,710 --> 00:27:08,440
+attribute but implicitly also there's
+
+692
+00:27:08,440 --> 00:27:11,620
+also gonna be a 64 64 bit pointer back
+
+693
+00:27:11,620 --> 00:27:13,960
+to the tuple that this key corresponds
+
+694
+00:27:13,960 --> 00:27:16,420
+to so you have to store the join key
+
+695
+00:27:16,420 --> 00:27:18,100
+when you do this sorting in Cindy
+
+696
+00:27:18,100 --> 00:27:20,080
+because if I now store these keys and
+
+697
+00:27:20,080 --> 00:27:22,210
+come up with a different order I have no
+
+698
+00:27:22,210 --> 00:27:25,240
+way to have the key map back to the
+
+699
+00:27:25,240 --> 00:27:28,120
+tuple that it belongs to so again for
+
+700
+00:27:28,120 --> 00:27:29,470
+illustration purposes I'm not showing
+
+701
+00:27:29,470 --> 00:27:31,930
+the tuple pointer here but assume that
+
+702
+00:27:31,930 --> 00:27:34,210
+it's actually both and then the join key
+
+703
+00:27:34,210 --> 00:27:36,640
+is in the higher level bits because now
+
+704
+00:27:36,640 --> 00:27:38,710
+when a new comparison of whether five is
+
+705
+00:27:38,710 --> 00:27:40,660
+is less than or equal to one there's a
+
+706
+00:27:40,660 --> 00:27:42,940
+greater wood between 501 what's the min
+
+707
+00:27:42,940 --> 00:27:45,430
+was the max I essentially ignore this
+
+708
+00:27:45,430 --> 00:27:47,260
+part of the key and I'm all and looking
+
+709
+00:27:47,260 --> 00:27:50,410
+this other upper part here so this is
+
+710
+00:27:50,410 --> 00:27:52,900
+also another reason why as I said last
+
+711
+00:27:52,900 --> 00:27:57,300
+class the Intel paper talked about how
+
+712
+00:27:57,300 --> 00:28:01,300
+you know you can implement a Cindy or
+
+713
+00:28:01,300 --> 00:28:02,890
+vectorized sort merge joint algorithm
+
+714
+00:28:02,890 --> 00:28:04,930
+that I'm talking about here but they
+
+715
+00:28:04,930 --> 00:28:06,670
+couldn't do it for real at the time
+
+716
+00:28:06,670 --> 00:28:09,610
+because you needed 512 bit registers or
+
+717
+00:28:09,610 --> 00:28:11,200
+Cindy red chairs which we actually have
+
+718
+00:28:11,200 --> 00:28:13,720
+now since 2017 in the case of the
+
+719
+00:28:13,720 --> 00:28:15,850
+Columbia paper that came out in 2015
+
+720
+00:28:15,850 --> 00:28:16,890
+2016
+
+721
+00:28:16,890 --> 00:28:20,170
+AVX 512 wasn't around at the time so
+
+722
+00:28:20,170 --> 00:28:23,740
+they only operated on 32-bit keys and
+
+723
+00:28:23,740 --> 00:28:25,660
+32-bit pointers which in a real system
+
+724
+00:28:25,660 --> 00:28:27,190
+actually wouldn't work but now in
+
+725
+00:28:27,190 --> 00:28:30,120
+today's hardware we can actually do this
+
+726
+00:28:30,120 --> 00:28:32,350
+all right so now the way we're gonna do
+
+727
+00:28:32,350 --> 00:28:32,800
+this
+
+728
+00:28:32,800 --> 00:28:34,810
+sorting just we want again we want to
+
+729
+00:28:34,810 --> 00:28:38,620
+come up with we want to produce 4 for
+
+730
+00:28:38,620 --> 00:28:41,620
+element or for key sorted runs so our
+
+731
+00:28:41,620 --> 00:28:43,059
+sort of runs contains 4 outline
+
+732
+00:28:43,059 --> 00:28:44,919
+and we won't but we want to soar sort
+
+733
+00:28:44,919 --> 00:28:48,299
+for runs simultaneously at the same time
+
+734
+00:28:48,299 --> 00:28:50,679
+so now the first thing we need to do is
+
+735
+00:28:50,679 --> 00:28:54,519
+do load the data into our semi registers
+
+736
+00:28:54,519 --> 00:28:56,679
+so assuming this data is contiguous in
+
+737
+00:28:56,679 --> 00:28:58,779
+memory we can execute that with four
+
+738
+00:28:58,779 --> 00:29:01,139
+loading instructions into the registers
+
+739
+00:29:01,139 --> 00:29:03,309
+but now the way we're going to sort this
+
+740
+00:29:03,309 --> 00:29:05,259
+is that we're gonna sort this in a
+
+741
+00:29:05,259 --> 00:29:09,519
+columnar fashion right and so what that
+
+742
+00:29:09,519 --> 00:29:11,740
+means is I can't sort within a single
+
+743
+00:29:11,740 --> 00:29:13,720
+register because the symbian structures
+
+744
+00:29:13,720 --> 00:29:14,830
+that are available to us don't work that
+
+745
+00:29:14,830 --> 00:29:18,039
+way but I can sort across the registers
+
+746
+00:29:18,039 --> 00:29:20,289
+at the same time all right so I'm gonna
+
+747
+00:29:20,289 --> 00:29:22,149
+sort in a columnar fashion so in this
+
+748
+00:29:22,149 --> 00:29:24,820
+case here nine eight six seven I'm not
+
+749
+00:29:24,820 --> 00:29:26,559
+gonna sort that I'm gonna sort instead
+
+750
+00:29:26,559 --> 00:29:31,179
+this column with 21 eight 14 and 11 so
+
+751
+00:29:31,179 --> 00:29:33,999
+now I can just do that same minimax that
+
+752
+00:29:33,999 --> 00:29:36,279
+we did and I showed in the last last
+
+753
+00:29:36,279 --> 00:29:38,559
+slide but now I'm just doing this with
+
+754
+00:29:38,559 --> 00:29:41,769
+Cindy so in this case here I need to do
+
+755
+00:29:41,769 --> 00:29:43,629
+10 min and max instructions that are
+
+756
+00:29:43,629 --> 00:29:46,809
+vectorized to produce output that gives
+
+757
+00:29:46,809 --> 00:29:50,919
+me now in a columnar fashion the sort of
+
+758
+00:29:50,919 --> 00:29:53,080
+order again think of each of these
+
+759
+00:29:53,080 --> 00:29:55,899
+elements or lanes within a register as
+
+760
+00:29:55,899 --> 00:29:58,210
+one of those wires going into my sorting
+
+761
+00:29:58,210 --> 00:30:00,490
+Network and I just invoke the min Max
+
+762
+00:30:00,490 --> 00:30:02,590
+instructions compare these two and these
+
+763
+00:30:02,590 --> 00:30:03,970
+two and then these two and so forth
+
+764
+00:30:03,970 --> 00:30:06,369
+right depending the same way they did in
+
+765
+00:30:06,369 --> 00:30:08,259
+the last slot so again that only
+
+766
+00:30:08,259 --> 00:30:11,230
+requires ten minimax instructions but
+
+767
+00:30:11,230 --> 00:30:12,789
+now the problem is again I want to
+
+768
+00:30:12,789 --> 00:30:16,330
+produce in memory a sort of run of four
+
+769
+00:30:16,330 --> 00:30:19,149
+elements so I need to do a little magic
+
+770
+00:30:19,149 --> 00:30:23,230
+now to get this column now in a row
+
+771
+00:30:23,230 --> 00:30:25,899
+fashion because if I write out this into
+
+772
+00:30:25,899 --> 00:30:27,730
+memory it's not it's not a sort of run
+
+773
+00:30:27,730 --> 00:30:31,149
+right five four is less than than eleven
+
+774
+00:30:31,149 --> 00:30:33,100
+but lemon comes first so I want to do a
+
+775
+00:30:33,100 --> 00:30:35,169
+transpose now to take this column and
+
+776
+00:30:35,169 --> 00:30:37,080
+convert it into a row
+
+777
+00:30:37,080 --> 00:30:39,460
+okay so there's transpose operations to
+
+778
+00:30:39,460 --> 00:30:41,980
+do this in Cindy and then now I end up
+
+779
+00:30:41,980 --> 00:30:44,830
+with my my four sort it runs all right
+
+780
+00:30:44,830 --> 00:30:47,019
+so now again what cross cross one
+
+781
+00:30:47,019 --> 00:30:51,279
+register it's sorted so it takes me now
+
+782
+00:30:51,279 --> 00:30:53,169
+eight shuffle instructions to do that
+
+783
+00:30:53,169 --> 00:30:55,269
+transpose and then now for store
+
+784
+00:30:55,269 --> 00:30:56,809
+instructions to write out the registers
+
+785
+00:30:56,809 --> 00:31:01,580
+healthy manner so in in quicksort the
+
+786
+00:31:01,580 --> 00:31:02,990
+the number instructions we'd have to
+
+787
+00:31:02,990 --> 00:31:05,840
+execute to do this would be be way more
+
+788
+00:31:05,840 --> 00:31:07,970
+than what we're doing here so this is
+
+789
+00:31:07,970 --> 00:31:10,610
+only 26 instructions right assuming the
+
+790
+00:31:10,610 --> 00:31:13,340
+load operation only took four four four
+
+791
+00:31:13,340 --> 00:31:16,309
+instructions we take 26 instructions to
+
+792
+00:31:16,309 --> 00:31:19,789
+end up sorting 16 keys right or have
+
+793
+00:31:19,789 --> 00:31:23,240
+four for element sort of runs and we can
+
+794
+00:31:23,240 --> 00:31:24,649
+do this because it's deterministic so
+
+795
+00:31:24,649 --> 00:31:25,999
+this is actually this is pretty
+
+796
+00:31:25,999 --> 00:31:27,980
+phenomenal right this is this is a big
+
+797
+00:31:27,980 --> 00:31:30,619
+win to definitely do this but now what
+
+798
+00:31:30,619 --> 00:31:31,999
+do we have right now we have a bunch of
+
+799
+00:31:31,999 --> 00:31:34,279
+for held that sort of runs across
+
+800
+00:31:34,279 --> 00:31:35,600
+Ontario keys which could be a billion
+
+801
+00:31:35,600 --> 00:31:37,850
+keys and now we need start to start
+
+802
+00:31:37,850 --> 00:31:40,009
+putting these things together so at this
+
+803
+00:31:40,009 --> 00:31:43,190
+point now once we once we sort every
+
+804
+00:31:43,190 --> 00:31:46,340
+single key in our in the table then we
+
+805
+00:31:46,340 --> 00:31:47,779
+enter now level two where we want to
+
+806
+00:31:47,779 --> 00:31:49,419
+start combining these together into
+
+807
+00:31:49,419 --> 00:31:53,779
+larger sorted runs so to do it this at
+
+808
+00:31:53,779 --> 00:31:55,460
+level two we're going to use what's
+
+809
+00:31:55,460 --> 00:31:58,789
+called a victaulic merge Network and at
+
+810
+00:31:58,789 --> 00:32:00,440
+a high level it's gonna look like a
+
+811
+00:32:00,440 --> 00:32:02,509
+sorting Network but now we're just gonna
+
+812
+00:32:02,509 --> 00:32:05,509
+be able to sort larger runs together
+
+813
+00:32:05,509 --> 00:32:08,269
+into a locally sort of runs into a
+
+814
+00:32:08,269 --> 00:32:09,830
+globally sort of run that's a little bit
+
+815
+00:32:09,830 --> 00:32:12,619
+larger and again we keep doing this and
+
+816
+00:32:12,619 --> 00:32:14,179
+expanding the network which just means
+
+817
+00:32:14,179 --> 00:32:16,909
+more spaces more more more more sort of
+
+818
+00:32:16,909 --> 00:32:18,470
+steps and shuffling in min/max
+
+819
+00:32:18,470 --> 00:32:21,559
+instructions until we hit the half the
+
+820
+00:32:21,559 --> 00:32:23,360
+size of our last level cache because
+
+821
+00:32:23,360 --> 00:32:27,019
+then we fall down into into level three
+
+822
+00:32:27,019 --> 00:32:30,799
+and again on a 2020 easy on the l3 cache
+
+823
+00:32:30,799 --> 00:32:33,679
+size is around 36 to 40 megabytes I
+
+824
+00:32:33,679 --> 00:32:36,559
+think I think AMD would be less than
+
+825
+00:32:36,559 --> 00:32:40,070
+that so this technique won't talk about
+
+826
+00:32:40,070 --> 00:32:44,960
+here is also from Intel it comes came
+
+827
+00:32:44,960 --> 00:32:47,499
+out in 2008 it was one year before the
+
+828
+00:32:47,499 --> 00:32:49,789
+the hash join paper for Intel came out
+
+829
+00:32:49,789 --> 00:32:52,909
+and I the reason why I'd like this paper
+
+830
+00:32:52,909 --> 00:32:53,960
+and I like this technique is because
+
+831
+00:32:53,960 --> 00:32:57,230
+this is actually a big deal because they
+
+832
+00:32:57,230 --> 00:33:00,110
+were able to show that by using Cindy
+
+833
+00:33:00,110 --> 00:33:01,730
+instructions in the baton of certain
+
+834
+00:33:01,730 --> 00:33:04,789
+baton immers networks you can get almost
+
+835
+00:33:04,789 --> 00:33:08,809
+up to a 3.5 X improvement over a sisty
+
+836
+00:33:08,809 --> 00:33:09,440
+or
+
+837
+00:33:09,440 --> 00:33:12,440
+so sick non vectorized implementation
+
+838
+00:33:12,440 --> 00:33:17,049
+and so 3.5 x is for an algorithm that
+
+839
+00:33:17,049 --> 00:33:19,460
+for an old algorithm because all you're
+
+840
+00:33:19,460 --> 00:33:22,429
+really doing is now getting a constant
+
+841
+00:33:22,429 --> 00:33:23,870
+factor speed-up because we're using
+
+842
+00:33:23,870 --> 00:33:25,669
+harvard correctly that's actually a big
+
+843
+00:33:25,669 --> 00:33:27,440
+deal I mean you think of like quick sort
+
+844
+00:33:27,440 --> 00:33:29,169
+of quick search something in the 1970s
+
+845
+00:33:29,169 --> 00:33:31,940
+there's no magic wand we can do to make
+
+846
+00:33:31,940 --> 00:33:33,409
+that sort of fundamental core algorithm
+
+847
+00:33:33,409 --> 00:33:34,879
+we use all the time in computer science
+
+848
+00:33:34,879 --> 00:33:38,120
+to go faster through theory it's just by
+
+849
+00:33:38,120 --> 00:33:40,299
+making sure we use the harbor correctly
+
+850
+00:33:40,299 --> 00:33:42,620
+do we get the the better and proven that
+
+851
+00:33:42,620 --> 00:33:44,409
+we're looking for
+
+852
+00:33:44,409 --> 00:33:48,440
+so a I'll say also to you know this
+
+853
+00:33:48,440 --> 00:33:50,240
+paper was published in vldb one major
+
+854
+00:33:50,240 --> 00:33:52,490
+Davis conferences Intel is obviously not
+
+855
+00:33:52,490 --> 00:33:53,870
+a database company so they're not in the
+
+856
+00:33:53,870 --> 00:33:55,429
+business sign database their business of
+
+857
+00:33:55,429 --> 00:33:57,139
+selling hardware and so the way the
+
+858
+00:33:57,139 --> 00:33:59,870
+Intel stays competitive no I do not want
+
+859
+00:33:59,870 --> 00:34:05,080
+to restart thanks whatever Windows um
+
+860
+00:34:05,080 --> 00:34:07,940
+you would like so Intel is not in the
+
+861
+00:34:07,940 --> 00:34:09,260
+business of selling database they're
+
+862
+00:34:09,260 --> 00:34:10,460
+selling harbor and so the way they stay
+
+863
+00:34:10,460 --> 00:34:12,050
+competitive is they add new features
+
+864
+00:34:12,050 --> 00:34:14,530
+like Cindy instructions or the
+
+865
+00:34:14,530 --> 00:34:16,250
+non-volatile memory stuff I will talk
+
+866
+00:34:16,250 --> 00:34:17,540
+about later in the semester the add
+
+867
+00:34:17,540 --> 00:34:19,719
+additional things in the hardware that
+
+868
+00:34:19,719 --> 00:34:22,159
+you as the application programmer or the
+
+869
+00:34:22,159 --> 00:34:24,199
+Davis system developer can take
+
+870
+00:34:24,199 --> 00:34:26,418
+advantage of and get actually knowing
+
+871
+00:34:26,418 --> 00:34:30,530
+sort of justify buying new Intel
+
+872
+00:34:30,530 --> 00:34:32,810
+hardware and so the issue is that if
+
+873
+00:34:32,810 --> 00:34:33,889
+these things are super complicated
+
+874
+00:34:33,889 --> 00:34:36,290
+nobody's have knows how to use them then
+
+875
+00:34:36,290 --> 00:34:37,730
+Intel's not gonna sell more chip so they
+
+876
+00:34:37,730 --> 00:34:40,280
+actually put out it's been a good amount
+
+877
+00:34:40,280 --> 00:34:41,810
+of time and actually do good research on
+
+878
+00:34:41,810 --> 00:34:43,760
+putting out papers that are easy to
+
+879
+00:34:43,760 --> 00:34:46,040
+follow easy to read showing you how you
+
+880
+00:34:46,040 --> 00:34:49,280
+can apply you know the latest
+
+881
+00:34:49,280 --> 00:34:51,050
+enhancements and intel's hardware or to
+
+882
+00:34:51,050 --> 00:34:52,849
+two databases so the papers are always
+
+883
+00:34:52,849 --> 00:34:54,500
+always a good read and look look forward
+
+884
+00:34:54,500 --> 00:34:58,520
+to them so again at a high level the big
+
+885
+00:34:58,520 --> 00:35:00,290
+tonic merged network is just gonna look
+
+886
+00:35:00,290 --> 00:35:02,990
+like the sort merge are sorry of the the
+
+887
+00:35:02,990 --> 00:35:04,730
+sort of sorting network
+
+888
+00:35:04,730 --> 00:35:06,710
+it's just now review multiple steps
+
+889
+00:35:06,710 --> 00:35:07,849
+because we're dealing with large restore
+
+890
+00:35:07,849 --> 00:35:10,760
+it runs so say this is now on our input
+
+891
+00:35:10,760 --> 00:35:12,500
+size side and we're going to take two
+
+892
+00:35:12,500 --> 00:35:14,810
+for element sort of runs from level one
+
+893
+00:35:14,810 --> 00:35:16,160
+and we're going to combine them together
+
+894
+00:35:16,160 --> 00:35:20,480
+into a eight element output buffer so to
+
+895
+00:35:20,480 --> 00:35:22,520
+take two to sort of run so the first one
+
+896
+00:35:22,520 --> 00:35:23,030
+will be in the
+
+897
+00:35:23,030 --> 00:35:26,260
+same order that was generated in level 1
+
+898
+00:35:26,260 --> 00:35:28,220
+ii though we're gonna put in reverse
+
+899
+00:35:28,220 --> 00:35:31,010
+order so in that case here the smallest
+
+900
+00:35:31,010 --> 00:35:32,960
+element for this sort of run is the last
+
+901
+00:35:32,960 --> 00:35:35,630
+element and for this one the largest
+
+902
+00:35:35,630 --> 00:35:37,490
+element is the last element and the
+
+903
+00:35:37,490 --> 00:35:38,870
+reason is do this and just when you
+
+904
+00:35:38,870 --> 00:35:42,890
+start doing the evaluations it works out
+
+905
+00:35:42,890 --> 00:35:46,280
+the better what it works it's correct to
+
+906
+00:35:46,280 --> 00:35:48,860
+do it in this in this way so now what
+
+907
+00:35:48,860 --> 00:35:50,030
+would have it a bunch of these min and
+
+908
+00:35:50,030 --> 00:35:52,190
+Max the same that we had before we can
+
+909
+00:35:52,190 --> 00:35:53,960
+vectorize and then now we're just doing
+
+910
+00:35:53,960 --> 00:35:55,730
+more shuffles to do comparisons between
+
+911
+00:35:55,730 --> 00:35:58,340
+them until we produce our final output
+
+912
+00:35:58,340 --> 00:36:02,000
+and a completely sorted run right and
+
+913
+00:36:02,000 --> 00:36:03,830
+the key thing about this is that this
+
+914
+00:36:03,830 --> 00:36:05,180
+shuffle in particular can keep
+
+915
+00:36:05,180 --> 00:36:08,120
+everything in CB registers for as long
+
+916
+00:36:08,120 --> 00:36:09,380
+as possible without having to bring it
+
+917
+00:36:09,380 --> 00:36:14,810
+back into into the CPU cache because
+
+918
+00:36:14,810 --> 00:36:15,980
+that's gonna be that's gonna slip slows
+
+919
+00:36:15,980 --> 00:36:20,960
+down heist and then now once we once we
+
+920
+00:36:20,960 --> 00:36:24,200
+run out of cash base we're gonna fall
+
+921
+00:36:24,200 --> 00:36:26,240
+back into earth fall down into level
+
+922
+00:36:26,240 --> 00:36:28,820
+three but again this is gonna use the
+
+923
+00:36:28,820 --> 00:36:31,970
+same step the same procedures we did
+
+924
+00:36:31,970 --> 00:36:32,360
+before
+
+925
+00:36:32,360 --> 00:36:34,060
+it's just now there's gonna be this
+
+926
+00:36:34,060 --> 00:36:36,410
+high-level orchestration of keeping
+
+927
+00:36:36,410 --> 00:36:38,300
+track of what data is available on our
+
+928
+00:36:38,300 --> 00:36:41,030
+CPU caches and having operate on that
+
+929
+00:36:41,030 --> 00:36:43,190
+data first before we go jump to another
+
+930
+00:36:43,190 --> 00:36:46,310
+region of memory and so we let that get
+
+931
+00:36:46,310 --> 00:36:48,050
+fetched in torcida caches and before we
+
+932
+00:36:48,050 --> 00:36:49,940
+go ahead and start executing and the
+
+933
+00:36:49,940 --> 00:36:51,650
+idea here is that we're going to be
+
+934
+00:36:51,650 --> 00:36:53,240
+doing some extra bookkeeping to keep
+
+935
+00:36:53,240 --> 00:36:55,850
+track of where what's in memory what's
+
+936
+00:36:55,850 --> 00:36:57,050
+or say what's in what's in the CPU
+
+937
+00:36:57,050 --> 00:36:59,060
+caches and where we left off in our
+
+938
+00:36:59,060 --> 00:37:00,980
+pipeline and all those extra
+
+939
+00:37:00,980 --> 00:37:02,360
+instructions could potentially slow us
+
+940
+00:37:02,360 --> 00:37:05,270
+down the cost of doing that extra work
+
+941
+00:37:05,270 --> 00:37:10,220
+is much less it's gonna do it's me much
+
+942
+00:37:10,220 --> 00:37:12,590
+less than having to have stalls in our
+
+943
+00:37:12,590 --> 00:37:14,750
+threads while we go wait to fetch things
+
+944
+00:37:14,750 --> 00:37:17,240
+from from memory all right so we're not
+
+945
+00:37:17,240 --> 00:37:20,000
+burning every thread when it runs always
+
+946
+00:37:20,000 --> 00:37:21,530
+has stuff into CPU caches and it can
+
+947
+00:37:21,530 --> 00:37:23,000
+actually very efficiently so we're not
+
+948
+00:37:23,000 --> 00:37:25,370
+ping pong in our thread from going going
+
+949
+00:37:25,370 --> 00:37:27,290
+from being CPU bound to to memory
+
+950
+00:37:27,290 --> 00:37:29,660
+bandwidth bound right it's this always
+
+951
+00:37:29,660 --> 00:37:31,070
+says everything every time the thread
+
+952
+00:37:31,070 --> 00:37:31,430
+runs
+
+953
+00:37:31,430 --> 00:37:33,110
+there's always data in CPU cache and
+
+954
+00:37:33,110 --> 00:37:35,060
+it's running as fast as possible by the
+
+955
+00:37:35,060 --> 00:37:36,869
+instructions per cycle will be much high
+
+956
+00:37:36,869 --> 00:37:39,299
+in that case here so again we're gonna
+
+957
+00:37:39,299 --> 00:37:41,400
+run this in parallel while in multiple
+
+958
+00:37:41,400 --> 00:37:42,479
+cores keep track with all the different
+
+959
+00:37:42,479 --> 00:37:43,759
+cores are doing what threads are doing
+
+960
+00:37:43,759 --> 00:37:48,269
+and within the pipeline as data is
+
+961
+00:37:48,269 --> 00:37:50,670
+coming it's coming from level two or
+
+962
+00:37:50,670 --> 00:37:53,309
+moving along through progressing through
+
+963
+00:37:53,309 --> 00:37:56,039
+our sorting Network here we can have
+
+964
+00:37:56,039 --> 00:37:57,180
+outside jump around and work in
+
+965
+00:37:57,180 --> 00:37:58,289
+different parts and just keep track of
+
+966
+00:37:58,289 --> 00:38:00,210
+where this halt it's so there's no
+
+967
+00:38:00,210 --> 00:38:02,910
+synchronization between threads every
+
+968
+00:38:02,910 --> 00:38:04,079
+thread knows what needs to operate on
+
+969
+00:38:04,079 --> 00:38:05,880
+and we don't need to do any sort of
+
+970
+00:38:05,880 --> 00:38:07,410
+global there's no global coordination
+
+971
+00:38:07,410 --> 00:38:08,609
+every thread can figure out on its own
+
+972
+00:38:08,609 --> 00:38:12,390
+what it needs to do so this is actually
+
+973
+00:38:12,390 --> 00:38:14,999
+very difficult very convoluted and
+
+974
+00:38:14,999 --> 00:38:17,130
+complicated and to the best of my
+
+975
+00:38:17,130 --> 00:38:19,079
+knowledge no database system actually
+
+976
+00:38:19,079 --> 00:38:23,430
+implements this because it makes this
+
+977
+00:38:23,430 --> 00:38:25,859
+big assumption that all the all the
+
+978
+00:38:25,859 --> 00:38:28,589
+threads all the you know all the cores
+
+979
+00:38:28,589 --> 00:38:33,029
+are only being used for for sorting
+
+980
+00:38:33,029 --> 00:38:34,829
+meaning there's no other queries running
+
+981
+00:38:34,829 --> 00:38:36,150
+there's no other sort of background
+
+982
+00:38:36,150 --> 00:38:38,999
+tasks running like networking a garbage
+
+983
+00:38:38,999 --> 00:38:40,739
+collection or indexing they're things
+
+984
+00:38:40,739 --> 00:38:43,950
+like that and so I think the reason
+
+985
+00:38:43,950 --> 00:38:46,739
+because if you now could have different
+
+986
+00:38:46,739 --> 00:38:49,259
+cores doing different things that aren't
+
+987
+00:38:49,259 --> 00:38:51,210
+involved in sorting it's hard to have
+
+988
+00:38:51,210 --> 00:38:52,769
+that sort of precision that you would
+
+989
+00:38:52,769 --> 00:38:54,630
+need to recognize the data that I need
+
+990
+00:38:54,630 --> 00:38:56,759
+is in my CPU cache or not not my CPU
+
+991
+00:38:56,759 --> 00:38:59,160
+cache I think all that becomes like I
+
+992
+00:38:59,160 --> 00:39:01,049
+said more complicated when there's
+
+993
+00:39:01,049 --> 00:39:02,460
+things that are outside of the sorting
+
+994
+00:39:02,460 --> 00:39:05,940
+process so conceptually just looks like
+
+995
+00:39:05,940 --> 00:39:07,289
+this these are all the sort of runs
+
+996
+00:39:07,289 --> 00:39:09,390
+we've produced from level two and then
+
+997
+00:39:09,390 --> 00:39:12,150
+we want to start merging them and what
+
+998
+00:39:12,150 --> 00:39:14,849
+will happen is as a as a thread starts
+
+999
+00:39:14,849 --> 00:39:17,700
+executing say in this case here it does
+
+1000
+00:39:17,700 --> 00:39:19,200
+the merge starts running out data into
+
+1001
+00:39:19,200 --> 00:39:21,869
+this queue and before we can now start
+
+1002
+00:39:21,869 --> 00:39:25,319
+doing the next merge we have to wait for
+
+1003
+00:39:25,319 --> 00:39:27,869
+this all this data to be be done instead
+
+1004
+00:39:27,869 --> 00:39:29,069
+of having a thread here just sort of
+
+1005
+00:39:29,069 --> 00:39:30,869
+spin thread can pick up and jump to
+
+1006
+00:39:30,869 --> 00:39:33,539
+another part of this multi waiting
+
+1007
+00:39:33,539 --> 00:39:35,969
+Network and process the data that's
+
+1008
+00:39:35,969 --> 00:39:37,739
+there and then when this data is finally
+
+1009
+00:39:37,739 --> 00:39:39,569
+all available in our caches then the
+
+1010
+00:39:39,569 --> 00:39:41,099
+thread can come back and and pick up
+
+1011
+00:39:41,099 --> 00:39:44,670
+left off right so basically there's this
+
+1012
+00:39:44,670 --> 00:39:46,950
+flag at every single stage that we set
+
+1013
+00:39:46,950 --> 00:39:49,349
+to say there's there's nothing to do and
+
+1014
+00:39:49,349 --> 00:39:49,990
+a thread
+
+1015
+00:39:49,990 --> 00:39:51,880
+check for it for work and then when the
+
+1016
+00:39:51,880 --> 00:39:54,400
+thread is when it's actually available
+
+1017
+00:39:54,400 --> 00:39:57,100
+it's sort of like a pub/sub notification
+
+1018
+00:39:57,100 --> 00:39:59,100
+that tell somebody hey come and get
+
+1019
+00:39:59,100 --> 00:40:01,360
+start processing the data that's in my
+
+1020
+00:40:01,360 --> 00:40:03,670
+queue that's available and again this
+
+1021
+00:40:03,670 --> 00:40:05,200
+seems like this would be bad for CPU
+
+1022
+00:40:05,200 --> 00:40:06,550
+caches because now we have our thread
+
+1023
+00:40:06,550 --> 00:40:08,350
+jumping around different parts of the
+
+1024
+00:40:08,350 --> 00:40:10,060
+program so to speak over the network so
+
+1025
+00:40:10,060 --> 00:40:12,100
+to speak and processing different things
+
+1026
+00:40:12,100 --> 00:40:15,400
+but again the the penalty of having to
+
+1027
+00:40:15,400 --> 00:40:17,110
+wait for things that sit in the cache or
+
+1028
+00:40:17,110 --> 00:40:18,490
+to be available in the CPU cache before
+
+1029
+00:40:18,490 --> 00:40:22,300
+I start running on them is gonna be much
+
+1030
+00:40:22,300 --> 00:40:25,300
+less in terms of you know the amount of
+
+1031
+00:40:25,300 --> 00:40:26,920
+work the amount of cycles you're having
+
+1032
+00:40:26,920 --> 00:40:29,890
+to spend again this is assumes that I
+
+1033
+00:40:29,890 --> 00:40:31,480
+think it makes a big assumption that you
+
+1034
+00:40:31,480 --> 00:40:32,740
+have complete control over all the
+
+1035
+00:40:32,740 --> 00:40:34,450
+sockets and all the threads on each
+
+1036
+00:40:34,450 --> 00:40:36,790
+socket and I think in a real system that
+
+1037
+00:40:36,790 --> 00:40:42,790
+it's not not the case okay so as I said
+
+1038
+00:40:42,790 --> 00:40:45,040
+no as far as I know far as I know nobody
+
+1039
+00:40:45,040 --> 00:40:50,110
+does this I also think that the the
+
+1040
+00:40:50,110 --> 00:40:51,910
+various in-memory database vendors that
+
+1041
+00:40:51,910 --> 00:40:53,770
+are out there everybody's doing
+
+1042
+00:40:53,770 --> 00:40:55,570
+something slightly different for the
+
+1043
+00:40:55,570 --> 00:40:57,510
+disk based vendors oftentimes you'll see
+
+1044
+00:40:57,510 --> 00:41:01,210
+a fancy version of quicksort if
+
+1045
+00:41:01,210 --> 00:41:03,310
+everything's in memory otherwise they do
+
+1046
+00:41:03,310 --> 00:41:05,170
+extra merge sort when you have to spill
+
+1047
+00:41:05,170 --> 00:41:07,300
+a disk but I briefly want to talk about
+
+1048
+00:41:07,300 --> 00:41:12,250
+what we do in our system and it's some
+
+1049
+00:41:12,250 --> 00:41:13,240
+point we should go look to see what are
+
+1050
+00:41:13,240 --> 00:41:14,710
+the other in memory Ben Davis vendors
+
+1051
+00:41:14,710 --> 00:41:17,710
+were actually doing so we use something
+
+1052
+00:41:17,710 --> 00:41:19,180
+called an in-place superscalar sample
+
+1053
+00:41:19,180 --> 00:41:22,000
+support this was a paper that came out
+
+1054
+00:41:22,000 --> 00:41:26,140
+in 2017 by these other Germans in
+
+1055
+00:41:26,140 --> 00:41:29,619
+Karlsruhe and the main thing i want to
+
+1056
+00:41:29,619 --> 00:41:33,070
+talk about is that it's an open source
+
+1057
+00:41:33,070 --> 00:41:35,170
+good have library that we just linked in
+
+1058
+00:41:35,170 --> 00:41:36,609
+into our system so it's not like we're
+
+1059
+00:41:36,609 --> 00:41:38,680
+empty and free implemented this using
+
+1060
+00:41:38,680 --> 00:41:41,380
+their implementation but the the basic
+
+1061
+00:41:41,380 --> 00:41:43,200
+way to think about this is that it's
+
+1062
+00:41:43,200 --> 00:41:45,630
+using sample sort which is a
+
+1063
+00:41:45,630 --> 00:41:47,500
+generalization of quicksort the
+
+1064
+00:41:47,500 --> 00:41:50,470
+quicksort only has like to you know has
+
+1065
+00:41:50,470 --> 00:41:52,030
+one pivot point divides it up to two
+
+1066
+00:41:52,030 --> 00:41:55,540
+parts in each step in sample sort you
+
+1067
+00:41:55,540 --> 00:41:57,190
+sample some keys and make a decision
+
+1068
+00:41:57,190 --> 00:41:59,770
+about how many partitions or any buckets
+
+1069
+00:41:59,770 --> 00:42:00,609
+you want to generate
+
+1070
+00:42:00,609 --> 00:42:03,309
+right and you serve occur Sulli do that
+
+1071
+00:42:03,309 --> 00:42:06,239
+but the key thing about this one that
+
+1072
+00:42:06,239 --> 00:42:09,549
+makes it work really well is that it's
+
+1073
+00:42:09,549 --> 00:42:12,669
+doing this all in place meaning it's not
+
+1074
+00:42:12,669 --> 00:42:14,559
+truly in place but it just means that
+
+1075
+00:42:14,559 --> 00:42:17,499
+the the amount of extra storage space
+
+1076
+00:42:17,499 --> 00:42:20,709
+you would need to as you start moving it
+
+1077
+00:42:20,709 --> 00:42:23,859
+around is is caught the constant factor
+
+1078
+00:42:23,859 --> 00:42:26,559
+to the total infant size and so what
+
+1079
+00:42:26,559 --> 00:42:28,209
+will happen is as you start splitting
+
+1080
+00:42:28,209 --> 00:42:31,059
+the data up when you in writing in the
+
+1081
+00:42:31,059 --> 00:42:32,380
+particulars and you are writing into
+
+1082
+00:42:32,380 --> 00:42:34,059
+your output buffer when that upper
+
+1083
+00:42:34,059 --> 00:42:36,579
+output buffer gets full rather than
+
+1084
+00:42:36,579 --> 00:42:38,799
+allocating a new upper buffer you then
+
+1085
+00:42:38,799 --> 00:42:41,159
+try to write it back into your key space
+
+1086
+00:42:41,159 --> 00:42:44,469
+over a - over write another part of the
+
+1087
+00:42:44,469 --> 00:42:45,459
+the key space that's already been
+
+1088
+00:42:45,459 --> 00:42:47,259
+partitioned so that you're not wasting
+
+1089
+00:42:47,259 --> 00:42:49,059
+wasting space are you're not allocating
+
+1090
+00:42:49,059 --> 00:42:50,409
+more memory that and then then you
+
+1091
+00:42:50,409 --> 00:42:53,469
+actually need it's also gonna be
+
+1092
+00:42:53,469 --> 00:42:56,289
+optimized for superscalar architectures
+
+1093
+00:42:56,289 --> 00:42:57,369
+which means that they're an avoid
+
+1094
+00:42:57,369 --> 00:42:59,259
+conditional branches in the same way
+
+1095
+00:42:59,259 --> 00:43:01,299
+that we talked about before and the way
+
+1096
+00:43:01,299 --> 00:43:03,339
+do this is by comparing keys usually
+
+1097
+00:43:03,339 --> 00:43:04,569
+conditionally execute instructions
+
+1098
+00:43:04,569 --> 00:43:07,209
+Christa copilot can generate for us so
+
+1099
+00:43:07,209 --> 00:43:09,929
+again we use this in our implementation
+
+1100
+00:43:09,929 --> 00:43:14,259
+and the research results at least from
+
+1101
+00:43:14,259 --> 00:43:15,939
+this paper shows that it you know
+
+1102
+00:43:15,939 --> 00:43:18,729
+clearly outperforms some of the more
+
+1103
+00:43:18,729 --> 00:43:23,289
+optimized versions of quick so all right
+
+1104
+00:43:23,289 --> 00:43:25,890
+so that's the sorting phase again we
+
+1105
+00:43:25,890 --> 00:43:29,259
+we've we've taken our relations and we
+
+1106
+00:43:29,259 --> 00:43:31,419
+sorted them on the join key but now we
+
+1107
+00:43:31,419 --> 00:43:33,039
+want to have our iterators walk through
+
+1108
+00:43:33,039 --> 00:43:36,880
+the two tables and compare compare two
+
+1109
+00:43:36,880 --> 00:43:38,999
+poles from the outer and the inner and
+
+1110
+00:43:38,999 --> 00:43:41,529
+if there's a match then we make a copy
+
+1111
+00:43:41,529 --> 00:43:44,769
+and put it into output buffer so in our
+
+1112
+00:43:44,769 --> 00:43:47,289
+well we'll talk about here today we're
+
+1113
+00:43:47,289 --> 00:43:48,579
+not going too soon we have to backtrack
+
+1114
+00:43:48,579 --> 00:43:51,999
+but if you have to recognize that the if
+
+1115
+00:43:51,999 --> 00:43:53,709
+I have it if I have multiple keys we
+
+1116
+00:43:53,709 --> 00:43:55,329
+sorted multiple tuples to the same key I
+
+1117
+00:43:55,329 --> 00:43:58,019
+may need a backtrack on the inner table
+
+1118
+00:43:58,019 --> 00:44:00,429
+but we can ignore that for now at a high
+
+1119
+00:44:00,429 --> 00:44:02,289
+level all the algorithms we'll talk
+
+1120
+00:44:02,289 --> 00:44:04,140
+about here today I work all the same way
+
+1121
+00:44:04,140 --> 00:44:06,789
+so just like in the sorting phase when
+
+1122
+00:44:06,789 --> 00:44:07,959
+we want to split this up and run those
+
+1123
+00:44:07,959 --> 00:44:09,939
+multiple threads we want to do the same
+
+1124
+00:44:09,939 --> 00:44:11,769
+thing here we want to have multiple
+
+1125
+00:44:11,769 --> 00:44:14,289
+threads scan through the outer inner
+
+1126
+00:44:14,289 --> 00:44:16,450
+table in parallel so that we
+
+1127
+00:44:16,450 --> 00:44:18,280
+do this more quickly and of course that
+
+1128
+00:44:18,280 --> 00:44:21,400
+also means now we wanted to we want to
+
+1129
+00:44:21,400 --> 00:44:23,079
+have them not require any
+
+1130
+00:44:23,079 --> 00:44:26,109
+synchronization during this process so
+
+1131
+00:44:26,109 --> 00:44:28,540
+that they basically can run at almost
+
+1132
+00:44:28,540 --> 00:44:29,950
+bare-metal speeds so there's no sort of
+
+1133
+00:44:29,950 --> 00:44:32,920
+global creation decide you know who's
+
+1134
+00:44:32,920 --> 00:44:34,440
+reading what peach that piece of data
+
+1135
+00:44:34,440 --> 00:44:39,220
+right so we can do this if we if we're
+
+1136
+00:44:39,220 --> 00:44:40,960
+having everything that right to separate
+
+1137
+00:44:40,960 --> 00:44:42,609
+output buffers if you have to write to
+
+1138
+00:44:42,609 --> 00:44:43,990
+the same output buffer and then you have
+
+1139
+00:44:43,990 --> 00:44:46,329
+to do like compare and swap take take
+
+1140
+00:44:46,329 --> 00:44:47,680
+out you know a slot do you want to write
+
+1141
+00:44:47,680 --> 00:44:49,660
+into and so far as I know everyone's
+
+1142
+00:44:49,660 --> 00:44:53,050
+always does does this in parallel so
+
+1143
+00:44:53,050 --> 00:44:55,329
+what also say to is if you just want to
+
+1144
+00:44:55,329 --> 00:44:57,070
+do an order by in your query so not a
+
+1145
+00:44:57,070 --> 00:45:01,810
+join just an order by or sorting for an
+
+1146
+00:45:01,810 --> 00:45:04,570
+aggregation or distinct yet you stopped
+
+1147
+00:45:04,570 --> 00:45:06,310
+at the sort phase that we just talked
+
+1148
+00:45:06,310 --> 00:45:07,359
+about you don't have to do this merge
+
+1149
+00:45:07,359 --> 00:45:09,220
+step there's merge step is only to do
+
+1150
+00:45:09,220 --> 00:45:14,290
+the soltner join so I want to talk about
+
+1151
+00:45:14,290 --> 00:45:18,160
+now three different approaches to do do
+
+1152
+00:45:18,160 --> 00:45:19,930
+assert merge all right so did do this
+
+1153
+00:45:19,930 --> 00:45:21,400
+merge phase and put it all together so
+
+1154
+00:45:21,400 --> 00:45:24,940
+the first two are from the ETH paper
+
+1155
+00:45:24,940 --> 00:45:27,130
+that you guys read right from the guys
+
+1156
+00:45:27,130 --> 00:45:29,050
+the guys in Switzerland and then the
+
+1157
+00:45:29,050 --> 00:45:31,869
+last one here is from the hyper guys it
+
+1158
+00:45:31,869 --> 00:45:33,970
+was the paper that they wrote in 2012
+
+1159
+00:45:33,970 --> 00:45:36,040
+that said this is the best way to do
+
+1160
+00:45:36,040 --> 00:45:38,380
+joins this is even better than hashed
+
+1161
+00:45:38,380 --> 00:45:40,510
+joins and then the next year they
+
+1162
+00:45:40,510 --> 00:45:42,130
+abandon that and switch over be entirely
+
+1163
+00:45:42,130 --> 00:45:45,369
+in to do hash joins and so the paper you
+
+1164
+00:45:45,369 --> 00:45:46,690
+guys read basically shows that this
+
+1165
+00:45:46,690 --> 00:45:48,880
+approach for as much as the the the
+
+1166
+00:45:48,880 --> 00:45:50,710
+hyper Germans touted it was it was
+
+1167
+00:45:50,710 --> 00:45:54,400
+amazing it's gonna get crushed by by by
+
+1168
+00:45:54,400 --> 00:45:56,200
+the first one here the Malta wave sort
+
+1169
+00:45:56,200 --> 00:45:57,640
+merge so when you go through each of
+
+1170
+00:45:57,640 --> 00:45:58,599
+these one by one
+
+1171
+00:45:58,599 --> 00:46:00,400
+see what how they set things up and see
+
+1172
+00:46:00,400 --> 00:46:01,869
+how they're different and then we'll do
+
+1173
+00:46:01,869 --> 00:46:03,099
+an evaluation and look at the
+
+1174
+00:46:03,099 --> 00:46:08,970
+performance numbers with that
+
+1175
+00:46:10,900 --> 00:46:13,700
+the terrier asks whether leap the hyper
+
+1176
+00:46:13,700 --> 00:46:15,790
+Germans are the same ones as the
+
+1177
+00:46:15,790 --> 00:46:19,220
+in-place superscalar merge sorting out
+
+1178
+00:46:19,220 --> 00:46:21,230
+them these are different Germans the
+
+1179
+00:46:21,230 --> 00:46:24,349
+hyper Germans and Munich the the sorting
+
+1180
+00:46:24,349 --> 00:46:27,050
+algorithm Germans are in arrancars well
+
+1181
+00:46:27,050 --> 00:46:31,569
+different people different Germans okay
+
+1182
+00:46:31,569 --> 00:46:34,160
+so the first one is gonna be this
+
+1183
+00:46:34,160 --> 00:46:35,990
+multi-way search and so the multivator
+
+1184
+00:46:35,990 --> 00:46:38,960
+sort merge so the idea here is that for
+
+1185
+00:46:38,960 --> 00:46:41,150
+the outer table we're going to have all
+
+1186
+00:46:41,150 --> 00:46:44,740
+the course sort the data in parallel
+
+1187
+00:46:44,740 --> 00:46:47,119
+using the level one level two approach
+
+1188
+00:46:47,119 --> 00:46:48,559
+that we talked about before
+
+1189
+00:46:48,559 --> 00:46:51,020
+then they're gonna redistribute the data
+
+1190
+00:46:51,020 --> 00:46:55,339
+across their cores in business doing
+
+1191
+00:46:55,339 --> 00:46:56,660
+another round I like a range
+
+1192
+00:46:56,660 --> 00:46:59,059
+partitioning and do the multi wage merge
+
+1193
+00:46:59,059 --> 00:47:00,980
+sort or they'll ultimately merge from
+
+1194
+00:47:00,980 --> 00:47:02,059
+the level three that we talked about
+
+1195
+00:47:02,059 --> 00:47:05,300
+before we'll do the same thing now in
+
+1196
+00:47:05,300 --> 00:47:07,210
+the our table so that means now we have
+
+1197
+00:47:07,210 --> 00:47:11,109
+at the end of the sorting phase we have
+
+1198
+00:47:11,109 --> 00:47:15,380
+at every core we have a chunk of we have
+
+1199
+00:47:15,380 --> 00:47:17,809
+a partition of data where we know that
+
+1200
+00:47:17,809 --> 00:47:21,290
+for any tuple in the outer table it has
+
+1201
+00:47:21,290 --> 00:47:24,160
+to either exist or not exist in the
+
+1202
+00:47:24,160 --> 00:47:26,270
+corresponding partition from the inner
+
+1203
+00:47:26,270 --> 00:47:28,730
+table and that tuple cannot exist in any
+
+1204
+00:47:28,730 --> 00:47:31,160
+other partition all right so again it's
+
+1205
+00:47:31,160 --> 00:47:32,720
+like the grace hash joint by breaking up
+
+1206
+00:47:32,720 --> 00:47:35,000
+into buckets or partitions I know that
+
+1207
+00:47:35,000 --> 00:47:36,470
+the data I'm looking for has to be in
+
+1208
+00:47:36,470 --> 00:47:37,640
+this other partition and it's not there
+
+1209
+00:47:37,640 --> 00:47:39,500
+and then doesn't exist and I know I know
+
+1210
+00:47:39,500 --> 00:47:42,079
+I don't need to check anything else so
+
+1211
+00:47:42,079 --> 00:47:43,569
+this is actually gonna turn out to be
+
+1212
+00:47:43,569 --> 00:47:48,260
+the best approach the important thing I
+
+1213
+00:47:48,260 --> 00:47:50,059
+also say about too is that in this case
+
+1214
+00:47:50,059 --> 00:47:51,980
+here you know I said that the multi way
+
+1215
+00:47:51,980 --> 00:47:54,140
+merge is complicated and no real system
+
+1216
+00:47:54,140 --> 00:47:55,849
+actually implements this so for this
+
+1217
+00:47:55,849 --> 00:47:58,270
+paper here this is a testbed system
+
+1218
+00:47:58,270 --> 00:48:02,660
+similar to the Columbia paper as far as
+
+1219
+00:48:02,660 --> 00:48:04,640
+I know it only does the join so they're
+
+1220
+00:48:04,640 --> 00:48:05,900
+not worried about interference from
+
+1221
+00:48:05,900 --> 00:48:07,099
+other threads in the system running at
+
+1222
+00:48:07,099 --> 00:48:08,690
+the same time right it's just doing the
+
+1223
+00:48:08,690 --> 00:48:11,630
+join so let's see what it looks like at
+
+1224
+00:48:11,630 --> 00:48:13,730
+a high level so say this is our outer
+
+1225
+00:48:13,730 --> 00:48:15,650
+table here so at the very beginning
+
+1226
+00:48:15,650 --> 00:48:17,119
+we're just gonna have that local Numa
+
+1227
+00:48:17,119 --> 00:48:19,579
+partitioning the same way we talked
+
+1228
+00:48:19,579 --> 00:48:21,680
+about in hyper for morsels I
+
+1229
+00:48:21,680 --> 00:48:23,900
+are just chunks of data of the table
+
+1230
+00:48:23,900 --> 00:48:26,150
+that's unsorted that is local to each
+
+1231
+00:48:26,150 --> 00:48:27,950
+each of our pours each each of our
+
+1232
+00:48:27,950 --> 00:48:30,590
+threads so now each threads going to
+
+1233
+00:48:30,590 --> 00:48:33,620
+take its its local local partition and
+
+1234
+00:48:33,620 --> 00:48:35,660
+it's gonna do the local sort so that's
+
+1235
+00:48:35,660 --> 00:48:38,030
+gonna be the the level-1 level-2 sort
+
+1236
+00:48:38,030 --> 00:48:40,330
+that way that we talked about before
+
+1237
+00:48:40,330 --> 00:48:42,680
+then now in the next step we want to do
+
+1238
+00:48:42,680 --> 00:48:44,960
+the multi way merge where we're going to
+
+1239
+00:48:44,960 --> 00:48:48,440
+combine together the values within a
+
+1240
+00:48:48,440 --> 00:48:52,070
+given range at each core and move them
+
+1241
+00:48:52,070 --> 00:48:54,740
+to be on a single core so for this first
+
+1242
+00:48:54,740 --> 00:48:56,270
+sort of chunk here say this first sort
+
+1243
+00:48:56,270 --> 00:48:57,650
+of range which we know the ranges are
+
+1244
+00:48:57,650 --> 00:48:59,120
+because we've already scans to the data
+
+1245
+00:48:59,120 --> 00:49:01,460
+once all the data that corresponds in
+
+1246
+00:49:01,460 --> 00:49:03,110
+that same range will be then getting
+
+1247
+00:49:03,110 --> 00:49:06,890
+written to to this core here which then
+
+1248
+00:49:06,890 --> 00:49:10,910
+does now the the multi way or the level
+
+1249
+00:49:10,910 --> 00:49:12,350
+three merging that we talked about for
+
+1250
+00:49:12,350 --> 00:49:14,420
+where we have we're sort of jumping
+
+1251
+00:49:14,420 --> 00:49:16,160
+around to different parts parts of the
+
+1252
+00:49:16,160 --> 00:49:19,610
+of the sort of execution flow based on
+
+1253
+00:49:19,610 --> 00:49:22,100
+what's what's in our CPU caches all
+
+1254
+00:49:22,100 --> 00:49:23,560
+right
+
+1255
+00:49:23,560 --> 00:49:26,270
+so we do the same thing now for all the
+
+1256
+00:49:26,270 --> 00:49:28,760
+other for all the other data this would
+
+1257
+00:49:28,760 --> 00:49:30,110
+happen in parallel it's not we're doing
+
+1258
+00:49:30,110 --> 00:49:31,580
+these one at a time but every core is
+
+1259
+00:49:31,580 --> 00:49:32,900
+gonna get all the data they need from
+
+1260
+00:49:32,900 --> 00:49:35,210
+the other other cores and do that multi
+
+1261
+00:49:35,210 --> 00:49:38,930
+way sir multimers here then now what do
+
+1262
+00:49:38,930 --> 00:49:42,230
+we have now we have for our outer table
+
+1263
+00:49:42,230 --> 00:49:46,640
+we have a globally sorted global sorted
+
+1264
+00:49:46,640 --> 00:49:51,800
+table so now on the on the inner table
+
+1265
+00:49:51,800 --> 00:49:53,570
+we're doing the exact same thing as the
+
+1266
+00:49:53,570 --> 00:49:55,430
+outer table for the sake of space
+
+1267
+00:49:55,430 --> 00:49:57,410
+because the screens all look so big I'm
+
+1268
+00:49:57,410 --> 00:49:58,670
+just gonna say that there's this little
+
+1269
+00:49:58,670 --> 00:50:00,470
+sort box but that's doing the same
+
+1270
+00:50:00,470 --> 00:50:02,390
+multiwave merge sort and multi merge
+
+1271
+00:50:02,390 --> 00:50:04,760
+that we saw here so now what do we have
+
+1272
+00:50:04,760 --> 00:50:07,490
+we have that every single every single
+
+1273
+00:50:07,490 --> 00:50:10,550
+core again we have a partition range
+
+1274
+00:50:10,550 --> 00:50:12,920
+partitioning chunk of data where we know
+
+1275
+00:50:12,920 --> 00:50:16,010
+that a key either exists in this
+
+1276
+00:50:16,010 --> 00:50:17,870
+partition or it doesn't exist at all
+
+1277
+00:50:17,870 --> 00:50:19,760
+because you know key five should should
+
+1278
+00:50:19,760 --> 00:50:21,530
+be mapped in here we're not gonna find
+
+1279
+00:50:21,530 --> 00:50:23,360
+it at any other position when we try to
+
+1280
+00:50:23,360 --> 00:50:25,940
+do the join so now we do this local
+
+1281
+00:50:25,940 --> 00:50:27,830
+merge point where we have each thread
+
+1282
+00:50:27,830 --> 00:50:30,440
+just rip through the data that's local
+
+1283
+00:50:30,440 --> 00:50:32,060
+to it having two iterators run at the
+
+1284
+00:50:32,060 --> 00:50:34,350
+same time do comparisons and
+
+1285
+00:50:34,350 --> 00:50:36,330
+every thread writes out a matching tuple
+
+1286
+00:50:36,330 --> 00:50:39,710
+to to its own output buffer me alright
+
+1287
+00:50:39,710 --> 00:50:42,900
+so a way to think about this algorithm
+
+1288
+00:50:42,900 --> 00:50:45,030
+is happening here is that we're paying a
+
+1289
+00:50:45,030 --> 00:50:47,490
+penalty in the beginning to do remote
+
+1290
+00:50:47,490 --> 00:50:51,060
+writes when we do this this so there's
+
+1291
+00:50:51,060 --> 00:50:52,860
+merging across different course right
+
+1292
+00:50:52,860 --> 00:50:56,790
+but that means now when we do the merge
+
+1293
+00:50:56,790 --> 00:50:59,310
+of the sort merge phase or the merge
+
+1294
+00:50:59,310 --> 00:51:01,680
+phase of the sort merge phase in fact
+
+1295
+00:51:01,680 --> 00:51:03,570
+the merge phase of the certain merge
+
+1296
+00:51:03,570 --> 00:51:06,750
+join here we don't have to do any remote
+
+1297
+00:51:06,750 --> 00:51:08,870
+reads across from the new Marie Jeanette
+
+1298
+00:51:08,870 --> 00:51:11,400
+slept local to us and that's gonna be
+
+1299
+00:51:11,400 --> 00:51:16,230
+super fast the next one from ETH is the
+
+1300
+00:51:16,230 --> 00:51:20,340
+multi pass sort merge join so the outer
+
+1301
+00:51:20,340 --> 00:51:21,960
+table will do the same thing that we did
+
+1302
+00:51:21,960 --> 00:51:24,840
+in the last one at level one for level
+
+1303
+00:51:24,840 --> 00:51:26,760
+one level two will sort our data locally
+
+1304
+00:51:26,760 --> 00:51:29,490
+but now instead of redistributing the
+
+1305
+00:51:29,490 --> 00:51:32,370
+the data across different cores with
+
+1306
+00:51:32,370 --> 00:51:36,800
+that multi way merge we're just gonna do
+
+1307
+00:51:36,800 --> 00:51:39,660
+comparison across the entire table on
+
+1308
+00:51:39,660 --> 00:51:42,060
+the inner side to see whether we have a
+
+1309
+00:51:42,060 --> 00:51:45,330
+match and that may require us to do
+
+1310
+00:51:45,330 --> 00:51:46,920
+multiple passes hence the name multi
+
+1311
+00:51:46,920 --> 00:51:49,620
+pass over the the table for every single
+
+1312
+00:51:49,620 --> 00:51:50,790
+to go to find the data that we're
+
+1313
+00:51:50,790 --> 00:51:52,920
+looking for right so in this case here
+
+1314
+00:51:52,920 --> 00:51:54,270
+the merge phase is just looking for
+
+1315
+00:51:54,270 --> 00:51:55,380
+matching pairs of chunks to the outer
+
+1316
+00:51:55,380 --> 00:51:57,720
+table in the inner table and that maybe
+
+1317
+00:51:57,720 --> 00:52:00,200
+could be across different Numa regions
+
+1318
+00:52:00,200 --> 00:52:03,180
+so conceptually it looks like this same
+
+1319
+00:52:03,180 --> 00:52:04,800
+thing before we have that same local
+
+1320
+00:52:04,800 --> 00:52:08,060
+Numa partitioning we use that same local
+
+1321
+00:52:08,060 --> 00:52:11,010
+local sorting and every partition using
+
+1322
+00:52:11,010 --> 00:52:14,220
+l1 l1 l2 methods then now we'll do a
+
+1323
+00:52:14,220 --> 00:52:16,740
+global merge join where for every single
+
+1324
+00:52:16,740 --> 00:52:19,410
+thread or every single chunk of data on
+
+1325
+00:52:19,410 --> 00:52:22,170
+the outer table we got to scan through
+
+1326
+00:52:22,170 --> 00:52:25,260
+every single chunk of data on the on the
+
+1327
+00:52:25,260 --> 00:52:27,810
+inner table and again all the threads
+
+1328
+00:52:27,810 --> 00:52:28,950
+are going to do this doing this at
+
+1329
+00:52:28,950 --> 00:52:30,930
+parallel at the same time so you have
+
+1330
+00:52:30,930 --> 00:52:32,940
+sort of anyway connections going around
+
+1331
+00:52:32,940 --> 00:52:34,110
+and everybody's reading data from
+
+1332
+00:52:34,110 --> 00:52:37,860
+everyone else right so we'll see now and
+
+1333
+00:52:37,860 --> 00:52:39,810
+if you next slide the hyper guys are
+
+1334
+00:52:39,810 --> 00:52:41,250
+gonna claim that this is not gonna be an
+
+1335
+00:52:41,250 --> 00:52:44,040
+big deal because the harpy fetcher will
+
+1336
+00:52:44,040 --> 00:52:47,040
+will help us but doesn't turn out to be
+
+1337
+00:52:47,040 --> 00:52:48,670
+the case at all
+
+1338
+00:52:48,670 --> 00:52:50,630
+all right the last one again is from the
+
+1339
+00:52:50,630 --> 00:52:52,609
+hyper guys so this is massively parallel
+
+1340
+00:52:52,609 --> 00:52:54,619
+sort merge so we're gonna range
+
+1341
+00:52:54,619 --> 00:52:56,959
+partition the outer table redistribute
+
+1342
+00:52:56,959 --> 00:52:58,910
+it across the cores and then now each
+
+1343
+00:52:58,910 --> 00:53:00,769
+core is gonna sort that their their
+
+1344
+00:53:00,769 --> 00:53:02,569
+local local data in the partition in
+
+1345
+00:53:02,569 --> 00:53:05,059
+parallel the inner table we're not going
+
+1346
+00:53:05,059 --> 00:53:06,499
+to redistribute at all we're just gonna
+
+1347
+00:53:06,499 --> 00:53:08,479
+sort it locally for whatever data that
+
+1348
+00:53:08,479 --> 00:53:11,299
+they have then now when we do a merge
+
+1349
+00:53:11,299 --> 00:53:14,930
+phase the scan across the different
+
+1350
+00:53:14,930 --> 00:53:17,180
+threads we stop the stand across
+
+1351
+00:53:17,180 --> 00:53:18,319
+different threads for every single
+
+1352
+00:53:18,319 --> 00:53:19,819
+thread on the outer table every single
+
+1353
+00:53:19,819 --> 00:53:22,069
+partition on the outer table but since
+
+1354
+00:53:22,069 --> 00:53:27,349
+we know our data is is sorted we know
+
+1355
+00:53:27,349 --> 00:53:29,569
+what boundary on the inner table we
+
+1356
+00:53:29,569 --> 00:53:30,739
+actually need a deal with them and we
+
+1357
+00:53:30,739 --> 00:53:34,190
+don't have to scan the entire partition
+
+1358
+00:53:34,190 --> 00:53:36,440
+of the inner table every single time we
+
+1359
+00:53:36,440 --> 00:53:39,979
+want to do a lookup so looks like this
+
+1360
+00:53:39,979 --> 00:53:42,859
+same same cost name a partitioning I
+
+1361
+00:53:42,859 --> 00:53:45,369
+sorry different before it so now the
+
+1362
+00:53:45,369 --> 00:53:48,319
+every threads gonna write out the data
+
+1363
+00:53:48,319 --> 00:53:51,079
+that it belongs to data within a range
+
+1364
+00:53:51,079 --> 00:53:52,999
+to a different partition so you much a
+
+1365
+00:53:52,999 --> 00:53:55,339
+remote writes in the beginning and then
+
+1366
+00:53:55,339 --> 00:53:57,979
+now locally you're gonna sort these high
+
+1367
+00:53:57,979 --> 00:54:00,489
+and these will be globally sorted the
+
+1368
+00:54:00,489 --> 00:54:03,529
+the outer table will just sorry the
+
+1369
+00:54:03,529 --> 00:54:05,089
+inner table will just sort locally and
+
+1370
+00:54:05,089 --> 00:54:08,180
+then now when I do my join I have to go
+
+1371
+00:54:08,180 --> 00:54:10,219
+across partitions so I'm gonna scan here
+
+1372
+00:54:10,219 --> 00:54:12,650
+scan now for every single tuple in the
+
+1373
+00:54:12,650 --> 00:54:14,749
+inner table but only scan a portion
+
+1374
+00:54:14,749 --> 00:54:16,249
+sorry every scan through the entire
+
+1375
+00:54:16,249 --> 00:54:18,559
+partition on the outer table but only
+
+1376
+00:54:18,559 --> 00:54:20,660
+scan now a portion of the partition on
+
+1377
+00:54:20,660 --> 00:54:22,910
+the inner table but I gotta do that for
+
+1378
+00:54:22,910 --> 00:54:24,680
+every single partition to find all the
+
+1379
+00:54:24,680 --> 00:54:26,509
+data I'm looking for and of course again
+
+1380
+00:54:26,509 --> 00:54:28,999
+I can do this in parallel across all my
+
+1381
+00:54:28,999 --> 00:54:30,619
+threads at the same time but everybody
+
+1382
+00:54:30,619 --> 00:54:32,119
+everybody's gonna have to do the exact
+
+1383
+00:54:32,119 --> 00:54:33,910
+same thing right
+
+1384
+00:54:33,910 --> 00:54:37,309
+so what hyper hyper guy is gonna argue
+
+1385
+00:54:37,309 --> 00:54:42,019
+is that in in all these cases you're
+
+1386
+00:54:42,019 --> 00:54:46,039
+doing sequential reads and so we haven't
+
+1387
+00:54:46,039 --> 00:54:47,299
+really talked about hubber prefetching
+
+1388
+00:54:47,299 --> 00:54:48,799
+but we talked about software prefetching
+
+1389
+00:54:48,799 --> 00:54:51,319
+when we talked about the relaxed
+
+1390
+00:54:51,319 --> 00:54:52,910
+operator fusion where that's where we
+
+1391
+00:54:52,910 --> 00:54:54,289
+have special instructions that tell the
+
+1392
+00:54:54,289 --> 00:54:56,150
+CPU hey I'm gonna need this data pretty
+
+1393
+00:54:56,150 --> 00:54:58,489
+soon and go bring in my CPU caches at
+
+1394
+00:54:58,489 --> 00:55:00,680
+the same time the harbor itself was
+
+1395
+00:55:00,680 --> 00:55:01,730
+trying to figure out
+
+1396
+00:55:01,730 --> 00:55:02,869
+what's your access patterns look like
+
+1397
+00:55:02,869 --> 00:55:04,670
+and if it recognizes that you're doing
+
+1398
+00:55:04,670 --> 00:55:06,500
+sequential scans over some stride of
+
+1399
+00:55:06,500 --> 00:55:08,990
+memory or region of memory it's gonna
+
+1400
+00:55:08,990 --> 00:55:11,090
+start trying to prefetch that data for
+
+1401
+00:55:11,090 --> 00:55:11,990
+you because it thinks you're gonna keep
+
+1402
+00:55:11,990 --> 00:55:14,720
+scanning scanning it along so the hyper
+
+1403
+00:55:14,720 --> 00:55:18,140
+guys argue that in and in and this step
+
+1404
+00:55:18,140 --> 00:55:20,300
+here when you start doing remote reads
+
+1405
+00:55:20,300 --> 00:55:23,570
+different new Murray jhin's the harbor
+
+1406
+00:55:23,570 --> 00:55:24,859
+is moving to recognize that I'm doing
+
+1407
+00:55:24,859 --> 00:55:26,690
+special scans over these remote regions
+
+1408
+00:55:26,690 --> 00:55:28,640
+and start prefetching it over the
+
+1409
+00:55:28,640 --> 00:55:29,990
+interconnect and bringing it to your
+
+1410
+00:55:29,990 --> 00:55:32,630
+local local CPU cache and your Numa
+
+1411
+00:55:32,630 --> 00:55:34,730
+region so that this is gonna hide any
+
+1412
+00:55:34,730 --> 00:55:37,310
+penalty to you you would have from doing
+
+1413
+00:55:37,310 --> 00:55:40,400
+these around reads truth is though this
+
+1414
+00:55:40,400 --> 00:55:41,600
+this doesn't actually work out to be the
+
+1415
+00:55:41,600 --> 00:55:44,210
+case and the and the in the Swiss guys
+
+1416
+00:55:44,210 --> 00:55:47,540
+will show this in the result one
+
+1417
+00:55:47,540 --> 00:55:48,980
+additional thing I think that came out
+
+1418
+00:55:48,980 --> 00:55:49,970
+of the hyper paper which i think is
+
+1419
+00:55:49,970 --> 00:55:53,210
+interesting is that they sort of laid
+
+1420
+00:55:53,210 --> 00:55:54,890
+out some rules that you should try to
+
+1421
+00:55:54,890 --> 00:55:57,530
+follow when you if you want to implement
+
+1422
+00:55:57,530 --> 00:56:00,260
+an efficient sort merge algorithm the
+
+1423
+00:56:00,260 --> 00:56:01,730
+joint algorithm that is aware of the
+
+1424
+00:56:01,730 --> 00:56:03,619
+hardware and then that can be paralyzed
+
+1425
+00:56:03,619 --> 00:56:05,450
+well so the first thing they're gonna
+
+1426
+00:56:05,450 --> 00:56:07,730
+argue is that you don't have any random
+
+1427
+00:56:07,730 --> 00:56:09,740
+writes to non-local memory right
+
+1428
+00:56:09,740 --> 00:56:11,840
+contrast this with the multi pass
+
+1429
+00:56:11,840 --> 00:56:14,359
+certain merge when you did those random
+
+1430
+00:56:14,359 --> 00:56:17,930
+writes and then instead what you want to
+
+1431
+00:56:17,930 --> 00:56:19,190
+do is used to break things up and then
+
+1432
+00:56:19,190 --> 00:56:20,570
+reach trigger to them and have each core
+
+1433
+00:56:20,570 --> 00:56:23,420
+operate on the local data the second
+
+1434
+00:56:23,420 --> 00:56:24,800
+rule is that you want to try to perform
+
+1435
+00:56:24,800 --> 00:56:26,240
+it and come you got to read data that's
+
+1436
+00:56:26,240 --> 00:56:28,310
+not local to your thread always do a
+
+1437
+00:56:28,310 --> 00:56:30,320
+central scan so the harbor fetcher can
+
+1438
+00:56:30,320 --> 00:56:32,359
+bring things into CPU caches I had the
+
+1439
+00:56:32,359 --> 00:56:34,310
+penalty doesn't work I always break out
+
+1440
+00:56:34,310 --> 00:56:36,170
+of the case and for these these joins
+
+1441
+00:56:36,170 --> 00:56:39,940
+and then the last one was related to the
+
+1442
+00:56:39,940 --> 00:56:44,240
+fee like in the multi way merge in level
+
+1443
+00:56:44,240 --> 00:56:46,310
+three it just and in general this is
+
+1444
+00:56:46,310 --> 00:56:47,990
+always good advice for parallel systems
+
+1445
+00:56:47,990 --> 00:56:50,090
+anyway you don't want to have any core
+
+1446
+00:56:50,090 --> 00:56:51,440
+have to wait for another thread to do
+
+1447
+00:56:51,440 --> 00:56:53,330
+something right that means you want to
+
+1448
+00:56:53,330 --> 00:56:54,770
+avoid it's fine rain latches or
+
+1449
+00:56:54,770 --> 00:56:58,070
+synchronization barriers and just have
+
+1450
+00:56:58,070 --> 00:57:00,470
+every thread be able to operate on data
+
+1451
+00:57:00,470 --> 00:57:02,810
+immediately without is as much as
+
+1452
+00:57:02,810 --> 00:57:03,740
+possible that haven't according with
+
+1453
+00:57:03,740 --> 00:57:08,030
+anybody else all right so for the to
+
+1454
+00:57:08,030 --> 00:57:10,250
+finish up with results we're gonna
+
+1455
+00:57:10,250 --> 00:57:12,350
+discuss the from the paper you guys are
+
+1456
+00:57:12,350 --> 00:57:14,540
+signed to read from ETH where they're
+
+1457
+00:57:14,540 --> 00:57:16,370
+actually going to compare
+
+1458
+00:57:16,370 --> 00:57:17,840
+the three different sort of complete
+
+1459
+00:57:17,840 --> 00:57:18,830
+joint algorithms that I've talked about
+
+1460
+00:57:18,830 --> 00:57:22,130
+just now on a pretty beefy machine at
+
+1461
+00:57:22,130 --> 00:57:24,500
+the time that had four sockets with a
+
+1462
+00:57:24,500 --> 00:57:26,930
+half a terabyte of DRAM so again
+
+1463
+00:57:26,930 --> 00:57:31,160
+everything's gonna fit in memory and so
+
+1464
+00:57:31,160 --> 00:57:32,780
+they're gonna compare against the the
+
+1465
+00:57:32,780 --> 00:57:35,270
+three games of three sort merge joins so
+
+1466
+00:57:35,270 --> 00:57:36,740
+the two that they developed and then the
+
+1467
+00:57:36,740 --> 00:57:38,420
+one from hyper and then they'll also
+
+1468
+00:57:38,420 --> 00:57:40,910
+compare against the the radix partition
+
+1469
+00:57:40,910 --> 00:57:43,130
+hash join that we talked about last
+
+1470
+00:57:43,130 --> 00:57:44,690
+class I think in this paper they
+
+1471
+00:57:44,690 --> 00:57:46,640
+referred to it as a radix join just
+
+1472
+00:57:46,640 --> 00:57:48,800
+means that it's a radix partition hashed
+
+1473
+00:57:48,800 --> 00:57:53,360
+run so the the first thing they want to
+
+1474
+00:57:53,360 --> 00:57:56,090
+compare against is or evaluate is how
+
+1475
+00:57:56,090 --> 00:57:58,100
+the sim D sorting algorithm that we
+
+1476
+00:57:58,100 --> 00:58:01,250
+talked about before from Intel how that
+
+1477
+00:58:01,250 --> 00:58:03,680
+sort of compares against a sort of non
+
+1478
+00:58:03,680 --> 00:58:05,900
+vectorize or non Cindy implementation
+
+1479
+00:58:05,900 --> 00:58:07,540
+when you're running on a single thread
+
+1480
+00:58:07,540 --> 00:58:11,720
+so they're gonna pair against the SCBA
+
+1481
+00:58:11,720 --> 00:58:14,240
+plus STL's standard sword which is a
+
+1482
+00:58:14,240 --> 00:58:16,010
+hybrid sword that's using quicksort in
+
+1483
+00:58:16,010 --> 00:58:17,510
+the beginning and then they switch over
+
+1484
+00:58:17,510 --> 00:58:19,040
+to heap sort as you get further along
+
+1485
+00:58:19,040 --> 00:58:22,220
+and they this is just showing you along
+
+1486
+00:58:22,220 --> 00:58:24,020
+the x-axis as you increase the number of
+
+1487
+00:58:24,020 --> 00:58:26,300
+tuples you want to sort you can show
+
+1488
+00:58:26,300 --> 00:58:29,330
+that the the throughput you can get and
+
+1489
+00:58:29,330 --> 00:58:32,240
+how it varies so this is actually a
+
+1490
+00:58:32,240 --> 00:58:33,820
+great result because this is actually
+
+1491
+00:58:33,820 --> 00:58:37,370
+corroborating the 2009 Intel paper that
+
+1492
+00:58:37,370 --> 00:58:38,930
+did the same comparison so this is sort
+
+1493
+00:58:38,930 --> 00:58:41,150
+of like you know further justification
+
+1494
+00:58:41,150 --> 00:58:43,670
+or evidence that the cindy sort is
+
+1495
+00:58:43,670 --> 00:58:46,190
+preferable over to you know sisty
+
+1496
+00:58:46,190 --> 00:58:48,260
+sorting implementation and this one's
+
+1497
+00:58:48,260 --> 00:58:50,030
+like matches exactly with the speed-up
+
+1498
+00:58:50,030 --> 00:58:52,520
+that Intel reported which was about you
+
+1499
+00:58:52,520 --> 00:58:55,220
+know about 3x faster so you know this is
+
+1500
+00:58:55,220 --> 00:58:56,780
+good science this is this is really cool
+
+1501
+00:58:56,780 --> 00:59:00,140
+that they were able to do this so then
+
+1502
+00:59:00,140 --> 00:59:01,400
+now you want to do that you compare this
+
+1503
+00:59:01,400 --> 00:59:03,530
+one and the sort so for this one if
+
+1504
+00:59:03,530 --> 00:59:04,850
+they're gonna have the outer table be
+
+1505
+00:59:04,850 --> 00:59:06,470
+1.6 billion two bullets and the inner
+
+1506
+00:59:06,470 --> 00:59:09,170
+table is 128 million tuples and they're
+
+1507
+00:59:09,170 --> 00:59:12,250
+going to be just sorting 8 8 by tuples
+
+1508
+00:59:12,250 --> 00:59:16,820
+so the way this is divided up is that we
+
+1509
+00:59:16,820 --> 00:59:18,380
+have the multi way the multi pass and
+
+1510
+00:59:18,380 --> 00:59:20,450
+the nasty parallel from hyper and then
+
+1511
+00:59:20,450 --> 00:59:22,730
+it's broken up into the amount of time
+
+1512
+00:59:22,730 --> 00:59:24,320
+or amount of cycles that you're spending
+
+1513
+00:59:24,320 --> 00:59:27,170
+for tuple for the different phases so
+
+1514
+00:59:27,170 --> 00:59:29,039
+the partition phase across all of them
+
+1515
+00:59:29,039 --> 00:59:31,169
+is about the same but the big difference
+
+1516
+00:59:31,169 --> 00:59:33,119
+you now see is for the sorting and the
+
+1517
+00:59:33,119 --> 00:59:36,329
+merge so this is the sort phase of the
+
+1518
+00:59:36,329 --> 00:59:38,039
+actual sorting algorithm and then this
+
+1519
+00:59:38,039 --> 00:59:40,650
+is the merge phase of the merge
+
+1520
+00:59:40,650 --> 00:59:42,449
+algorithm and then this is the merge
+
+1521
+00:59:42,449 --> 00:59:44,189
+phase of the joint algorithm but it's a
+
+1522
+00:59:44,189 --> 00:59:45,749
+you know this is obviously confusing
+
+1523
+00:59:45,749 --> 00:59:47,039
+we're doing merge twice but this is
+
+1524
+00:59:47,039 --> 00:59:48,660
+where the sorting and this is for the
+
+1525
+00:59:48,660 --> 00:59:52,289
+join so the main takeaway here is that
+
+1526
+00:59:52,289 --> 00:59:54,390
+the multi-way actually performs the best
+
+1527
+00:59:54,390 --> 00:59:57,029
+partitioning is the same the sorting is
+
+1528
+00:59:57,029 --> 00:59:59,189
+a little bit slower than the multi pass
+
+1529
+00:59:59,189 --> 01:00:03,630
+but then the the merge pass is is you
+
+1530
+01:00:03,630 --> 01:00:05,939
+know there's nothing and then the the
+
+1531
+01:00:05,939 --> 01:00:08,369
+merged itself or the join is super fast
+
+1532
+01:00:08,369 --> 01:00:12,569
+because that's always gonna be in that
+
+1533
+01:00:12,569 --> 01:00:14,910
+operating on on data that's local to you
+
+1534
+01:00:14,910 --> 01:00:16,469
+my numeral region swaggin so the number
+
+1535
+01:00:16,469 --> 01:00:17,640
+of cycles I'm spending to do that
+
+1536
+01:00:17,640 --> 01:00:20,819
+comparison is super short where in the
+
+1537
+01:00:20,819 --> 01:00:22,709
+case of hyper they're spending a lot
+
+1538
+01:00:22,709 --> 01:00:25,679
+more time more cycles accessing remote
+
+1539
+01:00:25,679 --> 01:00:27,630
+memory and they pay big penalties so
+
+1540
+01:00:27,630 --> 01:00:29,910
+this is showing you that the harbor
+
+1541
+01:00:29,910 --> 01:00:31,890
+prefetcher that hyper claims is going to
+
+1542
+01:00:31,890 --> 01:00:34,979
+help them here and doesn't another way
+
+1543
+01:00:34,979 --> 01:00:36,869
+you can plot this is include the
+
+1544
+01:00:36,869 --> 01:00:38,669
+throughput graph so in this case here
+
+1545
+01:00:38,669 --> 01:00:39,809
+when you're doing cycles for output
+
+1546
+01:00:39,809 --> 01:00:41,669
+obviously lower cycles per two pool
+
+1547
+01:00:41,669 --> 01:00:44,429
+output lower is better in the case of
+
+1548
+01:00:44,429 --> 01:00:46,199
+the throughput line higher is better
+
+1549
+01:00:46,199 --> 01:00:48,089
+because you're pussing more data quickly
+
+1550
+01:00:48,089 --> 01:00:50,609
+and so as expected if you guys see fewer
+
+1551
+01:00:50,609 --> 01:00:53,159
+instructions to compute the join the
+
+1552
+01:00:53,159 --> 01:00:57,059
+throughput will be higher right so again
+
+1553
+01:00:57,059 --> 01:00:59,279
+this is this is a great result that's
+
+1554
+01:00:59,279 --> 01:01:01,109
+just showing you that the you know that
+
+1555
+01:01:01,109 --> 01:01:03,839
+breaks down at what phase of the joint
+
+1556
+01:01:03,839 --> 01:01:06,119
+itself are you spending all your time
+
+1557
+01:01:06,119 --> 01:01:08,759
+and if you're aware of if you're if
+
+1558
+01:01:08,759 --> 01:01:09,989
+you're designing your album would be
+
+1559
+01:01:09,989 --> 01:01:12,299
+aware and conscious of the cache sizes
+
+1560
+01:01:12,299 --> 01:01:14,429
+and my new Murray jhin's I'm able to get
+
+1561
+01:01:14,429 --> 01:01:16,199
+the better performance by minimizing
+
+1562
+01:01:16,199 --> 01:01:19,650
+them out of the remote reads I have to
+
+1563
+01:01:19,650 --> 01:01:21,749
+do I should the baby penalty do move
+
+1564
+01:01:21,749 --> 01:01:23,159
+right to the beginning but then the
+
+1565
+01:01:23,159 --> 01:01:25,469
+remote reads is is you don't have any at
+
+1566
+01:01:25,469 --> 01:01:28,650
+the end alright so the next one would
+
+1567
+01:01:28,650 --> 01:01:31,799
+cap error is now just a little more
+
+1568
+01:01:31,799 --> 01:01:33,119
+detail of scaling now the number of
+
+1569
+01:01:33,119 --> 01:01:36,900
+threads for the foot for the multi way
+
+1570
+01:01:36,900 --> 01:01:39,449
+and the hyper join so in this case here
+
+1571
+01:01:39,449 --> 01:01:42,390
+I think this one was
+
+1572
+01:01:42,390 --> 01:01:45,220
+this was all the threads on a machine
+
+1573
+01:01:45,220 --> 01:01:47,320
+but this is now scaling up that I'm the
+
+1574
+01:01:47,320 --> 01:01:49,360
+number of threads so when you're down on
+
+1575
+01:01:49,360 --> 01:01:51,160
+one thread it's not not that not that
+
+1576
+01:01:51,160 --> 01:01:53,080
+there's no big difference between two of
+
+1577
+01:01:53,080 --> 01:01:54,220
+them although the multi way is still
+
+1578
+01:01:54,220 --> 01:01:56,320
+faster but as you now you scale up in
+
+1579
+01:01:56,320 --> 01:01:58,360
+order threads you see of the larger gap
+
+1580
+01:01:58,360 --> 01:02:01,210
+in performance and so this is showing
+
+1581
+01:02:01,210 --> 01:02:05,140
+you now though in in well to scale log
+
+1582
+01:02:05,140 --> 01:02:06,850
+to scale like you're doubling the number
+
+1583
+01:02:06,850 --> 01:02:08,590
+of threads as we go along the x axis and
+
+1584
+01:02:08,590 --> 01:02:10,750
+so if you're able to achieve linear
+
+1585
+01:02:10,750 --> 01:02:12,640
+scalability which is the gold standard
+
+1586
+01:02:12,640 --> 01:02:14,770
+which you want in a parallel system and
+
+1587
+01:02:14,770 --> 01:02:16,240
+if I double the number of threads and
+
+1588
+01:02:16,240 --> 01:02:18,220
+double internal cords I double the
+
+1589
+01:02:18,220 --> 01:02:19,600
+amount of throughput or double my amount
+
+1590
+01:02:19,600 --> 01:02:22,180
+of work to accomplish so in case the
+
+1591
+01:02:22,180 --> 01:02:25,150
+multi way merge sort all right wet at 16
+
+1592
+01:02:25,150 --> 01:02:27,460
+threads I'm doing 130 million tuples per
+
+1593
+01:02:27,460 --> 01:02:29,410
+second and then if I double the number
+
+1594
+01:02:29,410 --> 01:02:32,590
+threads to 32 I'm doing 259 so it's
+
+1595
+01:02:32,590 --> 01:02:35,380
+slightly less than 260 but it's almost
+
+1596
+01:02:35,380 --> 01:02:37,780
+exactly double when of course once you
+
+1597
+01:02:37,780 --> 01:02:40,090
+have hyper threading there aren't you
+
+1598
+01:02:40,090 --> 01:02:42,490
+know they're not real true cores you
+
+1599
+01:02:42,490 --> 01:02:43,990
+have to program counters that you're
+
+1600
+01:02:43,990 --> 01:02:45,940
+you're switching in between to name in
+
+1601
+01:02:45,940 --> 01:02:49,510
+between on the core and so if your CPU
+
+1602
+01:02:49,510 --> 01:02:51,760
+bound doesn't really help in this case
+
+1603
+01:02:51,760 --> 01:02:55,750
+here we're probably memory bound so you
+
+1604
+01:02:55,750 --> 01:02:56,920
+still able to get a little bit
+
+1605
+01:02:56,920 --> 01:02:58,180
+improvement but it's not gonna scale
+
+1606
+01:02:58,180 --> 01:03:00,190
+linearly in the case of the hyper
+
+1607
+01:03:00,190 --> 01:03:02,320
+approach right they're not able to scale
+
+1608
+01:03:02,320 --> 01:03:06,670
+linear law so going from 54 to 290 like
+
+1609
+01:03:06,670 --> 01:03:09,640
+this should be this should be 108 but
+
+1610
+01:03:09,640 --> 01:03:11,320
+we're only at 90 so even though we're
+
+1611
+01:03:11,320 --> 01:03:13,030
+adding more more threads we're getting
+
+1612
+01:03:13,030 --> 01:03:14,140
+worse performance and then when we go
+
+1613
+01:03:14,140 --> 01:03:15,910
+into hyper threading then it just all
+
+1614
+01:03:15,910 --> 01:03:19,210
+falls apart all right so the main
+
+1615
+01:03:19,210 --> 01:03:21,040
+takeaway here is that the extra
+
+1616
+01:03:21,040 --> 01:03:22,540
+instructions we're gonna spend for the
+
+1617
+01:03:22,540 --> 01:03:25,270
+multi-page sort merge in level 3 turns
+
+1618
+01:03:25,270 --> 01:03:28,780
+out to pay off for us because we don't
+
+1619
+01:03:28,780 --> 01:03:32,680
+have to you know we're not doing remote
+
+1620
+01:03:32,680 --> 01:03:34,960
+reads when we do the merge phase of our
+
+1621
+01:03:34,960 --> 01:03:37,840
+joint album all right and if the
+
+1622
+01:03:37,840 --> 01:03:39,460
+overhead of reading across new Marines
+
+1623
+01:03:39,460 --> 01:03:41,260
+is what's hurting the the high
+
+1624
+01:03:41,260 --> 01:03:44,050
+performance right in this case here
+
+1625
+01:03:44,050 --> 01:03:46,780
+what's happening is for Hyper the reason
+
+1626
+01:03:46,780 --> 01:03:48,430
+why it's falling off and getting the
+
+1627
+01:03:48,430 --> 01:03:51,700
+worst performance because if I now split
+
+1628
+01:03:51,700 --> 01:03:54,430
+my data up across multiple threads more
+
+1629
+01:03:54,430 --> 01:03:55,599
+and more threads
+
+1630
+01:03:55,599 --> 01:03:58,239
+then the likelihood that a when a thread
+
+1631
+01:03:58,239 --> 01:04:00,039
+goes and tries to access a tuple the
+
+1632
+01:04:00,039 --> 01:04:05,829
+likelihood that that thread is is not
+
+1633
+01:04:05,829 --> 01:04:08,200
+that the - they like to hug to my throat
+
+1634
+01:04:08,200 --> 01:04:09,519
+is trying to access is not in my
+
+1635
+01:04:09,519 --> 01:04:11,319
+numeration increases as I add more
+
+1636
+01:04:11,319 --> 01:04:12,609
+threads because now the data is split
+
+1637
+01:04:12,609 --> 01:04:14,829
+across multiple threads so therefore I'm
+
+1638
+01:04:14,829 --> 01:04:18,700
+doing one or more remote remote reads so
+
+1639
+01:04:18,700 --> 01:04:22,210
+for this for this graph this graph is
+
+1640
+01:04:22,210 --> 01:04:25,720
+comparing the the multi way merge sort
+
+1641
+01:04:25,720 --> 01:04:28,019
+sort merge join with the radix hash join
+
+1642
+01:04:28,019 --> 01:04:30,999
+and what I'm showing you here is that
+
+1643
+01:04:30,999 --> 01:04:33,039
+you're varying different sizes of the
+
+1644
+01:04:33,039 --> 01:04:35,380
+inner table in the outer table and what
+
+1645
+01:04:35,380 --> 01:04:37,630
+it shows here is that the for smaller
+
+1646
+01:04:37,630 --> 01:04:40,269
+table sizes the the performance gap
+
+1647
+01:04:40,269 --> 01:04:42,249
+between the two of them is quite larger
+
+1648
+01:04:42,249 --> 01:04:44,410
+then as you increase the larger and
+
+1649
+01:04:44,410 --> 01:04:46,720
+larger and larger tables the the
+
+1650
+01:04:46,720 --> 01:04:47,920
+partition gets more and more expensive
+
+1651
+01:04:47,920 --> 01:04:50,769
+for the hashing and that sort of negates
+
+1652
+01:04:50,769 --> 01:04:51,910
+some of the difference you would get
+
+1653
+01:04:51,910 --> 01:04:53,229
+before it's better if you get over the
+
+1654
+01:04:53,229 --> 01:04:54,910
+sort of merge join out with them but
+
+1655
+01:04:54,910 --> 01:04:57,279
+it's still still going to beat it here
+
+1656
+01:04:57,279 --> 01:05:00,849
+right and so for this the I'm combining
+
+1657
+01:05:00,849 --> 01:05:03,329
+together the the building probe phase
+
+1658
+01:05:03,329 --> 01:05:05,799
+and just doing a single number but it
+
+1659
+01:05:05,799 --> 01:05:08,499
+shows you that the cost of building a
+
+1660
+01:05:08,499 --> 01:05:10,569
+hash table and then probing it to find a
+
+1661
+01:05:10,569 --> 01:05:12,789
+match in some cases can be less than the
+
+1662
+01:05:12,789 --> 01:05:14,979
+cost of sorting the outer table in the
+
+1663
+01:05:14,979 --> 01:05:17,319
+inner table and the merge drawing
+
+1664
+01:05:17,319 --> 01:05:19,749
+because then I still have to go do the
+
+1665
+01:05:19,749 --> 01:05:22,359
+the join I try to merge after the
+
+1666
+01:05:22,359 --> 01:05:24,190
+sorting and then do the merge to join
+
+1667
+01:05:24,190 --> 01:05:26,710
+like the cost of doing the sorting phase
+
+1668
+01:05:26,710 --> 01:05:29,920
+and sometimes is is greater than just to
+
+1669
+01:05:29,920 --> 01:05:32,140
+build a hash table so this is sort of
+
+1670
+01:05:32,140 --> 01:05:35,410
+showing you why the you know a using
+
+1671
+01:05:35,410 --> 01:05:36,960
+efficient hash table implementation
+
+1672
+01:05:36,960 --> 01:05:38,650
+parallelizing across multiple threads
+
+1673
+01:05:38,650 --> 01:05:41,349
+even though we can't Simbi all of that
+
+1674
+01:05:41,349 --> 01:05:44,469
+you know all that that process to in
+
+1675
+01:05:44,469 --> 01:05:46,779
+that in the hash join it still may be
+
+1676
+01:05:46,779 --> 01:05:51,309
+much faster than sorting where sort
+
+1677
+01:05:51,309 --> 01:05:52,539
+merge we actually would beat the hash
+
+1678
+01:05:52,539 --> 01:05:57,489
+join is if if I might the output of my
+
+1679
+01:05:57,489 --> 01:06:00,430
+query has my query as an order by Clause
+
+1680
+01:06:00,430 --> 01:06:03,460
+that's the same that needs to sort the
+
+1681
+01:06:03,460 --> 01:06:06,670
+data on the same key that I'm joining on
+
+1682
+01:06:06,670 --> 01:06:08,810
+then if I do a sort merge
+
+1683
+01:06:08,810 --> 01:06:11,810
+I can just use the output of the join
+
+1684
+01:06:11,810 --> 01:06:14,150
+which is already sort of that in the
+
+1685
+01:06:14,150 --> 01:06:15,800
+same way that need for my order by and I
+
+1686
+01:06:15,800 --> 01:06:17,480
+don't have to do an extra sorting so in
+
+1687
+01:06:17,480 --> 01:06:19,280
+this case here so say I have to do the
+
+1688
+01:06:19,280 --> 01:06:23,390
+sorting for for this I use this clear
+
+1689
+01:06:23,390 --> 01:06:25,250
+ball say I've do this an order by for
+
+1690
+01:06:25,250 --> 01:06:27,230
+this query if the order by is the same
+
+1691
+01:06:27,230 --> 01:06:28,880
+as the same as the joint key I'm using
+
+1692
+01:06:28,880 --> 01:06:31,610
+my servers don't I got one then I don't
+
+1693
+01:06:31,610 --> 01:06:32,840
+need to do anything extra effort I do
+
+1694
+01:06:32,840 --> 01:06:35,120
+the joint in this case here if I need to
+
+1695
+01:06:35,120 --> 01:06:37,280
+sort it F my hash table then I got to
+
+1696
+01:06:37,280 --> 01:06:39,620
+add that same chunk of time up here
+
+1697
+01:06:39,620 --> 01:06:41,660
+it'll be a bit less depending on the
+
+1698
+01:06:41,660 --> 01:06:44,450
+output of the join but it's still an
+
+1699
+01:06:44,450 --> 01:06:46,130
+extra step I have to do and this is
+
+1700
+01:06:46,130 --> 01:06:47,780
+something I need a count for in my query
+
+1701
+01:06:47,780 --> 01:06:50,950
+optimizer so this graph is just
+
+1702
+01:06:50,950 --> 01:06:54,020
+explaining the last graph last slide of
+
+1703
+01:06:54,020 --> 01:06:58,610
+how you vary the the size of the tables
+
+1704
+01:06:58,610 --> 01:07:00,140
+when you're trying to join what if the
+
+1705
+01:07:00,140 --> 01:07:01,910
+how does the performance gap between the
+
+1706
+01:07:01,910 --> 01:07:05,090
+two approaches close down and again this
+
+1707
+01:07:05,090 --> 01:07:07,100
+is just showing you that with radix hash
+
+1708
+01:07:07,100 --> 01:07:10,100
+join when you have larger tables you
+
+1709
+01:07:10,100 --> 01:07:13,670
+have to do more passes to do the to do
+
+1710
+01:07:13,670 --> 01:07:15,410
+the partitioning and the performance
+
+1711
+01:07:15,410 --> 01:07:18,050
+benefit you get is reduced but still in
+
+1712
+01:07:18,050 --> 01:07:20,660
+the end it's going to be it's gonna it's
+
+1713
+01:07:20,660 --> 01:07:22,310
+gonna be preferable over the sort merge
+
+1714
+01:07:22,310 --> 01:07:24,770
+join and I don't forget why this +
+
+1715
+01:07:24,770 --> 01:07:28,520
+plateaus um I think at some point you're
+
+1716
+01:07:28,520 --> 01:07:29,810
+just paying the penalty everybody things
+
+1717
+01:07:29,810 --> 01:07:32,480
+in and out of memory in the same way you
+
+1718
+01:07:32,480 --> 01:07:38,720
+would do in a disk based system ok so so
+
+1719
+01:07:38,720 --> 01:07:41,110
+one of the main main thoughts about this
+
+1720
+01:07:41,110 --> 01:07:46,310
+as I said the in a modern commercial or
+
+1721
+01:07:46,310 --> 01:07:47,690
+enterprise or high-end
+
+1722
+01:07:47,690 --> 01:07:49,280
+oh that database system that wants be
+
+1723
+01:07:49,280 --> 01:07:50,960
+competitive you're going to need both
+
+1724
+01:07:50,960 --> 01:07:52,640
+the hash join and the cert merge-join
+
+1725
+01:07:52,640 --> 01:07:53,390
+algorithms
+
+1726
+01:07:53,390 --> 01:07:55,280
+I think they implement both and the
+
+1727
+01:07:55,280 --> 01:07:56,660
+optimizer will figure out which one you
+
+1728
+01:07:56,660 --> 01:08:01,190
+actually want to use and so but if
+
+1729
+01:08:01,190 --> 01:08:04,010
+you're building a new system scratch it
+
+1730
+01:08:04,010 --> 01:08:05,570
+unless you're targeting old GP workloads
+
+1731
+01:08:05,570 --> 01:08:07,100
+if you're trying to target OLAP or pose
+
+1732
+01:08:07,100 --> 01:08:08,780
+the first join implementation you're
+
+1733
+01:08:08,780 --> 01:08:09,950
+gonna want to build is the hash join
+
+1734
+01:08:09,950 --> 01:08:11,990
+because it's just the research so is
+
+1735
+01:08:11,990 --> 01:08:14,330
+that it's ideally you know clearly
+
+1736
+01:08:14,330 --> 01:08:16,760
+preferable and faster than the sort of
+
+1737
+01:08:16,760 --> 01:08:19,460
+merged one the and as I sort of said at
+
+1738
+01:08:19,460 --> 01:08:20,930
+the end here we also do not consider
+
+1739
+01:08:20,930 --> 01:08:24,500
+the impact of having the data already
+
+1740
+01:08:24,500 --> 01:08:27,590
+sorted on the join key as as you may
+
+1741
+01:08:27,590 --> 01:08:29,899
+need by the order by clause and in that
+
+1742
+01:08:29,899 --> 01:08:31,880
+case they're like you know you wouldn't
+
+1743
+01:08:31,880 --> 01:08:33,380
+have to pay that extra sorting stuff and
+
+1744
+01:08:33,380 --> 01:08:34,910
+that the sort MERS joint actually may
+
+1745
+01:08:34,910 --> 01:08:38,090
+end up being better than B then the hash
+
+1746
+01:08:38,090 --> 01:08:39,529
+join but again this is something the
+
+1747
+01:08:39,529 --> 01:08:41,620
+query optimizer can figure out for you
+
+1748
+01:08:41,620 --> 01:08:46,279
+so that's it for today for Wednesday's
+
+1749
+01:08:46,279 --> 01:08:48,830
+class now we'll get into actually the
+
+1750
+01:08:48,830 --> 01:08:50,979
+part of database systems that I
+
+1751
+01:08:50,979 --> 01:08:55,970
+admittedly know the least about and but
+
+1752
+01:08:55,970 --> 01:08:56,930
+it's something that I find the most
+
+1753
+01:08:56,930 --> 01:08:59,990
+fascinating and so we'll do a we have
+
+1754
+01:08:59,990 --> 01:09:03,200
+expanded lecture series this this
+
+1755
+01:09:03,200 --> 01:09:04,069
+semester we're going to have additional
+
+1756
+01:09:04,069 --> 01:09:07,160
+lecture on Cori optimizers and the idea
+
+1757
+01:09:07,160 --> 01:09:08,779
+here is that just try to understand how
+
+1758
+01:09:08,779 --> 01:09:12,140
+we can take a sequel query and convert
+
+1759
+01:09:12,140 --> 01:09:13,640
+it into the best query plan we would
+
+1760
+01:09:13,640 --> 01:09:15,020
+want to execute on our system so we can
+
+1761
+01:09:15,020 --> 01:09:16,460
+use all the various techniques that
+
+1762
+01:09:16,460 --> 01:09:18,140
+we've talked about so far the joint
+
+1763
+01:09:18,140 --> 01:09:20,569
+islands the vectorize execution the
+
+1764
+01:09:20,569 --> 01:09:22,880
+scheduling methods all the indexes all
+
+1765
+01:09:22,880 --> 01:09:24,170
+these different things now we think we
+
+1766
+01:09:24,170 --> 01:09:28,010
+can consider when we do our and when we
+
+1767
+01:09:28,010 --> 01:09:30,260
+try to build our query plan and so the
+
+1768
+01:09:30,260 --> 01:09:31,609
+paper that's the sign for Wednesday
+
+1769
+01:09:31,609 --> 01:09:33,410
+reading is just an overview of the
+
+1770
+01:09:33,410 --> 01:09:34,340
+various problems you have to deal with
+
+1771
+01:09:34,340 --> 01:09:38,300
+in query optimizer and then on next week
+
+1772
+01:09:38,300 --> 01:09:39,950
+when and well then talk about actual
+
+1773
+01:09:39,950 --> 01:09:41,390
+implementations and the main difference
+
+1774
+01:09:41,390 --> 01:09:43,189
+will be this sort of dynamic programming
+
+1775
+01:09:43,189 --> 01:09:46,040
+approach from IDM versus the Cascade
+
+1776
+01:09:46,040 --> 01:09:49,700
+approach from the volcano guy okay all
+
+1777
+01:09:49,700 --> 01:09:52,850
+right that's it for now and a post on
+
+1778
+01:09:52,850 --> 01:09:54,650
+Piazza about getting set up for getting
+
+1779
+01:09:54,650 --> 01:09:56,480
+prepared for for next week's project
+
+1780
+01:09:56,480 --> 01:09:58,790
+presentations blanketing the side park
+
+1781
+01:09:58,790 --> 01:10:01,850
+what is this some fool heyyo
+
+1782
+01:10:01,850 --> 01:10:03,119
+[Music]
+
+1783
+01:10:03,119 --> 01:10:05,400
+this design with that here called
+
+1784
+01:10:05,400 --> 01:10:08,099
+the whole kit cuz I'm og ice you down
+
+1785
+01:10:08,099 --> 01:10:10,800
+with the testy hi you look and it was go
+
+1786
+01:10:10,800 --> 01:10:13,800
+grab me a 40 just to get my buzz song
+
+1787
+01:10:13,800 --> 01:10:16,670
+cuz I needed just a little more kick to
+
+1788
+01:10:16,670 --> 01:10:22,469
+just slipped up my lips and just say
+
+1789
+01:10:22,469 --> 01:10:25,590
+nice and my hood won't be the same I'm
+
+1790
+01:10:25,590 --> 01:10:29,869
+nice to take a seat I pray
+

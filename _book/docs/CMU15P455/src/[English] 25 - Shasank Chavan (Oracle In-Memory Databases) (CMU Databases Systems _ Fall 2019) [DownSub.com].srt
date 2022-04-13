@@ -1,0 +1,7480 @@
+1
+00:00:03,640 --> 00:00:17,970
+[Music]
+
+2
+00:00:20,380 --> 00:00:26,240
+you didn't buy your opening I heard ok
+
+3
+00:00:26,240 --> 00:00:29,269
+lets you ever some people christmas for
+
+4
+00:00:29,269 --> 00:00:36,410
+the holiday okay okay so alright what's
+
+5
+00:00:36,410 --> 00:00:36,980
+up for you guys
+
+6
+00:00:36,980 --> 00:00:39,710
+alright so this last week classes the
+
+7
+00:00:39,710 --> 00:00:42,190
+project for still do home 5 what we do
+
+8
+00:00:42,190 --> 00:00:44,780
+and then on Wednesdays class we'll have
+
+9
+00:00:44,780 --> 00:00:47,420
+the system potpourri and the final
+
+10
+00:00:47,420 --> 00:00:49,579
+review and I'll also be announcing the
+
+11
+00:00:49,579 --> 00:00:53,960
+result of the fraternity test about my
+
+12
+00:00:53,960 --> 00:00:56,629
+kid and well we're not two mile away
+
+13
+00:00:56,629 --> 00:00:58,460
+alright so I'm outside at the end of
+
+14
+00:00:58,460 --> 00:01:00,289
+class on Wednesday as well all right
+
+15
+00:01:00,289 --> 00:01:01,910
+before we switch over to Vegas speaker
+
+16
+00:01:01,910 --> 00:01:03,170
+any questions about what's remaining
+
+17
+00:01:03,170 --> 00:01:06,880
+progresses the semester for you guys yes
+
+18
+00:01:06,880 --> 00:01:10,340
+now you're gonna do the same day as
+
+19
+00:01:10,340 --> 00:01:13,090
+project for it should be on the website
+
+20
+00:01:13,090 --> 00:01:15,770
+it will send off the feedback for the
+
+21
+00:01:15,770 --> 00:01:18,560
+extra credit flight tomorrow or
+
+22
+00:01:18,560 --> 00:01:24,079
+Wednesday okay any other questions hi
+
+23
+00:01:24,079 --> 00:01:26,000
+guys so we're super excited today to
+
+24
+00:01:26,000 --> 00:01:29,780
+have Shashank from Oracle come and give
+
+25
+00:01:29,780 --> 00:01:31,040
+a guest lecture and again like I said
+
+26
+00:01:31,040 --> 00:01:32,420
+the reason why I like having him here is
+
+27
+00:01:32,420 --> 00:01:34,549
+because it's gonna make me not seem
+
+28
+00:01:34,549 --> 00:01:35,869
+crazy that I didn't tell you all these
+
+29
+00:01:35,869 --> 00:01:37,460
+about databases and just didn't make
+
+30
+00:01:37,460 --> 00:01:39,439
+things up he's gonna say oh yeah there's
+
+31
+00:01:39,439 --> 00:01:40,790
+a real system there making lots of money
+
+32
+00:01:40,790 --> 00:01:42,649
+it does all the things that we talked
+
+33
+00:01:42,649 --> 00:01:45,110
+about this the semester but he's gonna
+
+34
+00:01:45,110 --> 00:01:46,430
+talk about it in the context of an
+
+35
+00:01:46,430 --> 00:01:48,710
+in-memory database which is not what we
+
+36
+00:01:48,710 --> 00:01:51,079
+talked about but it's going to apply the
+
+37
+00:01:51,079 --> 00:01:53,090
+same concept in a different environment
+
+38
+00:01:53,090 --> 00:01:54,770
+and if you're interested in the kind of
+
+39
+00:01:54,770 --> 00:01:56,659
+things he's talking about today this is
+
+40
+00:01:56,659 --> 00:01:58,939
+what the advanced class 15 7:21 will be
+
+41
+00:01:58,939 --> 00:02:02,600
+entirely about next semester okay so she
+
+42
+00:02:02,600 --> 00:02:05,479
+shank is a vice president of a memory
+
+43
+00:02:05,479 --> 00:02:06,890
+database technologies is that correct
+
+44
+00:02:06,890 --> 00:02:08,538
+that's correct so he has an
+
+45
+00:02:08,538 --> 00:02:10,070
+undergraduate and a master's degree from
+
+46
+00:02:10,070 --> 00:02:12,140
+UC San Diego and he's been an Oracle for
+
+47
+00:02:12,140 --> 00:02:14,660
+six years nine years nine years nine
+
+48
+00:02:14,660 --> 00:02:17,880
+years okay and again like
+
+49
+00:02:17,880 --> 00:02:19,860
+a real dude working on the system isn't
+
+50
+00:02:19,860 --> 00:02:22,920
+some marketing this is real so by all
+
+51
+00:02:22,920 --> 00:02:24,330
+means stop and ask some hard technical
+
+52
+00:02:24,330 --> 00:02:26,310
+questions it's push him and see whether
+
+53
+00:02:26,310 --> 00:02:27,150
+he actually knows what he's talking
+
+54
+00:02:27,150 --> 00:02:29,180
+about
+
+55
+00:02:32,330 --> 00:02:35,220
+awesome all right hey guys thank you for
+
+56
+00:02:35,220 --> 00:02:38,730
+coming so again my name is Josh shank
+
+57
+00:02:38,730 --> 00:02:41,250
+Yvonne I come here every now and then I
+
+58
+00:02:41,250 --> 00:02:43,410
+guess there's a PDL lab that they come
+
+59
+00:02:43,410 --> 00:02:45,870
+here for the retreats and I think it's
+
+60
+00:02:45,870 --> 00:02:48,060
+like winter and spring I think and and
+
+61
+00:02:48,060 --> 00:02:50,430
+he's kind enough to invite me so thank
+
+62
+00:02:50,430 --> 00:02:51,600
+you again for inviting me here so
+
+63
+00:02:51,600 --> 00:02:54,060
+today's talk is gonna be on this top
+
+64
+00:02:54,060 --> 00:02:55,920
+five innovations of Oracle's database in
+
+65
+00:02:55,920 --> 00:02:58,410
+memory so this talk was initially given
+
+66
+00:02:58,410 --> 00:02:59,970
+to folks actually know about the
+
+67
+00:02:59,970 --> 00:03:02,310
+database in memory product I kind of
+
+68
+00:03:02,310 --> 00:03:03,660
+changed it a little bit to kind of give
+
+69
+00:03:03,660 --> 00:03:05,160
+you guys a background on what database
+
+70
+00:03:05,160 --> 00:03:08,250
+in memory is like Andy said please feel
+
+71
+00:03:08,250 --> 00:03:10,050
+free to stop me at any point in time any
+
+72
+00:03:10,050 --> 00:03:11,580
+time you have a question of no problems
+
+73
+00:03:11,580 --> 00:03:13,080
+I as I was telling Andy I usually have
+
+74
+00:03:13,080 --> 00:03:14,760
+more slides and I have time before the
+
+75
+00:03:14,760 --> 00:03:16,380
+talk so sometimes I talk too fast
+
+76
+00:03:16,380 --> 00:03:18,540
+so just interrupt me any time you want
+
+77
+00:03:18,540 --> 00:03:22,590
+to come okay so let me see I just wanna
+
+78
+00:03:22,590 --> 00:03:23,580
+make sure I'm following the slides
+
+79
+00:03:23,580 --> 00:03:25,140
+appropriately okay great so that's my
+
+80
+00:03:25,140 --> 00:03:27,960
+next slide all right so I like to start
+
+81
+00:03:27,960 --> 00:03:30,240
+off with this motivation slide this is
+
+82
+00:03:30,240 --> 00:03:32,280
+talking about real time enterprises need
+
+83
+00:03:32,280 --> 00:03:36,660
+in memory innovations now okay so this
+
+84
+00:03:36,660 --> 00:03:38,670
+was the the slide that I have currently
+
+85
+00:03:38,670 --> 00:03:40,440
+what I really wanted to show was this
+
+86
+00:03:40,440 --> 00:03:43,200
+slide with our presidents tweeting in
+
+87
+00:03:43,200 --> 00:03:45,030
+the morning called the arms real time
+
+88
+00:03:45,030 --> 00:03:46,650
+enterprises needed memory innovations
+
+89
+00:03:46,650 --> 00:03:48,960
+now but I was told would be too
+
+90
+00:03:48,960 --> 00:03:52,490
+political so I opted for this instead
+
+91
+00:03:52,490 --> 00:03:55,440
+but I actually like this one better cuz
+
+92
+00:03:55,440 --> 00:03:59,100
+it's real it actually is very true he
+
+93
+00:03:59,100 --> 00:04:03,570
+literally said that no no this is
+
+94
+00:04:03,570 --> 00:04:05,340
+actually when the impeachment trial
+
+95
+00:04:05,340 --> 00:04:07,410
+started I think is when we put the slide
+
+96
+00:04:07,410 --> 00:04:09,270
+together but the reality is following
+
+97
+00:04:09,270 --> 00:04:10,830
+real time enterprises our enterprises
+
+98
+00:04:10,830 --> 00:04:13,650
+that need access to data now their
+
+99
+00:04:13,650 --> 00:04:14,490
+data-driven
+
+100
+00:04:14,490 --> 00:04:16,798
+they are agile they're efficient they
+
+101
+00:04:16,798 --> 00:04:18,358
+want to be able to react instantly to
+
+102
+00:04:18,358 --> 00:04:21,120
+data so you can imagine they're a bunch
+
+103
+00:04:21,120 --> 00:04:22,770
+of enterprises that fit this category
+
+104
+00:04:22,770 --> 00:04:25,320
+right like insurance companies retail is
+
+105
+00:04:25,320 --> 00:04:26,970
+manufacturing process these financial
+
+106
+00:04:26,970 --> 00:04:28,380
+services people need to do fraud
+
+107
+00:04:28,380 --> 00:04:30,690
+detection in real time actually this
+
+108
+00:04:30,690 --> 00:04:31,139
+just
+
+109
+00:04:31,139 --> 00:04:33,719
+happened yesterday I was buying some
+
+110
+00:04:33,719 --> 00:04:35,159
+speakers that Best Buy because they're
+
+111
+00:04:35,159 --> 00:04:38,159
+on sale and literally after I made that
+
+112
+00:04:38,159 --> 00:04:40,379
+purchase I got a text message that says
+
+113
+00:04:40,379 --> 00:04:41,849
+are you certain that you want to make
+
+114
+00:04:41,849 --> 00:04:42,960
+this purchase did you make this purchase
+
+115
+00:04:42,960 --> 00:04:44,610
+blah blah blah because they immediately
+
+116
+00:04:44,610 --> 00:04:46,650
+know that I'm not the kind of person
+
+117
+00:04:46,650 --> 00:04:49,469
+that makes a 500 purchase you know on on
+
+118
+00:04:49,469 --> 00:04:50,789
+the spur of the moment that's just not
+
+119
+00:04:50,789 --> 00:04:54,150
+me so anyways that that's real time and
+
+120
+00:04:54,150 --> 00:04:57,029
+so in order to achieve that we need a
+
+121
+00:04:57,029 --> 00:04:58,919
+lot of things to come in place so we see
+
+122
+00:04:58,919 --> 00:05:00,120
+the demand that's coming from
+
+123
+00:05:00,120 --> 00:05:02,639
+enterprises companies right so what's
+
+124
+00:05:02,639 --> 00:05:06,029
+actually making this possible so if you
+
+125
+00:05:06,029 --> 00:05:08,250
+look at the hardware trends okay you're
+
+126
+00:05:08,250 --> 00:05:10,740
+starting to have larger cheaper memory
+
+127
+00:05:10,740 --> 00:05:13,439
+so DRAM everybody's familiar with memory
+
+128
+00:05:13,439 --> 00:05:15,300
+P man I don't know how many of you are
+
+129
+00:05:15,300 --> 00:05:17,340
+familiar with persistent memory I talked
+
+130
+00:05:17,340 --> 00:05:19,289
+about that and the last bullet there so
+
+131
+00:05:19,289 --> 00:05:21,210
+I'll get to that then you have larger
+
+132
+00:05:21,210 --> 00:05:24,150
+CPU caches so now we're talking about 32
+
+133
+00:05:24,150 --> 00:05:27,180
+megabytes of shared l3 cache on Intel's
+
+134
+00:05:27,180 --> 00:05:29,699
+latest processors you have larger
+
+135
+00:05:29,699 --> 00:05:32,969
+multi-core processors so 24 cores with
+
+136
+00:05:32,969 --> 00:05:36,270
+Intel cascade Lake larger SIM D vector
+
+137
+00:05:36,270 --> 00:05:37,139
+processing years
+
+138
+00:05:37,139 --> 00:05:38,639
+show of hands the folks who know what
+
+139
+00:05:38,639 --> 00:05:40,560
+Cindy is you hear that before single
+
+140
+00:05:40,560 --> 00:05:42,000
+instruction multiple ADA excellent okay
+
+141
+00:05:42,000 --> 00:05:45,839
+so now you have 512 bit sim D registers
+
+142
+00:05:45,839 --> 00:05:47,899
+that can paralyze your operations
+
+143
+00:05:47,899 --> 00:05:49,800
+essentially in the sink in a single
+
+144
+00:05:49,800 --> 00:05:52,620
+cycle faster Network so you have 100
+
+145
+00:05:52,620 --> 00:05:55,050
+gigabit per second rocky versus the 40
+
+146
+00:05:55,050 --> 00:05:57,110
+gigabit per second that you have with
+
+147
+00:05:57,110 --> 00:05:58,229
+InfiniBand
+
+148
+00:05:58,229 --> 00:06:00,539
+Numa architectures so that you have now
+
+149
+00:06:00,539 --> 00:06:01,919
+you have to concentrate on local memory
+
+150
+00:06:01,919 --> 00:06:03,479
+versus remote memory there's a bunch of
+
+151
+00:06:03,479 --> 00:06:06,270
+factors persistent memory is really the
+
+152
+00:06:06,270 --> 00:06:08,969
+biggest in my mind and at Oracle and a
+
+153
+00:06:08,969 --> 00:06:11,129
+lot of our group we think is a big-time
+
+154
+00:06:11,129 --> 00:06:14,219
+game changer in the memory technology
+
+155
+00:06:14,219 --> 00:06:16,439
+space so persistent memory is basically
+
+156
+00:06:16,439 --> 00:06:19,139
+like DRAM it's just like memory except
+
+157
+00:06:19,139 --> 00:06:21,680
+it's a lot larger about 3x times the
+
+158
+00:06:21,680 --> 00:06:24,479
+size of DRAM
+
+159
+00:06:24,479 --> 00:06:26,310
+it's got availability because it's
+
+160
+00:06:26,310 --> 00:06:28,500
+persistent you pull the plug you're
+
+161
+00:06:28,500 --> 00:06:30,060
+doing you put the plug back in the data
+
+162
+00:06:30,060 --> 00:06:31,830
+still they're sitting in these
+
+163
+00:06:31,830 --> 00:06:34,500
+persistent memory dims and it's it's
+
+164
+00:06:34,500 --> 00:06:37,500
+fast it's not faster than DRAM but it's
+
+165
+00:06:37,500 --> 00:06:40,379
+way faster than flash so it's got a lot
+
+166
+00:06:40,379 --> 00:06:42,690
+of really cool qualities and all of
+
+167
+00:06:42,690 --> 00:06:44,050
+these things combined
+
+168
+00:06:44,050 --> 00:06:47,440
+help us move towards meeting the
+
+169
+00:06:47,440 --> 00:06:51,110
+requirements of real time enterprises
+
+170
+00:06:51,110 --> 00:06:52,289
+[Music]
+
+171
+00:06:52,289 --> 00:06:56,379
+Aries so you're writing your ability to
+
+172
+00:06:56,379 --> 00:06:58,569
+write out dirty pages in your own pool
+
+173
+00:06:58,569 --> 00:07:00,159
+persistent memory you don't want to do
+
+174
+00:07:00,159 --> 00:07:06,190
+project for work exactly okay
+
+175
+00:07:06,190 --> 00:07:08,500
+where do we have in memory to that in
+
+176
+00:07:08,500 --> 00:07:11,259
+case we have different tiers so the top
+
+177
+00:07:11,259 --> 00:07:13,690
+tier here is application tier this is
+
+178
+00:07:13,690 --> 00:07:15,430
+where you care about an immediate
+
+179
+00:07:15,430 --> 00:07:17,440
+response time so imagine you have an
+
+180
+00:07:17,440 --> 00:07:19,240
+application and you're gonna link this
+
+181
+00:07:19,240 --> 00:07:21,699
+database directly into your applications
+
+182
+00:07:21,699 --> 00:07:23,590
+shares the same process base the memory
+
+183
+00:07:23,590 --> 00:07:25,539
+space everything is shared and so you're
+
+184
+00:07:25,539 --> 00:07:27,550
+gonna get immediate response time this
+
+185
+00:07:27,550 --> 00:07:29,650
+is extremely important if you're like
+
+186
+00:07:29,650 --> 00:07:31,240
+oil TP sensitive and you want to do an
+
+187
+00:07:31,240 --> 00:07:32,860
+insert very quickly or read very quickly
+
+188
+00:07:32,860 --> 00:07:34,840
+you're just getting a value for this
+
+189
+00:07:34,840 --> 00:07:37,479
+particular key so that's times 10 times
+
+190
+00:07:37,479 --> 00:07:39,460
+10 came out years ago was one of the
+
+191
+00:07:39,460 --> 00:07:41,229
+first in memory did I think it was the
+
+192
+00:07:41,229 --> 00:07:43,539
+first in memory database I think it's
+
+193
+00:07:43,539 --> 00:07:45,280
+what Oh No maybe 20 years ago so it was
+
+194
+00:07:45,280 --> 00:07:49,330
+Chris 96 okay much long enough so that's
+
+195
+00:07:49,330 --> 00:07:51,639
+that times 10 that's in the application
+
+196
+00:07:51,639 --> 00:07:53,590
+tier database tiers what I'm gonna talk
+
+197
+00:07:53,590 --> 00:07:55,330
+about that's where we have Oracle
+
+198
+00:07:55,330 --> 00:07:58,000
+database in memory and this is where we
+
+199
+00:07:58,000 --> 00:07:59,800
+really care about analytics but will
+
+200
+00:07:59,800 --> 00:08:01,900
+also mix workload performance and it's
+
+201
+00:08:01,900 --> 00:08:04,389
+embedded directly into a real working
+
+202
+00:08:04,389 --> 00:08:06,789
+enterprise database and then you're
+
+203
+00:08:06,789 --> 00:08:08,289
+processing things that billions of rows
+
+204
+00:08:08,289 --> 00:08:09,550
+per seconds when you're looking at
+
+205
+00:08:09,550 --> 00:08:12,400
+analytics then there's also the storage
+
+206
+00:08:12,400 --> 00:08:14,319
+tier so I'll talk about that as well and
+
+207
+00:08:14,319 --> 00:08:16,090
+by the storage chair means where the
+
+208
+00:08:16,090 --> 00:08:17,770
+data is actually residing whether it be
+
+209
+00:08:17,770 --> 00:08:19,900
+on on disk in some persistent store on
+
+210
+00:08:19,900 --> 00:08:22,419
+flash or something close to basically a
+
+211
+00:08:22,419 --> 00:08:23,680
+persistent store
+
+212
+00:08:23,680 --> 00:08:25,479
+so yeah the application to your database
+
+213
+00:08:25,479 --> 00:08:27,610
+tier storage tier and I'll talk mostly
+
+214
+00:08:27,610 --> 00:08:30,130
+about the database tier and the storage
+
+215
+00:08:30,130 --> 00:08:33,820
+tier Ken okay so I'm gonna start off
+
+216
+00:08:33,820 --> 00:08:35,770
+with a background on what Oracle
+
+217
+00:08:35,770 --> 00:08:40,270
+database in memory is okay let's start
+
+218
+00:08:40,270 --> 00:08:44,190
+with some basics okay so before we had
+
+219
+00:08:44,190 --> 00:08:46,180
+calmer databases which is in the next
+
+220
+00:08:46,180 --> 00:08:48,579
+slide we basically have row databases
+
+221
+00:08:48,579 --> 00:08:51,430
+row wise databases are fantastic if you
+
+222
+00:08:51,430 --> 00:08:53,740
+care about transactions okay
+
+223
+00:08:53,740 --> 00:08:56,890
+so as an example your an ATM machine you
+
+224
+00:08:56,890 --> 00:08:57,880
+have you ATM card
+
+225
+00:08:57,880 --> 00:09:00,190
+you wanted the duck 25 $20 from your
+
+226
+00:09:00,190 --> 00:09:02,680
+account that's a transaction that you're
+
+227
+00:09:02,680 --> 00:09:04,389
+applying you're going to quickly search
+
+228
+00:09:04,389 --> 00:09:07,029
+through this gigantic database of you
+
+229
+00:09:07,029 --> 00:09:09,550
+know millions or billions of users not
+
+230
+00:09:09,550 --> 00:09:11,170
+billions but certainly many millions and
+
+231
+00:09:11,170 --> 00:09:14,170
+search for your particular account find
+
+232
+00:09:14,170 --> 00:09:16,660
+your balance and deduct $20 from it so
+
+233
+00:09:16,660 --> 00:09:18,490
+that's like looking for a specific row
+
+234
+00:09:18,490 --> 00:09:21,519
+and potentially top potentially
+
+235
+00:09:21,519 --> 00:09:23,500
+accessing multiple columns within that
+
+236
+00:09:23,500 --> 00:09:25,480
+row that's great for it that's
+
+237
+00:09:25,480 --> 00:09:27,550
+transaction processing so row base is
+
+238
+00:09:27,550 --> 00:09:30,279
+very good for accessing a particular row
+
+239
+00:09:30,279 --> 00:09:32,500
+and then touching multiple columns
+
+240
+00:09:32,500 --> 00:09:34,300
+within that realm so as an example here
+
+241
+00:09:34,300 --> 00:09:36,880
+if you're running this query like select
+
+242
+00:09:36,880 --> 00:09:39,940
+column 4 from my table what you have to
+
+243
+00:09:39,940 --> 00:09:42,430
+do is you basically have to process each
+
+244
+00:09:42,430 --> 00:09:45,610
+row and hop to column 4 to get to it
+
+245
+00:09:45,610 --> 00:09:48,699
+right so the problem is when it comes to
+
+246
+00:09:48,699 --> 00:09:50,980
+analytics is you're basically visiting
+
+247
+00:09:50,980 --> 00:09:53,110
+every single row but on top of that
+
+248
+00:09:53,110 --> 00:09:55,720
+you're going column by calling call them
+
+249
+00:09:55,720 --> 00:09:57,550
+touching multiple cache lines to get to
+
+250
+00:09:57,550 --> 00:09:59,709
+the column that you care about so it's
+
+251
+00:09:59,709 --> 00:10:01,480
+again fantastic if you want to get to a
+
+252
+00:10:01,480 --> 00:10:03,519
+specific row and access a specific
+
+253
+00:10:03,519 --> 00:10:08,860
+column that's row format now column row
+
+254
+00:10:08,860 --> 00:10:11,740
+format is fast for analytics ok
+
+255
+00:10:11,740 --> 00:10:13,990
+analytics is where you say I actually
+
+256
+00:10:13,990 --> 00:10:17,139
+care about visiting all the rows but I'm
+
+257
+00:10:17,139 --> 00:10:20,470
+only interested in certain columns right
+
+258
+00:10:20,470 --> 00:10:23,230
+so in this case now if I just want to
+
+259
+00:10:23,230 --> 00:10:25,360
+say select column 4 from my table
+
+260
+00:10:25,360 --> 00:10:29,050
+all I need to do is visit column 4 ok
+
+261
+00:10:29,050 --> 00:10:31,180
+the data is stored in columns in
+
+262
+00:10:31,180 --> 00:10:34,060
+contiguous memory each column here is in
+
+263
+00:10:34,060 --> 00:10:37,600
+a contiguous piece of memory any
+
+264
+00:10:37,600 --> 00:10:38,889
+questions so far the difference between
+
+265
+00:10:38,889 --> 00:10:41,529
+row format and column or format we don't
+
+266
+00:10:41,529 --> 00:10:48,550
+do that ok great awesome okay so the the
+
+267
+00:10:48,550 --> 00:10:50,560
+innovation on art and what Oracle
+
+268
+00:10:50,560 --> 00:10:53,110
+develop for our in-memory product is we
+
+269
+00:10:53,110 --> 00:10:55,660
+decided that you can't just have one or
+
+270
+00:10:55,660 --> 00:10:56,259
+the other
+
+271
+00:10:56,259 --> 00:10:58,720
+it's just not feasible really for
+
+272
+00:10:58,720 --> 00:11:00,250
+enterprise companies enterprises are
+
+273
+00:11:00,250 --> 00:11:01,660
+basically more interested in mixed
+
+274
+00:11:01,660 --> 00:11:02,800
+workloads sometimes the running
+
+275
+00:11:02,800 --> 00:11:03,910
+analytics sometimes the reigning
+
+276
+00:11:03,910 --> 00:11:06,819
+transactions sometimes and it could be
+
+277
+00:11:06,819 --> 00:11:08,079
+very mix sometimes they run ad hoc
+
+278
+00:11:08,079 --> 00:11:10,510
+queries use gigantic queries sometimes a
+
+279
+00:11:10,510 --> 00:11:11,130
+very very
+
+280
+00:11:11,130 --> 00:11:13,980
+simple queries so it's a mix and so we
+
+281
+00:11:13,980 --> 00:11:16,140
+basically decided that you're not you
+
+282
+00:11:16,140 --> 00:11:17,790
+can't Jessica Lee choose one format we
+
+283
+00:11:17,790 --> 00:11:19,500
+basically want to have both formats and
+
+284
+00:11:19,500 --> 00:11:20,880
+so that's why we have this thing called
+
+285
+00:11:20,880 --> 00:11:24,090
+dual format architecture so with dual
+
+286
+00:11:24,090 --> 00:11:25,290
+format architecture we basically
+
+287
+00:11:25,290 --> 00:11:28,110
+maintain both the traditional roast or
+
+288
+00:11:28,110 --> 00:11:30,230
+that's sitting in your buffer cache as
+
+289
+00:11:30,230 --> 00:11:33,090
+well as a columnar representation that's
+
+290
+00:11:33,090 --> 00:11:35,670
+sitting in memory okay we maintain both
+
+291
+00:11:35,670 --> 00:11:38,640
+and both of them are simultaneously
+
+292
+00:11:38,640 --> 00:11:40,740
+active and consistent with each other
+
+293
+00:11:40,740 --> 00:11:43,500
+all the brains goes into the optimizer
+
+294
+00:11:43,500 --> 00:11:45,720
+the optimizer decides when it sees the
+
+295
+00:11:45,720 --> 00:11:48,690
+query which path it should take so for
+
+296
+00:11:48,690 --> 00:11:50,520
+example if it sees a query that says I
+
+297
+00:11:50,520 --> 00:11:52,470
+really want to get to this particular
+
+298
+00:11:52,470 --> 00:11:54,960
+row this key and extract that value and
+
+299
+00:11:54,960 --> 00:11:57,540
+I have this old TP index on it the
+
+300
+00:11:57,540 --> 00:11:59,280
+optimizer will say go to the buffer
+
+301
+00:11:59,280 --> 00:12:01,590
+cache and fetch the index block for it
+
+302
+00:12:01,590 --> 00:12:03,570
+and read that row and that's how fast
+
+303
+00:12:03,570 --> 00:12:05,760
+it'll get that row if the query is an
+
+304
+00:12:05,760 --> 00:12:08,010
+analytic query and you're doing some
+
+305
+00:12:08,010 --> 00:12:09,810
+kind of crazy aggregation or group by
+
+306
+00:12:09,810 --> 00:12:11,490
+somewhere some joins or whatever it is
+
+307
+00:12:11,490 --> 00:12:17,760
+it'll use the column store okay so it's
+
+308
+00:12:17,760 --> 00:12:21,150
+for us when we develop this database in
+
+309
+00:12:21,150 --> 00:12:23,670
+memory we built it natively into the
+
+310
+00:12:23,670 --> 00:12:25,380
+database so it's not a separate storage
+
+311
+00:12:25,380 --> 00:12:27,720
+engine it's part of the existing storage
+
+312
+00:12:27,720 --> 00:12:30,150
+engine it's basically just a think of
+
+313
+00:12:30,150 --> 00:12:32,190
+the the color representation as if it
+
+314
+00:12:32,190 --> 00:12:34,320
+was an index an index that resides in
+
+315
+00:12:34,320 --> 00:12:52,440
+memory okay any quick question so if it
+
+316
+00:12:52,440 --> 00:12:55,830
+depends on what the percentage of writes
+
+317
+00:12:55,830 --> 00:12:58,350
+are to do your workload so I'll cover
+
+318
+00:12:58,350 --> 00:12:59,910
+that in second in terms of how we handle
+
+319
+00:12:59,910 --> 00:13:02,820
+writes or updates or whatever or DML in
+
+320
+00:13:02,820 --> 00:13:05,730
+general if you're doing let's say 1% of
+
+321
+00:13:05,730 --> 00:13:07,920
+your workload is rights ok
+
+322
+00:13:07,920 --> 00:13:09,750
+that's not a problem that's basically a
+
+323
+00:13:09,750 --> 00:13:11,820
+mixed workload ten even five to ten
+
+324
+00:13:11,820 --> 00:13:14,550
+percent is fine when when you start
+
+325
+00:13:14,550 --> 00:13:15,960
+getting to a higher percentage or like
+
+326
+00:13:15,960 --> 00:13:17,760
+twenty thirty forty percent maybe let's
+
+327
+00:13:17,760 --> 00:13:19,710
+say this is not the right solution for
+
+328
+00:13:19,710 --> 00:13:21,960
+you because now as you'll see you're
+
+329
+00:13:21,960 --> 00:13:23,100
+basically oops I'm sorry I don't know
+
+330
+00:13:23,100 --> 00:13:23,529
+how that
+
+331
+00:13:23,529 --> 00:13:25,509
+advanced ah you know I'm probably you're
+
+332
+00:13:25,509 --> 00:13:27,810
+probably running with the timer yeah
+
+333
+00:13:27,810 --> 00:13:29,589
+okay
+
+334
+00:13:29,589 --> 00:13:31,290
+so what you're doing is you're basically
+
+335
+00:13:31,290 --> 00:13:33,310
+maintaining both right you're
+
+336
+00:13:33,310 --> 00:13:34,749
+maintaining this column store and the
+
+337
+00:13:34,749 --> 00:13:36,759
+rows store and that could become
+
+338
+00:13:36,759 --> 00:13:39,759
+problematic okay so I'll describe how we
+
+339
+00:13:39,759 --> 00:13:43,600
+handle that very efficiently any other
+
+340
+00:13:43,600 --> 00:13:52,899
+questions next week all right cool we
+
+341
+00:13:52,899 --> 00:13:54,689
+move all that out awesome
+
+342
+00:13:54,689 --> 00:13:57,610
+all right let's go into some of the
+
+343
+00:13:57,610 --> 00:13:59,410
+details okay in terms of how we store
+
+344
+00:13:59,410 --> 00:14:02,350
+this data so what you see here is a
+
+345
+00:14:02,350 --> 00:14:05,439
+table we store the data in a very impure
+
+346
+00:14:05,439 --> 00:14:08,529
+memory calmly representation so sales
+
+347
+00:14:08,529 --> 00:14:11,829
+table continues to sit on disk doesn't
+
+348
+00:14:11,829 --> 00:14:14,170
+change right it's exactly as you guys
+
+349
+00:14:14,170 --> 00:14:16,240
+know it to be it can be pulled into the
+
+350
+00:14:16,240 --> 00:14:19,120
+buffer cache if it's accessed that
+
+351
+00:14:19,120 --> 00:14:21,819
+doesn't change but what you do is if you
+
+352
+00:14:21,819 --> 00:14:25,600
+stay bring this table into in-memory we
+
+353
+00:14:25,600 --> 00:14:28,029
+will basically bring it into in memory
+
+354
+00:14:28,029 --> 00:14:30,850
+we'll take the rows transpose them into
+
+355
+00:14:30,850 --> 00:14:33,279
+columns and then store the columns into
+
+356
+00:14:33,279 --> 00:14:36,240
+blocks of contiguous pieces of memory
+
+357
+00:14:36,240 --> 00:14:39,129
+okay there's no changes to the disk
+
+358
+00:14:39,129 --> 00:14:41,800
+format we were Oracle so we support all
+
+359
+00:14:41,800 --> 00:14:45,160
+platforms you can enable in memory at
+
+360
+00:14:45,160 --> 00:14:47,350
+any level okay at the tablespace level
+
+361
+00:14:47,350 --> 00:14:50,860
+at the tables at a column level even you
+
+362
+00:14:50,860 --> 00:14:53,259
+can specify any level and the only thing
+
+363
+00:14:53,259 --> 00:14:54,790
+you do need to do is you need to tell us
+
+364
+00:14:54,790 --> 00:14:58,149
+how much memory you want to reserve for
+
+365
+00:14:58,149 --> 00:15:01,629
+your column store okay that's as I'll
+
+366
+00:15:01,629 --> 00:15:02,860
+talk about some of the future stuff
+
+367
+00:15:02,860 --> 00:15:04,899
+we're working on but that's a the only
+
+368
+00:15:04,899 --> 00:15:06,339
+thing you really have to do is tell us
+
+369
+00:15:06,339 --> 00:15:09,399
+how much memory now if you dive in
+
+370
+00:15:09,399 --> 00:15:12,939
+deeper into us okay we basically block
+
+371
+00:15:12,939 --> 00:15:15,399
+out these rows in something called IMC
+
+372
+00:15:15,399 --> 00:15:18,250
+user in memory compression units okay I
+
+373
+00:15:18,250 --> 00:15:19,870
+am see you in memory compression units
+
+374
+00:15:19,870 --> 00:15:22,990
+and in IMC you basically has about a
+
+375
+00:15:22,990 --> 00:15:25,209
+half a million rows half a million to a
+
+376
+00:15:25,209 --> 00:15:28,809
+million rows and within each IMC you you
+
+377
+00:15:28,809 --> 00:15:31,589
+have all the columns for that table so
+
+378
+00:15:31,589 --> 00:15:34,540
+here in this sales table here you have
+
+379
+00:15:34,540 --> 00:15:37,490
+the employee ID name Department salary
+
+380
+00:15:37,490 --> 00:15:41,149
+okay we also have this row ID column now
+
+381
+00:15:41,149 --> 00:15:42,950
+this is really important this is kind of
+
+382
+00:15:42,950 --> 00:15:45,890
+the little trick that we have that row
+
+383
+00:15:45,890 --> 00:15:50,240
+ID column maps to the actual locations
+
+384
+00:15:50,240 --> 00:15:52,940
+of those rows on disk which is this
+
+385
+00:15:52,940 --> 00:15:56,360
+bottom part here so on disk we basically
+
+386
+00:15:56,360 --> 00:15:58,040
+store data in extents which are
+
+387
+00:15:58,040 --> 00:16:00,320
+basically contiguous pieces of blocks
+
+388
+00:16:00,320 --> 00:16:03,950
+and this extent says extent number 13 as
+
+389
+00:16:03,950 --> 00:16:06,950
+blocks 20 to 120 extent number 14 as
+
+390
+00:16:06,950 --> 00:16:09,020
+blocks to 80 to 180 - and in each block
+
+391
+00:16:09,020 --> 00:16:11,029
+you have like you know some you know
+
+392
+00:16:11,029 --> 00:16:15,709
+hundreds 100 or thousands of rows and so
+
+393
+00:16:15,709 --> 00:16:20,000
+this imc U is mapped directly to the the
+
+394
+00:16:20,000 --> 00:16:23,120
+physical locations on this and why this
+
+395
+00:16:23,120 --> 00:16:25,190
+is important is because when you have a
+
+396
+00:16:25,190 --> 00:16:28,399
+modification to a row it's very easy to
+
+397
+00:16:28,399 --> 00:16:31,040
+say which I am see does that map to and
+
+398
+00:16:31,040 --> 00:16:34,130
+I'll go through a another slide that
+
+399
+00:16:34,130 --> 00:16:35,720
+talks about how we utilize this when we
+
+400
+00:16:35,720 --> 00:16:38,420
+talk about DML so the only other point
+
+401
+00:16:38,420 --> 00:16:41,420
+to make here is you can specify how you
+
+402
+00:16:41,420 --> 00:16:44,000
+want to compress this column so you know
+
+403
+00:16:44,000 --> 00:16:45,050
+you don't think you guys talked about
+
+404
+00:16:45,050 --> 00:16:47,000
+compression yet or different data
+
+405
+00:16:47,000 --> 00:16:48,380
+formats and you guys heard a dictionary
+
+406
+00:16:48,380 --> 00:16:50,870
+encoding before or prefix encode okay so
+
+407
+00:16:50,870 --> 00:16:52,520
+well I think I have a few slides on this
+
+408
+00:16:52,520 --> 00:16:54,230
+but you can specify what compression
+
+409
+00:16:54,230 --> 00:16:55,579
+levels you want you're limited to on
+
+410
+00:16:55,579 --> 00:16:58,070
+memory so you can bring it into memory
+
+411
+00:16:58,070 --> 00:16:59,360
+and compress it however you which way
+
+412
+00:16:59,360 --> 00:17:02,810
+you want to okay so that's how we store
+
+413
+00:17:02,810 --> 00:17:04,490
+things as I'm shocked here's the slide
+
+414
+00:17:04,490 --> 00:17:07,040
+on on compression so how do we actually
+
+415
+00:17:07,040 --> 00:17:10,520
+store this data okay so imagine this was
+
+416
+00:17:10,520 --> 00:17:12,140
+your column okay this is your
+
+417
+00:17:12,140 --> 00:17:14,420
+uncompressed data and I have Cat Cat
+
+418
+00:17:14,420 --> 00:17:16,550
+fish fish horse horse horse horse dog
+
+419
+00:17:16,550 --> 00:17:20,270
+cat etc okay it's not actually sorted I
+
+420
+00:17:20,270 --> 00:17:22,490
+have dogs here and cats here but this is
+
+421
+00:17:22,490 --> 00:17:24,770
+just my example so the first thing we do
+
+422
+00:17:24,770 --> 00:17:27,589
+is we dictionary encode this so
+
+423
+00:17:27,589 --> 00:17:29,929
+dictionary encoding means is it
+
+424
+00:17:29,929 --> 00:17:33,020
+identifies the distinct symbols in that
+
+425
+00:17:33,020 --> 00:17:36,110
+column pulls out those distinct symbols
+
+426
+00:17:36,110 --> 00:17:38,630
+and then sorts those distinct symbols
+
+427
+00:17:38,630 --> 00:17:41,720
+and then assigns a code to them so you
+
+428
+00:17:41,720 --> 00:17:44,150
+have cat dog fish horse that's all you
+
+429
+00:17:44,150 --> 00:17:47,120
+have in this in this column I sort them
+
+430
+00:17:47,120 --> 00:17:51,030
+and I sign them codes at 0 1 2 & 3 and
+
+431
+00:17:51,030 --> 00:17:53,340
+and you just have to replace the values
+
+432
+00:17:53,340 --> 00:17:57,090
+of Cat Cat fish fish etc with the codes
+
+433
+00:17:57,090 --> 00:17:58,860
+themselves and we take it one step
+
+434
+00:17:58,860 --> 00:18:01,530
+further we actually bit pack those codes
+
+435
+00:18:01,530 --> 00:18:03,330
+so because they're only four distinct
+
+436
+00:18:03,330 --> 00:18:05,340
+symbols there I only need two bits right
+
+437
+00:18:05,340 --> 00:18:07,740
+to represent each one of those symbols
+
+438
+00:18:07,740 --> 00:18:12,810
+so 0 0 0 0 1 0 etc ok so far so good
+
+439
+00:18:12,810 --> 00:18:15,180
+so that's the dictionary encoding the
+
+440
+00:18:15,180 --> 00:18:18,030
+next thing we do is we apply orally or
+
+441
+00:18:18,030 --> 00:18:20,430
+run length encoding run length encoding
+
+442
+00:18:20,430 --> 00:18:22,200
+is basically saying let me see if I can
+
+443
+00:18:22,200 --> 00:18:25,590
+identify a run of the same symbol and
+
+444
+00:18:25,590 --> 00:18:28,500
+number of times and replace all end
+
+445
+00:18:28,500 --> 00:18:31,110
+copies with a single copy along with the
+
+446
+00:18:31,110 --> 00:18:34,980
+run write account so here you notice
+
+447
+00:18:34,980 --> 00:18:37,140
+that we have Cat Cat and fish fish or
+
+448
+00:18:37,140 --> 00:18:39,360
+rather zero zero zero zero and one zero
+
+449
+00:18:39,360 --> 00:18:41,700
+one zero where I can replace that with
+
+450
+00:18:41,700 --> 00:18:44,100
+just zero zero and one zero and then I
+
+451
+00:18:44,100 --> 00:18:47,250
+have a run over there is this little
+
+452
+00:18:47,250 --> 00:18:50,520
+button the yeah there you go perfect so
+
+453
+00:18:50,520 --> 00:18:51,900
+then you can see their names basically
+
+454
+00:18:51,900 --> 00:18:54,090
+maintain some runs that just identifies
+
+455
+00:18:54,090 --> 00:18:55,350
+how many runs there are for those
+
+456
+00:18:55,350 --> 00:18:57,630
+symbols so far so good
+
+457
+00:18:57,630 --> 00:19:02,010
+okay then we take it one step further we
+
+458
+00:19:02,010 --> 00:19:04,230
+apply something called a zip or oracle
+
+459
+00:19:04,230 --> 00:19:07,800
+zip local zip is very much it's pretty
+
+460
+00:19:07,800 --> 00:19:10,320
+much a fancy dictionary encoding
+
+461
+00:19:10,320 --> 00:19:12,690
+algorithm but it's fantastic because
+
+462
+00:19:12,690 --> 00:19:16,260
+it's very simple and it's it's hardware
+
+463
+00:19:16,260 --> 00:19:18,690
+friendly to decompress I won't go into
+
+464
+00:19:18,690 --> 00:19:20,010
+too many details before describing
+
+465
+00:19:20,010 --> 00:19:21,330
+what's happening here so what it's doing
+
+466
+00:19:21,330 --> 00:19:25,560
+is it's now finding patterns within the
+
+467
+00:19:25,560 --> 00:19:28,380
+the encoded the values now so here you
+
+468
+00:19:28,380 --> 00:19:32,040
+have 0 0 1 0 1 1 0 1 and you see the
+
+469
+00:19:32,040 --> 00:19:35,460
+same pattern of 0 0 1 0 1 1 0 1 so
+
+470
+00:19:35,460 --> 00:19:39,000
+you'll replace the set of of 8 bits now
+
+471
+00:19:39,000 --> 00:19:42,420
+with a single code of 0 or sing a bit of
+
+472
+00:19:42,420 --> 00:19:45,630
+0 and you'll replace 0 1 with 1 and now
+
+473
+00:19:45,630 --> 00:19:47,760
+you've compressed it even further so
+
+474
+00:19:47,760 --> 00:19:48,870
+you're building and yet another
+
+475
+00:19:48,870 --> 00:19:52,280
+dictionary on top of the encoded stream
+
+476
+00:19:52,280 --> 00:19:55,770
+so far so good ok so that's what we do
+
+477
+00:19:55,770 --> 00:19:57,450
+we take it to kind of an extreme and
+
+478
+00:19:57,450 --> 00:19:59,460
+then you can actually take this and you
+
+479
+00:19:59,460 --> 00:20:01,740
+put Z Z Lib on top of it or B zip
+
+480
+00:20:01,740 --> 00:20:03,539
+alright at a higher level
+
+481
+00:20:03,539 --> 00:20:06,409
+on top of it okay
+
+482
+00:20:06,649 --> 00:20:08,999
+all right one more compression form I
+
+483
+00:20:08,999 --> 00:20:10,200
+want to talk about is something called
+
+484
+00:20:10,200 --> 00:20:12,840
+prefix encoding so we talked about that
+
+485
+00:20:12,840 --> 00:20:16,259
+dictionary write a cat dog horse etc
+
+486
+00:20:16,259 --> 00:20:19,590
+notice how they were all sorted well so
+
+487
+00:20:19,590 --> 00:20:22,109
+once it's sorted you can actually remove
+
+488
+00:20:22,109 --> 00:20:25,080
+a common prefixes from adjacent symbols
+
+489
+00:20:25,080 --> 00:20:27,330
+and store them separately so the example
+
+490
+00:20:27,330 --> 00:20:29,729
+I have here in this dictionary is used
+
+491
+00:20:29,729 --> 00:20:32,940
+used useful usefully usefulness etc
+
+492
+00:20:32,940 --> 00:20:36,210
+right and they all have used but some of
+
+493
+00:20:36,210 --> 00:20:37,830
+the symbols can actually benefit for
+
+494
+00:20:37,830 --> 00:20:40,379
+something more like useful so what we'll
+
+495
+00:20:40,379 --> 00:20:42,299
+do is we'll basically take out maybe
+
+496
+00:20:42,299 --> 00:20:44,820
+like a block of eight symbols and then
+
+497
+00:20:44,820 --> 00:20:46,379
+from those eight symbols we'll find the
+
+498
+00:20:46,379 --> 00:20:48,330
+the common prefix across those eight
+
+499
+00:20:48,330 --> 00:20:49,859
+symbols in this example I think I'm
+
+500
+00:20:49,859 --> 00:20:53,220
+using two symbols so use for use and
+
+501
+00:20:53,220 --> 00:20:56,309
+then D is the suffix for used so I just
+
+502
+00:20:56,309 --> 00:20:59,070
+maintain the prefix along with an empty
+
+503
+00:20:59,070 --> 00:21:01,320
+suffix here for the first symbol and D
+
+504
+00:21:01,320 --> 00:21:03,749
+for the second one and then the next one
+
+505
+00:21:03,749 --> 00:21:07,289
+we'll use useful because the third
+
+506
+00:21:07,289 --> 00:21:09,929
+symbol here is useful and the same thing
+
+507
+00:21:09,929 --> 00:21:12,330
+and then our grabs the suffixes so this
+
+508
+00:21:12,330 --> 00:21:15,539
+just gives you some more compression so
+
+509
+00:21:15,539 --> 00:21:18,359
+far so good okay problem with this stuff
+
+510
+00:21:18,359 --> 00:21:19,710
+is the following right
+
+511
+00:21:19,710 --> 00:21:22,409
+you have to decompress it and that could
+
+512
+00:21:22,409 --> 00:21:23,129
+take some time
+
+513
+00:21:23,129 --> 00:21:27,029
+you can't just point to use and D
+
+514
+00:21:27,029 --> 00:21:28,889
+because you have to stitch them up at
+
+515
+00:21:28,889 --> 00:21:30,869
+some point and give it back to whatever
+
+516
+00:21:30,869 --> 00:21:33,450
+operator wants the actual symbol so
+
+517
+00:21:33,450 --> 00:21:35,179
+there's a cost associated with
+
+518
+00:21:35,179 --> 00:21:37,979
+compressing and then decompressing as a
+
+519
+00:21:37,979 --> 00:21:49,950
+result for the coms
+
+520
+00:21:49,950 --> 00:21:52,889
+we have specialized formats where we
+
+521
+00:21:52,889 --> 00:21:54,989
+like we know what the format is you
+
+522
+00:21:54,989 --> 00:21:56,399
+don't have to decompress it we have some
+
+523
+00:21:56,399 --> 00:21:57,059
+tricks too
+
+524
+00:21:57,059 --> 00:21:58,379
+like for example for a dictionary
+
+525
+00:21:58,379 --> 00:22:00,389
+encoding for a prefix encoding we have
+
+526
+00:22:00,389 --> 00:22:02,789
+tricks that use sim D that that allow
+
+527
+00:22:02,789 --> 00:22:04,139
+you to not have to ever stitch things
+
+528
+00:22:04,139 --> 00:22:05,340
+back together when you're doing a scan
+
+529
+00:22:05,340 --> 00:22:08,220
+when doing a projection you do roast or
+
+530
+00:22:08,220 --> 00:22:10,710
+roast or has a compressor very much like
+
+531
+00:22:10,710 --> 00:22:12,210
+dictionary encoding but it operates
+
+532
+00:22:12,210 --> 00:22:15,330
+across multiple rows and it's far more
+
+533
+00:22:15,330 --> 00:22:16,590
+complex so you're right when you
+
+534
+00:22:16,590 --> 00:22:17,040
+actually
+
+535
+00:22:17,040 --> 00:22:18,990
+have to project back it's a complicated
+
+536
+00:22:18,990 --> 00:22:20,280
+stitching algorithm to bring it back
+
+537
+00:22:20,280 --> 00:22:22,040
+together again
+
+538
+00:22:22,040 --> 00:22:24,020
+alright so far so good
+
+539
+00:22:24,020 --> 00:22:27,210
+okay alright so we talked about how we
+
+540
+00:22:27,210 --> 00:22:30,270
+bring the data into memory we talked
+
+541
+00:22:30,270 --> 00:22:32,460
+about how we format it and compress it
+
+542
+00:22:32,460 --> 00:22:34,020
+now we're going to talk about how do we
+
+543
+00:22:34,020 --> 00:22:35,760
+scan how do we actually use that data
+
+544
+00:22:35,760 --> 00:22:37,470
+and actually scan fast how do we get to
+
+545
+00:22:37,470 --> 00:22:39,720
+this billions of rows per second versus
+
+546
+00:22:39,720 --> 00:22:41,070
+the millions of rows per second when
+
+547
+00:22:41,070 --> 00:22:42,450
+you're looking at a buffer cache in a
+
+548
+00:22:42,450 --> 00:22:42,990
+row store
+
+549
+00:22:42,990 --> 00:22:45,360
+so this is where sim D comes into place
+
+550
+00:22:45,360 --> 00:22:47,340
+so sim D again for those of you don't
+
+551
+00:22:47,340 --> 00:22:48,570
+know stands for single instruction
+
+552
+00:22:48,570 --> 00:22:52,020
+multiple data and what that does is a
+
+553
+00:22:52,020 --> 00:22:55,440
+lot of most modern processes now now for
+
+554
+00:22:55,440 --> 00:22:57,930
+last I don't know 15 20 years maybe and
+
+555
+00:22:57,930 --> 00:23:02,010
+well since 96 I think have a in the
+
+556
+00:23:02,010 --> 00:23:05,640
+processor have a vector a vector ization
+
+557
+00:23:05,640 --> 00:23:08,190
+unit where they have very fat registers
+
+558
+00:23:08,190 --> 00:23:09,900
+and not only do they have those fat
+
+559
+00:23:09,900 --> 00:23:11,520
+registers they have a sequence of and
+
+560
+00:23:11,520 --> 00:23:14,100
+they have a instruction set that can be
+
+561
+00:23:14,100 --> 00:23:15,450
+applied on those registers registers
+
+562
+00:23:15,450 --> 00:23:18,480
+that allow you to paralyze data
+
+563
+00:23:18,480 --> 00:23:21,060
+operations so let's just go through an
+
+564
+00:23:21,060 --> 00:23:23,040
+example to make things clear here you
+
+565
+00:23:23,040 --> 00:23:24,870
+have again in your column store and you
+
+566
+00:23:24,870 --> 00:23:27,080
+have a column called state right and
+
+567
+00:23:27,080 --> 00:23:30,510
+your query is fine sales in state of
+
+568
+00:23:30,510 --> 00:23:33,300
+California so what you're gonna do is
+
+569
+00:23:33,300 --> 00:23:37,430
+bring the state column into a register
+
+570
+00:23:37,430 --> 00:23:39,690
+now you guys we just talked about
+
+571
+00:23:39,690 --> 00:23:41,940
+dictionary encoding right so these state
+
+572
+00:23:41,940 --> 00:23:44,400
+columns can all be packed into how many
+
+573
+00:23:44,400 --> 00:23:49,010
+bits do you guys think quick thinkers
+
+574
+00:23:51,290 --> 00:23:54,090
+exactly okay that's a good answer that's
+
+575
+00:23:54,090 --> 00:23:56,280
+right so you got with that five bits or
+
+576
+00:23:56,280 --> 00:23:59,730
+six bits thank you six bits so six bits
+
+577
+00:23:59,730 --> 00:24:02,310
+coming in here but you have a register
+
+578
+00:24:02,310 --> 00:24:06,570
+that sets 512 bits so I can bring in 64
+
+579
+00:24:06,570 --> 00:24:08,400
+of these assuming all of them are 8 bits
+
+580
+00:24:08,400 --> 00:24:11,910
+let's just say right I can bring 64 in a
+
+581
+00:24:11,910 --> 00:24:14,700
+512 bit register 64 states can be loaded
+
+582
+00:24:14,700 --> 00:24:15,630
+at once
+
+583
+00:24:15,630 --> 00:24:17,970
+that's one instruction some number
+
+584
+00:24:17,970 --> 00:24:19,710
+cycles depending on whether it's in in
+
+585
+00:24:19,710 --> 00:24:22,380
+your CPU cache or not but let's suppose
+
+586
+00:24:22,380 --> 00:24:24,420
+it is in your CPU cache okay so it's one
+
+587
+00:24:24,420 --> 00:24:27,870
+cycle I've loaded them in here the next
+
+588
+00:24:27,870 --> 00:24:30,600
+step is to bring in
+
+589
+00:24:30,600 --> 00:24:32,520
+California whatever bit representation
+
+590
+00:24:32,520 --> 00:24:35,580
+California is and splat that across
+
+591
+00:24:35,580 --> 00:24:37,590
+another register California California
+
+592
+00:24:37,590 --> 00:24:40,530
+California California cetera then I
+
+593
+00:24:40,530 --> 00:24:44,039
+planned that's one cycle okay then this
+
+594
+00:24:44,039 --> 00:24:46,289
+is where I use the the instruction set
+
+595
+00:24:46,289 --> 00:24:49,080
+for vector for vector registers here
+
+596
+00:24:49,080 --> 00:24:50,880
+where I can do a vector compare all
+
+597
+00:24:50,880 --> 00:24:54,780
+values in one cycle so this state will
+
+598
+00:24:54,780 --> 00:24:56,760
+be compared to California this state
+
+599
+00:24:56,760 --> 00:24:58,860
+will be compared to California etc etc
+
+600
+00:24:58,860 --> 00:25:01,289
+and in one cycle it will apply
+
+601
+00:25:01,289 --> 00:25:03,750
+sixty-four comparisons resulting in a
+
+602
+00:25:03,750 --> 00:25:07,740
+bit mask of 64 bits and that tells me
+
+603
+00:25:07,740 --> 00:25:11,130
+which of these 64 states or equal to
+
+604
+00:25:11,130 --> 00:25:20,640
+California you cannot do that in a
+
+605
+00:25:20,640 --> 00:25:24,150
+single cycle right to go do 64 tuples
+
+606
+00:25:24,150 --> 00:25:27,030
+would be you know next call 64 times
+
+607
+00:25:27,030 --> 00:25:28,919
+this is super phantom this is why you
+
+608
+00:25:28,919 --> 00:25:31,080
+use a vectorized model just what they're
+
+609
+00:25:31,080 --> 00:25:31,679
+doing here
+
+610
+00:25:31,679 --> 00:25:33,299
+you can punch of crap all at once and
+
+611
+00:25:33,299 --> 00:25:35,309
+then do the filter review the predicate
+
+612
+00:25:35,309 --> 00:25:37,140
+evaluates your very quickly that's why
+
+613
+00:25:37,140 --> 00:25:44,190
+they're getting 100x faster make make
+
+614
+00:25:44,190 --> 00:25:48,900
+you feel really good that's why you guys
+
+615
+00:25:48,900 --> 00:25:54,809
+100x slower learn okay um but but but
+
+616
+00:25:54,809 --> 00:25:57,150
+but Andy's right that we actually apply
+
+617
+00:25:57,150 --> 00:25:59,520
+vectorization techniques to all of our
+
+618
+00:25:59,520 --> 00:26:02,130
+operators okay so because there's magic
+
+619
+00:26:02,130 --> 00:26:04,710
+in this it's it's complicated not when I
+
+620
+00:26:04,710 --> 00:26:07,440
+have a slide on this I think but so
+
+621
+00:26:07,440 --> 00:26:09,450
+let's move on here okay so that brings
+
+622
+00:26:09,450 --> 00:26:11,640
+me to this slide here so we're really
+
+623
+00:26:11,640 --> 00:26:14,580
+looking to improve all aspects of
+
+624
+00:26:14,580 --> 00:26:16,890
+analytics so we talked about scams just
+
+625
+00:26:16,890 --> 00:26:20,700
+now with vectorization joins we look at
+
+626
+00:26:20,700 --> 00:26:22,770
+vectorizing joins as well there's all
+
+627
+00:26:22,770 --> 00:26:24,179
+sorts of nifty techniques when you're
+
+628
+00:26:24,179 --> 00:26:25,679
+dealing with a columnstore and you're
+
+629
+00:26:25,679 --> 00:26:27,480
+dealing with dictionary encoding you can
+
+630
+00:26:27,480 --> 00:26:29,280
+leverage the format leverage the
+
+631
+00:26:29,280 --> 00:26:31,679
+hardware to again process at the at the
+
+632
+00:26:31,679 --> 00:26:33,570
+billions of rows per second here we make
+
+633
+00:26:33,570 --> 00:26:35,640
+joints faster by simply making something
+
+634
+00:26:35,640 --> 00:26:37,679
+called bloom filters faster show of
+
+635
+00:26:37,679 --> 00:26:38,880
+hands of folks who know about bloom
+
+636
+00:26:38,880 --> 00:26:41,309
+filters excellent awesome
+
+637
+00:26:41,309 --> 00:26:43,530
+excellent excellent bloom filters are
+
+638
+00:26:43,530 --> 00:26:44,780
+magic I love
+
+639
+00:26:44,780 --> 00:26:46,669
+okay so that's how we make joints faster
+
+640
+00:26:46,669 --> 00:26:48,530
+initially with our first release from
+
+641
+00:26:48,530 --> 00:26:51,230
+five years ago and then reporting
+
+642
+00:26:51,230 --> 00:26:53,240
+aggregations group by some things like
+
+643
+00:26:53,240 --> 00:27:05,000
+that okay yep yep this is using sim D on
+
+644
+00:27:05,000 --> 00:27:07,340
+top of it okay let's move on here okay
+
+645
+00:27:07,340 --> 00:27:09,290
+so now we finally get to the top five
+
+646
+00:27:09,290 --> 00:27:12,200
+which is what I wanted to get to so top
+
+647
+00:27:12,200 --> 00:27:14,210
+five I just want to list five things
+
+648
+00:27:14,210 --> 00:27:18,140
+that we have done in the in the last
+
+649
+00:27:18,140 --> 00:27:20,690
+five years I guess that I think stand
+
+650
+00:27:20,690 --> 00:27:22,700
+out in terms of what makes database of
+
+651
+00:27:22,700 --> 00:27:26,450
+memory kind of cool for us at least and
+
+652
+00:27:26,450 --> 00:27:28,460
+by the way a lot of these most of these
+
+653
+00:27:28,460 --> 00:27:30,080
+resulted in academic papers that we
+
+654
+00:27:30,080 --> 00:27:31,400
+submit to various different conferences
+
+655
+00:27:31,400 --> 00:27:33,710
+so I'll point them out to you as we as
+
+656
+00:27:33,710 --> 00:27:36,799
+we move along so the first thing is the
+
+657
+00:27:36,799 --> 00:27:39,440
+dual format architecture fast mix
+
+658
+00:27:39,440 --> 00:27:42,080
+workloads and faster analytics why we
+
+659
+00:27:42,080 --> 00:27:44,540
+think this is pretty innovative so let's
+
+660
+00:27:44,540 --> 00:27:47,090
+explain how it works okay so the dual
+
+661
+00:27:47,090 --> 00:27:48,860
+form and architecture enables fast mixed
+
+662
+00:27:48,860 --> 00:27:51,049
+workloads and faster analytics so if you
+
+663
+00:27:51,049 --> 00:27:53,350
+look at your right that was our eye
+
+664
+00:27:53,350 --> 00:27:56,320
+drawing I showed to you last time now
+
+665
+00:27:56,320 --> 00:27:59,780
+you can get very fast in memory DML
+
+666
+00:27:59,780 --> 00:28:02,809
+because the invalid row is logically
+
+667
+00:28:02,809 --> 00:28:05,480
+removed from the column store so I'm
+
+668
+00:28:05,480 --> 00:28:06,860
+going to walk through this example let's
+
+669
+00:28:06,860 --> 00:28:10,610
+suppose that a row was modified okay so
+
+670
+00:28:10,610 --> 00:28:12,650
+that row was modified for whatever
+
+671
+00:28:12,650 --> 00:28:14,270
+reason maybe I call him in there or some
+
+672
+00:28:14,270 --> 00:28:15,980
+number of columns but it was updated or
+
+673
+00:28:15,980 --> 00:28:18,620
+deleted whatever it is that happens on
+
+674
+00:28:18,620 --> 00:28:20,870
+the normal path okay like it normally
+
+675
+00:28:20,870 --> 00:28:22,250
+does like Oracle has been doing for the
+
+676
+00:28:22,250 --> 00:28:25,370
+last 3040 years now when that happens
+
+677
+00:28:25,370 --> 00:28:28,640
+that tells us immediately using that row
+
+678
+00:28:28,640 --> 00:28:30,230
+ID see you remember how I told you we
+
+679
+00:28:30,230 --> 00:28:32,809
+map from disk to the Consular we can
+
+680
+00:28:32,809 --> 00:28:35,030
+immediately just set a bit that says
+
+681
+00:28:35,030 --> 00:28:37,970
+that row is invalid that doesn't take
+
+682
+00:28:37,970 --> 00:28:39,740
+that long you guys have all set bits if
+
+683
+00:28:39,740 --> 00:28:41,090
+you've done if you create a bloom filter
+
+684
+00:28:41,090 --> 00:28:43,250
+it doesn't take long you do have to find
+
+685
+00:28:43,250 --> 00:28:45,590
+that I am see you that's a little bit of
+
+686
+00:28:45,590 --> 00:28:47,360
+a lookup but not that long and then used
+
+687
+00:28:47,360 --> 00:28:50,809
+to set a bit so that's how DML is work
+
+688
+00:28:50,809 --> 00:28:53,240
+super simple you just say this row and
+
+689
+00:28:53,240 --> 00:28:54,830
+that column store is invalid so now what
+
+690
+00:28:54,830 --> 00:28:57,419
+happens when you want to do a scan
+
+691
+00:28:57,419 --> 00:29:02,009
+you just ignore the invalid rows okay so
+
+692
+00:29:02,009 --> 00:29:04,739
+here's my example let's say I'm doing
+
+693
+00:29:04,739 --> 00:29:07,499
+the full table scan I just go route and
+
+694
+00:29:07,499 --> 00:29:09,869
+I just sidestep that invalid row and I
+
+695
+00:29:09,869 --> 00:29:11,849
+keep going now
+
+696
+00:29:11,849 --> 00:29:15,209
+what happens I sidestep that row but
+
+697
+00:29:15,209 --> 00:29:17,039
+that's not giving me a consistent result
+
+698
+00:29:17,039 --> 00:29:18,929
+now I have to actually process that row
+
+699
+00:29:18,929 --> 00:29:23,369
+so just for that row I will go to disk
+
+700
+00:29:23,369 --> 00:29:25,700
+or the buffer cache to fetch that row
+
+701
+00:29:25,700 --> 00:29:29,249
+okay now in all likelihood is probably
+
+702
+00:29:29,249 --> 00:29:30,959
+in the buffer cache because I've updated
+
+703
+00:29:30,959 --> 00:29:33,479
+it or I've done something updating it
+
+704
+00:29:33,479 --> 00:29:34,979
+brings that block into the buffer cache
+
+705
+00:29:34,979 --> 00:29:38,219
+and so I'm still technically processing
+
+706
+00:29:38,219 --> 00:29:40,109
+at memory speeds because the buffer
+
+707
+00:29:40,109 --> 00:29:42,299
+cache is in memory but I'm going against
+
+708
+00:29:42,299 --> 00:29:46,979
+the row store right now I am Sue's not
+
+709
+00:29:46,979 --> 00:29:49,799
+covering invalid rows are unaffected so
+
+710
+00:29:49,799 --> 00:29:51,719
+that's when you break up your data into
+
+711
+00:29:51,719 --> 00:29:53,519
+blocks it's got a lot of value to it the
+
+712
+00:29:53,519 --> 00:29:56,039
+blocks aren't affected they'll still go
+
+713
+00:29:56,039 --> 00:29:58,559
+through a nice you know proper vector
+
+714
+00:29:58,559 --> 00:30:00,269
+scan the cindy scans that we just we
+
+715
+00:30:00,269 --> 00:30:03,299
+just talked about okay this is an
+
+716
+00:30:03,299 --> 00:30:03,929
+important point
+
+717
+00:30:03,929 --> 00:30:06,570
+mixed workload performance can suffer if
+
+718
+00:30:06,570 --> 00:30:09,119
+the number of invalid rows accumulates
+
+719
+00:30:09,119 --> 00:30:12,329
+in your IMC's which goes to to your
+
+720
+00:30:12,329 --> 00:30:14,519
+point over there earlier if the rows
+
+721
+00:30:14,519 --> 00:30:17,039
+start to get really dirty then I'm just
+
+722
+00:30:17,039 --> 00:30:18,629
+going to the buffer cache all the time
+
+723
+00:30:18,629 --> 00:30:20,549
+I'm not leveraging the the common
+
+724
+00:30:20,549 --> 00:30:21,379
+representation
+
+725
+00:30:21,379 --> 00:30:24,239
+so this is where fast repopulation
+
+726
+00:30:24,239 --> 00:30:25,919
+techniques save the day
+
+727
+00:30:25,919 --> 00:30:27,779
+so let's go through let's explain this
+
+728
+00:30:27,779 --> 00:30:30,320
+for a second so we do something called
+
+729
+00:30:30,320 --> 00:30:32,669
+continuous intelligence okay this is
+
+730
+00:30:32,669 --> 00:30:35,129
+actually an analyst herb continues LH
+
+731
+00:30:35,129 --> 00:30:37,349
+intelligence just means that we will
+
+732
+00:30:37,349 --> 00:30:40,950
+track how dirty your eye MCU is how and
+
+733
+00:30:40,950 --> 00:30:43,019
+how frequently it is scanned we do a
+
+734
+00:30:43,019 --> 00:30:45,719
+combination of it and I'll explain why
+
+735
+00:30:45,719 --> 00:30:48,690
+we care about both how dirty it is and
+
+736
+00:30:48,690 --> 00:30:50,820
+how frequently does it scan if your
+
+737
+00:30:50,820 --> 00:30:53,549
+iamsu is super dirty lots of updates are
+
+738
+00:30:53,549 --> 00:30:55,799
+happening but you're never scanning it I
+
+739
+00:30:55,799 --> 00:30:58,979
+don't necessarily care to refresh it or
+
+740
+00:30:58,979 --> 00:31:00,570
+repopulate it no one's actually
+
+741
+00:31:00,570 --> 00:31:03,059
+accessing it so it's some combination of
+
+742
+00:31:03,059 --> 00:31:05,039
+it that we have an algorithm for that
+
+743
+00:31:05,039 --> 00:31:07,769
+decides when we should refresh it so the
+
+744
+00:31:07,769 --> 00:31:09,179
+first technique we have is something
+
+745
+00:31:09,179 --> 00:31:10,830
+called double buffering
+
+746
+00:31:10,830 --> 00:31:13,080
+so with double buffering the idea here
+
+747
+00:31:13,080 --> 00:31:16,980
+is when you have an IMC that's dirty you
+
+748
+00:31:16,980 --> 00:31:20,910
+need to refresh it so we keep the dirty
+
+749
+00:31:20,910 --> 00:31:24,570
+one around and in the background we'll
+
+750
+00:31:24,570 --> 00:31:26,400
+create a new one
+
+751
+00:31:26,400 --> 00:31:28,640
+that brings in those dirty rows
+
+752
+00:31:28,640 --> 00:31:31,410
+repopulate sit and now has a nice fresh
+
+753
+00:31:31,410 --> 00:31:34,080
+copy of the IMC you and once it's ready
+
+754
+00:31:34,080 --> 00:31:36,480
+we do that switcheroo and the old one
+
+755
+00:31:36,480 --> 00:31:38,760
+goes out and a new one comes in right
+
+756
+00:31:38,760 --> 00:31:40,800
+the main reasons why we want to do this
+
+757
+00:31:40,800 --> 00:31:43,170
+is because we don't want your queries to
+
+758
+00:31:43,170 --> 00:31:45,840
+suffer by taking it offline every
+
+759
+00:31:45,840 --> 00:31:49,200
+operation if you if you learn a few
+
+760
+00:31:49,200 --> 00:31:51,600
+things I guess in database classes you
+
+761
+00:31:51,600 --> 00:31:52,800
+really want to try to keep everything
+
+762
+00:31:52,800 --> 00:31:55,500
+online you never want to bring something
+
+763
+00:31:55,500 --> 00:31:58,050
+down and then suffer a slower
+
+764
+00:31:58,050 --> 00:32:00,270
+performance while you're refreshing an
+
+765
+00:32:00,270 --> 00:32:03,420
+index or in this case refreshing the IMS
+
+766
+00:32:03,420 --> 00:32:06,180
+you anybody understand that double
+
+767
+00:32:06,180 --> 00:32:08,190
+offering okay the second thing is
+
+768
+00:32:08,190 --> 00:32:10,590
+incremental repopulation what we call
+
+769
+00:32:10,590 --> 00:32:12,630
+incremental population the idea here is
+
+770
+00:32:12,630 --> 00:32:16,700
+you can construct a new column
+
+771
+00:32:16,700 --> 00:32:19,260
+leveraging the information from the old
+
+772
+00:32:19,260 --> 00:32:21,810
+column so for example when you do a
+
+773
+00:32:21,810 --> 00:32:23,160
+track when you're actually going from
+
+774
+00:32:23,160 --> 00:32:25,200
+rows store the column store is very
+
+775
+00:32:25,200 --> 00:32:27,510
+expensive population we call that
+
+776
+00:32:27,510 --> 00:32:29,040
+population to bring it into the memory
+
+777
+00:32:29,040 --> 00:32:31,860
+the it's very expensive to identify the
+
+778
+00:32:31,860 --> 00:32:33,690
+distinct symbols you basically are going
+
+779
+00:32:33,690 --> 00:32:36,210
+to use a hash table or an art you guys
+
+780
+00:32:36,210 --> 00:32:38,610
+heard of art adapted radix tree and very
+
+781
+00:32:38,610 --> 00:32:39,990
+okay okay
+
+782
+00:32:39,990 --> 00:32:43,020
+an index or something yeah great extreme
+
+783
+00:32:43,020 --> 00:32:44,730
+you need something to identify give me
+
+784
+00:32:44,730 --> 00:32:47,730
+my distinct symbols it's expensive to do
+
+785
+00:32:47,730 --> 00:32:49,440
+that and so what you want to do is
+
+786
+00:32:49,440 --> 00:32:50,970
+leverage the fact that hey I have
+
+787
+00:32:50,970 --> 00:32:53,040
+already created a dictionary before I
+
+788
+00:32:53,040 --> 00:32:56,040
+just have some some dirty rows here so
+
+789
+00:32:56,040 --> 00:32:58,770
+you leverage that to build the new C or
+
+790
+00:32:58,770 --> 00:33:00,960
+the new column column C you okay so
+
+791
+00:33:00,960 --> 00:33:03,030
+that's incremental repopulation and the
+
+792
+00:33:03,030 --> 00:33:05,250
+last thing here that we do as a little
+
+793
+00:33:05,250 --> 00:33:08,070
+trickier is oftentimes when you are
+
+794
+00:33:08,070 --> 00:33:10,590
+invalidating a row invalid means you're
+
+795
+00:33:10,590 --> 00:33:12,120
+updating and deleting or whatever you're
+
+796
+00:33:12,120 --> 00:33:14,850
+really just touching a column or some
+
+797
+00:33:14,850 --> 00:33:16,860
+number of columns you're not actually
+
+798
+00:33:16,860 --> 00:33:19,980
+touching all the columns and so if you
+
+799
+00:33:19,980 --> 00:33:22,950
+run a query that's unaffected by by the
+
+800
+00:33:22,950 --> 00:33:24,090
+columns because
+
+801
+00:33:24,090 --> 00:33:25,380
+you're only accessing those columns that
+
+802
+00:33:25,380 --> 00:33:28,140
+were not affected then you can still go
+
+803
+00:33:28,140 --> 00:33:29,880
+columnar right you don't have to worry
+
+804
+00:33:29,880 --> 00:33:32,450
+about the accessing the invalid grounds
+
+805
+00:33:32,450 --> 00:33:35,340
+okay so these three kind of techniques
+
+806
+00:33:35,340 --> 00:33:38,370
+here allow us to really run mixed
+
+807
+00:33:38,370 --> 00:33:41,010
+workloads faster and it gives us this
+
+808
+00:33:41,010 --> 00:33:56,820
+best of both worlds there's no there's
+
+809
+00:33:56,820 --> 00:34:02,070
+no paging no so that's so from the very
+
+810
+00:34:02,070 --> 00:34:03,510
+beginning Oracle
+
+811
+00:34:03,510 --> 00:34:05,460
+we've always said that you can't assume
+
+812
+00:34:05,460 --> 00:34:06,659
+that everything's gonna fit in memory
+
+813
+00:34:06,659 --> 00:34:08,369
+that's just it doesn't not realistic so
+
+814
+00:34:08,369 --> 00:34:10,320
+so what happens is if you have a limit
+
+815
+00:34:10,320 --> 00:34:12,210
+of whatever memory you have you'll
+
+816
+00:34:12,210 --> 00:34:14,310
+populate that bringing it to memory
+
+817
+00:34:14,310 --> 00:34:15,989
+anything that doesn't fit will stay on
+
+818
+00:34:15,989 --> 00:34:18,389
+disk now you like I said you have the
+
+819
+00:34:18,389 --> 00:34:19,710
+ultimate control you can say which
+
+820
+00:34:19,710 --> 00:34:21,060
+columns you want you can say which
+
+821
+00:34:21,060 --> 00:34:26,960
+partitions you want whatever this no no
+
+822
+00:34:26,960 --> 00:34:29,668
+it's a it's a store it's a column store
+
+823
+00:34:29,668 --> 00:34:32,489
+so it's not a cache now well I'll talk
+
+824
+00:34:32,489 --> 00:34:34,349
+to you about how we're transitioning
+
+825
+00:34:34,349 --> 00:34:36,270
+over to actually making it a cache when
+
+826
+00:34:36,270 --> 00:34:37,619
+we're doing storage tiering and things
+
+827
+00:34:37,619 --> 00:34:41,270
+like that okay all right so far so good
+
+828
+00:34:41,270 --> 00:34:43,800
+doing all right on time this is a very
+
+829
+00:34:43,800 --> 00:34:45,780
+quick slide I'm just gonna skip through
+
+830
+00:34:45,780 --> 00:34:47,580
+the animation here and this is just
+
+831
+00:34:47,580 --> 00:34:49,320
+telling you how question I'm sorry go
+
+832
+00:34:49,320 --> 00:34:51,349
+ahead
+
+833
+00:35:13,400 --> 00:35:19,440
+yes yeah so let me okay so I think the
+
+834
+00:35:19,440 --> 00:35:21,300
+question was is that if you bring you
+
+835
+00:35:21,300 --> 00:35:22,710
+sounds like you're bringing both the row
+
+836
+00:35:22,710 --> 00:35:25,170
+row format color data and the column
+
+837
+00:35:25,170 --> 00:35:27,180
+their data into memory and it sounds
+
+838
+00:35:27,180 --> 00:35:28,380
+like that's inefficient to basically
+
+839
+00:35:28,380 --> 00:35:30,720
+have two versions of your data and in
+
+840
+00:35:30,720 --> 00:35:33,080
+memory
+
+841
+00:35:34,550 --> 00:35:36,750
+and you need to keep them in sync and
+
+842
+00:35:36,750 --> 00:35:40,680
+up-to-date right okay so so that okay so
+
+843
+00:35:40,680 --> 00:35:41,790
+let me see if I can answer this
+
+844
+00:35:41,790 --> 00:35:44,400
+appropriately if you're depending on
+
+845
+00:35:44,400 --> 00:35:46,710
+your workload you might be an analytic
+
+846
+00:35:46,710 --> 00:35:48,780
+heavy workload if you're an analytic
+
+847
+00:35:48,780 --> 00:35:50,520
+heavy workload you're never going to
+
+848
+00:35:50,520 --> 00:35:54,930
+bring the row formatted data into the
+
+849
+00:35:54,930 --> 00:35:57,359
+buffer cache make sense you're only
+
+850
+00:35:57,359 --> 00:35:58,710
+going to leverage what's in the column
+
+851
+00:35:58,710 --> 00:36:02,130
+store and you're done if you're an all
+
+852
+00:36:02,130 --> 00:36:04,380
+TP heavy all you're doing is
+
+853
+00:36:04,380 --> 00:36:06,030
+transactions inserts updates deletes
+
+854
+00:36:06,030 --> 00:36:09,300
+you're not doing joins or aggregations I
+
+855
+00:36:09,300 --> 00:36:11,430
+think you're never going to even bring
+
+856
+00:36:11,430 --> 00:36:13,800
+it into the column store that makes
+
+857
+00:36:13,800 --> 00:36:14,130
+sense
+
+858
+00:36:14,130 --> 00:36:18,150
+so so that's the the two extremes now
+
+859
+00:36:18,150 --> 00:36:20,369
+the middle ground is when you have some
+
+860
+00:36:20,369 --> 00:36:22,380
+percentage of DML some percentage of
+
+861
+00:36:22,380 --> 00:36:25,500
+scans now where in memory is going to be
+
+862
+00:36:25,500 --> 00:36:27,690
+beneficial is of course if you're more
+
+863
+00:36:27,690 --> 00:36:30,180
+heavily towards the scans than you are
+
+864
+00:36:30,180 --> 00:36:33,119
+to the DML now the DML is going to bring
+
+865
+00:36:33,119 --> 00:36:35,340
+thing blocks into the buffer cache but
+
+866
+00:36:35,340 --> 00:36:36,480
+it's not going to bring the whole table
+
+867
+00:36:36,480 --> 00:36:38,250
+into the buffer cache so that makes
+
+868
+00:36:38,250 --> 00:36:39,930
+sense and so you are going to
+
+869
+00:36:39,930 --> 00:36:41,730
+occasionally go down the row store
+
+870
+00:36:41,730 --> 00:36:43,109
+because you're just looking for a row
+
+871
+00:36:43,109 --> 00:36:44,580
+and you're gonna use an index to get to
+
+872
+00:36:44,580 --> 00:36:46,350
+that or you're gonna do analytics and go
+
+873
+00:36:46,350 --> 00:36:47,460
+through all those so that's the
+
+874
+00:36:47,460 --> 00:36:48,390
+difference
+
+875
+00:36:48,390 --> 00:37:02,250
+got it okay question good question so
+
+876
+00:37:02,250 --> 00:37:04,740
+the question is is that since we don't
+
+877
+00:37:04,740 --> 00:37:05,910
+bring it you don't have to bring
+
+878
+00:37:05,910 --> 00:37:08,190
+everything into memory what happens when
+
+879
+00:37:08,190 --> 00:37:09,450
+you're doing a full table stand and
+
+880
+00:37:09,450 --> 00:37:10,590
+you're actually they access something
+
+881
+00:37:10,590 --> 00:37:12,300
+that's not in memory that's your
+
+882
+00:37:12,300 --> 00:37:12,540
+question
+
+883
+00:37:12,540 --> 00:37:14,850
+so it's no different than what I was
+
+884
+00:37:14,850 --> 00:37:17,250
+mentioning about the invalid rows if you
+
+885
+00:37:17,250 --> 00:37:19,770
+have an invalid row you have to go to
+
+886
+00:37:19,770 --> 00:37:21,960
+disk to go get it so it's the same
+
+887
+00:37:21,960 --> 00:37:24,630
+concept imagine you have so you filled
+
+888
+00:37:24,630 --> 00:37:27,420
+up 50% of your data in memory and you
+
+889
+00:37:27,420 --> 00:37:29,720
+have those in IMS use imagine you have
+
+890
+00:37:29,720 --> 00:37:33,570
+the other 50% as empty AIIMS shoes or
+
+891
+00:37:33,570 --> 00:37:36,390
+dirty IM shoes just you know if you can
+
+892
+00:37:36,390 --> 00:37:38,160
+envision that then you're always going
+
+893
+00:37:38,160 --> 00:37:40,170
+to disk to fetch those 50% of the rolls
+
+894
+00:37:40,170 --> 00:37:42,330
+that's the behavior that you'll have so
+
+895
+00:37:42,330 --> 00:37:44,220
+you'll get everything that you can from
+
+896
+00:37:44,220 --> 00:37:45,080
+memory
+
+897
+00:37:45,080 --> 00:37:46,610
+the columnstore and you'll get the rest
+
+898
+00:37:46,610 --> 00:37:49,270
+from disk or the buffer cache got it
+
+899
+00:37:49,270 --> 00:37:51,260
+remember and you can compress the hell
+
+900
+00:37:51,260 --> 00:37:53,240
+out of these things so you can fit as
+
+901
+00:37:53,240 --> 00:37:54,770
+much as you can see you say so I didn't
+
+902
+00:37:54,770 --> 00:37:57,230
+say that per pile but you can't give you
+
+903
+00:37:57,230 --> 00:38:03,350
+let's say what I want okay okay all
+
+904
+00:38:03,350 --> 00:38:03,650
+right
+
+905
+00:38:03,650 --> 00:38:06,080
+there it is but you can you can compress
+
+906
+00:38:06,080 --> 00:38:07,910
+it bringing it in until you want it
+
+907
+00:38:07,910 --> 00:38:10,040
+bring everything you can into memory if
+
+908
+00:38:10,040 --> 00:38:11,810
+you can okay
+
+909
+00:38:11,810 --> 00:38:14,360
+moving on all right so this is I'll just
+
+910
+00:38:14,360 --> 00:38:16,250
+blaze through this but this is a very
+
+911
+00:38:16,250 --> 00:38:18,290
+kind of a knob somewhat obvious point
+
+912
+00:38:18,290 --> 00:38:20,000
+for me because I explain it all the time
+
+913
+00:38:20,000 --> 00:38:22,370
+but may not be so obvious to others how
+
+914
+00:38:22,370 --> 00:38:24,650
+do we get mixed workloads to run so much
+
+915
+00:38:24,650 --> 00:38:27,110
+faster without doing much but just
+
+916
+00:38:27,110 --> 00:38:29,660
+having a calm store so normally when you
+
+917
+00:38:29,660 --> 00:38:32,360
+have a mixed workload you'll have here's
+
+918
+00:38:32,360 --> 00:38:34,670
+a table you have one two three old tepee
+
+919
+00:38:34,670 --> 00:38:36,890
+indexes okay old to be index again
+
+920
+00:38:36,890 --> 00:38:39,020
+indexes on columns like key columns
+
+921
+00:38:39,020 --> 00:38:40,820
+primary key columns that you really
+
+922
+00:38:40,820 --> 00:38:42,380
+quickly trying to get to the the values
+
+923
+00:38:42,380 --> 00:38:46,610
+of and then you have 10 to 20 analytic
+
+924
+00:38:46,610 --> 00:38:48,890
+indexes because for all the columns that
+
+925
+00:38:48,890 --> 00:38:50,060
+you want to run analytics on you're
+
+926
+00:38:50,060 --> 00:38:52,340
+gonna have a separate index for that now
+
+927
+00:38:52,340 --> 00:38:54,380
+you can basically fill away those
+
+928
+00:38:54,380 --> 00:38:56,150
+analytic indexes all together and just
+
+929
+00:38:56,150 --> 00:38:58,850
+maintain the column store and anytime
+
+930
+00:38:58,850 --> 00:39:00,950
+there's an update as I mentioned you can
+
+931
+00:39:00,950 --> 00:39:03,620
+very quickly mark a bit that says this
+
+932
+00:39:03,620 --> 00:39:04,730
+guy's been update this guy's been
+
+933
+00:39:04,730 --> 00:39:07,250
+deleted so because the memory the the
+
+934
+00:39:07,250 --> 00:39:09,050
+updates are very quickly
+
+935
+00:39:09,050 --> 00:39:13,730
+to indicate a DML has happened okay and
+
+936
+00:39:13,730 --> 00:39:15,590
+that's how and so now you don't pay the
+
+937
+00:39:15,590 --> 00:39:18,320
+cost of updating all of these analytic
+
+938
+00:39:18,320 --> 00:39:20,870
+indexes for every update that you have
+
+939
+00:39:20,870 --> 00:39:25,760
+to your to your table all right number
+
+940
+00:39:25,760 --> 00:39:29,930
+to vectorize analytics so we touched
+
+941
+00:39:29,930 --> 00:39:32,090
+upon this briefly right with the sim D
+
+942
+00:39:32,090 --> 00:39:34,670
+scans I'm gonna walk through that a
+
+943
+00:39:34,670 --> 00:39:36,470
+little bit more in detail in terms of
+
+944
+00:39:36,470 --> 00:39:39,200
+how that works so paralyzed predicate
+
+945
+00:39:39,200 --> 00:39:42,380
+evaluation load eval store consumers all
+
+946
+00:39:42,380 --> 00:39:44,210
+these are the steps that you take when
+
+947
+00:39:44,210 --> 00:39:46,070
+you want to evaluate a predicate so
+
+948
+00:39:46,070 --> 00:39:48,410
+let's just go through a quick example so
+
+949
+00:39:48,410 --> 00:39:49,700
+let's say you have this select count
+
+950
+00:39:49,700 --> 00:39:52,460
+star from table T where a is greater
+
+951
+00:39:52,460 --> 00:39:55,760
+than 10 and B is less than 20 right so
+
+952
+00:39:55,760 --> 00:39:56,840
+the first thing you're going to do is
+
+953
+00:39:56,840 --> 00:39:58,640
+you're going to load a and you're going
+
+954
+00:39:58,640 --> 00:39:58,849
+to
+
+955
+00:39:58,849 --> 00:40:02,890
+for values into a sim deregister right
+
+956
+00:40:02,890 --> 00:40:05,119
+then as I mentioned you're gonna splat
+
+957
+00:40:05,119 --> 00:40:08,989
+10 across that Cindy register then
+
+958
+00:40:08,989 --> 00:40:10,910
+you're gonna do a comparison greater
+
+959
+00:40:10,910 --> 00:40:12,019
+than greater than greater than greater
+
+960
+00:40:12,019 --> 00:40:14,209
+than all in one cycle and you got you
+
+961
+00:40:14,209 --> 00:40:16,609
+know a bit back that says 1 1 0 1 then
+
+962
+00:40:16,609 --> 00:40:18,559
+you do the same thing for B you load B
+
+963
+00:40:18,559 --> 00:40:20,599
+you compare it to 20 and that's the bit
+
+964
+00:40:20,599 --> 00:40:23,479
+vector that you have for it and now you
+
+965
+00:40:23,479 --> 00:40:25,459
+just need the and those two bit vectors
+
+966
+00:40:25,459 --> 00:40:28,279
+together and now you have the final set
+
+967
+00:40:28,279 --> 00:40:30,979
+0 1 0 1 now that is actually not
+
+968
+00:40:30,979 --> 00:40:33,829
+completely done because that's stored in
+
+969
+00:40:33,829 --> 00:40:36,699
+a sim D register 4 bits are stored in
+
+970
+00:40:36,699 --> 00:40:39,140
+128-bit register I don't want to waste
+
+971
+00:40:39,140 --> 00:40:41,749
+128 bits to store 4 bits so you
+
+972
+00:40:41,749 --> 00:40:43,309
+basically pack them that's another
+
+973
+00:40:43,309 --> 00:40:45,289
+instruction that the the Simeon
+
+974
+00:40:45,289 --> 00:40:46,880
+structure set support that packs them
+
+975
+00:40:46,880 --> 00:40:48,650
+into just four bits literally four bits
+
+976
+00:40:48,650 --> 00:40:50,809
+and then you store that you know
+
+977
+00:40:50,809 --> 00:40:52,579
+wherever or utilize that on and then for
+
+978
+00:40:52,579 --> 00:40:54,679
+the next predicate so that's you know I
+
+979
+00:40:54,679 --> 00:40:57,859
+a little more details of house m.d.
+
+980
+00:40:57,859 --> 00:41:02,779
+operations work ok so not just scans but
+
+981
+00:41:02,779 --> 00:41:06,289
+we're also making joins faster so bloom
+
+982
+00:41:06,289 --> 00:41:08,359
+filters you guys are familiar with bloom
+
+983
+00:41:08,359 --> 00:41:10,459
+filters the way we make bloom filters
+
+984
+00:41:10,459 --> 00:41:12,650
+even faster it's a combination of things
+
+985
+00:41:12,650 --> 00:41:14,719
+we apply the bloom filter on the
+
+986
+00:41:14,719 --> 00:41:17,179
+dictionary first that's the first thing
+
+987
+00:41:17,179 --> 00:41:18,589
+because you only need to run it on two
+
+988
+00:41:18,589 --> 00:41:20,509
+distinct symbols you don't need to run
+
+989
+00:41:20,509 --> 00:41:22,759
+it on all the values and once you run
+
+990
+00:41:22,759 --> 00:41:24,289
+out on the distinct symbols you need to
+
+991
+00:41:24,289 --> 00:41:27,380
+map them back to those symbols that map
+
+992
+00:41:27,380 --> 00:41:29,659
+to those codes second thing that we make
+
+993
+00:41:29,659 --> 00:41:31,489
+bloom filters faster is we vectorize the
+
+994
+00:41:31,489 --> 00:41:33,529
+operations we use sim d to basically do
+
+995
+00:41:33,529 --> 00:41:36,289
+a set membership lookup this says within
+
+996
+00:41:36,289 --> 00:41:39,409
+the bit vector find determine if this
+
+997
+00:41:39,409 --> 00:41:41,900
+value is set in this in this bit vector
+
+998
+00:41:41,900 --> 00:41:43,819
+this slide doesn't talk about bloom
+
+999
+00:41:43,819 --> 00:41:45,439
+filters this takes it to the next level
+
+1000
+00:41:45,439 --> 00:41:49,519
+this is saying if you can tell me which
+
+1001
+00:41:49,519 --> 00:41:52,039
+two columns across two tables you plan
+
+1002
+00:41:52,039 --> 00:41:54,619
+on joining against okay and that's what
+
+1003
+00:41:54,619 --> 00:41:56,709
+we call this join group if you say hey
+
+1004
+00:41:56,709 --> 00:41:58,699
+you're going to join between vehicles
+
+1005
+00:41:58,699 --> 00:42:02,509
+and sales on this name column now once
+
+1006
+00:42:02,509 --> 00:42:05,959
+you tell me that or tell us that we will
+
+1007
+00:42:05,959 --> 00:42:09,349
+encode both of these columns using the
+
+1008
+00:42:09,349 --> 00:42:13,010
+same dictionary okay
+
+1009
+00:42:13,010 --> 00:42:15,660
+without this we will we don't know that
+
+1010
+00:42:15,660 --> 00:42:17,880
+these two are related and so we'll
+
+1011
+00:42:17,880 --> 00:42:19,710
+basically have a separate dictionary for
+
+1012
+00:42:19,710 --> 00:42:21,690
+this guy a separate dictionary for this
+
+1013
+00:42:21,690 --> 00:42:23,820
+guy and they can have different codes
+
+1014
+00:42:23,820 --> 00:42:25,470
+depending on how the item sewers are
+
+1015
+00:42:25,470 --> 00:42:27,570
+broken up and so once they have
+
+1016
+00:42:27,570 --> 00:42:29,610
+different codes they don't relate to
+
+1017
+00:42:29,610 --> 00:42:31,680
+each other anymore like code five here
+
+1018
+00:42:31,680 --> 00:42:34,290
+doesn't match code eight here even
+
+1019
+00:42:34,290 --> 00:42:37,620
+though five and eight are both out BMW
+
+1020
+00:42:37,620 --> 00:42:38,970
+or whatever this is vehicles name that
+
+1021
+00:42:38,970 --> 00:42:42,330
+BMW whatever so once you tell us this we
+
+1022
+00:42:42,330 --> 00:42:44,340
+will use the same dictionary to map the
+
+1023
+00:42:44,340 --> 00:42:47,820
+codes and now you're just doing a code
+
+1024
+00:42:47,820 --> 00:42:51,510
+to code match you're not doing a normal
+
+1025
+00:42:51,510 --> 00:42:54,180
+join you guys implemented a join yes
+
+1026
+00:42:54,180 --> 00:42:54,750
+okay
+
+1027
+00:42:54,750 --> 00:42:56,760
+so you know you guys a hash hash join
+
+1028
+00:42:56,760 --> 00:42:59,160
+hash drilling involves building a hash
+
+1029
+00:42:59,160 --> 00:43:00,660
+table you're gonna have to hash the key
+
+1030
+00:43:00,660 --> 00:43:04,110
+you got a insert into a hash table when
+
+1031
+00:43:04,110 --> 00:43:06,030
+you do a probe you guys again hash the
+
+1032
+00:43:06,030 --> 00:43:08,130
+key you gotta do a key comparison you
+
+1033
+00:43:08,130 --> 00:43:11,130
+got follow chains all of that right here
+
+1034
+00:43:11,130 --> 00:43:14,250
+it's just a ok code ten index into an
+
+1035
+00:43:14,250 --> 00:43:17,460
+array not null there's a match and
+
+1036
+00:43:17,460 --> 00:43:20,040
+that's it and that whole thing can be
+
+1037
+00:43:20,040 --> 00:43:22,020
+vectorized it's a very simple operation
+
+1038
+00:43:22,020 --> 00:43:30,960
+to do a lookup that makes sense yes yeah
+
+1039
+00:43:30,960 --> 00:43:32,730
+good question so there there cases where
+
+1040
+00:43:32,730 --> 00:43:34,620
+we do things automatically and then when
+
+1041
+00:43:34,620 --> 00:43:36,000
+I talk about the future we're gonna go
+
+1042
+00:43:36,000 --> 00:43:41,540
+to an extreme on this okay so that's
+
+1043
+00:43:41,540 --> 00:43:45,030
+joins aggregations we do the same thing
+
+1044
+00:43:45,030 --> 00:43:46,980
+that this the slides very detailed so
+
+1045
+00:43:46,980 --> 00:43:48,720
+just follow my words and not necessarily
+
+1046
+00:43:48,720 --> 00:43:51,600
+look too much at this but we have two
+
+1047
+00:43:51,600 --> 00:43:53,970
+forms of aggregation pushdown this is
+
+1048
+00:43:53,970 --> 00:43:56,490
+single table aviation pushdown this is
+
+1049
+00:43:56,490 --> 00:43:57,630
+something it's called vector
+
+1050
+00:43:57,630 --> 00:43:59,580
+transformations doing aggregations above
+
+1051
+00:43:59,580 --> 00:44:02,430
+a join and it's kind of a you know this
+
+1052
+00:44:02,430 --> 00:44:04,020
+is complicated right this you can't make
+
+1053
+00:44:04,020 --> 00:44:05,670
+much meaning by just looking at this
+
+1054
+00:44:05,670 --> 00:44:08,840
+graph but let's talk about this first
+
+1055
+00:44:08,840 --> 00:44:11,670
+what we're doing here is imagine you
+
+1056
+00:44:11,670 --> 00:44:14,640
+have a select sum from this table with a
+
+1057
+00:44:14,640 --> 00:44:18,030
+predicate right normally again with that
+
+1058
+00:44:18,030 --> 00:44:20,100
+volcano model right you're sending back
+
+1059
+00:44:20,100 --> 00:44:23,310
+every passing row to another operator
+
+1060
+00:44:23,310 --> 00:44:26,090
+and that operator is then
+
+1061
+00:44:26,090 --> 00:44:28,250
+and adding and adding and adding one row
+
+1062
+00:44:28,250 --> 00:44:30,170
+at a time maybe there's a batch of rows
+
+1063
+00:44:30,170 --> 00:44:33,020
+at a time right but it's taking it's
+
+1064
+00:44:33,020 --> 00:44:34,700
+doing a couple of things one is it's
+
+1065
+00:44:34,700 --> 00:44:37,280
+doing it it's copying the symbol into a
+
+1066
+00:44:37,280 --> 00:44:39,680
+buffer the other operator is reading
+
+1067
+00:44:39,680 --> 00:44:41,900
+that buffer then it's looking up and
+
+1068
+00:44:41,900 --> 00:44:44,000
+aggregate and it's adding it it's it's
+
+1069
+00:44:44,000 --> 00:44:47,300
+quite expensive what we're doing here is
+
+1070
+00:44:47,300 --> 00:44:48,860
+we're saying you know what let's
+
+1071
+00:44:48,860 --> 00:44:51,140
+leverage the format this was dictionary
+
+1072
+00:44:51,140 --> 00:44:53,930
+encoded and if it's dictionary encoded
+
+1073
+00:44:53,930 --> 00:44:56,210
+we can use the dictionary codes and
+
+1074
+00:44:56,210 --> 00:44:58,190
+aggregate against the dictionary codes
+
+1075
+00:44:58,190 --> 00:45:00,590
+and the distinct symbols and then we can
+
+1076
+00:45:00,590 --> 00:45:03,560
+do that all at the scan layer and then
+
+1077
+00:45:03,560 --> 00:45:05,870
+only project back a partial aggregate
+
+1078
+00:45:05,870 --> 00:45:09,500
+result to the higher-level operator okay
+
+1079
+00:45:09,500 --> 00:45:10,940
+so that's that's the techniques that
+
+1080
+00:45:10,940 --> 00:45:11,930
+we're doing aggregation I have an
+
+1081
+00:45:11,930 --> 00:45:13,610
+example this vector transformation I'm
+
+1082
+00:45:13,610 --> 00:45:14,930
+not going to go into this all I'm gonna
+
+1083
+00:45:14,930 --> 00:45:17,450
+say is again this is a paper that we
+
+1084
+00:45:17,450 --> 00:45:22,760
+have in I see de 2018 I think it's a
+
+1085
+00:45:22,760 --> 00:45:24,380
+very novel technique that basically
+
+1086
+00:45:24,380 --> 00:45:28,070
+pushes aggregations down and joins down
+
+1087
+00:45:28,070 --> 00:45:30,110
+into the scan layer so basically instead
+
+1088
+00:45:30,110 --> 00:45:31,850
+of actually sending all these rows back
+
+1089
+00:45:31,850 --> 00:45:33,950
+up up up across the operators to join
+
+1090
+00:45:33,950 --> 00:45:35,510
+operator aggregation toppers we do
+
+1091
+00:45:35,510 --> 00:45:37,070
+everything in the scan operator and
+
+1092
+00:45:37,070 --> 00:45:39,440
+that's that I'm again I'm not gonna talk
+
+1093
+00:45:39,440 --> 00:45:41,330
+about that but I'm gonna talk about this
+
+1094
+00:45:41,330 --> 00:45:43,850
+this is kind of cool something that you
+
+1095
+00:45:43,850 --> 00:45:45,470
+probably don't think about but we have
+
+1096
+00:45:45,470 --> 00:45:48,530
+to think about in industry very large
+
+1097
+00:45:48,530 --> 00:45:50,540
+numbers anybody know how very large
+
+1098
+00:45:50,540 --> 00:45:54,440
+numbers are encoded there's a variety
+
+1099
+00:45:54,440 --> 00:45:57,440
+different formats and by very large I'm
+
+1100
+00:45:57,440 --> 00:45:59,510
+talking about like let's say there are
+
+1101
+00:45:59,510 --> 00:46:02,210
+30 plus digits you know it's something
+
+1102
+00:46:02,210 --> 00:46:05,090
+that doesn't fit in 64-bit and a 64-bit
+
+1103
+00:46:05,090 --> 00:46:10,580
+register Oracle supports a software
+
+1104
+00:46:10,580 --> 00:46:14,180
+implemented type for a number you might
+
+1105
+00:46:14,180 --> 00:46:15,740
+think of a number is just the register a
+
+1106
+00:46:15,740 --> 00:46:18,560
+six an int or whatever right or long we
+
+1107
+00:46:18,560 --> 00:46:22,280
+treat it as a sequence of bytes okay
+
+1108
+00:46:22,280 --> 00:46:25,700
+when each set of each byte represents a
+
+1109
+00:46:25,700 --> 00:46:28,760
+digit up to 100 so it's it's its base
+
+1110
+00:46:28,760 --> 00:46:32,720
+100 so you have the first byte indicates
+
+1111
+00:46:32,720 --> 00:46:35,120
+like an exponent as well as a the sign
+
+1112
+00:46:35,120 --> 00:46:36,710
+plus a minus
+
+1113
+00:46:36,710 --> 00:46:41,210
+right numerix okay so this is but the
+
+1114
+00:46:41,210 --> 00:46:43,220
+and how its implemented you know how you
+
+1115
+00:46:43,220 --> 00:46:46,040
+guys it puts it okay so so we basically
+
+1116
+00:46:46,040 --> 00:46:48,680
+have a in each operation on a number
+
+1117
+00:46:48,680 --> 00:46:50,750
+type is like hundreds of cycles
+
+1118
+00:46:50,750 --> 00:46:52,790
+literally hundreds of cycles as opposed
+
+1119
+00:46:52,790 --> 00:46:56,180
+to one cycle for doing a simply a
+
+1120
+00:46:56,180 --> 00:46:59,359
+register operation so let's walk through
+
+1121
+00:46:59,359 --> 00:47:01,130
+an example of how we support very large
+
+1122
+00:47:01,130 --> 00:47:03,410
+numbers so imagine you have a select sum
+
+1123
+00:47:03,410 --> 00:47:05,690
+of a from table T where grouped by J
+
+1124
+00:47:05,690 --> 00:47:09,380
+comma K okay so you're doing a someone a
+
+1125
+00:47:09,380 --> 00:47:11,869
+grouping by J comma K and let's suppose
+
+1126
+00:47:11,869 --> 00:47:14,180
+this is your table okay
+
+1127
+00:47:14,180 --> 00:47:16,280
+these are your grouping columns J and K
+
+1128
+00:47:16,280 --> 00:47:21,020
+and that's your measure column a okay
+
+1129
+00:47:21,020 --> 00:47:23,810
+what we do is we create this frequency
+
+1130
+00:47:23,810 --> 00:47:26,720
+table and this frequency table on the
+
+1131
+00:47:26,720 --> 00:47:29,900
+x-axis are the dictionary codes
+
+1132
+00:47:29,900 --> 00:47:31,520
+these are imagine these are dictionary
+
+1133
+00:47:31,520 --> 00:47:33,560
+codes okay they they map to actual
+
+1134
+00:47:33,560 --> 00:47:35,690
+symbols just for the for to illustrate
+
+1135
+00:47:35,690 --> 00:47:38,330
+this example here so you're gonna have 0
+
+1136
+00:47:38,330 --> 00:47:41,089
+1 2 3 and this is 10,000 and 1 all the
+
+1137
+00:47:41,089 --> 00:47:43,250
+way to 50 1000 here 19 cetera okay
+
+1138
+00:47:43,250 --> 00:47:46,280
+that's the x axis on the y axis you have
+
+1139
+00:47:46,280 --> 00:47:49,730
+the groups the distinct groups so the
+
+1140
+00:47:49,730 --> 00:47:51,650
+possible combinations of groups are 0 0
+
+1141
+00:47:51,650 --> 00:47:55,310
+0 1 1 0 and 1 1 if you look at all these
+
+1142
+00:47:55,310 --> 00:47:59,240
+values over here right now what we do is
+
+1143
+00:47:59,240 --> 00:48:03,490
+we walk through each row and we add a
+
+1144
+00:48:03,490 --> 00:48:07,310
+count so if I go to 0 1 that map so this
+
+1145
+00:48:07,310 --> 00:48:12,320
+group I index into 50 1819 and I bump up
+
+1146
+00:48:12,320 --> 00:48:14,060
+a count here that says I've seen it one
+
+1147
+00:48:14,060 --> 00:48:17,480
+time and I do the same thing for each
+
+1148
+00:48:17,480 --> 00:48:20,030
+one of these values 51 8 or 9 again for
+
+1149
+00:48:20,030 --> 00:48:22,130
+the other group I bump it up I do this I
+
+1150
+00:48:22,130 --> 00:48:24,349
+bump it up and in the end I basically
+
+1151
+00:48:24,349 --> 00:48:26,330
+have this table that says how many times
+
+1152
+00:48:26,330 --> 00:48:29,150
+have I seen these dictionary codes for
+
+1153
+00:48:29,150 --> 00:48:32,510
+these different groups everybody with me
+
+1154
+00:48:32,510 --> 00:48:32,930
+so far
+
+1155
+00:48:32,930 --> 00:48:38,570
+ok now what we do is we will aggregate
+
+1156
+00:48:38,570 --> 00:48:41,690
+across each group by multiplying the
+
+1157
+00:48:41,690 --> 00:48:44,810
+frequency times that dictionary symbol
+
+1158
+00:48:44,810 --> 00:48:50,050
+so it will say code 0 shows up 0
+
+1159
+00:48:50,050 --> 00:48:52,540
+times so I don't need to multiply it but
+
+1160
+00:48:52,540 --> 00:48:55,060
+this guy shows up one time so I need to
+
+1161
+00:48:55,060 --> 00:48:57,100
+grab its code look it up in the
+
+1162
+00:48:57,100 --> 00:49:00,280
+dictionary and multiply it and so this
+
+1163
+00:49:00,280 --> 00:49:02,770
+is basically the operations zero times
+
+1164
+00:49:02,770 --> 00:49:05,110
+the symbol plus zero times the next
+
+1165
+00:49:05,110 --> 00:49:07,600
+symbol and so on why do we do this
+
+1166
+00:49:07,600 --> 00:49:33,070
+question mapping are you saying if the
+
+1167
+00:49:33,070 --> 00:49:34,960
+number groups is too large or if the
+
+1168
+00:49:34,960 --> 00:49:44,670
+number of dictionaries okay got it
+
+1169
+00:49:45,150 --> 00:49:47,140
+absolutely right so you bet you've
+
+1170
+00:49:47,140 --> 00:49:48,490
+identified some of the weaknesses of
+
+1171
+00:49:48,490 --> 00:49:51,460
+this so the question was I think if I
+
+1172
+00:49:51,460 --> 00:49:52,720
+understand your question right it's it's
+
+1173
+00:49:52,720 --> 00:49:53,890
+possible that you might have one
+
+1174
+00:49:53,890 --> 00:49:56,770
+everywhere here for example because it's
+
+1175
+00:49:56,770 --> 00:49:59,800
+so diverse I guess it's the right word
+
+1176
+00:49:59,800 --> 00:50:02,290
+and so you know every one of these codes
+
+1177
+00:50:02,290 --> 00:50:04,090
+only shows up one particular group or
+
+1178
+00:50:04,090 --> 00:50:05,800
+maybe the show in all the groups or
+
+1179
+00:50:05,800 --> 00:50:07,300
+whatever it is and so you basically end
+
+1180
+00:50:07,300 --> 00:50:11,650
+up multiplying everything and that is a
+
+1181
+00:50:11,650 --> 00:50:14,830
+weakness of this it's it depends so it's
+
+1182
+00:50:14,830 --> 00:50:17,890
+it's a it it depends on the data and how
+
+1183
+00:50:17,890 --> 00:50:19,720
+the data is actually organized in the
+
+1184
+00:50:19,720 --> 00:50:21,310
+case and also it depends on how many
+
+1185
+00:50:21,310 --> 00:50:23,260
+groups you have if you have many groups
+
+1186
+00:50:23,260 --> 00:50:25,750
+and this table stuffs become very large
+
+1187
+00:50:25,750 --> 00:50:27,100
+because you have many distinct symbols
+
+1188
+00:50:27,100 --> 00:50:29,230
+and many groups it's gonna be a very
+
+1189
+00:50:29,230 --> 00:50:30,760
+expensive operation to go through this
+
+1190
+00:50:30,760 --> 00:50:33,730
+for every single group but just just to
+
+1191
+00:50:33,730 --> 00:50:35,800
+finish off where the idea here is is
+
+1192
+00:50:35,800 --> 00:50:39,940
+we're basically replacing addition with
+
+1193
+00:50:39,940 --> 00:50:43,240
+multiplication right every additional if
+
+1194
+00:50:43,240 --> 00:50:44,890
+I have to add each one of these values
+
+1195
+00:50:44,890 --> 00:50:46,840
+up and sum up the same value and if I
+
+1196
+00:50:46,840 --> 00:50:48,430
+can replace that if it let's say it's
+
+1197
+00:50:48,430 --> 00:50:51,190
+ten times five I'd rather do ten times
+
+1198
+00:50:51,190 --> 00:50:53,470
+five as opposed to adding up five ten
+
+1199
+00:50:53,470 --> 00:50:56,110
+times and this is like an obvious thing
+
+1200
+00:50:56,110 --> 00:50:57,220
+you would think about in terms of
+
+1201
+00:50:57,220 --> 00:50:59,170
+factoring but it's very important for
+
+1202
+00:50:59,170 --> 00:51:00,730
+software implemented types because each
+
+1203
+00:51:00,730 --> 00:51:02,980
+one of these operations is so many so
+
+1204
+00:51:02,980 --> 00:51:03,910
+many cycles 80
+
+1205
+00:51:03,910 --> 00:51:07,210
+some cycles so as you were saying it
+
+1206
+00:51:07,210 --> 00:51:09,460
+does depend on the workload in terms of
+
+1207
+00:51:09,460 --> 00:51:11,890
+when this actually kicks in or not so
+
+1208
+00:51:11,890 --> 00:51:13,240
+that makes sense if I understand that
+
+1209
+00:51:13,240 --> 00:51:17,859
+one question again the group so the
+
+1210
+00:51:17,859 --> 00:51:20,470
+groups can be analyzed by what by by
+
+1211
+00:51:20,470 --> 00:51:22,450
+walking through the columns of J&K
+
+1212
+00:51:22,450 --> 00:51:25,539
+so you will as you walk through J you'll
+
+1213
+00:51:25,539 --> 00:51:27,309
+identify how many distinct symbols are
+
+1214
+00:51:27,309 --> 00:51:29,770
+in J you walk through K how many
+
+1215
+00:51:29,770 --> 00:51:32,140
+distinct symbols are K you multiply the
+
+1216
+00:51:32,140 --> 00:51:33,190
+two like kind of like a
+
+1217
+00:51:33,190 --> 00:51:34,990
+multi-dimensional array to get the max
+
+1218
+00:51:34,990 --> 00:51:38,619
+possible code and that's the that's the
+
+1219
+00:51:38,619 --> 00:51:41,020
+table that you create and then when you
+
+1220
+00:51:41,020 --> 00:51:42,700
+want to index into it you take this and
+
+1221
+00:51:42,700 --> 00:51:44,890
+this multiply them together and that's
+
+1222
+00:51:44,890 --> 00:51:47,920
+how you index into the table good okay
+
+1223
+00:51:47,920 --> 00:51:51,280
+all right I'm gonna skip through several
+
+1224
+00:51:51,280 --> 00:51:53,349
+slides here in interest of time so
+
+1225
+00:51:53,349 --> 00:51:57,609
+numbers joins are made faster remember
+
+1226
+00:51:57,609 --> 00:52:00,579
+expressions I'll skip over here dynamic
+
+1227
+00:52:00,579 --> 00:52:02,230
+scans I'll skip and I'll move over
+
+1228
+00:52:02,230 --> 00:52:04,390
+straight into this thing called a memory
+
+1229
+00:52:04,390 --> 00:52:07,930
+plus extra data so this is number three
+
+1230
+00:52:07,930 --> 00:52:09,579
+where we bringing in memory into the
+
+1231
+00:52:09,579 --> 00:52:14,859
+storage tier so with Oracle we have
+
+1232
+00:52:14,859 --> 00:52:17,049
+something called Exadata Exadata is a
+
+1233
+00:52:17,049 --> 00:52:19,329
+database machine that we build from
+
+1234
+00:52:19,329 --> 00:52:20,069
+scratch
+
+1235
+00:52:20,069 --> 00:52:22,420
+utilizing basically the best of reed
+
+1236
+00:52:22,420 --> 00:52:25,029
+hardware so the fastest networking the
+
+1237
+00:52:25,029 --> 00:52:28,660
+best SSD drives a lot of memory a lot of
+
+1238
+00:52:28,660 --> 00:52:31,750
+flash right we build that from scratch
+
+1239
+00:52:31,750 --> 00:52:35,020
+and we build it to run Oracle as fast as
+
+1240
+00:52:35,020 --> 00:52:42,520
+possible that's a good question it's
+
+1241
+00:52:42,520 --> 00:52:46,180
+definitely in the millions we've sell
+
+1242
+00:52:46,180 --> 00:52:47,650
+them in various different configurations
+
+1243
+00:52:47,650 --> 00:52:50,730
+but it's definitely in the millions but
+
+1244
+00:52:50,730 --> 00:52:53,079
+it's amazing how many people buy them
+
+1245
+00:52:53,079 --> 00:52:55,660
+it's like amazing it's a it's a
+
+1246
+00:52:55,660 --> 00:53:01,029
+billion-dollar business for achill ok ok
+
+1247
+00:53:01,029 --> 00:53:06,279
+so on exa data you have the compute
+
+1248
+00:53:06,279 --> 00:53:10,230
+notes and you have storage nodes ok
+
+1249
+00:53:10,230 --> 00:53:13,270
+compute nodes is where all the higher
+
+1250
+00:53:13,270 --> 00:53:15,670
+level sequel operator processing happens
+
+1251
+00:53:15,670 --> 00:53:17,720
+joins and aggregation
+
+1252
+00:53:17,720 --> 00:53:19,580
+and sorting and all that jazz happens
+
+1253
+00:53:19,580 --> 00:53:23,810
+there on the storage nodes is where you
+
+1254
+00:53:23,810 --> 00:53:26,720
+are closest to the data where it sits in
+
+1255
+00:53:26,720 --> 00:53:30,500
+the SSD drives so that's where you can
+
+1256
+00:53:30,500 --> 00:53:33,470
+actually do some fast filtering here and
+
+1257
+00:53:33,470 --> 00:53:36,470
+then only send back the rows that pass
+
+1258
+00:53:36,470 --> 00:53:40,250
+through the network to the compute nodes
+
+1259
+00:53:40,250 --> 00:53:50,090
+right correct okay so what you had
+
+1260
+00:53:50,090 --> 00:53:52,970
+without in memory is we have also some
+
+1261
+00:53:52,970 --> 00:53:54,859
+flash that's sitting on these storage
+
+1262
+00:53:54,859 --> 00:53:57,500
+nodes and how we use that flash as we
+
+1263
+00:53:57,500 --> 00:53:59,750
+use it as a cache and this goes to what
+
+1264
+00:53:59,750 --> 00:54:01,220
+Andy was talking about earlier is that
+
+1265
+00:54:01,220 --> 00:54:03,859
+there we actually have it as a cache in
+
+1266
+00:54:03,859 --> 00:54:05,780
+the sense that the hottest data that
+
+1267
+00:54:05,780 --> 00:54:08,119
+you're accessing will be moved from the
+
+1268
+00:54:08,119 --> 00:54:12,890
+SSD drives into the flash cache and now
+
+1269
+00:54:12,890 --> 00:54:16,130
+you will and it will also be stored in a
+
+1270
+00:54:16,130 --> 00:54:20,119
+columnar representation now the beauty
+
+1271
+00:54:20,119 --> 00:54:21,859
+of this is that on the compute nodes
+
+1272
+00:54:21,859 --> 00:54:23,570
+you're limited to how much DRAM you have
+
+1273
+00:54:23,570 --> 00:54:25,490
+like one and a half terabytes of memory
+
+1274
+00:54:25,490 --> 00:54:27,650
+which you might think is a lot but in
+
+1275
+00:54:27,650 --> 00:54:30,109
+again real enterprises that's nothing ok
+
+1276
+00:54:30,109 --> 00:54:31,460
+it's like a drop in the bucket you
+
+1277
+00:54:31,460 --> 00:54:33,170
+really need the hundreds of terabytes
+
+1278
+00:54:33,170 --> 00:54:35,599
+that flash gives you and once you have
+
+1279
+00:54:35,599 --> 00:54:37,940
+all of that memory you can basically do
+
+1280
+00:54:37,940 --> 00:54:39,680
+some really nifty storage tiering now
+
+1281
+00:54:39,680 --> 00:54:42,230
+you can have some most of your hottest
+
+1282
+00:54:42,230 --> 00:54:45,950
+data sitting on your compute and if you
+
+1283
+00:54:45,950 --> 00:54:48,650
+run out of memory no problem it will
+
+1284
+00:54:48,650 --> 00:54:51,440
+automatically get populated into the
+
+1285
+00:54:51,440 --> 00:54:53,500
+flash cache sitting on the storage nodes
+
+1286
+00:54:53,500 --> 00:54:57,410
+now how does a query work ok so imagine
+
+1287
+00:54:57,410 --> 00:54:59,599
+you're doing a scan a full table scan
+
+1288
+00:54:59,599 --> 00:55:02,210
+says you know select from my phonebook
+
+1289
+00:55:02,210 --> 00:55:04,220
+all people in my address that live in
+
+1290
+00:55:04,220 --> 00:55:06,410
+California whatever it's going to go
+
+1291
+00:55:06,410 --> 00:55:08,660
+through here it's gonna say ok I've
+
+1292
+00:55:08,660 --> 00:55:10,310
+exhausted everything that's over here
+
+1293
+00:55:10,310 --> 00:55:12,650
+the rest of my table is sitting on my
+
+1294
+00:55:12,650 --> 00:55:15,290
+storage and it's gonna say everything is
+
+1295
+00:55:15,290 --> 00:55:17,240
+cached into my flash cache it will
+
+1296
+00:55:17,240 --> 00:55:19,130
+utilize the same vectorization
+
+1297
+00:55:19,130 --> 00:55:21,260
+techniques that we've talked about the
+
+1298
+00:55:21,260 --> 00:55:23,150
+same improvements that we make for joins
+
+1299
+00:55:23,150 --> 00:55:25,190
+and aggregations and so on it leverages
+
+1300
+00:55:25,190 --> 00:55:27,290
+all of that it's just doing it from
+
+1301
+00:55:27,290 --> 00:55:29,599
+flash and so you have to bring it from
+
+1302
+00:55:29,599 --> 00:55:31,370
+flash into the D
+
+1303
+00:55:31,370 --> 00:55:33,860
+that's local to that storage node but
+
+1304
+00:55:33,860 --> 00:55:34,910
+then after that you do the same
+
+1305
+00:55:34,910 --> 00:55:37,780
+techniques and then you send it back up
+
+1306
+00:55:37,780 --> 00:55:40,550
+maybe that makes sense and this is just
+
+1307
+00:55:40,550 --> 00:55:42,320
+the form of storage tuning gives you a
+
+1308
+00:55:42,320 --> 00:55:44,570
+much larger column store it allows you
+
+1309
+00:55:44,570 --> 00:55:47,300
+to place data where it belongs
+
+1310
+00:55:47,300 --> 00:55:50,690
+hot data in the most expensive memory
+
+1311
+00:55:50,690 --> 00:55:52,910
+that's the fastest warm data in the
+
+1312
+00:55:52,910 --> 00:55:55,550
+flash cache and cold data sitting on
+
+1313
+00:55:55,550 --> 00:55:58,160
+your persistence store right on your on
+
+1314
+00:55:58,160 --> 00:56:02,300
+your disk okay these are just some
+
+1315
+00:56:02,300 --> 00:56:05,420
+performance numbers I think we can skip
+
+1316
+00:56:05,420 --> 00:56:11,240
+that and we'll skip this anybody
+
+1317
+00:56:11,240 --> 00:56:13,490
+interested in fault tolerance okay good
+
+1318
+00:56:13,490 --> 00:56:15,890
+okay so let me tell you about how we
+
+1319
+00:56:15,890 --> 00:56:20,510
+achieve fault tolerance okay on we
+
+1320
+00:56:20,510 --> 00:56:22,400
+basically maintain a cluster of nodes we
+
+1321
+00:56:22,400 --> 00:56:23,330
+call it rack
+
+1322
+00:56:23,330 --> 00:56:25,610
+okay on the rack you can have many
+
+1323
+00:56:25,610 --> 00:56:27,410
+different nodes let's say four nodes in
+
+1324
+00:56:27,410 --> 00:56:29,720
+this example and you have a column store
+
+1325
+00:56:29,720 --> 00:56:32,090
+on each one of these nodes each one of
+
+1326
+00:56:32,090 --> 00:56:33,470
+these nodes has memory you can put a
+
+1327
+00:56:33,470 --> 00:56:34,760
+separate you can put a column store in
+
+1328
+00:56:34,760 --> 00:56:38,600
+there what you can do is you can bring
+
+1329
+00:56:38,600 --> 00:56:41,120
+your data into this column store and you
+
+1330
+00:56:41,120 --> 00:56:43,220
+can duplicate it on any one of these
+
+1331
+00:56:43,220 --> 00:56:45,950
+other nodes so for example this red eye
+
+1332
+00:56:45,950 --> 00:56:49,430
+MCU is duplicate on this node and this
+
+1333
+00:56:49,430 --> 00:56:51,380
+blue is duplicate on that and black is
+
+1334
+00:56:51,380 --> 00:56:53,300
+duplicated there and you can have at
+
+1335
+00:56:53,300 --> 00:56:55,730
+least two nodes that you can duplicate
+
+1336
+00:56:55,730 --> 00:56:57,620
+it against so that if anything happens
+
+1337
+00:56:57,620 --> 00:56:59,900
+to this node queries just need to be
+
+1338
+00:56:59,900 --> 00:57:01,850
+redirected to the node that has that I
+
+1339
+00:57:01,850 --> 00:57:05,720
+MCU right it's really simple it's as
+
+1340
+00:57:05,720 --> 00:57:08,960
+simple as that you can do even better by
+
+1341
+00:57:08,960 --> 00:57:11,840
+having full duplication where this red
+
+1342
+00:57:11,840 --> 00:57:14,720
+eye MCU is stored everywhere and that
+
+1343
+00:57:14,720 --> 00:57:16,910
+gives you both availability as well as
+
+1344
+00:57:16,910 --> 00:57:20,000
+performance performance because every
+
+1345
+00:57:20,000 --> 00:57:22,580
+access now when you go to it will be
+
+1346
+00:57:22,580 --> 00:57:25,250
+local you're not doing a remote access
+
+1347
+00:57:25,250 --> 00:57:28,610
+to another node to fetch its contents to
+
+1348
+00:57:28,610 --> 00:57:30,970
+and run that query everything is local
+
+1349
+00:57:30,970 --> 00:57:32,120
+okay
+
+1350
+00:57:32,120 --> 00:57:34,760
+so that's how we achieve photons is it's
+
+1351
+00:57:34,760 --> 00:57:36,560
+it's fairly simple and straightforward
+
+1352
+00:57:36,560 --> 00:57:39,980
+every is the IMC you level every IMC you
+
+1353
+00:57:39,980 --> 00:57:41,630
+which is that half of a million rows
+
+1354
+00:57:41,630 --> 00:57:43,910
+gets duplicated I'm gonna skip data
+
+1355
+00:57:43,910 --> 00:57:45,770
+guard and I'll move straight to
+
+1356
+00:57:45,770 --> 00:57:48,170
+intelligent automation Andy how we doing
+
+1357
+00:57:48,170 --> 00:57:53,420
+on time okay okay all right all right
+
+1358
+00:57:53,420 --> 00:57:55,750
+number four is intelligent automation
+
+1359
+00:57:55,750 --> 00:57:58,340
+this is where we're trying to be a lot
+
+1360
+00:57:58,340 --> 00:58:00,980
+smarter so far everything I've told you
+
+1361
+00:58:00,980 --> 00:58:06,050
+for the most part is the DBA or you you
+
+1362
+00:58:06,050 --> 00:58:08,690
+know do you the user has to direct us in
+
+1363
+00:58:08,690 --> 00:58:10,910
+some way says hey bring this table and
+
+1364
+00:58:10,910 --> 00:58:13,100
+turn memory or hey create this join
+
+1365
+00:58:13,100 --> 00:58:17,080
+group right we want to be a lot smarter
+
+1366
+00:58:17,080 --> 00:58:20,630
+you guys were all work with Andy Andy's
+
+1367
+00:58:20,630 --> 00:58:22,670
+the creator of self-driving databases
+
+1368
+00:58:22,670 --> 00:58:28,760
+Larry Ellison stole the name I said we
+
+1369
+00:58:28,760 --> 00:58:31,490
+made money out of it so anyways so
+
+1370
+00:58:31,490 --> 00:58:33,590
+that's where we're moving towards right
+
+1371
+00:58:33,590 --> 00:58:36,680
+self-driving databases I have a separate
+
+1372
+00:58:36,680 --> 00:58:38,930
+talk later on today that that's talking
+
+1373
+00:58:38,930 --> 00:58:42,260
+more about how we achieve this but the
+
+1374
+00:58:42,260 --> 00:58:43,880
+idea here here is here's a picture of
+
+1375
+00:58:43,880 --> 00:58:47,660
+this DBA poor DBA and the DBA saying I
+
+1376
+00:58:47,660 --> 00:58:51,080
+have to manually manage what to put in
+
+1377
+00:58:51,080 --> 00:58:53,870
+this column store and what to keep out I
+
+1378
+00:58:53,870 --> 00:58:55,640
+don't know what tables are hot I don't
+
+1379
+00:58:55,640 --> 00:58:57,470
+know what's cold I know it's warm I have
+
+1380
+00:58:57,470 --> 00:58:59,390
+no idea what queries you're gonna run
+
+1381
+00:58:59,390 --> 00:59:02,420
+right but as I as I mentioned earlier
+
+1382
+00:59:02,420 --> 00:59:05,540
+it's a column store so once this store
+
+1383
+00:59:05,540 --> 00:59:09,980
+becomes full of tables that's it the DBA
+
+1384
+00:59:09,980 --> 00:59:12,020
+has to decide what to Vic tout what to
+
+1385
+00:59:12,020 --> 00:59:15,080
+bring in right and the desired outcome
+
+1386
+00:59:15,080 --> 00:59:17,450
+here is you want to keep hot objects in
+
+1387
+00:59:17,450 --> 00:59:20,380
+memory and remove the colder objects
+
+1388
+00:59:20,380 --> 00:59:24,380
+right so that's what we had okay
+
+1389
+00:59:24,380 --> 00:59:27,740
+what we have now is something smarter
+
+1390
+00:59:27,740 --> 00:59:31,070
+right here we will observe the access
+
+1391
+00:59:31,070 --> 00:59:33,320
+patterns we have something what we call
+
+1392
+00:59:33,320 --> 00:59:35,780
+a heat map heat map basically says at
+
+1393
+00:59:35,780 --> 00:59:39,020
+the very smallest granularity which for
+
+1394
+00:59:39,020 --> 00:59:41,390
+us is a block and the block has some
+
+1395
+00:59:41,390 --> 00:59:43,550
+number of rows at the block level we
+
+1396
+00:59:43,550 --> 00:59:45,790
+will say how often has it been
+
+1397
+00:59:45,790 --> 00:59:48,850
+just how hot is it and how it's been
+
+1398
+00:59:48,850 --> 00:59:50,530
+accessed well the access because it
+
+1399
+00:59:50,530 --> 00:59:54,010
+scans a DML what how right so we observe
+
+1400
+00:59:54,010 --> 00:59:56,410
+the access patterns once we observe the
+
+1401
+00:59:56,410 --> 00:59:58,990
+patterns will classify the data right
+
+1402
+00:59:58,990 --> 01:00:01,810
+we'll say hot intermediate cold cool
+
+1403
+01:00:01,810 --> 01:00:04,570
+data and once we classify the data then
+
+1404
+01:00:04,570 --> 01:00:06,310
+we take action we'll bring in the hot
+
+1405
+01:00:06,310 --> 01:00:09,670
+data in will remove the cold data very
+
+1406
+01:00:09,670 --> 01:00:12,040
+simple very straightforward we take it
+
+1407
+01:00:12,040 --> 01:00:15,250
+to an even more complicated level where
+
+1408
+01:00:15,250 --> 01:00:17,320
+we'll do it we'll do it not just at the
+
+1409
+01:00:17,320 --> 01:00:19,180
+table level or the partition level but
+
+1410
+01:00:19,180 --> 01:00:21,400
+even at the column level so we'll say
+
+1411
+01:00:21,400 --> 01:00:25,660
+something like this column is being used
+
+1412
+01:00:25,660 --> 01:00:28,800
+to aggregate on its a measure column and
+
+1413
+01:00:28,800 --> 01:00:32,200
+this column is being used to predicate
+
+1414
+01:00:32,200 --> 01:00:36,010
+on okay now if I know that this columns
+
+1415
+01:00:36,010 --> 01:00:37,690
+for predication or for predicates
+
+1416
+01:00:37,690 --> 01:00:39,340
+predicate evaluation and this column is
+
+1417
+01:00:39,340 --> 01:00:42,310
+for aggregation I could format them in a
+
+1418
+01:00:42,310 --> 01:00:43,930
+different way I might use dictionary
+
+1419
+01:00:43,930 --> 01:00:46,990
+encoding for wine and maybe another
+
+1420
+01:00:46,990 --> 01:00:49,840
+compressed format for the other because
+
+1421
+01:00:49,840 --> 01:00:51,640
+dictionary encoding in order involves
+
+1422
+01:00:51,640 --> 01:00:53,740
+getting the code looking up in the
+
+1423
+01:00:53,740 --> 01:00:55,420
+dictionary getting the symbol it's a
+
+1424
+01:00:55,420 --> 01:00:57,220
+couple of levels of indirection and
+
+1425
+01:00:57,220 --> 01:01:00,670
+that's expensive but it's really fast
+
+1426
+01:01:00,670 --> 01:01:02,830
+for scans because I just need to look at
+
+1427
+01:01:02,830 --> 01:01:04,390
+the bit codes I don't never I never have
+
+1428
+01:01:04,390 --> 01:01:06,880
+to decompress it whereas aggregation I
+
+1429
+01:01:06,880 --> 01:01:09,070
+need to actually go get that symbol from
+
+1430
+01:01:09,070 --> 01:01:11,380
+the dictionary and then I need to add it
+
+1431
+01:01:11,380 --> 01:01:13,840
+so why should I dictionary encode that
+
+1432
+01:01:13,840 --> 01:01:15,820
+maybe I should just keep it uncompressed
+
+1433
+01:01:15,820 --> 01:01:18,790
+so I have the symbols right there so
+
+1434
+01:01:18,790 --> 01:01:20,230
+this is where you can start becoming a
+
+1435
+01:01:20,230 --> 01:01:22,570
+lot smarter about knowing how your your
+
+1436
+01:01:22,570 --> 01:01:24,160
+data is accessed how the columns are
+
+1437
+01:01:24,160 --> 01:01:25,420
+access how they should be formatted
+
+1438
+01:01:25,420 --> 01:01:27,880
+maybe remember these maybe these four
+
+1439
+01:01:27,880 --> 01:01:30,130
+columns are never accessed get rid of
+
+1440
+01:01:30,130 --> 01:01:32,140
+them compress them or if you want to be
+
+1441
+01:01:32,140 --> 01:01:34,330
+safe compress them or evict them out of
+
+1442
+01:01:34,330 --> 01:01:35,290
+the column so all together
+
+1443
+01:01:35,290 --> 01:01:37,720
+okay so anyways so that's how we're
+
+1444
+01:01:37,720 --> 01:01:39,610
+trying to remove the guesswork out of
+
+1445
+01:01:39,610 --> 01:01:41,890
+the picture and just start being a lot
+
+1446
+01:01:41,890 --> 01:01:44,350
+lot smarter and this gets complicated
+
+1447
+01:01:44,350 --> 01:01:48,040
+because you guys all work on with the
+
+1448
+01:01:48,040 --> 01:01:50,200
+buffer cache imagine you have a mixed
+
+1449
+01:01:50,200 --> 01:01:52,360
+workload where sometimes you're going to
+
+1450
+01:01:52,360 --> 01:01:53,560
+run a little two-piece sometimes you're
+
+1451
+01:01:53,560 --> 01:01:56,560
+gonna run analytics how much memory do
+
+1452
+01:01:56,560 --> 01:01:58,480
+you dedicate for the column store versus
+
+1453
+01:01:58,480 --> 01:01:59,780
+how much do you dedicate for the buffer
+
+1454
+01:01:59,780 --> 01:02:04,400
+- right how do you determine that how do
+
+1455
+01:02:04,400 --> 01:02:06,320
+you know what the behavior is gonna be
+
+1456
+01:02:06,320 --> 01:02:08,540
+today versus tomorrow versus the next
+
+1457
+01:02:08,540 --> 01:02:10,640
+day and so on so all of these factors
+
+1458
+01:02:10,640 --> 01:02:12,560
+have to come into play and you have to
+
+1459
+01:02:12,560 --> 01:02:15,020
+be very elastic and being able to switch
+
+1460
+01:02:15,020 --> 01:02:16,820
+from one to the other and you have to be
+
+1461
+01:02:16,820 --> 01:02:19,790
+very very fast and accurate no customer
+
+1462
+01:02:19,790 --> 01:02:21,410
+wants to move over to Oracle's
+
+1463
+01:02:21,410 --> 01:02:23,240
+autonomous database and all of a sudden
+
+1464
+01:02:23,240 --> 01:02:26,210
+they experience worse performance and be
+
+1465
+01:02:26,210 --> 01:02:28,640
+experience like inconsistent performance
+
+1466
+01:02:28,640 --> 01:02:31,070
+those like those are two terrible things
+
+1467
+01:02:31,070 --> 01:02:33,080
+if the very least you want to be
+
+1468
+01:02:33,080 --> 01:02:35,450
+consistently bad that would be my sister
+
+1469
+01:02:35,450 --> 01:02:36,860
+if you're gonna be bad be consistently
+
+1470
+01:02:36,860 --> 01:02:39,410
+bad so that the user knows like okay at
+
+1471
+01:02:39,410 --> 01:02:40,790
+least I know what to expect today and
+
+1472
+01:02:40,790 --> 01:02:44,510
+tomorrow and so on all right so um I'm
+
+1473
+01:02:44,510 --> 01:02:46,190
+gonna skip through some more things I
+
+1474
+01:02:46,190 --> 01:02:53,930
+will talk briefly about question yes so
+
+1475
+01:02:53,930 --> 01:02:56,810
+this is this is a finer grain this is
+
+1476
+01:02:56,810 --> 01:03:00,230
+saying for example when the column store
+
+1477
+01:03:00,230 --> 01:03:02,630
+is full the action we could take is just
+
+1478
+01:03:02,630 --> 01:03:05,690
+evict out cold columns that's it we
+
+1479
+01:03:05,690 --> 01:03:08,480
+never will decide what should go in to
+
+1480
+01:03:08,480 --> 01:03:10,460
+replace it that's just based on your
+
+1481
+01:03:10,460 --> 01:03:12,380
+query whatever you touch you bring in
+
+1482
+01:03:12,380 --> 01:03:15,140
+that's one mode another mode is now will
+
+1483
+01:03:15,140 --> 01:03:17,210
+be smarter will evict and tell you what
+
+1484
+01:03:17,210 --> 01:03:19,910
+to bring in and yet another mode is an
+
+1485
+01:03:19,910 --> 01:03:22,130
+extreme mode that's where like hands off
+
+1486
+01:03:22,130 --> 01:03:24,290
+will do everything will decide from the
+
+1487
+01:03:24,290 --> 01:03:25,820
+get-go what should be in the column
+
+1488
+01:03:25,820 --> 01:03:27,470
+store from the get-go what columns
+
+1489
+01:03:27,470 --> 01:03:28,760
+should be in there or how to compress it
+
+1490
+01:03:28,760 --> 01:03:45,470
+and so on we we just look at we we just
+
+1491
+01:03:45,470 --> 01:03:48,710
+look at frequency ndv right that's all
+
+1492
+01:03:48,710 --> 01:03:51,230
+we really look at you could we do look
+
+1493
+01:03:51,230 --> 01:03:53,390
+at if it's a date column for example
+
+1494
+01:03:53,390 --> 01:03:54,770
+let's give a date column if it's a date
+
+1495
+01:03:54,770 --> 01:03:56,630
+column we could be smarter in terms of
+
+1496
+01:03:56,630 --> 01:03:58,940
+how we encode it we can code the month
+
+1497
+01:03:58,940 --> 01:04:00,320
+separate from the year from the dates
+
+1498
+01:04:00,320 --> 01:04:02,420
+and get better compression if it's a
+
+1499
+01:04:02,420 --> 01:04:04,160
+number column we can impress them with a
+
+1500
+01:04:04,160 --> 01:04:06,620
+binary representation JSON we can do so
+
+1501
+01:04:06,620 --> 01:04:08,900
+we do look at data types to compress
+
+1502
+01:04:08,900 --> 01:04:09,950
+them in a much more efficient
+
+1503
+01:04:09,950 --> 01:04:12,140
+representation but we don't look at it
+
+1504
+01:04:12,140 --> 01:04:13,610
+to derive meaning
+
+1505
+01:04:13,610 --> 01:04:16,190
+out of it now that's kind of another
+
+1506
+01:04:16,190 --> 01:04:18,170
+level once we once we have the queries
+
+1507
+01:04:18,170 --> 01:04:20,270
+together in the repository and we have
+
+1508
+01:04:20,270 --> 01:04:22,970
+the data and we have access patterns we
+
+1509
+01:04:22,970 --> 01:04:27,740
+can do things like that I don't know if
+
+1510
+01:04:27,740 --> 01:04:31,670
+we're like I say we could do it so we
+
+1511
+01:04:31,670 --> 01:04:33,380
+haven't actually done anything like that
+
+1512
+01:04:33,380 --> 01:04:35,840
+yet because we'll see here's the thing
+
+1513
+01:04:35,840 --> 01:04:37,970
+is the data likely will be encrypted as
+
+1514
+01:04:37,970 --> 01:04:41,030
+it is and so you know we can't do
+
+1515
+01:04:41,030 --> 01:04:43,400
+anything I'm not even an NDB even is
+
+1516
+01:04:43,400 --> 01:04:44,840
+difficult you can do it from the
+
+1517
+01:04:44,840 --> 01:04:46,810
+dictionary but other than that again
+
+1518
+01:04:46,810 --> 01:05:03,920
+any other questions question great yeah
+
+1519
+01:05:03,920 --> 01:05:07,280
+great question so that is that's kind of
+
+1520
+01:05:07,280 --> 01:05:08,840
+our expert system I don't it's not
+
+1521
+01:05:08,840 --> 01:05:10,220
+machine learning but it's like it's an
+
+1522
+01:05:10,220 --> 01:05:12,170
+expert system it's taking to account
+
+1523
+01:05:12,170 --> 01:05:14,540
+again but let's just take simplest
+
+1524
+01:05:14,540 --> 01:05:16,040
+metrics are how often has it been
+
+1525
+01:05:16,040 --> 01:05:18,500
+scanned how much space does it consume
+
+1526
+01:05:18,500 --> 01:05:20,960
+and how has it been scanned those are
+
+1527
+01:05:20,960 --> 01:05:22,250
+kind of like the three very simple
+
+1528
+01:05:22,250 --> 01:05:24,820
+metrics and from that you can divide
+
+1529
+01:05:24,820 --> 01:05:28,130
+design an equation that meets a
+
+1530
+01:05:28,130 --> 01:05:30,650
+threshold and you optimize for the other
+
+1531
+01:05:30,650 --> 01:05:32,300
+part of it that's missing is time I
+
+1532
+01:05:32,300 --> 01:05:35,180
+think when wine has been access you take
+
+1533
+01:05:35,180 --> 01:05:36,650
+all those into account and you've got a
+
+1534
+01:05:36,650 --> 01:05:38,720
+pretty smart system without anything
+
+1535
+01:05:38,720 --> 01:05:39,710
+more complicated than that
+
+1536
+01:05:39,710 --> 01:05:41,630
+this you can go further you can look at
+
+1537
+01:05:41,630 --> 01:05:43,430
+correlation between multiple columns
+
+1538
+01:05:43,430 --> 01:05:47,200
+correlation across multiple tables etc
+
+1539
+01:05:48,190 --> 01:06:07,850
+question in the back yep good question
+
+1540
+01:06:07,850 --> 01:06:09,800
+so the question is how do you determine
+
+1541
+01:06:09,800 --> 01:06:11,630
+when to bring it into the columns for
+
+1542
+01:06:11,630 --> 01:06:16,040
+automatically right but and when these
+
+1543
+01:06:16,040 --> 01:06:17,300
+opposite okay good question
+
+1544
+01:06:17,300 --> 01:06:19,640
+so I'll answer the first and when to
+
+1545
+01:06:19,640 --> 01:06:21,770
+bring it into memory is again it's
+
+1546
+01:06:21,770 --> 01:06:22,850
+similar to what I was saying those
+
+1547
+01:06:22,850 --> 01:06:25,040
+attributes if I know it let's say
+
+1548
+01:06:25,040 --> 01:06:27,740
+there's a table that's not in memory and
+
+1549
+01:06:27,740 --> 01:06:30,800
+counselor is full how often has this
+
+1550
+01:06:30,800 --> 01:06:34,190
+table been scanned not that often how
+
+1551
+01:06:34,190 --> 01:06:35,480
+often these tables been scanned at our
+
+1552
+01:06:35,480 --> 01:06:37,730
+memory very often doesn't make sense to
+
+1553
+01:06:37,730 --> 01:06:40,490
+replace them once the number of scans
+
+1554
+01:06:40,490 --> 01:06:43,640
+for this table has increased above what
+
+1555
+01:06:43,640 --> 01:06:45,740
+any of these are the tables have then it
+
+1556
+01:06:45,740 --> 01:06:47,960
+makes sense to evict something out from
+
+1557
+01:06:47,960 --> 01:06:50,720
+the column store bring something in but
+
+1558
+01:06:50,720 --> 01:06:52,670
+it's tricky right because you have to
+
+1559
+01:06:52,670 --> 01:06:54,980
+know is that just for a short period of
+
+1560
+01:06:54,980 --> 01:06:56,390
+time and then it's not gonna be accessed
+
+1561
+01:06:56,390 --> 01:06:59,510
+again and I paid all this I spent the
+
+1562
+01:06:59,510 --> 01:07:01,640
+last CPU cycles to transpose it bring
+
+1563
+01:07:01,640 --> 01:07:04,220
+into memory and now I'm done like it's
+
+1564
+01:07:04,220 --> 01:07:06,050
+midnight and I don't need to run these
+
+1565
+01:07:06,050 --> 01:07:09,080
+reports again so we try to be smart
+
+1566
+01:07:09,080 --> 01:07:11,720
+about identifying the access patterns
+
+1567
+01:07:11,720 --> 01:07:13,880
+before we take action we're actually a
+
+1568
+01:07:13,880 --> 01:07:16,340
+fairly conservative system and we will
+
+1569
+01:07:16,340 --> 01:07:19,070
+slowly make modifications it's it's it's
+
+1570
+01:07:19,070 --> 01:07:21,110
+like any other system its expert system
+
+1571
+01:07:21,110 --> 01:07:22,430
+that you design you're gonna have
+
+1572
+01:07:22,430 --> 01:07:24,260
+feedback mechanisms in here right you're
+
+1573
+01:07:24,260 --> 01:07:25,940
+gonna say did I make the right decision
+
+1574
+01:07:25,940 --> 01:07:29,510
+that I just did and if I didn't like I
+
+1575
+01:07:29,510 --> 01:07:31,369
+learned from that I remember that and
+
+1576
+01:07:31,369 --> 01:07:33,109
+the next time this situation comes again
+
+1577
+01:07:33,109 --> 01:07:35,119
+I'll be smarter about what I would I
+
+1578
+01:07:35,119 --> 01:07:37,640
+bring in I'll be honest with you this is
+
+1579
+01:07:37,640 --> 01:07:39,109
+not a perfect system and there's a lot
+
+1580
+01:07:39,109 --> 01:07:42,230
+of work that needs to be done here and
+
+1581
+01:07:42,230 --> 01:07:43,970
+that's where we're we're trying to
+
+1582
+01:07:43,970 --> 01:07:45,950
+figure out what's the how do we get the
+
+1583
+01:07:45,950 --> 01:07:49,400
+80% of the benefit with 20% of the work
+
+1584
+01:07:49,400 --> 01:07:51,580
+so we can quickly get to it it's a
+
+1585
+01:07:51,580 --> 01:08:14,540
+question of it okay yes yes yes so what
+
+1586
+01:08:14,540 --> 01:08:15,830
+we'll do this so the first thing we do
+
+1587
+01:08:15,830 --> 01:08:17,839
+let's say 0 & 1 are both hot that's what
+
+1588
+01:08:17,839 --> 01:08:18,890
+you're saying right they're both high
+
+1589
+01:08:18,890 --> 01:08:21,170
+you don't have space for both 0 & 1 what
+
+1590
+01:08:21,170 --> 01:08:23,000
+do you do first thing we do is we say
+
+1591
+01:08:23,000 --> 01:08:24,500
+which of these columns are not been
+
+1592
+01:08:24,500 --> 01:08:27,680
+accessed okay normally you have a table
+
+1593
+01:08:27,680 --> 01:08:30,229
+that's a very fat table or a fat table
+
+1594
+01:08:30,229 --> 01:08:32,149
+okay let live like anybody familiarity
+
+1595
+01:08:32,149 --> 01:08:36,080
+PCH okay t PCH is a benchmark the data
+
+1596
+01:08:36,080 --> 01:08:38,410
+warehouse bench mic
+
+1597
+01:08:38,410 --> 01:08:42,020
+okay TP CH has a table called line item
+
+1598
+01:08:42,020 --> 01:08:45,040
+line item has a column called L comment
+
+1599
+01:08:45,040 --> 01:08:48,620
+L comment is never used okay in the in
+
+1600
+01:08:48,620 --> 01:08:49,939
+the queries that are in that particular
+
+1601
+01:08:49,939 --> 01:08:53,090
+benchmark L comment for Oracle takes up
+
+1602
+01:08:53,090 --> 01:08:56,029
+about twenty percent of the space in
+
+1603
+01:08:56,029 --> 01:08:58,520
+memory it's a gigantic varchar not
+
+1604
+01:08:58,520 --> 01:08:59,899
+gigantic varchar but it's a large
+
+1605
+01:08:59,899 --> 01:09:03,170
+varchar' string and oracle is very
+
+1606
+01:09:03,170 --> 01:09:03,979
+aggressive
+
+1607
+01:09:03,979 --> 01:09:06,200
+we will dictionary encode it which
+
+1608
+01:09:06,200 --> 01:09:07,880
+doesn't really make sense because
+
+1609
+01:09:07,880 --> 01:09:09,200
+they're all distinct symbols why the
+
+1610
+01:09:09,200 --> 01:09:10,490
+hell am i dictionary encoding I'm not
+
+1611
+01:09:10,490 --> 01:09:12,410
+gonna leverage it but we do that because
+
+1612
+01:09:12,410 --> 01:09:15,229
+we assume you might scan against it and
+
+1613
+01:09:15,229 --> 01:09:16,970
+if you can scan against the dictionary
+
+1614
+01:09:16,970 --> 01:09:19,010
+encoding is the smartest thing so going
+
+1615
+01:09:19,010 --> 01:09:21,350
+back to your example here is L comment
+
+1616
+01:09:21,350 --> 01:09:23,899
+is never used line item is hot that's a
+
+1617
+01:09:23,899 --> 01:09:26,149
+hot table but that column L comment has
+
+1618
+01:09:26,149 --> 01:09:28,490
+never used so will evict it out or
+
+1619
+01:09:28,490 --> 01:09:30,950
+compress it just to be safe and just
+
+1620
+01:09:30,950 --> 01:09:32,810
+that act of compressing your victim out
+
+1621
+01:09:32,810 --> 01:09:34,729
+might allow you to bring this other
+
+1622
+01:09:34,729 --> 01:09:37,640
+table in that make sense so we will try
+
+1623
+01:09:37,640 --> 01:09:40,040
+to first be very conservative and try to
+
+1624
+01:09:40,040 --> 01:09:42,170
+get both of those tables into the into
+
+1625
+01:09:42,170 --> 01:09:44,029
+the column store by compressing columns
+
+1626
+01:09:44,029 --> 01:09:46,939
+okay if that doesn't work we take the
+
+1627
+01:09:46,939 --> 01:09:48,800
+next bigger action if that doesn't work
+
+1628
+01:09:48,800 --> 01:09:50,060
+we take the next bigger action it's very
+
+1629
+01:09:50,060 --> 01:09:52,040
+so for example tables are usually
+
+1630
+01:09:52,040 --> 01:09:54,350
+partitioned right you can partition by
+
+1631
+01:09:54,350 --> 01:09:57,770
+date maybe the old dates partitions are
+
+1632
+01:09:57,770 --> 01:09:58,940
+needed and you only care about the
+
+1633
+01:09:58,940 --> 01:10:00,500
+hottest date so you keep that in mind
+
+1634
+01:10:00,500 --> 01:10:03,020
+when you Vic the old dates out that make
+
+1635
+01:10:03,020 --> 01:10:04,850
+sense now if you're in a situation where
+
+1636
+01:10:04,850 --> 01:10:08,120
+both of these are hot then then we stay
+
+1637
+01:10:08,120 --> 01:10:09,320
+conservative we're not going to
+
+1638
+01:10:09,320 --> 01:10:11,780
+constantly populate we pick populate a
+
+1639
+01:10:11,780 --> 01:10:14,000
+vague that's just gonna add more cycles
+
+1640
+01:10:14,000 --> 01:10:15,920
+to do the population so we'll choose one
+
+1641
+01:10:15,920 --> 01:10:19,400
+and live live with the consequences okay
+
+1642
+01:10:19,400 --> 01:10:22,580
+all right I know I'm like running our
+
+1643
+01:10:22,580 --> 01:10:24,650
+time here so I'm just going to up sorry
+
+1644
+01:10:24,650 --> 01:10:28,100
+sorry I persistent memory okay let's
+
+1645
+01:10:28,100 --> 01:10:30,140
+just talk very quickly about persistent
+
+1646
+01:10:30,140 --> 01:10:34,310
+memory new silicon technology capacity
+
+1647
+01:10:34,310 --> 01:10:37,160
+performance and price between DRAM and
+
+1648
+01:10:37,160 --> 01:10:39,380
+flash this is a nice little picture here
+
+1649
+01:10:39,380 --> 01:10:42,530
+that shows as you go from disk to flash
+
+1650
+01:10:42,530 --> 01:10:44,480
+to persistent memory the DRAM you're
+
+1651
+01:10:44,480 --> 01:10:46,090
+going faster faster faster faster faster
+
+1652
+01:10:46,090 --> 01:10:48,710
+but at the same time you're going higher
+
+1653
+01:10:48,710 --> 01:10:50,600
+cost higher cost higher costs per per
+
+1654
+01:10:50,600 --> 01:10:51,559
+gigabyte okay
+
+1655
+01:10:51,559 --> 01:10:55,369
+eventually pmm is really expensive right
+
+1656
+01:10:55,369 --> 01:10:57,500
+now it's really expensive eventually
+
+1657
+01:10:57,500 --> 01:10:59,510
+this will reduce in price but flash is
+
+1658
+01:10:59,510 --> 01:11:01,520
+going to be even cheaper also so it's
+
+1659
+01:11:01,520 --> 01:11:02,989
+very interesting how we put systems
+
+1660
+01:11:02,989 --> 01:11:05,480
+together with all this technology to get
+
+1661
+01:11:05,480 --> 01:11:08,960
+the the best performance Intel calls
+
+1662
+01:11:08,960 --> 01:11:11,570
+this obtain DC persistent memory DC's
+
+1663
+01:11:11,570 --> 01:11:14,119
+data center I believe they're pretty
+
+1664
+01:11:14,119 --> 01:11:15,860
+much the only game in town right now
+
+1665
+01:11:15,860 --> 01:11:18,380
+okay there's a there's others but the
+
+1666
+01:11:18,380 --> 01:11:19,730
+only game in town right now
+
+1667
+01:11:19,730 --> 01:11:22,309
+reads that memory speed much faster than
+
+1668
+01:11:22,309 --> 01:11:25,190
+flash right survive power failure unlike
+
+1669
+01:11:25,190 --> 01:11:28,039
+DRAM okay you can imagine building as
+
+1670
+01:11:28,039 --> 01:11:30,619
+and you're saying building a brand new
+
+1671
+01:11:30,619 --> 01:11:32,270
+storage engine built on top of
+
+1672
+01:11:32,270 --> 01:11:35,780
+persistent memory right it's tricky as
+
+1673
+01:11:35,780 --> 01:11:38,150
+heavy a key here you guys he's gonna
+
+1674
+01:11:38,150 --> 01:11:41,239
+give a talk tomorrow on how you can
+
+1675
+01:11:41,239 --> 01:11:42,829
+leverage persistent memory it can be
+
+1676
+01:11:42,829 --> 01:11:45,050
+tricky because it involves leveraging
+
+1677
+01:11:45,050 --> 01:11:47,690
+some new instructions to make sure that
+
+1678
+01:11:47,690 --> 01:11:49,489
+data is properly flushed all the way
+
+1679
+01:11:49,489 --> 01:11:52,639
+back to to memory I won't go into the
+
+1680
+01:11:52,639 --> 01:11:55,250
+details of that I will just bring up
+
+1681
+01:11:55,250 --> 01:11:58,760
+this slide here on how we are planning
+
+1682
+01:11:58,760 --> 01:12:01,699
+on using persistent memory for our a
+
+1683
+01:12:01,699 --> 01:12:04,969
+memory column store so today as a
+
+1684
+01:12:04,969 --> 01:12:05,659
+baseline
+
+1685
+01:12:05,659 --> 01:12:08,239
+you cannot necessarily fit all of your
+
+1686
+01:12:08,239 --> 01:12:10,309
+data in memory that's the example or
+
+1687
+01:12:10,309 --> 01:12:12,230
+some of us we've been talking about so
+
+1688
+01:12:12,230 --> 01:12:13,820
+assume it doesn't fit in memory so
+
+1689
+01:12:13,820 --> 01:12:16,309
+you're gonna have disk disk plus memory
+
+1690
+01:12:16,309 --> 01:12:18,469
+the queries then have to go against the
+
+1691
+01:12:18,469 --> 01:12:21,199
+column store endear am as well as the
+
+1692
+01:12:21,199 --> 01:12:25,400
+roast or on disk right and DRAM dims can
+
+1693
+01:12:25,400 --> 01:12:26,539
+go up two hundred twenty eight gigabytes
+
+1694
+01:12:26,539 --> 01:12:28,520
+no one buys it at that it's very
+
+1695
+01:12:28,520 --> 01:12:32,079
+expensive so that's today's baseline
+
+1696
+01:12:32,079 --> 01:12:36,469
+with P mam you can conceivably fit
+
+1697
+01:12:36,469 --> 01:12:38,389
+everything inside of a pea mmm
+
+1698
+01:12:38,389 --> 01:12:42,260
+Adam okay it's 3x more denser something
+
+1699
+01:12:42,260 --> 01:12:44,119
+called memory mode this is really cool
+
+1700
+01:12:44,119 --> 01:12:48,559
+memory mode Intel supports it allows you
+
+1701
+01:12:48,559 --> 01:12:52,119
+to have a your persistent memory dim and
+
+1702
+01:12:52,119 --> 01:12:58,099
+a a dram dim sitting on top okay so when
+
+1703
+01:12:58,099 --> 01:13:01,340
+you access data the DRAM dim serves as a
+
+1704
+01:13:01,340 --> 01:13:05,030
+cache so your hottest data sits in
+
+1705
+01:13:05,030 --> 01:13:07,820
+memory Indy Ram and if it's not in that
+
+1706
+01:13:07,820 --> 01:13:09,920
+cache then we'll bring it from the
+
+1707
+01:13:09,920 --> 01:13:12,260
+persistent memory dim into the D Ram den
+
+1708
+01:13:12,260 --> 01:13:14,060
+so the D lambda just serves as a cache
+
+1709
+01:13:14,060 --> 01:13:16,280
+it's wasted space in the sense that it's
+
+1710
+01:13:16,280 --> 01:13:18,860
+a cache it's not like extra memory that
+
+1711
+01:13:18,860 --> 01:13:21,650
+you have but the benefit is you are
+
+1712
+01:13:21,650 --> 01:13:25,100
+accessing PMM almost as fast as SDRAM
+
+1713
+01:13:25,100 --> 01:13:27,440
+okay so that's called memory mode the
+
+1714
+01:13:27,440 --> 01:13:29,720
+hottest tables are cached in DRAM for
+
+1715
+01:13:29,720 --> 01:13:31,670
+the fastest access and these DIMMs can
+
+1716
+01:13:31,670 --> 01:13:33,920
+be quite large the 512 gigabytes and
+
+1717
+01:13:33,920 --> 01:13:36,230
+then this just talks about using our
+
+1718
+01:13:36,230 --> 01:13:38,600
+latest Oracle 20 C and some of the
+
+1719
+01:13:38,600 --> 01:13:39,590
+techniques and the reason why I mention
+
+1720
+01:13:39,590 --> 01:13:42,620
+this is we ran this this benchmark where
+
+1721
+01:13:42,620 --> 01:13:44,540
+we use SS B's is SS B's another
+
+1722
+01:13:44,540 --> 01:13:46,280
+benchmark called star schema benchmark
+
+1723
+01:13:46,280 --> 01:13:50,110
+it's kind of based off of T PCH and
+
+1724
+01:13:50,110 --> 01:13:53,000
+there we showed D Ram about 380 4
+
+1725
+01:13:53,000 --> 01:13:54,800
+gigabytes the table didn't fit entirely
+
+1726
+01:13:54,800 --> 01:13:57,230
+memory this was a progress bar but that
+
+1727
+01:13:57,230 --> 01:14:00,470
+completed we process 18 billion rows and
+
+1728
+01:14:00,470 --> 01:14:02,840
+took 130 seconds okay when it didn't fit
+
+1729
+01:14:02,840 --> 01:14:04,820
+entirely in memory and then we use
+
+1730
+01:14:04,820 --> 01:14:06,830
+memory mode with persistent memory and
+
+1731
+01:14:06,830 --> 01:14:09,590
+it like dropped by 10 X right and 10x
+
+1732
+01:14:09,590 --> 01:14:11,960
+faster and took 12 seconds to go to 18
+
+1733
+01:14:11,960 --> 01:14:13,880
+billion rows and then we just added
+
+1734
+01:14:13,880 --> 01:14:16,250
+Oracle 20 C which has some cool
+
+1735
+01:14:16,250 --> 01:14:17,990
+techniques for making joints faster and
+
+1736
+01:14:17,990 --> 01:14:19,790
+we just showed that that can go an
+
+1737
+01:14:19,790 --> 01:14:21,710
+additional you know 4x faster than that
+
+1738
+01:14:21,710 --> 01:14:23,780
+and the main point I want to mention is
+
+1739
+01:14:23,780 --> 01:14:25,670
+this really is a game changer for us
+
+1740
+01:14:25,670 --> 01:14:27,830
+we're looking at at persistent memory
+
+1741
+01:14:27,830 --> 01:14:31,460
+more as expanded memory larger capacity
+
+1742
+01:14:31,460 --> 01:14:33,920
+so now you could fit everything into
+
+1743
+01:14:33,920 --> 01:14:35,450
+memory and gone are the days where you
+
+1744
+01:14:35,450 --> 01:14:37,280
+need to put everything on disk
+
+1745
+01:14:37,280 --> 01:14:39,470
+okay you got terabytes and terabytes and
+
+1746
+01:14:39,470 --> 01:14:43,490
+terabytes of memory okay
+
+1747
+01:14:43,490 --> 01:14:46,280
+I'm gonna skip the converged analytics
+
+1748
+01:14:46,280 --> 01:14:48,080
+and I'm just gonna open it up to
+
+1749
+01:14:48,080 --> 01:14:49,460
+questions but the main I'll just talk
+
+1750
+01:14:49,460 --> 01:14:51,320
+about this slide here the main thing
+
+1751
+01:14:51,320 --> 01:14:52,880
+about Oracle one of the things that
+
+1752
+01:14:52,880 --> 01:14:54,080
+we're trying to push more cool is you
+
+1753
+01:14:54,080 --> 01:14:56,120
+don't need to have a separate storage
+
+1754
+01:14:56,120 --> 01:14:59,210
+engine for a document store or a spatial
+
+1755
+01:14:59,210 --> 01:15:04,160
+store neo4j or graph or AI or IOT or
+
+1756
+01:15:04,160 --> 01:15:05,720
+you know treat your databases the file
+
+1757
+01:15:05,720 --> 01:15:07,760
+system Oracle is trying to position
+
+1758
+01:15:07,760 --> 01:15:10,340
+itself as a one-stop shop right you can
+
+1759
+01:15:10,340 --> 01:15:12,260
+do everything on a single database and
+
+1760
+01:15:12,260 --> 01:15:15,290
+it's got a ton of benefits one being
+
+1761
+01:15:15,290 --> 01:15:17,630
+security you don't want to have to
+
+1762
+01:15:17,630 --> 01:15:18,770
+migrate your relay
+
+1763
+01:15:18,770 --> 01:15:21,950
+data out to bring it into yet a graph
+
+1764
+01:15:21,950 --> 01:15:24,320
+database just so you can run graph
+
+1765
+01:15:24,320 --> 01:15:27,650
+queries on it right there's a customer
+
+1766
+01:15:27,650 --> 01:15:29,930
+or is it the next day the customer in
+
+1767
+01:15:29,930 --> 01:15:32,870
+Europe that they have a they build a
+
+1768
+01:15:32,870 --> 01:15:37,070
+graph database and they use a graph to
+
+1769
+01:15:37,070 --> 01:15:40,130
+represent transactions between different
+
+1770
+01:15:40,130 --> 01:15:42,140
+people on their on their PayPal or a
+
+1771
+01:15:42,140 --> 01:15:45,290
+system and they every every edge in
+
+1772
+01:15:45,290 --> 01:15:47,570
+their graph node is a transaction but
+
+1773
+01:15:47,570 --> 01:15:49,130
+they have to take their data out of a
+
+1774
+01:15:49,130 --> 01:15:51,440
+relational store bring it into the the
+
+1775
+01:15:51,440 --> 01:15:53,270
+graph store and then they run their
+
+1776
+01:15:53,270 --> 01:15:55,820
+query and that takes one sometime and
+
+1777
+01:15:55,820 --> 01:15:57,260
+second there's always this security
+
+1778
+01:15:57,260 --> 01:15:58,760
+violation now because you're taking this
+
+1779
+01:15:58,760 --> 01:16:01,990
+unencrypted data out of the database
+
+1780
+01:16:01,990 --> 01:16:04,730
+same thing for a document store with
+
+1781
+01:16:04,730 --> 01:16:06,920
+MongoDB this MongoDB but you can also
+
+1782
+01:16:06,920 --> 01:16:10,130
+store JSON nicely inside of your your
+
+1783
+01:16:10,130 --> 01:16:12,710
+relational database okay so I'm not
+
+1784
+01:16:12,710 --> 01:16:15,590
+going to talk so much about this I'll
+
+1785
+01:16:15,590 --> 01:16:20,240
+just sort of skip through this and leave
+
+1786
+01:16:20,240 --> 01:16:20,660
+it at that
+
+1787
+01:16:20,660 --> 01:16:22,670
+okay so last thing is just this is this
+
+1788
+01:16:22,670 --> 01:16:25,100
+innovation summary I want to make it
+
+1789
+01:16:25,100 --> 01:16:28,640
+very clear that you know this is 2014
+
+1790
+01:16:28,640 --> 01:16:31,040
+when we came out all of these little
+
+1791
+01:16:31,040 --> 01:16:33,440
+bullets here are like kind of massive
+
+1792
+01:16:33,440 --> 01:16:36,170
+projects and Oracle is kind of committed
+
+1793
+01:16:36,170 --> 01:16:40,940
+to in memory and you know our roadmap
+
+1794
+01:16:40,940 --> 01:16:42,620
+going up so I'm kind of drawing it up
+
+1795
+01:16:42,620 --> 01:16:44,900
+higher from 20 to 21 scenes so on we're
+
+1796
+01:16:44,900 --> 01:16:46,310
+super committed because we feel like
+
+1797
+01:16:46,310 --> 01:16:49,160
+now's the time in memory is becoming
+
+1798
+01:16:49,160 --> 01:16:51,140
+readily available it's becoming cheaper
+
+1799
+01:16:51,140 --> 01:16:54,350
+it's becoming larger the hardware
+
+1800
+01:16:54,350 --> 01:16:56,180
+technology is all there the requirements
+
+1801
+01:16:56,180 --> 01:16:57,740
+again from the real time enterprises is
+
+1802
+01:16:57,740 --> 01:16:59,840
+there and so as a result our features
+
+1803
+01:16:59,840 --> 01:17:02,330
+need to be there and the main drivers
+
+1804
+01:17:02,330 --> 01:17:04,160
+for us are the self managing in-memory
+
+1805
+01:17:04,160 --> 01:17:05,360
+database everything needs to be
+
+1806
+01:17:05,360 --> 01:17:08,390
+autonomous really looking at everything
+
+1807
+01:17:08,390 --> 01:17:10,700
+not just relational but spatial text
+
+1808
+01:17:10,700 --> 01:17:15,170
+graph etc and also vectorizing all of
+
+1809
+01:17:15,170 --> 01:17:16,910
+our operators is not just our simple
+
+1810
+01:17:16,910 --> 01:17:20,420
+scans and so on ok I think that's it
+
+1811
+01:17:20,420 --> 01:17:22,760
+I'll skip that I'll skip that I'll skip
+
+1812
+01:17:22,760 --> 01:17:26,090
+that and open it to any questions you
+
+1813
+01:17:26,090 --> 01:17:29,200
+may have if you have any
+
+1814
+01:17:35,060 --> 01:17:49,440
+yeah great question so the question is
+
+1815
+01:17:49,440 --> 01:17:51,210
+how do how are we representing this as a
+
+1816
+01:17:51,210 --> 01:17:53,130
+single representation of your data when
+
+1817
+01:17:53,130 --> 01:17:54,390
+you want to use it for a graph Corre
+
+1818
+01:17:54,390 --> 01:17:56,550
+versus a relational query or is it like
+
+1819
+01:17:56,550 --> 01:17:58,470
+a you know multiple representations I
+
+1820
+01:17:58,470 --> 01:18:02,070
+had that right okay so I went through
+
+1821
+01:18:02,070 --> 01:18:03,600
+those slides very quickly but let me
+
+1822
+01:18:03,600 --> 01:18:06,750
+explain so what we do for graph or let's
+
+1823
+01:18:06,750 --> 01:18:08,550
+say I'll say JSON initially right now
+
+1824
+01:18:08,550 --> 01:18:10,740
+for text okay so the techniques that
+
+1825
+01:18:10,740 --> 01:18:13,080
+we're doing for text spatial JSON
+
+1826
+01:18:13,080 --> 01:18:15,690
+whatever it is is representing the data
+
+1827
+01:18:15,690 --> 01:18:19,560
+in a much more efficient manner in a in
+
+1828
+01:18:19,560 --> 01:18:21,960
+memory in a column store so it's kind of
+
+1829
+01:18:21,960 --> 01:18:23,760
+like think of dictionary encoding doing
+
+1830
+01:18:23,760 --> 01:18:25,470
+some tricks like that to represent your
+
+1831
+01:18:25,470 --> 01:18:34,800
+data more efficiently yeah like this how
+
+1832
+01:18:34,800 --> 01:18:37,020
+important you're looking to hire
+
+1833
+01:18:37,020 --> 01:18:39,030
+somebody would be he would have a
+
+1834
+01:18:39,030 --> 01:18:40,620
+background maybe testing database
+
+1835
+01:18:40,620 --> 01:18:43,440
+systems or query optimization oh yeah a
+
+1836
+01:18:43,440 --> 01:18:47,490
+great question okay so when I when we
+
+1837
+01:18:47,490 --> 01:18:50,550
+look to hire people okay so first thing
+
+1838
+01:18:50,550 --> 01:18:52,350
+is this I always look for people that
+
+1839
+01:18:52,350 --> 01:18:55,710
+are enthusiastic smart and excited about
+
+1840
+01:18:55,710 --> 01:18:57,180
+the technology that's that's first and
+
+1841
+01:18:57,180 --> 01:18:59,220
+foremost because we have we have
+
+1842
+01:18:59,220 --> 01:19:00,840
+mathematicians we have a mechanical
+
+1843
+01:19:00,840 --> 01:19:03,300
+engineer we have a chemist we have all
+
+1844
+01:19:03,300 --> 01:19:04,830
+sorts of people that working on database
+
+1845
+01:19:04,830 --> 01:19:07,710
+systems the folks that actually have a
+
+1846
+01:19:07,710 --> 01:19:09,810
+solid background in database systems
+
+1847
+01:19:09,810 --> 01:19:14,670
+however they that's like I don't know
+
+1848
+01:19:14,670 --> 01:19:15,990
+it's what's the word the Holy Grail in
+
+1849
+01:19:15,990 --> 01:19:16,710
+some in some ways
+
+1850
+01:19:16,710 --> 01:19:20,220
+because we interface with we're the core
+
+1851
+01:19:20,220 --> 01:19:21,990
+storage engine team but I interface we
+
+1852
+01:19:21,990 --> 01:19:23,880
+interface with the optimizer team we're
+
+1853
+01:19:23,880 --> 01:19:25,560
+going to face with the exudative team we
+
+1854
+01:19:25,560 --> 01:19:27,930
+interact with the hardware team I have a
+
+1855
+01:19:27,930 --> 01:19:29,640
+background in compilers in computer
+
+1856
+01:19:29,640 --> 01:19:32,250
+architecture so I didn't have a
+
+1857
+01:19:32,250 --> 01:19:37,140
+background database systems at all okay
+
+1858
+01:19:37,140 --> 01:19:39,560
+you have two candidates equal background
+
+1859
+01:19:39,560 --> 01:19:42,360
+honking one is a JavaScript programmer
+
+1860
+01:19:42,360 --> 01:19:44,870
+okay
+
+1861
+01:19:48,050 --> 01:19:50,240
+[Laughter]
+
+1862
+01:19:50,240 --> 01:19:53,550
+[Applause]
+
+1863
+01:20:02,620 --> 01:20:05,699
+[Music]
+
+1864
+01:20:11,720 --> 01:20:14,610
+son ricochet jelly hit the deli photo
+
+1865
+01:20:14,610 --> 01:20:16,350
+put one naturally bless ya
+
+1866
+01:20:16,350 --> 01:20:18,150
+rap is like a laser beam the pores in
+
+1867
+01:20:18,150 --> 01:20:23,400
+the bottle or sippy go don't fill out
+
+1868
+01:20:23,400 --> 01:20:27,090
+drink it and only to you can't and if
+
+1869
+01:20:27,090 --> 01:20:28,740
+the sake don't throw your phone can tap
+
+1870
+01:20:28,740 --> 01:20:31,250
+a thing
+

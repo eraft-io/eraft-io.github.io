@@ -1,0 +1,7180 @@
+1
+00:00:03,640 --> 00:00:13,140
+[Music]
+
+2
+00:00:15,000 --> 00:00:19,869
+okay guys let's get started again Thank
+
+3
+00:00:19,869 --> 00:00:22,630
+You DJ drop tables always always always
+
+4
+00:00:22,630 --> 00:00:24,720
+keep it down
+
+5
+00:00:24,720 --> 00:00:28,140
+how's your mixtape going oh it's going
+
+6
+00:00:28,140 --> 00:00:31,660
+we'll release it at the end of okay and
+
+7
+00:00:31,660 --> 00:00:33,160
+it's all it's all like DJ drop table
+
+8
+00:00:33,160 --> 00:00:33,579
+beats
+
+9
+00:00:33,579 --> 00:00:35,710
+oh nothing but you and like your own
+
+10
+00:00:35,710 --> 00:00:41,980
+stuff okay alright so let's get started
+
+11
+00:00:41,980 --> 00:00:43,120
+it's a beautiful day out and I think
+
+12
+00:00:43,120 --> 00:00:47,080
+that's why the turnout here so low which
+
+13
+00:00:47,080 --> 00:00:48,940
+sucks cuz my every lecture is all so
+
+14
+00:00:48,940 --> 00:00:51,150
+much here but this one I like a lot to
+
+15
+00:00:51,150 --> 00:00:54,790
+be before we get into the course
+
+16
+00:00:54,790 --> 00:00:56,470
+material just to discuss real quickly
+
+17
+00:00:56,470 --> 00:00:58,900
+what's on the schedule for you guys
+
+18
+00:00:58,900 --> 00:01:02,079
+project one is due this Friday at
+
+19
+00:01:02,079 --> 00:01:03,880
+midnight and again you should submit
+
+20
+00:01:03,880 --> 00:01:06,430
+that on great scope homework 2 is due on
+
+21
+00:01:06,430 --> 00:01:08,770
+Monday at midnight also spindle grade
+
+22
+00:01:08,770 --> 00:01:10,840
+scope so we'll send an announcement out
+
+23
+00:01:10,840 --> 00:01:14,289
+on Piazza but we've updated the PDF so
+
+24
+00:01:14,289 --> 00:01:16,030
+that you could drop the pictures in
+
+25
+00:01:16,030 --> 00:01:18,249
+right into the the PDF so you spitting
+
+26
+00:01:18,249 --> 00:01:20,439
+that know so we give you a template for
+
+27
+00:01:20,439 --> 00:01:23,020
+draw IO so it's an online tool to go
+
+28
+00:01:23,020 --> 00:01:25,149
+quickly edit and modify the templates
+
+29
+00:01:25,149 --> 00:01:25,899
+for your answers
+
+30
+00:01:25,899 --> 00:01:27,639
+so should we know handwritten drawings
+
+31
+00:01:27,639 --> 00:01:29,109
+and no photographs of like drawings that
+
+32
+00:01:29,109 --> 00:01:30,819
+everything should be done digitally and
+
+33
+00:01:30,819 --> 00:01:34,149
+then we'll be releasing project two on
+
+34
+00:01:34,149 --> 00:01:36,219
+on this Monday as well and that'll II do
+
+35
+00:01:36,219 --> 00:01:39,810
+think two or three weeks in October okay
+
+36
+00:01:39,810 --> 00:01:41,829
+so any high-level questions about the
+
+37
+00:01:41,829 --> 00:01:49,119
+project or homework - okay so let's get
+
+38
+00:01:49,119 --> 00:01:53,139
+into so the thing we need to talk about
+
+39
+00:01:53,139 --> 00:01:54,700
+now is that we spent the last three
+
+40
+00:01:54,700 --> 00:01:56,170
+classes talking about data structures
+
+41
+00:01:56,170 --> 00:01:58,270
+we'd spend down hash tables and spent
+
+42
+00:01:58,270 --> 00:02:01,209
+two days on B plus trees radix trees and
+
+43
+00:02:01,209 --> 00:02:03,459
+other tree data structures so for the
+
+44
+00:02:03,459 --> 00:02:04,779
+most part during this entire
+
+45
+00:02:04,779 --> 00:02:06,909
+conversation when we talk about these
+
+46
+00:02:06,909 --> 00:02:09,940
+data structures we've assumed that the
+
+47
+00:02:09,940 --> 00:02:12,400
+that they were only being accessed by a
+
+48
+00:02:12,400 --> 00:02:14,530
+single thread but there was only one
+
+49
+00:02:14,530 --> 00:02:15,730
+thread that could be reading and writing
+
+50
+00:02:15,730 --> 00:02:17,590
+data to the data structure at a time and
+
+51
+00:02:17,590 --> 00:02:19,570
+that simplified this part of the
+
+52
+00:02:19,570 --> 00:02:20,890
+discussion and so that you just underst
+
+53
+00:02:20,890 --> 00:02:22,450
+what's the core essence of how these
+
+54
+00:02:22,450 --> 00:02:25,000
+data structures work but in a real
+
+55
+00:02:25,000 --> 00:02:27,220
+system we obviously don't want to just
+
+56
+00:02:27,220 --> 00:02:29,260
+have a single thread be you know only
+
+57
+00:02:29,260 --> 00:02:30,640
+accessing the data structure at a time
+
+58
+00:02:30,640 --> 00:02:33,100
+we would allow multiple threads because
+
+59
+00:02:33,100 --> 00:02:35,260
+a modern CPUs there's a lot of CPU cores
+
+60
+00:02:35,260 --> 00:02:37,000
+so therefore we can have multiple
+
+61
+00:02:37,000 --> 00:02:38,590
+threads running queries and all updating
+
+62
+00:02:38,590 --> 00:02:40,780
+our data structures but also don't allow
+
+63
+00:02:40,780 --> 00:02:43,360
+this the high disk stalls due to you
+
+64
+00:02:43,360 --> 00:02:44,950
+know or stalls due to having to go read
+
+65
+00:02:44,950 --> 00:02:47,470
+read things from disk because now if one
+
+66
+00:02:47,470 --> 00:02:49,270
+thread is doing something and it reads a
+
+67
+00:02:49,270 --> 00:02:51,340
+page that's not in memory it has to get
+
+68
+00:02:51,340 --> 00:02:52,420
+stalled while the buffer pool manager
+
+69
+00:02:52,420 --> 00:02:54,250
+brings that in and then we can let other
+
+70
+00:02:54,250 --> 00:02:56,730
+threads keep running at the same time so
+
+71
+00:02:56,730 --> 00:02:58,750
+we're have a lot of threads running in
+
+72
+00:02:58,750 --> 00:03:00,459
+our system and we do this because that
+
+73
+00:03:00,459 --> 00:03:02,500
+maximizes parallelism or maximizes the
+
+74
+00:03:02,500 --> 00:03:04,870
+reduces the latency for the queries you
+
+75
+00:03:04,870 --> 00:03:07,239
+want to execute so for today we're now
+
+76
+00:03:07,239 --> 00:03:08,410
+talked about up now we bring back
+
+77
+00:03:08,410 --> 00:03:10,120
+multiple threads and want to update and
+
+78
+00:03:10,120 --> 00:03:12,280
+access our data structure what do we
+
+79
+00:03:12,280 --> 00:03:14,410
+need to do to protect ourselves so let's
+
+80
+00:03:14,410 --> 00:03:16,120
+say is it a quick aside so everything
+
+81
+00:03:16,120 --> 00:03:18,160
+that we'll talk about today is what how
+
+82
+00:03:18,160 --> 00:03:20,440
+most database systems actually work most
+
+83
+00:03:20,440 --> 00:03:21,580
+database systems that support multiple
+
+84
+00:03:21,580 --> 00:03:23,620
+threads will do the things that we're
+
+85
+00:03:23,620 --> 00:03:25,390
+talking about today doing this latching
+
+86
+00:03:25,390 --> 00:03:27,430
+stuff there are some particular systems
+
+87
+00:03:27,430 --> 00:03:30,250
+that actually don't do any of this and
+
+88
+00:03:30,250 --> 00:03:31,780
+only the owl single threads has to
+
+89
+00:03:31,780 --> 00:03:33,070
+access the data structures and they
+
+90
+00:03:33,070 --> 00:03:34,840
+still get really good performance so
+
+91
+00:03:34,840 --> 00:03:37,120
+volte B and Redis applied two miscreants
+
+92
+00:03:37,120 --> 00:03:39,220
+one set dips so in case the Redis Redis
+
+93
+00:03:39,220 --> 00:03:41,170
+only runs in one thread it's a one
+
+94
+00:03:41,170 --> 00:03:42,970
+threaded engine in both DB it's a
+
+95
+00:03:42,970 --> 00:03:44,920
+multi-threaded engine but they partition
+
+96
+00:03:44,920 --> 00:03:47,230
+the database in such a way that every B+
+
+97
+00:03:47,230 --> 00:03:48,700
+tree can only be accessed by a single
+
+98
+00:03:48,700 --> 00:03:50,950
+thread so you avoid all this latching
+
+99
+00:03:50,950 --> 00:03:52,660
+stuff that we talked about today and you
+
+100
+00:03:52,660 --> 00:03:53,920
+get really great performance but
+
+101
+00:03:53,920 --> 00:03:55,680
+obviously this means that it complicates
+
+102
+00:03:55,680 --> 00:03:58,120
+scaling up to multiple cores or multiple
+
+103
+00:03:58,120 --> 00:04:00,160
+machines but again we'll talk I'll just
+
+104
+00:04:00,160 --> 00:04:02,799
+talk about these things later on in the
+
+105
+00:04:02,799 --> 00:04:04,930
+semester but the main idea now is that
+
+106
+00:04:04,930 --> 00:04:06,190
+everybody pretty much does this thing
+
+107
+00:04:06,190 --> 00:04:09,430
+things that we're talking about so the
+
+108
+00:04:09,430 --> 00:04:10,750
+way we're going to protect our data
+
+109
+00:04:10,750 --> 00:04:12,970
+structures is through a control protocol
+
+110
+00:04:12,970 --> 00:04:15,760
+a control scheme and this is just the
+
+111
+00:04:15,760 --> 00:04:18,180
+the method in which the database system
+
+112
+00:04:18,180 --> 00:04:21,640
+guarantees the correctness of the of the
+
+113
+00:04:21,640 --> 00:04:23,740
+data structure by enforcing all the
+
+114
+00:04:23,740 --> 00:04:25,300
+threads to access the data structures
+
+115
+00:04:25,300 --> 00:04:27,160
+and using a certain protocol or sort of
+
+116
+00:04:27,160 --> 00:04:30,130
+certain way and so I'm putting the the
+
+117
+00:04:30,130 --> 00:04:32,620
+word correct in quotes because that can
+
+118
+00:04:32,620 --> 00:04:34,420
+mean about mean different things
+
+119
+00:04:34,420 --> 00:04:35,620
+and the kind of things were talking
+
+120
+00:04:35,620 --> 00:04:36,880
+about they're accessing although we've
+
+121
+00:04:36,880 --> 00:04:38,500
+been focused on data structures but it
+
+122
+00:04:38,500 --> 00:04:39,850
+really could be for any sugared shared
+
+123
+00:04:39,850 --> 00:04:41,650
+object in the system right it could be
+
+124
+00:04:41,650 --> 00:04:43,330
+for two-pole could be for an index could
+
+125
+00:04:43,330 --> 00:04:45,730
+be for the page table and in the buffer
+
+126
+00:04:45,730 --> 00:04:49,510
+pool it doesn't matter so the two types
+
+127
+00:04:49,510 --> 00:04:51,430
+of correctness we care about in converge
+
+128
+00:04:51,430 --> 00:04:53,440
+hole are logical correctness and
+
+129
+00:04:53,440 --> 00:04:56,110
+physical correctness so logical
+
+130
+00:04:56,110 --> 00:04:57,430
+correctness would be like a high level
+
+131
+00:04:57,430 --> 00:05:00,250
+thing that says if I'm accessing the
+
+132
+00:05:00,250 --> 00:05:02,950
+data structure am i seeing the values or
+
+133
+00:05:02,950 --> 00:05:04,660
+am I seeing the things that I expect to
+
+134
+00:05:04,660 --> 00:05:07,960
+see so if I have a B+ tree index I
+
+135
+00:05:07,960 --> 00:05:10,240
+insert the key five my thread that
+
+136
+00:05:10,240 --> 00:05:11,770
+thread comes back and reads key five
+
+137
+00:05:11,770 --> 00:05:13,780
+right away it should see it where I
+
+138
+00:05:13,780 --> 00:05:15,430
+should not get a should not get a false
+
+139
+00:05:15,430 --> 00:05:17,140
+negative but that's a logical
+
+140
+00:05:17,140 --> 00:05:18,400
+correctness thing that I'm seeing the
+
+141
+00:05:18,400 --> 00:05:21,160
+things I that I expect to see the thing
+
+142
+00:05:21,160 --> 00:05:22,540
+that we're gonna care about this class
+
+143
+00:05:22,540 --> 00:05:25,090
+is physical correctness but how do we
+
+144
+00:05:25,090 --> 00:05:27,370
+protect the internal representation of
+
+145
+00:05:27,370 --> 00:05:28,960
+the data structure of how it maintains
+
+146
+00:05:28,960 --> 00:05:30,910
+pointers and references to other pages
+
+147
+00:05:30,910 --> 00:05:33,400
+and keys and values how do we make sure
+
+148
+00:05:33,400 --> 00:05:35,320
+that as threads are reading writing this
+
+149
+00:05:35,320 --> 00:05:37,810
+data that the integrity of the data
+
+150
+00:05:37,810 --> 00:05:40,900
+structure is sound so it's able to be we
+
+151
+00:05:40,900 --> 00:05:42,460
+don't want the case where we're falling
+
+152
+00:05:42,460 --> 00:05:44,320
+down traversing into the B+ tree and
+
+153
+00:05:44,320 --> 00:05:46,330
+when we jump to the next node we have a
+
+154
+00:05:46,330 --> 00:05:48,190
+pointer to that and then by the time we
+
+155
+00:05:48,190 --> 00:05:49,660
+read the pointer figure out where we
+
+156
+00:05:49,660 --> 00:05:51,190
+need to go and then then try to jump
+
+157
+00:05:51,190 --> 00:05:53,020
+there somebody else modifies the data
+
+158
+00:05:53,020 --> 00:05:54,760
+structure well now that pointer is
+
+159
+00:05:54,760 --> 00:05:58,170
+pointing to a an invalid memory location
+
+160
+00:05:58,170 --> 00:06:01,600
+and we would get a seg fault so this is
+
+161
+00:06:01,600 --> 00:06:02,530
+what we're trying to do today we're
+
+162
+00:06:02,530 --> 00:06:03,760
+trying to protect the internal data
+
+163
+00:06:03,760 --> 00:06:05,170
+structure to allow multiple threads read
+
+164
+00:06:05,170 --> 00:06:07,870
+and write to it and that they still that
+
+165
+00:06:07,870 --> 00:06:10,060
+the data structure is is behaving
+
+166
+00:06:10,060 --> 00:06:12,430
+correctly for the logical correctness
+
+167
+00:06:12,430 --> 00:06:13,930
+we'll worry about this more when we talk
+
+168
+00:06:13,930 --> 00:06:16,000
+about transactions and current reach all
+
+169
+00:06:16,000 --> 00:06:17,440
+right this is a whole another engine
+
+170
+00:06:17,440 --> 00:06:19,180
+super interesting topic but for today we
+
+171
+00:06:19,180 --> 00:06:20,730
+say you know happy make sure that the
+
+172
+00:06:20,730 --> 00:06:24,700
+data structures are thread safe so we'll
+
+173
+00:06:24,700 --> 00:06:26,500
+begin by talking about what is actually
+
+174
+00:06:26,500 --> 00:06:27,700
+a latch they're a bit more detailed than
+
+175
+00:06:27,700 --> 00:06:29,560
+we then we talked about so far and how
+
+176
+00:06:29,560 --> 00:06:31,450
+it's actually implemented and then we'll
+
+177
+00:06:31,450 --> 00:06:32,890
+start off with an easy case of actually
+
+178
+00:06:32,890 --> 00:06:35,860
+doing thread safe hash tables using
+
+179
+00:06:35,860 --> 00:06:37,900
+latches for those because that they're
+
+180
+00:06:37,900 --> 00:06:39,790
+actually really simple to do but then
+
+181
+00:06:39,790 --> 00:06:41,020
+we'll spend most time talking about how
+
+182
+00:06:41,020 --> 00:06:43,270
+to handle sin B plus trees and what's
+
+183
+00:06:43,270 --> 00:06:44,980
+talking how do leaf node scans and other
+
+184
+00:06:44,980 --> 00:06:46,570
+optimizations again when we have
+
+185
+00:06:46,570 --> 00:06:48,040
+multiple threads accessing things
+
+186
+00:06:48,040 --> 00:06:52,120
+same time yeah all right so I showed
+
+187
+00:06:52,120 --> 00:06:55,150
+this slide last time and I don't think
+
+188
+00:06:55,150 --> 00:06:56,920
+everyone you know we only talked about
+
+189
+00:06:56,920 --> 00:06:58,120
+very briefly and I don't think everyone
+
+190
+00:06:58,120 --> 00:06:59,260
+absorbed its on it I want to send more
+
+191
+00:06:59,260 --> 00:07:00,850
+time talking about the difference
+
+192
+00:07:00,850 --> 00:07:04,120
+between locks and latches so in the
+
+193
+00:07:04,120 --> 00:07:08,800
+database world where I live a lock is a
+
+194
+00:07:08,800 --> 00:07:11,560
+higher level concept that protects the
+
+195
+00:07:11,560 --> 00:07:14,650
+logical contents of the database so a
+
+196
+00:07:14,650 --> 00:07:16,960
+logical content would be like a tuple or
+
+197
+00:07:16,960 --> 00:07:19,540
+a set of tuples or a table a database
+
+198
+00:07:19,540 --> 00:07:22,450
+and we're having using these locks to
+
+199
+00:07:22,450 --> 00:07:25,210
+protect these logical objects from other
+
+200
+00:07:25,210 --> 00:07:26,710
+transactions that are running at the
+
+201
+00:07:26,710 --> 00:07:29,140
+same time like if I'm modifying
+
+202
+00:07:29,140 --> 00:07:32,110
+something in a transaction and so I
+
+203
+00:07:32,110 --> 00:07:33,580
+don't want anybody else to modify that
+
+204
+00:07:33,580 --> 00:07:34,930
+that tuple at the same time that I am
+
+205
+00:07:34,930 --> 00:07:37,720
+right you may for other reasons but for
+
+206
+00:07:37,720 --> 00:07:39,910
+our purposes assume that we don't want
+
+207
+00:07:39,910 --> 00:07:42,370
+that to happen so for these locks we're
+
+208
+00:07:42,370 --> 00:07:44,950
+gonna hold them for the entire duration
+
+209
+00:07:44,950 --> 00:07:46,570
+of the transaction again that's not
+
+210
+00:07:46,570 --> 00:07:48,130
+entirely true but again for our purposes
+
+211
+00:07:48,130 --> 00:07:50,500
+just assume that's the case and then we
+
+212
+00:07:50,500 --> 00:07:52,180
+need to be able to roll back any changes
+
+213
+00:07:52,180 --> 00:07:55,300
+we make to our to the objects we modify
+
+214
+00:07:55,300 --> 00:07:57,760
+if we hold the locks for them so if I'm
+
+215
+00:07:57,760 --> 00:07:59,020
+trying to transfer money from my account
+
+216
+00:07:59,020 --> 00:08:01,420
+to her account if I take the money out
+
+217
+00:08:01,420 --> 00:08:04,600
+of my account and then I crash before I
+
+218
+00:08:04,600 --> 00:08:05,860
+put the money in her account when I come
+
+219
+00:08:05,860 --> 00:08:07,360
+back I want to reverse that change I
+
+220
+00:08:07,360 --> 00:08:10,360
+made to my tuple so these so in that
+
+221
+00:08:10,360 --> 00:08:11,650
+means the daily system is responsible
+
+222
+00:08:11,650 --> 00:08:12,880
+for knowing how to roll back these
+
+223
+00:08:12,880 --> 00:08:15,460
+changes so notice up here I didn't say
+
+224
+00:08:15,460 --> 00:08:17,530
+anything about threads or I'm talking my
+
+225
+00:08:17,530 --> 00:08:20,320
+transactions so a single transaction
+
+226
+00:08:20,320 --> 00:08:22,540
+could be could be broken across multiple
+
+227
+00:08:22,540 --> 00:08:24,670
+threads and they could all be updating
+
+228
+00:08:24,670 --> 00:08:27,100
+the same tuple that's okay that's
+
+229
+00:08:27,100 --> 00:08:28,660
+allowed because the transaction holds
+
+230
+00:08:28,660 --> 00:08:29,800
+the lock it doesn't matter what thread
+
+231
+00:08:29,800 --> 00:08:30,850
+that that's actually doing the
+
+232
+00:08:30,850 --> 00:08:33,849
+modification where we get down to the
+
+233
+00:08:33,849 --> 00:08:35,309
+low level constructs that we care about
+
+234
+00:08:35,309 --> 00:08:37,960
+protecting the physical the physical
+
+235
+00:08:37,960 --> 00:08:39,940
+integrity of our data structures or the
+
+236
+00:08:39,940 --> 00:08:43,179
+objects is latches so in the operating
+
+237
+00:08:43,179 --> 00:08:45,280
+system world they this is what they call
+
+238
+00:08:45,280 --> 00:08:47,650
+locks of mutexes in our world there's
+
+239
+00:08:47,650 --> 00:08:48,820
+latches because we need to distinguish
+
+240
+00:08:48,820 --> 00:08:51,640
+them from locks so latches are going to
+
+241
+00:08:51,640 --> 00:08:52,810
+protect the critical sections of the
+
+242
+00:08:52,810 --> 00:08:53,860
+database systems internal data
+
+243
+00:08:53,860 --> 00:08:55,960
+structures from other threads that are
+
+244
+00:08:55,960 --> 00:08:57,250
+reading right into that data structure
+
+245
+00:08:57,250 --> 00:09:00,760
+or that object at the same time so we're
+
+246
+00:09:00,760 --> 00:09:01,600
+only hole
+
+247
+00:09:01,600 --> 00:09:03,459
+latch for a short period just for the
+
+248
+00:09:03,459 --> 00:09:04,750
+duration that were in the critical
+
+249
+00:09:04,750 --> 00:09:06,730
+section to do whatever operation that we
+
+250
+00:09:06,730 --> 00:09:08,920
+need to do I want to update a page I
+
+251
+00:09:08,920 --> 00:09:10,389
+hold the latch on that page make the
+
+252
+00:09:10,389 --> 00:09:13,959
+change then release the latch we don't
+
+253
+00:09:13,959 --> 00:09:15,279
+need to be able to roll back any changes
+
+254
+00:09:15,279 --> 00:09:18,550
+here because the opposite of the
+
+255
+00:09:18,550 --> 00:09:19,569
+operations we're trying to do are
+
+256
+00:09:19,569 --> 00:09:21,759
+essentially meant to be atomic so I hope
+
+257
+00:09:21,759 --> 00:09:23,170
+I grabbed a latch from something I make
+
+258
+00:09:23,170 --> 00:09:25,630
+whatever change I want and then when I
+
+259
+00:09:25,630 --> 00:09:28,480
+when I release the latch then the
+
+260
+00:09:28,480 --> 00:09:30,160
+operations considered done so all the
+
+261
+00:09:30,160 --> 00:09:32,769
+changes are there if I can't acquire the
+
+262
+00:09:32,769 --> 00:09:34,329
+latch then I'm not gonna do the
+
+263
+00:09:34,329 --> 00:09:35,529
+operation anyway so there's nothing to
+
+264
+00:09:35,529 --> 00:09:39,970
+rollback so another way to think about
+
+265
+00:09:39,970 --> 00:09:43,000
+this is this great table from the that
+
+266
+00:09:43,000 --> 00:09:44,920
+that B+ tree book I recommended a few
+
+267
+00:09:44,920 --> 00:09:46,899
+lectures ago from Gert scrappy we has
+
+268
+00:09:46,899 --> 00:09:48,160
+this nice table that lays out again the
+
+269
+00:09:48,160 --> 00:09:51,040
+distinction between locks and latches so
+
+270
+00:09:51,040 --> 00:09:52,750
+four locks we're gonna separate user
+
+271
+00:09:52,750 --> 00:09:54,850
+transactions from each other and they're
+
+272
+00:09:54,850 --> 00:09:56,920
+gonna be protecting the bidets contents
+
+273
+00:09:56,920 --> 00:09:59,680
+tuples tables things like that and we're
+
+274
+00:09:59,680 --> 00:10:00,730
+gonna hold them for the entire duration
+
+275
+00:10:00,730 --> 00:10:02,589
+of the transaction there's gonna be a
+
+276
+00:10:02,589 --> 00:10:04,240
+bunch of different lock types that we
+
+277
+00:10:04,240 --> 00:10:04,690
+can help
+
+278
+00:10:04,690 --> 00:10:06,970
+hold on these objects again we'll cover
+
+279
+00:10:06,970 --> 00:10:10,089
+this in a few more lectures and then
+
+280
+00:10:10,089 --> 00:10:11,470
+when it comes time to actually dealing
+
+281
+00:10:11,470 --> 00:10:12,220
+with dead locks
+
+282
+00:10:12,220 --> 00:10:14,730
+we're gonna rely on some external
+
+283
+00:10:14,730 --> 00:10:17,139
+coordinator a lock manager or
+
+284
+00:10:17,139 --> 00:10:20,050
+transaction manager to resolve any dud
+
+285
+00:10:20,050 --> 00:10:22,480
+locks that that could occur and the
+
+286
+00:10:22,480 --> 00:10:24,279
+methods we can use are waits for timeout
+
+287
+00:10:24,279 --> 00:10:25,720
+sub or some other things and what we'll
+
+288
+00:10:25,720 --> 00:10:27,550
+focus on these later what we care about
+
+289
+00:10:27,550 --> 00:10:30,100
+is over here we have these latches
+
+290
+00:10:30,100 --> 00:10:31,180
+they're gonna protect threads from each
+
+291
+00:10:31,180 --> 00:10:34,199
+other for our in-memory data structures
+
+292
+00:10:34,199 --> 00:10:35,980
+we're gonna protect the critical
+
+293
+00:10:35,980 --> 00:10:37,149
+sections inside these data structures
+
+294
+00:10:37,149 --> 00:10:38,980
+there's only going to be two lock modes
+
+295
+00:10:38,980 --> 00:10:42,220
+read and write and the way we're going
+
+296
+00:10:42,220 --> 00:10:44,589
+to avoid deadlocks is to us being good
+
+297
+00:10:44,589 --> 00:10:47,560
+good programmers which is nice for
+
+298
+00:10:47,560 --> 00:10:50,019
+databases good equals expensive right so
+
+299
+00:10:50,019 --> 00:10:51,550
+it's up for us to make sure that we
+
+300
+00:10:51,550 --> 00:10:53,319
+write high-quality code in our data
+
+301
+00:10:53,319 --> 00:10:55,269
+structures to avoid deadlocks because
+
+302
+00:10:55,269 --> 00:10:57,250
+there is no external thing like a
+
+303
+00:10:57,250 --> 00:10:58,750
+transaction manager or lock manager
+
+304
+00:10:58,750 --> 00:11:00,430
+that's going to rescue us if we have a
+
+305
+00:11:00,430 --> 00:11:03,850
+deadlock it's all for us to design and
+
+306
+00:11:03,850 --> 00:11:05,079
+implement our data structure in such a
+
+307
+00:11:05,079 --> 00:11:08,290
+way that deadlocks cannot occur and
+
+308
+00:11:08,290 --> 00:11:09,480
+we'll see what that looks like later on
+
+309
+00:11:09,480 --> 00:11:12,670
+so again our focus is on here we'll
+
+310
+00:11:12,670 --> 00:11:15,340
+discuss all this lock stuff in lecture 7
+
+311
+00:11:15,340 --> 00:11:19,420
+after the midterm again I find all the
+
+312
+00:11:19,420 --> 00:11:20,650
+super pass men but this this is this is
+
+313
+00:11:20,650 --> 00:11:23,680
+like this is like one but the the black
+
+314
+00:11:23,680 --> 00:11:25,540
+arts of database systems if you can you
+
+315
+00:11:25,540 --> 00:11:28,300
+know actually make this stuff work all
+
+316
+00:11:28,300 --> 00:11:29,080
+right so let's talk about the latch
+
+317
+00:11:29,080 --> 00:11:32,230
+modes work for that we can have again
+
+318
+00:11:32,230 --> 00:11:34,630
+there's only two modes read and write so
+
+319
+00:11:34,630 --> 00:11:36,940
+a latch the latch is being held in read
+
+320
+00:11:36,940 --> 00:11:39,910
+mode then multiple threads are allowed
+
+321
+00:11:39,910 --> 00:11:42,940
+to share that read latch right because
+
+322
+00:11:42,940 --> 00:11:44,680
+again it's a read-only operation so I
+
+323
+00:11:44,680 --> 00:11:45,970
+can have multiple threads read the data
+
+324
+00:11:45,970 --> 00:11:48,070
+structure at the same time there's no
+
+325
+00:11:48,070 --> 00:11:49,810
+conflict there's no integrity issues
+
+326
+00:11:49,810 --> 00:11:51,820
+that could occur so they can all share
+
+327
+00:11:51,820 --> 00:11:54,670
+share that if I take out the latch and
+
+328
+00:11:54,670 --> 00:11:57,460
+write mode then I can only that's an
+
+329
+00:11:57,460 --> 00:11:59,320
+exclusive latch only one thread can hold
+
+330
+00:11:59,320 --> 00:12:01,780
+that latch in that mode at a time so if
+
+331
+00:12:01,780 --> 00:12:03,610
+I hold it right latch I'm making changes
+
+332
+00:12:03,610 --> 00:12:05,680
+nobody else can read that object that
+
+333
+00:12:05,680 --> 00:12:10,030
+I'm protecting until I finish all right
+
+334
+00:12:10,030 --> 00:12:11,980
+the only two modes we care about think
+
+335
+00:12:11,980 --> 00:12:13,330
+of this is like again multiple threats
+
+336
+00:12:13,330 --> 00:12:15,160
+we share this one this is this is an
+
+337
+00:12:15,160 --> 00:12:18,400
+exclusive latch all right so let's talk
+
+338
+00:12:18,400 --> 00:12:20,290
+actually how you implement a latch in a
+
+339
+00:12:20,290 --> 00:12:22,570
+Braille system so the first approach is
+
+340
+00:12:22,570 --> 00:12:25,690
+PI the one you're most familiar with you
+
+341
+00:12:25,690 --> 00:12:26,890
+know when you take any kind of systems
+
+342
+00:12:26,890 --> 00:12:28,900
+course or operating system course is a
+
+343
+00:12:28,900 --> 00:12:30,370
+blocking operating system mutex and
+
+344
+00:12:30,370 --> 00:12:32,740
+blocking OS mutex so this is the
+
+345
+00:12:32,740 --> 00:12:34,510
+simplest thing to use because it's sort
+
+346
+00:12:34,510 --> 00:12:35,980
+of built into the language like it like
+
+347
+00:12:35,980 --> 00:12:38,140
+in C++ the standard template library has
+
+348
+00:12:38,140 --> 00:12:40,330
+this thing STD mutex and it's really
+
+349
+00:12:40,330 --> 00:12:42,130
+simple to use you just declare it then
+
+350
+00:12:42,130 --> 00:12:43,720
+you call lock do something what you know
+
+351
+00:12:43,720 --> 00:12:45,430
+on your the object you're protecting
+
+352
+00:12:45,430 --> 00:12:47,290
+with it and then you call unlock and
+
+353
+00:12:47,290 --> 00:12:52,690
+you're done right so does anybody know
+
+354
+00:12:52,690 --> 00:12:54,010
+how this actually works in the operating
+
+355
+00:12:54,010 --> 00:12:55,990
+system in least some Linux how did the
+
+356
+00:12:55,990 --> 00:12:57,940
+mutex like this work yes
+
+357
+00:12:57,940 --> 00:13:01,470
+he says few texts what is a few texts
+
+358
+00:13:01,470 --> 00:13:07,630
+what's that he said well so he said few
+
+359
+00:13:07,630 --> 00:13:09,580
+texts he's correct in Linux few tech
+
+360
+00:13:09,580 --> 00:13:12,460
+stands for fast user space mutex the way
+
+361
+00:13:12,460 --> 00:13:14,620
+it works is that there is the in user
+
+362
+00:13:14,620 --> 00:13:16,180
+space meaning in the address space of
+
+363
+00:13:16,180 --> 00:13:17,740
+your process there'll be a memory
+
+364
+00:13:17,740 --> 00:13:20,860
+location that has you know a like a bit
+
+365
+00:13:20,860 --> 00:13:23,350
+usually a byte or so but I'll have a
+
+366
+00:13:23,350 --> 00:13:25,510
+memory location that you can then try to
+
+367
+00:13:25,510 --> 00:13:28,060
+do a compare and swap on to to acquire
+
+368
+00:13:28,060 --> 00:13:28,990
+that that
+
+369
+00:13:28,990 --> 00:13:31,420
+latch but then what happens is if you
+
+370
+00:13:31,420 --> 00:13:33,730
+don't acquire it then you fall back to
+
+371
+00:13:33,730 --> 00:13:36,339
+the the slower default mutex where that
+
+372
+00:13:36,339 --> 00:13:38,290
+goes down into the operating system so
+
+373
+00:13:38,290 --> 00:13:40,480
+the idea is you do a quick compare and
+
+374
+00:13:40,480 --> 00:13:41,860
+swap and in userspace
+
+375
+00:13:41,860 --> 00:13:43,540
+if you acquire it you're done if you
+
+376
+00:13:43,540 --> 00:13:44,860
+don't acquire it then you fall down to
+
+377
+00:13:44,860 --> 00:13:45,430
+vos
+
+378
+00:13:45,430 --> 00:13:47,529
+which is gonna be slower because what
+
+379
+00:13:47,529 --> 00:13:50,110
+happens is if you go down vos and sit on
+
+380
+00:13:50,110 --> 00:13:52,720
+a mutex inside side the kernel then the
+
+381
+00:13:52,720 --> 00:13:55,029
+OSS aha well I know you're blocked on
+
+382
+00:13:55,029 --> 00:13:56,950
+this mutex and you can't get it so let
+
+383
+00:13:56,950 --> 00:13:58,899
+me tell the scheduler to D schedule so
+
+384
+00:13:58,899 --> 00:14:01,089
+you don't actually run and the reason
+
+385
+00:14:01,089 --> 00:14:03,940
+why this is expensive because now the OS
+
+386
+00:14:03,940 --> 00:14:05,200
+has its own internal data structures
+
+387
+00:14:05,200 --> 00:14:06,880
+that is protecting with latches so
+
+388
+00:14:06,880 --> 00:14:07,810
+you've got to go update now the
+
+389
+00:14:07,810 --> 00:14:09,490
+discussion table to say this this
+
+390
+00:14:09,490 --> 00:14:12,190
+process of this thread can't run yet so
+
+391
+00:14:12,190 --> 00:14:14,320
+he's correct fast user-space mutex is
+
+392
+00:14:14,320 --> 00:14:16,270
+will be fast cuz that's just a spin-spin
+
+393
+00:14:16,270 --> 00:14:17,350
+latch we'll talk about the next slide
+
+394
+00:14:17,350 --> 00:14:20,440
+but he fall down to us then then then
+
+395
+00:14:20,440 --> 00:14:22,510
+you're screwed so this is another great
+
+396
+00:14:22,510 --> 00:14:23,589
+example were like we were trying to
+
+397
+00:14:23,589 --> 00:14:25,089
+avoid the OS much as possible for the
+
+398
+00:14:25,089 --> 00:14:26,980
+first project you guys use this because
+
+399
+00:14:26,980 --> 00:14:28,899
+it's fine but if you have a high
+
+400
+00:14:28,899 --> 00:14:30,160
+contention system then everybody is
+
+401
+00:14:30,160 --> 00:14:31,390
+going down to the OS and that's that's
+
+402
+00:14:31,390 --> 00:14:34,899
+gonna be a problematic so the
+
+403
+00:14:34,899 --> 00:14:37,000
+alternative is to implement ourselves
+
+404
+00:14:37,000 --> 00:14:38,529
+using a spin latch or test and set spin
+
+405
+00:14:38,529 --> 00:14:41,320
+latch so this is extremely an extremely
+
+406
+00:14:41,320 --> 00:14:44,079
+efficient it's super fast because on
+
+407
+00:14:44,079 --> 00:14:46,300
+modern CPUs there's a single instruction
+
+408
+00:14:46,300 --> 00:14:47,860
+there's an instruction to do a single
+
+409
+00:14:47,860 --> 00:14:49,839
+compare and swap on a memory dress I
+
+410
+00:14:49,839 --> 00:14:51,310
+think it just like I check to see
+
+411
+00:14:51,310 --> 00:14:52,779
+whether the value of this memory address
+
+412
+00:14:52,779 --> 00:14:54,940
+is what I think it is and if it is then
+
+413
+00:14:54,940 --> 00:14:57,130
+I'm allowed to change it to my new value
+
+414
+00:14:57,130 --> 00:14:59,440
+so think of like the latch is set to 0 I
+
+415
+00:14:59,440 --> 00:15:01,029
+check to see whether it's 0 and if it is
+
+416
+00:15:01,029 --> 00:15:02,560
+then I said at the 1 and that means I've
+
+417
+00:15:02,560 --> 00:15:05,290
+acquired a latch and you can do that a
+
+418
+00:15:05,290 --> 00:15:07,209
+modern CPUs and interesting single
+
+419
+00:15:07,209 --> 00:15:09,670
+instruction right you don't have to have
+
+420
+00:15:09,670 --> 00:15:11,079
+you don't the write C code like if this
+
+421
+00:15:11,079 --> 00:15:15,220
+then that it does it all for you so the
+
+422
+00:15:15,220 --> 00:15:17,649
+way even implement this is in C++ is
+
+423
+00:15:17,649 --> 00:15:19,690
+that you had this atomic keyword which
+
+424
+00:15:19,690 --> 00:15:20,800
+is templated you can put whatever you
+
+425
+00:15:20,800 --> 00:15:22,870
+want there but they have a shortcut for
+
+426
+00:15:22,870 --> 00:15:24,940
+you called atomic flag which is just an
+
+427
+00:15:24,940 --> 00:15:28,240
+alias for atomic pool and so inside this
+
+428
+00:15:28,240 --> 00:15:29,920
+now it will when we want to acquire this
+
+429
+00:15:29,920 --> 00:15:32,040
+latch we have to have this while loop
+
+430
+00:15:32,040 --> 00:15:35,470
+that says test and set the latch if I
+
+431
+00:15:35,470 --> 00:15:37,900
+acquire it then I jump out of the the
+
+432
+00:15:37,900 --> 00:15:39,100
+wild they're gonna because I hold the
+
+433
+00:15:39,100 --> 00:15:41,949
+latch if I don't fall into the wild loop
+
+434
+00:15:41,949 --> 00:15:42,579
+and now
+
+435
+00:15:42,579 --> 00:15:44,230
+it has some logic to figure out what
+
+436
+00:15:44,230 --> 00:15:47,259
+should we do the simplest thing is just
+
+437
+00:15:47,259 --> 00:15:48,699
+say all right let me just retry again
+
+438
+00:15:48,699 --> 00:15:50,459
+loop back around and keep trying it
+
+439
+00:15:50,459 --> 00:15:52,449
+right the problem with that is though
+
+440
+00:15:52,449 --> 00:15:53,920
+that's just me burning out your seat
+
+441
+00:15:53,920 --> 00:15:55,720
+you're not burning out literally but you
+
+442
+00:15:55,720 --> 00:15:57,579
+just burning cycles and your CPU because
+
+443
+00:15:57,579 --> 00:15:58,899
+you just keep trying to test that set
+
+444
+00:15:58,899 --> 00:16:00,220
+test and set test the set and it's
+
+445
+00:16:00,220 --> 00:16:01,959
+always gonna fail and you keep spinning
+
+446
+00:16:01,959 --> 00:16:04,509
+around and in this infinite loop so this
+
+447
+00:16:04,509 --> 00:16:06,009
+to the OS thinks you're actually doing
+
+448
+00:16:06,009 --> 00:16:07,209
+useful work because it doesn't know what
+
+449
+00:16:07,209 --> 00:16:08,949
+instructions you're executing so it says
+
+450
+00:16:08,949 --> 00:16:10,299
+you keep executing instructions let me
+
+451
+00:16:10,299 --> 00:16:12,279
+keep scheduling you and you're to spike
+
+452
+00:16:12,279 --> 00:16:15,429
+the CPU so this this test and set thing
+
+453
+00:16:15,429 --> 00:16:16,600
+is the same thing he said before about
+
+454
+00:16:16,600 --> 00:16:18,069
+the fast user mutex this is the same
+
+455
+00:16:18,069 --> 00:16:20,110
+thing the OS provides you in the Linux
+
+456
+00:16:20,110 --> 00:16:24,069
+standard or the STD mutex on Linux but
+
+457
+00:16:24,069 --> 00:16:26,499
+maybe I don't want to burn my cycles but
+
+458
+00:16:26,499 --> 00:16:28,179
+he's keep me trying maybe I want to
+
+459
+00:16:28,179 --> 00:16:30,549
+yield back to the OS get D schedule and
+
+460
+00:16:30,549 --> 00:16:32,559
+let it schedule some other thread or
+
+461
+00:16:32,559 --> 00:16:34,360
+maybe I try a thousand times and I'm
+
+462
+00:16:34,360 --> 00:16:35,649
+saying I'm not gonna get this and I just
+
+463
+00:16:35,649 --> 00:16:38,499
+up work so this is a good example of
+
+464
+00:16:38,499 --> 00:16:40,389
+where we as the database systems
+
+465
+00:16:40,389 --> 00:16:44,139
+developers we can be smart or we can we
+
+466
+00:16:44,139 --> 00:16:48,939
+come to the our implementation however
+
+467
+00:16:48,939 --> 00:16:50,679
+using latches and our data structures to
+
+468
+00:16:50,679 --> 00:16:53,110
+be mindful or try to accommodate what we
+
+469
+00:16:53,110 --> 00:16:55,419
+think the workloads gonna look like if I
+
+470
+00:16:55,419 --> 00:16:57,369
+think that this latch has to be like
+
+471
+00:16:57,369 --> 00:16:58,480
+whatever the operation I'm doing the
+
+472
+00:16:58,480 --> 00:17:00,519
+latches to be super fast then it's PI
+
+473
+00:17:00,519 --> 00:17:01,720
+faster for me to just keep retrying
+
+474
+00:17:01,720 --> 00:17:02,980
+because whoever holds the latch will
+
+475
+00:17:02,980 --> 00:17:04,869
+give it up real quickly but if I think
+
+476
+00:17:04,869 --> 00:17:06,130
+the operation is going to be super long
+
+477
+00:17:06,130 --> 00:17:09,519
+then maybe I want to yield or for some
+
+478
+00:17:09,519 --> 00:17:11,919
+amount of time or eventually abort we
+
+479
+00:17:11,919 --> 00:17:13,569
+can't do this in the blocking us mutex
+
+480
+00:17:13,569 --> 00:17:14,980
+soon as we try to get it we can't get it
+
+481
+00:17:14,980 --> 00:17:20,309
+the OS takes over and we're blocked yes
+
+482
+00:17:20,760 --> 00:17:27,849
+the questions what is this this oh this
+
+483
+00:17:27,849 --> 00:17:30,340
+yeah like the primers would be like it's
+
+484
+00:17:30,340 --> 00:17:32,590
+compare-and-swap it says at this memory
+
+485
+00:17:32,590 --> 00:17:34,179
+address check to see whether the value
+
+486
+00:17:34,179 --> 00:17:37,600
+is this like passing a zero if it if it
+
+487
+00:17:37,600 --> 00:17:40,419
+equals zero then set it to one right and
+
+488
+00:17:40,419 --> 00:17:42,010
+then there's different there's different
+
+489
+00:17:42,010 --> 00:17:43,570
+API sometimes you'll get back the old
+
+490
+00:17:43,570 --> 00:17:44,889
+value you'll get back a true whether
+
+491
+00:17:44,889 --> 00:17:46,480
+it's exceeded there's a bunch different
+
+492
+00:17:46,480 --> 00:17:47,830
+things and then they have they have
+
+493
+00:17:47,830 --> 00:17:49,389
+tested sets for you know for all the
+
+494
+00:17:49,389 --> 00:17:51,940
+different types you could you could be
+
+495
+00:17:51,940 --> 00:17:54,270
+based on
+
+496
+00:17:54,270 --> 00:17:56,290
+so again the main takeaway here is that
+
+497
+00:17:56,290 --> 00:17:58,240
+again we we in the data system can do a
+
+498
+00:17:58,240 --> 00:18:00,430
+better job than the OS because we would
+
+499
+00:18:00,430 --> 00:18:02,230
+know in what context we be using this
+
+500
+00:18:02,230 --> 00:18:07,390
+latch so for these two examples though
+
+501
+00:18:07,390 --> 00:18:09,850
+the latch has just been you know do I
+
+502
+00:18:09,850 --> 00:18:13,030
+hold it or not as I said before we have
+
+503
+00:18:13,030 --> 00:18:15,670
+we have different modes so we need a
+
+504
+00:18:15,670 --> 00:18:19,300
+reader writer latch that can support we
+
+505
+00:18:19,300 --> 00:18:20,500
+have these different notes the way we
+
+506
+00:18:20,500 --> 00:18:21,760
+basically do this and we build on top of
+
+507
+00:18:21,760 --> 00:18:23,680
+whatever our basic latching primitive we
+
+508
+00:18:23,680 --> 00:18:26,620
+have either the spin latch or the POS
+
+509
+00:18:26,620 --> 00:18:29,260
+mutex and then we manage different
+
+510
+00:18:29,260 --> 00:18:30,850
+queues to keep track of how many threads
+
+511
+00:18:30,850 --> 00:18:32,860
+are waiting acquired to different types
+
+512
+00:18:32,860 --> 00:18:35,590
+of latches right so it may be just
+
+513
+00:18:35,590 --> 00:18:36,790
+mentioned some counters to say here's
+
+514
+00:18:36,790 --> 00:18:37,930
+the number of threads that help hold the
+
+515
+00:18:37,930 --> 00:18:40,000
+latch in this mode here's the number of
+
+516
+00:18:40,000 --> 00:18:42,880
+threads that are waiting for it so if a
+
+517
+00:18:42,880 --> 00:18:44,650
+rethread shows up and says I want to get
+
+518
+00:18:44,650 --> 00:18:46,450
+the read latch well I look over here and
+
+519
+00:18:46,450 --> 00:18:48,040
+say nobody nobody holds the right latch
+
+520
+00:18:48,040 --> 00:18:50,290
+and nobody is waiting for it so I go
+
+521
+00:18:50,290 --> 00:18:52,720
+ahead and and hand it out and I update
+
+522
+00:18:52,720 --> 00:18:55,150
+my counter to say I have one one thread
+
+523
+00:18:55,150 --> 00:18:58,050
+that that's uh that holds this latch
+
+524
+00:18:58,050 --> 00:19:00,520
+another threat comes along and once also
+
+525
+00:19:00,520 --> 00:19:02,650
+quite a real a CH again Reed latches are
+
+526
+00:19:02,650 --> 00:19:04,990
+compatible or making me shared so we
+
+527
+00:19:04,990 --> 00:19:06,610
+just recognize that this guy already
+
+528
+00:19:06,610 --> 00:19:07,840
+holds the reed latch so this guy can
+
+529
+00:19:07,840 --> 00:19:09,490
+also acquire it and we just update our
+
+530
+00:19:09,490 --> 00:19:12,880
+counter so now the writer writer thread
+
+531
+00:19:12,880 --> 00:19:14,560
+comes along what's the right latch it
+
+532
+00:19:14,560 --> 00:19:17,050
+has to stall because the because the
+
+533
+00:19:17,050 --> 00:19:19,060
+read latch is being held by other
+
+534
+00:19:19,060 --> 00:19:21,040
+threads and so we just add our counter
+
+535
+00:19:21,040 --> 00:19:22,860
+here to say that we're waiting for this
+
+536
+00:19:22,860 --> 00:19:26,020
+so now if a read thread comes along and
+
+537
+00:19:26,020 --> 00:19:30,090
+wants the read latch what should happen
+
+538
+00:19:34,260 --> 00:19:36,250
+right so you guys depends on what policy
+
+539
+00:19:36,250 --> 00:19:38,830
+were using we could just immediately let
+
+540
+00:19:38,830 --> 00:19:41,140
+the say uh read latches already is
+
+541
+00:19:41,140 --> 00:19:42,760
+already being held go ahead and also
+
+542
+00:19:42,760 --> 00:19:44,170
+acquire it but that could lead to
+
+543
+00:19:44,170 --> 00:19:45,940
+starvation because the right on the
+
+544
+00:19:45,940 --> 00:19:47,620
+right thread will never get to it so in
+
+545
+00:19:47,620 --> 00:19:49,450
+this example here we could just stall it
+
+546
+00:19:49,450 --> 00:19:52,030
+add it to the counter say we're waiting
+
+547
+00:19:52,030 --> 00:19:54,160
+for this and then eventually when the
+
+548
+00:19:54,160 --> 00:19:56,380
+first two guys at least the latches the
+
+549
+00:19:56,380 --> 00:19:58,810
+writer thread will get the latch again
+
+550
+00:19:58,810 --> 00:20:01,540
+this depends what policy we want to use
+
+551
+00:20:01,540 --> 00:20:04,300
+depends on in what context we the the
+
+552
+00:20:04,300 --> 00:20:06,670
+latch is is being used
+
+553
+00:20:06,670 --> 00:20:08,680
+right if it's a if it's a if it's a data
+
+554
+00:20:08,680 --> 00:20:10,000
+structure where there's not many rights
+
+555
+00:20:10,000 --> 00:20:11,710
+but the rights are really important then
+
+556
+00:20:11,710 --> 00:20:14,110
+we want to give higher priority to the
+
+557
+00:20:14,110 --> 00:20:18,790
+right of threads okay and again we just
+
+558
+00:20:18,790 --> 00:20:21,400
+build on top of our the data structures
+
+559
+00:20:21,400 --> 00:20:23,230
+that are that the latching primitives
+
+560
+00:20:23,230 --> 00:20:24,730
+that I showed before to implement
+
+561
+00:20:24,730 --> 00:20:27,880
+something like this and you can still do
+
+562
+00:20:27,880 --> 00:20:29,500
+this you still depending on how you
+
+563
+00:20:29,500 --> 00:20:30,640
+organize the memory you can still do
+
+564
+00:20:30,640 --> 00:20:30,970
+this
+
+565
+00:20:30,970 --> 00:20:32,740
+most of the operations on this
+
+566
+00:20:32,740 --> 00:20:38,140
+atomically okay all right so let's now
+
+567
+00:20:38,140 --> 00:20:39,640
+see how we take these latches and
+
+568
+00:20:39,640 --> 00:20:42,040
+actually do something with them so the
+
+569
+00:20:42,040 --> 00:20:43,390
+first thing is as I said well first talk
+
+570
+00:20:43,390 --> 00:20:44,710
+about do hash tables because this is
+
+571
+00:20:44,710 --> 00:20:47,890
+actually super easy to do and the reason
+
+572
+00:20:47,890 --> 00:20:50,350
+why it's super easy to do is because the
+
+573
+00:20:50,350 --> 00:20:52,540
+ways in which threads can interact with
+
+574
+00:20:52,540 --> 00:20:56,170
+our hash table is is limited meaning we
+
+575
+00:20:56,170 --> 00:20:59,050
+probe into a for this one assuming we're
+
+576
+00:20:59,050 --> 00:21:00,760
+doing like the static hashing table the
+
+577
+00:21:00,760 --> 00:21:02,200
+extendable linear stuff that dynamic
+
+578
+00:21:02,200 --> 00:21:03,670
+ones they're a bit more complicated but
+
+579
+00:21:03,670 --> 00:21:06,900
+the the same principles apply here but
+
+580
+00:21:06,900 --> 00:21:09,160
+today in a linear probing hashing table
+
+581
+00:21:09,160 --> 00:21:11,410
+Mikey shows up I just hash it I jump to
+
+582
+00:21:11,410 --> 00:21:14,370
+some slot and then I just scan down in
+
+583
+00:21:14,370 --> 00:21:16,810
+sequential order on the hash table try
+
+584
+00:21:16,810 --> 00:21:18,640
+find a thing I'm looking what I'm
+
+585
+00:21:18,640 --> 00:21:21,250
+looking for and everybody every other
+
+586
+00:21:21,250 --> 00:21:22,570
+thread is doing the same thing they're
+
+587
+00:21:22,570 --> 00:21:26,350
+always scanning top to bottom eventually
+
+588
+00:21:26,350 --> 00:21:27,520
+reach the bottom and loop back around
+
+589
+00:21:27,520 --> 00:21:29,410
+but you think of that is just a circular
+
+590
+00:21:29,410 --> 00:21:30,490
+buffer where you're essentially always
+
+591
+00:21:30,490 --> 00:21:33,280
+scanning down so in this case here
+
+592
+00:21:33,280 --> 00:21:34,690
+deadlocks aren't possible because
+
+593
+00:21:34,690 --> 00:21:36,000
+everybody is going in the same direction
+
+594
+00:21:36,000 --> 00:21:38,050
+nobody's coming up in the other way and
+
+595
+00:21:38,050 --> 00:21:39,880
+they hold a latch it up that I want and
+
+596
+00:21:39,880 --> 00:21:41,800
+it holds a latch that I want like you
+
+597
+00:21:41,800 --> 00:21:45,160
+can't you can't have a deadlock so this
+
+598
+00:21:45,160 --> 00:21:48,160
+makes it super super simple so for an
+
+599
+00:21:48,160 --> 00:21:50,140
+out it's a resize that pay the table
+
+600
+00:21:50,140 --> 00:21:52,600
+this one we just take a global latch on
+
+601
+00:21:52,600 --> 00:21:55,930
+the usually in the header page that just
+
+602
+00:21:55,930 --> 00:21:58,090
+prevents anybody else from from reading
+
+603
+00:21:58,090 --> 00:22:00,520
+and writing the table until I complete
+
+604
+00:22:00,520 --> 00:22:03,820
+the the resizing but again that's if we
+
+605
+00:22:03,820 --> 00:22:05,530
+size our table a large enough to in the
+
+606
+00:22:05,530 --> 00:22:07,300
+very beginning like this is a rare
+
+607
+00:22:07,300 --> 00:22:09,370
+occurrence most of the time we're doing
+
+608
+00:22:09,370 --> 00:22:11,410
+you know probes or insertions and
+
+609
+00:22:11,410 --> 00:22:14,020
+that'll be fast deletions also
+
+610
+00:22:14,020 --> 00:22:15,400
+complicate this too if you want to do
+
+611
+00:22:15,400 --> 00:22:17,770
+compaction or move data around but for
+
+612
+00:22:17,770 --> 00:22:19,370
+that we can just ignore
+
+613
+00:22:19,370 --> 00:22:22,670
+so the two approaches to do this will
+
+614
+00:22:22,670 --> 00:22:25,750
+differ on the granularity of the latches
+
+615
+00:22:25,750 --> 00:22:28,820
+so the first approach you just have at a
+
+616
+00:22:28,820 --> 00:22:31,370
+on each page you just have a single
+
+617
+00:22:31,370 --> 00:22:34,010
+reader/writer latch and so when a thread
+
+618
+00:22:34,010 --> 00:22:35,960
+wants to do something you know do a
+
+619
+00:22:35,960 --> 00:22:38,030
+lookup before it can read the page or
+
+620
+00:22:38,030 --> 00:22:40,040
+access it it has to acquire the right
+
+621
+00:22:40,040 --> 00:22:43,730
+latch for that page the other approach
+
+622
+00:22:43,730 --> 00:22:45,230
+is be more fine-grain latching where you
+
+623
+00:22:45,230 --> 00:22:49,040
+have a latch for every single slot so
+
+624
+00:22:49,040 --> 00:22:50,540
+that means as you're scanning down you
+
+625
+00:22:50,540 --> 00:22:52,760
+can you acquire the next slots latch and
+
+626
+00:22:52,760 --> 00:22:54,320
+then you go into it and then do it look
+
+627
+00:22:54,320 --> 00:22:55,520
+for whatever whatever you're looking for
+
+628
+00:22:55,520 --> 00:22:57,470
+so there's this trade-off between the
+
+629
+00:22:57,470 --> 00:22:58,940
+computation the storage overhead between
+
+630
+00:22:58,940 --> 00:23:00,920
+these two approaches because the the
+
+631
+00:23:00,920 --> 00:23:02,990
+page latch we have to store less latches
+
+632
+00:23:02,990 --> 00:23:05,330
+there's only one per page but now this
+
+633
+00:23:05,330 --> 00:23:06,920
+can potentially reduce our parallelism
+
+634
+00:23:06,920 --> 00:23:10,670
+because I can't have two you know even
+
+635
+00:23:10,670 --> 00:23:12,200
+though two threads might be operating on
+
+636
+00:23:12,200 --> 00:23:14,060
+different slots because it's in the same
+
+637
+00:23:14,060 --> 00:23:16,610
+page they can't run at the same time in
+
+638
+00:23:16,610 --> 00:23:19,700
+the case of having a latch per slot it's
+
+639
+00:23:19,700 --> 00:23:21,050
+gonna lob for more parallelism because
+
+640
+00:23:21,050 --> 00:23:23,600
+the latches are more fine-grain but now
+
+641
+00:23:23,600 --> 00:23:25,010
+I'm storing more latches in every single
+
+642
+00:23:25,010 --> 00:23:27,590
+slot and now it's also more expensive to
+
+643
+00:23:27,590 --> 00:23:30,710
+you know - keep quiet ease latches as
+
+644
+00:23:30,710 --> 00:23:31,880
+I'm scanning through because I'm doing
+
+645
+00:23:31,880 --> 00:23:33,050
+it for every single slot that I'm
+
+646
+00:23:33,050 --> 00:23:35,540
+looking at so let's let's look at some
+
+647
+00:23:35,540 --> 00:23:37,280
+high-level example so first one would be
+
+648
+00:23:37,280 --> 00:23:39,020
+page latches so again say we have a
+
+649
+00:23:39,020 --> 00:23:41,870
+simple three to three page table that
+
+650
+00:23:41,870 --> 00:23:44,720
+has two slots per page and so the first
+
+651
+00:23:44,720 --> 00:23:47,420
+thread wants to find D and say D hashes
+
+652
+00:23:47,420 --> 00:23:50,300
+to this this position here this slot so
+
+653
+00:23:50,300 --> 00:23:52,160
+before I can go look inside of it to see
+
+654
+00:23:52,160 --> 00:23:53,420
+whether the thing I want is there I
+
+655
+00:23:53,420 --> 00:23:55,460
+first have to get the read latch on it
+
+656
+00:23:55,460 --> 00:23:57,800
+and then once I have that now my cursor
+
+657
+00:23:57,800 --> 00:24:00,560
+can start looking at it now let's say
+
+658
+00:24:00,560 --> 00:24:01,910
+another thread comes along and they want
+
+659
+00:24:01,910 --> 00:24:04,580
+to insert E and E wants to hash to where
+
+660
+00:24:04,580 --> 00:24:07,490
+C is can it do that can actually start
+
+661
+00:24:07,490 --> 00:24:10,010
+looking at it no right because because
+
+662
+00:24:10,010 --> 00:24:13,250
+it wants to take a write latch on this
+
+663
+00:24:13,250 --> 00:24:16,190
+page because it doesn't know that C is
+
+664
+00:24:16,190 --> 00:24:17,720
+is full it doesn't know it's gonna have
+
+665
+00:24:17,720 --> 00:24:19,070
+to scan but so before they can even look
+
+666
+00:24:19,070 --> 00:24:19,490
+at it
+
+667
+00:24:19,490 --> 00:24:20,900
+it needs the right latch the right latch
+
+668
+00:24:20,900 --> 00:24:22,820
+is not compatible to read latch so it
+
+669
+00:24:22,820 --> 00:24:26,360
+has to stall and wait so the first guy
+
+670
+00:24:26,360 --> 00:24:28,340
+scans down he looks at C and now he
+
+671
+00:24:28,340 --> 00:24:29,900
+needs to go look at this next page here
+
+672
+00:24:29,900 --> 00:24:31,760
+and again the way we figure out what
+
+673
+00:24:31,760 --> 00:24:32,570
+page you look at
+
+674
+00:24:32,570 --> 00:24:35,500
+is we just look you know we look in our
+
+675
+00:24:35,500 --> 00:24:37,790
+the header for the hash table and the
+
+676
+00:24:37,790 --> 00:24:38,930
+headers gonna say here's all the pages
+
+677
+00:24:38,930 --> 00:24:40,580
+that you're looking for but logically
+
+678
+00:24:40,580 --> 00:24:42,590
+they're order sequentially right so like
+
+679
+00:24:42,590 --> 00:24:44,990
+page zero page 1 page 2 so you look in
+
+680
+00:24:44,990 --> 00:24:47,000
+the header and say where do I find page
+
+681
+00:24:47,000 --> 00:24:51,050
+2 for my hash table and so in order to
+
+682
+00:24:51,050 --> 00:24:52,940
+do this traversal when I want to go from
+
+683
+00:24:52,940 --> 00:24:55,580
+from page 1 to page 2 I actually don't
+
+684
+00:24:55,580 --> 00:24:58,640
+need to hold the latch on one in order
+
+685
+00:24:58,640 --> 00:25:01,490
+for me to jump down to 2 because my hash
+
+686
+00:25:01,490 --> 00:25:04,670
+tables static I'm not resizing so this
+
+687
+00:25:04,670 --> 00:25:08,270
+location is always gonna be the same so
+
+688
+00:25:08,270 --> 00:25:09,860
+I can immediately release the latch
+
+689
+00:25:09,860 --> 00:25:11,510
+before I jump to this and allow anybody
+
+690
+00:25:11,510 --> 00:25:13,400
+else to keep running and then I can go
+
+691
+00:25:13,400 --> 00:25:16,130
+ahead and quire the latch for this this
+
+692
+00:25:16,130 --> 00:25:17,060
+is gonna be different when we talk about
+
+693
+00:25:17,060 --> 00:25:18,650
+B plus trees B plus trees you have to
+
+694
+00:25:18,650 --> 00:25:20,690
+hold a latch on whatever node you're
+
+695
+00:25:20,690 --> 00:25:22,400
+coming from before you jump to the next
+
+696
+00:25:22,400 --> 00:25:24,200
+node and it's only when you get to the
+
+697
+00:25:24,200 --> 00:25:25,670
+next row do you then release the one
+
+698
+00:25:25,670 --> 00:25:37,820
+behind you yes yeah so he's so he
+
+699
+00:25:37,820 --> 00:25:40,160
+proposed an optimization where in this
+
+700
+00:25:40,160 --> 00:25:43,310
+case here for thread thread 2 instead of
+
+701
+00:25:43,310 --> 00:25:45,320
+trying to acquire require a write latch
+
+702
+00:25:45,320 --> 00:25:47,450
+could I just require a read latch figure
+
+703
+00:25:47,450 --> 00:25:48,560
+out whether the thing I actually want
+
+704
+00:25:48,560 --> 00:25:50,960
+would be there or not and then if it is
+
+705
+00:25:50,960 --> 00:25:52,310
+then I go back and try to acquire the
+
+706
+00:25:52,310 --> 00:25:54,680
+write latch or I just jump down here and
+
+707
+00:25:54,680 --> 00:25:57,290
+say you know do the same thing because I
+
+708
+00:25:57,290 --> 00:25:58,250
+know it's the thing I'm look for is not
+
+709
+00:25:58,250 --> 00:25:59,870
+here if there's no delete to know
+
+710
+00:25:59,870 --> 00:26:03,920
+movement yes we'll talk the same
+
+711
+00:26:03,920 --> 00:26:05,270
+technique when we apply for B plus trees
+
+712
+00:26:05,270 --> 00:26:07,610
+I'm doing it that sort of the the naive
+
+713
+00:26:07,610 --> 00:26:09,080
+way but yes you can actually do that in
+
+714
+00:26:09,080 --> 00:26:11,360
+general you don't do you you don't
+
+715
+00:26:11,360 --> 00:26:13,040
+really do latch upgrades you can't say
+
+716
+00:26:13,040 --> 00:26:14,390
+I'm in read mode now put me in write
+
+717
+00:26:14,390 --> 00:26:16,370
+mode you release the latch and then in
+
+718
+00:26:16,370 --> 00:26:17,960
+one mode and put and get acquired again
+
+719
+00:26:17,960 --> 00:26:21,440
+another another another mode all right
+
+720
+00:26:21,440 --> 00:26:23,390
+so this guy Gavriel at she can start
+
+721
+00:26:23,390 --> 00:26:25,400
+reading this now this guy gets the right
+
+722
+00:26:25,400 --> 00:26:28,400
+latch it sees that sees not what a once
+
+723
+00:26:28,400 --> 00:26:30,050
+so wants to scan down here and this time
+
+724
+00:26:30,050 --> 00:26:32,240
+t1 has gone away so can go ahead and be
+
+725
+00:26:32,240 --> 00:26:33,920
+the right latch see that the thing
+
+726
+00:26:33,920 --> 00:26:35,780
+there's this slots occupied come down
+
+727
+00:26:35,780 --> 00:26:38,420
+here and do the insert again it's more
+
+728
+00:26:38,420 --> 00:26:40,130
+coarse-grained because only one thread
+
+729
+00:26:40,130 --> 00:26:43,310
+can be inside if they're doing if the
+
+730
+00:26:43,310 --> 00:26:45,320
+the latch mode conflict was only one
+
+731
+00:26:45,320 --> 00:26:46,279
+thread at a time to be
+
+732
+00:26:46,279 --> 00:26:50,119
+side the the table but it makes it more
+
+733
+00:26:50,119 --> 00:26:51,440
+simple to actually choir these latches I
+
+734
+00:26:51,440 --> 00:26:52,909
+don't not acquiring latches every single
+
+735
+00:26:52,909 --> 00:26:55,330
+one so let's let's see how to do it in
+
+736
+00:26:55,330 --> 00:26:59,479
+which slot latches so again t1 starts it
+
+737
+00:26:59,479 --> 00:27:02,119
+wants to do find D it hashes to where a
+
+738
+00:27:02,119 --> 00:27:04,849
+is so it acquires the read latch on a
+
+739
+00:27:04,849 --> 00:27:08,869
+and then t t2 starts it wants to do a
+
+740
+00:27:08,869 --> 00:27:11,509
+right so acquires the right latch on C
+
+741
+00:27:11,509 --> 00:27:14,389
+and at this point when t1 starts up
+
+742
+00:27:14,389 --> 00:27:16,190
+again and tries to look at this it can't
+
+743
+00:27:16,190 --> 00:27:17,710
+run because you can't get that latch
+
+744
+00:27:17,710 --> 00:27:21,529
+whereas so he has to stall whereas this
+
+745
+00:27:21,529 --> 00:27:22,729
+other thread can keep going down here
+
+746
+00:27:22,729 --> 00:27:24,589
+and then now this guy can then pick up
+
+747
+00:27:24,589 --> 00:27:26,659
+me and keep going behind it alright so
+
+748
+00:27:26,659 --> 00:27:27,979
+then eventually it has to stall too
+
+749
+00:27:27,979 --> 00:27:29,599
+because they can't go here this guy
+
+750
+00:27:29,599 --> 00:27:31,909
+moves on does his insert and then this
+
+751
+00:27:31,909 --> 00:27:34,369
+guy can then proceed right so we can do
+
+752
+00:27:34,369 --> 00:27:35,749
+the exact same optimization that he said
+
+753
+00:27:35,749 --> 00:27:37,339
+and we'll see this in content sippy +
+
+754
+00:27:37,339 --> 00:27:40,039
+tree I could escape T key real a chance
+
+755
+00:27:40,039 --> 00:27:42,049
+try find the spot that I want and then I
+
+756
+00:27:42,049 --> 00:27:43,279
+try to acquire the real s what I want
+
+757
+00:27:43,279 --> 00:27:45,559
+but I do have to handle the case or I do
+
+758
+00:27:45,559 --> 00:27:47,450
+take the read latch see this is the spot
+
+759
+00:27:47,450 --> 00:27:49,849
+I want to go then I release the real a
+
+760
+00:27:49,849 --> 00:27:51,229
+CH then come back and try to take the
+
+761
+00:27:51,229 --> 00:27:52,639
+right latch and in between that time
+
+762
+00:27:52,639 --> 00:27:54,049
+somebody might have inserted something
+
+763
+00:27:54,049 --> 00:27:56,119
+in my slot and then I need then I need
+
+764
+00:27:56,119 --> 00:27:56,989
+to be able to handle that and keep
+
+765
+00:27:56,989 --> 00:28:00,200
+scanning down below so just that
+
+766
+00:28:00,200 --> 00:28:01,429
+technique works with blue sector stuff
+
+767
+00:28:01,429 --> 00:28:05,389
+you have to do so again the main
+
+768
+00:28:05,389 --> 00:28:06,499
+takeaway I want to get from all this
+
+769
+00:28:06,499 --> 00:28:09,229
+there can't be a deadlock because
+
+770
+00:28:09,229 --> 00:28:10,969
+everyone's scanning from the top to the
+
+771
+00:28:10,969 --> 00:28:12,979
+bottom that makes our life easier
+
+772
+00:28:12,979 --> 00:28:14,119
+there's nobody else coming in the other
+
+773
+00:28:14,119 --> 00:28:16,940
+direction so that's why also - we can
+
+774
+00:28:16,940 --> 00:28:18,259
+just release the latches before we jump
+
+775
+00:28:18,259 --> 00:28:19,849
+to the next one because we're not
+
+776
+00:28:19,849 --> 00:28:21,710
+worried about the location of the page
+
+777
+00:28:21,710 --> 00:28:27,889
+we're W changing okay alright so let's
+
+778
+00:28:27,889 --> 00:28:28,879
+talk about more complicated things let's
+
+779
+00:28:28,879 --> 00:28:31,460
+talk we had to do this in a B+ tree so
+
+780
+00:28:31,460 --> 00:28:33,139
+again we want to have multiple threads
+
+781
+00:28:33,139 --> 00:28:35,809
+running at the same time and then we
+
+782
+00:28:35,809 --> 00:28:37,509
+allow them to redo reads and writes
+
+783
+00:28:37,509 --> 00:28:39,799
+without having to lock the or latch the
+
+784
+00:28:39,799 --> 00:28:41,899
+entire tree or during that duration of
+
+785
+00:28:41,899 --> 00:28:44,119
+the operation so the two things we need
+
+786
+00:28:44,119 --> 00:28:45,889
+to handle in our B+ tree to make them
+
+787
+00:28:45,889 --> 00:28:47,989
+thread safe is that we need to handle
+
+788
+00:28:47,989 --> 00:28:49,460
+the case where two threads are trying to
+
+789
+00:28:49,460 --> 00:28:52,059
+modify the same node at the same time
+
+790
+00:28:52,059 --> 00:28:54,320
+and then we need to handle the case
+
+791
+00:28:54,320 --> 00:28:56,089
+where one thread might be traversing the
+
+792
+00:28:56,089 --> 00:28:58,729
+tree and then down below it before it
+
+793
+00:28:58,729 --> 00:28:59,990
+gets to the leaf node
+
+794
+00:28:59,990 --> 00:29:02,179
+another thread does a modification that
+
+795
+00:29:02,179 --> 00:29:04,340
+causes a split and emerge and now the
+
+796
+00:29:04,340 --> 00:29:07,700
+location of a page may end up a node may
+
+797
+00:29:07,700 --> 00:29:10,070
+end up getting moved around and the data
+
+798
+00:29:10,070 --> 00:29:11,450
+I'm looking for is not there or in worst
+
+799
+00:29:11,450 --> 00:29:13,100
+case scenario I have a pointer to now
+
+800
+00:29:13,100 --> 00:29:16,390
+and in memory an invalid memory location
+
+801
+00:29:16,390 --> 00:29:18,440
+so let's look at high-level example here
+
+802
+00:29:18,440 --> 00:29:20,660
+so we're gonna focus on this side of the
+
+803
+00:29:20,660 --> 00:29:22,760
+tree I'm just labeled in ABCDE and then
+
+804
+00:29:22,760 --> 00:29:25,429
+so forth on the leaf nodes so say we
+
+805
+00:29:25,429 --> 00:29:29,330
+want to do a delete on on 44 down to the
+
+806
+00:29:29,330 --> 00:29:31,280
+bottom so the first threads going to
+
+807
+00:29:31,280 --> 00:29:32,809
+start at the top again we just do the
+
+808
+00:29:32,809 --> 00:29:34,370
+traversal we talked about so far we look
+
+809
+00:29:34,370 --> 00:29:36,110
+at the separator keys we figure out
+
+810
+00:29:36,110 --> 00:29:37,250
+whether or you want to go left and right
+
+811
+00:29:37,250 --> 00:29:39,170
+and we move down to the child node based
+
+812
+00:29:39,170 --> 00:29:41,660
+on that so then we may get down to this
+
+813
+00:29:41,660 --> 00:29:44,030
+leaf node here and we can go ahead and
+
+814
+00:29:44,030 --> 00:29:46,850
+delete our entry but now we see that our
+
+815
+00:29:46,850 --> 00:29:48,890
+node is less than half-full in this case
+
+816
+00:29:48,890 --> 00:29:51,380
+it's entirely empty so therefore we have
+
+817
+00:29:51,380 --> 00:29:54,320
+to rebalance and so we're gonna want to
+
+818
+00:29:54,320 --> 00:29:55,970
+in this case here instead of doing a
+
+819
+00:29:55,970 --> 00:29:59,420
+merge we'll just copy over a key from
+
+820
+00:29:59,420 --> 00:30:01,640
+one of our siblings but let's say before
+
+821
+00:30:01,640 --> 00:30:05,450
+we can do that rebalancing the OS swaps
+
+822
+00:30:05,450 --> 00:30:08,270
+out our thread I and we get stall it and
+
+823
+00:30:08,270 --> 00:30:10,880
+now another thread start running and
+
+824
+00:30:10,880 --> 00:30:12,860
+that other thread wants to do a lookup
+
+825
+00:30:12,860 --> 00:30:15,740
+to try to find key 41 right down here at
+
+826
+00:30:15,740 --> 00:30:17,480
+the bottom so that does the same thing
+
+827
+00:30:17,480 --> 00:30:19,610
+it starts traversing the tree and then
+
+828
+00:30:19,610 --> 00:30:22,580
+it gets down to this point here and it
+
+829
+00:30:22,580 --> 00:30:24,260
+looks at the separator keys and figures
+
+830
+00:30:24,260 --> 00:30:26,450
+out oh I want to go to this node but
+
+831
+00:30:26,450 --> 00:30:29,150
+then it get it Bo stalls this switches
+
+832
+00:30:29,150 --> 00:30:33,050
+back to our first thread and the first
+
+833
+00:30:33,050 --> 00:30:36,110
+rad moves 41 over and then now when my
+
+834
+00:30:36,110 --> 00:30:37,400
+other thread starts up running again I
+
+835
+00:30:37,400 --> 00:30:38,750
+get down here and the thing that I
+
+836
+00:30:38,750 --> 00:30:41,740
+thought was there is no longer there
+
+837
+00:30:41,740 --> 00:30:45,860
+right so that so best-case scenario this
+
+838
+00:30:45,860 --> 00:30:47,360
+is just you know we got a false negative
+
+839
+00:30:47,360 --> 00:30:50,000
+here we thought key 41 does exist but
+
+840
+00:30:50,000 --> 00:30:51,490
+the index told us it didn't exist that
+
+841
+00:30:51,490 --> 00:30:53,570
+all the anomalies or issues were talked
+
+842
+00:30:53,570 --> 00:30:54,440
+about today at the best-case scenario
+
+843
+00:30:54,440 --> 00:30:57,140
+worst-case scenario was this node got
+
+844
+00:30:57,140 --> 00:30:58,610
+moved around and then now this pointer
+
+845
+00:30:58,610 --> 00:31:01,010
+pointed to nothing and we went and we
+
+846
+00:31:01,010 --> 00:31:02,270
+would get a seg fault in a program a
+
+847
+00:31:02,270 --> 00:31:05,480
+crash so the way we're gonna handle this
+
+848
+00:31:05,480 --> 00:31:07,790
+is the classic technique called latch
+
+849
+00:31:07,790 --> 00:31:10,190
+crabbing or latch coupling when I you
+
+850
+00:31:10,190 --> 00:31:11,780
+know when I was a young lad when I was
+
+851
+00:31:11,780 --> 00:31:13,220
+taught databases
+
+852
+00:31:13,220 --> 00:31:15,800
+I would be game I was told the term was
+
+853
+00:31:15,800 --> 00:31:16,730
+called lat crabbing
+
+854
+00:31:16,730 --> 00:31:18,170
+I don't know what the textbook actually
+
+855
+00:31:18,170 --> 00:31:19,880
+uses but the Wikipedia I think calls a
+
+856
+00:31:19,880 --> 00:31:22,340
+lot latch coupling it's all the same
+
+857
+00:31:22,340 --> 00:31:25,670
+concept same thing so lats crabbing is a
+
+858
+00:31:25,670 --> 00:31:27,140
+technique that allows multiple threads
+
+859
+00:31:27,140 --> 00:31:30,140
+to access the the B plus tree at the
+
+860
+00:31:30,140 --> 00:31:31,310
+same time and we're to protect things
+
+861
+00:31:31,310 --> 00:31:33,680
+using latches so the basic idea the way
+
+862
+00:31:33,680 --> 00:31:35,840
+this works is that anytime we're at a
+
+863
+00:31:35,840 --> 00:31:37,280
+node we have to have a latch on that
+
+864
+00:31:37,280 --> 00:31:39,800
+node being in right mode or read mode
+
+865
+00:31:39,800 --> 00:31:42,920
+and then before we can jump to our child
+
+866
+00:31:42,920 --> 00:31:45,230
+we got to get the latch on our child the
+
+867
+00:31:45,230 --> 00:31:46,460
+next the next node we're gonna we're
+
+868
+00:31:46,460 --> 00:31:49,460
+gonna go to and then when we land on
+
+869
+00:31:49,460 --> 00:31:51,350
+that on that child we can then examine
+
+870
+00:31:51,350 --> 00:31:53,060
+its contents and if we determine that
+
+871
+00:31:53,060 --> 00:31:56,890
+the child node we just moved to is safe
+
+872
+00:31:56,890 --> 00:31:59,360
+then it's okay for us to release the
+
+873
+00:31:59,360 --> 00:32:02,150
+latch on our parent and so the term let
+
+874
+00:32:02,150 --> 00:32:03,470
+crabbing sort of has to do with the way
+
+875
+00:32:03,470 --> 00:32:05,720
+like crabs walk like moving one leg past
+
+876
+00:32:05,720 --> 00:32:07,070
+another that's how we're going to
+
+877
+00:32:07,070 --> 00:32:10,190
+acquire latches as we go down so our
+
+878
+00:32:10,190 --> 00:32:13,100
+definition of safe is one where if we're
+
+879
+00:32:13,100 --> 00:32:16,610
+doing a modification the the node we're
+
+880
+00:32:16,610 --> 00:32:18,770
+sitting at will not have to do a split
+
+881
+00:32:18,770 --> 00:32:21,170
+or merge no matter what happens below it
+
+882
+00:32:21,170 --> 00:32:24,530
+in the tree so that means that it's
+
+883
+00:32:24,530 --> 00:32:26,510
+either not completely full if we're
+
+884
+00:32:26,510 --> 00:32:27,920
+trying to insert we have room to
+
+885
+00:32:27,920 --> 00:32:29,630
+accommodate any key that may come up to
+
+886
+00:32:29,630 --> 00:32:31,400
+us or any key that we're inserting and
+
+887
+00:32:31,400 --> 00:32:33,320
+then if we were doing a delete we know
+
+888
+00:32:33,320 --> 00:32:34,720
+that it's more it's more than half-full
+
+889
+00:32:34,720 --> 00:32:37,610
+meaning we have to delete a key we're
+
+890
+00:32:37,610 --> 00:32:41,720
+not gonna have to do a merge all right
+
+891
+00:32:41,720 --> 00:32:43,040
+so again the basic protocol worked like
+
+892
+00:32:43,040 --> 00:32:44,930
+this at the very root you acquire the
+
+893
+00:32:44,930 --> 00:32:46,640
+right latch you need so in the case
+
+894
+00:32:46,640 --> 00:32:48,200
+we're doing a fine it's all read latches
+
+895
+00:32:48,200 --> 00:32:50,060
+all the way down again every single time
+
+896
+00:32:50,060 --> 00:32:52,880
+we we get to the next node we release
+
+897
+00:32:52,880 --> 00:32:54,080
+the latch on that parent hood where we
+
+898
+00:32:54,080 --> 00:32:56,120
+came from okay again we're not making
+
+899
+00:32:56,120 --> 00:32:57,740
+any modifications so every every node is
+
+900
+00:32:57,740 --> 00:33:00,560
+deemed safe for inserts and deletes we
+
+901
+00:33:00,560 --> 00:33:02,060
+start off with getting right latches all
+
+902
+00:33:02,060 --> 00:33:04,220
+the way down and then please we
+
+903
+00:33:04,220 --> 00:33:05,600
+recognize that the node we're at is
+
+904
+00:33:05,600 --> 00:33:07,790
+considered safe we can release any right
+
+905
+00:33:07,790 --> 00:33:09,590
+latch we have up above in the tree
+
+906
+00:33:09,590 --> 00:33:11,720
+because again no matter what has below
+
+907
+00:33:11,720 --> 00:33:13,640
+us they would not be affected they would
+
+908
+00:33:13,640 --> 00:33:16,880
+not have to get changed so let's look at
+
+909
+00:33:16,880 --> 00:33:19,040
+some signals so again find is super
+
+910
+00:33:19,040 --> 00:33:21,140
+simple I want to find key 38 at the
+
+911
+00:33:21,140 --> 00:33:23,000
+bottom so my thread starts off the
+
+912
+00:33:23,000 --> 00:33:25,430
+beginning I get the real a on a I come
+
+913
+00:33:25,430 --> 00:33:26,929
+down to now B and now this
+
+914
+00:33:26,929 --> 00:33:30,950
+point here again because it's read-only
+
+915
+00:33:30,950 --> 00:33:33,710
+operation it's a fine it's safe for me
+
+916
+00:33:33,710 --> 00:33:36,320
+to release the latch on a so as soon as
+
+917
+00:33:36,320 --> 00:33:38,029
+I get down to B I can release the latch
+
+918
+00:33:38,029 --> 00:33:40,129
+na and I'm good to go and now I keep
+
+919
+00:33:40,129 --> 00:33:42,049
+scanning down and do the same thing get
+
+920
+00:33:42,049 --> 00:33:45,169
+to D release on B get to H release on D
+
+921
+00:33:45,169 --> 00:33:47,919
+and now I do my read and and I'm done
+
+922
+00:33:47,919 --> 00:33:52,429
+right pretty straightforward so let's
+
+923
+00:33:52,429 --> 00:33:56,149
+see now if we want to do a delete so I
+
+924
+00:33:56,149 --> 00:33:57,259
+start off with the right latch on the
+
+925
+00:33:57,259 --> 00:33:59,869
+root I come down to B after i acquire
+
+926
+00:33:59,869 --> 00:34:02,089
+the right latch now this point here is
+
+927
+00:34:02,089 --> 00:34:04,159
+it is it safe for me to release the
+
+928
+00:34:04,159 --> 00:34:06,229
+latch on a No
+
+929
+00:34:06,229 --> 00:34:08,210
+why because I only have one key and B
+
+930
+00:34:08,210 --> 00:34:10,579
+and so I don't know what's below me yet
+
+931
+00:34:10,579 --> 00:34:12,589
+I'm going down and going I'm doing 38 so
+
+932
+00:34:12,589 --> 00:34:14,418
+I'm going down here I don't know what
+
+933
+00:34:14,418 --> 00:34:16,879
+these other notes look like yet so if I
+
+934
+00:34:16,879 --> 00:34:19,399
+do a delete and I have to merge and I
+
+935
+00:34:19,399 --> 00:34:21,469
+have to remove this key now I do like
+
+936
+00:34:21,469 --> 00:34:23,809
+them you know make a change up to egg so
+
+937
+00:34:23,809 --> 00:34:25,549
+in this case here we have to hold the
+
+938
+00:34:25,549 --> 00:34:27,589
+latch on B I'm sorry I hold the latch on
+
+939
+00:34:27,589 --> 00:34:29,960
+egg so then we get the latch on D get
+
+940
+00:34:29,960 --> 00:34:33,199
+down here and now we recognize that no
+
+941
+00:34:33,199 --> 00:34:35,599
+matter what happens below D we know that
+
+942
+00:34:35,599 --> 00:34:37,969
+we have room to accommodate or we can
+
+943
+00:34:37,969 --> 00:34:39,199
+lease to meet one key and I'll have to
+
+944
+00:34:39,199 --> 00:34:41,270
+merge so we can at this point here we
+
+945
+00:34:41,270 --> 00:34:43,760
+can release the latches on on a and B so
+
+946
+00:34:43,760 --> 00:34:44,779
+essentially the threads are sort of
+
+947
+00:34:44,779 --> 00:34:46,099
+keeping a stack of like here's all the
+
+948
+00:34:46,099 --> 00:34:48,139
+latches on I'm holding as I go down so
+
+949
+00:34:48,139 --> 00:34:49,940
+it knows at some point when I when I am
+
+950
+00:34:49,940 --> 00:34:51,230
+at a safe node I just release everything
+
+951
+00:34:51,230 --> 00:34:54,710
+up a bumping alright so now I get down
+
+952
+00:34:54,710 --> 00:34:57,049
+to H I can release the latch on D
+
+953
+00:34:57,049 --> 00:35:00,049
+because H is is one Humberts at full
+
+954
+00:35:00,049 --> 00:35:02,270
+then I go ahead and do my delete and
+
+955
+00:35:02,270 --> 00:35:03,829
+then when I'm done then I release the
+
+956
+00:35:03,829 --> 00:35:07,970
+latch and go home let's see now an
+
+957
+00:35:07,970 --> 00:35:09,020
+insert same thing
+
+958
+00:35:09,020 --> 00:35:10,549
+start with the right latch on a and the
+
+959
+00:35:10,549 --> 00:35:12,710
+roof go down to be at this point here I
+
+960
+00:35:12,710 --> 00:35:14,900
+recognize that B can accommodate any new
+
+961
+00:35:14,900 --> 00:35:17,150
+insertion so it's safe for me to release
+
+962
+00:35:17,150 --> 00:35:19,069
+the latch on a so I'll go ahead and do
+
+963
+00:35:19,069 --> 00:35:21,770
+that and then I go down to D D is
+
+964
+00:35:21,770 --> 00:35:23,809
+considered full so I don't know what's
+
+965
+00:35:23,809 --> 00:35:25,490
+gonna happen below me and so I had to
+
+966
+00:35:25,490 --> 00:35:28,849
+hold the latch on B so then I get down
+
+967
+00:35:28,849 --> 00:35:30,859
+to I and now I recognize that I can
+
+968
+00:35:30,859 --> 00:35:32,329
+never split because as enough room so
+
+969
+00:35:32,329 --> 00:35:34,339
+before I do the update I release the
+
+970
+00:35:34,339 --> 00:35:37,549
+latch on B and B and D and the night
+
+971
+00:35:37,549 --> 00:35:39,660
+then I can do my insert
+
+972
+00:35:39,660 --> 00:35:43,780
+so for this the the order in which you
+
+973
+00:35:43,780 --> 00:35:46,270
+release the latches doesn't matter from
+
+974
+00:35:46,270 --> 00:35:49,180
+a correctness standpoint right so back
+
+975
+00:35:49,180 --> 00:35:51,790
+going back here I have to release the
+
+976
+00:35:51,790 --> 00:35:54,550
+latch on D and B if I release latch on D
+
+977
+00:35:54,550 --> 00:35:56,920
+before bead that doesn't matter because
+
+978
+00:35:56,920 --> 00:35:58,240
+no one's gonna get to D anyway because
+
+979
+00:35:58,240 --> 00:36:00,670
+they can't get to B so from a
+
+980
+00:36:00,670 --> 00:36:01,960
+correctness standpoint it doesn't matter
+
+981
+00:36:01,960 --> 00:36:03,730
+but from a before my standpoint we
+
+982
+00:36:03,730 --> 00:36:05,220
+obviously want to release this one first
+
+983
+00:36:05,220 --> 00:36:08,980
+because this this covers no more more
+
+984
+00:36:08,980 --> 00:36:11,200
+leaf nodes so you want to release the
+
+985
+00:36:11,200 --> 00:36:15,780
+higher up latches as soon as possible
+
+986
+00:36:16,410 --> 00:36:20,410
+okay let's look at one more example
+
+987
+00:36:20,410 --> 00:36:22,960
+where there could be a split so I wanted
+
+988
+00:36:22,960 --> 00:36:25,330
+to cert 25 same thing right latched on
+
+989
+00:36:25,330 --> 00:36:28,960
+on a right latching be be won't won't
+
+990
+00:36:28,960 --> 00:36:30,550
+get over a full I can release the latch
+
+991
+00:36:30,550 --> 00:36:33,340
+on a I come down to see see he's not
+
+992
+00:36:33,340 --> 00:36:35,140
+gonna go get over a fool so I can at
+
+993
+00:36:35,140 --> 00:36:37,180
+least latch on B and then now I come
+
+994
+00:36:37,180 --> 00:36:39,610
+down to F and now I see I need I need to
+
+995
+00:36:39,610 --> 00:36:42,670
+do a split so in this case here I need
+
+996
+00:36:42,670 --> 00:36:44,500
+need to hold the latch on my parent node
+
+997
+00:36:44,500 --> 00:36:49,540
+on C while I make the change so I first
+
+998
+00:36:49,540 --> 00:36:53,290
+start 25 here take the spillover page
+
+999
+00:36:53,290 --> 00:36:55,390
+over here put 31 there and then update
+
+1000
+00:36:55,390 --> 00:36:59,830
+my my parent node do I need to have a
+
+1001
+00:36:59,830 --> 00:37:04,030
+latch on this new guy down here what
+
+1002
+00:37:04,030 --> 00:37:12,040
+that says no why he says no we can
+
+1003
+00:37:12,040 --> 00:37:13,210
+access it because you could have you
+
+1004
+00:37:13,210 --> 00:37:17,050
+have a latch on the parent that assumes
+
+1005
+00:37:17,050 --> 00:37:19,060
+that there's no sibling pointers which
+
+1006
+00:37:19,060 --> 00:37:20,590
+we'll talk about in a second so in this
+
+1007
+00:37:20,590 --> 00:37:22,690
+example here for simplicity reasons I'm
+
+1008
+00:37:22,690 --> 00:37:23,710
+not going to acquire the latch because
+
+1009
+00:37:23,710 --> 00:37:25,480
+everyone's going top of the bottom if
+
+1010
+00:37:25,480 --> 00:37:27,520
+I'm scanning along the leaf nodes then
+
+1011
+00:37:27,520 --> 00:37:28,900
+yeah someone can get to this and I have
+
+1012
+00:37:28,900 --> 00:37:32,280
+to protect it but we'll get to that okay
+
+1013
+00:37:32,280 --> 00:37:34,280
+yes
+
+1014
+00:37:34,280 --> 00:37:37,349
+[Music]
+
+1015
+00:37:39,870 --> 00:37:42,250
+yes Damon is I said that the threads
+
+1016
+00:37:42,250 --> 00:37:44,920
+have a stack of the of the latches
+
+1017
+00:37:44,920 --> 00:37:45,700
+they're acquiring us to go down
+
+1018
+00:37:45,700 --> 00:37:50,140
+shouldn't be a queue yes first-in
+
+1019
+00:37:50,140 --> 00:37:52,230
+first-out
+
+1020
+00:37:53,040 --> 00:38:25,030
+okay yes yes say - I said come back to
+
+1021
+00:38:25,030 --> 00:38:27,130
+this table here I said that you want to
+
+1022
+00:38:27,130 --> 00:38:30,310
+release the latches in the from the top
+
+1023
+00:38:30,310 --> 00:38:32,260
+to the bottom and you're saying it in
+
+1024
+00:38:32,260 --> 00:38:35,140
+the OS world you-you-you release them in
+
+1025
+00:38:35,140 --> 00:38:38,260
+reverse order so again think about what
+
+1026
+00:38:38,260 --> 00:38:40,200
+we're doing in the data structure here
+
+1027
+00:38:40,200 --> 00:38:43,510
+at this point here like no one can get
+
+1028
+00:38:43,510 --> 00:38:46,360
+to D unless they go through B so me
+
+1029
+00:38:46,360 --> 00:38:48,400
+releasing the latch on D doesn't do
+
+1030
+00:38:48,400 --> 00:38:50,770
+anything because nobody's waiting to get
+
+1031
+00:38:50,770 --> 00:38:53,680
+that latch up somebody up above could be
+
+1032
+00:38:53,680 --> 00:38:55,510
+waiting to get required B so I want to
+
+1033
+00:38:55,510 --> 00:38:57,480
+release that latch as soon as possible
+
+1034
+00:38:57,480 --> 00:38:59,950
+so it's because we know what the data
+
+1035
+00:38:59,950 --> 00:39:01,600
+structure how it's being used we
+
+1036
+00:39:01,600 --> 00:39:02,740
+understand the context of how of your
+
+1037
+00:39:02,740 --> 00:39:04,360
+latches are being used you want to
+
+1038
+00:39:04,360 --> 00:39:11,850
+release this one first okay okay
+
+1039
+00:39:13,030 --> 00:39:16,300
+so now I want to ask you guys what was
+
+1040
+00:39:16,300 --> 00:39:17,920
+the very first step I did for all those
+
+1041
+00:39:17,920 --> 00:39:19,420
+modifications and examples for the
+
+1042
+00:39:19,420 --> 00:39:20,770
+inserts and deletes what's the very
+
+1043
+00:39:20,770 --> 00:39:25,930
+first step you do exactly you latch the
+
+1044
+00:39:25,930 --> 00:39:27,430
+root in exclusive mode or right-right
+
+1045
+00:39:27,430 --> 00:39:30,250
+mode that's problematic right because
+
+1046
+00:39:30,250 --> 00:39:32,320
+again the right law right latch is
+
+1047
+00:39:32,320 --> 00:39:34,930
+exclusive no other thread can can
+
+1048
+00:39:34,930 --> 00:39:35,890
+acquire any other lasha
+
+1049
+00:39:35,890 --> 00:39:38,080
+during that on that node so this becomes
+
+1050
+00:39:38,080 --> 00:39:39,430
+a single point of contention a single
+
+1051
+00:39:39,430 --> 00:39:41,650
+bottleneck in order to get into the data
+
+1052
+00:39:41,650 --> 00:39:42,040
+structure
+
+1053
+00:39:42,040 --> 00:39:43,780
+everyone has acquired this right latch
+
+1054
+00:39:43,780 --> 00:39:45,640
+and only one thread can hold that right
+
+1055
+00:39:45,640 --> 00:39:48,700
+latch at a time so this is a big problem
+
+1056
+00:39:48,700 --> 00:39:50,530
+this is gonna prevent us from getting
+
+1057
+00:39:50,530 --> 00:39:51,810
+too high parallelism to high concurrency
+
+1058
+00:39:51,810 --> 00:39:54,940
+so we need something better than just
+
+1059
+00:39:54,940 --> 00:39:56,650
+everyone decline the right latch and
+
+1060
+00:39:56,650 --> 00:39:58,690
+soon as they go in and so what we're
+
+1061
+00:39:58,690 --> 00:39:59,800
+gonna actually give them to do is
+
+1062
+00:39:59,800 --> 00:40:01,810
+exactly what he proposed before from the
+
+1063
+00:40:01,810 --> 00:40:04,330
+hash table is make an optimistic
+
+1064
+00:40:04,330 --> 00:40:08,110
+assumption that most threads are not
+
+1065
+00:40:08,110 --> 00:40:10,150
+gonna need to do splits or merges at the
+
+1066
+00:40:10,150 --> 00:40:12,880
+leaf nodes so rather than taking right
+
+1067
+00:40:12,880 --> 00:40:14,050
+latches all the way down
+
+1068
+00:40:14,050 --> 00:40:16,530
+I take read latches all the way down and
+
+1069
+00:40:16,530 --> 00:40:19,000
+then I take a right latch on the leaf
+
+1070
+00:40:19,000 --> 00:40:21,940
+node if I determine that I don't have to
+
+1071
+00:40:21,940 --> 00:40:24,100
+split then great I got down with just
+
+1072
+00:40:24,100 --> 00:40:25,930
+read latches and I can make whatever
+
+1073
+00:40:25,930 --> 00:40:28,510
+change I want if I if I get it wrong and
+
+1074
+00:40:28,510 --> 00:40:30,550
+I do what this do a split or merge then
+
+1075
+00:40:30,550 --> 00:40:32,380
+I just abort restart the operation in
+
+1076
+00:40:32,380 --> 00:40:33,580
+the beginning and take right latches
+
+1077
+00:40:33,580 --> 00:40:37,360
+down so this is this is a standard
+
+1078
+00:40:37,360 --> 00:40:38,820
+technique we do in systems where you
+
+1079
+00:40:38,820 --> 00:40:40,840
+optimistic versus pessimistic I'm
+
+1080
+00:40:40,840 --> 00:40:42,730
+optimistically gonna assume that I'm not
+
+1081
+00:40:42,730 --> 00:40:45,160
+gonna have to do a split so therefore I
+
+1082
+00:40:45,160 --> 00:40:47,230
+take the fast path and do do read
+
+1083
+00:40:47,230 --> 00:40:49,570
+latches well see this in context of
+
+1084
+00:40:49,570 --> 00:40:50,830
+other things like for transactions later
+
+1085
+00:40:50,830 --> 00:40:54,490
+on and for most data structures remote B
+
+1086
+00:40:54,490 --> 00:40:56,740
+plus trees in the real world this is
+
+1087
+00:40:56,740 --> 00:40:59,230
+actually a pretty safe assumption right
+
+1088
+00:40:59,230 --> 00:41:00,850
+in my example some shown nodes would
+
+1089
+00:41:00,850 --> 00:41:02,950
+have two keys in them in a real database
+
+1090
+00:41:02,950 --> 00:41:04,630
+system your node is gonna be you know
+
+1091
+00:41:04,630 --> 00:41:06,550
+eight kilobytes or 16 kilobytes that's
+
+1092
+00:41:06,550 --> 00:41:07,960
+gonna have a lot of keys so most of the
+
+1093
+00:41:07,960 --> 00:41:09,610
+operations you're doing are not gonna
+
+1094
+00:41:09,610 --> 00:41:11,380
+have to do a split in the merge in the
+
+1095
+00:41:11,380 --> 00:41:12,820
+rare case that you do have to do a split
+
+1096
+00:41:12,820 --> 00:41:13,990
+merge and then again you just fall back
+
+1097
+00:41:13,990 --> 00:41:16,150
+to the standard latch crabbing technique
+
+1098
+00:41:16,150 --> 00:41:19,330
+that I showed before so this is from a
+
+1099
+00:41:19,330 --> 00:41:22,630
+paper from 1977 from these German guys
+
+1100
+00:41:22,630 --> 00:41:24,790
+Baron schlock Nick this so there's no
+
+1101
+00:41:24,790 --> 00:41:26,050
+name for the algorithm that people
+
+1102
+00:41:26,050 --> 00:41:26,770
+usually refer
+
+1103
+00:41:26,770 --> 00:41:28,780
+- as the bearish logic algorithm we're
+
+1104
+00:41:28,780 --> 00:41:31,360
+optimistic a lot / grabbing all right so
+
+1105
+00:41:31,360 --> 00:41:33,280
+let's say we wanna do that delete on 38
+
+1106
+00:41:33,280 --> 00:41:35,290
+so again I don't take a right latch in
+
+1107
+00:41:35,290 --> 00:41:37,600
+the root I take a read latch all the way
+
+1108
+00:41:37,600 --> 00:41:41,020
+down and then when I get down to 2 D
+
+1109
+00:41:41,020 --> 00:41:43,390
+here I acquire the real at the right
+
+1110
+00:41:43,390 --> 00:41:46,810
+latch on on on H I recognize that I'm
+
+1111
+00:41:46,810 --> 00:41:48,520
+doing a delete therefore I'm not gonna
+
+1112
+00:41:48,520 --> 00:41:51,040
+do a split and merge so therefore my my
+
+1113
+00:41:51,040 --> 00:41:51,760
+gamble paid off
+
+1114
+00:41:51,760 --> 00:41:55,030
+and I don't need to to restart right I
+
+1115
+00:41:55,030 --> 00:41:57,880
+can do my delete without having to take
+
+1116
+00:41:57,880 --> 00:42:00,690
+right latches right
+
+1117
+00:42:02,010 --> 00:42:05,080
+same thing for insert so insert 25 I
+
+1118
+00:42:05,080 --> 00:42:07,180
+take the relapse on the way down I'm
+
+1119
+00:42:07,180 --> 00:42:07,630
+sorry
+
+1120
+00:42:07,630 --> 00:42:11,020
+I take a real a CH and do crabbing all
+
+1121
+00:42:11,020 --> 00:42:12,820
+the way down and then I eventually get
+
+1122
+00:42:12,820 --> 00:42:15,610
+to see here where I take the right latch
+
+1123
+00:42:15,610 --> 00:42:18,250
+on F this one I recognize that I'm gonna
+
+1124
+00:42:18,250 --> 00:42:22,570
+have to do a split so I abort the
+
+1125
+00:42:22,570 --> 00:42:25,630
+operation and just restart it start from
+
+1126
+00:42:25,630 --> 00:42:27,310
+beginning and take take right latches
+
+1127
+00:42:27,310 --> 00:42:35,380
+all the way down so he said shouldn't
+
+1128
+00:42:35,380 --> 00:42:36,580
+you start at the point where you last
+
+1129
+00:42:36,580 --> 00:42:38,830
+released the latches on the way down so
+
+1130
+00:42:38,830 --> 00:42:40,600
+that would be in this case here at C
+
+1131
+00:42:40,600 --> 00:42:54,520
+right so question is so it'd be a -
+
+1132
+00:42:54,520 --> 00:42:56,920
+sorry we need my two nodes like -
+
+1133
+00:42:56,920 --> 00:43:05,080
+sibling - keys yes correct
+
+1134
+00:43:05,080 --> 00:43:13,810
+yes but how do you get how do you get
+
+1135
+00:43:13,810 --> 00:43:22,750
+CNF again you can't he said I said you
+
+1136
+00:43:22,750 --> 00:43:24,250
+can maintain a stack of the punters that
+
+1137
+00:43:24,250 --> 00:43:26,110
+way you got down here I can't do that
+
+1138
+00:43:26,110 --> 00:43:30,520
+because I can't say page IDs again these
+
+1139
+00:43:30,520 --> 00:43:32,860
+ABCDE these are the logical identifiers
+
+1140
+00:43:32,860 --> 00:43:34,720
+for these nodes but they may end up
+
+1141
+00:43:34,720 --> 00:43:36,580
+being put into different pages so
+
+1142
+00:43:36,580 --> 00:43:38,260
+because I didn't I don't hold any
+
+1143
+00:43:38,260 --> 00:43:40,390
+latches on these things anybody can do
+
+1144
+00:43:40,390 --> 00:43:40,820
+anything
+
+1145
+00:43:40,820 --> 00:43:43,610
+and therefore the location of the page
+
+1146
+00:43:43,610 --> 00:43:45,800
+ID for these these nodes may now be
+
+1147
+00:43:45,800 --> 00:43:48,140
+something different so now you see page
+
+1148
+00:43:48,140 --> 00:43:50,690
+1 2 3 announce 4 5 6 in my stack I go
+
+1149
+00:43:50,690 --> 00:43:51,980
+look for page 1 2 3 and now it's
+
+1150
+00:43:51,980 --> 00:43:54,260
+something completely different because I
+
+1151
+00:43:54,260 --> 00:43:56,510
+can't we can't assume that the location
+
+1152
+00:43:56,510 --> 00:43:57,770
+of these pic nodes will always be the
+
+1153
+00:43:57,770 --> 00:44:00,590
+same unless I hold a latch on them the
+
+1154
+00:44:00,590 --> 00:44:02,000
+read latch prevents anybody from writing
+
+1155
+00:44:02,000 --> 00:44:03,530
+them and doing the splits the right
+
+1156
+00:44:03,530 --> 00:44:05,270
+latch prevents anybody from ah else I
+
+1157
+00:44:05,270 --> 00:44:07,400
+also modifying them you always have to
+
+1158
+00:44:07,400 --> 00:44:29,990
+restart yes thank you sorry your
+
+1159
+00:44:29,990 --> 00:44:33,230
+statement is yes say forgetting so if I
+
+1160
+00:44:33,230 --> 00:44:42,520
+assume that is the start over sorry yes
+
+1161
+00:44:50,410 --> 00:44:53,960
+so your question is if we're have if say
+
+1162
+00:44:53,960 --> 00:44:59,120
+we're like maybe like here so I hold the
+
+1163
+00:44:59,120 --> 00:45:02,060
+read latch on this and I hold the right
+
+1164
+00:45:02,060 --> 00:45:04,700
+latch on this and then because I at this
+
+1165
+00:45:04,700 --> 00:45:07,250
+point I need to modify it but also I
+
+1166
+00:45:07,250 --> 00:45:08,660
+don't know whether someone's gonna
+
+1167
+00:45:08,660 --> 00:45:10,490
+change the change something that would
+
+1168
+00:45:10,490 --> 00:45:11,920
+cause this thing to get modified as well
+
+1169
+00:45:11,920 --> 00:45:13,970
+but again everyone's going in the same
+
+1170
+00:45:13,970 --> 00:45:15,680
+direction so they can't do that like
+
+1171
+00:45:15,680 --> 00:45:17,540
+they can't get to they can't make any
+
+1172
+00:45:17,540 --> 00:45:19,670
+change here because I hold the real ash
+
+1173
+00:45:19,670 --> 00:45:23,200
+on that so they can't modify this node
+
+1174
+00:45:23,200 --> 00:45:26,200
+right
+
+1175
+00:45:26,880 --> 00:45:49,200
+yes yes yeah yes yeah question is in
+
+1176
+00:45:49,200 --> 00:45:50,760
+this example here when I got down here
+
+1177
+00:45:50,760 --> 00:45:52,590
+and took the right lateral F to do the
+
+1178
+00:45:52,590 --> 00:45:54,660
+insert and when I recognized oh I got a
+
+1179
+00:45:54,660 --> 00:45:56,040
+split therefore I need the right latch
+
+1180
+00:45:56,040 --> 00:45:57,750
+on this and there and I don't have it so
+
+1181
+00:45:57,750 --> 00:45:58,500
+at the restart
+
+1182
+00:45:58,500 --> 00:46:02,570
+do you just hold this the whole time no
+
+1183
+00:46:05,090 --> 00:46:51,350
+yes yes yes yes yes
+
+1184
+00:46:51,350 --> 00:46:53,700
+she said so say I'd had this example
+
+1185
+00:46:53,700 --> 00:46:56,520
+here I went to cert 25 I got to the leaf
+
+1186
+00:46:56,520 --> 00:46:58,800
+node and recognized oh I got a split let
+
+1187
+00:46:58,800 --> 00:47:01,230
+me restart and take right latches down
+
+1188
+00:47:01,230 --> 00:47:03,120
+but he needs between the time I
+
+1189
+00:47:03,120 --> 00:47:05,400
+restarted somebody else came along and
+
+1190
+00:47:05,400 --> 00:47:07,200
+wants to insert 24 and they're gonna
+
+1191
+00:47:07,200 --> 00:47:08,700
+have the same issue they also have to
+
+1192
+00:47:08,700 --> 00:47:11,190
+split this so they come back as well and
+
+1193
+00:47:11,190 --> 00:47:12,870
+take take right latches on the way down
+
+1194
+00:47:12,870 --> 00:47:14,730
+but now because both of them are taking
+
+1195
+00:47:14,730 --> 00:47:16,260
+right latches only one of them is gonna
+
+1196
+00:47:16,260 --> 00:47:19,380
+proceed at a time so now 25 say the guy
+
+1197
+00:47:19,380 --> 00:47:21,420
+that wants her 25 he gets there first
+
+1198
+00:47:21,420 --> 00:47:24,240
+he inserts this and splits then 24 is
+
+1199
+00:47:24,240 --> 00:47:26,790
+allowed to run it gets down here
+
+1200
+00:47:26,790 --> 00:47:28,620
+it doesn't care that it already got
+
+1201
+00:47:28,620 --> 00:47:31,200
+split again this is a good example
+
+1202
+00:47:31,200 --> 00:47:32,970
+between the logical correctness and the
+
+1203
+00:47:32,970 --> 00:47:34,860
+logical view and the physical view I
+
+1204
+00:47:34,860 --> 00:47:37,770
+don't care my index where my key
+
+1205
+00:47:37,770 --> 00:47:39,750
+actually exists so I don't care that
+
+1206
+00:47:39,750 --> 00:47:40,920
+like oh I try to put it here
+
+1207
+00:47:40,920 --> 00:47:42,240
+so make sure I put it in this here the
+
+1208
+00:47:42,240 --> 00:47:43,200
+next time because I couldn't hear the
+
+1209
+00:47:43,200 --> 00:47:44,610
+first time I want to go exactly this
+
+1210
+00:47:44,610 --> 00:47:47,250
+page you don't care every single time
+
+1211
+00:47:47,250 --> 00:47:48,420
+you come into it you're doing this
+
+1212
+00:47:48,420 --> 00:47:50,160
+traversal from scratch you don't care
+
+1213
+00:47:50,160 --> 00:47:52,380
+how you got there before so it doesn't
+
+1214
+00:47:52,380 --> 00:47:55,170
+matter that 25 inserts here at splits or
+
+1215
+00:47:55,170 --> 00:47:56,640
+maybe 24 came first and splits it
+
+1216
+00:47:56,640 --> 00:47:58,770
+doesn't matter it's still balanced and
+
+1217
+00:47:58,770 --> 00:48:06,060
+still correct yes correct so he said the
+
+1218
+00:48:06,060 --> 00:48:07,500
+second reversal for 24
+
+1219
+00:48:07,500 --> 00:48:09,990
+it doesn't need a right latch because 25
+
+1220
+00:48:09,990 --> 00:48:12,450
+already split it correct that so that
+
+1221
+00:48:12,450 --> 00:48:13,860
+that's more expensive but what's the
+
+1222
+00:48:13,860 --> 00:48:16,620
+alternative right the alternative is to
+
+1223
+00:48:16,620 --> 00:48:17,940
+take right junk latches every single
+
+1224
+00:48:17,940 --> 00:48:20,580
+time so optimistic is not perfect we're
+
+1225
+00:48:20,580 --> 00:48:22,440
+not guaranteed to always do the least
+
+1226
+00:48:22,440 --> 00:48:24,000
+amount of work we need to do because
+
+1227
+00:48:24,000 --> 00:48:26,370
+certainly if I'm again in this case here
+
+1228
+00:48:26,370 --> 00:48:27,540
+my nodes are really small so I'm
+
+1229
+00:48:27,540 --> 00:48:29,520
+splitting a lot if I'm inserting a lot
+
+1230
+00:48:29,520 --> 00:48:32,940
+so I'd be wasting a lot of lot of cycles
+
+1231
+00:48:32,940 --> 00:48:35,070
+a lot doing wasted work should reverse
+
+1232
+00:48:35,070 --> 00:48:36,630
+just to find out I need to come back and
+
+1233
+00:48:36,630 --> 00:48:39,810
+take right latches so in practice if the
+
+1234
+00:48:39,810 --> 00:48:41,070
+contention rate is high and therefore
+
+1235
+00:48:41,070 --> 00:48:43,170
+the optimistic assumption is incorrect
+
+1236
+00:48:43,170 --> 00:48:45,030
+you're going to actually be slower than
+
+1237
+00:48:45,030 --> 00:48:47,280
+this doing the pessimistic thing but for
+
+1238
+00:48:47,280 --> 00:48:49,190
+these data structures in general
+
+1239
+00:48:49,190 --> 00:48:50,880
+probably talking right here at the
+
+1240
+00:48:50,880 --> 00:48:52,520
+optimistic one actually works the best
+
+1241
+00:48:52,520 --> 00:48:56,370
+the for the the hash table stuff I
+
+1242
+00:48:56,370 --> 00:48:58,410
+actually haven't seen numbers in that
+
+1243
+00:48:58,410 --> 00:49:03,420
+case the it's often times the the the
+
+1244
+00:49:03,420 --> 00:49:05,520
+pessimistic approach of taking latches
+
+1245
+00:49:05,520 --> 00:49:08,610
+on the page is this is actually pretty
+
+1246
+00:49:08,610 --> 00:49:10,920
+good cuz it's so simple for this won't
+
+1247
+00:49:10,920 --> 00:49:12,810
+make more fine-grain and and and we get
+
+1248
+00:49:12,810 --> 00:49:14,970
+a big grin but it depends on a lot of
+
+1249
+00:49:14,970 --> 00:49:16,260
+things depends on what the workload is
+
+1250
+00:49:16,260 --> 00:49:18,210
+are we insert heavy lookup heavy
+
+1251
+00:49:18,210 --> 00:49:21,180
+delete heavy it depends on you know the
+
+1252
+00:49:21,180 --> 00:49:23,310
+distribution our values depends on how
+
+1253
+00:49:23,310 --> 00:49:26,580
+many cores we have right it varies a lot
+
+1254
+00:49:26,580 --> 00:49:28,980
+in practice though most data systems
+
+1255
+00:49:28,980 --> 00:49:30,360
+just pick one approach they don't try to
+
+1256
+00:49:30,360 --> 00:49:32,370
+be adaptive because this is with from
+
+1257
+00:49:32,370 --> 00:49:33,450
+engineering standpoint it's way more
+
+1258
+00:49:33,450 --> 00:49:37,850
+complicated yes
+
+1259
+00:49:42,730 --> 00:49:45,280
+so he says for people she knows you
+
+1260
+00:49:45,280 --> 00:49:47,490
+can't use the low-level slot latches
+
+1261
+00:49:47,490 --> 00:49:55,990
+like you can in a page table no because
+
+1262
+00:49:55,990 --> 00:50:00,280
+you could be modifying the you could be
+
+1263
+00:50:00,280 --> 00:50:02,980
+modifying the in the physical structure
+
+1264
+00:50:02,980 --> 00:50:05,349
+of the index itself so therefore I'm
+
+1265
+00:50:05,349 --> 00:50:09,030
+updating pointers so like if I have like
+
+1266
+00:50:09,030 --> 00:50:11,200
+like if I need to have split merge and I
+
+1267
+00:50:11,200 --> 00:50:13,630
+need to have latches for all the keys in
+
+1268
+00:50:13,630 --> 00:50:16,599
+this in this node in order to move them
+
+1269
+00:50:16,599 --> 00:50:18,910
+around so so in general you just take a
+
+1270
+00:50:18,910 --> 00:50:21,369
+latch entire page I think that's true I
+
+1271
+00:50:21,369 --> 00:50:25,420
+could double check that though it makes
+
+1272
+00:50:25,420 --> 00:50:31,900
+things more complicated okay so again
+
+1273
+00:50:31,900 --> 00:50:33,609
+this is just reiterate what we're trying
+
+1274
+00:50:33,609 --> 00:50:36,790
+to talk about again for the this for the
+
+1275
+00:50:36,790 --> 00:50:38,050
+search with the better the better lock
+
+1276
+00:50:38,050 --> 00:50:39,910
+latch latching algorithm same as before
+
+1277
+00:50:39,910 --> 00:50:43,000
+insert delete it's it's giving you you
+
+1278
+00:50:43,000 --> 00:50:45,130
+take relapses all the way down if it
+
+1279
+00:50:45,130 --> 00:50:46,119
+fails then you just come back and
+
+1280
+00:50:46,119 --> 00:50:50,260
+restart so again this is what I was
+
+1281
+00:50:50,260 --> 00:50:52,300
+saying before about how we're assuming
+
+1282
+00:50:52,300 --> 00:50:54,280
+that most of the time taking the real
+
+1283
+00:50:54,280 --> 00:50:55,510
+edges on the way down is going to be
+
+1284
+00:50:55,510 --> 00:50:56,770
+good enough but we're not gonna have to
+
+1285
+00:50:56,770 --> 00:51:00,280
+restart right and therefore if we if we
+
+1286
+00:51:00,280 --> 00:51:02,369
+if we choose correctly with predict
+
+1287
+00:51:02,369 --> 00:51:05,980
+incorrectly then you need that first
+
+1288
+00:51:05,980 --> 00:51:07,450
+time we went down is just wasted work
+
+1289
+00:51:07,450 --> 00:51:09,369
+we're just burning cycles and so we're
+
+1290
+00:51:09,369 --> 00:51:10,599
+not gonna get the the better scalability
+
+1291
+00:51:10,599 --> 00:51:13,329
+or concurrency we may actually want but
+
+1292
+00:51:13,329 --> 00:51:14,560
+I'll say in practice this is this is
+
+1293
+00:51:14,560 --> 00:51:17,970
+this usually worked out nicely alright
+
+1294
+00:51:17,970 --> 00:51:20,440
+so the next thing to talk about is how
+
+1295
+00:51:20,440 --> 00:51:23,829
+we actually support leaf no scans so in
+
+1296
+00:51:23,829 --> 00:51:25,869
+the example I've shown so far with the
+
+1297
+00:51:25,869 --> 00:51:28,030
+B+ tree just like in the hash table all
+
+1298
+00:51:28,030 --> 00:51:29,800
+the traversals were in one direction
+
+1299
+00:51:29,800 --> 00:51:32,140
+they always top to the bottom so there
+
+1300
+00:51:32,140 --> 00:51:34,240
+can never be any dead locks because I
+
+1301
+00:51:34,240 --> 00:51:36,010
+never had a thread trying to come up
+
+1302
+00:51:36,010 --> 00:51:38,200
+from the bottom to the top in reverse
+
+1303
+00:51:38,200 --> 00:51:39,670
+direction and try to hold latches that
+
+1304
+00:51:39,670 --> 00:51:41,260
+holds latches that another thread once
+
+1305
+00:51:41,260 --> 00:51:42,690
+right
+
+1306
+00:51:42,690 --> 00:51:45,910
+so if though now we want to start
+
+1307
+00:51:45,910 --> 00:51:47,890
+scanning on leaf nodes things become
+
+1308
+00:51:47,890 --> 00:51:49,060
+more complicated because now we have
+
+1309
+00:51:49,060 --> 00:51:50,920
+things coming from top to bottom and and
+
+1310
+00:51:50,920 --> 00:51:53,650
+also from left to right so in this case
+
+1311
+00:51:53,650 --> 00:51:55,200
+deadlocks could occur
+
+1312
+00:51:55,200 --> 00:51:57,630
+so let's see how we handle this so the
+
+1313
+00:51:57,630 --> 00:51:59,130
+first thing I'll say is the original
+
+1314
+00:51:59,130 --> 00:52:01,500
+this is before the original B+ tree did
+
+1315
+00:52:01,500 --> 00:52:03,059
+not have these sibling pointers on the
+
+1316
+00:52:03,059 --> 00:52:05,220
+leaf nodes this is what how most people
+
+1317
+00:52:05,220 --> 00:52:06,569
+streets have this now and this comes
+
+1318
+00:52:06,569 --> 00:52:08,460
+from the be link tree that was invented
+
+1319
+00:52:08,460 --> 00:52:11,549
+here at CMU so let's say I had this
+
+1320
+00:52:11,549 --> 00:52:13,619
+really simple tree like this and I have
+
+1321
+00:52:13,619 --> 00:52:15,270
+thread one wants to find all keys less
+
+1322
+00:52:15,270 --> 00:52:18,030
+than four so we take a reed latch on the
+
+1323
+00:52:18,030 --> 00:52:20,460
+root come down here I forget the
+
+1324
+00:52:20,460 --> 00:52:23,040
+relation on C we can release the real a
+
+1325
+00:52:23,040 --> 00:52:25,049
+on a and now we want to start scanning
+
+1326
+00:52:25,049 --> 00:52:27,240
+scanning across all right so say we
+
+1327
+00:52:27,240 --> 00:52:29,220
+reverse order on all the keys in this
+
+1328
+00:52:29,220 --> 00:52:30,990
+node but now we recognize that we got to
+
+1329
+00:52:30,990 --> 00:52:34,619
+keep going over here right so just like
+
+1330
+00:52:34,619 --> 00:52:36,569
+before in case of crabbing when we want
+
+1331
+00:52:36,569 --> 00:52:39,660
+to go horizontally we don't release the
+
+1332
+00:52:39,660 --> 00:52:41,309
+latch that we hold until we acquire the
+
+1333
+00:52:41,309 --> 00:52:44,190
+latch that we want so in this case here
+
+1334
+00:52:44,190 --> 00:52:47,160
+in order to get the latch on B I hold
+
+1335
+00:52:47,160 --> 00:52:49,890
+the latch on C once i acquire it then I
+
+1336
+00:52:49,890 --> 00:52:51,240
+can swing around and then release the
+
+1337
+00:52:51,240 --> 00:52:56,790
+latch on C so in this case here for all
+
+1338
+00:52:56,790 --> 00:52:58,339
+keys less than four is basically keys
+
+1339
+00:52:58,339 --> 00:53:00,329
+from less than forward to that negative
+
+1340
+00:53:00,329 --> 00:53:02,010
+infinity so we know that we're gonna
+
+1341
+00:53:02,010 --> 00:53:04,260
+have to hit the we want to get to this
+
+1342
+00:53:04,260 --> 00:53:07,140
+end of the the the tree there's other
+
+1343
+00:53:07,140 --> 00:53:08,790
+tricks you can do like having like fence
+
+1344
+00:53:08,790 --> 00:53:11,309
+keys or hint keys basically to tell you
+
+1345
+00:53:11,309 --> 00:53:13,920
+for this node here what's the keys over
+
+1346
+00:53:13,920 --> 00:53:15,059
+on this side here and to tell you
+
+1347
+00:53:15,059 --> 00:53:16,799
+whether you even even need to jump there
+
+1348
+00:53:16,799 --> 00:53:18,990
+or not but for this example we don't be
+
+1349
+00:53:18,990 --> 00:53:21,930
+worried about that all right so let's
+
+1350
+00:53:21,930 --> 00:53:23,280
+make it more complicated say now we have
+
+1351
+00:53:23,280 --> 00:53:25,290
+another another thread that wants to
+
+1352
+00:53:25,290 --> 00:53:27,630
+find all keys greater than one well okay
+
+1353
+00:53:27,630 --> 00:53:28,920
+that's fine so the both of them start
+
+1354
+00:53:28,920 --> 00:53:30,630
+they both want acquire the Reed latch on
+
+1355
+00:53:30,630 --> 00:53:32,460
+a that can happen because that can be
+
+1356
+00:53:32,460 --> 00:53:34,650
+shared amongst them and then they this
+
+1357
+00:53:34,650 --> 00:53:36,599
+guy gets to relapse on B this guy gets a
+
+1358
+00:53:36,599 --> 00:53:38,760
+relapse on see that's fine then they
+
+1359
+00:53:38,760 --> 00:53:41,339
+scan all the raqi's and they start going
+
+1360
+00:53:41,339 --> 00:53:45,660
+across and for this point here B wants
+
+1361
+00:53:45,660 --> 00:53:48,119
+to latch on CC wants to latch on B that
+
+1362
+00:53:48,119 --> 00:53:49,410
+could be shared right because the Reed
+
+1363
+00:53:49,410 --> 00:53:51,900
+latches so at this point here they both
+
+1364
+00:53:51,900 --> 00:53:54,180
+acquire alternating one so the different
+
+1365
+00:53:54,180 --> 00:53:56,309
+ones that's good then they slide over
+
+1366
+00:53:56,309 --> 00:53:58,260
+and now they release the latch of it it
+
+1367
+00:53:58,260 --> 00:54:00,809
+just came from so because the Reed latch
+
+1368
+00:54:00,809 --> 00:54:01,619
+can be shared
+
+1369
+00:54:01,619 --> 00:54:04,319
+there's no dead locks right so this
+
+1370
+00:54:04,319 --> 00:54:06,799
+works out fine
+
+1371
+00:54:06,990 --> 00:54:09,160
+so let's talk about now when we haven't
+
+1372
+00:54:09,160 --> 00:54:11,800
+we're rights so Fred one what's that
+
+1373
+00:54:11,800 --> 00:54:14,290
+leap for and threat to wants to find all
+
+1374
+00:54:14,290 --> 00:54:17,080
+keys greater than one so at the very
+
+1375
+00:54:17,080 --> 00:54:20,290
+beginning they start off they can both
+
+1376
+00:54:20,290 --> 00:54:22,000
+get the reed latch on a because we're
+
+1377
+00:54:22,000 --> 00:54:24,460
+doing that the optimistic latch coupling
+
+1378
+00:54:24,460 --> 00:54:27,340
+technique of last crabbing where I at my
+
+1379
+00:54:27,340 --> 00:54:29,230
+root I always choir the reed latch and
+
+1380
+00:54:29,230 --> 00:54:32,620
+only get the right latch only on the the
+
+1381
+00:54:32,620 --> 00:54:34,300
+child node so the very beginning they
+
+1382
+00:54:34,300 --> 00:54:36,160
+both have a reed latch that's fine and
+
+1383
+00:54:36,160 --> 00:54:38,470
+then they both go down here begets the
+
+1384
+00:54:38,470 --> 00:54:40,570
+real a on on sorry thread one gets
+
+1385
+00:54:40,570 --> 00:54:42,610
+thread two gets the real a Jumby thread
+
+1386
+00:54:42,610 --> 00:54:45,010
+one gets the right latch on see because
+
+1387
+00:54:45,010 --> 00:54:47,040
+that's the entry that it wants to delete
+
+1388
+00:54:47,040 --> 00:54:52,330
+so now let's say that t2 wants to scan
+
+1389
+00:54:52,330 --> 00:54:53,590
+across because it's flying all cream
+
+1390
+00:54:53,590 --> 00:54:56,590
+cheese greater than one so before it can
+
+1391
+00:54:56,590 --> 00:54:59,860
+jump into into C it has to get the right
+
+1392
+00:54:59,860 --> 00:55:01,890
+latch on C we're sorry to read lachen C
+
+1393
+00:55:01,890 --> 00:55:05,620
+but it can't do that because the first
+
+1394
+00:55:05,620 --> 00:55:08,490
+thread has the right latch on this node
+
+1395
+00:55:08,490 --> 00:55:15,610
+so what should happen what's that he
+
+1396
+00:55:15,610 --> 00:55:20,160
+says sure wait what else could we do
+
+1397
+00:55:20,160 --> 00:55:23,220
+there's three choices right we can wait
+
+1398
+00:55:23,220 --> 00:55:25,270
+all right again think of that while that
+
+1399
+00:55:25,270 --> 00:55:29,260
+we just spin in that we could kill
+
+1400
+00:55:29,260 --> 00:55:31,030
+ourselves and just restart the operation
+
+1401
+00:55:31,030 --> 00:55:33,760
+or it could be like a gangster and try
+
+1402
+00:55:33,760 --> 00:55:35,550
+to steal its you know take go over here
+
+1403
+00:55:35,550 --> 00:55:37,720
+shoot it in the head take his wallet
+
+1404
+00:55:37,720 --> 00:55:41,070
+take its latch and then take over
+
+1405
+00:55:41,250 --> 00:55:43,300
+alright so raise your hand if you think
+
+1406
+00:55:43,300 --> 00:55:48,250
+we should wait 25% raise your hand if
+
+1407
+00:55:48,250 --> 00:55:51,030
+you think we should just kill ourselves
+
+1408
+00:55:51,270 --> 00:55:53,860
+even less raise your hand if you think
+
+1409
+00:55:53,860 --> 00:55:56,550
+we should be a gangster and steal it
+
+1410
+00:55:56,550 --> 00:56:02,470
+nobody so what's the issue here what
+
+1411
+00:56:02,470 --> 00:56:03,910
+what is this thread know about this
+
+1412
+00:56:03,910 --> 00:56:06,210
+thread
+
+1413
+00:56:07,290 --> 00:56:11,530
+nothing right because all the latches is
+
+1414
+00:56:11,530 --> 00:56:12,820
+just a little some bits in the data
+
+1415
+00:56:12,820 --> 00:56:13,780
+structure this and then something
+
+1416
+00:56:13,780 --> 00:56:15,550
+someone requires it and either read mode
+
+1417
+00:56:15,550 --> 00:56:18,370
+or write mode so there's no global view
+
+1418
+00:56:18,370 --> 00:56:20,290
+in the system to tell you what this
+
+1419
+00:56:20,290 --> 00:56:22,960
+other thread is doing the database is at
+
+1420
+00:56:22,960 --> 00:56:25,270
+a high level sure it says no I'm doing
+
+1421
+00:56:25,270 --> 00:56:27,790
+I'm doing delete on for but at this
+
+1422
+00:56:27,790 --> 00:56:29,710
+lowest level inside the data structure
+
+1423
+00:56:29,710 --> 00:56:31,270
+as our threads are traversing through we
+
+1424
+00:56:31,270 --> 00:56:32,260
+don't have access to that information
+
+1425
+00:56:32,260 --> 00:56:34,300
+because that would be too expensive for
+
+1426
+00:56:34,300 --> 00:56:37,150
+us to go look up again we want these
+
+1427
+00:56:37,150 --> 00:56:38,500
+operations to be really fast because
+
+1428
+00:56:38,500 --> 00:56:39,880
+we're holding this latch on this guy
+
+1429
+00:56:39,880 --> 00:56:42,040
+here you know while we're trying to get
+
+1430
+00:56:42,040 --> 00:56:46,650
+that other latch so we could wait but
+
+1431
+00:56:46,650 --> 00:56:49,750
+that could be a bad idea too because we
+
+1432
+00:56:49,750 --> 00:56:52,000
+don't know what this guy's doing
+
+1433
+00:56:52,000 --> 00:56:53,980
+right we don't know whether you know in
+
+1434
+00:56:53,980 --> 00:56:55,180
+this case here on our example it's just
+
+1435
+00:56:55,180 --> 00:56:56,740
+deleting this one record there's one key
+
+1436
+00:56:56,740 --> 00:57:00,130
+and it meant then it's done but we don't
+
+1437
+00:57:00,130 --> 00:57:01,750
+know that it could also be trying to
+
+1438
+00:57:01,750 --> 00:57:04,330
+acquire the latch on B and therefore I
+
+1439
+00:57:04,330 --> 00:57:07,510
+have a deadlock so the simplest thing
+
+1440
+00:57:07,510 --> 00:57:08,920
+turns out to be the best thing is this
+
+1441
+00:57:08,920 --> 00:57:10,510
+we say we don't want to live anymore and
+
+1442
+00:57:10,510 --> 00:57:13,330
+we use abort and kill ourselves and just
+
+1443
+00:57:13,330 --> 00:57:18,040
+restart the operation right this is the
+
+1444
+00:57:18,040 --> 00:57:19,210
+fastest thing to do because there's
+
+1445
+00:57:19,210 --> 00:57:21,340
+again these latches are super dumb like
+
+1446
+00:57:21,340 --> 00:57:22,660
+there's no information about who's
+
+1447
+00:57:22,660 --> 00:57:24,490
+holding them and what they're doing so
+
+1448
+00:57:24,490 --> 00:57:25,990
+rather than try to reason about anything
+
+1449
+00:57:25,990 --> 00:57:27,730
+we just want to mediately stop what
+
+1450
+00:57:27,730 --> 00:57:31,930
+we're doing and restart and assume they
+
+1451
+00:57:31,930 --> 00:57:33,190
+have time to come back then the last we
+
+1452
+00:57:33,190 --> 00:57:36,880
+want is now there yes since how is it
+
+1453
+00:57:36,880 --> 00:57:38,500
+better than waiting so yeah you can wait
+
+1454
+00:57:38,500 --> 00:57:40,870
+a little bit with a timeout and then
+
+1455
+00:57:40,870 --> 00:57:42,970
+eventually that the latch you want is
+
+1456
+00:57:42,970 --> 00:57:43,990
+not available then you just kill
+
+1457
+00:57:43,990 --> 00:57:45,940
+yourself that's a you could do that as
+
+1458
+00:57:45,940 --> 00:57:47,710
+well but like I'm talking like maybe
+
+1459
+00:57:47,710 --> 00:58:00,070
+wait microseconds so his statement is
+
+1460
+00:58:00,070 --> 00:58:03,340
+back up here he said if we're down here
+
+1461
+00:58:03,340 --> 00:58:08,020
+on c4 thread one doesn't thread one have
+
+1462
+00:58:08,020 --> 00:58:11,670
+a right latch
+
+1463
+00:58:14,770 --> 00:58:18,410
+people that he was like that person cool
+
+1464
+00:58:18,410 --> 00:58:31,700
+game from the table and so his statement
+
+1465
+00:58:31,700 --> 00:58:36,770
+is that if if C really wanted to go in
+
+1466
+00:58:36,770 --> 00:58:38,540
+this direction and do some modification
+
+1467
+00:58:38,540 --> 00:58:40,490
+wouldn't have to have a right latch up
+
+1468
+00:58:40,490 --> 00:58:44,780
+AB up and therefore I this threat would
+
+1469
+00:58:44,780 --> 00:58:46,130
+not been able to get down here to go
+
+1470
+00:58:46,130 --> 00:58:49,490
+across well know right so say the blue
+
+1471
+00:58:49,490 --> 00:58:51,320
+thread starts first it gets the real a
+
+1472
+00:58:51,320 --> 00:58:52,700
+CH comes down here and gets the red
+
+1473
+00:58:52,700 --> 00:58:55,490
+latch that it wants on B then t1 starts
+
+1474
+00:58:55,490 --> 00:58:58,550
+gets the right latch on on on a right
+
+1475
+00:58:58,550 --> 00:59:02,330
+any man gets the right latch on this so
+
+1476
+00:59:02,330 --> 00:59:05,360
+it doesn't know you don't know this like
+
+1477
+00:59:05,360 --> 00:59:19,400
+it can come in any order yes so this
+
+1478
+00:59:19,400 --> 00:59:20,900
+damn it is which is true we could have
+
+1479
+00:59:20,900 --> 00:59:23,090
+starvation here where this thing here it
+
+1480
+00:59:23,090 --> 00:59:24,290
+says I don't you know I can't get what I
+
+1481
+00:59:24,290 --> 00:59:25,310
+want I'm gonna kill myself
+
+1482
+00:59:25,310 --> 00:59:28,870
+tries it again same as you yes and
+
+1483
+00:59:28,870 --> 00:59:30,650
+there's different ways to handle that
+
+1484
+00:59:30,650 --> 00:59:35,680
+that adds additional overhead in
+
+1485
+00:59:35,680 --> 00:59:41,840
+practice I don't think my sequent post
+
+1486
+00:59:41,840 --> 00:59:42,980
+guys do anything I don't know what the
+
+1487
+00:59:42,980 --> 00:59:45,350
+commercial guys but you can do it you
+
+1488
+00:59:45,350 --> 00:59:46,760
+imagine how to do it it's just it's
+
+1489
+00:59:46,760 --> 00:59:48,560
+extra work and it may not be worth it
+
+1490
+00:59:48,560 --> 00:59:49,790
+the simple thing might be doing the best
+
+1491
+00:59:49,790 --> 00:59:56,420
+thing yes what do you like the whole
+
+1492
+00:59:56,420 --> 01:00:02,210
+program I think the process oh no no no
+
+1493
+01:00:02,210 --> 01:00:05,990
+no like it's like so it's like an
+
+1494
+01:00:05,990 --> 01:00:09,170
+operation so this like find all keys
+
+1495
+01:00:09,170 --> 01:00:11,260
+greater than one we restart that
+
+1496
+01:00:11,260 --> 01:00:15,620
+actually um actually perfect next the
+
+1497
+01:00:15,620 --> 01:00:18,620
+next slide so the the way think about
+
+1498
+01:00:18,620 --> 01:00:19,970
+this is that we have this database
+
+1499
+01:00:19,970 --> 01:00:21,200
+system we have this execution engine
+
+1500
+01:00:21,200 --> 01:00:23,090
+that's invoking queries and it says oh
+
+1501
+01:00:23,090 --> 01:00:25,190
+in order to get the two boys I need for
+
+1502
+01:00:25,190 --> 01:00:27,650
+this query to answer this query I gotta
+
+1503
+01:00:27,650 --> 01:00:28,069
+go
+
+1504
+01:00:28,069 --> 01:00:30,109
+to the index and do final keys greater
+
+1505
+01:00:30,109 --> 01:00:32,539
+than one so then it invokes that on the
+
+1506
+01:00:32,539 --> 01:00:34,670
+index and there's basically a retry loop
+
+1507
+01:00:34,670 --> 01:00:37,279
+that's inside the index where I keep
+
+1508
+01:00:37,279 --> 01:00:40,400
+retrying that to do that operation on
+
+1509
+01:00:40,400 --> 01:00:45,079
+that index until it succeeds for four
+
+1510
+01:00:45,079 --> 01:00:46,670
+inserts or things that could potentially
+
+1511
+01:00:46,670 --> 01:00:48,979
+violate an integrity constraint yeah you
+
+1512
+01:00:48,979 --> 01:00:50,779
+have a check to say you know I try to
+
+1513
+01:00:50,779 --> 01:00:52,519
+insert and I couldn't because it would
+
+1514
+01:00:52,519 --> 01:00:53,989
+violate the integrity strain not because
+
+1515
+01:00:53,989 --> 01:00:55,789
+I couldn't get the latch I wanted and in
+
+1516
+01:00:55,789 --> 01:00:57,589
+that case you you abort that up you
+
+1517
+01:00:57,589 --> 01:00:59,599
+board that operation but in general you
+
+1518
+01:00:59,599 --> 01:01:00,890
+just keep you trying this irreverent cuz
+
+1519
+01:01:00,890 --> 01:01:02,959
+eventually it'll go through but to his
+
+1520
+01:01:02,959 --> 01:01:04,249
+point you could lead to starvation or
+
+1521
+01:01:04,249 --> 01:01:06,199
+just burning a lot of cycles trying to
+
+1522
+01:01:06,199 --> 01:01:07,489
+you know torch the bottom and then try
+
+1523
+01:01:07,489 --> 01:01:08,779
+to acquire the latch that you never can
+
+1524
+01:01:08,779 --> 01:01:11,749
+acquire but the main thing i main
+
+1525
+01:01:11,749 --> 01:01:13,249
+takeaway when you get at get out of this
+
+1526
+01:01:13,249 --> 01:01:16,729
+is that because there's a potential for
+
+1527
+01:01:16,729 --> 01:01:18,410
+deadlock here but we don't know there
+
+1528
+01:01:18,410 --> 01:01:21,380
+what the other thread is doing rat we
+
+1529
+01:01:21,380 --> 01:01:22,519
+wouldn't be super conservative and just
+
+1530
+01:01:22,519 --> 01:01:23,719
+kill ourselves immediately we can wait a
+
+1531
+01:01:23,719 --> 01:01:25,579
+little bit sure but we don't want to
+
+1532
+01:01:25,579 --> 01:01:26,839
+reason about what they're trying to do
+
+1533
+01:01:26,839 --> 01:01:28,099
+we just say we can't get in those latch
+
+1534
+01:01:28,099 --> 01:01:31,069
+and really retry because there's nothing
+
+1535
+01:01:31,069 --> 01:01:32,390
+else up above that's gonna say oh
+
+1536
+01:01:32,390 --> 01:01:33,829
+there's a deadlock when we break break
+
+1537
+01:01:33,829 --> 01:01:40,699
+it by killing one of you yes the same is
+
+1538
+01:01:40,699 --> 01:01:42,319
+it wouldn't matter what that what kind
+
+1539
+01:01:42,319 --> 01:01:44,479
+of latch the other thread is having sure
+
+1540
+01:01:44,479 --> 01:01:46,940
+yes in this case here it's this guy has
+
+1541
+01:01:46,940 --> 01:01:48,319
+a right latch I can't I can't get the
+
+1542
+01:01:48,319 --> 01:01:58,369
+real a that fails right so that was the
+
+1543
+01:01:58,369 --> 01:01:59,690
+gangster one right so that was saying
+
+1544
+01:01:59,690 --> 01:02:01,910
+like this guy has the real latch maybe I
+
+1545
+01:02:01,910 --> 01:02:03,829
+prefer read reads or writes and
+
+1546
+01:02:03,829 --> 01:02:06,019
+therefore I want to kill this guy sure
+
+1547
+01:02:06,019 --> 01:02:07,249
+you can do that but how do you actually
+
+1548
+01:02:07,249 --> 01:02:08,569
+implement that in your code
+
+1549
+01:02:08,569 --> 01:02:10,369
+now you need to way to interrupt this
+
+1550
+01:02:10,369 --> 01:02:13,549
+guy in whatever it's doing did then go
+
+1551
+01:02:13,549 --> 01:02:16,039
+steal the latch that's super hard
+
+1552
+01:02:16,039 --> 01:02:17,599
+because again we're doing this these
+
+1553
+01:02:17,599 --> 01:02:19,489
+small critical sections I don't want to
+
+1554
+01:02:19,489 --> 01:02:20,690
+check a global variable says did
+
+1555
+01:02:20,690 --> 01:02:22,989
+somebody hate me and I and I should die
+
+1556
+01:02:22,989 --> 01:02:25,470
+right
+
+1557
+01:02:25,470 --> 01:02:28,140
+so it's kinda corny that is just it's
+
+1558
+01:02:28,140 --> 01:02:51,450
+not worth it in the back yes huh okay so
+
+1559
+01:02:51,450 --> 01:02:53,760
+I think you said here if if this thing
+
+1560
+01:02:53,760 --> 01:02:55,680
+actually when I do the delete I had the
+
+1561
+01:02:55,680 --> 01:02:57,780
+I submerged in the fraud to modify the
+
+1562
+01:02:57,780 --> 01:03:01,080
+route how would that work well again
+
+1563
+01:03:01,080 --> 01:03:02,940
+like I would have to hell out the right
+
+1564
+01:03:02,940 --> 01:03:05,220
+so when I landed here using optimistic
+
+1565
+01:03:05,220 --> 01:03:07,140
+lash crabbing I would recognize oh I'm
+
+1566
+01:03:07,140 --> 01:03:09,330
+gonna have to merge and modify my
+
+1567
+01:03:09,330 --> 01:03:11,280
+parents I got to go back and take its
+
+1568
+01:03:11,280 --> 01:03:12,540
+clue so blacks all the way to exclude
+
+1569
+01:03:12,540 --> 01:03:14,790
+latches all the way down so that Beckett
+
+1570
+01:03:14,790 --> 01:03:30,540
+am yes I say if we're in this situation
+
+1571
+01:03:30,540 --> 01:03:40,050
+here yes we're gonna do some operations
+
+1572
+01:03:40,050 --> 01:03:42,090
+requires to modify a head so we just
+
+1573
+01:03:42,090 --> 01:03:44,210
+obtained blocks on all of the children
+
+1574
+01:03:44,210 --> 01:03:47,700
+we know that as a parent leaves and then
+
+1575
+01:03:47,700 --> 01:03:49,380
+we never actually get it started to read
+
+1576
+01:03:49,380 --> 01:03:56,790
+operation starts than we ever have to
+
+1577
+01:03:56,790 --> 01:03:58,920
+worry about this yes he's actually
+
+1578
+01:03:58,920 --> 01:04:17,090
+cracked so so this is what that right so
+
+1579
+01:04:17,480 --> 01:04:21,660
+what you're saying so if I if I know any
+
+1580
+01:04:21,660 --> 01:04:23,250
+views button here and therefore I may
+
+1581
+01:04:23,250 --> 01:04:24,360
+have to spill over here
+
+1582
+01:04:24,360 --> 01:04:26,190
+I want to acquire a right latch on this
+
+1583
+01:04:26,190 --> 01:04:28,530
+and then I'm and then a right latch from
+
+1584
+01:04:28,530 --> 01:04:31,590
+all my all its children and then that
+
+1585
+01:04:31,590 --> 01:04:32,940
+would allow me to do any modifications
+
+1586
+01:04:32,940 --> 01:04:34,830
+that I want to do which includes
+
+1587
+01:04:34,830 --> 01:04:36,300
+updating the sibling pointers which is
+
+1588
+01:04:36,300 --> 01:04:37,859
+tricky
+
+1589
+01:04:37,859 --> 01:04:39,849
+and then you're saying that could cause
+
+1590
+01:04:39,849 --> 01:04:41,230
+a deadlock because someone could be
+
+1591
+01:04:41,230 --> 01:04:44,130
+coming in a different direction
+
+1592
+01:04:50,789 --> 01:05:08,289
+yes right so you kill yourself there's
+
+1593
+01:05:08,289 --> 01:05:10,799
+no point of acquiring walks
+
+1594
+01:05:10,799 --> 01:05:14,710
+yeah so if this guy had a split I have
+
+1595
+01:05:14,710 --> 01:05:16,569
+to update this sibling pointer too so
+
+1596
+01:05:16,569 --> 01:05:18,190
+you do need to acquire a latch on this
+
+1597
+01:05:18,190 --> 01:05:20,140
+guy as well but again the simplest thing
+
+1598
+01:05:20,140 --> 01:05:23,289
+is like I another thing you can do -
+
+1599
+01:05:23,289 --> 01:05:25,029
+like say two threads exactly same time
+
+1600
+01:05:25,029 --> 01:05:26,789
+to enterprise exact same latches in
+
+1601
+01:05:26,789 --> 01:05:28,539
+practice there's you know there's
+
+1602
+01:05:28,539 --> 01:05:31,299
+nothing there not me in absolute
+
+1603
+01:05:31,299 --> 01:05:33,339
+lockstep meaning like if you bought them
+
+1604
+01:05:33,339 --> 01:05:34,599
+the same time to really come back and
+
+1605
+01:05:34,599 --> 01:05:36,039
+hit the same conflict they're gonna be
+
+1606
+01:05:36,039 --> 01:05:37,630
+slightly different each other but even
+
+1607
+01:05:37,630 --> 01:05:38,829
+then you could say oh I've tried this
+
+1608
+01:05:38,829 --> 01:05:40,660
+before and I wasn't able to do it let me
+
+1609
+01:05:40,660 --> 01:05:42,640
+back off a little bit and that way at
+
+1610
+01:05:42,640 --> 01:05:44,589
+least come in staggered then I avoid
+
+1611
+01:05:44,589 --> 01:05:46,150
+that issue again the simplest thing to
+
+1612
+01:05:46,150 --> 01:05:47,470
+say I didn't get the last I wanted to
+
+1613
+01:05:47,470 --> 01:05:49,299
+kill myself immediately and that avoids
+
+1614
+01:05:49,299 --> 01:05:53,140
+all deadlocks and that's gonna be
+
+1615
+01:05:53,140 --> 01:05:54,519
+different when we talk about today's
+
+1616
+01:05:54,519 --> 01:05:56,160
+locking later on for transactions
+
+1617
+01:05:56,160 --> 01:05:59,799
+because we will have something else can
+
+1618
+01:05:59,799 --> 01:06:01,539
+come and resolve deadlocks for us but we
+
+1619
+01:06:01,539 --> 01:06:03,839
+don't have that here
+
+1620
+01:06:03,839 --> 01:06:07,119
+okay so the last thing I want to finish
+
+1621
+01:06:07,119 --> 01:06:11,380
+up discussing is a is an additional
+
+1622
+01:06:11,380 --> 01:06:14,559
+optimization for handing overflows and
+
+1623
+01:06:14,559 --> 01:06:16,930
+this is this comes from the B link again
+
+1624
+01:06:16,930 --> 01:06:19,180
+the peeling trees want what went first
+
+1625
+01:06:19,180 --> 01:06:20,829
+invented the the sibling pointers and
+
+1626
+01:06:20,829 --> 01:06:22,809
+then everybody does that now in a B+
+
+1627
+01:06:22,809 --> 01:06:24,489
+tree for the most part at least in one
+
+1628
+01:06:24,489 --> 01:06:28,299
+direction so normally every time you
+
+1629
+01:06:28,299 --> 01:06:29,589
+have to do an overflow you have to do a
+
+1630
+01:06:29,589 --> 01:06:32,440
+split in a node we have to update three
+
+1631
+01:06:32,440 --> 01:06:34,630
+notes we have to update the the node
+
+1632
+01:06:34,630 --> 01:06:36,339
+being split we have to create a new node
+
+1633
+01:06:36,339 --> 01:06:38,650
+to overflow into and then we have to
+
+1634
+01:06:38,650 --> 01:06:41,259
+update at least one parent or one our
+
+1635
+01:06:41,259 --> 01:06:43,359
+ancestry - now accommodate that new
+
+1636
+01:06:43,359 --> 01:06:45,130
+separator key for the new node that we
+
+1637
+01:06:45,130 --> 01:06:48,489
+added so the B link tree guys came with
+
+1638
+01:06:48,489 --> 01:06:50,680
+optimization where any single time a
+
+1639
+01:06:50,680 --> 01:06:51,170
+leaf node
+
+1640
+01:06:51,170 --> 01:06:54,470
+of flows you actually hold off on on
+
+1641
+01:06:54,470 --> 01:06:56,780
+updating the parent node so that you
+
+1642
+01:06:56,780 --> 01:07:00,020
+don't want the restart and this restart
+
+1643
+01:07:00,020 --> 01:07:02,210
+the traversal and do the pessimistic
+
+1644
+01:07:02,210 --> 01:07:04,819
+right latches all the way down you just
+
+1645
+01:07:04,819 --> 01:07:07,420
+update a little global information
+
+1646
+01:07:07,420 --> 01:07:10,309
+global information table for the for the
+
+1647
+01:07:10,309 --> 01:07:12,950
+tree and says any time somebody comes
+
+1648
+01:07:12,950 --> 01:07:14,000
+through that part of the tree again
+
+1649
+01:07:14,000 --> 01:07:16,880
+here's how it want you to update it so
+
+1650
+01:07:16,880 --> 01:07:18,410
+let's look at example so say I want to
+
+1651
+01:07:18,410 --> 01:07:21,109
+search key 25 again I do the optimistic
+
+1652
+01:07:21,109 --> 01:07:22,549
+latch crabbing on the way down I get
+
+1653
+01:07:22,549 --> 01:07:27,609
+real a ch's I get to here on C again I'm
+
+1654
+01:07:27,609 --> 01:07:31,430
+when I get the right latch on on F I
+
+1655
+01:07:31,430 --> 01:07:33,260
+hear that I would recognize that I'm
+
+1656
+01:07:33,260 --> 01:07:36,559
+gonna have to split but then rather than
+
+1657
+01:07:36,559 --> 01:07:38,569
+restarting and taking right latches I
+
+1658
+01:07:38,569 --> 01:07:42,200
+just give up the read Lacan see I still
+
+1659
+01:07:42,200 --> 01:07:46,220
+do my insert and add the new the new the
+
+1660
+01:07:46,220 --> 01:07:49,220
+new node but then rather than having to
+
+1661
+01:07:49,220 --> 01:07:51,880
+update this thing I just have a little
+
+1662
+01:07:51,880 --> 01:07:54,770
+global global table for the tree that
+
+1663
+01:07:54,770 --> 01:07:57,109
+says if you if you ever take the right
+
+1664
+01:07:57,109 --> 01:07:59,240
+latch on this node see here's the change
+
+1665
+01:07:59,240 --> 01:08:01,369
+I want you I want you to add in right
+
+1666
+01:08:01,369 --> 01:08:05,089
+and that way the next time somebody
+
+1667
+01:08:05,089 --> 01:08:06,079
+comes through and takes the right latch
+
+1668
+01:08:06,079 --> 01:08:08,390
+they'll do some extra work and finish
+
+1669
+01:08:08,390 --> 01:08:10,430
+updating what we wanted and this is
+
+1670
+01:08:10,430 --> 01:08:11,720
+still correct this is still valid
+
+1671
+01:08:11,720 --> 01:08:14,059
+because if I come along and now do a
+
+1672
+01:08:14,059 --> 01:08:18,259
+look-up on 31 well I follow the the the
+
+1673
+01:08:18,259 --> 01:08:21,170
+pointers down and my pointer for for all
+
+1674
+01:08:21,170 --> 01:08:23,689
+keys greater than 23 will put me here
+
+1675
+01:08:23,689 --> 01:08:25,549
+and now I have to know all right well I
+
+1676
+01:08:25,549 --> 01:08:27,080
+should have this overflow thing if I'm
+
+1677
+01:08:27,080 --> 01:08:29,540
+looking for 31 scan on longleaf note and
+
+1678
+01:08:29,540 --> 01:08:34,299
+that's actually what I'm looking for yes
+
+1679
+01:08:39,609 --> 01:08:42,080
+right so basically so now there's now
+
+1680
+01:08:42,080 --> 01:08:44,359
+there's a in this global thing that
+
+1681
+01:08:44,359 --> 01:08:45,500
+anybody can see when they first start
+
+1682
+01:08:45,500 --> 01:08:48,109
+says oh by the way if you you're doing a
+
+1683
+01:08:48,109 --> 01:08:50,330
+modification and you go um I see take a
+
+1684
+01:08:50,330 --> 01:08:52,429
+right latch work so this guy wants to
+
+1685
+01:08:52,429 --> 01:08:55,040
+now insert 33 I can do real a chah's all
+
+1686
+01:08:55,040 --> 01:08:57,290
+the way down to get to B and then but
+
+1687
+01:08:57,290 --> 01:08:59,630
+now for C I would know oh why I was told
+
+1688
+01:08:59,630 --> 01:09:00,830
+that I should take a right latch on this
+
+1689
+01:09:00,830 --> 01:09:03,920
+let me go ahead and do that now I do
+
+1690
+01:09:03,920 --> 01:09:04,939
+I finished the property
+
+1691
+01:09:04,939 --> 01:09:07,279
+applying that change there and then now
+
+1692
+01:09:07,279 --> 01:09:08,930
+the tree is considered considered valid
+
+1693
+01:09:08,930 --> 01:09:10,310
+right I take the right latching and
+
+1694
+01:09:10,310 --> 01:09:12,979
+complete my operation so it's just it's
+
+1695
+01:09:12,979 --> 01:09:14,600
+like rather than having to do the
+
+1696
+01:09:14,600 --> 01:09:17,029
+restart you update this thing to say all
+
+1697
+01:09:17,029 --> 01:09:17,660
+right the next time you go through
+
+1698
+01:09:17,660 --> 01:09:18,979
+somebody else will take care of it for
+
+1699
+01:09:18,979 --> 01:09:24,680
+me yes how would you identify see and -
+
+1700
+01:09:24,680 --> 01:09:28,219
+what you mean like that like it's a page
+
+1701
+01:09:28,219 --> 01:09:30,979
+ID right logical nudity if you're going
+
+1702
+01:09:30,979 --> 01:09:33,529
+to see you know page 1 2 3 by the way
+
+1703
+01:09:33,529 --> 01:09:42,620
+apply this change for me yes do you
+
+1704
+01:09:42,620 --> 01:09:48,790
+obtain what sorry so back here yeah so
+
+1705
+01:09:48,790 --> 01:09:52,670
+yeah yes and for simplicity reasons
+
+1706
+01:09:52,670 --> 01:09:54,469
+there's different ways to do this in
+
+1707
+01:09:54,469 --> 01:09:56,150
+this case here if we don't have the same
+
+1708
+01:09:56,150 --> 01:09:59,210
+parent then we may not have a sibling
+
+1709
+01:09:59,210 --> 01:10:01,810
+pointer to go in the reverse direction
+
+1710
+01:10:01,810 --> 01:10:04,130
+there's different implementations but if
+
+1711
+01:10:04,130 --> 01:10:05,840
+you want to have bi-directional sibling
+
+1712
+01:10:05,840 --> 01:10:06,920
+pointers yeah so you'd have to update
+
+1713
+01:10:06,920 --> 01:10:09,380
+that that makes things way more
+
+1714
+01:10:09,380 --> 01:10:11,210
+complicated then what I could show in a
+
+1715
+01:10:11,210 --> 01:10:24,080
+class would like this thing that's just
+
+1716
+01:10:24,080 --> 01:10:27,590
+a sibling pointer oh yeah you need you
+
+1717
+01:10:27,590 --> 01:10:29,330
+have the update and say yes the 7 corner
+
+1718
+01:10:29,330 --> 01:10:31,390
+the overflow thing is not there anymore
+
+1719
+01:10:31,390 --> 01:10:33,530
+but it actually doesn't matter anymore
+
+1720
+01:10:33,530 --> 01:10:34,070
+actually
+
+1721
+01:10:34,070 --> 01:10:35,480
+you actually can keep it right because
+
+1722
+01:10:35,480 --> 01:10:37,610
+because up above if I'm looking for
+
+1723
+01:10:37,610 --> 01:10:41,120
+things greater than equal to 31 I'm
+
+1724
+01:10:41,120 --> 01:10:43,070
+never gonna get this known anyway I'd
+
+1725
+01:10:43,070 --> 01:10:45,080
+always get to this one so you don't you
+
+1726
+01:10:45,080 --> 01:10:49,630
+don't actually have to update it yes
+
+1727
+01:10:59,810 --> 01:11:01,630
+[Music]
+
+1728
+01:11:01,630 --> 01:11:03,920
+correct his David is the first person
+
+1729
+01:11:03,920 --> 01:11:05,570
+for this for this position the first
+
+1730
+01:11:05,570 --> 01:11:08,180
+person that will update see applies this
+
+1731
+01:11:08,180 --> 01:11:09,770
+change and because they hold the right
+
+1732
+01:11:09,770 --> 01:11:12,940
+latch on it it's an atomic operation
+
+1733
+01:11:14,059 --> 01:11:16,110
+correct yes otherwise could be changed
+
+1734
+01:11:16,110 --> 01:11:20,809
+yes all right awesome
+
+1735
+01:11:20,809 --> 01:11:24,270
+all right so let's finish up so
+
+1736
+01:11:24,270 --> 01:11:27,449
+hopefully I've convinced you that uh you
+
+1737
+01:11:27,449 --> 01:11:29,510
+know you want to do the latching stuff
+
+1738
+01:11:29,510 --> 01:11:34,050
+but it Centauri hard to do right I lost
+
+1739
+01:11:34,050 --> 01:11:35,820
+over sibling pointers how to keep those
+
+1740
+01:11:35,820 --> 01:11:39,929
+in in sync that's a whole nother bag of
+
+1741
+01:11:39,929 --> 01:11:42,139
+we don't talk about that's super tricky
+
+1742
+01:11:42,139 --> 01:11:44,400
+but again as I said the good news is
+
+1743
+01:11:44,400 --> 01:11:46,590
+that because it's super hard and if you
+
+1744
+01:11:46,590 --> 01:11:48,329
+can do this people pay you a lot of
+
+1745
+01:11:48,329 --> 01:11:51,480
+money to do this in practice I would say
+
+1746
+01:11:51,480 --> 01:11:54,270
+that you know there's there are those
+
+1747
+01:11:54,270 --> 01:11:55,829
+actually surprisingly I mean there's
+
+1748
+01:11:55,829 --> 01:11:57,119
+there's a bunch of current data
+
+1749
+01:11:57,119 --> 01:11:58,739
+structure libraries that are out there
+
+1750
+01:11:58,739 --> 01:12:00,960
+the Intel thread building blocks is one
+
+1751
+01:12:00,960 --> 01:12:04,290
+of them Facebook's folly so in general
+
+1752
+01:12:04,290 --> 01:12:07,949
+for low-level things like you know
+
+1753
+01:12:07,949 --> 01:12:09,090
+internal hash tables and things like
+
+1754
+01:12:09,090 --> 01:12:11,219
+that that aren't being used as part of
+
+1755
+01:12:11,219 --> 01:12:12,510
+you in query processing and storing data
+
+1756
+01:12:12,510 --> 01:12:15,570
+as an index off-the-shelf stuff is
+
+1757
+01:12:15,570 --> 01:12:17,579
+probably good enough all the commercial
+
+1758
+01:12:17,579 --> 01:12:20,040
+systems roll all the high-end systems
+
+1759
+01:12:20,040 --> 01:12:21,179
+roll their own data structures for these
+
+1760
+01:12:21,179 --> 01:12:22,920
+things but for table indexes I think
+
+1761
+01:12:22,920 --> 01:12:24,480
+that having to having building a data
+
+1762
+01:12:24,480 --> 01:12:25,409
+structure that's specific to your
+
+1763
+01:12:25,409 --> 01:12:27,150
+database system is super important
+
+1764
+01:12:27,150 --> 01:12:28,260
+because then you can tailor it towards
+
+1765
+01:12:28,260 --> 01:12:29,909
+whatever whatever your target operating
+
+1766
+01:12:29,909 --> 01:12:32,699
+environment is so the other thing I'll
+
+1767
+01:12:32,699 --> 01:12:33,630
+point out to you is all that we talked a
+
+1768
+01:12:33,630 --> 01:12:35,400
+little bit about hash tables we spent
+
+1769
+01:12:35,400 --> 01:12:36,389
+most or time and talked about B plus
+
+1770
+01:12:36,389 --> 01:12:38,369
+trees but the core ideas that I've
+
+1771
+01:12:38,369 --> 01:12:40,530
+talked about like making sure threads
+
+1772
+01:12:40,530 --> 01:12:41,760
+are always going in one direction to
+
+1773
+01:12:41,760 --> 01:12:43,559
+avoid deadlocks killing yourself right
+
+1774
+01:12:43,559 --> 01:12:45,619
+away if you do encounter a deadlock
+
+1775
+01:12:45,619 --> 01:12:48,510
+maybe optimistically assuming that
+
+1776
+01:12:48,510 --> 01:12:50,099
+you're not going to have have to do
+
+1777
+01:12:50,099 --> 01:12:52,710
+modifications to to the structure and
+
+1778
+01:12:52,710 --> 01:12:54,239
+therefore taking a fast path first all
+
+1779
+01:12:54,239 --> 01:12:56,219
+these techniques are reused all
+
+1780
+01:12:56,219 --> 01:12:57,840
+throughout computer science and in
+
+1781
+01:12:57,840 --> 01:12:59,760
+systems in general so it's not just B
+
+1782
+01:12:59,760 --> 01:13:01,290
+plus trees Abad these techniques are
+
+1783
+01:13:01,290 --> 01:13:02,909
+applicable everywhere
+
+1784
+01:13:02,909 --> 01:13:07,260
+ok all right so any questions about that
+
+1785
+01:13:07,260 --> 01:13:11,100
+Moke we talked about so far today
+
+1786
+01:13:11,100 --> 01:13:12,960
+alright so the good news is that next
+
+1787
+01:13:12,960 --> 01:13:15,000
+class we we can finally start about how
+
+1788
+01:13:15,000 --> 01:13:17,010
+to actually query we know how to store
+
+1789
+01:13:17,010 --> 01:13:19,440
+them we now to index them and now let's
+
+1790
+01:13:19,440 --> 01:13:20,760
+talk about actually how do you you know
+
+1791
+01:13:20,760 --> 01:13:23,160
+run queries on top of them and produce
+
+1792
+01:13:23,160 --> 01:13:27,770
+of results okay all right guys
+
+1793
+01:13:38,900 --> 01:13:41,979
+[Music]
+
+1794
+01:13:48,680 --> 01:14:01,700
+ricochet jelly hit the deli the bottle I
+
+1795
+01:14:03,020 --> 01:14:07,190
+don't know your phone can tap a
+

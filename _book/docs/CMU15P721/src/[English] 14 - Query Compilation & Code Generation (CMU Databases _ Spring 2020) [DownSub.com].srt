@@ -1,0 +1,8300 @@
+1
+00:00:01,300 --> 00:00:05,129
+[Music]
+
+2
+00:00:05,200 --> 00:00:05,930
+[Applause]
+
+3
+00:00:05,930 --> 00:00:08,630
+[Music]
+
+4
+00:00:08,630 --> 00:00:10,020
+[Applause]
+
+5
+00:00:10,020 --> 00:00:11,630
+[Music]
+
+6
+00:00:11,630 --> 00:00:15,269
+let's get started compilation is an
+
+7
+00:00:15,269 --> 00:00:16,859
+awesome topic there's a lot to discuss
+
+8
+00:00:16,859 --> 00:00:20,430
+alright so this is just what's on the
+
+9
+00:00:20,430 --> 00:00:24,029
+docket for everyone here project to
+
+10
+00:00:24,029 --> 00:00:24,720
+checkpoint
+
+11
+00:00:24,720 --> 00:00:26,460
+I think he's he'll post it on great
+
+12
+00:00:26,460 --> 00:00:28,140
+scope I think it's not already up it
+
+13
+00:00:28,140 --> 00:00:30,480
+posted today we're trying to figure out
+
+14
+00:00:30,480 --> 00:00:32,340
+we looked at to see ways to make the
+
+15
+00:00:32,340 --> 00:00:34,559
+accomplish and go faster
+
+16
+00:00:34,559 --> 00:00:36,960
+it wasn't anything obvious but like when
+
+17
+00:00:36,960 --> 00:00:39,000
+you submit this it won't it run like
+
+18
+00:00:39,000 --> 00:00:41,160
+clang format and clanked ID but it won't
+
+19
+00:00:41,160 --> 00:00:44,789
+run the the full linter so it'll be so
+
+20
+00:00:44,789 --> 00:00:46,770
+you make sure you run that yourself
+
+21
+00:00:46,770 --> 00:00:49,590
+because when we run it from this has to
+
+22
+00:00:49,590 --> 00:00:51,390
+pass that so again the first checkpoint
+
+23
+00:00:51,390 --> 00:00:53,070
+just be insert will figure out the
+
+24
+00:00:53,070 --> 00:00:57,600
+delete and then scan key and then this
+
+25
+00:00:57,600 --> 00:00:59,309
+one will be has to be full concurrency
+
+26
+00:00:59,309 --> 00:01:01,109
+and again this one he's not checking for
+
+27
+00:01:01,109 --> 00:01:03,690
+concurrency because great skip only
+
+28
+00:01:03,690 --> 00:01:05,400
+gives you a single thread will do more
+
+29
+00:01:05,400 --> 00:01:07,619
+exhaustive tests in the final final
+
+30
+00:01:07,619 --> 00:01:12,090
+analysis okay and then on Wednesdays
+
+31
+00:01:12,090 --> 00:01:14,610
+class all now announced what's but what
+
+32
+00:01:14,610 --> 00:01:16,710
+about our sort discussing project three
+
+33
+00:01:16,710 --> 00:01:20,729
+and I'll propose some topics that you
+
+34
+00:01:20,729 --> 00:01:21,960
+guys can look at certainly some things
+
+35
+00:01:21,960 --> 00:01:23,790
+we've talked about so far so things
+
+36
+00:01:23,790 --> 00:01:25,530
+we'll talk about today are Jemaine or
+
+37
+00:01:25,530 --> 00:01:29,189
+applicable topics you could explore but
+
+38
+00:01:29,189 --> 00:01:31,110
+then with the first class after Spring
+
+39
+00:01:31,110 --> 00:01:34,799
+Break on that first Monday we'll have in
+
+40
+00:01:34,799 --> 00:01:36,390
+class presentations where every group
+
+41
+00:01:36,390 --> 00:01:37,680
+will come out and spend five minutes to
+
+42
+00:01:37,680 --> 00:01:39,770
+say hey this is what we're gonna do okay
+
+43
+00:01:39,770 --> 00:01:42,479
+so you should least I mean I realize you
+
+44
+00:01:42,479 --> 00:01:43,829
+stopped the bill to beat the the B+ tree
+
+45
+00:01:43,829 --> 00:01:45,659
+to start thinking about what it is that
+
+46
+00:01:45,659 --> 00:01:47,329
+you actually want to want to possibly
+
+47
+00:01:47,329 --> 00:01:50,549
+build for project three okay and if
+
+48
+00:01:50,549 --> 00:01:53,399
+you're not sure about potential topics
+
+49
+00:01:53,399 --> 00:01:55,020
+and want some further clarification you
+
+50
+00:01:55,020 --> 00:01:56,280
+know I'll be around spring break and we
+
+51
+00:01:56,280 --> 00:02:01,170
+can meet necessary okay all right query
+
+52
+00:02:01,170 --> 00:02:04,560
+compilation is super important it is the
+
+53
+00:02:04,560 --> 00:02:06,540
+one of the main techniques that our
+
+54
+00:02:06,540 --> 00:02:08,008
+people are using in modern systems
+
+55
+00:02:08,008 --> 00:02:10,110
+database systems today to get best
+
+56
+00:02:10,110 --> 00:02:12,569
+performance so you know this is why we
+
+57
+00:02:12,569 --> 00:02:13,530
+spend the entire lecture
+
+58
+00:02:13,530 --> 00:02:15,900
+on illness so we'll first talk about
+
+59
+00:02:15,900 --> 00:02:17,550
+some background about what is it what
+
+60
+00:02:17,550 --> 00:02:19,950
+what you know cogeneration why we
+
+61
+00:02:19,950 --> 00:02:20,970
+actually wanna do this do the
+
+62
+00:02:20,970 --> 00:02:23,100
+compilation then we'll talk about the
+
+63
+00:02:23,100 --> 00:02:25,410
+the two techniques the cogeneration of
+
+64
+00:02:25,410 --> 00:02:27,150
+transformation basically source the
+
+65
+00:02:27,150 --> 00:02:28,950
+source compilation and then we'll talk
+
+66
+00:02:28,950 --> 00:02:31,380
+about the JIT compilation using the LLVM
+
+67
+00:02:31,380 --> 00:02:32,819
+because that was in the hyper paper that
+
+68
+00:02:32,819 --> 00:02:34,500
+you guys read but certainly this is not
+
+69
+00:02:34,500 --> 00:02:36,450
+the only way to compilation so we'll
+
+70
+00:02:36,450 --> 00:02:37,500
+look at some real work techniques
+
+71
+00:02:37,500 --> 00:02:40,170
+including popping of post graphs and our
+
+72
+00:02:40,170 --> 00:02:42,120
+own database system and seeing what the
+
+73
+00:02:42,120 --> 00:02:44,730
+the cogent quiet looks like for for
+
+74
+00:02:44,730 --> 00:02:49,530
+these different systems okay so last
+
+75
+00:02:49,530 --> 00:02:51,360
+class or a couple classes ago we've been
+
+76
+00:02:51,360 --> 00:02:54,360
+talking about how we're gonna get our
+
+77
+00:02:54,360 --> 00:02:57,150
+system to run as fast as possible and we
+
+78
+00:02:57,150 --> 00:03:00,300
+said that the you know the way we could
+
+79
+00:03:00,300 --> 00:03:03,510
+do this is is is reduce the number
+
+80
+00:03:03,510 --> 00:03:06,239
+instructions we have to execute alright
+
+81
+00:03:06,239 --> 00:03:08,810
+and also get more instructions per cycle
+
+82
+00:03:08,810 --> 00:03:11,489
+so if you start to talk about how hard
+
+83
+00:03:11,489 --> 00:03:13,769
+this is this is to really get you know
+
+84
+00:03:13,769 --> 00:03:15,510
+good speed-up just based on own
+
+85
+00:03:15,510 --> 00:03:18,660
+instructions this is a back of the
+
+86
+00:03:18,660 --> 00:03:20,880
+napkin calculation that the hackathon
+
+87
+00:03:20,880 --> 00:03:23,040
+got hackathon guys did for their paper
+
+88
+00:03:23,040 --> 00:03:24,720
+when they were explaining why they were
+
+89
+00:03:24,720 --> 00:03:26,910
+doing cogeneration compilation in their
+
+90
+00:03:26,910 --> 00:03:29,700
+system and it basically says that if you
+
+91
+00:03:29,700 --> 00:03:31,519
+want to have your data and go 10x faster
+
+92
+00:03:31,519 --> 00:03:35,549
+then you need to execute 90% fewer
+
+93
+00:03:35,549 --> 00:03:38,640
+instructions this is doable right this
+
+94
+00:03:38,640 --> 00:03:40,920
+is something you know not just you know
+
+95
+00:03:40,920 --> 00:03:44,250
+maybe turning compile optimization flag
+
+96
+00:03:44,250 --> 00:03:45,660
+to get you know better better better
+
+97
+00:03:45,660 --> 00:03:48,959
+binaries but through careful redesign of
+
+98
+00:03:48,959 --> 00:03:51,030
+a databases architecture we can achieve
+
+99
+00:03:51,030 --> 00:03:53,070
+this but if we want to get a hundred X
+
+100
+00:03:53,070 --> 00:03:55,620
+faster now we have 2x X 99% few
+
+101
+00:03:55,620 --> 00:03:57,269
+instructions now this starts to get
+
+102
+00:03:57,269 --> 00:04:01,170
+really really hard and so what today's
+
+103
+00:04:01,170 --> 00:04:03,000
+class and then Wednesday's class and
+
+104
+00:04:03,000 --> 00:04:04,290
+then after after the Spring Break when
+
+105
+00:04:04,290 --> 00:04:05,970
+we start about a vectorization these are
+
+106
+00:04:05,970 --> 00:04:07,230
+the techniques we're going to use to
+
+107
+00:04:07,230 --> 00:04:08,519
+allow us to execute a few instructions
+
+108
+00:04:08,519 --> 00:04:10,590
+to do the same amount of work so that we
+
+109
+00:04:10,590 --> 00:04:13,769
+can try to achieve this this 100x right
+
+110
+00:04:13,769 --> 00:04:15,600
+because Intel it's not graduating up the
+
+111
+00:04:15,600 --> 00:04:16,978
+clock speed anymore they're giving us
+
+112
+00:04:16,978 --> 00:04:19,168
+wider seamy registers more specialized
+
+113
+00:04:19,168 --> 00:04:20,820
+instructions there's more things Intel
+
+114
+00:04:20,820 --> 00:04:22,108
+is gonna give us this noon clock speed
+
+115
+00:04:22,108 --> 00:04:23,610
+so we have the designer system in order
+
+116
+00:04:23,610 --> 00:04:26,490
+to try to achieve this and there's not
+
+117
+00:04:26,490 --> 00:04:27,480
+going to be a magic
+
+118
+00:04:27,480 --> 00:04:30,690
+in GCC and clang like Oh 100 that we can
+
+119
+00:04:30,690 --> 00:04:33,810
+use to make this happen again it's us as
+
+120
+00:04:33,810 --> 00:04:36,630
+the data system developers have to
+
+121
+00:04:36,630 --> 00:04:38,550
+design the system and again for 20
+
+122
+00:04:38,550 --> 00:04:39,720
+people pay us a lot of money to do this
+
+123
+00:04:39,720 --> 00:04:41,970
+well that's good so this is why we want
+
+124
+00:04:41,970 --> 00:04:43,860
+to do code specialization or query
+
+125
+00:04:43,860 --> 00:04:47,250
+compilation so the idea of code
+
+126
+00:04:47,250 --> 00:04:49,470
+specialization is that instead of having
+
+127
+00:04:49,470 --> 00:04:51,750
+general purpose code in our database
+
+128
+00:04:51,750 --> 00:04:54,180
+system to process queries or do whatever
+
+129
+00:04:54,180 --> 00:04:57,240
+task we want in our system we're gonna
+
+130
+00:04:57,240 --> 00:05:00,090
+generate code that is specific to the
+
+131
+00:05:00,090 --> 00:05:03,090
+one task we're trying to process or
+
+132
+00:05:03,090 --> 00:05:05,730
+complete and for our purposes today it's
+
+133
+00:05:05,730 --> 00:05:06,930
+always gonna be a query so we have a
+
+134
+00:05:06,930 --> 00:05:08,790
+query and Retin rather than running this
+
+135
+00:05:08,790 --> 00:05:10,620
+through a general-purpose system we will
+
+136
+00:05:10,620 --> 00:05:14,340
+then generate code that is hard coded or
+
+137
+00:05:14,340 --> 00:05:17,940
+baked just to execute that one query the
+
+138
+00:05:17,940 --> 00:05:20,280
+reason why this is gonna be better for
+
+139
+00:05:20,280 --> 00:05:22,590
+it for for performances because in the
+
+140
+00:05:22,590 --> 00:05:24,480
+general purpose system you're gonna have
+
+141
+00:05:24,480 --> 00:05:26,130
+all this indirection we're gonna have
+
+142
+00:05:26,130 --> 00:05:28,080
+all these if causes or switch statements
+
+143
+00:05:28,080 --> 00:05:30,630
+to deal with all the little impossible
+
+144
+00:05:30,630 --> 00:05:33,210
+datatypes or operands or predicates or
+
+145
+00:05:33,210 --> 00:05:34,740
+aggregations you could be executing why
+
+146
+00:05:34,740 --> 00:05:36,810
+you process the query and that means
+
+147
+00:05:36,810 --> 00:05:38,670
+that as I look at every single tuple and
+
+148
+00:05:38,670 --> 00:05:40,740
+I call my a great function there's me a
+
+149
+00:05:40,740 --> 00:05:42,150
+switch statement that says if my data
+
+150
+00:05:42,150 --> 00:05:43,950
+type is this do this and my data type is
+
+151
+00:05:43,950 --> 00:05:46,260
+that do that we don't avoid all that we
+
+152
+00:05:46,260 --> 00:05:47,880
+strip it down to be just the exact
+
+153
+00:05:47,880 --> 00:05:49,410
+instructions I need in order to execute
+
+154
+00:05:49,410 --> 00:05:53,220
+that query so this is gonna be tricky to
+
+155
+00:05:53,220 --> 00:05:57,510
+do and it's not to say that people when
+
+156
+00:05:57,510 --> 00:05:59,070
+they when we write general-purpose data
+
+157
+00:05:59,070 --> 00:06:02,100
+system code they're not doing this just
+
+158
+00:06:02,100 --> 00:06:04,200
+because they're dumb they're doing it
+
+159
+00:06:04,200 --> 00:06:05,880
+for mostly software engineering reasons
+
+160
+00:06:05,880 --> 00:06:07,320
+right you're making it so the code is
+
+161
+00:06:07,320 --> 00:06:08,940
+reusable so you don't have to have this
+
+162
+00:06:08,940 --> 00:06:10,620
+you know duplicate operations over and
+
+163
+00:06:10,620 --> 00:06:12,120
+over again you know adding two numbers
+
+164
+00:06:12,120 --> 00:06:16,260
+we're adding to two floats and we also
+
+165
+00:06:16,260 --> 00:06:18,060
+write code in such a way that's easier
+
+166
+00:06:18,060 --> 00:06:21,900
+for people to maintain and support but
+
+167
+00:06:21,900 --> 00:06:23,190
+the problem is gonna be as I said before
+
+168
+00:06:23,190 --> 00:06:24,990
+is the way we write code that's easier
+
+169
+00:06:24,990 --> 00:06:26,730
+for humans to understand we're actually
+
+170
+00:06:26,730 --> 00:06:28,730
+gonna be the worst way you can actually
+
+171
+00:06:28,730 --> 00:06:33,180
+write code for for the CPU so I'm gonna
+
+172
+00:06:33,180 --> 00:06:34,380
+show a bunch of examples I'm going to
+
+173
+00:06:34,380 --> 00:06:37,380
+use this simple three table schema ABC
+
+174
+00:06:37,380 --> 00:06:40,350
+write a B have primary key integers and
+
+175
+00:06:40,350 --> 00:06:41,220
+some value
+
+176
+00:06:41,220 --> 00:06:43,920
+and then see just has to foreign key
+
+177
+00:06:43,920 --> 00:06:45,630
+references to the primary key at a and
+
+178
+00:06:45,630 --> 00:06:47,760
+the primary key and B so I show a bunch
+
+179
+00:06:47,760 --> 00:06:49,620
+of examples doing three bay joins on
+
+180
+00:06:49,620 --> 00:06:52,590
+this table on the foreign keys so let's
+
+181
+00:06:52,590 --> 00:06:54,570
+see now how we could process this query
+
+182
+00:06:54,570 --> 00:06:56,790
+here a three-way join with with a nested
+
+183
+00:06:56,790 --> 00:06:59,970
+query learned ester aggregation using
+
+184
+00:06:59,970 --> 00:07:02,040
+the interpretation model the iterator
+
+185
+00:07:02,040 --> 00:07:04,650
+model that we talked about before right
+
+186
+00:07:04,650 --> 00:07:06,840
+so again we have a group I or
+
+187
+00:07:06,840 --> 00:07:08,880
+aggregation or a group I for B inside
+
+188
+00:07:08,880 --> 00:07:10,950
+this this inner query and then we're
+
+189
+00:07:10,950 --> 00:07:14,490
+gonna do a join on on a B and C so the
+
+190
+00:07:14,490 --> 00:07:16,260
+query plan would look like this right
+
+191
+00:07:16,260 --> 00:07:18,690
+this is for our purposes here this is
+
+192
+00:07:18,690 --> 00:07:20,130
+just the logical plan we're not saying
+
+193
+00:07:20,130 --> 00:07:22,740
+what the joint album actually is but we
+
+194
+00:07:22,740 --> 00:07:23,970
+can this assume that it's a hash table
+
+195
+00:07:23,970 --> 00:07:25,320
+we're not saying how we're doing the
+
+196
+00:07:25,320 --> 00:07:27,090
+aggregation assume and also it's a hash
+
+197
+00:07:27,090 --> 00:07:31,530
+table so if we go back and use the for
+
+198
+00:07:31,530 --> 00:07:33,740
+loop iterator model approach that we saw
+
+199
+00:07:33,740 --> 00:07:36,600
+last class the way we'd execute this
+
+200
+00:07:36,600 --> 00:07:38,430
+query is in just a bunch of for loops
+
+201
+00:07:38,430 --> 00:07:40,560
+where and one operator they iterate over
+
+202
+00:07:40,560 --> 00:07:43,440
+the the target input in this case here
+
+203
+00:07:43,440 --> 00:07:45,090
+we're scanning B for every tuple in B
+
+204
+00:07:45,090 --> 00:07:47,130
+then we shove it up into the next
+
+205
+00:07:47,130 --> 00:07:48,840
+operator to do the filter and this
+
+206
+00:07:48,840 --> 00:07:52,230
+shoves it up to do the join right so
+
+207
+00:07:52,230 --> 00:07:54,360
+again this is gonna be slow for an enemy
+
+208
+00:07:54,360 --> 00:07:56,010
+database it's still gonna be slow for a
+
+209
+00:07:56,010 --> 00:07:58,590
+displaced database because we're copying
+
+210
+00:07:58,590 --> 00:08:00,360
+a lot of you know all the data from one
+
+211
+00:08:00,360 --> 00:08:02,430
+to the next yes we can combine these but
+
+212
+00:08:02,430 --> 00:08:04,260
+you know we're having all these next
+
+213
+00:08:04,260 --> 00:08:06,090
+calls and these MIT calls like all these
+
+214
+00:08:06,090 --> 00:08:07,680
+function calls are gonna be expensive
+
+215
+00:08:07,680 --> 00:08:09,930
+for us right and we have to do this
+
+216
+00:08:09,930 --> 00:08:11,090
+right we have this general-purpose
+
+217
+00:08:11,090 --> 00:08:13,050
+evaluation or value eight predicate
+
+218
+00:08:13,050 --> 00:08:16,140
+functions because the we don't know
+
+219
+00:08:16,140 --> 00:08:17,310
+actually know what the predicate
+
+220
+00:08:17,310 --> 00:08:18,840
+actually looks like we just know we're
+
+221
+00:08:18,840 --> 00:08:20,310
+gonna have the source sort of this
+
+222
+00:08:20,310 --> 00:08:21,720
+expression tree that we want to evaluate
+
+223
+00:08:21,720 --> 00:08:23,940
+and all this code here the do that do
+
+224
+00:08:23,940 --> 00:08:27,060
+the iteration over the next over that
+
+225
+00:08:27,060 --> 00:08:30,120
+every tuple from the child it just calls
+
+226
+00:08:30,120 --> 00:08:32,219
+this function it's it's not doing
+
+227
+00:08:32,219 --> 00:08:33,450
+anything special it's not doing anything
+
+228
+00:08:33,450 --> 00:08:36,900
+in line right so again there's a lot of
+
+229
+00:08:36,900 --> 00:08:38,250
+overhead from all these next calls
+
+230
+00:08:38,250 --> 00:08:39,929
+because we could have there are
+
+231
+00:08:39,929 --> 00:08:41,940
+different types of indirection but the
+
+232
+00:08:41,940 --> 00:08:43,289
+expression itself is also going to be
+
+233
+00:08:43,289 --> 00:08:45,570
+expensive as well right so we just take
+
+234
+00:08:45,570 --> 00:08:47,550
+this inner part here right where B dot
+
+235
+00:08:47,550 --> 00:08:49,860
+Val equals question mark meaning it's an
+
+236
+00:08:49,860 --> 00:08:51,270
+input parameter this is a prepared
+
+237
+00:08:51,270 --> 00:08:52,890
+statement so at runtime someone's gonna
+
+238
+00:08:52,890 --> 00:08:54,290
+pass in the value for this parameter
+
+239
+00:08:54,290 --> 00:08:56,630
+and then we're going to add one to it so
+
+240
+00:08:56,630 --> 00:08:58,880
+typically you a you you you represent
+
+241
+00:08:58,880 --> 00:09:01,310
+these predicates is through these
+
+242
+00:09:01,310 --> 00:09:03,290
+expression trees and the way to think
+
+243
+00:09:03,290 --> 00:09:05,449
+about this is that the the day to day
+
+244
+00:09:05,449 --> 00:09:07,790
+system will enter the root and invoke
+
+245
+00:09:07,790 --> 00:09:09,380
+whatever this operator is and say hey I
+
+246
+00:09:09,380 --> 00:09:11,060
+want to evaluate this expression tree
+
+247
+00:09:11,060 --> 00:09:12,740
+from the root and then it and then has
+
+248
+00:09:12,740 --> 00:09:14,630
+to now traverse down into the tree and
+
+249
+00:09:14,630 --> 00:09:16,519
+evaluate all its two children and start
+
+250
+00:09:16,519 --> 00:09:19,670
+pushing results up so say we come down
+
+251
+00:09:19,670 --> 00:09:21,529
+here we look at the equal operator we
+
+252
+00:09:21,529 --> 00:09:23,209
+start going to the left child we see
+
+253
+00:09:23,209 --> 00:09:24,500
+that expression here is a tuple
+
+254
+00:09:24,500 --> 00:09:26,899
+attribute on P dot Val so we do look up
+
+255
+00:09:26,899 --> 00:09:28,130
+at the current tubule we're looking at
+
+256
+00:09:28,130 --> 00:09:29,720
+because we're calling this you know
+
+257
+00:09:29,720 --> 00:09:31,160
+value eight predicate function for every
+
+258
+00:09:31,160 --> 00:09:33,589
+single tuple as we scan along so we say
+
+259
+00:09:33,589 --> 00:09:35,360
+alright I want B dot Val so now I gotta
+
+260
+00:09:35,360 --> 00:09:37,430
+look at my table schema and say alright
+
+261
+00:09:37,430 --> 00:09:40,370
+well the the Bao attribute is the second
+
+262
+00:09:40,370 --> 00:09:42,110
+one or the second attribute so I need I
+
+263
+00:09:42,110 --> 00:09:43,490
+know how to jump over here to get get
+
+264
+00:09:43,490 --> 00:09:45,230
+one thousand and then I produce that as
+
+265
+00:09:45,230 --> 00:09:47,240
+my output now I have to first down to
+
+266
+00:09:47,240 --> 00:09:49,190
+this this side of the tree this says I
+
+267
+00:09:49,190 --> 00:09:51,350
+want parameter 0 so I go look up my my
+
+268
+00:09:51,350 --> 00:09:53,569
+parameter array find the first one and
+
+269
+00:09:53,569 --> 00:09:56,240
+that's 99 so I get that there then this
+
+270
+00:09:56,240 --> 00:09:57,889
+is just evaluating it constant so I just
+
+271
+00:09:57,889 --> 00:09:59,690
+take one shove it up here add these
+
+272
+00:09:59,690 --> 00:10:01,880
+together I get a thousand then now I can
+
+273
+00:10:01,880 --> 00:10:05,839
+do my I can do my comparison and the
+
+274
+00:10:05,839 --> 00:10:08,209
+result is true so again I had to
+
+275
+00:10:08,209 --> 00:10:10,100
+traverse this tree for every single
+
+276
+00:10:10,100 --> 00:10:11,839
+tuple that I evaluate so have a billion
+
+277
+00:10:11,839 --> 00:10:15,199
+tuples I'm making one billion times you
+
+278
+00:10:15,199 --> 00:10:18,290
+know whatever for for jumps for for all
+
+279
+00:10:18,290 --> 00:10:19,430
+these different expressions you know
+
+280
+00:10:19,430 --> 00:10:21,529
+function calls and we're doing this
+
+281
+00:10:21,529 --> 00:10:23,690
+because again as humans it's easy for us
+
+282
+00:10:23,690 --> 00:10:25,819
+to reason about how to represent the
+
+283
+00:10:25,819 --> 00:10:27,620
+where clause through this tree but again
+
+284
+00:10:27,620 --> 00:10:29,360
+that's gonna be slow because because you
+
+285
+00:10:29,360 --> 00:10:32,420
+know all this indirection so this is
+
+286
+00:10:32,420 --> 00:10:34,550
+what again just these two things of oida
+
+287
+00:10:34,550 --> 00:10:37,310
+ng that that the interpretation of the
+
+288
+00:10:37,310 --> 00:10:38,990
+query plan to deal with all the in
+
+289
+00:10:38,990 --> 00:10:40,699
+direction of the different operators as
+
+290
+00:10:40,699 --> 00:10:42,860
+well as the predicate so we're at the
+
+291
+00:10:42,860 --> 00:10:44,779
+value eight inside those operators are
+
+292
+00:10:44,779 --> 00:10:47,110
+the main two things we're gonna try to
+
+293
+00:10:47,110 --> 00:10:51,730
+get rid of through Co specialization so
+
+294
+00:10:53,019 --> 00:10:55,069
+all right so again the idea is that
+
+295
+00:10:55,069 --> 00:10:58,160
+anytime we have a CPU intensive task in
+
+296
+00:10:58,160 --> 00:11:00,860
+our database we want to then convert it
+
+297
+00:11:00,860 --> 00:11:05,269
+or compile it into machine code that can
+
+298
+00:11:05,269 --> 00:11:06,949
+then we can exude directly so it's like
+
+299
+00:11:06,949 --> 00:11:08,060
+again
+
+300
+00:11:08,060 --> 00:11:09,290
+roll the switch demons would get rolling
+
+301
+00:11:09,290 --> 00:11:11,210
+if clauses other than you know checking
+
+302
+00:11:11,210 --> 00:11:12,380
+where the predicate evaluates to true
+
+303
+00:11:12,380 --> 00:11:14,570
+and it comes down we stripped down to be
+
+304
+00:11:14,570 --> 00:11:17,780
+exactly what the the query wants with
+
+305
+00:11:17,780 --> 00:11:20,780
+minimal lookups in in directions so I've
+
+306
+00:11:20,780 --> 00:11:22,850
+already shown how to do this for access
+
+307
+00:11:22,850 --> 00:11:24,860
+methods or evaluate predicates or
+
+308
+00:11:24,860 --> 00:11:27,290
+operated execution we can also do it for
+
+309
+00:11:27,290 --> 00:11:29,060
+store procedures or prepared statements
+
+310
+00:11:29,060 --> 00:11:31,430
+right with the logic appeal sequel we
+
+311
+00:11:31,430 --> 00:11:35,300
+can then convert into machine code only
+
+312
+00:11:35,300 --> 00:11:37,430
+Oracle really does this predicate
+
+313
+00:11:37,430 --> 00:11:39,200
+valuation we also solve other parts of
+
+314
+00:11:39,200 --> 00:11:40,850
+the system like logging operations like
+
+315
+00:11:40,850 --> 00:11:42,950
+on recovery if I had to replay these log
+
+316
+00:11:42,950 --> 00:11:44,690
+records rather than me looking at the
+
+317
+00:11:44,690 --> 00:11:46,670
+schema and then having indirection to
+
+318
+00:11:46,670 --> 00:11:48,890
+say oh my schema my log record has these
+
+319
+00:11:48,890 --> 00:11:51,230
+types and these values therefore I'd
+
+320
+00:11:51,230 --> 00:11:52,670
+know how to apply them to the database I
+
+321
+00:11:52,670 --> 00:11:55,190
+could compile or coach but I have Co
+
+322
+00:11:55,190 --> 00:11:58,070
+specialization methods applied to making
+
+323
+00:11:58,070 --> 00:12:00,560
+recovery work faster no Davison actually
+
+324
+00:12:00,560 --> 00:12:02,900
+does this one predicate evaluation is in
+
+325
+00:12:02,900 --> 00:12:04,700
+is probably the most common followed by
+
+326
+00:12:04,700 --> 00:12:06,530
+a Pareto access methods operatic
+
+327
+00:12:06,530 --> 00:12:08,480
+extrusion and then it's only a few
+
+328
+00:12:08,480 --> 00:12:10,190
+number systems actually do this and this
+
+329
+00:12:10,190 --> 00:12:11,630
+is actually something we're exploring it
+
+330
+00:12:11,630 --> 00:12:15,470
+in our own system right so I've already
+
+331
+00:12:15,470 --> 00:12:16,610
+said this before but why we want to do
+
+332
+00:12:16,610 --> 00:12:19,040
+this well we can do this because we know
+
+333
+00:12:19,040 --> 00:12:20,720
+what the attributes are in our in our
+
+334
+00:12:20,720 --> 00:12:23,030
+database ahead of time right and the
+
+335
+00:12:23,030 --> 00:12:24,290
+relational model you get to declare a
+
+336
+00:12:24,290 --> 00:12:26,360
+schema so it's not like we're looking at
+
+337
+00:12:26,360 --> 00:12:28,610
+arbitrary JSON fields or arbitrary CSV
+
+338
+00:12:28,610 --> 00:12:29,060
+files
+
+339
+00:12:29,060 --> 00:12:31,370
+we know exactly what the schema looks
+
+340
+00:12:31,370 --> 00:12:33,950
+like we know exactly what the size of
+
+341
+00:12:33,950 --> 00:12:36,050
+the data is that varchars have to be
+
+342
+00:12:36,050 --> 00:12:37,310
+treated differently but at least we know
+
+343
+00:12:37,310 --> 00:12:39,320
+that we have a fixed size pointer to
+
+344
+00:12:39,320 --> 00:12:41,390
+that large arm so therefore we can
+
+345
+00:12:41,390 --> 00:12:43,400
+instead of having all these function
+
+346
+00:12:43,400 --> 00:12:45,110
+calls to do lookups and say you know
+
+347
+00:12:45,110 --> 00:12:46,850
+give me the you know I want this
+
+348
+00:12:46,850 --> 00:12:48,530
+attribute from this tuple and therefore
+
+349
+00:12:48,530 --> 00:12:49,910
+I jump into this function that knows how
+
+350
+00:12:49,910 --> 00:12:51,380
+to do the arithmetic to find the value
+
+351
+00:12:51,380 --> 00:12:53,660
+I'm looking for I guess in line directly
+
+352
+00:12:53,660 --> 00:12:57,260
+the address math to go get exactly the
+
+353
+00:12:57,260 --> 00:13:00,440
+data that I'm looking for likewise we
+
+354
+00:13:00,440 --> 00:13:01,820
+all that predicates are known ahead of
+
+355
+00:13:01,820 --> 00:13:03,320
+time because we're given the where
+
+356
+00:13:03,320 --> 00:13:05,570
+clauses or we're given whatever whatever
+
+357
+00:13:05,570 --> 00:13:07,190
+is in our projection list so we know
+
+358
+00:13:07,190 --> 00:13:10,010
+exactly how to then instead of
+
+359
+00:13:10,010 --> 00:13:11,450
+representing it as a tree we can
+
+360
+00:13:11,450 --> 00:13:14,810
+represent exactly to be the the
+
+361
+00:13:14,810 --> 00:13:15,770
+you know the predicate that we're
+
+362
+00:13:15,770 --> 00:13:18,020
+actually trying to apply and then
+
+363
+00:13:18,020 --> 00:13:19,520
+likewise we want to get rid of all the
+
+364
+00:13:19,520 --> 00:13:21,800
+function calls we have inside loops so
+
+365
+00:13:21,800 --> 00:13:23,390
+that we have this tight kernel that we
+
+366
+00:13:23,390 --> 00:13:25,010
+don't then doing any branching inside of
+
+367
+00:13:25,010 --> 00:13:27,290
+it we iterate very quickly over and over
+
+368
+00:13:27,290 --> 00:13:28,580
+again and this with some benefits from
+
+369
+00:13:28,580 --> 00:13:30,350
+the compiler in this case because you
+
+370
+00:13:30,350 --> 00:13:32,300
+can do some unrolling and in some cases
+
+371
+00:13:32,300 --> 00:13:34,100
+it could can do some auto vectorization
+
+372
+00:13:34,100 --> 00:13:36,290
+which we'll cover on on Wednesday all
+
+373
+00:13:36,290 --> 00:13:39,650
+right all right so at a high level of
+
+374
+00:13:39,650 --> 00:13:41,120
+the DAT a system that we're talking
+
+375
+00:13:41,120 --> 00:13:42,620
+right now looks like this so I haven't
+
+376
+00:13:42,620 --> 00:13:43,760
+shared this picture before but this is
+
+377
+00:13:43,760 --> 00:13:45,260
+basically the pipeline within a real
+
+378
+00:13:45,260 --> 00:13:47,750
+database system of when a query shows up
+
+379
+00:13:47,750 --> 00:13:49,580
+right so say there's a networking layer
+
+380
+00:13:49,580 --> 00:13:51,350
+here at sequel query shows up first
+
+381
+00:13:51,350 --> 00:13:53,150
+thing we're to parse the sequel and from
+
+382
+00:13:53,150 --> 00:13:54,500
+the part sequel we get an abstract
+
+383
+00:13:54,500 --> 00:13:56,810
+syntax tree this is just the tokens like
+
+384
+00:13:56,810 --> 00:13:58,970
+to select the names by all the strings
+
+385
+00:13:58,970 --> 00:14:00,850
+that are inside the the Siebel itself
+
+386
+00:14:00,850 --> 00:14:03,320
+then we run this into our binder and the
+
+387
+00:14:03,320 --> 00:14:05,150
+binder does a lookup in the catalog to
+
+388
+00:14:05,150 --> 00:14:07,790
+replace the the string tokens of the
+
+389
+00:14:07,790 --> 00:14:09,230
+names of objects in the database with
+
+390
+00:14:09,230 --> 00:14:11,870
+internal identifiers like so if my table
+
+391
+00:14:11,870 --> 00:14:14,480
+is called foo the abstracts index tree
+
+392
+00:14:14,480 --> 00:14:16,340
+we'll see Oh someone's doing lookup on
+
+393
+00:14:16,340 --> 00:14:18,620
+something called foo I do look up my
+
+394
+00:14:18,620 --> 00:14:20,570
+catalogue say well foo corresponds to
+
+395
+00:14:20,570 --> 00:14:21,740
+this table and here's an internal
+
+396
+00:14:21,740 --> 00:14:23,510
+identifier to allow you to find it more
+
+397
+00:14:23,510 --> 00:14:26,060
+quickly in the future so then you pass
+
+398
+00:14:26,060 --> 00:14:29,060
+along now this annotated ast into our
+
+399
+00:14:29,060 --> 00:14:30,860
+query optimizer which then is going to
+
+400
+00:14:30,860 --> 00:14:33,410
+come generate a physical plan but there
+
+401
+00:14:33,410 --> 00:14:34,850
+could be more steps we'll see this later
+
+402
+00:14:34,850 --> 00:14:36,440
+in the semester but for our purposes
+
+403
+00:14:36,440 --> 00:14:37,760
+today we only care about that the
+
+404
+00:14:37,760 --> 00:14:39,410
+optimizer generates a physical plan
+
+405
+00:14:39,410 --> 00:14:41,870
+which we then now feed in some to some
+
+406
+00:14:41,870 --> 00:14:45,140
+compiler or the trance flyer or the the
+
+407
+00:14:45,140 --> 00:14:46,490
+cogent engine whatever you want to call
+
+408
+00:14:46,490 --> 00:14:48,200
+this that's going to take the physical
+
+409
+00:14:48,200 --> 00:14:50,060
+plan which is going to be those of that
+
+410
+00:14:50,060 --> 00:14:52,220
+operator tree and then it's gonna spit
+
+411
+00:14:52,220 --> 00:14:54,830
+out some kind of native code or byte
+
+412
+00:14:54,830 --> 00:14:57,350
+code that we can then interpret all
+
+413
+00:14:57,350 --> 00:14:59,240
+right so now the idea is that we take
+
+414
+00:14:59,240 --> 00:15:00,590
+the physical plan we've gotten from this
+
+415
+00:15:00,590 --> 00:15:02,990
+and we convert it into source code or
+
+416
+00:15:02,990 --> 00:15:04,880
+native code that does exactly what that
+
+417
+00:15:04,880 --> 00:15:06,650
+query wants to do without any
+
+418
+00:15:06,650 --> 00:15:07,690
+indirection
+
+419
+00:15:07,690 --> 00:15:12,140
+ok so now how you actually run this
+
+420
+00:15:12,140 --> 00:15:13,670
+compiler it's gonna vary between the
+
+421
+00:15:13,670 --> 00:15:14,810
+different systems and what this actually
+
+422
+00:15:14,810 --> 00:15:16,040
+is coming out of this thing
+
+423
+00:15:16,040 --> 00:15:17,420
+can vary to the different approaches
+
+424
+00:15:17,420 --> 00:15:19,580
+that we'll talk about today as well all
+
+425
+00:15:19,580 --> 00:15:22,790
+right so one thing I also say too is
+
+426
+00:15:22,790 --> 00:15:25,400
+like the in the cases where we are going
+
+427
+00:15:25,400 --> 00:15:28,490
+to actually compile the
+
+428
+00:15:28,490 --> 00:15:31,190
+the the physical plan into like machine
+
+429
+00:15:31,190 --> 00:15:33,110
+code that we can then link you know or
+
+430
+00:15:33,110 --> 00:15:35,230
+execute in a saturated system process
+
+431
+00:15:35,230 --> 00:15:38,270
+because we're the as us as the database
+
+432
+00:15:38,270 --> 00:15:40,010
+available where the wrongs writing this
+
+433
+00:15:40,010 --> 00:15:42,320
+this translation step we don't have to
+
+434
+00:15:42,320 --> 00:15:44,270
+have any security concerns because it's
+
+435
+00:15:44,270 --> 00:15:46,040
+not like we're taking arbitrary C code
+
+436
+00:15:46,040 --> 00:15:47,900
+from the user and running inside our
+
+437
+00:15:47,900 --> 00:15:49,730
+data system which would be stupid right
+
+438
+00:15:49,730 --> 00:15:52,190
+so because we control this step we don't
+
+439
+00:15:52,190 --> 00:15:53,870
+have to do extra security checks to make
+
+440
+00:15:53,870 --> 00:15:55,580
+sure that like we're not gonna have like
+
+441
+00:15:55,580 --> 00:15:57,410
+buffer overruns or malicious code and
+
+442
+00:15:57,410 --> 00:15:58,910
+things like that this is code that else
+
+443
+00:15:58,910 --> 00:16:00,380
+as the davison developers will spit out
+
+444
+00:16:00,380 --> 00:16:03,110
+so we we can assume it's sanitize unless
+
+445
+00:16:03,110 --> 00:16:04,700
+you know somebody on the inside tries to
+
+446
+00:16:04,700 --> 00:16:06,680
+take us down right we can assume that
+
+447
+00:16:06,680 --> 00:16:07,790
+this is safe for us to run directly
+
+448
+00:16:07,790 --> 00:16:09,529
+inside our database process and we don't
+
+449
+00:16:09,529 --> 00:16:13,370
+have to sandbox it at all we'll see when
+
+450
+00:16:13,370 --> 00:16:15,260
+we talk about UDS like in some
+
+451
+00:16:15,260 --> 00:16:18,050
+commercial systems like in Oracle for
+
+452
+00:16:18,050 --> 00:16:21,680
+example you can write UDS in NC which
+
+453
+00:16:21,680 --> 00:16:23,060
+always easy super dangerous because you
+
+454
+00:16:23,060 --> 00:16:25,790
+can jump to any address base uh you know
+
+455
+00:16:25,790 --> 00:16:27,589
+in your process so in that case they'll
+
+456
+00:16:27,589 --> 00:16:29,779
+fork off a sandbox and run it there so
+
+457
+00:16:29,779 --> 00:16:31,070
+you can't hurt the real database system
+
+458
+00:16:31,070 --> 00:16:32,600
+but again in our code we don't worry
+
+459
+00:16:32,600 --> 00:16:45,470
+about this yes question is how do I know
+
+460
+00:16:45,470 --> 00:16:48,200
+with the if I have a global data
+
+461
+00:16:48,200 --> 00:16:49,970
+structure how do I know where the global
+
+462
+00:16:49,970 --> 00:16:52,510
+data structures are in the compiled code
+
+463
+00:16:52,510 --> 00:16:57,170
+the compiled code can invoke anything in
+
+464
+00:16:57,170 --> 00:16:59,780
+the it'll get linked in with anything
+
+465
+00:16:59,780 --> 00:17:01,550
+that's running a setter data system so
+
+466
+00:17:01,550 --> 00:17:04,550
+you wouldn't want to have it like you
+
+467
+00:17:04,550 --> 00:17:07,130
+know had this arbitrary memory address
+
+468
+00:17:07,130 --> 00:17:09,020
+that has the object that you want you
+
+469
+00:17:09,020 --> 00:17:10,490
+would have a way to link it and say well
+
+470
+00:17:10,490 --> 00:17:12,079
+here's the function I could call commit
+
+471
+00:17:12,079 --> 00:17:13,400
+that can again give me access to the
+
+472
+00:17:13,400 --> 00:17:15,650
+object that I can do what I want yes
+
+473
+00:17:15,650 --> 00:17:17,329
+it's the same thing is like if it's like
+
+474
+00:17:17,329 --> 00:17:19,400
+arbitration of his boss like I can link
+
+475
+00:17:19,400 --> 00:17:21,650
+it with an existing library and be able
+
+476
+00:17:21,650 --> 00:17:23,270
+to evoke into that library it works the
+
+477
+00:17:23,270 --> 00:17:25,609
+same way like the avi of Linux or
+
+478
+00:17:25,609 --> 00:17:27,020
+whatever property system you doing
+
+479
+00:17:27,020 --> 00:17:31,310
+handles all that for you alright so
+
+480
+00:17:31,310 --> 00:17:32,720
+there's two approaches this there's
+
+481
+00:17:32,720 --> 00:17:34,970
+transpilation and and the JIT
+
+482
+00:17:34,970 --> 00:17:37,760
+compilation so translation also call it
+
+483
+00:17:37,760 --> 00:17:40,370
+source to source compilation the idea
+
+484
+00:17:40,370 --> 00:17:42,020
+here is that the day
+
+485
+00:17:42,020 --> 00:17:44,570
+a system will have specialized code that
+
+486
+00:17:44,570 --> 00:17:47,810
+admits new source code so like it'll
+
+487
+00:17:47,810 --> 00:17:50,440
+have C++ code that spits out C++ code
+
+488
+00:17:50,440 --> 00:17:53,300
+then you then run that people that that
+
+489
+00:17:53,300 --> 00:17:54,800
+new source code through a regular
+
+490
+00:17:54,800 --> 00:17:57,350
+compiler link that in and then that and
+
+491
+00:17:57,350 --> 00:17:59,030
+run that and that's that's your your
+
+492
+00:17:59,030 --> 00:18:00,920
+database that's your query and you're
+
+493
+00:18:00,920 --> 00:18:03,890
+gonna execute all right the other post
+
+494
+00:18:03,890 --> 00:18:06,500
+is a compilation where instead of
+
+495
+00:18:06,500 --> 00:18:08,420
+generating a you know direct like you
+
+496
+00:18:08,420 --> 00:18:10,340
+know higher-level source code we're
+
+497
+00:18:10,340 --> 00:18:12,110
+gonna want to generate this low-level I
+
+498
+00:18:12,110 --> 00:18:14,300
+or medium in intermediate representation
+
+499
+00:18:14,300 --> 00:18:17,300
+thing to like the LLVM ir or the JVM
+
+500
+00:18:17,300 --> 00:18:19,520
+bytecode we're gonna MIT that directly
+
+501
+00:18:19,520 --> 00:18:22,460
+and then we can then invoke that inside
+
+502
+00:18:22,460 --> 00:18:23,570
+of our data recently you can either
+
+503
+00:18:23,570 --> 00:18:26,480
+compile it or interpret it so I had a
+
+504
+00:18:26,480 --> 00:18:28,160
+high-level the end result is still gonna
+
+505
+00:18:28,160 --> 00:18:30,080
+be the same that we're going to take our
+
+506
+00:18:30,080 --> 00:18:33,010
+physical query plan and generate
+
+507
+00:18:33,010 --> 00:18:36,170
+executable code that is you know baked
+
+508
+00:18:36,170 --> 00:18:40,730
+just for that query plan whether we're
+
+509
+00:18:40,730 --> 00:18:43,430
+doing that because we generate you know
+
+510
+00:18:43,430 --> 00:18:45,830
+C++ code first or generate this little I
+
+511
+00:18:45,830 --> 00:18:49,880
+our first the the compilation time is
+
+512
+00:18:49,880 --> 00:18:51,580
+gonna differ between these two and
+
+513
+00:18:51,580 --> 00:18:53,480
+there's also software engineering
+
+514
+00:18:53,480 --> 00:18:55,790
+difference as well but at end the day it
+
+515
+00:18:55,790 --> 00:18:57,350
+still be the same thing this I mean this
+
+516
+00:18:57,350 --> 00:19:00,020
+is no interpretation of or having these
+
+517
+00:19:00,020 --> 00:19:03,050
+different lookups for for the different
+
+518
+00:19:03,050 --> 00:19:04,040
+types of indirection we could have
+
+519
+00:19:04,040 --> 00:19:06,740
+working on arbitrary data types that the
+
+520
+00:19:06,740 --> 00:19:08,960
+the query plan we're generating or it
+
+521
+00:19:08,960 --> 00:19:10,550
+comes out of a compiler is baked just
+
+522
+00:19:10,550 --> 00:19:13,820
+for that one query okay so we'll go
+
+523
+00:19:13,820 --> 00:19:19,310
+through these one by one so the one of
+
+524
+00:19:19,310 --> 00:19:22,370
+the first database systems in the modern
+
+525
+00:19:22,370 --> 00:19:23,990
+era and I'll explain what that is when
+
+526
+00:19:23,990 --> 00:19:25,670
+we talk about system are when the first
+
+527
+00:19:25,670 --> 00:19:26,960
+data system in the modern era that's
+
+528
+00:19:26,960 --> 00:19:28,430
+doing cogeneration was this thing called
+
+529
+00:19:28,430 --> 00:19:31,810
+high Q out of the university Edinboro
+
+530
+00:19:31,810 --> 00:19:34,040
+and like I said what do we do is like
+
+531
+00:19:34,040 --> 00:19:35,210
+for a given query plan that the
+
+532
+00:19:35,210 --> 00:19:38,500
+optimizer gave it it would write out a
+
+533
+00:19:38,500 --> 00:19:42,260
+C+ code that implements the X cubed plan
+
+534
+00:19:42,260 --> 00:19:45,140
+for that query and all our predicates
+
+535
+00:19:45,140 --> 00:19:46,310
+and all our type conversions are all
+
+536
+00:19:46,310 --> 00:19:48,860
+baked exactly into the query plan based
+
+537
+00:19:48,860 --> 00:19:51,770
+on what the schema is for that given
+
+538
+00:19:51,770 --> 00:19:54,440
+table and then maybe do a fork exact on
+
+539
+00:19:54,440 --> 00:19:55,550
+GCC
+
+540
+00:19:55,550 --> 00:19:57,830
+have-have GC spit out a shared object
+
+541
+00:19:57,830 --> 00:19:59,750
+the link that into our database doesn't
+
+542
+00:19:59,750 --> 00:20:02,720
+process and then we just invoke that to
+
+543
+00:20:02,720 --> 00:20:04,070
+execute the query so the way to think
+
+544
+00:20:04,070 --> 00:20:06,830
+about this is the the source code were
+
+545
+00:20:06,830 --> 00:20:09,320
+generating here it's gonna have a like a
+
+546
+00:20:09,320 --> 00:20:11,240
+main function but suppose that we called
+
+547
+00:20:11,240 --> 00:20:12,410
+name it's gonna have a function that
+
+548
+00:20:12,410 --> 00:20:15,800
+that the name is known and has the the
+
+549
+00:20:15,800 --> 00:20:17,690
+parameter signature is known to the
+
+550
+00:20:17,690 --> 00:20:19,790
+database system so when you get the
+
+551
+00:20:19,790 --> 00:20:21,140
+shared object and want to invoke the
+
+552
+00:20:21,140 --> 00:20:23,720
+query you know you just call that one
+
+553
+00:20:23,720 --> 00:20:25,250
+function then it spits back whatever
+
+554
+00:20:25,250 --> 00:20:28,550
+whatever the result is right so as well
+
+555
+00:20:28,550 --> 00:20:29,870
+seems to go along you're obviously gonna
+
+556
+00:20:29,870 --> 00:20:32,390
+pay a big penalty for in performance for
+
+557
+00:20:32,390 --> 00:20:34,760
+having to fork exact GCC because that's
+
+558
+00:20:34,760 --> 00:20:36,260
+firing up another process there's a
+
+559
+00:20:36,260 --> 00:20:38,420
+context which GCC wants to read its own
+
+560
+00:20:38,420 --> 00:20:39,680
+config files and if you're doing this
+
+561
+00:20:39,680 --> 00:20:40,730
+for every single query over never again
+
+562
+00:20:40,730 --> 00:20:43,070
+it's gonna be slow and this is what the
+
+563
+00:20:43,070 --> 00:20:45,070
+JIT compilation is gonna solve
+
+564
+00:20:45,070 --> 00:20:49,790
+let's see roughly how this works so we
+
+565
+00:20:49,790 --> 00:20:52,640
+have our query here select star from a
+
+566
+00:20:52,640 --> 00:20:54,110
+where a dot Val equals question mark
+
+567
+00:20:54,110 --> 00:20:58,340
+plus one so for the interpreted plan
+
+568
+00:20:58,340 --> 00:21:01,130
+it's that you know the sort of for loop
+
+569
+00:21:01,130 --> 00:21:02,450
+that I showed before in the first
+
+570
+00:21:02,450 --> 00:21:04,840
+example right we're gonna warn as
+
+571
+00:21:04,840 --> 00:21:07,880
+iterate over every single tuple for the
+
+572
+00:21:07,880 --> 00:21:09,380
+new tuples we have gave it to one I give
+
+573
+00:21:09,380 --> 00:21:10,670
+an offset of that way in our private
+
+574
+00:21:10,670 --> 00:21:13,340
+predicate and then admit its output so
+
+575
+00:21:13,340 --> 00:21:14,840
+in the first step here when we invoke
+
+576
+00:21:14,840 --> 00:21:17,360
+this function what it has to do is go
+
+577
+00:21:17,360 --> 00:21:19,040
+look in the catalog and figure out what
+
+578
+00:21:19,040 --> 00:21:21,290
+the the schema looks like for the table
+
+579
+00:21:21,290 --> 00:21:23,020
+then you got to calculate the offset
+
+580
+00:21:23,020 --> 00:21:25,280
+based on the tuple size so I know that
+
+581
+00:21:25,280 --> 00:21:26,840
+jump to the block and up to the fixed
+
+582
+00:21:26,840 --> 00:21:28,910
+like offset and then I return the
+
+583
+00:21:28,910 --> 00:21:30,920
+pointer to the tuple now you can cash
+
+584
+00:21:30,920 --> 00:21:32,660
+this first one here you can try to avoid
+
+585
+00:21:32,660 --> 00:21:34,940
+having to go get the schema every single
+
+586
+00:21:34,940 --> 00:21:37,100
+time but these other ones here you still
+
+587
+00:21:37,100 --> 00:21:39,560
+have to do but now the big cost is gonna
+
+588
+00:21:39,560 --> 00:21:40,880
+be an hour and when we valid our
+
+589
+00:21:40,880 --> 00:21:42,080
+predicate because now we've got to
+
+590
+00:21:42,080 --> 00:21:44,810
+traverse that expression tree and pull
+
+591
+00:21:44,810 --> 00:21:46,490
+all the values up and see whether it
+
+592
+00:21:46,490 --> 00:21:48,710
+returns true or false and then if so
+
+593
+00:21:48,710 --> 00:21:53,390
+then we made our tuple all right so what
+
+594
+00:21:53,390 --> 00:21:55,910
+haiku is gonna do is have a template a
+
+595
+00:21:55,910 --> 00:21:59,300
+plan where the this is all Python but
+
+596
+00:21:59,300 --> 00:22:00,800
+they're doing this they're doing their
+
+597
+00:22:00,800 --> 00:22:03,650
+temples in C++ where they know that they
+
+598
+00:22:03,650 --> 00:22:06,050
+have to do an iteration or scan over a
+
+599
+00:22:06,050 --> 00:22:09,140
+over a table and
+
+600
+00:22:09,140 --> 00:22:11,030
+that's really gonna be different is what
+
+601
+00:22:11,030 --> 00:22:12,350
+are the the predicates are there
+
+602
+00:22:12,350 --> 00:22:14,090
+different values you're gonna have to
+
+603
+00:22:14,090 --> 00:22:17,270
+substitute you know when you want to
+
+604
+00:22:17,270 --> 00:22:19,520
+evaluate the scan right so the tuple
+
+605
+00:22:19,520 --> 00:22:20,870
+size the predicates offset and the
+
+606
+00:22:20,870 --> 00:22:22,340
+parameter value like these are the
+
+607
+00:22:22,340 --> 00:22:24,650
+things that are going to be told to us
+
+608
+00:22:24,650 --> 00:22:26,570
+when we invoke the query but everything
+
+609
+00:22:26,570 --> 00:22:29,360
+else the predicate will change you know
+
+610
+00:22:29,360 --> 00:22:30,980
+could change from one core to the next
+
+611
+00:22:30,980 --> 00:22:32,300
+but everything else is with me always
+
+612
+00:22:32,300 --> 00:22:34,940
+the same from one scan the next so now
+
+613
+00:22:34,940 --> 00:22:36,140
+all I need to do is take these values
+
+614
+00:22:36,140 --> 00:22:40,580
+and take this template and just the cat
+
+615
+00:22:40,580 --> 00:22:42,530
+one time it'll fill these things in for
+
+616
+00:22:42,530 --> 00:22:45,170
+me this one here I just check to see
+
+617
+00:22:45,170 --> 00:22:46,250
+where that values are true or not the
+
+618
+00:22:46,250 --> 00:22:48,380
+same thing I just get it from here and
+
+619
+00:22:48,380 --> 00:22:50,840
+then I can evaluate this so again I got
+
+620
+00:22:50,840 --> 00:22:53,660
+rid of the look up for the for the to
+
+621
+00:22:53,660 --> 00:22:55,760
+get the tuple and I got rid of the look
+
+622
+00:22:55,760 --> 00:22:57,800
+up to evaluate the predicate so I
+
+623
+00:22:57,800 --> 00:22:59,060
+removed the two functions that were
+
+624
+00:22:59,060 --> 00:23:00,770
+gonna cause us to have jumps inside of
+
+625
+00:23:00,770 --> 00:23:04,310
+our for loop and now the the the the CPU
+
+626
+00:23:04,310 --> 00:23:05,990
+can can iterate through this for that
+
+627
+00:23:05,990 --> 00:23:11,360
+very quickly yes how how were using the
+
+628
+00:23:11,360 --> 00:23:18,080
+credit the predicate offset so it's
+
+629
+00:23:18,080 --> 00:23:19,820
+we're the so we have to get the
+
+630
+00:23:19,820 --> 00:23:21,710
+predicate offset is what attribute in
+
+631
+00:23:21,710 --> 00:23:23,380
+the and the tuple do I want to evaluate
+
+632
+00:23:23,380 --> 00:23:27,830
+so I would have to know I want I went
+
+633
+00:23:27,830 --> 00:23:30,770
+before was a B dot value so so this will
+
+634
+00:23:30,770 --> 00:23:32,420
+tell me and what offset the two boys
+
+635
+00:23:32,420 --> 00:23:53,810
+beat yes oh yeah this predicate because
+
+636
+00:23:53,810 --> 00:23:57,400
+I because what do you mean look I know
+
+637
+00:24:00,310 --> 00:24:02,480
+correct so it's quite here it's question
+
+638
+00:24:02,480 --> 00:24:06,230
+is how did I convert a bow into question
+
+639
+00:24:06,230 --> 00:24:08,330
+mark plus one how do I convert that into
+
+640
+00:24:08,330 --> 00:24:12,140
+this so the I had to make a pass through
+
+641
+00:24:12,140 --> 00:24:13,490
+the query plan that comes out of the
+
+642
+00:24:13,490 --> 00:24:15,200
+optimizer and figure out what what is
+
+643
+00:24:15,200 --> 00:24:16,220
+the predicate is that it's actually
+
+644
+00:24:16,220 --> 00:24:18,590
+doing and I convert the expression tree
+
+645
+00:24:18,590 --> 00:24:20,900
+into this line here so you may think
+
+646
+00:24:20,900 --> 00:24:22,669
+well isn't that doing
+
+647
+00:24:22,669 --> 00:24:25,399
+look up you'll have a billion two bowls
+
+648
+00:24:25,399 --> 00:24:28,129
+I only do that once right whereas this
+
+649
+00:24:28,129 --> 00:24:29,269
+case here you have to do it a billion
+
+650
+00:24:29,269 --> 00:24:33,019
+times right so it should be obvious why
+
+651
+00:24:33,019 --> 00:24:34,549
+again why does this is gonna be a big
+
+652
+00:24:34,549 --> 00:24:36,769
+win for us because everything's baked in
+
+653
+00:24:36,769 --> 00:24:38,989
+there's no additional lookups and we can
+
+654
+00:24:38,989 --> 00:24:40,309
+just iterate very quickly over every
+
+655
+00:24:40,309 --> 00:24:41,989
+single tuple evaluate our predicate and
+
+656
+00:24:41,989 --> 00:24:50,749
+produce the output yes so this question
+
+657
+00:24:50,749 --> 00:24:53,389
+is how is this like for the predicate
+
+658
+00:24:53,389 --> 00:25:04,940
+the whole thing yeah correct
+
+659
+00:25:04,940 --> 00:25:07,700
+we'll get there so his question is in my
+
+660
+00:25:07,700 --> 00:25:10,090
+example here when the query shows up
+
+661
+00:25:10,090 --> 00:25:12,499
+it's gonna generate this this this
+
+662
+00:25:12,499 --> 00:25:14,659
+structure every single time so if I
+
+663
+00:25:14,659 --> 00:25:16,549
+actually in theory if I know doning
+
+664
+00:25:16,549 --> 00:25:18,109
+query plan cashing it back to the same
+
+665
+00:25:18,109 --> 00:25:19,909
+query over again it's gonna pre generate
+
+666
+00:25:19,909 --> 00:25:20,960
+this thing open over again
+
+667
+00:25:20,960 --> 00:25:22,820
+compile it over and over again and so
+
+668
+00:25:22,820 --> 00:25:24,889
+couldn't you recognize that oh well I
+
+669
+00:25:24,889 --> 00:25:26,299
+only have to do so many things in a
+
+670
+00:25:26,299 --> 00:25:27,529
+database of some light like there's only
+
+671
+00:25:27,529 --> 00:25:30,799
+so many predicates sigh you know equals
+
+672
+00:25:30,799 --> 00:25:32,659
+less than greater than there's only in
+
+673
+00:25:32,659 --> 00:25:34,489
+the forum's there's only so many things
+
+674
+00:25:34,489 --> 00:25:36,619
+I'm gonna do execute a query could I
+
+675
+00:25:36,619 --> 00:25:38,289
+need to pre generate all those
+
+676
+00:25:38,289 --> 00:25:40,070
+primitives is the word I'll actually use
+
+677
+00:25:40,070 --> 00:25:43,220
+and in that way at runtime I don't have
+
+678
+00:25:43,220 --> 00:25:45,950
+to generate C++ code I just invoke these
+
+679
+00:25:45,950 --> 00:25:46,519
+functions directly
+
+680
+00:25:46,519 --> 00:25:48,379
+that's what vector wise does we'll see
+
+681
+00:25:48,379 --> 00:25:49,909
+that in later in the class
+
+682
+00:25:49,909 --> 00:25:51,559
+yes that's actual what we do in our
+
+683
+00:25:51,559 --> 00:25:56,779
+system especially the number of
+
+684
+00:25:56,779 --> 00:25:58,159
+predicates dependent on the depth of the
+
+685
+00:25:58,159 --> 00:26:01,519
+tree but I think his point is like say
+
+686
+00:26:01,519 --> 00:26:02,779
+like what am I doing here
+
+687
+00:26:02,779 --> 00:26:07,539
+Val equals something right and so
+
+688
+00:26:07,539 --> 00:26:10,429
+instead of having again having a
+
+689
+00:26:10,429 --> 00:26:12,200
+function instead of having this if calls
+
+690
+00:26:12,200 --> 00:26:16,070
+here to do this I could have a function
+
+691
+00:26:16,070 --> 00:26:18,259
+says take two integers check to see
+
+692
+00:26:18,259 --> 00:26:19,909
+whether they're equal and pre-compiled
+
+693
+00:26:19,909 --> 00:26:22,210
+that
+
+694
+00:26:25,870 --> 00:26:29,030
+nobody but you decompose them right to
+
+695
+00:26:29,030 --> 00:26:31,570
+like just like the conjunction clauses
+
+696
+00:26:31,570 --> 00:26:35,920
+no now it's an array it's not a tree a
+
+697
+00:26:35,920 --> 00:26:38,660
+equals one and B equals two and C equals
+
+698
+00:26:38,660 --> 00:26:40,070
+three each of those ones could be a
+
+699
+00:26:40,070 --> 00:26:41,390
+function called you know something
+
+700
+00:26:41,390 --> 00:26:44,390
+equals something and I invoke them in an
+
+701
+00:26:44,390 --> 00:26:45,860
+array one after another I don't want to
+
+702
+00:26:45,860 --> 00:27:01,970
+traverse any tree one we the
+
+703
+00:27:01,970 --> 00:27:03,560
+vectorization was about when we have a
+
+704
+00:27:03,560 --> 00:27:06,950
+better wise but like well gets in a
+
+705
+00:27:06,950 --> 00:27:09,140
+second the compilation cost is what's
+
+706
+00:27:09,140 --> 00:27:11,390
+gonna kill this approach it right so if
+
+707
+00:27:11,390 --> 00:27:13,850
+you don't have to now compile something
+
+708
+00:27:13,850 --> 00:27:15,500
+equals something every single time you
+
+709
+00:27:15,500 --> 00:27:17,300
+execute a query and his example can you
+
+710
+00:27:17,300 --> 00:27:19,550
+catch that or the copilot wants in this
+
+711
+00:27:19,550 --> 00:27:23,570
+link it yes yes this what vector buys
+
+712
+00:27:23,570 --> 00:27:35,030
+does all right right so related his
+
+713
+00:27:35,030 --> 00:27:37,370
+question is well how can my generate
+
+714
+00:27:37,370 --> 00:27:39,890
+query code invoke and touch other parts
+
+715
+00:27:39,890 --> 00:27:40,910
+of the system if I don't know where the
+
+716
+00:27:40,910 --> 00:27:42,890
+memory addresses is again well this is
+
+717
+00:27:42,890 --> 00:27:45,320
+just Cephas loss code we're gonna link
+
+718
+00:27:45,320 --> 00:27:47,720
+it in with our database system shared
+
+719
+00:27:47,720 --> 00:27:50,630
+object so if we expose an API it allow
+
+720
+00:27:50,630 --> 00:27:52,520
+you to go get access to the internal
+
+721
+00:27:52,520 --> 00:27:54,890
+components of our database system then
+
+722
+00:27:54,890 --> 00:27:58,400
+our our you know our cogent query plan
+
+723
+00:27:58,400 --> 00:28:00,170
+could invoke and touch those things as
+
+724
+00:28:00,170 --> 00:28:00,560
+well
+
+725
+00:28:00,560 --> 00:28:02,870
+I said like if I need to access that
+
+726
+00:28:02,870 --> 00:28:04,700
+like transaction manager I have a
+
+727
+00:28:04,700 --> 00:28:06,320
+function that says you know for my
+
+728
+00:28:06,320 --> 00:28:08,330
+current execution contact give me my
+
+729
+00:28:08,330 --> 00:28:10,970
+transaction manager and now my my on the
+
+730
+00:28:10,970 --> 00:28:13,700
+on the fly code can invoke that and you
+
+731
+00:28:13,700 --> 00:28:14,720
+know check to see whether it's a lot of
+
+732
+00:28:14,720 --> 00:28:16,880
+commit or not things like that so it's
+
+733
+00:28:16,880 --> 00:28:19,370
+almost as if like it's just the same
+
+734
+00:28:19,370 --> 00:28:20,930
+thing as the coab you'd write in our
+
+735
+00:28:20,930 --> 00:28:23,780
+database system but we're writing this
+
+736
+00:28:23,780 --> 00:28:26,090
+and compiling it on the fly at runtime
+
+737
+00:28:26,090 --> 00:28:28,490
+so us as the data system developers we
+
+738
+00:28:28,490 --> 00:28:29,660
+don't know exactly whatever query is
+
+739
+00:28:29,660 --> 00:28:33,110
+going to show up but we can still do you
+
+740
+00:28:33,110 --> 00:28:35,030
+know we can still invoke the pieces of
+
+741
+00:28:35,030 --> 00:28:35,879
+the system and actually make it
+
+742
+00:28:35,879 --> 00:28:40,589
+happen right so this this is this this
+
+743
+00:28:40,589 --> 00:28:44,849
+can be problematic in a and a JIT system
+
+744
+00:28:44,849 --> 00:28:46,949
+LLVM because of its c++ then you have
+
+745
+00:28:46,949 --> 00:28:48,959
+these mangled pass to the functions like
+
+746
+00:28:48,959 --> 00:28:50,039
+if you ever looked at else people plus
+
+747
+00:28:50,039 --> 00:28:51,899
+what the functions actually look like
+
+748
+00:28:51,899 --> 00:28:53,339
+when you when you look at their names
+
+749
+00:28:53,339 --> 00:28:56,339
+like in gdb unless they do on mangling
+
+750
+00:28:56,339 --> 00:28:57,749
+you know these long strings with like
+
+751
+00:28:57,749 --> 00:28:59,459
+the class name and like the function
+
+752
+00:28:59,459 --> 00:29:02,009
+name and things like that if that can
+
+753
+00:29:02,009 --> 00:29:03,779
+get a bit gnarly so you need to you need
+
+754
+00:29:03,779 --> 00:29:07,199
+a way to bridge in to do the Davison to
+
+755
+00:29:07,199 --> 00:29:09,779
+do that in in their world because
+
+756
+00:29:09,779 --> 00:29:11,429
+they're generating C code it's it's not
+
+757
+00:29:11,429 --> 00:29:13,289
+an issue or steeples cuz it's not an
+
+758
+00:29:13,289 --> 00:29:14,909
+issue because they just vote the other
+
+759
+00:29:14,909 --> 00:29:16,469
+functions as if it was all being
+
+760
+00:29:16,469 --> 00:29:19,679
+compiled at the same time right the
+
+761
+00:29:19,679 --> 00:29:20,879
+other nice thing you get about this
+
+762
+00:29:20,879 --> 00:29:22,859
+translation approach is that it makes
+
+763
+00:29:22,859 --> 00:29:24,839
+debugging a lot easier because now if I
+
+764
+00:29:24,839 --> 00:29:29,279
+crash in my my my generated code I can
+
+765
+00:29:29,279 --> 00:29:31,619
+just use gdb and all my standard
+
+766
+00:29:31,619 --> 00:29:33,089
+debugging tools to figure out why I
+
+767
+00:29:33,089 --> 00:29:36,029
+crashed and that's actually a big gonna
+
+768
+00:29:36,029 --> 00:29:40,559
+be a big problem for the LLVM stuff how
+
+769
+00:29:40,559 --> 00:29:42,389
+you do it you do have to have do a
+
+770
+00:29:42,389 --> 00:29:43,739
+little extra work to figure out like
+
+771
+00:29:43,739 --> 00:29:45,539
+well what is the simplest code that
+
+772
+00:29:45,539 --> 00:29:47,190
+generated this T plus code that crashed
+
+773
+00:29:47,190 --> 00:29:49,229
+yeah that you have to make that jump in
+
+774
+00:29:49,229 --> 00:29:51,059
+at debug symbols or hints about how that
+
+775
+00:29:51,059 --> 00:29:53,219
+happened but again it's it's not as bad
+
+776
+00:29:53,219 --> 00:29:56,219
+as it is in LLVM all right so let's look
+
+777
+00:29:56,219 --> 00:29:58,709
+at some experiments that they did for
+
+778
+00:29:58,709 --> 00:30:00,419
+haiku to understand the the benefits for
+
+779
+00:30:00,419 --> 00:30:02,999
+their approach so this paper is big old
+
+780
+00:30:02,999 --> 00:30:08,039
+I think it's 2010 now but I like it a
+
+781
+00:30:08,039 --> 00:30:09,959
+lot because they they generate all
+
+782
+00:30:09,959 --> 00:30:11,489
+different variations the way you could
+
+783
+00:30:11,489 --> 00:30:12,869
+do translation or you could build a
+
+784
+00:30:12,869 --> 00:30:14,909
+davis system and they put it all in a
+
+785
+00:30:14,909 --> 00:30:16,619
+single engine and compare against all
+
+786
+00:30:16,619 --> 00:30:20,069
+them so they're gonna have five
+
+787
+00:30:20,069 --> 00:30:21,929
+different approaches so the generic
+
+788
+00:30:21,929 --> 00:30:23,789
+iterators would be like the textbook
+
+789
+00:30:23,789 --> 00:30:26,549
+implementation of a database system
+
+790
+00:30:26,549 --> 00:30:28,709
+where you have like the volcano model
+
+791
+00:30:28,709 --> 00:30:29,909
+and you're calling these functions
+
+792
+00:30:29,909 --> 00:30:31,409
+inside the four loops two by eight
+
+793
+00:30:31,409 --> 00:30:34,049
+things calling next 10x over again then
+
+794
+00:30:34,049 --> 00:30:35,639
+they're gonna have a slightly more
+
+795
+00:30:35,639 --> 00:30:36,929
+optimized version where now you have
+
+796
+00:30:36,929 --> 00:30:38,729
+iterators that are specific to the
+
+797
+00:30:38,729 --> 00:30:40,769
+different types of columns you could be
+
+798
+00:30:40,769 --> 00:30:42,179
+accessing or a trees you'd be accessing
+
+799
+00:30:42,179 --> 00:30:46,049
+in your database and you you can
+
+800
+00:30:46,049 --> 00:30:48,239
+evaluate the the predicate before you
+
+801
+00:30:48,239 --> 00:30:49,590
+pass it up to the next operator
+
+802
+00:30:49,590 --> 00:30:50,940
+the tree they are basically doing
+
+803
+00:30:50,940 --> 00:30:53,130
+predicate push down then you have these
+
+804
+00:30:53,130 --> 00:30:54,630
+hard-coded implementations where like
+
+805
+00:30:54,630 --> 00:30:56,160
+they had a grad student implement like a
+
+806
+00:30:56,160 --> 00:30:59,070
+best-effort approach with like the
+
+807
+00:30:59,070 --> 00:31:00,270
+generic iterates and predicates
+
+808
+00:31:00,270 --> 00:31:02,100
+equivalent to this one and then a more
+
+809
+00:31:02,100 --> 00:31:03,450
+optimized version that's equivalent to
+
+810
+00:31:03,450 --> 00:31:05,280
+this one but again it's like hard-coded
+
+811
+00:31:05,280 --> 00:31:06,630
+just for the query and not like a
+
+812
+00:31:06,630 --> 00:31:09,060
+general-purpose engine and then the last
+
+813
+00:31:09,060 --> 00:31:12,300
+one is what they're they're you know
+
+814
+00:31:12,300 --> 00:31:15,270
+they're source-to-source compiler code
+
+815
+00:31:15,270 --> 00:31:16,770
+generator engines gonna spit out for
+
+816
+00:31:16,770 --> 00:31:20,190
+queries the way to think about this the
+
+817
+00:31:20,190 --> 00:31:21,930
+optimist heart could one is what he was
+
+818
+00:31:21,930 --> 00:31:24,630
+asking about like can i pre compile all
+
+819
+00:31:24,630 --> 00:31:26,580
+the predicates and types ahead of time
+
+820
+00:31:26,580 --> 00:31:27,630
+and now I'm just sort of linking
+
+821
+00:31:27,630 --> 00:31:29,100
+together these different functions so
+
+822
+00:31:29,100 --> 00:31:32,310
+that's one that's what this one is so
+
+823
+00:31:32,310 --> 00:31:33,900
+for this one
+
+824
+00:31:33,900 --> 00:31:36,140
+they are running I think it's just a
+
+825
+00:31:36,140 --> 00:31:42,570
+scan or join query over to 10,000 tuple
+
+826
+00:31:42,570 --> 00:31:45,270
+tables to produce 10 million and so what
+
+827
+00:31:45,270 --> 00:31:46,560
+you see is that for the case of the
+
+828
+00:31:46,560 --> 00:31:48,240
+generic iterators the surprise it
+
+829
+00:31:48,240 --> 00:31:49,800
+performs the worst and then as you get
+
+830
+00:31:49,800 --> 00:31:52,020
+over here the the different thing about
+
+831
+00:31:52,020 --> 00:31:53,490
+my is hard-coded one of the Haiku one
+
+832
+00:31:53,490 --> 00:31:56,040
+are they're about the same because the
+
+833
+00:31:56,040 --> 00:31:59,610
+the the Haiku like engine is spitting
+
+834
+00:31:59,610 --> 00:32:01,890
+out C++ code that is roughly equivalent
+
+835
+00:32:01,890 --> 00:32:05,430
+to what the hard-coded one can do so the
+
+836
+00:32:05,430 --> 00:32:07,260
+idea now again for any arbitrary query
+
+837
+00:32:07,260 --> 00:32:08,850
+instead of me time to write code by hand
+
+838
+00:32:08,850 --> 00:32:10,740
+over and over again I can have the
+
+839
+00:32:10,740 --> 00:32:13,640
+engine generate that code directly write
+
+840
+00:32:13,640 --> 00:32:17,010
+the the other thing you point out to is
+
+841
+00:32:17,010 --> 00:32:18,390
+like we have a lot more memory stalls
+
+842
+00:32:18,390 --> 00:32:22,020
+here in the generic one just because
+
+843
+00:32:22,020 --> 00:32:24,660
+there's so much like indirection and
+
+844
+00:32:24,660 --> 00:32:25,890
+we're doing these jumps and we don't
+
+845
+00:32:25,890 --> 00:32:27,330
+know exactly what what piece of memory
+
+846
+00:32:27,330 --> 00:32:28,380
+are gonna read ahead you know ahead of
+
+847
+00:32:28,380 --> 00:32:31,350
+time whereas in these cases again the
+
+848
+00:32:31,350 --> 00:32:33,270
+for loop is super tight we can rip
+
+849
+00:32:33,270 --> 00:32:34,590
+through things very quickly and then the
+
+850
+00:32:34,590 --> 00:32:35,580
+hardware prefetcher could bring things
+
+851
+00:32:35,580 --> 00:32:40,580
+in a memory ahead of time for us yeah
+
+852
+00:32:40,580 --> 00:32:43,580
+yes
+
+853
+00:32:46,520 --> 00:32:49,970
+so it's great shame it is this basically
+
+854
+00:32:49,970 --> 00:32:51,950
+says that this argues for the case that
+
+855
+00:32:51,950 --> 00:32:55,010
+you almost never want to inline small
+
+856
+00:32:55,010 --> 00:32:57,860
+functions are not inline them for the
+
+857
+00:32:57,860 --> 00:33:00,050
+inside the for-loop kernels yes
+
+858
+00:33:00,050 --> 00:33:09,380
+how did agree with that yes yeah I think
+
+859
+00:33:09,380 --> 00:33:17,900
+for small functions yes yeah I think
+
+860
+00:33:17,900 --> 00:33:19,580
+alike if there's predicates that are
+
+861
+00:33:19,580 --> 00:33:22,340
+really expensive or really large or like
+
+862
+00:33:22,340 --> 00:33:24,670
+functions you really large but I
+
+863
+00:33:24,670 --> 00:33:27,080
+actually I think the compilers these
+
+864
+00:33:27,080 --> 00:33:28,970
+days actually do a pretty good job for
+
+865
+00:33:28,970 --> 00:33:31,100
+figuring out what the in line so in the
+
+866
+00:33:31,100 --> 00:33:32,809
+case of like haiku when is when it's
+
+867
+00:33:32,809 --> 00:33:35,030
+cogentiva source code I don't think you
+
+868
+00:33:35,030 --> 00:33:37,160
+want to put explicit like inline hints I
+
+869
+00:33:37,160 --> 00:33:38,720
+think you want the compiler do whatever
+
+870
+00:33:38,720 --> 00:33:40,190
+wants to do I think that's the sort of
+
+871
+00:33:40,190 --> 00:33:41,900
+the conventional wisdom now for C++ you
+
+872
+00:33:41,900 --> 00:33:44,059
+don't add in mine anywhere you let the
+
+873
+00:33:44,059 --> 00:33:49,700
+compiler favorite things out okay what's
+
+874
+00:33:49,700 --> 00:33:50,960
+the downside of this approach well it's
+
+875
+00:33:50,960 --> 00:33:52,460
+gonna be the compilation cost now right
+
+876
+00:33:52,460 --> 00:33:54,800
+so for this one they're gonna compile
+
+877
+00:33:54,800 --> 00:33:57,590
+with o 0 + o - o 0 basically as no
+
+878
+00:33:57,590 --> 00:34:00,290
+optimization so 2 is with the most
+
+879
+00:34:00,290 --> 00:34:01,370
+aggressive optimizations that are
+
+880
+00:34:01,370 --> 00:34:03,230
+considered to be safe and obviously
+
+881
+00:34:03,230 --> 00:34:05,270
+there's more passes when you do o - so
+
+882
+00:34:05,270 --> 00:34:07,460
+therefore the compilation time goes up
+
+883
+00:34:07,460 --> 00:34:10,609
+so this is 40 PCH right ISM this is not
+
+884
+00:34:10,609 --> 00:34:11,929
+the query execution time this is just
+
+885
+00:34:11,929 --> 00:34:13,820
+the compilation time all right so now
+
+886
+00:34:13,820 --> 00:34:16,219
+you're trying to get into problems
+
+887
+00:34:16,219 --> 00:34:19,219
+because in the case of Q 3 it's gonna
+
+888
+00:34:19,219 --> 00:34:23,000
+take me 600 milliseconds to to compile
+
+889
+00:34:23,000 --> 00:34:25,070
+it for some cases the query can be done
+
+890
+00:34:25,070 --> 00:34:27,168
+in maybe 100 milliseconds so I'm
+
+891
+00:34:27,168 --> 00:34:29,090
+spending more time doing compilation
+
+892
+00:34:29,090 --> 00:34:32,300
+than hi I'm actually you know when I'm
+
+893
+00:34:32,300 --> 00:34:33,619
+spending on actually actually didn't
+
+894
+00:34:33,619 --> 00:34:36,770
+query right so this is the this is me a
+
+895
+00:34:36,770 --> 00:34:39,918
+problem with this approach and we'll see
+
+896
+00:34:39,918 --> 00:34:41,570
+mem sequel later in this in in the class
+
+897
+00:34:41,570 --> 00:34:43,429
+but like mem Seco actually their first
+
+898
+00:34:43,429 --> 00:34:45,129
+implementation actually did this and
+
+899
+00:34:45,129 --> 00:34:47,149
+when he looked some of the early blog
+
+900
+00:34:47,149 --> 00:34:48,500
+articles which they've since from Ruby
+
+901
+00:34:48,500 --> 00:34:49,609
+you look on the archive you can still
+
+902
+00:34:49,609 --> 00:34:51,290
+find them right they would have examples
+
+903
+00:34:51,290 --> 00:34:52,639
+where like you run a query and it takes
+
+904
+00:34:52,639 --> 00:34:54,800
+one second to run even though it doesn't
+
+905
+00:34:54,800 --> 00:34:56,449
+know work because they're a fork
+
+906
+00:34:56,449 --> 00:34:59,030
+exacting GCC from there there's there's
+
+907
+00:34:59,030 --> 00:35:00,410
+the C++ code there Jen
+
+908
+00:35:00,410 --> 00:35:02,270
+for that query compiling it then linking
+
+909
+00:35:02,270 --> 00:35:04,549
+back in and run it but they did a good
+
+910
+00:35:04,549 --> 00:35:06,619
+job caching everything so that when you
+
+911
+00:35:06,619 --> 00:35:08,059
+execute the same query again and they're
+
+912
+00:35:08,059 --> 00:35:09,380
+in their examples they would show the
+
+913
+00:35:09,380 --> 00:35:10,609
+company action each time would be now
+
+914
+00:35:10,609 --> 00:35:12,859
+zero because they can just reuse that
+
+915
+00:35:12,859 --> 00:35:21,520
+binary over and over again okay so the
+
+916
+00:35:21,520 --> 00:35:23,869
+as I said the beginning the operators
+
+917
+00:35:23,869 --> 00:35:26,150
+that the way we can organize our query
+
+918
+00:35:26,150 --> 00:35:27,920
+plan tree is useful for us to reason
+
+919
+00:35:27,920 --> 00:35:30,440
+about as humans makes the code reusable
+
+920
+00:35:30,440 --> 00:35:32,150
+makes the code easily extensible but
+
+921
+00:35:32,150 --> 00:35:33,140
+it's again it's not gonna be the most
+
+922
+00:35:33,140 --> 00:35:35,030
+efficient way to executors and in case
+
+923
+00:35:35,030 --> 00:35:36,980
+the haiku stuff again even though we
+
+924
+00:35:36,980 --> 00:35:38,750
+could execute see puzzles code that
+
+925
+00:35:38,750 --> 00:35:40,970
+would be a more efficient way to execute
+
+926
+00:35:40,970 --> 00:35:43,609
+these queries it's going to be slow for
+
+927
+00:35:43,609 --> 00:35:47,539
+us to compile right a big issue also too
+
+928
+00:35:47,539 --> 00:35:48,740
+with high q-- is that they're not gonna
+
+929
+00:35:48,740 --> 00:35:50,510
+support full pipelining they're still
+
+930
+00:35:50,510 --> 00:35:52,430
+gonna generate on a per operator the
+
+931
+00:35:52,430 --> 00:35:54,829
+drink of the for loop for that one
+
+932
+00:35:54,829 --> 00:35:56,990
+operator still having a MIT function to
+
+933
+00:35:56,990 --> 00:35:58,309
+shove it up to the next operator who's
+
+934
+00:35:58,309 --> 00:36:00,619
+then is gonna have its own for loop to
+
+935
+00:36:00,619 --> 00:36:02,329
+process things now make a new predicate
+
+936
+00:36:02,329 --> 00:36:03,799
+push down so that when you do the scan
+
+937
+00:36:03,799 --> 00:36:04,849
+on the table though evaluate the
+
+938
+00:36:04,849 --> 00:36:06,559
+predicate but everything else up in the
+
+939
+00:36:06,559 --> 00:36:08,150
+query plan again it's gonna be like that
+
+940
+00:36:08,150 --> 00:36:10,609
+next call you have you know you have to
+
+941
+00:36:10,609 --> 00:36:14,660
+run your own for loop as well so to
+
+942
+00:36:14,660 --> 00:36:16,130
+understand what how we can get better
+
+943
+00:36:16,130 --> 00:36:18,079
+performance with pipelining we'll go
+
+944
+00:36:18,079 --> 00:36:20,569
+back to this three-way join query and
+
+945
+00:36:20,569 --> 00:36:22,609
+now we're gonna divide it up into lists
+
+946
+00:36:22,609 --> 00:36:25,220
+of pipelines and again a pipeline is a
+
+947
+00:36:25,220 --> 00:36:28,130
+portion of the query plan where I can
+
+948
+00:36:28,130 --> 00:36:31,039
+take a single tuple and ride it up as
+
+949
+00:36:31,039 --> 00:36:32,599
+far as I can up into the query plan
+
+950
+00:36:32,599 --> 00:36:34,789
+until I reach some point where I can't
+
+951
+00:36:34,789 --> 00:36:36,890
+continue up in the query plan until I go
+
+952
+00:36:36,890 --> 00:36:38,809
+get get the next two will get all the
+
+953
+00:36:38,809 --> 00:36:40,670
+tuples that are coming within my
+
+954
+00:36:40,670 --> 00:36:42,710
+pipeline so the easiest one to
+
+955
+00:36:42,710 --> 00:36:45,289
+understand here is a pipeline to I'm
+
+956
+00:36:45,289 --> 00:36:47,690
+scanning B then I'm applying my
+
+957
+00:36:47,690 --> 00:36:49,970
+predicate but now I want to do my
+
+958
+00:36:49,970 --> 00:36:52,190
+aggregation on the group I but I can't I
+
+959
+00:36:52,190 --> 00:36:56,059
+can't go past this this operator until I
+
+960
+00:36:56,059 --> 00:36:58,970
+get all the tuples into my hash table
+
+961
+00:36:58,970 --> 00:37:01,250
+for my aggregation because I'm computing
+
+962
+00:37:01,250 --> 00:37:03,380
+the count so I need you know what is the
+
+963
+00:37:03,380 --> 00:37:04,670
+count another more tools that I have for
+
+964
+00:37:04,670 --> 00:37:06,740
+the you know the group by clause before
+
+965
+00:37:06,740 --> 00:37:09,440
+I can pass anything up over here in the
+
+966
+00:37:09,440 --> 00:37:11,240
+case of pipeline for over here I geeks
+
+967
+00:37:11,240 --> 00:37:13,670
+can see and assuming I've already built
+
+968
+00:37:13,670 --> 00:37:14,240
+the hash
+
+969
+00:37:14,240 --> 00:37:16,880
+able to do the joins on a and B I can
+
+970
+00:37:16,880 --> 00:37:18,920
+take a single tuple write it up here
+
+971
+00:37:18,920 --> 00:37:21,860
+check to see whether it if I do the join
+
+972
+00:37:21,860 --> 00:37:24,050
+it matches yes so then I can run it up
+
+973
+00:37:24,050 --> 00:37:25,369
+here and check to see whether I can do
+
+974
+00:37:25,369 --> 00:37:28,160
+the join a and whether it matches has
+
+975
+00:37:28,160 --> 00:37:29,420
+the idea is again we can have the
+
+976
+00:37:29,420 --> 00:37:31,430
+pipeline go look cuba go far as account
+
+977
+00:37:31,430 --> 00:37:33,050
+and you know up in the and until
+
+978
+00:37:33,050 --> 00:37:37,369
+we had a pipeline breaker right so this
+
+979
+00:37:37,369 --> 00:37:39,440
+is what hyper does so hyper actually has
+
+980
+00:37:39,440 --> 00:37:40,850
+two main ideas and the paper do you guys
+
+981
+00:37:40,850 --> 00:37:42,650
+you guys read so the first is that
+
+982
+00:37:42,650 --> 00:37:45,860
+they're gonna do this push based query
+
+983
+00:37:45,860 --> 00:37:47,720
+plant or processing model but then
+
+984
+00:37:47,720 --> 00:37:50,030
+they're also going to do just in time
+
+985
+00:37:50,030 --> 00:37:54,290
+compilation of the query plan using LLVM
+
+986
+00:37:54,290 --> 00:37:58,250
+right and so when you read the paper
+
+987
+00:37:58,250 --> 00:37:59,420
+hopefully didn't read the appendix I
+
+988
+00:37:59,420 --> 00:38:00,050
+should have warned you ahead of time
+
+989
+00:38:00,050 --> 00:38:02,510
+because there's all this ll Mir I don't
+
+990
+00:38:02,510 --> 00:38:03,920
+understand it like it's not really
+
+991
+00:38:03,920 --> 00:38:05,869
+useful the core material what's actually
+
+992
+00:38:05,869 --> 00:38:07,520
+going on in the paper was was the the
+
+993
+00:38:07,520 --> 00:38:10,640
+front body of it so again what the
+
+994
+00:38:10,640 --> 00:38:11,990
+reason why they're gonna do this push
+
+995
+00:38:11,990 --> 00:38:15,200
+based model is that more than is keeping
+
+996
+00:38:15,200 --> 00:38:16,880
+things in your CPU caches now you can
+
+997
+00:38:16,880 --> 00:38:18,680
+keep tuples and values in your CPU
+
+998
+00:38:18,680 --> 00:38:20,810
+registers which is even faster than l1
+
+999
+00:38:20,810 --> 00:38:23,780
+cache so now as I as I go up the query
+
+1000
+00:38:23,780 --> 00:38:26,510
+plan in my pipeline if I'm just having
+
+1001
+00:38:26,510 --> 00:38:29,630
+the same tuple in my CP registers then
+
+1002
+00:38:29,630 --> 00:38:30,650
+that can rip through it very very
+
+1003
+00:38:30,650 --> 00:38:34,150
+quickly right
+
+1004
+00:38:35,200 --> 00:38:38,420
+the for those who don't know actually
+
+1005
+00:38:38,420 --> 00:38:40,670
+who here has heard of El Elyon before or
+
+1006
+00:38:40,670 --> 00:38:42,220
+here is not heard about him before
+
+1007
+00:38:42,220 --> 00:38:47,540
+ok perfect so LLVM is originally stance
+
+1008
+00:38:47,540 --> 00:38:48,740
+with a low-level virtual machine
+
+1009
+00:38:48,740 --> 00:38:49,880
+although you shouldn't think of it as a
+
+1010
+00:38:49,880 --> 00:38:51,320
+virtual machine like not like VirtualBox
+
+1011
+00:38:51,320 --> 00:38:55,070
+to vmware originally started at UIUC in
+
+1012
+00:38:55,070 --> 00:38:58,400
+like like 2000 or 1999 and they were
+
+1013
+00:38:58,400 --> 00:38:59,859
+trying to build a tool to investigate
+
+1014
+00:38:59,859 --> 00:39:02,510
+like dynamic compilation techniques for
+
+1015
+00:39:02,510 --> 00:39:04,520
+programming languages and they ended up
+
+1016
+00:39:04,520 --> 00:39:06,320
+building this like toolkit that's gonna
+
+1017
+00:39:06,320 --> 00:39:09,590
+have all these different that components
+
+1018
+00:39:09,590 --> 00:39:10,940
+you would need to been a full fledged
+
+1019
+00:39:10,940 --> 00:39:12,740
+compiler the idea is that rather than
+
+1020
+00:39:12,740 --> 00:39:15,140
+having a you know being compiled in
+
+1021
+00:39:15,140 --> 00:39:16,850
+filament one programming language it
+
+1022
+00:39:16,850 --> 00:39:18,109
+would sort of have different front-end
+
+1023
+00:39:18,109 --> 00:39:19,700
+plugins you can then take different
+
+1024
+00:39:19,700 --> 00:39:22,340
+programming languages build a front-end
+
+1025
+00:39:22,340 --> 00:39:23,960
+for it that can then convert it to the
+
+1026
+00:39:23,960 --> 00:39:25,700
+LMI r and then from there you can then
+
+1027
+00:39:25,700 --> 00:39:27,130
+compile the
+
+1028
+00:39:27,130 --> 00:39:30,670
+the into machine code so Apple is
+
+1029
+00:39:30,670 --> 00:39:32,619
+invested heavily in this they hired one
+
+1030
+00:39:32,619 --> 00:39:35,489
+of the main guys at a UIUC in like
+
+1031
+00:39:35,489 --> 00:39:38,729
+2004-2005 and he basically runs their
+
+1032
+00:39:38,729 --> 00:39:41,259
+you know they're all the work they do
+
+1033
+00:39:41,259 --> 00:39:42,970
+I'm clang and LLB I'm based on this all
+
+1034
+00:39:42,970 --> 00:39:45,309
+right so again what's gonna happen is we
+
+1035
+00:39:45,309 --> 00:39:46,869
+can take any arbitrary language and
+
+1036
+00:39:46,869 --> 00:39:49,150
+convert it down to this low-level IR
+
+1037
+00:39:49,150 --> 00:39:50,979
+that's gonna sort of look like assembly
+
+1038
+00:39:50,979 --> 00:39:52,960
+but it's designed specifically for the
+
+1039
+00:39:52,960 --> 00:39:54,849
+sort of the virtual machine that that
+
+1040
+00:39:54,849 --> 00:39:57,279
+that LLVM provides and then on the back
+
+1041
+00:39:57,279 --> 00:39:59,259
+end they can then compile that IR into
+
+1042
+00:39:59,259 --> 00:40:02,170
+whatever your target target is a is so
+
+1043
+00:40:02,170 --> 00:40:03,999
+that it supports x86 or support arm so
+
+1044
+00:40:03,999 --> 00:40:05,529
+you can take any arbitrary language
+
+1045
+00:40:05,529 --> 00:40:07,269
+convert it to the IR and then have it
+
+1046
+00:40:07,269 --> 00:40:10,839
+spit out to any CPU I say that uh that L
+
+1047
+00:40:10,839 --> 00:40:13,630
+of M supports right so important thing
+
+1048
+00:40:13,630 --> 00:40:16,960
+to understand though is that in the case
+
+1049
+00:40:16,960 --> 00:40:19,479
+of hyper hyper is gonna have C++ code
+
+1050
+00:40:19,479 --> 00:40:23,200
+admit L of him ir directly so haiku was
+
+1051
+00:40:23,200 --> 00:40:24,789
+tabbing seamless code generate seamless
+
+1052
+00:40:24,789 --> 00:40:26,769
+code Piper is having Steve of Cisco
+
+1053
+00:40:26,769 --> 00:40:30,579
+generate IR but the rest of the system
+
+1054
+00:40:30,579 --> 00:40:32,680
+just like in haiku does not need to be
+
+1055
+00:40:32,680 --> 00:40:35,789
+written in the same language that the
+
+1056
+00:40:35,789 --> 00:40:39,940
+that the query plan is generated in so
+
+1057
+00:40:39,940 --> 00:40:42,190
+the rest of hyper is written in C++ and
+
+1058
+00:40:42,190 --> 00:40:45,640
+it can still make also C++ code but you
+
+1059
+00:40:45,640 --> 00:40:47,559
+have to mangle the the function names
+
+1060
+00:40:47,559 --> 00:40:49,390
+the class names as I said there's you
+
+1061
+00:40:49,390 --> 00:40:51,160
+know LM doesn't do that for you were
+
+1062
+00:40:51,160 --> 00:40:53,079
+free but you can still have the IR code
+
+1063
+00:40:53,079 --> 00:40:55,690
+call in to your simplest code you still
+
+1064
+00:40:55,690 --> 00:40:57,309
+get the same benefit of everything
+
+1065
+00:40:57,309 --> 00:41:01,059
+running in the same dress base right so
+
+1066
+00:41:01,059 --> 00:41:02,319
+now let's go back to this query plan and
+
+1067
+00:41:02,319 --> 00:41:05,950
+see how we would generate a source code
+
+1068
+00:41:05,950 --> 00:41:10,059
+that would do the the push the the the
+
+1069
+00:41:10,059 --> 00:41:13,809
+push up approach in hyper so now for for
+
+1070
+00:41:13,809 --> 00:41:14,859
+these think of these of these different
+
+1071
+00:41:14,859 --> 00:41:16,210
+for loops as the different pipelines and
+
+1072
+00:41:16,210 --> 00:41:18,160
+again the idea of a pipeline is it's
+
+1073
+00:41:18,160 --> 00:41:20,890
+it's a for loop or a bunch of for loops
+
+1074
+00:41:20,890 --> 00:41:22,180
+that can take a single tuple and keep
+
+1075
+00:41:22,180 --> 00:41:24,249
+processing it as far as I can up into
+
+1076
+00:41:24,249 --> 00:41:26,229
+the query plan first so if we're doing
+
+1077
+00:41:26,229 --> 00:41:28,180
+the scale on a is just a fourth open a
+
+1078
+00:41:28,180 --> 00:41:30,069
+and then we evaluate a predicate and
+
+1079
+00:41:30,069 --> 00:41:33,640
+then we can materialize it into into our
+
+1080
+00:41:33,640 --> 00:41:36,700
+hash table right then now we do this we
+
+1081
+00:41:36,700 --> 00:41:39,579
+jump over to pipeline B we can then do
+
+1082
+00:41:39,579 --> 00:41:40,869
+scan through that ply up right
+
+1083
+00:41:40,869 --> 00:41:43,089
+get a hash-table then we can then
+
+1084
+00:41:43,089 --> 00:41:45,640
+materialize the output of the of the of
+
+1085
+00:41:45,640 --> 00:41:48,339
+the aggregation table on being but that
+
+1086
+00:41:48,339 --> 00:41:50,740
+now here in pipeline see we have three
+
+1087
+00:41:50,740 --> 00:41:51,490
+nested for-loops
+
+1088
+00:41:51,490 --> 00:41:54,009
+so we're going to take a tuple in C and
+
+1089
+00:41:54,009 --> 00:41:58,569
+then try to do a join against it in on
+
+1090
+00:41:58,569 --> 00:42:00,849
+against B and if that matches we try to
+
+1091
+00:42:00,849 --> 00:42:03,369
+do the join against it on on a and then
+
+1092
+00:42:03,369 --> 00:42:05,380
+then that that's is correct then we can
+
+1093
+00:42:05,380 --> 00:42:07,990
+we can spit it up as our output so for
+
+1094
+00:42:07,990 --> 00:42:10,839
+one tuple and C we can do the the join
+
+1095
+00:42:10,839 --> 00:42:12,309
+and a of joining B and then produce an
+
+1096
+00:42:12,309 --> 00:42:13,990
+output if necessary we don't have any
+
+1097
+00:42:13,990 --> 00:42:21,519
+switch turn up to another tuple yes his
+
+1098
+00:42:21,519 --> 00:42:23,230
+question is is is there multiple ways to
+
+1099
+00:42:23,230 --> 00:42:26,410
+generate these pipelines and if so is
+
+1100
+00:42:26,410 --> 00:42:28,059
+there always going to be an a optimal
+
+1101
+00:42:28,059 --> 00:42:30,599
+way to do this
+
+1102
+00:42:31,769 --> 00:42:34,539
+the typical optimization strategy is
+
+1103
+00:42:34,539 --> 00:42:40,599
+that you you well there's two things one
+
+1104
+00:42:40,599 --> 00:42:42,670
+is are there different ways to generate
+
+1105
+00:42:42,670 --> 00:42:44,589
+this query plan yes
+
+1106
+00:42:44,589 --> 00:42:45,819
+right cuz that's the quarry optimizer
+
+1107
+00:42:45,819 --> 00:42:48,940
+does and so from our perspective in this
+
+1108
+00:42:48,940 --> 00:42:50,769
+class we're just rying to say well the
+
+1109
+00:42:50,769 --> 00:42:53,470
+optimizer gave us a query plan how can
+
+1110
+00:42:53,470 --> 00:42:55,480
+we generate pipelines for it and in that
+
+1111
+00:42:55,480 --> 00:42:57,819
+case it's a pretty simple heuristic to
+
+1112
+00:42:57,819 --> 00:42:59,559
+decide where these pipelines that it
+
+1113
+00:42:59,559 --> 00:43:01,660
+should look like and the typically way
+
+1114
+00:43:01,660 --> 00:43:04,720
+you do this is the you start with like
+
+1115
+00:43:04,720 --> 00:43:08,319
+the left side of the tree they have any
+
+1116
+00:43:08,319 --> 00:43:10,180
+join that's a pipeline feeding to the
+
+1117
+00:43:10,180 --> 00:43:12,190
+join and then on the right side you try
+
+1118
+00:43:12,190 --> 00:43:14,079
+to have the pipeline go all the way up
+
+1119
+00:43:14,079 --> 00:43:15,970
+until you hit a head a pipeline breaker
+
+1120
+00:43:15,970 --> 00:43:19,180
+so the conversion process to introduce
+
+1121
+00:43:19,180 --> 00:43:20,619
+your question yes there's different ways
+
+1122
+00:43:20,619 --> 00:43:22,480
+I can generate get pipeline from cilium
+
+1123
+00:43:22,480 --> 00:43:24,160
+fiscal plan like I could have a pipeline
+
+1124
+00:43:24,160 --> 00:43:26,470
+in here that have a new pipeline it'd be
+
+1125
+00:43:26,470 --> 00:43:28,359
+stupid but I could do that but the
+
+1126
+00:43:28,359 --> 00:43:29,710
+heuristic to find the optimal one for a
+
+1127
+00:43:29,710 --> 00:43:32,109
+given physical plan is it's pretty
+
+1128
+00:43:32,109 --> 00:43:34,960
+straight forward the harder decision is
+
+1129
+00:43:34,960 --> 00:43:37,329
+like should I join a b or b a like all
+
+1130
+00:43:37,329 --> 00:43:41,160
+that before okay
+
+1131
+00:43:41,160 --> 00:43:44,499
+so again what hyper is doing hyper is
+
+1132
+00:43:44,499 --> 00:43:46,809
+gonna take instead of generating the
+
+1133
+00:43:46,809 --> 00:43:48,579
+pseudocode they're gonna generate the ll
+
+1134
+00:43:48,579 --> 00:43:50,999
+than ir that does exactly these steps
+
+1135
+00:43:50,999 --> 00:43:53,739
+compile this as one giant function all
+
+1136
+00:43:53,739 --> 00:43:55,060
+the pipelines to
+
+1137
+00:43:55,060 --> 00:43:57,250
+and then now it's just stages all right
+
+1138
+00:43:57,250 --> 00:43:58,420
+I'll run this for loop and when that's
+
+1139
+00:43:58,420 --> 00:44:00,220
+done now I jump to this part or just
+
+1140
+00:44:00,220 --> 00:44:01,630
+it's actually not a jump it's just you
+
+1141
+00:44:01,630 --> 00:44:03,220
+know just executing sequentially then I
+
+1142
+00:44:03,220 --> 00:44:04,930
+do the this for loop then I do that for
+
+1143
+00:44:04,930 --> 00:44:06,190
+loop and then I do this last for loop
+
+1144
+00:44:06,190 --> 00:44:10,870
+for the pipeline right so in our new
+
+1145
+00:44:10,870 --> 00:44:12,520
+system we can actually compile these
+
+1146
+00:44:12,520 --> 00:44:14,710
+pipelines separately in this version of
+
+1147
+00:44:14,710 --> 00:44:16,030
+hyper everything was compiled all at
+
+1148
+00:44:16,030 --> 00:44:18,010
+once so you had to have all the IR
+
+1149
+00:44:18,010 --> 00:44:19,390
+generated for the for the entire query
+
+1150
+00:44:19,390 --> 00:44:21,040
+plan for all your pipelines generated
+
+1151
+00:44:21,040 --> 00:44:22,960
+together and this giant function then
+
+1152
+00:44:22,960 --> 00:44:28,990
+you fire it off to two LLVM so let's
+
+1153
+00:44:28,990 --> 00:44:30,730
+look at some before Midsummer's
+
+1154
+00:44:30,730 --> 00:44:33,820
+comparing two different versions of
+
+1155
+00:44:33,820 --> 00:44:36,490
+hyper one is doing the LLM IR and then
+
+1156
+00:44:36,490 --> 00:44:38,200
+one is doing the the high Q approach
+
+1157
+00:44:38,200 --> 00:44:39,700
+where you're spitting out so Fusco and
+
+1158
+00:44:39,700 --> 00:44:42,160
+then for quiz second GCC then we have
+
+1159
+00:44:42,160 --> 00:44:43,600
+the vector wise approach which is using
+
+1160
+00:44:43,600 --> 00:44:46,240
+his precompiled predicate method that he
+
+1161
+00:44:46,240 --> 00:44:49,840
+mentioned Monet DB would generate it
+
+1162
+00:44:49,840 --> 00:44:52,000
+generates what looks like an IR but then
+
+1163
+00:44:52,000 --> 00:44:53,230
+they have an interpreter for it they
+
+1164
+00:44:53,230 --> 00:44:54,430
+don't actually compiling into machine
+
+1165
+00:44:54,430 --> 00:44:57,210
+code and then Oracle does does nothing
+
+1166
+00:44:57,210 --> 00:44:59,230
+it's just interpreting the query plan
+
+1167
+00:44:59,230 --> 00:45:00,580
+and the same way we always do it right
+
+1168
+00:45:00,580 --> 00:45:05,140
+so this is also not measuring the
+
+1169
+00:45:05,140 --> 00:45:06,640
+compilation time this is just saying
+
+1170
+00:45:06,640 --> 00:45:08,590
+like assuming I have everything compiled
+
+1171
+00:45:08,590 --> 00:45:11,260
+ahead of time how fast can I go and so
+
+1172
+00:45:11,260 --> 00:45:14,230
+because the in the case that lol M
+
+1173
+00:45:14,230 --> 00:45:16,090
+version of hyper they're doing more
+
+1174
+00:45:16,090 --> 00:45:19,990
+aggressive more pipelining right they're
+
+1175
+00:45:19,990 --> 00:45:21,910
+making sure that the pipeline is as long
+
+1176
+00:45:21,910 --> 00:45:24,220
+as possible that they can do selecting
+
+1177
+00:45:24,220 --> 00:45:26,590
+slightly better than this version and
+
+1178
+00:45:26,590 --> 00:45:28,030
+the Oracle is always going to lose again
+
+1179
+00:45:28,030 --> 00:45:28,840
+because it's always doing the
+
+1180
+00:45:28,840 --> 00:45:32,430
+interpretation right for the case of
+
+1181
+00:45:32,430 --> 00:45:36,970
+like for q1 q1 is it's it's there's no
+
+1182
+00:45:36,970 --> 00:45:38,950
+join it's a single table it's just a
+
+1183
+00:45:38,950 --> 00:45:41,590
+bunch of aggregations so that one you
+
+1184
+00:45:41,590 --> 00:45:43,360
+can do more efficiently if you coach and
+
+1185
+00:45:43,360 --> 00:45:46,480
+everything q5 is a is like five or six
+
+1186
+00:45:46,480 --> 00:45:49,570
+joins and the output is pretty simple so
+
+1187
+00:45:49,570 --> 00:45:51,700
+you don't get as much big of a benefit
+
+1188
+00:45:51,700 --> 00:45:53,740
+because the major cost in executing this
+
+1189
+00:45:53,740 --> 00:45:55,210
+query is always going to be the join
+
+1190
+00:45:55,210 --> 00:45:58,900
+that's gonna be precompiled anyway you
+
+1191
+00:45:58,900 --> 00:46:00,670
+know to probe a hash table for example
+
+1192
+00:46:00,670 --> 00:46:02,710
+invoke the hash function so in that case
+
+1193
+00:46:02,710 --> 00:46:04,240
+you're not gonna get that big of a
+
+1194
+00:46:04,240 --> 00:46:06,640
+benefit for for the gun cogent side of
+
+1195
+00:46:06,640 --> 00:46:07,770
+things
+
+1196
+00:46:07,770 --> 00:46:12,300
+all right so let's now look at the
+
+1197
+00:46:12,300 --> 00:46:14,400
+compilation cost so now this is not a
+
+1198
+00:46:14,400 --> 00:46:16,020
+true like apples to apples comparison
+
+1199
+00:46:16,020 --> 00:46:19,050
+because I'm tea I'm like taking the
+
+1200
+00:46:19,050 --> 00:46:21,360
+numbers from the haiku paper and mashing
+
+1201
+00:46:21,360 --> 00:46:24,240
+it together with the the hyper results
+
+1202
+00:46:24,240 --> 00:46:25,710
+so they're not running on the same
+
+1203
+00:46:25,710 --> 00:46:27,750
+hardware I think like the hyper guys are
+
+1204
+00:46:27,750 --> 00:46:30,150
+running on like a Z on this is running
+
+1205
+00:46:30,150 --> 00:46:31,790
+on a Core 2 Duo from like you know
+
+1206
+00:46:31,790 --> 00:46:34,800
+2008-2009 the scale factor is still the
+
+1207
+00:46:34,800 --> 00:46:37,020
+same they're still compiling the same TP
+
+1208
+00:46:37,020 --> 00:46:38,880
+CH queries it's sort of the relative
+
+1209
+00:46:38,880 --> 00:46:40,590
+difference is what matters right just
+
+1210
+00:46:40,590 --> 00:46:42,090
+because they have a slightly newer CPU
+
+1211
+00:46:42,090 --> 00:46:43,950
+you know it's not going to magically get
+
+1212
+00:46:43,950 --> 00:46:45,930
+faster so that is just showing you that
+
+1213
+00:46:45,930 --> 00:46:49,320
+not having to then parse the C++ code
+
+1214
+00:46:49,320 --> 00:46:52,320
+run through your you know your a ste and
+
+1215
+00:46:52,320 --> 00:46:54,240
+your tokenizer and then compile it as
+
+1216
+00:46:54,240 --> 00:46:56,100
+you would and GCC or clang but is
+
+1217
+00:46:56,100 --> 00:46:58,260
+emitting the IR directly then being able
+
+1218
+00:46:58,260 --> 00:47:00,030
+to run your operation pisses on that
+
+1219
+00:47:00,030 --> 00:47:02,730
+inside the LLVM that's gonna be you know
+
+1220
+00:47:02,730 --> 00:47:05,100
+orders of magnitude faster or these one
+
+1221
+00:47:05,100 --> 00:47:10,350
+order magnitude faster than then GCC so
+
+1222
+00:47:10,350 --> 00:47:13,350
+for this reason I think the the element
+
+1223
+00:47:13,350 --> 00:47:14,910
+compilation approach is the right way to
+
+1224
+00:47:14,910 --> 00:47:16,290
+go if you have a sleepless loss based
+
+1225
+00:47:16,290 --> 00:47:18,990
+engine well seem examples some Java
+
+1226
+00:47:18,990 --> 00:47:21,090
+based database systems they'll do this
+
+1227
+00:47:21,090 --> 00:47:22,380
+sort of the same thing they'll MIT Java
+
+1228
+00:47:22,380 --> 00:47:24,690
+bytecode directly instead of me know
+
+1229
+00:47:24,690 --> 00:47:27,440
+emitting Java code then compiling that
+
+1230
+00:47:27,440 --> 00:47:32,040
+ok so where is this compilation cost
+
+1231
+00:47:32,040 --> 00:47:35,730
+coming from so you know 37 milliseconds
+
+1232
+00:47:35,730 --> 00:47:38,400
+it's not as bad as 400 milliseconds but
+
+1233
+00:47:38,400 --> 00:47:42,810
+it's still a lot right my mic my query
+
+1234
+00:47:42,810 --> 00:47:44,310
+some queries can run in less than a
+
+1235
+00:47:44,310 --> 00:47:45,420
+millisecond but I takes me 37
+
+1236
+00:47:45,420 --> 00:47:47,130
+milliseconds to compile it assuming I
+
+1237
+00:47:47,130 --> 00:47:49,920
+can't cash it ahead of time then I'm not
+
+1238
+00:47:49,920 --> 00:47:52,980
+really getting any benefit so what's
+
+1239
+00:47:52,980 --> 00:47:55,619
+happening here so the issue is gonna be
+
+1240
+00:47:55,619 --> 00:47:57,150
+the compilation time is going to depend
+
+1241
+00:47:57,150 --> 00:47:59,790
+on the query size so this means the
+
+1242
+00:47:59,790 --> 00:48:01,230
+number joins we have then I'm rheticus
+
+1243
+00:48:01,230 --> 00:48:03,240
+that we have number of aggregates I just
+
+1244
+00:48:03,240 --> 00:48:05,040
+saw how complex the query is the more
+
+1245
+00:48:05,040 --> 00:48:06,630
+things we're trying to do then the
+
+1246
+00:48:06,630 --> 00:48:09,930
+compilation time is gonna go up and now
+
+1247
+00:48:09,930 --> 00:48:11,700
+it's sort of this trade-off between like
+
+1248
+00:48:11,700 --> 00:48:15,270
+well if my queries gonna run for 30
+
+1249
+00:48:15,270 --> 00:48:17,369
+seconds who cares if it took it maybe an
+
+1250
+00:48:17,369 --> 00:48:18,330
+extra second to compile because I'm
+
+1251
+00:48:18,330 --> 00:48:20,369
+still gonna get a big win in terms of
+
+1252
+00:48:20,369 --> 00:48:21,839
+performance numbers that we saw over
+
+1253
+00:48:21,839 --> 00:48:24,239
+/ Oracle but for other queries that are
+
+1254
+00:48:24,239 --> 00:48:27,390
+really fast maybe the the amount of data
+
+1255
+00:48:27,390 --> 00:48:29,279
+they need to process you can rip through
+
+1256
+00:48:29,279 --> 00:48:30,589
+very quickly because it's a calm store
+
+1257
+00:48:30,589 --> 00:48:32,609
+you know the accomplish in time could
+
+1258
+00:48:32,609 --> 00:48:35,849
+start eat eat into the extrusion time so
+
+1259
+00:48:35,849 --> 00:48:38,099
+for all to be applications this won't be
+
+1260
+00:48:38,099 --> 00:48:38,900
+an issue
+
+1261
+00:48:38,900 --> 00:48:42,359
+imma take a guess why why would we care
+
+1262
+00:48:42,359 --> 00:48:48,059
+less roll the TP says less joins yes
+
+1263
+00:48:48,059 --> 00:48:56,190
+that's one of it yes yes but as you were
+
+1264
+00:48:56,190 --> 00:48:57,749
+saying the same thing so he's saying the
+
+1265
+00:48:57,749 --> 00:48:59,339
+execute the complexity of the query is
+
+1266
+00:48:59,339 --> 00:49:01,559
+relatively easy compared to or lab it
+
+1267
+00:49:01,559 --> 00:49:03,569
+means they have less joints right so yes
+
+1268
+00:49:03,569 --> 00:49:05,819
+the oat any queries gonna be way less
+
+1269
+00:49:05,819 --> 00:49:07,469
+complex you're not gonna do a hundred
+
+1270
+00:49:07,469 --> 00:49:09,359
+table join it's gonna be like knee look
+
+1271
+00:49:09,359 --> 00:49:11,609
+up Andes record thumb from the index and
+
+1272
+00:49:11,609 --> 00:49:13,200
+go get you know some basic information
+
+1273
+00:49:13,200 --> 00:49:14,700
+and maybe do a join with a foreign key
+
+1274
+00:49:14,700 --> 00:49:17,569
+table there's another reason as well
+
+1275
+00:49:17,569 --> 00:49:19,859
+caching exactly and all the T
+
+1276
+00:49:19,859 --> 00:49:20,999
+applications weren't actually the same
+
+1277
+00:49:20,999 --> 00:49:23,369
+queries over and over again like I load
+
+1278
+00:49:23,369 --> 00:49:25,140
+the web page and Amazon they do a query
+
+1279
+00:49:25,140 --> 00:49:27,269
+lookup and the index to get my record he
+
+1280
+00:49:27,269 --> 00:49:28,920
+goes business Amazon it's the same query
+
+1281
+00:49:28,920 --> 00:49:30,930
+just a different key so you can cache
+
+1282
+00:49:30,930 --> 00:49:32,910
+that either as prepared statement or
+
+1283
+00:49:32,910 --> 00:49:34,380
+like you know pre compiled code and
+
+1284
+00:49:34,380 --> 00:49:36,359
+we've invoked that over and over again
+
+1285
+00:49:36,359 --> 00:49:40,349
+right for OLAP this this is gonna be an
+
+1286
+00:49:40,349 --> 00:49:42,329
+issue but where that trade-off is when
+
+1287
+00:49:42,329 --> 00:49:44,819
+you know if you know haven't decide oh
+
+1288
+00:49:44,819 --> 00:49:46,469
+this is good enough to compile which is
+
+1289
+00:49:46,469 --> 00:49:48,150
+just interpreting that's hard to figure
+
+1290
+00:49:48,150 --> 00:49:52,650
+out right because at the compiler level
+
+1291
+00:49:52,650 --> 00:49:53,819
+one more generate and we're doing code
+
+1292
+00:49:53,819 --> 00:49:57,329
+gen we have a rough idea how much data
+
+1293
+00:49:57,329 --> 00:49:59,579
+we're gonna access but those estimations
+
+1294
+00:49:59,579 --> 00:50:06,269
+can always be very wrong yes sorry get
+
+1295
+00:50:06,269 --> 00:50:11,729
+over him what's her and with in memory
+
+1296
+00:50:11,729 --> 00:50:14,249
+if it's in memory then it can be really
+
+1297
+00:50:14,249 --> 00:50:21,150
+fast right we can run like so the I
+
+1298
+00:50:21,150 --> 00:50:22,529
+think I think this is like scale factor
+
+1299
+00:50:22,529 --> 00:50:25,979
+one so this is like doing you know this
+
+1300
+00:50:25,979 --> 00:50:27,450
+is reading one gigabyte data in 35
+
+1301
+00:50:27,450 --> 00:50:30,809
+milliseconds so multiply it by you know
+
+1302
+00:50:30,809 --> 00:50:34,069
+whatever terabyte is 1024
+
+1303
+00:50:34,130 --> 00:50:36,390
+and memory this is an issue for disk
+
+1304
+00:50:36,390 --> 00:50:37,440
+based system the distance always going
+
+1305
+00:50:37,440 --> 00:50:39,359
+to crush you so it matters less which is
+
+1306
+00:50:39,359 --> 00:50:40,859
+part of the reason why Oracle probably
+
+1307
+00:50:40,859 --> 00:50:43,280
+is never done this at least for for the
+
+1308
+00:50:43,280 --> 00:50:50,579
+traditional and is based system correct
+
+1309
+00:50:50,579 --> 00:50:53,760
+yes in memory the the compilation time
+
+1310
+00:50:53,760 --> 00:50:55,109
+or the you know all that function
+
+1311
+00:50:55,109 --> 00:50:59,720
+lookups me a bottleneck now with that I
+
+1312
+00:50:59,869 --> 00:51:02,640
+would say also to like so Postgres is a
+
+1313
+00:51:02,640 --> 00:51:04,859
+system we'll see this in a second they
+
+1314
+00:51:04,859 --> 00:51:07,950
+do compilation too as well now as of
+
+1315
+00:51:07,950 --> 00:51:12,690
+like 2018 but the end they have this
+
+1316
+00:51:12,690 --> 00:51:15,780
+little parameter you can set to make
+
+1317
+00:51:15,780 --> 00:51:17,160
+decisions about should I actually
+
+1318
+00:51:17,160 --> 00:51:18,540
+compile or not based on what the extra
+
+1319
+00:51:18,540 --> 00:51:19,470
+should cost the query it's actually
+
+1320
+00:51:19,470 --> 00:51:22,800
+gonna be so let me get actual give it
+
+1321
+00:51:22,800 --> 00:51:24,180
+what I'm gonna talk about what hyper
+
+1322
+00:51:24,180 --> 00:51:27,329
+does the motivation for what Hyper's
+
+1323
+00:51:27,329 --> 00:51:30,329
+gonna do here was they were trying to
+
+1324
+00:51:30,329 --> 00:51:31,380
+just like us they were trying to support
+
+1325
+00:51:31,380 --> 00:51:32,760
+the post that's wire protocol and post
+
+1326
+00:51:32,760 --> 00:51:34,890
+has catalog and so there's this contrary
+
+1327
+00:51:34,890 --> 00:51:37,440
+a commonly used tool call PG admin which
+
+1328
+00:51:37,440 --> 00:51:40,170
+is like a PHP interface to configure
+
+1329
+00:51:40,170 --> 00:51:42,480
+your Postgres installation so the way
+
+1330
+00:51:42,480 --> 00:51:45,240
+all these like these these you know
+
+1331
+00:51:45,240 --> 00:51:48,089
+visual database tools work is that when
+
+1332
+00:51:48,089 --> 00:51:49,170
+you turn them on they connect to the
+
+1333
+00:51:49,170 --> 00:51:50,880
+database it immediately run a query a
+
+1334
+00:51:50,880 --> 00:51:52,410
+bunch of queries against the catalog and
+
+1335
+00:51:52,410 --> 00:51:53,940
+figure out what tables do I have what
+
+1336
+00:51:53,940 --> 00:51:55,530
+columns do I have what indexes do I have
+
+1337
+00:51:55,530 --> 00:51:57,780
+so they can expose that to the DBA to
+
+1338
+00:51:57,780 --> 00:52:00,450
+manage the database so when you turn
+
+1339
+00:52:00,450 --> 00:52:02,880
+that when you would in hyper case when
+
+1340
+00:52:02,880 --> 00:52:04,680
+you would turn PGM and on point at hyper
+
+1341
+00:52:04,680 --> 00:52:07,440
+it would be this long pause at the very
+
+1342
+00:52:07,440 --> 00:52:09,810
+beginning right we're talking like maybe
+
+1343
+00:52:09,810 --> 00:52:13,109
+10 seconds because the PG admin fire of
+
+1344
+00:52:13,109 --> 00:52:14,730
+all these queries that then had to run
+
+1345
+00:52:14,730 --> 00:52:16,470
+through the elevate and compiler just to
+
+1346
+00:52:16,470 --> 00:52:17,490
+figure out what tables you would have
+
+1347
+00:52:17,490 --> 00:52:18,900
+whereas the key around was regular post
+
+1348
+00:52:18,900 --> 00:52:20,250
+rest it doesn't do any of that
+
+1349
+00:52:20,250 --> 00:52:22,170
+compilation so when you turn on PG admin
+
+1350
+00:52:22,170 --> 00:52:23,579
+it would be much more quick you know
+
+1351
+00:52:23,579 --> 00:52:27,119
+boot up more quickly so to solve that so
+
+1352
+00:52:27,119 --> 00:52:29,190
+let's do so those queries aren't that
+
+1353
+00:52:29,190 --> 00:52:30,839
+complex but there was just a lot of them
+
+1354
+00:52:30,839 --> 00:52:32,730
+and the compilation cost was eating
+
+1355
+00:52:32,730 --> 00:52:37,710
+eating all your time so this is a paper
+
+1356
+00:52:37,710 --> 00:52:39,450
+that came out in 2018 from the hyper
+
+1357
+00:52:39,450 --> 00:52:41,880
+guys at won best paper in ICD I think
+
+1358
+00:52:41,880 --> 00:52:45,510
+this is actually a this is actually a
+
+1359
+00:52:45,510 --> 00:52:46,810
+really good idea
+
+1360
+00:52:46,810 --> 00:52:50,650
+we tried doing this in peloton but when
+
+1361
+00:52:50,650 --> 00:52:52,360
+we killed off peloton we didn't we do
+
+1362
+00:52:52,360 --> 00:52:54,400
+something differently now we we do
+
+1363
+00:52:54,400 --> 00:52:55,390
+something slightly different in what
+
+1364
+00:52:55,390 --> 00:52:57,340
+they're doing but the idea here is it's
+
+1365
+00:52:57,340 --> 00:52:59,530
+a really good one so what they're gonna
+
+1366
+00:52:59,530 --> 00:53:01,210
+do is when a query shows up they're
+
+1367
+00:53:01,210 --> 00:53:03,520
+still gonna generate the IR just as you
+
+1368
+00:53:03,520 --> 00:53:05,920
+normally would but then rather than
+
+1369
+00:53:05,920 --> 00:53:08,800
+firing off the LLVM compiler waiting for
+
+1370
+00:53:08,800 --> 00:53:10,270
+that to finish and then start executing
+
+1371
+00:53:10,270 --> 00:53:12,430
+the query they're gonna have a IR
+
+1372
+00:53:12,430 --> 00:53:14,950
+interpreter think of this is like a VM
+
+1373
+00:53:14,950 --> 00:53:17,110
+that's can then interpret that IR and
+
+1374
+00:53:17,110 --> 00:53:20,860
+start executing it so they have the
+
+1375
+00:53:20,860 --> 00:53:22,480
+German guide Thomas wrote it in parently
+
+1376
+00:53:22,480 --> 00:53:24,910
+in two weeks you basically take the the
+
+1377
+00:53:24,910 --> 00:53:27,400
+the byte codes that LVM spits out and
+
+1378
+00:53:27,400 --> 00:53:29,830
+it's IR and you just implement a virtual
+
+1379
+00:53:29,830 --> 00:53:31,660
+machine to execute it so now it's gonna
+
+1380
+00:53:31,660 --> 00:53:33,910
+make all the same function calls to the
+
+1381
+00:53:33,910 --> 00:53:35,590
+rest of the system make all the same
+
+1382
+00:53:35,590 --> 00:53:37,450
+invoke all the same operands and
+
+1383
+00:53:37,450 --> 00:53:38,920
+predicates as you normally would in the
+
+1384
+00:53:38,920 --> 00:53:41,650
+cop-out engine but it's running it as an
+
+1385
+00:53:41,650 --> 00:53:43,390
+interpreted as an interpreter so it's
+
+1386
+00:53:43,390 --> 00:53:44,470
+not like you have to build two separate
+
+1387
+00:53:44,470 --> 00:53:46,600
+engines completely you just have the
+
+1388
+00:53:46,600 --> 00:53:47,680
+interpreter execute the same
+
+1389
+00:53:47,680 --> 00:53:49,600
+instructions that the compiled version
+
+1390
+00:53:49,600 --> 00:53:52,240
+stuff well so now the interpreter is
+
+1391
+00:53:52,240 --> 00:53:54,760
+running then in the background you start
+
+1392
+00:53:54,760 --> 00:53:57,040
+compiling the query and then when the
+
+1393
+00:53:57,040 --> 00:53:59,170
+compiled query is ready you just slide
+
+1394
+00:53:59,170 --> 00:54:01,180
+it in if the query still running to
+
+1395
+00:54:01,180 --> 00:54:04,780
+replace the the interpreter execution so
+
+1396
+00:54:04,780 --> 00:54:06,220
+again they're using morsels though so
+
+1397
+00:54:06,220 --> 00:54:08,590
+what would happen is every single time a
+
+1398
+00:54:08,590 --> 00:54:11,020
+a thread a worker thread would complete
+
+1399
+00:54:11,020 --> 00:54:13,120
+a morsel it would check some flag and
+
+1400
+00:54:13,120 --> 00:54:15,550
+say is my compiled version ready if yes
+
+1401
+00:54:15,550 --> 00:54:17,890
+then invoke that if no then I just keep
+
+1402
+00:54:17,890 --> 00:54:19,890
+running might might in the interpreter
+
+1403
+00:54:19,890 --> 00:54:22,090
+so now for those queries that could take
+
+1404
+00:54:22,090 --> 00:54:24,220
+a long time to compile but will execute
+
+1405
+00:54:24,220 --> 00:54:27,670
+very quickly in those cases the you
+
+1406
+00:54:27,670 --> 00:54:28,870
+could finish them off just do the
+
+1407
+00:54:28,870 --> 00:54:30,940
+interpreter and not wait for the long
+
+1408
+00:54:30,940 --> 00:54:33,730
+compilation stuff to finish so they're
+
+1409
+00:54:33,730 --> 00:54:36,940
+actually going to do have usually three
+
+1410
+00:54:36,940 --> 00:54:38,290
+stages of different different types of
+
+1411
+00:54:38,290 --> 00:54:40,180
+compilation can do based on what type of
+
+1412
+00:54:40,180 --> 00:54:42,880
+optimizations are going to do so again
+
+1413
+00:54:42,880 --> 00:54:44,380
+the sequel query shows up and so in
+
+1414
+00:54:44,380 --> 00:54:45,820
+their case their optimizer maybe takes
+
+1415
+00:54:45,820 --> 00:54:49,180
+you know 0.2 milliseconds then they have
+
+1416
+00:54:49,180 --> 00:54:51,130
+this cochon engine and that's taken 0.7
+
+1417
+00:54:51,130 --> 00:54:51,820
+milliseconds
+
+1418
+00:54:51,820 --> 00:54:53,290
+all right because you're traversing the
+
+1419
+00:54:53,290 --> 00:54:56,170
+tree spitting out the IR and then the
+
+1420
+00:54:56,170 --> 00:54:57,520
+first thing that'll do is they'll
+
+1421
+00:54:57,520 --> 00:55:00,210
+they'll pass off the IR to the
+
+1422
+00:55:00,210 --> 00:55:01,770
+this bytecode compiler or interpreter
+
+1423
+00:55:01,770 --> 00:55:05,400
+and execute that and so some cases that
+
+1424
+00:55:05,400 --> 00:55:07,380
+could finish up in 0.4 milliseconds
+
+1425
+00:55:07,380 --> 00:55:09,839
+sorry sorry it's compiler so you're
+
+1426
+00:55:09,839 --> 00:55:11,190
+taking the IR and converting it to a
+
+1427
+00:55:11,190 --> 00:55:12,859
+bytecode that they can then interpret
+
+1428
+00:55:12,859 --> 00:55:17,520
+that takes four milliseconds then the IR
+
+1429
+00:55:17,520 --> 00:55:19,589
+also goes to the Allium compiler but
+
+1430
+00:55:19,589 --> 00:55:22,440
+they turn off all the the optimization
+
+1431
+00:55:22,440 --> 00:55:24,630
+passes like unrolling loops and peephole
+
+1432
+00:55:24,630 --> 00:55:26,819
+optimizations all that's turned off so
+
+1433
+00:55:26,819 --> 00:55:28,920
+that complete in six milliseconds so now
+
+1434
+00:55:28,920 --> 00:55:30,450
+that's gonna be a little bit faster than
+
+1435
+00:55:30,450 --> 00:55:32,250
+this one so when this one finishes then
+
+1436
+00:55:32,250 --> 00:55:34,440
+you can replace this with this but then
+
+1437
+00:55:34,440 --> 00:55:35,910
+they're also gonna then if it runs even
+
+1438
+00:55:35,910 --> 00:55:38,309
+longer then they'll run it through all
+
+1439
+00:55:38,309 --> 00:55:40,109
+the optimization passes of the hello and
+
+1440
+00:55:40,109 --> 00:55:42,240
+provides by now you're doing like dead
+
+1441
+00:55:42,240 --> 00:55:43,680
+code elimination and sub-expression
+
+1442
+00:55:43,680 --> 00:55:46,200
+elimination and the peephole stuff that
+
+1443
+00:55:46,200 --> 00:55:47,640
+then they can then run it through the
+
+1444
+00:55:47,640 --> 00:55:49,710
+compiler and then this picks out the x86
+
+1445
+00:55:49,710 --> 00:55:53,069
+code so the idea is that I start
+
+1446
+00:55:53,069 --> 00:55:54,540
+interpreting right away on the byte code
+
+1447
+00:55:54,540 --> 00:55:57,869
+if it finishes before you know right
+
+1448
+00:55:57,869 --> 00:56:00,990
+away then I'm done if this thing
+
+1449
+00:56:00,990 --> 00:56:03,359
+finishes before this excuse execution
+
+1450
+00:56:03,359 --> 00:56:04,470
+finishes then I just start executing
+
+1451
+00:56:04,470 --> 00:56:06,900
+this but then I also fire off this this
+
+1452
+00:56:06,900 --> 00:56:09,690
+this pass and then if this is if this is
+
+1453
+00:56:09,690 --> 00:56:11,400
+done if this is not done by the time I
+
+1454
+00:56:11,400 --> 00:56:13,890
+get this then I replace it with that so
+
+1455
+00:56:13,890 --> 00:56:15,599
+you're sort of staging how fast the the
+
+1456
+00:56:15,599 --> 00:56:19,020
+execution engines gonna get and the idea
+
+1457
+00:56:19,020 --> 00:56:20,880
+is that rather waiting for this thing to
+
+1458
+00:56:20,880 --> 00:56:22,710
+finish which in this particular example
+
+1459
+00:56:22,710 --> 00:56:24,119
+here 25 milliseconds plus 70
+
+1460
+00:56:24,119 --> 00:56:25,859
+milliseconds rather not executing any
+
+1461
+00:56:25,859 --> 00:56:27,630
+work during this time I think these get
+
+1462
+00:56:27,630 --> 00:56:29,220
+some work done it's not gonna as if it
+
+1463
+00:56:29,220 --> 00:56:31,500
+as efficient but it's better than
+
+1464
+00:56:31,500 --> 00:56:36,720
+nothing so they have some some numbers
+
+1465
+00:56:36,720 --> 00:56:39,359
+about cpc-h for those three stages again
+
+1466
+00:56:39,359 --> 00:56:41,099
+this is going to show you the relative
+
+1467
+00:56:41,099 --> 00:56:42,980
+difference from performance between the
+
+1468
+00:56:42,980 --> 00:56:45,359
+between the the bytecode interpreter or
+
+1469
+00:56:45,359 --> 00:56:46,920
+the unoptimized LVM and the optimized
+
+1470
+00:56:46,920 --> 00:56:48,960
+LLVM so again you're getting an
+
+1471
+00:56:48,960 --> 00:56:50,760
+automatic two difference between the
+
+1472
+00:56:50,760 --> 00:56:52,530
+optimized compiled version and the
+
+1473
+00:56:52,530 --> 00:56:55,530
+interpreter so that that's reasons why
+
+1474
+00:56:55,530 --> 00:56:57,359
+you want to have both the other benefit
+
+1475
+00:56:57,359 --> 00:56:58,380
+you do get which they don't talk about
+
+1476
+00:56:58,380 --> 00:57:00,900
+so much in the paper is that since again
+
+1477
+00:57:00,900 --> 00:57:03,030
+these it's the same eye are the same
+
+1478
+00:57:03,030 --> 00:57:05,970
+through the the bytecode is executing
+
+1479
+00:57:05,970 --> 00:57:07,770
+the same query that were executed here
+
+1480
+00:57:07,770 --> 00:57:10,410
+if now there's a bug in how I generate
+
+1481
+00:57:10,410 --> 00:57:13,220
+that IR rather than
+
+1482
+00:57:13,220 --> 00:57:15,440
+you know looking at the compiled version
+
+1483
+00:57:15,440 --> 00:57:17,300
+of the query plan which in this case
+
+1484
+00:57:17,300 --> 00:57:18,650
+here you're not gonna have debug symbols
+
+1485
+00:57:18,650 --> 00:57:20,660
+you're not going to have a stack trace
+
+1486
+00:57:20,660 --> 00:57:22,280
+when you crash is you're just gonna land
+
+1487
+00:57:22,280 --> 00:57:24,740
+in an assembly you can least step
+
+1488
+00:57:24,740 --> 00:57:26,060
+through the interpreter with this and
+
+1489
+00:57:26,060 --> 00:57:28,930
+figure out why your query is breaking
+
+1490
+00:57:28,930 --> 00:57:46,070
+right yes team is if there's a pack here
+
+1491
+00:57:46,070 --> 00:57:49,340
+if there's a bug in this applying the IR
+
+1492
+00:57:49,340 --> 00:57:51,590
+into the bytecode or bug in the
+
+1493
+00:57:51,590 --> 00:57:54,980
+interpreter itself then yes you like you
+
+1494
+00:57:54,980 --> 00:57:56,330
+have to figure out what's going on here
+
+1495
+00:57:56,330 --> 00:58:07,780
+but the idea would be that the that LLVM
+
+1496
+00:58:07,780 --> 00:58:12,609
+so like yes the compiler could be wrong
+
+1497
+00:58:12,609 --> 00:58:15,440
+there's a there's a hierarchy of like
+
+1498
+00:58:15,440 --> 00:58:16,609
+what could be wrong like it's always
+
+1499
+00:58:16,609 --> 00:58:18,589
+like like the first thing the blame is
+
+1500
+00:58:18,589 --> 00:58:20,810
+your code then next thing the blame is
+
+1501
+00:58:20,810 --> 00:58:24,050
+maybe the library you're using then
+
+1502
+00:58:24,050 --> 00:58:26,810
+maybe you next blame the the compiler
+
+1503
+00:58:26,810 --> 00:58:28,400
+and then maybe they're very unlikely
+
+1504
+00:58:28,400 --> 00:58:30,680
+blame the hardware so the high
+
+1505
+00:58:30,680 --> 00:58:33,050
+probability your code is wrong like this
+
+1506
+00:58:33,050 --> 00:58:35,119
+thing's not gonna be wrong so but the
+
+1507
+00:58:35,119 --> 00:58:37,220
+point I'm trying to make is like we
+
+1508
+00:58:37,220 --> 00:58:39,140
+don't have to write this this is not
+
+1509
+00:58:39,140 --> 00:58:40,940
+gonna be that difficult to write and
+
+1510
+00:58:40,940 --> 00:58:42,230
+it's not something has to be modified
+
+1511
+00:58:42,230 --> 00:58:43,760
+all the time as we expand your
+
+1512
+00:58:43,760 --> 00:58:47,030
+functionality right if we design the
+
+1513
+00:58:47,030 --> 00:58:48,530
+system such that it's it's sort of
+
+1514
+00:58:48,530 --> 00:58:50,690
+general enough you know every time we
+
+1515
+00:58:50,690 --> 00:58:52,130
+add a new sequel functions not like we
+
+1516
+00:58:52,130 --> 00:58:54,500
+need to modify this so only a you know a
+
+1517
+00:58:54,500 --> 00:58:56,960
+small number of smart people think about
+
+1518
+00:58:56,960 --> 00:58:58,520
+this there's a small number of small
+
+1519
+00:58:58,520 --> 00:58:59,540
+people that can write a Devi system
+
+1520
+00:58:59,540 --> 00:59:01,250
+there's even smaller number of smart
+
+1521
+00:59:01,250 --> 00:59:03,250
+smart people that can write this piece
+
+1522
+00:59:03,250 --> 00:59:05,900
+right and so we pay that person a lot of
+
+1523
+00:59:05,900 --> 00:59:08,030
+money get this right and assume it's
+
+1524
+00:59:08,030 --> 00:59:11,710
+right going forward okay
+
+1525
+00:59:11,850 --> 00:59:14,310
+all right we have 15 minutes I want to
+
+1526
+00:59:14,310 --> 00:59:15,720
+rip through very quickly a bunch of
+
+1527
+00:59:15,720 --> 00:59:16,830
+different real-world implications of
+
+1528
+00:59:16,830 --> 00:59:18,840
+this so as I said at the very beginning
+
+1529
+00:59:18,840 --> 00:59:21,330
+I said oh the high Q was the first
+
+1530
+00:59:21,330 --> 00:59:24,720
+example in the modern era and the reason
+
+1531
+00:59:24,720 --> 00:59:26,370
+I use that as that phrasing is because
+
+1532
+00:59:26,370 --> 00:59:29,430
+IBM did this as many things and
+
+1533
+00:59:29,430 --> 00:59:31,860
+databases as it did in the 1970s but
+
+1534
+00:59:31,860 --> 00:59:33,180
+then they abandoned it but now pretty
+
+1535
+00:59:33,180 --> 00:59:34,740
+much a lot of the systems today are
+
+1536
+00:59:34,740 --> 00:59:38,130
+using this approach so IBM had a
+
+1537
+00:59:38,130 --> 00:59:40,050
+primitive form of cogent and cording
+
+1538
+00:59:40,050 --> 00:59:41,070
+compilation back in the nineteen
+
+1539
+00:59:41,070 --> 00:59:43,080
+seventies for system R Roberts the
+
+1540
+00:59:43,080 --> 00:59:44,970
+system our project was they took Ted
+
+1541
+00:59:44,970 --> 00:59:47,250
+cots paper handle off to researchers at
+
+1542
+00:59:47,250 --> 00:59:49,620
+San Jose got him in a room a bunch
+
+1543
+00:59:49,620 --> 00:59:51,210
+people with brand new PCs and said hey
+
+1544
+00:59:51,210 --> 00:59:52,260
+build a database system build a
+
+1545
+00:59:52,260 --> 00:59:53,820
+relational database system every one
+
+1546
+00:59:53,820 --> 00:59:55,500
+card we know every person with a PC
+
+1547
+00:59:55,500 --> 00:59:57,120
+carved off one piece of it one guy did
+
+1548
+00:59:57,120 --> 00:59:59,790
+storage one guy invented sequel another
+
+1549
+00:59:59,790 --> 01:00:01,860
+woman did query optimization and then
+
+1550
+01:00:01,860 --> 01:00:03,450
+somebody did this cogeneration thing
+
+1551
+01:00:03,450 --> 01:00:05,160
+right and then what would happen is they
+
+1552
+01:00:05,160 --> 01:00:06,870
+would take a sequel statement and they
+
+1553
+01:00:06,870 --> 01:00:09,510
+we have it spit out assembly that would
+
+1554
+01:00:09,510 --> 01:00:11,670
+then in just like a haiku or the IR for
+
+1555
+01:00:11,670 --> 01:00:14,940
+LLVM be exactly the the bacon execution
+
+1556
+01:00:14,940 --> 01:00:18,240
+plan for for that query and they would
+
+1557
+01:00:18,240 --> 01:00:19,200
+have a bunch of templates and sort of
+
+1558
+01:00:19,200 --> 01:00:21,750
+splice things together so it turned out
+
+1559
+01:00:21,750 --> 01:00:23,640
+though that this was a huge panting ass
+
+1560
+01:00:23,640 --> 01:00:26,820
+maintained engineer because back in the
+
+1561
+01:00:26,820 --> 01:00:29,280
+day in the 1970s IBM had a whole these
+
+1562
+01:00:29,280 --> 01:00:30,810
+different mainframes that all these
+
+1563
+01:00:30,810 --> 01:00:32,400
+different ISAs and instruction sets they
+
+1564
+01:00:32,400 --> 01:00:34,200
+had the support so in order to get
+
+1565
+01:00:34,200 --> 01:00:36,030
+system R to work on you know you know
+
+1566
+01:00:36,030 --> 01:00:38,280
+360 or some some other system you had to
+
+1567
+01:00:38,280 --> 01:00:39,720
+make sure you poured all this assembly
+
+1568
+01:00:39,720 --> 01:00:42,300
+stuff which is error-prone so when they
+
+1569
+01:00:42,300 --> 01:00:46,140
+went and started building db2 some
+
+1570
+01:00:46,140 --> 01:00:48,030
+pieces of system are made it into
+
+1571
+01:00:48,030 --> 01:00:50,460
+whatever the version of db2 they built
+
+1572
+01:00:50,460 --> 01:00:53,910
+first like the sequel stuff but all this
+
+1573
+01:00:53,910 --> 01:00:56,340
+cogeneration stuff and abandoned the
+
+1574
+01:00:56,340 --> 01:00:58,800
+other big issue too was anytime that the
+
+1575
+01:00:58,800 --> 01:01:00,510
+other parts of the system changed like
+
+1576
+01:01:00,510 --> 01:01:04,200
+the layout of pages for for tuples or
+
+1577
+01:01:04,200 --> 01:01:06,300
+the indexes you had to go change all of
+
+1578
+01:01:06,300 --> 01:01:08,160
+this assembly code which is a huge you
+
+1579
+01:01:08,160 --> 01:01:09,210
+know nightmare because every time there
+
+1580
+01:01:09,210 --> 01:01:11,190
+was a change you got to change this part
+
+1581
+01:01:11,190 --> 01:01:13,790
+and test it so there's this great
+
+1582
+01:01:13,790 --> 01:01:16,110
+there's a retrospective came out in 1981
+
+1583
+01:01:16,110 --> 01:01:17,970
+that talks about the history of system R
+
+1584
+01:01:17,970 --> 01:01:20,670
+but then the the main developers that
+
+1585
+01:01:20,670 --> 01:01:22,770
+worked at IBM at the time they did like
+
+1586
+01:01:22,770 --> 01:01:24,810
+a panel or
+
+1587
+01:01:24,810 --> 01:01:26,610
+interviews in the late or early 1990s
+
+1588
+01:01:26,610 --> 01:01:28,350
+that talked about you know what was like
+
+1589
+01:01:28,350 --> 01:01:30,030
+building your Davis system in the 1970s
+
+1590
+01:01:30,030 --> 01:01:31,050
+where nobody knew how to build a
+
+1591
+01:01:31,050 --> 01:01:32,790
+database system and one of the things
+
+1592
+01:01:32,790 --> 01:01:33,900
+when you read those interviews they talk
+
+1593
+01:01:33,900 --> 01:01:34,890
+about how this thing was a huge
+
+1594
+01:01:34,890 --> 01:01:36,600
+nightmare and that when they built db2
+
+1595
+01:01:36,600 --> 01:01:43,940
+they got rid of it right so Oracle for
+
+1596
+01:01:43,940 --> 01:01:46,980
+their high end things like the fracture
+
+1597
+01:01:46,980 --> 01:01:49,320
+mirror in memory column store and then
+
+1598
+01:01:49,320 --> 01:01:51,120
+for like Exadata they do something
+
+1599
+01:01:51,120 --> 01:01:53,100
+similar but like if you just download
+
+1600
+01:01:53,100 --> 01:01:56,310
+regular Oracle the disk based version it
+
+1601
+01:01:56,310 --> 01:01:58,770
+doesn't do any compilation for queries
+
+1602
+01:01:58,770 --> 01:02:01,650
+they might do predicates but again that
+
+1603
+01:02:01,650 --> 01:02:05,280
+might only be for the for the high-end
+
+1604
+01:02:05,280 --> 01:02:07,140
+versions of it the one thing they do
+
+1605
+01:02:07,140 --> 01:02:09,390
+compile though is store procedures so
+
+1606
+01:02:09,390 --> 01:02:10,560
+they're going to take your PL sequel
+
+1607
+01:02:10,560 --> 01:02:13,110
+store procedures and convert them into
+
+1608
+01:02:13,110 --> 01:02:16,140
+pro C or prostar C which is their
+
+1609
+01:02:16,140 --> 01:02:19,050
+specialized dialect of C and then
+
+1610
+01:02:19,050 --> 01:02:21,090
+they'll compile that into native and C
+
+1611
+01:02:21,090 --> 01:02:26,640
+C++ code and the the the reason why
+
+1612
+01:02:26,640 --> 01:02:29,580
+they're gonna do this is because this is
+
+1613
+01:02:29,580 --> 01:02:30,900
+gonna have a bunch of security checks to
+
+1614
+01:02:30,900 --> 01:02:33,180
+make sure that your store procedure is
+
+1615
+01:02:33,180 --> 01:02:34,710
+not doing something weird with address
+
+1616
+01:02:34,710 --> 01:02:36,270
+space so they don't they don't run this
+
+1617
+01:02:36,270 --> 01:02:37,380
+in the sandbox thing and run this
+
+1618
+01:02:37,380 --> 01:02:38,460
+directly inside the database system
+
+1619
+01:02:38,460 --> 01:02:41,010
+system process the one thing that
+
+1620
+01:02:41,010 --> 01:02:42,630
+horrible can do that nobody else can do
+
+1621
+01:02:42,630 --> 01:02:45,450
+that's super insane is like actually put
+
+1622
+01:02:45,450 --> 01:02:47,430
+the database operations directly on
+
+1623
+01:02:47,430 --> 01:02:48,150
+hardware
+
+1624
+01:02:48,150 --> 01:02:51,240
+now FPGAs are a thing that you can do
+
+1625
+01:02:51,240 --> 01:02:52,350
+and people have done this from database
+
+1626
+01:02:52,350 --> 01:02:54,570
+systems but those are skin those are
+
+1627
+01:02:54,570 --> 01:02:55,890
+still slightly more general-purpose this
+
+1628
+01:02:55,890 --> 01:02:57,630
+is like they're actually manufacturing
+
+1629
+01:02:57,630 --> 01:02:59,040
+the CPU and they'll put specialized
+
+1630
+01:02:59,040 --> 01:03:01,320
+instructions or with the Aqua database
+
+1631
+01:03:01,320 --> 01:03:02,250
+on the CPU
+
+1632
+01:03:02,250 --> 01:03:05,760
+they bought son 15 years ago someone's
+
+1633
+01:03:05,760 --> 01:03:07,470
+making the spark chips so some of the
+
+1634
+01:03:07,470 --> 01:03:08,670
+new version of spark chips have like
+
+1635
+01:03:08,670 --> 01:03:11,370
+support for or host compression
+
+1636
+01:03:11,370 --> 01:03:12,810
+algorithm or Oracles bitmap stuff
+
+1637
+01:03:12,810 --> 01:03:15,660
+directly on on hardware so that avoids
+
+1638
+01:03:15,660 --> 01:03:17,520
+you know that blows out anything you can
+
+1639
+01:03:17,520 --> 01:03:19,290
+do with cojan because instead of you
+
+1640
+01:03:19,290 --> 01:03:22,080
+know compiling code that does the what
+
+1641
+01:03:22,080 --> 01:03:23,610
+your dailies wants to do you just invoke
+
+1642
+01:03:23,610 --> 01:03:25,290
+the operations on the hardware itself
+
+1643
+01:03:25,290 --> 01:03:29,190
+doesn't get any faster than that I don't
+
+1644
+01:03:29,190 --> 01:03:30,270
+think they do this anymore because I
+
+1645
+01:03:30,270 --> 01:03:31,860
+don't think they make sparks anymore but
+
+1646
+01:03:31,860 --> 01:03:34,110
+this is maybe like four or five years
+
+1647
+01:03:34,110 --> 01:03:35,310
+ago they were touting this that you
+
+1648
+01:03:35,310 --> 01:03:38,060
+could buy Oracle RAC machine from
+
+1649
+01:03:38,060 --> 01:03:40,700
+had son Sons hardware and they would
+
+1650
+01:03:40,700 --> 01:03:43,970
+make your Oracle debase go faster we'll
+
+1651
+01:03:43,970 --> 01:03:45,410
+talk about FPGA is it at the end the
+
+1652
+01:03:45,410 --> 01:03:47,900
+semester for hackathon we've already
+
+1653
+01:03:47,900 --> 01:03:49,790
+talked about Bakic a pal but store
+
+1654
+01:03:49,790 --> 01:03:52,700
+procedures and sequel what was kind of
+
+1655
+01:03:52,700 --> 01:03:55,400
+cool is that they would have they would
+
+1656
+01:03:55,400 --> 01:03:57,020
+pre compile a bunch of these operators
+
+1657
+01:03:57,020 --> 01:03:59,050
+that allow you to have non hackathon
+
+1658
+01:03:59,050 --> 01:04:02,420
+queries touch Hecate on data I can run
+
+1659
+01:04:02,420 --> 01:04:04,430
+those efficiently and the way they would
+
+1660
+01:04:04,430 --> 01:04:05,930
+do this is they would generate C code
+
+1661
+01:04:05,930 --> 01:04:08,060
+from the syntax tree of the query plan
+
+1662
+01:04:08,060 --> 01:04:11,450
+compile that using you know the whatever
+
+1663
+01:04:11,450 --> 01:04:14,930
+the the Microsoft compiler generate a
+
+1664
+01:04:14,930 --> 01:04:16,580
+DLL then link that in at runtime the
+
+1665
+01:04:16,580 --> 01:04:18,110
+same way that the Haiku actually did
+
+1666
+01:04:18,110 --> 01:04:20,720
+this and make sure that anybody was
+
+1667
+01:04:20,720 --> 01:04:22,040
+doing something clunky they would have a
+
+1668
+01:04:22,040 --> 01:04:23,510
+bunch of extra checks to make sure that
+
+1669
+01:04:23,510 --> 01:04:25,430
+you you know you didn't have a weird
+
+1670
+01:04:25,430 --> 01:04:26,870
+predicate that try to do a cup offer
+
+1671
+01:04:26,870 --> 01:04:28,690
+overflow to take control of the systems
+
+1672
+01:04:28,690 --> 01:04:31,160
+now Actium vector is what he was asking
+
+1673
+01:04:31,160 --> 01:04:33,410
+about before so they're not really doing
+
+1674
+01:04:33,410 --> 01:04:36,470
+cogent they're pre compiling these
+
+1675
+01:04:36,470 --> 01:04:37,640
+primitives and this is why I use the
+
+1676
+01:04:37,640 --> 01:04:39,320
+term and thinking about primitive as
+
+1677
+01:04:39,320 --> 01:04:42,320
+some low-level operation you'd want to
+
+1678
+01:04:42,320 --> 01:04:44,660
+do on a piece of data repeatedly but
+
+1679
+01:04:44,660 --> 01:04:46,600
+it's gonna all going to be written for a
+
+1680
+01:04:46,600 --> 01:04:49,580
+specific type so how about primitive did
+
+1681
+01:04:49,580 --> 01:04:51,710
+you a comparison between two numbers or
+
+1682
+01:04:51,710 --> 01:04:54,380
+and one will be for 32-bit 64-bit 16-bit
+
+1683
+01:04:54,380 --> 01:04:56,090
+floats right I'll pre compile all these
+
+1684
+01:04:56,090 --> 01:04:59,990
+primitives then now at runtime what my
+
+1685
+01:04:59,990 --> 01:05:01,370
+query plan is basically doing is
+
+1686
+01:05:01,370 --> 01:05:03,260
+stitching together all these precalc
+
+1687
+01:05:03,260 --> 01:05:05,690
+primitives as if it was a bunch of C++
+
+1688
+01:05:05,690 --> 01:05:07,220
+code that was that was generated on the
+
+1689
+01:05:07,220 --> 01:05:09,380
+fly and now I'm just making calls into
+
+1690
+01:05:09,380 --> 01:05:11,510
+these functions that are pre compiled
+
+1691
+01:05:11,510 --> 01:05:13,760
+and that's gonna be almost as fast or
+
+1692
+01:05:13,760 --> 01:05:18,290
+some cases faster so looking at one
+
+1693
+01:05:18,290 --> 01:05:20,390
+example here right so here's L a
+
+1694
+01:05:20,390 --> 01:05:24,230
+primitive do do it take a take a pointer
+
+1695
+01:05:24,230 --> 01:05:26,570
+to a bunch of in 32 call values inside
+
+1696
+01:05:26,570 --> 01:05:28,490
+of a column take the value I want to
+
+1697
+01:05:28,490 --> 01:05:31,280
+compare against and then I just do do a
+
+1698
+01:05:31,280 --> 01:05:33,230
+less than and if it matches then I
+
+1699
+01:05:33,230 --> 01:05:35,150
+produce in my output buffer and here's
+
+1700
+01:05:35,150 --> 01:05:36,710
+the same function but now I'm comparing
+
+1701
+01:05:36,710 --> 01:05:40,280
+a double so my input column is a as a
+
+1702
+01:05:40,280 --> 01:05:42,470
+32-bit integer but my comparison value
+
+1703
+01:05:42,470 --> 01:05:44,660
+is a double so I just you know I add
+
+1704
+01:05:44,660 --> 01:05:45,830
+that piece in there the copilot will
+
+1705
+01:05:45,830 --> 01:05:47,750
+generate the right Caston code for me
+
+1706
+01:05:47,750 --> 01:05:49,700
+right
+
+1707
+01:05:49,700 --> 01:05:52,410
+so we'll see this next class we'll talk
+
+1708
+01:05:52,410 --> 01:05:54,060
+a little bit the next guys NL so after
+
+1709
+01:05:54,060 --> 01:05:56,340
+Spring Break but you would think all
+
+1710
+01:05:56,340 --> 01:05:57,690
+right well isn't this gonna be slow now
+
+1711
+01:05:57,690 --> 01:05:59,370
+if I'm invoking this function for every
+
+1712
+01:05:59,370 --> 01:06:01,530
+single tuple well that's why they're
+
+1713
+01:06:01,530 --> 01:06:03,600
+passing in a kind of appointed to a
+
+1714
+01:06:03,600 --> 01:06:05,700
+column it's sort of in the name of
+
+1715
+01:06:05,700 --> 01:06:07,170
+vector wise are they're passing in a
+
+1716
+01:06:07,170 --> 01:06:09,930
+vector of tuples that this can then be
+
+1717
+01:06:09,930 --> 01:06:13,260
+vectorized by the compiler using seemed
+
+1718
+01:06:13,260 --> 01:06:15,060
+instructions so now I'm not doing a
+
+1719
+01:06:15,060 --> 01:06:17,460
+comparison between a single scalar and
+
+1720
+01:06:17,460 --> 01:06:19,380
+another scalar I'm taking on batch of
+
+1721
+01:06:19,380 --> 01:06:21,960
+values invoking a single instruction to
+
+1722
+01:06:21,960 --> 01:06:24,260
+execute that more efficiently
+
+1723
+01:06:24,260 --> 01:06:28,530
+all right so again we'll see this we'll
+
+1724
+01:06:28,530 --> 01:06:29,640
+see how to do vectorization neck the
+
+1725
+01:06:29,640 --> 01:06:31,890
+next class but this is this is one of
+
+1726
+01:06:31,890 --> 01:06:34,170
+the reasons why although vector Y is not
+
+1727
+01:06:34,170 --> 01:06:36,870
+a full cogent engine you can still match
+
+1728
+01:06:36,870 --> 01:06:38,940
+the performance of a cogent engine
+
+1729
+01:06:38,940 --> 01:06:40,290
+because you get this benefit here
+
+1730
+01:06:40,290 --> 01:06:41,820
+whereas Viper can't do vectorize
+
+1731
+01:06:41,820 --> 01:06:45,780
+execution it's only tuple at a time all
+
+1732
+01:06:45,780 --> 01:06:47,040
+right so now there's a bunch of database
+
+1733
+01:06:47,040 --> 01:06:48,420
+systems that are based on the JVM that
+
+1734
+01:06:48,420 --> 01:06:51,660
+run on the JVM so spark in 2015
+
+1735
+01:06:51,660 --> 01:06:53,220
+announced they had this new tungsten
+
+1736
+01:06:53,220 --> 01:06:55,950
+execution engine sparks written entirely
+
+1737
+01:06:55,950 --> 01:06:56,700
+in Scala
+
+1738
+01:06:56,700 --> 01:06:58,890
+so inside those source code they have a
+
+1739
+01:06:58,890 --> 01:07:01,110
+way to take the predicates of a inside
+
+1740
+01:07:01,110 --> 01:07:02,970
+of your query because spark supports
+
+1741
+01:07:02,970 --> 01:07:04,950
+sequel and then they'll convert that
+
+1742
+01:07:04,950 --> 01:07:07,980
+directly into Scala ast S which then can
+
+1743
+01:07:07,980 --> 01:07:09,900
+be generated into bytecode and they can
+
+1744
+01:07:09,900 --> 01:07:11,490
+invoke that and execute that natively
+
+1745
+01:07:11,490 --> 01:07:14,630
+inside of the engine how it's running so
+
+1746
+01:07:14,630 --> 01:07:18,240
+SPARC is doing this for Scala again it's
+
+1747
+01:07:18,240 --> 01:07:20,190
+just running the JVM there's a bunch of
+
+1748
+01:07:20,190 --> 01:07:21,810
+other JVM databases that are more or
+
+1749
+01:07:21,810 --> 01:07:23,730
+less all doing the same thing neo4j
+
+1750
+01:07:23,730 --> 01:07:26,130
+spliced machine presto and Derby splice
+
+1751
+01:07:26,130 --> 01:07:27,930
+machine uses Derby so these these two
+
+1752
+01:07:27,930 --> 01:07:30,600
+are kind of the same I was looking at
+
+1753
+01:07:30,600 --> 01:07:32,220
+the neo4j source code last night it's
+
+1754
+01:07:32,220 --> 01:07:33,390
+not very good because there's no
+
+1755
+01:07:33,390 --> 01:07:35,370
+documentation but from what I can tell
+
+1756
+01:07:35,370 --> 01:07:37,470
+it looks like that you can actually
+
+1757
+01:07:37,470 --> 01:07:41,460
+generate the you generate the bytecode
+
+1758
+01:07:41,460 --> 01:07:44,370
+for your query they can also then
+
+1759
+01:07:44,370 --> 01:07:45,900
+reverse it and put it back into Java
+
+1760
+01:07:45,900 --> 01:07:48,150
+source code so if you won the end now
+
+1761
+01:07:48,150 --> 01:07:49,200
+run it through a debugger and figure out
+
+1762
+01:07:49,200 --> 01:07:50,370
+you know why your query isn't actually
+
+1763
+01:07:50,370 --> 01:07:50,990
+working
+
+1764
+01:07:50,990 --> 01:07:53,340
+they can actually support that I don't
+
+1765
+01:07:53,340 --> 01:07:54,720
+know whether these other guys can do the
+
+1766
+01:07:54,720 --> 01:07:56,220
+same thing all right
+
+1767
+01:07:56,220 --> 01:07:58,200
+the others do think about you about
+
+1768
+01:07:58,200 --> 01:07:59,640
+using the JVM because it's doing
+
+1769
+01:07:59,640 --> 01:08:00,660
+just-in-time compilation
+
+1770
+01:08:00,660 --> 01:08:02,880
+I can omit the bytecode
+
+1771
+01:08:02,880 --> 01:08:04,799
+I don't have to run any compiler passes
+
+1772
+01:08:04,799 --> 01:08:08,640
+on it right away then the the hot spot
+
+1773
+01:08:08,640 --> 01:08:10,829
+VM will recognize if I'm extremely this
+
+1774
+01:08:10,829 --> 01:08:13,049
+this this bytecode over now over again
+
+1775
+01:08:13,049 --> 01:08:15,089
+in my for them as I'm accessing every
+
+1776
+01:08:15,089 --> 01:08:17,189
+single tuple it'll then do the compiler
+
+1777
+01:08:17,189 --> 01:08:20,250
+compilation stuff for me so I don't need
+
+1778
+01:08:20,250 --> 01:08:21,839
+to do that multiple stages that we did
+
+1779
+01:08:21,839 --> 01:08:23,880
+in the LLVM the JVM takes care of this
+
+1780
+01:08:23,880 --> 01:08:27,139
+for me but I think it's kind of cool
+
+1781
+01:08:27,139 --> 01:08:30,509
+alright so mem Seco is a interesting one
+
+1782
+01:08:30,509 --> 01:08:32,520
+because they have two versions of their
+
+1783
+01:08:32,520 --> 01:08:35,370
+engine so as I said before the mem steep
+
+1784
+01:08:35,370 --> 01:08:37,109
+one Memphis goes co-founder was at was
+
+1785
+01:08:37,109 --> 01:08:38,189
+that Microsoft when they were building
+
+1786
+01:08:38,189 --> 01:08:41,130
+hackathon saw the early talks from and
+
+1787
+01:08:41,130 --> 01:08:43,170
+you know internally from at Microsoft he
+
+1788
+01:08:43,170 --> 01:08:45,060
+wasn't working on hackathon so talk from
+
+1789
+01:08:45,060 --> 01:08:46,620
+the researchers to talk to how they were
+
+1790
+01:08:46,620 --> 01:08:50,250
+new cogent for hackathon using C so when
+
+1791
+01:08:50,250 --> 01:08:51,479
+you went off in Belton MC call he did
+
+1792
+01:08:51,479 --> 01:08:53,100
+more that's the same thing which is the
+
+1793
+01:08:53,100 --> 01:08:54,750
+same thing as haiku so they would have
+
+1794
+01:08:54,750 --> 01:08:56,819
+code that would generate this the the C
+
+1795
+01:08:56,819 --> 01:08:59,819
+source code for a query plan then fork
+
+1796
+01:08:59,819 --> 01:09:02,729
+exec GCC link in that shared object and
+
+1797
+01:09:02,729 --> 01:09:04,979
+then run that query and as I said in the
+
+1798
+01:09:04,979 --> 01:09:07,109
+early versions of mem Siegel when you
+
+1799
+01:09:07,109 --> 01:09:08,969
+look at their blog articles they would
+
+1800
+01:09:08,969 --> 01:09:10,439
+show examples were like the first time
+
+1801
+01:09:10,439 --> 01:09:11,698
+you run a query be one second because
+
+1802
+01:09:11,698 --> 01:09:13,439
+that's all the compilation overhead but
+
+1803
+01:09:13,439 --> 01:09:15,109
+then second times would be much faster
+
+1804
+01:09:15,109 --> 01:09:17,310
+then raid they were able to make it go
+
+1805
+01:09:17,310 --> 01:09:20,429
+faster is through caching by taking any
+
+1806
+01:09:20,429 --> 01:09:22,469
+query that showed up extracting out the
+
+1807
+01:09:22,469 --> 01:09:24,839
+constants and then recognizing if the
+
+1808
+01:09:24,839 --> 01:09:26,729
+query same query shows up again just
+
+1809
+01:09:26,729 --> 01:09:28,290
+with different input parameters I can
+
+1810
+01:09:28,290 --> 01:09:31,620
+reuse my cache shirt shared object so my
+
+1811
+01:09:31,620 --> 01:09:33,630
+query shows up select star from a where
+
+1812
+01:09:33,630 --> 01:09:35,750
+egg a ID equals one two three I
+
+1813
+01:09:35,750 --> 01:09:38,279
+recognize I have one two three here rip
+
+1814
+01:09:38,279 --> 01:09:40,589
+that out to be a parameter compile that
+
+1815
+01:09:40,589 --> 01:09:42,719
+cache it and then now for another query
+
+1816
+01:09:42,719 --> 01:09:44,549
+shows up with a ID equals four five six
+
+1817
+01:09:44,549 --> 01:09:46,259
+I could recognize that I could reuse the
+
+1818
+01:09:46,259 --> 01:09:47,969
+same query plan and run that and don't
+
+1819
+01:09:47,969 --> 01:09:49,229
+pay that compilation overhead
+
+1820
+01:09:49,229 --> 01:09:51,658
+now we asked them and they told us that
+
+1821
+01:09:51,658 --> 01:09:52,920
+the only thing they were doing here was
+
+1822
+01:09:52,920 --> 01:09:55,050
+just string matching so if my predicate
+
+1823
+01:09:55,050 --> 01:09:57,750
+was like where a ID equals 1 and n be ID
+
+1824
+01:09:57,750 --> 01:10:00,060
+equals 2 I cashed that one but now if I
+
+1825
+01:10:00,060 --> 01:10:02,190
+show up with reverse of like B ID equals
+
+1826
+01:10:02,190 --> 01:10:04,980
+1 and a ID equals 2 then they couldn't
+
+1827
+01:10:04,980 --> 01:10:06,540
+reuse that even though semantically it's
+
+1828
+01:10:06,540 --> 01:10:08,520
+the same query that the string won't
+
+1829
+01:10:08,520 --> 01:10:14,030
+match right so then what happened was
+
+1830
+01:10:14,030 --> 01:10:16,530
+and actually the the
+
+1831
+01:10:16,530 --> 01:10:18,719
+mm single guy Nikita told me that like
+
+1832
+01:10:18,719 --> 01:10:22,800
+had in the earliest of mmm seagull had
+
+1833
+01:10:22,800 --> 01:10:24,449
+they had to do it all over again they
+
+1834
+01:10:24,449 --> 01:10:25,800
+would have not added this compilation
+
+1835
+01:10:25,800 --> 01:10:27,150
+stuff at the beginning because it was a
+
+1836
+01:10:27,150 --> 01:10:28,739
+huge pain for them to maintain I think
+
+1837
+01:10:28,739 --> 01:10:29,730
+they were going to a lot of the same
+
+1838
+01:10:29,730 --> 01:10:33,059
+pains that the the IBM guys were having
+
+1839
+01:10:33,059 --> 01:10:49,800
+yes he said you say - this compilation
+
+1840
+01:10:49,800 --> 01:10:52,409
+is expensive but like how much is it how
+
+1841
+01:10:52,409 --> 01:10:53,820
+much is the overhead of the compilation
+
+1842
+01:10:53,820 --> 01:10:55,639
+versus the execution time the query and
+
+1843
+01:10:55,639 --> 01:11:02,480
+how much can we actually cash things yes
+
+1844
+01:11:02,480 --> 01:11:04,710
+right so like but if we query runs from
+
+1845
+01:11:04,710 --> 01:11:07,619
+one millisecond like if if you ran the
+
+1846
+01:11:07,619 --> 01:11:09,119
+interpreter and it took ten milliseconds
+
+1847
+01:11:09,119 --> 01:11:11,219
+but my compiled version runs from one
+
+1848
+01:11:11,219 --> 01:11:13,110
+millisecond but it takes me 20
+
+1849
+01:11:13,110 --> 01:11:14,880
+milliseconds to compile it then I'm
+
+1850
+01:11:14,880 --> 01:11:16,460
+better off just running the interpreter
+
+1851
+01:11:16,460 --> 01:11:19,170
+mem sequel to avoid engineering overhead
+
+1852
+01:11:19,170 --> 01:11:20,219
+you don't want have to build two
+
+1853
+01:11:20,219 --> 01:11:22,199
+separate engines right so they would
+
+1854
+01:11:22,199 --> 01:11:26,070
+compile every query so to avoid and they
+
+1855
+01:11:26,070 --> 01:11:27,360
+were sort of focusing all that things so
+
+1856
+01:11:27,360 --> 01:11:29,280
+you could hope that most the queries
+
+1857
+01:11:29,280 --> 01:11:31,860
+show up with the same pattern you can
+
+1858
+01:11:31,860 --> 01:11:33,449
+reuse the cache plan over and over again
+
+1859
+01:11:33,449 --> 01:11:35,730
+the question is though how much benefit
+
+1860
+01:11:35,730 --> 01:11:37,409
+it provides or depends on what the query
+
+1861
+01:11:37,409 --> 01:11:38,699
+is actually going to do if I'm gonna
+
+1862
+01:11:38,699 --> 01:11:42,539
+read one tuple then then caching could
+
+1863
+01:11:42,539 --> 01:11:45,270
+help a lot because the queries gonna be
+
+1864
+01:11:45,270 --> 01:11:47,190
+so shortened anyway if I'm reading you
+
+1865
+01:11:47,190 --> 01:11:49,260
+know a petabyte of data caching is
+
+1866
+01:11:49,260 --> 01:11:50,280
+probably not gonna make a difference who
+
+1867
+01:11:50,280 --> 01:11:54,059
+cares right for in memory you know most
+
+1868
+01:11:54,059 --> 01:11:55,980
+you don't have databases running in one
+
+1869
+01:11:55,980 --> 01:11:57,900
+petabyte of memory because that's be
+
+1870
+01:11:57,900 --> 01:12:00,570
+super expensive so most memory databases
+
+1871
+01:12:00,570 --> 01:12:02,400
+we're looking at or tens of hundreds of
+
+1872
+01:12:02,400 --> 01:12:03,000
+gigabytes
+
+1873
+01:12:03,000 --> 01:12:04,739
+I think Memphis Eagles that they had
+
+1874
+01:12:04,739 --> 01:12:06,210
+somebody who was like 14 terabytes or
+
+1875
+01:12:06,210 --> 01:12:08,239
+something like that still a lot like
+
+1876
+01:12:08,239 --> 01:12:10,079
+most squares aren't gonna have to rip
+
+1877
+01:12:10,079 --> 01:12:15,570
+the repeting so as I said if they the
+
+1878
+01:12:15,570 --> 01:12:16,500
+mem sequel guide told me they had the
+
+1879
+01:12:16,500 --> 01:12:17,880
+noose over again they would not started
+
+1880
+01:12:17,880 --> 01:12:19,679
+with up with the compilation stuff but
+
+1881
+01:12:19,679 --> 01:12:21,750
+then they got a bunch of money which
+
+1882
+01:12:21,750 --> 01:12:23,489
+always makes things easier and they
+
+1883
+01:12:23,489 --> 01:12:26,429
+hired the guy from from Facebook that
+
+1884
+01:12:26,429 --> 01:12:28,739
+built the hip hop VM for Facebook so
+
+1885
+01:12:28,739 --> 01:12:30,239
+Facebook famously runs on PHP
+
+1886
+01:12:30,239 --> 01:12:32,340
+PHP is an interpreted language language
+
+1887
+01:12:32,340 --> 01:12:34,650
+and the the default least because when I
+
+1888
+01:12:34,650 --> 01:12:36,690
+do PHP develop a con the day like the
+
+1889
+01:12:36,690 --> 01:12:39,059
+default PHP interpreter is super slow so
+
+1890
+01:12:39,059 --> 01:12:41,699
+Facebook nor get better scalability they
+
+1891
+01:12:41,699 --> 01:12:43,079
+built their own B end that can compile
+
+1892
+01:12:43,079 --> 01:12:45,929
+PHP so mem Seco hired the guy that
+
+1893
+01:12:45,929 --> 01:12:47,369
+invented her that worked on that hip-hop
+
+1894
+01:12:47,369 --> 01:12:49,380
+VM to let that project to go read write
+
+1895
+01:12:49,380 --> 01:12:51,659
+the execution engine to be entirely
+
+1896
+01:12:51,659 --> 01:12:54,139
+based on LLVM so now they're gonna do
+
+1897
+01:12:54,139 --> 01:12:57,780
+when what is in my opinion the right way
+
+1898
+01:12:57,780 --> 01:13:01,050
+to do a LM a query execution engine and
+
+1899
+01:13:01,050 --> 01:13:02,159
+this is basically what we're doing now
+
+1900
+01:13:02,159 --> 01:13:04,079
+in our own system so what they're gonna
+
+1901
+01:13:04,079 --> 01:13:05,369
+do is they're gonna take the physical
+
+1902
+01:13:05,369 --> 01:13:06,989
+query plan the optimizer spits out and
+
+1903
+01:13:06,989 --> 01:13:09,420
+then they're to first convert it into a
+
+1904
+01:13:09,420 --> 01:13:12,570
+an imperative plan that that is written
+
+1905
+01:13:12,570 --> 01:13:14,940
+in a high-level domain-specific language
+
+1906
+01:13:14,940 --> 01:13:17,190
+of DSL that they call MPL the mem sequel
+
+1907
+01:13:17,190 --> 01:13:19,679
+programming language it basically looks
+
+1908
+01:13:19,679 --> 01:13:21,719
+like C++ and we'll see our example in a
+
+1909
+01:13:21,719 --> 01:13:24,630
+second then you take that DSL and now
+
+1910
+01:13:24,630 --> 01:13:26,190
+you compile into a bunch of op codes and
+
+1911
+01:13:26,190 --> 01:13:28,650
+then now you can have these op code the
+
+1912
+01:13:28,650 --> 01:13:31,559
+and either interpreted or compiled now
+
+1913
+01:13:31,559 --> 01:13:32,880
+mmm sequels case I think they always
+
+1914
+01:13:32,880 --> 01:13:35,070
+went straight and did compilation but
+
+1915
+01:13:35,070 --> 01:13:36,510
+you could still have an interpreter the
+
+1916
+01:13:36,510 --> 01:13:38,099
+way that the hyper guys did for for
+
+1917
+01:13:38,099 --> 01:13:41,219
+their IR right and now the benefit you
+
+1918
+01:13:41,219 --> 01:13:43,170
+get from this is if I'm a database
+
+1919
+01:13:43,170 --> 01:13:45,090
+engineer we actually people actually
+
+1920
+01:13:45,090 --> 01:13:47,489
+building the system it's way easier for
+
+1921
+01:13:47,489 --> 01:13:49,440
+hire new people to work on this part and
+
+1922
+01:13:49,440 --> 01:13:50,999
+not worry about this part down here
+
+1923
+01:13:50,999 --> 01:13:52,440
+because I'm gonna I'm gonna assume that
+
+1924
+01:13:52,440 --> 01:13:53,670
+my really expensive really smart people
+
+1925
+01:13:53,670 --> 01:13:56,880
+wrote this part correctly and the
+
+1926
+01:13:56,880 --> 01:13:59,849
+everyone else you know I can I can come
+
+1927
+01:13:59,849 --> 01:14:01,769
+work on this part here so you guys will
+
+1928
+01:14:01,769 --> 01:14:03,719
+be the same thing for your project 3 if
+
+1929
+01:14:03,719 --> 01:14:04,769
+you end up working on the execution
+
+1930
+01:14:04,769 --> 01:14:06,749
+engine most of you if you want to add
+
+1931
+01:14:06,749 --> 01:14:08,130
+new features like new string functions
+
+1932
+01:14:08,130 --> 01:14:10,110
+and your sequel functions or date
+
+1933
+01:14:10,110 --> 01:14:11,639
+functions you don't have to touch this
+
+1934
+01:14:11,639 --> 01:14:13,530
+part here you just need to modify this
+
+1935
+01:14:13,530 --> 01:14:19,190
+part up here right all right
+
+1936
+01:14:19,190 --> 01:14:22,320
+Postgres add support for the elevation
+
+1937
+01:14:22,320 --> 01:14:25,260
+in 2018 first came out in version 11 but
+
+1938
+01:14:25,260 --> 01:14:27,030
+it was turned off by default
+
+1939
+01:14:27,030 --> 01:14:29,159
+and then now version 12 I think as of
+
+1940
+01:14:29,159 --> 01:14:31,679
+last year it's turned on by default so
+
+1941
+01:14:31,679 --> 01:14:33,179
+every query and they have an internal
+
+1942
+01:14:33,179 --> 01:14:34,409
+cost model to decide whether I should do
+
+1943
+01:14:34,409 --> 01:14:36,860
+compilation or not and they're gonna do
+
+1944
+01:14:36,860 --> 01:14:38,789
+accomplishment predicates and tuple do
+
+1945
+01:14:38,789 --> 01:14:41,159
+serialization and basically get removed
+
+1946
+01:14:41,159 --> 01:14:43,110
+reduce the number of get next calls you
+
+1947
+01:14:43,110 --> 01:14:43,840
+think
+
+1948
+01:14:43,840 --> 01:14:45,340
+and in the iterator model so I'm gonna
+
+1949
+01:14:45,340 --> 01:14:46,659
+try to inline everything as much as
+
+1950
+01:14:46,659 --> 01:14:48,909
+possible all right and the way they did
+
+1951
+01:14:48,909 --> 01:14:50,110
+is super interesting is that they took
+
+1952
+01:14:50,110 --> 01:14:52,900
+all the backend Postgres code like the
+
+1953
+01:14:52,900 --> 01:14:55,540
+actual the server itself that they have
+
+1954
+01:14:55,540 --> 01:14:57,610
+written see and they can then convert
+
+1955
+01:14:57,610 --> 01:15:01,929
+that same source code into LEM C++ and
+
+1956
+01:15:01,929 --> 01:15:03,310
+then through that they can then remove
+
+1957
+01:15:03,310 --> 01:15:04,719
+these iterator calls so you sort of take
+
+1958
+01:15:04,719 --> 01:15:06,760
+the function to take you know add two
+
+1959
+01:15:06,760 --> 01:15:08,409
+numbers together and they can pre
+
+1960
+01:15:08,409 --> 01:15:10,929
+compile that in LMC pulse code so now as
+
+1961
+01:15:10,929 --> 01:15:12,880
+I do cojan for queries
+
+1962
+01:15:12,880 --> 01:15:16,810
+I invoke that C++ code and not the
+
+1963
+01:15:16,810 --> 01:15:21,040
+regular Postgres C code right
+
+1964
+01:15:21,040 --> 01:15:24,550
+I overtime I could give a demo but let's
+
+1965
+01:15:24,550 --> 01:15:26,500
+give it we'll do it at the end of a on
+
+1966
+01:15:26,500 --> 01:15:28,330
+more time cloud or impalas in double
+
+1967
+01:15:28,330 --> 01:15:30,699
+images using LLVM so they only do
+
+1968
+01:15:30,699 --> 01:15:33,190
+predicates just like in Postgres but
+
+1969
+01:15:33,190 --> 01:15:34,599
+they also do for record parsing which is
+
+1970
+01:15:34,599 --> 01:15:35,199
+interesting
+
+1971
+01:15:35,199 --> 01:15:39,340
+so Impala doesn't have their own like
+
+1972
+01:15:39,340 --> 01:15:41,050
+proprietary storage format like post
+
+1973
+01:15:41,050 --> 01:15:41,800
+cast my seagull there's always
+
+1974
+01:15:41,800 --> 01:15:44,050
+proprietary you know wrote column layout
+
+1975
+01:15:44,050 --> 01:15:45,790
+of data you know they run a parquet
+
+1976
+01:15:45,790 --> 01:15:47,320
+they've run an Avro they run on all the
+
+1977
+01:15:47,320 --> 01:15:50,679
+Hadoop or cloud-based file formats so
+
+1978
+01:15:50,679 --> 01:15:52,690
+what they're gonna do is in order in
+
+1979
+01:15:52,690 --> 01:15:54,159
+order to parse these these records more
+
+1980
+01:15:54,159 --> 01:15:57,369
+more quickly they're gonna precompile a
+
+1981
+01:15:57,369 --> 01:16:00,010
+bunch of these parsers ahead of time or
+
+1982
+01:16:00,010 --> 01:16:02,170
+if my query shows up and operating on
+
+1983
+01:16:02,170 --> 01:16:04,179
+some CSV file so I know what the schema
+
+1984
+01:16:04,179 --> 01:16:07,750
+is I can then pre-compile the CSV parser
+
+1985
+01:16:07,750 --> 01:16:09,369
+so I don't have to have this interpreter
+
+1986
+01:16:09,369 --> 01:16:11,050
+to look at like you know fine columns or
+
+1987
+01:16:11,050 --> 01:16:12,900
+commas and things like that
+
+1988
+01:16:12,900 --> 01:16:15,400
+I'm gonna skip Vitesse DB I want to
+
+1989
+01:16:15,400 --> 01:16:18,580
+quickly talk about hours so the first
+
+1990
+01:16:18,580 --> 01:16:20,320
+version of peloton we did what L Piper
+
+1991
+01:16:20,320 --> 01:16:22,090
+did we would have our C plus coats but I
+
+1992
+01:16:22,090 --> 01:16:25,060
+are directly we weren't doing full
+
+1993
+01:16:25,060 --> 01:16:26,830
+pipelining they were doing we actually
+
+1994
+01:16:26,830 --> 01:16:29,260
+can do we actually introduced these
+
+1995
+01:16:29,260 --> 01:16:30,670
+these pipeline breakers at different
+
+1996
+01:16:30,670 --> 01:16:32,199
+parts of the query plan because now we
+
+1997
+01:16:32,199 --> 01:16:32,830
+can pass around
+
+1998
+01:16:32,830 --> 01:16:34,510
+vectors R to pool to get the benefits we
+
+1999
+01:16:34,510 --> 01:16:36,040
+have in vector wise this will make more
+
+2000
+01:16:36,040 --> 01:16:38,650
+sense next class and when you solve our
+
+2001
+01:16:38,650 --> 01:16:41,199
+pet you need to hide this so just to
+
+2002
+01:16:41,199 --> 01:16:42,940
+show some numbers this number this is
+
+2003
+01:16:42,940 --> 01:16:45,099
+what my patient Prashant ran so this is
+
+2004
+01:16:45,099 --> 01:16:46,540
+like the interpreted version of peloton
+
+2005
+01:16:46,540 --> 01:16:48,400
+versus like the compiled version with
+
+2006
+01:16:48,400 --> 01:16:51,369
+and without this relax operator fusion
+
+2007
+01:16:51,369 --> 01:16:54,960
+technique and so this is not a good
+
+2008
+01:16:54,960 --> 01:16:57,219
+example of what the benefit you can get
+
+2009
+01:16:57,219 --> 01:16:58,690
+from compilation like this is like if
+
+2010
+01:16:58,690 --> 01:17:00,250
+you're versus not like
+
+2011
+01:17:00,250 --> 01:17:02,170
+the Graybar he repelled town that was a
+
+2012
+01:17:02,170 --> 01:17:04,630
+it was a bad engine right it wasn't good
+
+2013
+01:17:04,630 --> 01:17:06,310
+at all and so I don't get the idea that
+
+2014
+01:17:06,310 --> 01:17:07,780
+you're gonna get a hunter X benefit
+
+2015
+01:17:07,780 --> 01:17:09,400
+performance improvement through
+
+2016
+01:17:09,400 --> 01:17:11,620
+compilation is usually like from any
+
+2017
+01:17:11,620 --> 01:17:14,620
+from 2 to 25 X right but this showing
+
+2018
+01:17:14,620 --> 01:17:16,690
+you here that again we can go from this
+
+2019
+01:17:16,690 --> 01:17:20,050
+is like 88 8 seconds to 800 milliseconds
+
+2020
+01:17:20,050 --> 01:17:21,790
+like that that's a pretty significant
+
+2021
+01:17:21,790 --> 01:17:24,670
+drop by doing compilation here right but
+
+2022
+01:17:24,670 --> 01:17:26,320
+we abandon this because it was a huge
+
+2023
+01:17:26,320 --> 01:17:27,969
+pain because now you need to be an
+
+2024
+01:17:27,969 --> 01:17:30,400
+expert in ela Mir in order to debug
+
+2025
+01:17:30,400 --> 01:17:31,719
+anything or make any changes to the
+
+2026
+01:17:31,719 --> 01:17:33,610
+execution engine because when the query
+
+2027
+01:17:33,610 --> 01:17:35,560
+crashed you land an assembly and don't
+
+2028
+01:17:35,560 --> 01:17:37,660
+have a stack trace and only like 2 or 3
+
+2029
+01:17:37,660 --> 01:17:39,510
+students could actually work on it now
+
+2030
+01:17:39,510 --> 01:17:41,469
+our new system which is currently
+
+2031
+01:17:41,469 --> 01:17:42,880
+unnamed but we have a name we haven't
+
+2032
+01:17:42,880 --> 01:17:44,590
+announced it is we do what mem Siegel
+
+2033
+01:17:44,590 --> 01:17:46,810
+does where we take the query plan
+
+2034
+01:17:46,810 --> 01:17:49,180
+convert it into a high-level DSL that's
+
+2035
+01:17:49,180 --> 01:17:50,350
+specific to our database system
+
+2036
+01:17:50,350 --> 01:17:53,320
+basically looks like C then we compile
+
+2037
+01:17:53,320 --> 01:17:55,210
+that DSL into opcodes
+
+2038
+01:17:55,210 --> 01:17:56,830
+and then we can interpret that off codes
+
+2039
+01:17:56,830 --> 01:17:58,150
+while the compilation occurs in the
+
+2040
+01:17:58,150 --> 01:18:01,840
+background looks like this my query plan
+
+2041
+01:18:01,840 --> 01:18:03,910
+shows up I can then convert this into
+
+2042
+01:18:03,910 --> 01:18:05,949
+some some dialect which again looks like
+
+2043
+01:18:05,949 --> 01:18:08,410
+C like this is doing a scan on foo and
+
+2044
+01:18:08,410 --> 01:18:10,390
+then has this predicate on column a
+
+2045
+01:18:10,390 --> 01:18:13,510
+column B well inside of my my my DSL I'm
+
+2046
+01:18:13,510 --> 01:18:16,210
+doing that operation directly now I'm
+
+2047
+01:18:16,210 --> 01:18:18,820
+gonna convert this into op codes the
+
+2048
+01:18:18,820 --> 01:18:20,620
+exact details doesn't don't matter but
+
+2049
+01:18:20,620 --> 01:18:21,850
+like this is actually human readable
+
+2050
+01:18:21,850 --> 01:18:23,890
+right like we have things like table
+
+2051
+01:18:23,890 --> 01:18:25,300
+vectors to iterate over to polls and get
+
+2052
+01:18:25,300 --> 01:18:28,180
+next and have function calls to to get
+
+2053
+01:18:28,180 --> 01:18:30,040
+integers and things like that so now I
+
+2054
+01:18:30,040 --> 01:18:32,920
+can then take this OP code start
+
+2055
+01:18:32,920 --> 01:18:34,780
+interpreting it at me lean start means I
+
+2056
+01:18:34,780 --> 01:18:35,980
+can start executing without having to
+
+2057
+01:18:35,980 --> 01:18:37,960
+run the compiler then in the background
+
+2058
+01:18:37,960 --> 01:18:39,670
+I run my LM optimized compiler I
+
+2059
+01:18:39,670 --> 01:18:41,860
+generate C++ I gentlemen my shared
+
+2060
+01:18:41,860 --> 01:18:44,380
+object I can then link that in and and
+
+2061
+01:18:44,380 --> 01:18:46,110
+fire it off right
+
+2062
+01:18:46,110 --> 01:18:48,610
+again that was bit rushed I can show
+
+2063
+01:18:48,610 --> 01:18:51,210
+down with this next class all right so
+
+2064
+01:18:51,210 --> 01:18:53,020
+the main takeaway from this is that
+
+2065
+01:18:53,020 --> 01:18:55,690
+query compilation is super important any
+
+2066
+01:18:55,690 --> 01:18:56,949
+every modern data system is going to
+
+2067
+01:18:56,949 --> 01:18:57,699
+want to do this
+
+2068
+01:18:57,699 --> 01:18:59,440
+the column is gonna be it's gonna be not
+
+2069
+01:18:59,440 --> 01:19:01,300
+easy to implement but you need to know
+
+2070
+01:19:01,300 --> 01:19:03,310
+something about compilers and political
+
+2071
+01:19:03,310 --> 01:19:05,770
+systems the Mystique approach as of 2016
+
+2072
+01:19:05,770 --> 01:19:07,120
+is the way to go
+
+2073
+01:19:07,120 --> 01:19:11,280
+and every system now is it's exploring
+
+2074
+01:19:11,339 --> 01:19:19,139
+okay okay what is this
+
+2075
+01:19:19,310 --> 01:19:46,500
+[Music]
+

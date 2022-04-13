@@ -1,0 +1,8780 @@
+1
+00:00:03,640 --> 00:00:13,140
+[Music]
+
+2
+00:00:15,789 --> 00:00:17,600
+all right again
+
+3
+00:00:17,600 --> 00:00:21,199
+Thank You Gigi easy drop table for keep
+
+4
+00:00:21,199 --> 00:00:22,550
+things fresh all right
+
+5
+00:00:22,550 --> 00:00:25,999
+so we'd love to talk about real quickly
+
+6
+00:00:25,999 --> 00:00:27,949
+again for the assignments project three
+
+7
+00:00:27,949 --> 00:00:29,720
+hits been put out and that'll be due on
+
+8
+00:00:29,720 --> 00:00:32,060
+Sunday November 17th and I'll talk about
+
+9
+00:00:32,060 --> 00:00:33,650
+that briefly at the end of this class
+
+10
+00:00:33,650 --> 00:00:37,430
+and then project or say homework 4
+
+11
+00:00:37,430 --> 00:00:39,770
+should be four not three or will be
+
+12
+00:00:39,770 --> 00:00:42,379
+released next week and that will be then
+
+13
+00:00:42,379 --> 00:00:45,379
+better we do on on the thirteenth okay
+
+14
+00:00:45,379 --> 00:00:48,469
+and as I said my wife is going we're
+
+15
+00:00:48,469 --> 00:00:49,969
+going to hospital tonight it's gonna
+
+16
+00:00:49,969 --> 00:00:52,250
+happen like nine hours from now so I'm
+
+17
+00:00:52,250 --> 00:00:53,629
+gonna be gone for two weeks I won't have
+
+18
+00:00:53,629 --> 00:00:54,980
+office hours next week or the following
+
+19
+00:00:54,980 --> 00:00:56,929
+week and then next week we will still
+
+20
+00:00:56,929 --> 00:00:59,839
+have classes my PhD students will what
+
+21
+00:00:59,839 --> 00:01:01,699
+we take take care of those classes then
+
+22
+00:01:01,699 --> 00:01:02,839
+the following Monday we'll be getting
+
+23
+00:01:02,839 --> 00:01:04,309
+one more PG student and then we'll have
+
+24
+00:01:04,309 --> 00:01:07,580
+no class on October 30th and then the
+
+25
+00:01:07,580 --> 00:01:11,060
+schedule correctly reflects this okay so
+
+26
+00:01:11,060 --> 00:01:13,490
+any questions about any of this and that
+
+27
+00:01:13,490 --> 00:01:15,680
+would make arrangements with my my admin
+
+28
+00:01:15,680 --> 00:01:18,650
+about having all the midterms in her
+
+29
+00:01:18,650 --> 00:01:20,119
+office and then we'll figure out some
+
+30
+00:01:20,119 --> 00:01:21,770
+time you'd go come her office and check
+
+31
+00:01:21,770 --> 00:01:24,049
+check out your your midterm again just
+
+32
+00:01:24,049 --> 00:01:25,549
+bring your student ID so she knows who
+
+33
+00:01:25,549 --> 00:01:29,360
+you are okay and then if you have if you
+
+34
+00:01:29,360 --> 00:01:31,250
+want something regraded take a photo you
+
+35
+00:01:31,250 --> 00:01:32,509
+can't take your midterm with you just
+
+36
+00:01:32,509 --> 00:01:33,470
+take a photo the page you want me
+
+37
+00:01:33,470 --> 00:01:36,200
+created and email me and we'll take care
+
+38
+00:01:36,200 --> 00:01:40,759
+of it okay all right so we're right now
+
+39
+00:01:40,759 --> 00:01:42,770
+in the course is that we've covered the
+
+40
+00:01:42,770 --> 00:01:45,200
+entire stack we've covered how to store
+
+41
+00:01:45,200 --> 00:01:47,270
+things on disk we covered how to put
+
+42
+00:01:47,270 --> 00:01:49,340
+things in a probable the access method
+
+43
+00:01:49,340 --> 00:01:51,649
+scans how to execute operators and how
+
+44
+00:01:51,649 --> 00:01:54,110
+to do query planning so now we're gonna
+
+45
+00:01:54,110 --> 00:01:55,399
+actually can look look at for the next
+
+46
+00:01:55,399 --> 00:01:57,380
+four weeks we're gonna go back and look
+
+47
+00:01:57,380 --> 00:01:58,640
+at the entire architecture all over
+
+48
+00:01:58,640 --> 00:02:02,210
+again and now consider two important
+
+49
+00:02:02,210 --> 00:02:04,159
+components concurrency control and
+
+50
+00:02:04,159 --> 00:02:06,920
+recovery and these concepts actually
+
+51
+00:02:06,920 --> 00:02:08,869
+permeate all throughout the entire
+
+52
+00:02:08,869 --> 00:02:10,880
+system we kinda need to understand the
+
+53
+00:02:10,880 --> 00:02:12,170
+basics first and that's why we went
+
+54
+00:02:12,170 --> 00:02:13,610
+through without discussing any of these
+
+55
+00:02:13,610 --> 00:02:15,530
+things and now we're going back and
+
+56
+00:02:15,530 --> 00:02:17,599
+seeing how we wouldn't you know if you
+
+57
+00:02:17,599 --> 00:02:18,860
+want to enforce concur cheat or make
+
+58
+00:02:18,860 --> 00:02:20,090
+sure that our databases can be stored on
+
+59
+00:02:20,090 --> 00:02:20,780
+disk safely
+
+60
+00:02:20,780 --> 00:02:23,180
+how do we make sure that we had we
+
+61
+00:02:23,180 --> 00:02:24,410
+modify what we've already talked about
+
+62
+00:02:24,410 --> 00:02:26,270
+to account for these things and take
+
+63
+00:02:26,270 --> 00:02:26,810
+care of it
+
+64
+00:02:26,810 --> 00:02:29,560
+so again courage call and recovery are
+
+65
+00:02:29,560 --> 00:02:31,730
+all you know they're not like should be
+
+66
+00:02:31,730 --> 00:02:33,140
+separate things on the side with a
+
+67
+00:02:33,140 --> 00:02:35,750
+problem manager or an index the entire
+
+68
+00:02:35,750 --> 00:02:37,730
+system needs you aware of how it's gonna
+
+69
+00:02:37,730 --> 00:02:40,070
+be durable how things are gonna be how
+
+70
+00:02:40,070 --> 00:02:41,840
+transactions are gonna run safely and so
+
+71
+00:02:41,840 --> 00:02:42,830
+that's why we're going we're covering
+
+72
+00:02:42,830 --> 00:02:46,280
+this at the at the second half of the
+
+73
+00:02:46,280 --> 00:02:48,650
+semester and I would say also to once we
+
+74
+00:02:48,650 --> 00:02:50,480
+have these two things that you can go
+
+75
+00:02:50,480 --> 00:02:51,530
+off the world and build your own
+
+76
+00:02:51,530 --> 00:02:53,060
+database system but these are the last
+
+77
+00:02:53,060 --> 00:02:54,860
+two things we need to actually build an
+
+78
+00:02:54,860 --> 00:02:56,780
+AV system that can run transactions
+
+79
+00:02:56,780 --> 00:02:58,670
+correctly and make sure that everything
+
+80
+00:02:58,670 --> 00:03:02,600
+is safe so we're almost there so to
+
+81
+00:03:02,600 --> 00:03:04,430
+motivate why we want to talk about
+
+82
+00:03:04,430 --> 00:03:06,770
+Kikuchi on recovery let's look at two
+
+83
+00:03:06,770 --> 00:03:09,920
+simple scenarios so let's say that I
+
+84
+00:03:09,920 --> 00:03:12,950
+have an application where I want to have
+
+85
+00:03:12,950 --> 00:03:14,989
+two threads try to update the same
+
+86
+00:03:14,989 --> 00:03:17,390
+record in the same table at exactly the
+
+87
+00:03:17,390 --> 00:03:20,420
+same time how to make how to make a
+
+88
+00:03:20,420 --> 00:03:21,530
+decision about which one should you
+
+89
+00:03:21,530 --> 00:03:22,970
+succeed well should be our final change
+
+90
+00:03:22,970 --> 00:03:24,590
+and there's a race condition here I
+
+91
+00:03:24,590 --> 00:03:26,390
+would have want to come slight before
+
+92
+00:03:26,390 --> 00:03:30,260
+the for another the other scenario is
+
+93
+00:03:30,260 --> 00:03:31,820
+that let's say that I have an
+
+94
+00:03:31,820 --> 00:03:34,820
+application that for my bank and I want
+
+95
+00:03:34,820 --> 00:03:36,470
+to transfer a hundred dollars out of my
+
+96
+00:03:36,470 --> 00:03:39,170
+account into your account but let's say
+
+97
+00:03:39,170 --> 00:03:40,910
+you know before I you know after I take
+
+98
+00:03:40,910 --> 00:03:42,560
+the money out of my account but before I
+
+99
+00:03:42,560 --> 00:03:44,840
+can put it in your account the the
+
+100
+00:03:44,840 --> 00:03:46,280
+building the data center gets struck by
+
+101
+00:03:46,280 --> 00:03:49,100
+lightning the the lose all power our
+
+102
+00:03:49,100 --> 00:03:50,450
+machine crashes or database system
+
+103
+00:03:50,450 --> 00:03:53,450
+crashes so when we come back what should
+
+104
+00:03:53,450 --> 00:03:55,730
+be the correct state of the database but
+
+105
+00:03:55,730 --> 00:04:00,079
+what should we actually see so the first
+
+106
+00:04:00,079 --> 00:04:02,239
+problem that I'm talking about here at
+
+107
+00:04:02,239 --> 00:04:04,370
+the top this is an example of a lost
+
+108
+00:04:04,370 --> 00:04:07,160
+update or I have two transactions two
+
+109
+00:04:07,160 --> 00:04:08,570
+threads trying to make an update to the
+
+110
+00:04:08,570 --> 00:04:10,549
+same back at the same time I couldn't
+
+111
+00:04:10,549 --> 00:04:13,100
+have end up missing one all right how to
+
+112
+00:04:13,100 --> 00:04:14,420
+make sure that doesn't happen and the
+
+113
+00:04:14,420 --> 00:04:16,279
+way we're gonna use ensure that these
+
+114
+00:04:16,279 --> 00:04:18,620
+things happen correctly is through a
+
+115
+00:04:18,620 --> 00:04:21,769
+concur tool mechanism occurred stroke
+
+116
+00:04:21,769 --> 00:04:24,290
+protocol for the second scenario where
+
+117
+00:04:24,290 --> 00:04:27,290
+my machine Meador my data center catches
+
+118
+00:04:27,290 --> 00:04:30,229
+on fire and I you know my I lose power
+
+119
+00:04:30,229 --> 00:04:32,660
+and my machine crashes we're gonna use
+
+120
+00:04:32,660 --> 00:04:33,810
+the recovery mechanism
+
+121
+00:04:33,810 --> 00:04:35,040
+in the database system to ensure
+
+122
+00:04:35,040 --> 00:04:39,570
+durability so these two costs of control
+
+123
+00:04:39,570 --> 00:04:41,580
+and durability are one of the main
+
+124
+00:04:41,580 --> 00:04:44,040
+selling points of a database management
+
+125
+00:04:44,040 --> 00:04:46,230
+system this is why if you're building an
+
+126
+00:04:46,230 --> 00:04:47,820
+application whether it's in the cloud or
+
+127
+00:04:47,820 --> 00:04:52,080
+on a cell phone or on a desktop you
+
+128
+00:04:52,080 --> 00:04:53,340
+don't want to be in the business of
+
+129
+00:04:53,340 --> 00:04:55,050
+doing these things yourself in your
+
+130
+00:04:55,050 --> 00:04:56,310
+application because you're probably
+
+131
+00:04:56,310 --> 00:04:57,990
+gonna get it wrong and you can have
+
+132
+00:04:57,990 --> 00:05:00,210
+losing data or have incorrect data this
+
+133
+00:05:00,210 --> 00:05:01,770
+is why you want to use a data internet
+
+134
+00:05:01,770 --> 00:05:03,270
+system because they can have they have
+
+135
+00:05:03,270 --> 00:05:04,200
+really smart people that have been
+
+136
+00:05:04,200 --> 00:05:05,850
+spending a lot of time to make sure that
+
+137
+00:05:05,850 --> 00:05:08,580
+these things happen correctly if you
+
+138
+00:05:08,580 --> 00:05:09,810
+also think about it to it like if you're
+
+139
+00:05:09,810 --> 00:05:13,140
+a startup you know the if you're
+
+140
+00:05:13,140 --> 00:05:15,060
+shipping an application it doesn't
+
+141
+00:05:15,060 --> 00:05:16,470
+matter you know the end of the day
+
+142
+00:05:16,470 --> 00:05:18,000
+what's with what's not gonna sell your
+
+143
+00:05:18,000 --> 00:05:20,520
+product is oh I can I can recover the
+
+144
+00:05:20,520 --> 00:05:22,650
+database after a crash right you need
+
+145
+00:05:22,650 --> 00:05:24,210
+that as a feature you absolutely have to
+
+146
+00:05:24,210 --> 00:05:26,100
+have but that's not a differentiating
+
+147
+00:05:26,100 --> 00:05:28,169
+aspect of your application versus your
+
+148
+00:05:28,169 --> 00:05:30,660
+competitors all right so you don't want
+
+149
+00:05:30,660 --> 00:05:32,130
+to get if you don't want any business of
+
+150
+00:05:32,130 --> 00:05:33,570
+writing a database minute from yourself
+
+151
+00:05:33,570 --> 00:05:36,150
+unless that is your job for everything
+
+152
+00:05:36,150 --> 00:05:36,450
+else
+
+153
+00:05:36,450 --> 00:05:38,760
+people should rely on you know high
+
+154
+00:05:38,760 --> 00:05:40,229
+quality software David system software
+
+155
+00:05:40,229 --> 00:05:42,630
+that is that is vetted to do these
+
+156
+00:05:42,630 --> 00:05:46,350
+things so the core concept that we're
+
+157
+00:05:46,350 --> 00:05:48,660
+going to use through the next four weeks
+
+158
+00:05:48,660 --> 00:05:50,910
+discussing this these you know running
+
+159
+00:05:50,910 --> 00:05:52,979
+the our system to make sure that things
+
+160
+00:05:52,979 --> 00:05:54,390
+are running in the correct order or
+
+161
+00:05:54,390 --> 00:05:56,669
+running that all our changes are so
+
+162
+00:05:56,669 --> 00:05:59,039
+durable is this idea of transactions
+
+163
+00:05:59,039 --> 00:06:00,810
+that are that are gonna run with asset
+
+164
+00:06:00,810 --> 00:06:03,240
+guarantees or asset properties so
+
+165
+00:06:03,240 --> 00:06:04,140
+there's a quick show of hands who here
+
+166
+00:06:04,140 --> 00:06:06,169
+has heard of the acronym asset before
+
+167
+00:06:06,169 --> 00:06:07,320
+all right
+
+168
+00:06:07,320 --> 00:06:10,800
+about half okay so we'll cover that so
+
+169
+00:06:10,800 --> 00:06:12,270
+before we can sell an asset let's talk
+
+170
+00:06:12,270 --> 00:06:15,210
+about what a transaction is so in our
+
+171
+00:06:15,210 --> 00:06:17,400
+world today if we're talk about in this
+
+172
+00:06:17,400 --> 00:06:19,950
+lecture the transaction is gonna be the
+
+173
+00:06:19,950 --> 00:06:23,460
+execution of a sequence of operations on
+
+174
+00:06:23,460 --> 00:06:25,229
+a database system to before some
+
+175
+00:06:25,229 --> 00:06:27,810
+higher-level function and so these
+
+176
+00:06:27,810 --> 00:06:29,070
+operations you can sort of think about
+
+177
+00:06:29,070 --> 00:06:30,630
+as sequel queries or the reads and
+
+178
+00:06:30,630 --> 00:06:33,650
+writes we're doing to the database and
+
+179
+00:06:33,650 --> 00:06:36,000
+by higher-level function I mean
+
+180
+00:06:36,000 --> 00:06:39,360
+something like that reputation you know
+
+181
+00:06:39,360 --> 00:06:41,820
+some some some feature we want our
+
+182
+00:06:41,820 --> 00:06:44,729
+application to perform the steps
+
+183
+00:06:44,729 --> 00:06:46,650
+transfer money from my account into your
+
+184
+00:06:46,650 --> 00:06:48,300
+account that would be a high-level
+
+185
+00:06:48,300 --> 00:06:50,819
+function because it's suppity program in
+
+186
+00:06:50,819 --> 00:06:53,129
+a transaction in our application no
+
+187
+00:06:53,129 --> 00:06:54,900
+database systems gonna have that did
+
+188
+00:06:54,900 --> 00:06:56,279
+that feature that like that single
+
+189
+00:06:56,279 --> 00:06:58,860
+function can call no move money this is
+
+190
+00:06:58,860 --> 00:06:59,849
+something you would write in your
+
+191
+00:06:59,849 --> 00:07:03,479
+application up above so transactions are
+
+192
+00:07:03,479 --> 00:07:05,249
+going to be the basic unit of change in
+
+193
+00:07:05,249 --> 00:07:06,930
+our database management system meaning
+
+194
+00:07:06,930 --> 00:07:09,449
+this is well how all changes are going
+
+195
+00:07:09,449 --> 00:07:12,059
+to occur in the in the wrapped inside of
+
+196
+00:07:12,059 --> 00:07:14,729
+a transaction right whether it's if it's
+
+197
+00:07:14,729 --> 00:07:16,680
+multiple queries or a single query it's
+
+198
+00:07:16,680 --> 00:07:18,710
+always going to be a transaction I
+
+199
+00:07:18,710 --> 00:07:21,599
+suppose you can have a zero query
+
+200
+00:07:21,599 --> 00:07:22,740
+transaction but that doesn't really mean
+
+201
+00:07:22,740 --> 00:07:24,960
+anything right but it's assumed that
+
+202
+00:07:24,960 --> 00:07:26,939
+it's one or more operations we want to
+
+203
+00:07:26,939 --> 00:07:29,520
+do and so the key concept though about
+
+204
+00:07:29,520 --> 00:07:31,289
+transactions is that we're not going to
+
+205
+00:07:31,289 --> 00:07:33,419
+allow for partial transactions where
+
+206
+00:07:33,419 --> 00:07:34,469
+transactions are always going to be
+
+207
+00:07:34,469 --> 00:07:34,919
+atomic
+
+208
+00:07:34,919 --> 00:07:37,620
+but that means that if I have a sequence
+
+209
+00:07:37,620 --> 00:07:39,930
+of five updates I want to do either all
+
+210
+00:07:39,930 --> 00:07:43,620
+five occur or none of them occur I can't
+
+211
+00:07:43,620 --> 00:07:44,909
+have you know some like you know maybe
+
+212
+00:07:44,909 --> 00:07:46,379
+the first three out of five secede and
+
+213
+00:07:46,379 --> 00:07:48,899
+the other two fail right it's either all
+
+214
+00:07:48,899 --> 00:07:51,360
+or nothing and even if you have a single
+
+215
+00:07:51,360 --> 00:07:52,800
+query transaction a single operation
+
+216
+00:07:52,800 --> 00:07:54,930
+transaction say I have an update query
+
+217
+00:07:54,930 --> 00:07:57,060
+that updates five to pools all right
+
+218
+00:07:57,060 --> 00:07:59,339
+still one query but within that I'm not
+
+219
+00:07:59,339 --> 00:08:02,069
+getting five things all five had to get
+
+220
+00:08:02,069 --> 00:08:06,449
+updated not not some subset of them so
+
+221
+00:08:06,449 --> 00:08:08,189
+the transaction example would be that
+
+222
+00:08:08,189 --> 00:08:09,990
+the one I talked about before work I
+
+223
+00:08:09,990 --> 00:08:11,490
+want to move a hundred dollars out of my
+
+224
+00:08:11,490 --> 00:08:13,229
+bank account into my shady promoters
+
+225
+00:08:13,229 --> 00:08:15,779
+account so the database system doesn't
+
+226
+00:08:15,779 --> 00:08:17,309
+provide this functionality in my
+
+227
+00:08:17,309 --> 00:08:18,959
+application code I would write the steps
+
+228
+00:08:18,959 --> 00:08:21,389
+to perform this right so in the first
+
+229
+00:08:21,389 --> 00:08:23,129
+step I would say well check to see
+
+230
+00:08:23,129 --> 00:08:24,839
+whether India has $100 he probably
+
+231
+00:08:24,839 --> 00:08:28,229
+doesn't write but then if I do then you
+
+232
+00:08:28,229 --> 00:08:29,520
+can take the hundred dollars out of my
+
+233
+00:08:29,520 --> 00:08:31,770
+account and then put the hundred dollars
+
+234
+00:08:31,770 --> 00:08:34,229
+into his account all right again these
+
+235
+00:08:34,229 --> 00:08:36,029
+are separate steps there's no magic way
+
+236
+00:08:36,029 --> 00:08:38,669
+to just materialize money in in a single
+
+237
+00:08:38,669 --> 00:08:40,318
+at the lowest level the harbor to
+
+238
+00:08:40,318 --> 00:08:42,089
+automatically update something and
+
+239
+00:08:42,089 --> 00:08:44,670
+another thing at the exact same time all
+
+240
+00:08:44,670 --> 00:08:45,600
+right there's a bunch of extra stuff we
+
+241
+00:08:45,600 --> 00:08:46,740
+have to do to make sure that this
+
+242
+00:08:46,740 --> 00:08:49,019
+happens atomically but from the
+
+243
+00:08:49,019 --> 00:08:51,300
+applications perspective you know they
+
+244
+00:08:51,300 --> 00:08:52,769
+vote this transaction and this will all
+
+245
+00:08:52,769 --> 00:08:55,670
+happen or none of it happens
+
+246
+00:08:55,670 --> 00:08:57,920
+so let's talk about a really simple
+
+247
+00:08:57,920 --> 00:08:59,450
+database system we could build that
+
+248
+00:08:59,450 --> 00:09:02,410
+could could could do this for us so
+
+249
+00:09:02,410 --> 00:09:04,460
+let's say we have a database system that
+
+250
+00:09:04,460 --> 00:09:07,150
+has only supports a single thread
+
+251
+00:09:07,150 --> 00:09:09,530
+meaning only one transaction and only
+
+252
+00:09:09,530 --> 00:09:12,160
+one query can run at a single time and
+
+253
+00:09:12,160 --> 00:09:14,480
+you know if multiple queries are
+
+254
+00:09:14,480 --> 00:09:15,470
+multiple transactions show up in the
+
+255
+00:09:15,470 --> 00:09:17,210
+system it just puts them in a queue and
+
+256
+00:09:17,210 --> 00:09:18,860
+there's one thread pulling things off
+
+257
+00:09:18,860 --> 00:09:20,560
+that queue and running them one by one
+
+258
+00:09:20,560 --> 00:09:23,000
+so now before transaction starts
+
+259
+00:09:23,000 --> 00:09:25,250
+executing what they're gonna do is
+
+260
+00:09:25,250 --> 00:09:26,660
+they're gonna copy the entire database
+
+261
+00:09:26,660 --> 00:09:29,330
+file or set of files what however it's
+
+262
+00:09:29,330 --> 00:09:31,490
+architected it's gonna make a second
+
+263
+00:09:31,490 --> 00:09:33,920
+copy of the database make all the
+
+264
+00:09:33,920 --> 00:09:35,600
+changes that wants to make to that copy
+
+265
+00:09:35,600 --> 00:09:38,180
+and then if it succeeds and we want to
+
+266
+00:09:38,180 --> 00:09:40,340
+save all our changes then we just flip a
+
+267
+00:09:40,340 --> 00:09:42,170
+pointer to say now the new version of
+
+268
+00:09:42,170 --> 00:09:44,690
+the database is is the second file I
+
+269
+00:09:44,690 --> 00:09:47,420
+just created all right so this
+
+270
+00:09:47,420 --> 00:09:49,340
+guarantees that Adam is to be propagated
+
+271
+00:09:49,340 --> 00:09:52,070
+is mentioned because if I make the copy
+
+272
+00:09:52,070 --> 00:09:54,740
+to the database and then I'm doing five
+
+273
+00:09:54,740 --> 00:09:56,660
+writes but then the first three happen
+
+274
+00:09:56,660 --> 00:09:58,850
+and then I crash when I come back I
+
+275
+00:09:58,850 --> 00:10:00,290
+still have my original copy of the
+
+276
+00:10:00,290 --> 00:10:01,730
+database because I didn't affect that I
+
+277
+00:10:01,730 --> 00:10:03,590
+said that you know so everything is
+
+278
+00:10:03,590 --> 00:10:06,500
+still correct there that's fine things
+
+279
+00:10:06,500 --> 00:10:09,020
+are being written to disk so if I crash
+
+280
+00:10:09,020 --> 00:10:10,610
+I could come back and those my disks
+
+281
+00:10:10,610 --> 00:10:14,530
+didn't die all my data is still there so
+
+282
+00:10:14,530 --> 00:10:18,140
+would this actually work he says yes
+
+283
+00:10:18,140 --> 00:10:23,960
+would this be fast says no y-you said no
+
+284
+00:10:23,960 --> 00:10:34,670
+so why if something to the UH please
+
+285
+00:10:34,670 --> 00:10:36,260
+doesn't matter right the amount of the
+
+286
+00:10:36,260 --> 00:10:38,510
+matter updates I'm doing in my
+
+287
+00:10:38,510 --> 00:10:39,590
+transaction it doesn't matter because
+
+288
+00:10:39,590 --> 00:10:40,970
+I'm copying the file every single time
+
+289
+00:10:40,970 --> 00:10:43,340
+so I copy entire file and make one
+
+290
+00:10:43,340 --> 00:10:45,140
+change versus a thousand changes like
+
+291
+00:10:45,140 --> 00:10:47,240
+that copy cost is always the same but
+
+292
+00:10:47,240 --> 00:10:48,680
+you're right the clock the copy part is
+
+293
+00:10:48,680 --> 00:10:51,050
+expensive if it's a one kilobyte or
+
+294
+00:10:51,050 --> 00:10:53,540
+starting a four kilobyte page for my
+
+295
+00:10:53,540 --> 00:10:55,370
+database who cares that's one Hardware
+
+296
+00:10:55,370 --> 00:10:56,660
+read and write I can I do that pretty
+
+297
+00:10:56,660 --> 00:10:58,430
+quickly but if I have one petabyte of
+
+298
+00:10:58,430 --> 00:11:00,290
+data now for every single transaction
+
+299
+00:11:00,290 --> 00:11:02,120
+I'm copping one petabyte every single
+
+300
+00:11:02,120 --> 00:11:05,570
+time making my changes and then updating
+
+301
+00:11:05,570 --> 00:11:09,080
+the pointer so this is a good example of
+
+302
+00:11:09,080 --> 00:11:09,500
+where we
+
+303
+00:11:09,500 --> 00:11:11,390
+design a system that had the properties
+
+304
+00:11:11,390 --> 00:11:12,590
+that we want and particularly acid
+
+305
+00:11:12,590 --> 00:11:14,300
+properties that we'll talk about but
+
+306
+00:11:14,300 --> 00:11:16,880
+this is going to be super slow to do it
+
+307
+00:11:16,880 --> 00:11:19,130
+this way the other issue is that we're
+
+308
+00:11:19,130 --> 00:11:21,740
+also running with a single thread so I
+
+309
+00:11:21,740 --> 00:11:23,030
+didn't say anything about whether the
+
+310
+00:11:23,030 --> 00:11:24,740
+the the database fits in memory or not
+
+311
+00:11:24,740 --> 00:11:26,480
+right so now if I'm running with a
+
+312
+00:11:26,480 --> 00:11:28,100
+single thread and tries to touch data
+
+313
+00:11:28,100 --> 00:11:29,870
+that's not in memory but it's in disk I
+
+314
+00:11:29,870 --> 00:11:32,120
+have to stole my thread until I go fetch
+
+315
+00:11:32,120 --> 00:11:34,280
+it and I can't run anything else because
+
+316
+00:11:34,280 --> 00:11:35,300
+I only have one thread that can do this
+
+317
+00:11:35,300 --> 00:11:38,630
+at a time so we're gonna talk about
+
+318
+00:11:38,630 --> 00:11:40,970
+today and and and for the next couple
+
+319
+00:11:40,970 --> 00:11:43,970
+weeks is a potentially better approach
+
+320
+00:11:43,970 --> 00:11:45,410
+where we're going to allow transactions
+
+321
+00:11:45,410 --> 00:11:49,160
+to run simultaneously at the same time
+
+322
+00:11:49,160 --> 00:11:51,020
+and then we're gonna come up with a way
+
+323
+00:11:51,020 --> 00:11:52,730
+to try to put potentially in or leave
+
+324
+00:11:52,730 --> 00:11:56,180
+their operations in such a way that we
+
+325
+00:11:56,180 --> 00:11:58,460
+maximize our parallelism but still get
+
+326
+00:11:58,460 --> 00:12:00,410
+all the safety guarantees that they want
+
+327
+00:12:00,410 --> 00:12:01,700
+and correctness guarantees that we want
+
+328
+00:12:01,700 --> 00:12:04,490
+in our database system right and again
+
+329
+00:12:04,490 --> 00:12:06,170
+it's obvious why we want to do this
+
+330
+00:12:06,170 --> 00:12:07,430
+because we talked about two before when
+
+331
+00:12:07,430 --> 00:12:09,080
+we talked about latching we talked about
+
+332
+00:12:09,080 --> 00:12:12,710
+query execution if we can get we can
+
+333
+00:12:12,710 --> 00:12:13,970
+allow multiple queries that run at the
+
+334
+00:12:13,970 --> 00:12:15,620
+same time we're gonna get better
+
+335
+00:12:15,620 --> 00:12:17,089
+utilization of our Hardware better
+
+336
+00:12:17,089 --> 00:12:18,800
+throughput meaning we can do more more
+
+337
+00:12:18,800 --> 00:12:21,560
+work in a same amount of time and then
+
+338
+00:12:21,560 --> 00:12:23,600
+the system's gonna look more responsive
+
+339
+00:12:23,600 --> 00:12:25,640
+and snappy because now I don't have to
+
+340
+00:12:25,640 --> 00:12:27,740
+wait in that single queue until my to my
+
+341
+00:12:27,740 --> 00:12:29,960
+quick transaction gets to the front and
+
+342
+00:12:29,960 --> 00:12:31,970
+then I can run I could potentially start
+
+343
+00:12:31,970 --> 00:12:35,420
+running right away but now Kristin the
+
+344
+00:12:35,420 --> 00:12:37,040
+tricky thing is gonna be is that how do
+
+345
+00:12:37,040 --> 00:12:39,620
+we actually do this interleaving you
+
+346
+00:12:39,620 --> 00:12:41,030
+know such a way that we don't violate
+
+347
+00:12:41,030 --> 00:12:42,770
+any better correctness guarantees of our
+
+348
+00:12:42,770 --> 00:12:44,900
+system and that we don't starve any one
+
+349
+00:12:44,900 --> 00:12:48,920
+transaction you know from from taking
+
+350
+00:12:48,920 --> 00:12:50,450
+all the resources and other transactions
+
+351
+00:12:50,450 --> 00:12:53,540
+can't do anything so concurrent reto
+
+352
+00:12:53,540 --> 00:12:56,000
+we're talk about today is a is an old
+
+353
+00:12:56,000 --> 00:12:57,800
+concept that goes back to the 1970s oh I
+
+354
+00:12:57,800 --> 00:13:00,110
+when I BM built system R this is one of
+
+355
+00:13:00,110 --> 00:13:02,180
+the first things they also invented and
+
+356
+00:13:02,180 --> 00:13:06,589
+so in a disk based system back then of
+
+357
+00:13:06,589 --> 00:13:09,230
+course because memory was limited and
+
+358
+00:13:09,230 --> 00:13:10,640
+any time it turns actually could touch
+
+359
+00:13:10,640 --> 00:13:12,230
+data that's on that's on disk and on a
+
+360
+00:13:12,230 --> 00:13:14,240
+memory and therefore it would stall and
+
+361
+00:13:14,240 --> 00:13:15,440
+then now you could let other transaction
+
+362
+00:13:15,440 --> 00:13:17,720
+to run at the same time in modern
+
+363
+00:13:17,720 --> 00:13:20,510
+systems today usually for all it to be
+
+364
+00:13:20,510 --> 00:13:22,190
+applications they're not that big the
+
+365
+00:13:22,190 --> 00:13:23,330
+databases aren't that big
+
+366
+00:13:23,330 --> 00:13:25,070
+so we have enough memory where we could
+
+367
+00:13:25,070 --> 00:13:27,380
+put the entire database in memory for
+
+368
+00:13:27,380 --> 00:13:29,000
+analytics you still go to disk but that
+
+369
+00:13:29,000 --> 00:13:31,850
+we're not doing transactions there so in
+
+370
+00:13:31,850 --> 00:13:34,339
+a modern system most mostly ultimate
+
+371
+00:13:34,339 --> 00:13:37,250
+databases can fit memory but now Intel
+
+372
+00:13:37,250 --> 00:13:39,380
+is giving us more and more cores so now
+
+373
+00:13:39,380 --> 00:13:40,640
+we're gonna allow transactions around in
+
+374
+00:13:40,640 --> 00:13:42,019
+different cores at the same time and
+
+375
+00:13:42,019 --> 00:13:43,519
+then we still need to guarantee all
+
+376
+00:13:43,519 --> 00:13:46,399
+these things so even though the hardware
+
+377
+00:13:46,399 --> 00:13:47,750
+is different from when how people first
+
+378
+00:13:47,750 --> 00:13:48,829
+invented cooker to scroll back in the
+
+379
+00:13:48,829 --> 00:13:50,570
+day we still have the same problem so
+
+380
+00:13:50,570 --> 00:13:52,000
+you still want to maximize parallelism
+
+381
+00:13:52,000 --> 00:13:55,040
+and as I said a couple times already
+
+382
+00:13:55,040 --> 00:13:56,990
+this is gonna be really hard to do and
+
+383
+00:13:56,990 --> 00:13:58,880
+as I said last class this is probably
+
+384
+00:13:58,880 --> 00:14:00,470
+the second hardest thing to do in
+
+385
+00:14:00,470 --> 00:14:02,410
+database systems to do concur control
+
+386
+00:14:02,410 --> 00:14:04,190
+and this is part of the reason why the
+
+387
+00:14:04,190 --> 00:14:05,810
+nocebo guys when they first came out ten
+
+388
+00:14:05,810 --> 00:14:07,730
+years ago they were like we're not doing
+
+389
+00:14:07,730 --> 00:14:09,470
+transactions okay that's too hard
+
+390
+00:14:09,470 --> 00:14:13,100
+because they want to run faster so it's
+
+391
+00:14:13,100 --> 00:14:14,480
+gonna be super hard for us to guarantee
+
+392
+00:14:14,480 --> 00:14:17,149
+correctness which transactions all right
+
+393
+00:14:17,149 --> 00:14:19,430
+so what happens if I we have $100 in my
+
+394
+00:14:19,430 --> 00:14:21,620
+bank account and I try to give money to
+
+395
+00:14:21,620 --> 00:14:23,450
+people at the exact same time what
+
+396
+00:14:23,450 --> 00:14:25,579
+should happen because I don't want to
+
+397
+00:14:25,579 --> 00:14:27,200
+you know assuming that banks not gonna
+
+398
+00:14:27,200 --> 00:14:29,480
+let me overdraft I you know I don't
+
+399
+00:14:29,480 --> 00:14:30,470
+wanna be giving out money I don't
+
+400
+00:14:30,470 --> 00:14:32,959
+actually have and then it's also gonna
+
+401
+00:14:32,959 --> 00:14:34,160
+be hard to execute this very efficiently
+
+402
+00:14:34,160 --> 00:14:36,860
+because again if I do the serial
+
+403
+00:14:36,860 --> 00:14:38,000
+execution case that I talked about in
+
+404
+00:14:38,000 --> 00:14:39,350
+the beginning then that's gonna be
+
+405
+00:14:39,350 --> 00:14:40,940
+always correct because only one
+
+406
+00:14:40,940 --> 00:14:42,320
+transaction is running at a time and
+
+407
+00:14:42,320 --> 00:14:43,730
+then how many worries about any
+
+408
+00:14:43,730 --> 00:14:45,649
+interleaving but for now I do want to
+
+409
+00:14:45,649 --> 00:14:47,240
+interleave them
+
+410
+00:14:47,240 --> 00:14:48,740
+I want to bet to be as efficient as
+
+411
+00:14:48,740 --> 00:14:49,940
+possible to be to figure out whether I'm
+
+412
+00:14:49,940 --> 00:14:52,399
+running correct still correctly I just
+
+413
+00:14:52,399 --> 00:14:53,510
+there's me some overhead to figure these
+
+414
+00:14:53,510 --> 00:14:57,829
+things out so what we're essentially
+
+415
+00:14:57,829 --> 00:14:59,420
+trying to do today and for the next
+
+416
+00:14:59,420 --> 00:15:01,390
+three let three or four lectures is
+
+417
+00:15:01,390 --> 00:15:03,680
+allow for these interleaving the
+
+418
+00:15:03,680 --> 00:15:06,560
+operations of transactions and that well
+
+419
+00:15:06,560 --> 00:15:08,180
+as we see is that when we start doing
+
+420
+00:15:08,180 --> 00:15:09,529
+these interleaving we can end up with
+
+421
+00:15:09,529 --> 00:15:13,040
+inconsistent databases and sometimes
+
+422
+00:15:13,040 --> 00:15:15,130
+it's okay sometimes it's not okay
+
+423
+00:15:15,130 --> 00:15:18,410
+so some inconsistencies will be okay
+
+424
+00:15:18,410 --> 00:15:20,810
+because they're temporary so for example
+
+425
+00:15:20,810 --> 00:15:21,829
+if I'm taking money out of my account
+
+426
+00:15:21,829 --> 00:15:24,410
+putting in your account again I can't do
+
+427
+00:15:24,410 --> 00:15:26,029
+that atomically at the Harvard level I
+
+428
+00:15:26,029 --> 00:15:27,470
+have to do that with you know multiple
+
+429
+00:15:27,470 --> 00:15:29,720
+instructions or multiple operations so
+
+430
+00:15:29,720 --> 00:15:32,120
+there will be a brief period in time
+
+431
+00:15:32,120 --> 00:15:34,070
+where I take the $100 out of my account
+
+432
+00:15:34,070 --> 00:15:36,320
+and then before it before I put it in
+
+433
+00:15:36,320 --> 00:15:37,010
+your account
+
+434
+00:15:37,010 --> 00:15:38,930
+that hundred dollars it doesn't exist
+
+435
+00:15:38,930 --> 00:15:42,110
+anywhere so that's okay because that's
+
+436
+00:15:42,110 --> 00:15:44,329
+temporary it's unavoidable the outside
+
+437
+00:15:44,329 --> 00:15:46,040
+world will not see potentially not see
+
+438
+00:15:46,040 --> 00:15:47,690
+that inconsistency and we'll do some
+
+439
+00:15:47,690 --> 00:15:48,829
+protection mechanisms make sure that
+
+440
+00:15:48,829 --> 00:15:52,370
+they can't see this and so because that
+
+441
+00:15:52,370 --> 00:15:53,870
+because we're gonna allow this this is
+
+442
+00:15:53,870 --> 00:15:55,089
+gonna last actually make this all work
+
+443
+00:15:55,089 --> 00:15:57,050
+but the thing we want to avoid or
+
+444
+00:15:57,050 --> 00:15:59,600
+permanent inconsistencies where again if
+
+445
+00:15:59,600 --> 00:16:00,800
+I take the hundred dollars out and then
+
+446
+00:16:00,800 --> 00:16:02,630
+I crash and I come back that hundred
+
+447
+00:16:02,630 --> 00:16:04,220
+dollars better not be missing all right
+
+448
+00:16:04,220 --> 00:16:05,870
+a better it better be in the other count
+
+449
+00:16:05,870 --> 00:16:08,620
+or Maya County it can't just disappear
+
+450
+00:16:08,620 --> 00:16:11,300
+so in order for us to understand whether
+
+451
+00:16:11,300 --> 00:16:12,649
+we're doing the right thing
+
+452
+00:16:12,649 --> 00:16:14,690
+whether we're coming out with the
+
+453
+00:16:14,690 --> 00:16:17,240
+interleaving of our transactions that
+
+454
+00:16:17,240 --> 00:16:19,310
+are actually correct we need a more
+
+455
+00:16:19,310 --> 00:16:21,019
+formal definition of what actually means
+
+456
+00:16:21,019 --> 00:16:23,149
+to be correct because it's sort of
+
+457
+00:16:23,149 --> 00:16:24,740
+obvious for us right yeah if I take a
+
+458
+00:16:24,740 --> 00:16:26,269
+hundred dollars of my account and before
+
+459
+00:16:26,269 --> 00:16:28,550
+I put it in your account we crash like
+
+460
+00:16:28,550 --> 00:16:30,110
+that sort of obvious we know that we
+
+461
+00:16:30,110 --> 00:16:31,160
+don't want to lose a hundred dollars or
+
+462
+00:16:31,160 --> 00:16:33,589
+any amount of money but from the
+
+463
+00:16:33,589 --> 00:16:34,940
+database systems perspective it doesn't
+
+464
+00:16:34,940 --> 00:16:36,290
+know that it's operating no money
+
+465
+00:16:36,290 --> 00:16:37,970
+just sees a bunch of bytes and it's
+
+466
+00:16:37,970 --> 00:16:39,680
+moving them around so we need a way for
+
+467
+00:16:39,680 --> 00:16:41,060
+us to reason about whether we're doing
+
+468
+00:16:41,060 --> 00:16:44,750
+the correct thing so the first thing we
+
+469
+00:16:44,750 --> 00:16:46,370
+need to find what is what are these
+
+470
+00:16:46,370 --> 00:16:48,829
+operations that we're actually doing so
+
+471
+00:16:48,829 --> 00:16:50,779
+as I said already a transactions Macross
+
+472
+00:16:50,779 --> 00:16:56,060
+of one or more operations but at a high
+
+473
+00:16:56,060 --> 00:16:57,889
+level the database the application could
+
+474
+00:16:57,889 --> 00:17:01,069
+be you know update this insert that make
+
+475
+00:17:01,069 --> 00:17:03,050
+these changes but from the database
+
+476
+00:17:03,050 --> 00:17:04,490
+systems perspective it doesn't doesn't
+
+477
+00:17:04,490 --> 00:17:06,589
+know about those high-level queries it
+
+478
+00:17:06,589 --> 00:17:07,730
+just knows that I'm doing low-level
+
+479
+00:17:07,730 --> 00:17:11,299
+reads and writes and so the only thing
+
+480
+00:17:11,299 --> 00:17:12,589
+that we can reason about are the things
+
+481
+00:17:12,589 --> 00:17:15,619
+that happened to our database so that
+
+482
+00:17:15,619 --> 00:17:17,390
+means that if they're our transaction
+
+483
+00:17:17,390 --> 00:17:20,059
+involves additional steps or procedures
+
+484
+00:17:20,059 --> 00:17:22,699
+or operations that aren't reads and
+
+485
+00:17:22,699 --> 00:17:25,189
+writes on the database this is outside
+
+486
+00:17:25,189 --> 00:17:26,630
+our purview this is outside our control
+
+487
+00:17:26,630 --> 00:17:30,799
+and we can't do anything about it so to
+
+488
+00:17:30,799 --> 00:17:32,179
+give an example let's say that I'm gonna
+
+489
+00:17:32,179 --> 00:17:33,410
+take a hundred dollars out of my account
+
+490
+00:17:33,410 --> 00:17:36,020
+I put it in your account and then I send
+
+491
+00:17:36,020 --> 00:17:38,390
+an email to you to say the transfer
+
+492
+00:17:38,390 --> 00:17:40,429
+succeeded and that we want that to
+
+493
+00:17:40,429 --> 00:17:42,679
+happen in the transaction but then
+
+494
+00:17:42,679 --> 00:17:44,330
+before I can go commit and save my
+
+495
+00:17:44,330 --> 00:17:48,559
+changes there's a crash so I've sent the
+
+496
+00:17:48,559 --> 00:17:50,330
+email but then I crashed before I
+
+497
+00:17:50,330 --> 00:17:52,520
+save all the changes that email is gone
+
+498
+00:17:52,520 --> 00:17:54,440
+up on the network it's outside the
+
+499
+00:17:54,440 --> 00:17:55,940
+database now it's gone out in the real
+
+500
+00:17:55,940 --> 00:17:59,360
+world we can't retract that so we can
+
+501
+00:17:59,360 --> 00:18:01,340
+only reason about and roll back and and
+
+502
+00:18:01,340 --> 00:18:03,290
+and and persist things that are these
+
+503
+00:18:03,290 --> 00:18:04,340
+low-level reads and writes to our
+
+504
+00:18:04,340 --> 00:18:06,470
+database if we make a call to you know
+
+505
+00:18:06,470 --> 00:18:09,050
+to an outside system or whatever like
+
+506
+00:18:09,050 --> 00:18:11,660
+that's that's beyond us no system can
+
+507
+00:18:11,660 --> 00:18:14,450
+handle that at least we're talking out
+
+508
+00:18:14,450 --> 00:18:19,880
+here so far okay so the database that
+
+509
+00:18:19,880 --> 00:18:21,550
+were going to be worried about today is
+
+510
+00:18:21,550 --> 00:18:25,330
+going to be defined as a fixed set of
+
+511
+00:18:25,330 --> 00:18:28,280
+arbitrary data objects that are each
+
+512
+00:18:28,280 --> 00:18:30,890
+going to have a label or a name so in
+
+513
+00:18:30,890 --> 00:18:32,330
+this case here we'll just use ABCD but
+
+514
+00:18:32,330 --> 00:18:35,930
+we'll just use alphabet characters so
+
+515
+00:18:35,930 --> 00:18:37,790
+the two new things to point out here are
+
+516
+00:18:37,790 --> 00:18:39,590
+one I'm not defining what a database
+
+517
+00:18:39,590 --> 00:18:42,410
+object is it could be an attribute it
+
+518
+00:18:42,410 --> 00:18:43,910
+could be a tuple could be a page could
+
+519
+00:18:43,910 --> 00:18:45,590
+be a table could be a database it
+
+520
+00:18:45,590 --> 00:18:47,600
+doesn't matter all the same things that
+
+521
+00:18:47,600 --> 00:18:48,890
+we'll talk about today and for the next
+
+522
+00:18:48,890 --> 00:18:51,350
+couple couple classes they're all still
+
+523
+00:18:51,350 --> 00:18:54,010
+work on different granularities in
+
+524
+00:18:54,010 --> 00:18:56,300
+practice most the time it's going to be
+
+525
+00:18:56,300 --> 00:18:59,060
+based on a take on a tuple but we'll see
+
+526
+00:18:59,060 --> 00:19:00,710
+in some cases you can take locks you can
+
+527
+00:19:00,710 --> 00:19:02,990
+try to protect databases and tables
+
+528
+00:19:02,990 --> 00:19:05,150
+nobody exercise protect single fields
+
+529
+00:19:05,150 --> 00:19:08,660
+that becomes too too too expensive the
+
+530
+00:19:08,660 --> 00:19:09,890
+other thing to point out too is that I'm
+
+531
+00:19:09,890 --> 00:19:13,070
+saying the database is a fixed size so
+
+532
+00:19:13,070 --> 00:19:14,510
+that means that the only operations
+
+533
+00:19:14,510 --> 00:19:16,700
+we're gonna do or reads and writes reads
+
+534
+00:19:16,700 --> 00:19:19,790
+or updates of existing things we're not
+
+535
+00:19:19,790 --> 00:19:21,230
+gonna talk about inserts today we're not
+
+536
+00:19:21,230 --> 00:19:23,330
+going to talk about deletes the Davis
+
+537
+00:19:23,330 --> 00:19:24,320
+always has the same number of things
+
+538
+00:19:24,320 --> 00:19:26,710
+because that's gonna complicate things
+
+539
+00:19:26,710 --> 00:19:29,870
+and we'll cover that on Monday next week
+
+540
+00:19:29,870 --> 00:19:31,640
+so for today just assume that we've
+
+541
+00:19:31,640 --> 00:19:34,190
+always have the same number of X and so
+
+542
+00:19:34,190 --> 00:19:35,810
+now what the database is gonna see is
+
+543
+00:19:35,810 --> 00:19:37,340
+just the sequence of read and write
+
+544
+00:19:37,340 --> 00:19:39,470
+operations on these names opposite up
+
+545
+00:19:39,470 --> 00:19:41,390
+above so we're to say we use the
+
+546
+00:19:41,390 --> 00:19:42,920
+function R for a read and the function
+
+547
+00:19:42,920 --> 00:19:45,230
+of W for a right so this is the only
+
+548
+00:19:45,230 --> 00:19:47,690
+thing that we can see in our database
+
+549
+00:19:47,690 --> 00:19:49,190
+system we can't see anything else any
+
+550
+00:19:49,190 --> 00:19:51,530
+program logic that the application may
+
+551
+00:19:51,530 --> 00:19:53,500
+be running for the transaction and
+
+552
+00:19:53,500 --> 00:19:55,610
+that's gonna limit the amount of
+
+553
+00:19:55,610 --> 00:19:56,630
+parallels and we're be able to get
+
+554
+00:19:56,630 --> 00:19:58,670
+because we don't understand main any
+
+555
+00:19:58,670 --> 00:20:00,470
+some kind of high-level meeting with
+
+556
+00:20:00,470 --> 00:20:01,700
+what the transaction is actually trying
+
+557
+00:20:01,700 --> 00:20:04,070
+to do we'll see one case where if you do
+
+558
+00:20:04,070 --> 00:20:06,140
+you can get better parallelism but in
+
+559
+00:20:06,140 --> 00:20:08,780
+practice nope nobody does this and we'll
+
+560
+00:20:08,780 --> 00:20:11,870
+get to that later so now from a
+
+561
+00:20:11,870 --> 00:20:13,670
+practical standpoint how do you actually
+
+562
+00:20:13,670 --> 00:20:15,170
+implement or use transactions and
+
+563
+00:20:15,170 --> 00:20:16,540
+applications and database systems today
+
+564
+00:20:16,540 --> 00:20:19,970
+so in the seco standard you have these
+
+565
+00:20:19,970 --> 00:20:21,830
+extra keywords begin commit and abort
+
+566
+00:20:21,830 --> 00:20:23,750
+some systems use roll back instead of
+
+567
+00:20:23,750 --> 00:20:24,530
+abort
+
+568
+00:20:24,530 --> 00:20:26,330
+I think postcards are my siglo support
+
+569
+00:20:26,330 --> 00:20:30,020
+both so we're gonna explicitly start a
+
+570
+00:20:30,020 --> 00:20:31,730
+new transaction with the begin keyword
+
+571
+00:20:31,730 --> 00:20:34,850
+and then what happens is we make we any
+
+572
+00:20:34,850 --> 00:20:36,350
+queries we then execute or a part of
+
+573
+00:20:36,350 --> 00:20:39,230
+that transaction and then the better
+
+574
+00:20:39,230 --> 00:20:42,620
+call I want to commit or abort so if the
+
+575
+00:20:42,620 --> 00:20:44,840
+user says I want to commit then two
+
+576
+00:20:44,840 --> 00:20:47,570
+things can happen either the transaction
+
+577
+00:20:47,570 --> 00:20:49,580
+does commit the database saves all the
+
+578
+00:20:49,580 --> 00:20:51,380
+changes that you made and returns back
+
+579
+00:20:51,380 --> 00:20:52,790
+in acknowledgments is to say they're
+
+580
+00:20:52,790 --> 00:20:55,670
+successful or the database systems can
+
+581
+00:20:55,670 --> 00:20:59,030
+say you can't actually commit I'm not
+
+582
+00:20:59,030 --> 00:21:01,220
+gonna let you make those changes and I'm
+
+583
+00:21:01,220 --> 00:21:02,480
+gonna go ahead and shoot you and abort
+
+584
+00:21:02,480 --> 00:21:03,770
+you and you have the rollback and you
+
+585
+00:21:03,770 --> 00:21:05,420
+get a notification that your transaction
+
+586
+00:21:05,420 --> 00:21:07,940
+failed right so just because the
+
+587
+00:21:07,940 --> 00:21:09,920
+application calls commit doesn't mean
+
+588
+00:21:09,920 --> 00:21:12,230
+you're actually gonna commit again
+
+589
+00:21:12,230 --> 00:21:13,370
+that's a very important concept that we
+
+590
+00:21:13,370 --> 00:21:16,790
+can rely on later on if the transaction
+
+591
+00:21:16,790 --> 00:21:19,010
+gets aborted then any changes that we
+
+592
+00:21:19,010 --> 00:21:21,230
+made since we called begin will get
+
+593
+00:21:21,230 --> 00:21:23,510
+rolled back and it'll appear as if the
+
+594
+00:21:23,510 --> 00:21:26,060
+transaction never ran at all so that's
+
+595
+00:21:26,060 --> 00:21:27,500
+how we guarantee if I'm moving hundred
+
+596
+00:21:27,500 --> 00:21:28,550
+dollars out of my account to your
+
+597
+00:21:28,550 --> 00:21:31,220
+account if the thing fails before we put
+
+598
+00:21:31,220 --> 00:21:32,660
+the money in your account the
+
+599
+00:21:32,660 --> 00:21:34,310
+transaction gets a border to come back
+
+600
+00:21:34,310 --> 00:21:35,810
+and if we go back to the state we were
+
+601
+00:21:35,810 --> 00:21:38,780
+before we started our transaction right
+
+602
+00:21:38,780 --> 00:21:39,860
+this is how we guarantee that there's no
+
+603
+00:21:39,860 --> 00:21:45,200
+partial transactions yes this question
+
+604
+00:21:45,200 --> 00:21:46,310
+is why would do we want to tell the
+
+605
+00:21:46,310 --> 00:21:48,710
+Davis entity one of abort so a lot of
+
+606
+00:21:48,710 --> 00:21:52,280
+times there's application code where you
+
+607
+00:21:52,280 --> 00:21:55,040
+say take take take for example take the
+
+608
+00:21:55,040 --> 00:21:56,750
+money out of my account or I'm
+
+609
+00:21:56,750 --> 00:21:59,210
+transferring money so I go look at my
+
+610
+00:21:59,210 --> 00:21:59,900
+account first
+
+611
+00:21:59,900 --> 00:22:02,810
+I read that do I have $100 yes now go
+
+612
+00:22:02,810 --> 00:22:04,070
+take a hundred as my account but then
+
+613
+00:22:04,070 --> 00:22:05,750
+I'll go read your account and your
+
+614
+00:22:05,750 --> 00:22:07,670
+bank's your your accounts my flag fraud
+
+615
+00:22:07,670 --> 00:22:10,010
+so now I want to abort and roll that
+
+616
+00:22:10,010 --> 00:22:14,380
+back right the simple reason
+
+617
+00:22:14,380 --> 00:22:20,580
+I don't know how often that occurs I
+
+618
+00:22:21,090 --> 00:22:23,559
+always say I mean most code I want to
+
+619
+00:22:23,559 --> 00:22:24,690
+commit they want to go to commit right
+
+620
+00:22:24,690 --> 00:22:29,470
+but we have to be able support this so
+
+621
+00:22:29,470 --> 00:22:30,669
+again the main thing to point out here
+
+622
+00:22:30,669 --> 00:22:33,639
+is this abort could either be
+
+623
+00:22:33,639 --> 00:22:35,139
+self-inflicted meaning we tell us if we
+
+624
+00:22:35,139 --> 00:22:37,000
+want abort or the data system tells you
+
+625
+00:22:37,000 --> 00:22:38,470
+you have to abort and then if you
+
+626
+00:22:38,470 --> 00:22:39,820
+tennyson comes back says you have to
+
+627
+00:22:39,820 --> 00:22:43,210
+abort are you got aborted then it's up
+
+628
+00:22:43,210 --> 00:22:44,860
+for you in the application code to catch
+
+629
+00:22:44,860 --> 00:22:46,929
+that you get like an exception back and
+
+630
+00:22:46,929 --> 00:22:48,279
+says you know your transaction failed
+
+631
+00:22:48,279 --> 00:22:50,799
+and it'll suggest that you retry it and
+
+632
+00:22:50,799 --> 00:22:51,940
+you have to go back in application code
+
+633
+00:22:51,940 --> 00:22:52,960
+if you actually care about this and
+
+634
+00:22:52,960 --> 00:22:58,720
+retry again all right so the correctness
+
+635
+00:22:58,720 --> 00:23:01,269
+criteria we're going to use now for this
+
+636
+00:23:01,269 --> 00:23:02,679
+lecture and going forth through the rest
+
+637
+00:23:02,679 --> 00:23:04,750
+of the semester is going to be defined
+
+638
+00:23:04,750 --> 00:23:08,169
+in terms of this acid acronym so as it
+
+639
+00:23:08,169 --> 00:23:09,190
+stands for atomicity consistency
+
+640
+00:23:09,190 --> 00:23:10,899
+isolation and durability
+
+641
+00:23:10,899 --> 00:23:13,120
+so atomicity is what we already talked
+
+642
+00:23:13,120 --> 00:23:14,500
+about where we say all that the
+
+643
+00:23:14,500 --> 00:23:16,059
+operations of a transaction have to
+
+644
+00:23:16,059 --> 00:23:17,919
+occur or none of them occur right no
+
+645
+00:23:17,919 --> 00:23:21,279
+partial transactions consistency is sort
+
+646
+00:23:21,279 --> 00:23:23,559
+of a weird one I'll briefly talk about
+
+647
+00:23:23,559 --> 00:23:26,919
+it but it's it's very handy how it
+
+648
+00:23:26,919 --> 00:23:28,600
+actually means at least for a single
+
+649
+00:23:28,600 --> 00:23:29,529
+node database system
+
+650
+00:23:29,529 --> 00:23:32,740
+so it just says that if if the
+
+651
+00:23:32,740 --> 00:23:35,200
+transaction is consistent like doorbell
+
+652
+00:23:35,200 --> 00:23:40,029
+sorry I forget the if if the transaction
+
+653
+00:23:40,029 --> 00:23:42,100
+is consistent and the database system is
+
+654
+00:23:42,100 --> 00:23:43,779
+consistent then when the transaction
+
+655
+00:23:43,779 --> 00:23:46,659
+executes then the database and state
+
+656
+00:23:46,659 --> 00:23:49,149
+will be consistent so now you're like
+
+657
+00:23:49,149 --> 00:23:51,309
+what is consistent mean well at a high
+
+658
+00:23:51,309 --> 00:23:53,679
+level it means correctness but then what
+
+659
+00:23:53,679 --> 00:23:54,399
+does that mean
+
+660
+00:23:54,399 --> 00:23:56,679
+so again we'll cover this in a few more
+
+661
+00:23:56,679 --> 00:24:00,580
+slides this one again as it was
+
+662
+00:24:00,580 --> 00:24:01,659
+originally defined by the guy that
+
+663
+00:24:01,659 --> 00:24:03,970
+invented this this acronym this one was
+
+664
+00:24:03,970 --> 00:24:06,399
+always a really handy one it's some
+
+665
+00:24:06,399 --> 00:24:07,840
+people feel like he sort of forced this
+
+666
+00:24:07,840 --> 00:24:09,340
+one in here in order to get that the
+
+667
+00:24:09,340 --> 00:24:12,850
+acronym to work out the other thing too
+
+668
+00:24:12,850 --> 00:24:16,149
+is that the database lor is that he made
+
+669
+00:24:16,149 --> 00:24:17,889
+this thing up to make make fun of his
+
+670
+00:24:17,889 --> 00:24:20,259
+wife cuz like his wife didn't like candy
+
+671
+00:24:20,259 --> 00:24:21,610
+or she was like a bitter woman or
+
+672
+00:24:21,610 --> 00:24:23,830
+something so he named it after her I
+
+673
+00:24:23,830 --> 00:24:25,149
+don't know whether that was true he's
+
+674
+00:24:25,149 --> 00:24:28,029
+Germans and maybe but there's another
+
+675
+00:24:28,029 --> 00:24:28,450
+one called
+
+676
+00:24:28,450 --> 00:24:30,909
+base which is for distributed systems or
+
+677
+00:24:30,909 --> 00:24:32,080
+no single systems and we'll cover that
+
+678
+00:24:32,080 --> 00:24:33,700
+and a few more lectures so there's acid
+
+679
+00:24:33,700 --> 00:24:35,769
+is what we care about here base will
+
+680
+00:24:35,769 --> 00:24:38,139
+cover later isolation is another
+
+681
+00:24:38,139 --> 00:24:40,299
+important one that means that the when
+
+682
+00:24:40,299 --> 00:24:42,009
+our transaction executes it should have
+
+683
+00:24:42,009 --> 00:24:44,019
+the illusion that it's running by itself
+
+684
+00:24:44,019 --> 00:24:45,759
+even though other transactions may be
+
+685
+00:24:45,759 --> 00:24:47,409
+running at the same time and the data
+
+686
+00:24:47,409 --> 00:24:50,080
+isn't one well will provide that that
+
+687
+00:24:50,080 --> 00:24:52,720
+illusion for it and then durability is
+
+688
+00:24:52,720 --> 00:24:54,730
+wet if our transaction commits all our
+
+689
+00:24:54,730 --> 00:24:56,529
+changes get saved and we get back at on
+
+690
+00:24:56,529 --> 00:24:58,210
+acknowledgment veterans actually
+
+691
+00:24:58,210 --> 00:25:00,399
+committed then no matter what happens to
+
+692
+00:25:00,399 --> 00:25:02,350
+the database whether you know it the
+
+693
+00:25:02,350 --> 00:25:04,059
+Machine crashes it's not oh s crashes
+
+694
+00:25:04,059 --> 00:25:07,359
+the machine catches on fire then all our
+
+695
+00:25:07,359 --> 00:25:09,129
+changes should be persistent maybe she
+
+696
+00:25:09,129 --> 00:25:09,970
+always could be able to come back and
+
+697
+00:25:09,970 --> 00:25:12,549
+see our changes our changes may get
+
+698
+00:25:12,549 --> 00:25:15,039
+overwritten that's okay but for least
+
+699
+00:25:15,039 --> 00:25:16,899
+for our transaction you know we know
+
+700
+00:25:16,899 --> 00:25:20,320
+that all has changes got persistent so
+
+701
+00:25:20,320 --> 00:25:22,749
+another short shorthand way of looking
+
+702
+00:25:22,749 --> 00:25:23,830
+at these things you would say
+
+703
+00:25:23,830 --> 00:25:25,539
+Adam isn't he just means all or nothing
+
+704
+00:25:25,539 --> 00:25:27,429
+no parts of transactions because since
+
+705
+00:25:27,429 --> 00:25:29,350
+he means it looks correct to me and
+
+706
+00:25:29,350 --> 00:25:32,109
+correct will be in quotes isolation
+
+707
+00:25:32,109 --> 00:25:33,159
+means you're running as if you're alone
+
+708
+00:25:33,159 --> 00:25:34,929
+and then durability means that you're
+
+709
+00:25:34,929 --> 00:25:37,659
+going to survive all failures so for
+
+710
+00:25:37,659 --> 00:25:38,859
+today's class we're going to go through
+
+711
+00:25:38,859 --> 00:25:40,869
+each of these one by one and describe at
+
+712
+00:25:40,869 --> 00:25:43,239
+a high level what it means to determine
+
+713
+00:25:43,239 --> 00:25:46,179
+whether we are achieving the asset
+
+714
+00:25:46,179 --> 00:25:47,889
+guarantee with a given property of each
+
+715
+00:25:47,889 --> 00:25:50,049
+letter we're gonna mostly focus on
+
+716
+00:25:50,049 --> 00:25:52,119
+atomicity and isolation I'll briefly
+
+717
+00:25:52,119 --> 00:25:53,499
+talk about consistency here it doesn't
+
+718
+00:25:53,499 --> 00:25:54,879
+really make that much sense for a single
+
+719
+00:25:54,879 --> 00:25:55,779
+node system it matters more for
+
+720
+00:25:55,779 --> 00:25:57,399
+distributed systems and then for
+
+721
+00:25:57,399 --> 00:25:59,080
+durability we're also not really going
+
+722
+00:25:59,080 --> 00:26:00,549
+to talk about it too much because we'll
+
+723
+00:26:00,549 --> 00:26:03,269
+spend that whole two lectures after
+
+724
+00:26:03,269 --> 00:26:06,460
+after I come back on on checkpoints and
+
+725
+00:26:06,460 --> 00:26:07,720
+volume because that's how they're gonna
+
+726
+00:26:07,720 --> 00:26:11,109
+achieve that okay and I'll say also to
+
+727
+00:26:11,109 --> 00:26:14,320
+that acid is what you would get in a if
+
+728
+00:26:14,320 --> 00:26:17,470
+a relational data cement system says
+
+729
+00:26:17,470 --> 00:26:19,749
+they support transactions this is
+
+730
+00:26:19,749 --> 00:26:22,629
+typically I mean the no sequel systems
+
+731
+00:26:22,629 --> 00:26:23,679
+that don't do transactions
+
+732
+00:26:23,679 --> 00:26:25,389
+they're typically going to sacrifice
+
+733
+00:26:25,389 --> 00:26:29,259
+often Adam is to be isolation and kisses
+
+734
+00:26:29,259 --> 00:26:30,700
+actually some of them do get rid of
+
+735
+00:26:30,700 --> 00:26:33,749
+everything but we'll take that offline
+
+736
+00:26:33,749 --> 00:26:36,970
+all right let's talk wait atomicity so
+
+737
+00:26:36,970 --> 00:26:38,919
+as I said already there are two outcomes
+
+738
+00:26:38,919 --> 00:26:42,100
+of our transaction either it commits
+
+739
+00:26:42,100 --> 00:26:43,960
+and all our changes get get % or get
+
+740
+00:26:43,960 --> 00:26:45,789
+could apply to the database all at once
+
+741
+00:26:45,789 --> 00:26:49,150
+or it gets aborted because of some you
+
+742
+00:26:49,150 --> 00:26:50,980
+know either data says so or application
+
+743
+00:26:50,980 --> 00:26:53,679
+says so so again what we're providing
+
+744
+00:26:53,679 --> 00:26:54,970
+the guarantee were providing to our
+
+745
+00:26:54,970 --> 00:26:57,070
+application is that that any transaction
+
+746
+00:26:57,070 --> 00:26:59,890
+that we execute all the changes will be
+
+747
+00:26:59,890 --> 00:27:02,080
+atomic meaning they'll all appears that
+
+748
+00:27:02,080 --> 00:27:05,080
+they happen exactly at the same time so
+
+749
+00:27:05,080 --> 00:27:05,950
+again it just means that either
+
+750
+00:27:05,950 --> 00:27:07,390
+everything happens or none of it happens
+
+751
+00:27:07,390 --> 00:27:08,950
+so no matter what happens if I say I
+
+752
+00:27:08,950 --> 00:27:11,169
+commit then I know everything got got
+
+753
+00:27:11,169 --> 00:27:13,900
+saved so let's look at two scenarios
+
+754
+00:27:13,900 --> 00:27:16,840
+where we could have problems atomicity
+
+755
+00:27:16,840 --> 00:27:18,250
+and then we'll see how I actually want
+
+756
+00:27:18,250 --> 00:27:21,940
+to solve it so again my beloved example
+
+757
+00:27:21,940 --> 00:27:23,020
+I'm taking a hundred dollars out of my
+
+758
+00:27:23,020 --> 00:27:24,280
+account and putting it to another
+
+759
+00:27:24,280 --> 00:27:27,520
+account but then we we take the money
+
+760
+00:27:27,520 --> 00:27:29,620
+out of my account but then the
+
+761
+00:27:29,620 --> 00:27:31,690
+transaction gets aborted the machine
+
+762
+00:27:31,690 --> 00:27:33,100
+doesn't crash the data says noes crash
+
+763
+00:27:33,100 --> 00:27:36,490
+we just get aborted the second scenario
+
+764
+00:27:36,490 --> 00:27:38,289
+is when you can take the hundred hours
+
+765
+00:27:38,289 --> 00:27:40,860
+out but now there's a power failure and
+
+766
+00:27:40,860 --> 00:27:42,669
+everything that the data systems running
+
+767
+00:27:42,669 --> 00:27:45,400
+is lost we come back and what should be
+
+768
+00:27:45,400 --> 00:27:47,590
+the correct state of the database all
+
+769
+00:27:47,590 --> 00:27:49,600
+right so there's two ways we could
+
+770
+00:27:49,600 --> 00:27:52,659
+possibly handle this the most common
+
+771
+00:27:52,659 --> 00:27:55,299
+approach is to do logging so nice a
+
+772
+00:27:55,299 --> 00:27:57,280
+logging I don't mean like you know the
+
+773
+00:27:57,280 --> 00:27:59,350
+log debug messages you're using for your
+
+774
+00:27:59,350 --> 00:28:01,450
+projects right I mean something like
+
+775
+00:28:01,450 --> 00:28:02,679
+right ahead logging but we're actually
+
+776
+00:28:02,679 --> 00:28:05,110
+recording our file on disk here's all
+
+777
+00:28:05,110 --> 00:28:07,659
+just that we're making so what will
+
+778
+00:28:07,659 --> 00:28:08,890
+happen is the David Simmons gonna run
+
+779
+00:28:08,890 --> 00:28:12,100
+and as it runs a transaction every for
+
+780
+00:28:12,100 --> 00:28:13,419
+every change I make to the database
+
+781
+00:28:13,419 --> 00:28:14,770
+every update or write I do to the
+
+782
+00:28:14,770 --> 00:28:17,590
+database I'm gonna make a copy of what
+
+783
+00:28:17,590 --> 00:28:20,490
+the old value was that I'm overwriting
+
+784
+00:28:20,490 --> 00:28:23,559
+and then that way if I crash or my
+
+785
+00:28:23,559 --> 00:28:25,780
+transaction gets aborted I had the old
+
+786
+00:28:25,780 --> 00:28:28,030
+value sitting around and I can go back
+
+787
+00:28:28,030 --> 00:28:31,360
+and put it back in place so that when my
+
+788
+00:28:31,360 --> 00:28:33,159
+transaction gets cleaned up after an
+
+789
+00:28:33,159 --> 00:28:35,799
+abort all the original batteries were
+
+790
+00:28:35,799 --> 00:28:40,150
+still there and so the way this is going
+
+791
+00:28:40,150 --> 00:28:41,320
+to work is that this is going to be
+
+792
+00:28:41,320 --> 00:28:42,929
+we're gonna maintain these undo records
+
+793
+00:28:42,929 --> 00:28:46,539
+both in memory and on disk and that way
+
+794
+00:28:46,539 --> 00:28:48,520
+again if we crash while if the
+
+795
+00:28:48,520 --> 00:28:51,070
+transaction is aborted while we're
+
+796
+00:28:51,070 --> 00:28:52,929
+running then if it's in memory we just
+
+797
+00:28:52,929 --> 00:28:54,850
+go reverse things real quickly but if
+
+798
+00:28:54,850 --> 00:28:55,539
+stuff
+
+799
+00:28:55,539 --> 00:28:58,479
+written a disk and then we crash then we
+
+800
+00:28:58,479 --> 00:29:00,549
+have our log records on theirs on disk
+
+801
+00:29:00,549 --> 00:29:02,109
+that we can then load back in when we
+
+802
+00:29:02,109 --> 00:29:04,149
+turn the data system on and and
+
+803
+00:29:04,149 --> 00:29:05,710
+reconcile put us back in the correct
+
+804
+00:29:05,710 --> 00:29:08,559
+state so in a high level you can sort of
+
+805
+00:29:08,559 --> 00:29:10,629
+think of the log as the black box and an
+
+806
+00:29:10,629 --> 00:29:13,570
+airplane like if there's a major any
+
+807
+00:29:13,570 --> 00:29:15,279
+airplane crash as a major crash but if
+
+808
+00:29:15,279 --> 00:29:17,739
+an airplane crashes what the government
+
+809
+00:29:17,739 --> 00:29:18,970
+goes and looks funds looks at the black
+
+810
+00:29:18,970 --> 00:29:20,710
+box all right because that's gonna
+
+811
+00:29:20,710 --> 00:29:22,029
+record information about what actually
+
+812
+00:29:22,029 --> 00:29:23,590
+is you know what happened in the plane
+
+813
+00:29:23,590 --> 00:29:27,609
+at the moment that it crashed and then
+
+814
+00:29:27,609 --> 00:29:28,989
+it tries to figure out what was the
+
+815
+00:29:28,989 --> 00:29:31,090
+error what was the malfunction now in
+
+816
+00:29:31,090 --> 00:29:32,470
+the in the airplane case they can't put
+
+817
+00:29:32,470 --> 00:29:33,669
+the airplane back together and the
+
+818
+00:29:33,669 --> 00:29:35,229
+database can okay so we can put it back
+
+819
+00:29:35,229 --> 00:29:35,590
+together
+
+820
+00:29:35,590 --> 00:29:36,970
+all right that's that's what we're gonna
+
+821
+00:29:36,970 --> 00:29:41,070
+use that form so logging at a high level
+
+822
+00:29:41,070 --> 00:29:44,229
+right will be used by almost everything
+
+823
+00:29:44,229 --> 00:29:45,429
+we'll make data system that's out there
+
+824
+00:29:45,429 --> 00:29:47,379
+any database system that says that
+
+825
+00:29:47,379 --> 00:29:50,080
+they're adorable to disk chances are
+
+826
+00:29:50,080 --> 00:29:54,669
+they're using log so in addition to you
+
+827
+00:29:54,669 --> 00:29:56,830
+know having the ability to roll back
+
+828
+00:29:56,830 --> 00:29:59,080
+things and guarantee atomicity logins
+
+829
+00:29:59,080 --> 00:30:01,419
+gonna provide us additional benefits in
+
+830
+00:30:01,419 --> 00:30:03,460
+terms of both performance and high level
+
+831
+00:30:03,460 --> 00:30:05,799
+concept of high level criteria we may
+
+832
+00:30:05,799 --> 00:30:08,349
+have for application on organization so
+
+833
+00:30:08,349 --> 00:30:09,879
+it's going to turn out that when we
+
+834
+00:30:09,879 --> 00:30:12,369
+start talking about logging since no
+
+835
+00:30:12,369 --> 00:30:14,590
+discs are expensive right - we can turn
+
+836
+00:30:14,590 --> 00:30:16,269
+random writes into sequential writes
+
+837
+00:30:16,269 --> 00:30:18,970
+through a log all right and that'll make
+
+838
+00:30:18,970 --> 00:30:20,859
+the system run faster and then for other
+
+839
+00:30:20,859 --> 00:30:22,090
+applications the log is actually
+
+840
+00:30:22,090 --> 00:30:25,179
+essentially going to be you know a audit
+
+841
+00:30:25,179 --> 00:30:26,799
+trail everything a single thing every
+
+842
+00:30:26,799 --> 00:30:28,899
+single thing your application did then
+
+843
+00:30:28,899 --> 00:30:31,059
+you can use that to figure out what was
+
+844
+00:30:31,059 --> 00:30:32,769
+happening if you ever have an audit or
+
+845
+00:30:32,769 --> 00:30:34,899
+to have questions about know my
+
+846
+00:30:34,899 --> 00:30:36,190
+application did this at this time
+
+847
+00:30:36,190 --> 00:30:37,989
+because and then there was a breach what
+
+848
+00:30:37,989 --> 00:30:39,820
+data I got red or what data I got you
+
+849
+00:30:39,820 --> 00:30:43,389
+got got written so in a lot of financial
+
+850
+00:30:43,389 --> 00:30:44,950
+companies they maintain me they have to
+
+851
+00:30:44,950 --> 00:30:46,720
+maintain the the log that data students
+
+852
+00:30:46,720 --> 00:30:47,710
+generate for the last seven years
+
+853
+00:30:47,710 --> 00:30:50,080
+because of a government regulation so
+
+854
+00:30:50,080 --> 00:30:51,549
+this is this is a good example where I
+
+855
+00:30:51,549 --> 00:30:53,559
+can use the log for atomicity but also
+
+856
+00:30:53,559 --> 00:30:57,190
+get additional benefit from it so the
+
+857
+00:30:57,190 --> 00:30:58,479
+other approach to guarantee atomicity
+
+858
+00:30:58,479 --> 00:30:59,799
+that's less common is called shadow
+
+859
+00:30:59,799 --> 00:31:02,470
+paging and this is actually the example
+
+860
+00:31:02,470 --> 00:31:03,669
+that I mentioned the beginning the class
+
+861
+00:31:03,669 --> 00:31:04,840
+where I said for every single
+
+862
+00:31:04,840 --> 00:31:06,249
+transaction I'm gonna make a copy of the
+
+863
+00:31:06,249 --> 00:31:09,099
+database file on disk all my changes go
+
+864
+00:31:09,099 --> 00:31:09,400
+to
+
+865
+00:31:09,400 --> 00:31:10,750
+copy and then when my transaction
+
+866
+00:31:10,750 --> 00:31:12,430
+commits I just swing a pointer and say
+
+867
+00:31:12,430 --> 00:31:14,680
+this is now the this is now the master
+
+868
+00:31:14,680 --> 00:31:16,660
+version so that's essentially what
+
+869
+00:31:16,660 --> 00:31:18,940
+shadow paging is but instead of copying
+
+870
+00:31:18,940 --> 00:31:20,920
+the single file every single time
+
+871
+00:31:20,920 --> 00:31:22,450
+they'll just copy the individual pages
+
+872
+00:31:22,450 --> 00:31:24,610
+that the transaction modifies when it
+
+873
+00:31:24,610 --> 00:31:26,710
+runs and then when in transaction
+
+874
+00:31:26,710 --> 00:31:28,240
+commits again you swing a pointer and
+
+875
+00:31:28,240 --> 00:31:29,860
+say all right all of these shadow copy
+
+876
+00:31:29,860 --> 00:31:33,160
+pages are now the master copy pages so
+
+877
+00:31:33,160 --> 00:31:35,020
+this is the one of the oldest ideas in
+
+878
+00:31:35,020 --> 00:31:36,250
+database systems this was event about
+
+879
+00:31:36,250 --> 00:31:41,680
+IBM in the 1970s and system R this turns
+
+880
+00:31:41,680 --> 00:31:45,700
+out to be super slow and problematic for
+
+881
+00:31:45,700 --> 00:31:48,430
+managing data on disk and when IBM went
+
+882
+00:31:48,430 --> 00:31:50,110
+to go build db2 which is the second day
+
+883
+00:31:50,110 --> 00:31:51,460
+the relational data system they built
+
+884
+00:31:51,460 --> 00:31:54,070
+after system are they didn't do any of
+
+885
+00:31:54,070 --> 00:31:55,500
+this they went with the logging approach
+
+886
+00:31:55,500 --> 00:31:58,630
+because you end up with fragmentation
+
+887
+00:31:58,630 --> 00:32:02,680
+and it with unordered data sets and it
+
+888
+00:32:02,680 --> 00:32:05,380
+gets and it gets slower so as far as you
+
+889
+00:32:05,380 --> 00:32:07,870
+know today the only two database systems
+
+890
+00:32:07,870 --> 00:32:09,520
+that actually do this is shadow paging
+
+891
+00:32:09,520 --> 00:32:16,510
+approach is CouchDB and LM DB they say
+
+892
+00:32:16,510 --> 00:32:17,860
+it's for performance reasons it's not
+
+893
+00:32:17,860 --> 00:32:19,900
+that common everyone else is gonna do is
+
+894
+00:32:19,900 --> 00:32:23,860
+gonna do logging so this is question yes
+
+895
+00:32:23,860 --> 00:32:37,180
+oh yes this one keep going this one so
+
+896
+00:32:37,180 --> 00:32:39,850
+for this one this one is it's the same
+
+897
+00:32:39,850 --> 00:32:41,200
+operation take money around account put
+
+898
+00:32:41,200 --> 00:32:43,630
+in your account this is like we get a
+
+899
+00:32:43,630 --> 00:32:45,520
+Bourdon like the user says abort my
+
+900
+00:32:45,520 --> 00:32:48,370
+transaction everything's still in memory
+
+901
+00:32:48,370 --> 00:32:50,470
+how do I roll that back this is like a
+
+902
+00:32:50,470 --> 00:32:53,320
+hard crash how do I come back from that
+
+903
+00:32:53,320 --> 00:32:54,970
+and so the point I was trying to make
+
+904
+00:32:54,970 --> 00:32:58,720
+here was the the log information is
+
+905
+00:32:58,720 --> 00:33:00,130
+gonna reside both in memory and
+
+906
+00:33:00,130 --> 00:33:02,370
+eventually also get written out to disk
+
+907
+00:33:02,370 --> 00:33:04,540
+because if it's in memory then I can
+
+908
+00:33:04,540 --> 00:33:06,220
+quickly go get it and flip you know flip
+
+909
+00:33:06,220 --> 00:33:08,560
+back the old buttons right if I pour it
+
+910
+00:33:08,560 --> 00:33:10,690
+if I do a hard crash if it's on disk
+
+911
+00:33:10,690 --> 00:33:12,090
+then I can reverse things potentially
+
+912
+00:33:12,090 --> 00:33:14,470
+right when I wouldn't want to load the
+
+913
+00:33:14,470 --> 00:33:16,000
+system back up because again after a
+
+914
+00:33:16,000 --> 00:33:18,130
+hard crash all the contents of a buffer
+
+915
+00:33:18,130 --> 00:33:20,980
+pool are gone and we in you know we need
+
+916
+00:33:20,980 --> 00:33:22,510
+to figure out what was happening at the
+
+917
+00:33:22,510 --> 00:33:23,170
+system at the time
+
+918
+00:33:23,170 --> 00:33:24,430
+crash to put us back in the correct
+
+919
+00:33:24,430 --> 00:33:29,950
+state yes so this question is does this
+
+920
+00:33:29,950 --> 00:33:31,060
+require writing to disk reads
+
+921
+00:33:31,060 --> 00:33:34,150
+transaction yes if you care about this
+
+922
+00:33:34,150 --> 00:33:36,010
+okay if you care about not losing data
+
+923
+00:33:36,010 --> 00:33:39,780
+yes we'll cover that later
+
+924
+00:33:45,660 --> 00:33:48,040
+LM dB
+
+925
+00:33:48,040 --> 00:33:51,850
+this question is is there any why would
+
+926
+00:33:51,850 --> 00:33:58,150
+you ever watch you want to do this I'd
+
+927
+00:33:58,150 --> 00:34:06,040
+if you it doesn't work right so we so we
+
+928
+00:34:06,040 --> 00:34:08,770
+a few years ago my first my first PC
+
+929
+00:34:08,770 --> 00:34:10,090
+student he and I started building a new
+
+930
+00:34:10,090 --> 00:34:13,150
+system using like the new Intel
+
+931
+00:34:13,150 --> 00:34:15,130
+non-volatile memory devices and we
+
+932
+00:34:15,130 --> 00:34:17,918
+thought at the time that with really
+
+933
+00:34:17,918 --> 00:34:21,159
+fast storage like non-volatile memory
+
+934
+00:34:21,159 --> 00:34:22,989
+he's like almost as fast as DRAM with
+
+935
+00:34:22,989 --> 00:34:26,110
+really fast storage to do random access
+
+936
+00:34:26,110 --> 00:34:27,699
+that shadow paging would actually turn
+
+937
+00:34:27,699 --> 00:34:29,440
+out to be a better approach like taking
+
+938
+00:34:29,440 --> 00:34:31,659
+an old idea from the 70s and running on
+
+939
+00:34:31,659 --> 00:34:33,730
+like today's hardware it doesn't work
+
+940
+00:34:33,730 --> 00:34:34,810
+right ahead of all games always move
+
+941
+00:34:34,810 --> 00:34:36,159
+faster because you can do these
+
+942
+00:34:36,159 --> 00:34:38,530
+sequential writes you know you can batch
+
+943
+00:34:38,530 --> 00:34:39,880
+a bunch of things together and then
+
+944
+00:34:39,880 --> 00:34:41,199
+shove amount all the disk at once with
+
+945
+00:34:41,199 --> 00:34:42,159
+shadow paging it's all this
+
+946
+00:34:42,159 --> 00:34:43,810
+fragmentation you're copying things
+
+947
+00:34:43,810 --> 00:34:45,820
+every single time it becomes very
+
+948
+00:34:45,820 --> 00:34:49,239
+expensive well see multi-version
+
+949
+00:34:49,239 --> 00:34:51,460
+concurrency troll which is sort of like
+
+950
+00:34:51,460 --> 00:34:53,469
+this but you instead of copying an
+
+951
+00:34:53,469 --> 00:34:55,270
+entire page before I make a change I
+
+952
+00:34:55,270 --> 00:34:57,820
+maybe just copy a tuple or a subset of
+
+953
+00:34:57,820 --> 00:35:00,730
+the tuple so shadow paging is sort of
+
+954
+00:35:00,730 --> 00:35:03,550
+how multi virtual control works but its
+
+955
+00:35:03,550 --> 00:35:05,320
+shadow paging as defined by IBM is
+
+956
+00:35:05,320 --> 00:35:15,760
+nobody does except for these guys yes to
+
+957
+00:35:15,760 --> 00:35:18,010
+their login stuff yes so I don't spend
+
+958
+00:35:18,010 --> 00:35:20,080
+too much time on running out the desk
+
+959
+00:35:20,080 --> 00:35:22,120
+but the question is is it the case that
+
+960
+00:35:22,120 --> 00:35:25,930
+I if I do much changes I create some
+
+961
+00:35:25,930 --> 00:35:27,400
+some undo undo records that are in
+
+962
+00:35:27,400 --> 00:35:29,560
+memory but then I crash before it's
+
+963
+00:35:29,560 --> 00:35:31,420
+written out the disk is that a problem
+
+964
+00:35:31,420 --> 00:35:35,260
+no because when I come back all my
+
+965
+00:35:35,260 --> 00:35:36,700
+memories gone
+
+966
+00:35:36,700 --> 00:35:39,010
+and the therefore I'm going to load the
+
+967
+00:35:39,010 --> 00:35:41,410
+database back up based on how it was on
+
+968
+00:35:41,410 --> 00:35:43,869
+disk and so because those changes never
+
+969
+00:35:43,869 --> 00:35:47,349
+got persisted to disk they're there as
+
+970
+00:35:47,349 --> 00:35:49,690
+if they never happened so his question
+
+971
+00:35:49,690 --> 00:35:52,230
+which is which is a good point is that
+
+972
+00:35:52,230 --> 00:35:54,550
+do I have is this mean have to do if I
+
+973
+00:35:54,550 --> 00:35:56,230
+know if I want to say my transaction is
+
+974
+00:35:56,230 --> 00:35:57,910
+committed do I have to do an S Inc do I
+
+975
+00:35:57,910 --> 00:35:59,770
+do a flush every single time my
+
+976
+00:35:59,770 --> 00:36:01,990
+transaction commits and I answer is yes
+
+977
+00:36:01,990 --> 00:36:03,609
+but you don't really do it on every
+
+978
+00:36:03,609 --> 00:36:05,530
+single commit you batch a bunch together
+
+979
+00:36:05,530 --> 00:36:06,910
+and then do a group commit when you
+
+980
+00:36:06,910 --> 00:36:08,170
+flush them out all together that
+
+981
+00:36:08,170 --> 00:36:09,640
+advertises the F sync costs over time
+
+982
+00:36:09,640 --> 00:36:11,740
+but if you dare if you want to guarantee
+
+983
+00:36:11,740 --> 00:36:15,520
+that your data is actually durable you
+
+984
+00:36:15,520 --> 00:36:17,440
+happen you have to write the disk well
+
+985
+00:36:17,440 --> 00:36:19,210
+seem so but the tricky thing is gonna be
+
+986
+00:36:19,210 --> 00:36:21,339
+in what order you write to disk it's
+
+987
+00:36:21,339 --> 00:36:22,690
+gonna matter a lot to so you have to
+
+988
+00:36:22,690 --> 00:36:24,490
+make sure you write the log record that
+
+989
+00:36:24,490 --> 00:36:26,079
+correspond to a change to a data page
+
+990
+00:36:26,079 --> 00:36:27,400
+first before you write the data page to
+
+991
+00:36:27,400 --> 00:36:27,880
+disk
+
+992
+00:36:27,880 --> 00:36:29,820
+we'll cover what's in a whole day on
+
+993
+00:36:29,820 --> 00:36:32,980
+this as well and at the point of
+
+994
+00:36:32,980 --> 00:36:34,900
+checking make I made about like oh well
+
+995
+00:36:34,900 --> 00:36:36,400
+the no sequel guys don't always provide
+
+996
+00:36:36,400 --> 00:36:40,000
+acid some of them would actually not
+
+997
+00:36:40,000 --> 00:36:41,980
+even flush to disk when if they had
+
+998
+00:36:41,980 --> 00:36:43,660
+transactions they would not trust a disk
+
+999
+00:36:43,660 --> 00:36:45,760
+exactly when you say you know complete
+
+1000
+00:36:45,760 --> 00:36:47,710
+my transaction they were sort of every
+
+1001
+00:36:47,710 --> 00:36:50,290
+do it every 60 seconds so that means you
+
+1002
+00:36:50,290 --> 00:36:51,790
+could crash and lose the last 60 seconds
+
+1003
+00:36:51,790 --> 00:36:54,609
+of data some systems were even worse
+
+1004
+00:36:54,609 --> 00:36:56,859
+than this I'll just say it straight up
+
+1005
+00:36:56,859 --> 00:36:58,780
+ right the early version of
+
+1006
+00:36:58,780 --> 00:37:01,030
+is when you do it right it would mean Li
+
+1007
+00:37:01,030 --> 00:37:02,319
+come back and say yeah I got your right
+
+1008
+00:37:02,319 --> 00:37:04,780
+but in actually being do the right it's
+
+1009
+00:37:04,780 --> 00:37:07,000
+a network Lera said yeah I got it and if
+
+1010
+00:37:07,000 --> 00:37:07,900
+you wanted to make sure that you're
+
+1011
+00:37:07,900 --> 00:37:09,040
+right actually occurred yet to come back
+
+1012
+00:37:09,040 --> 00:37:10,300
+a second time and say did you actually
+
+1013
+00:37:10,300 --> 00:37:12,369
+do that that was the default for them
+
+1014
+00:37:12,369 --> 00:37:13,480
+for like four or five years and their
+
+1015
+00:37:13,480 --> 00:37:14,859
+early benchmark moments were amazing
+
+1016
+00:37:14,859 --> 00:37:16,390
+because like they would do these rights
+
+1017
+00:37:16,390 --> 00:37:18,550
+and of course it's like yeah I get it no
+
+1018
+00:37:18,550 --> 00:37:22,140
+problem right but didn't actually do it
+
+1019
+00:37:23,579 --> 00:37:25,990
+there's some fix that company fall
+
+1020
+00:37:25,990 --> 00:37:28,810
+anymore okay so any questions by
+
+1021
+00:37:28,810 --> 00:37:30,660
+atomicity
+
+1022
+00:37:30,660 --> 00:37:32,920
+again what we'll cover that how we
+
+1023
+00:37:32,920 --> 00:37:37,680
+actually guarantee this in a second so
+
+1024
+00:37:37,680 --> 00:37:39,790
+consistency as I said before is this
+
+1025
+00:37:39,790 --> 00:37:43,150
+nebulous term about correctness of the
+
+1026
+00:37:43,150 --> 00:37:46,420
+database so at a high level the way to
+
+1027
+00:37:46,420 --> 00:37:47,319
+think about this what a database
+
+1028
+00:37:47,319 --> 00:37:50,600
+actually is is trying to model some some
+
+1029
+00:37:50,600 --> 00:37:53,360
+concept or aspect of the real world like
+
+1030
+00:37:53,360 --> 00:37:55,250
+my my database for my bank is trying to
+
+1031
+00:37:55,250 --> 00:37:57,350
+model the old days of a bank where
+
+1032
+00:37:57,350 --> 00:37:58,790
+somebody would sit in a ledger and
+
+1033
+00:37:58,790 --> 00:38:00,200
+record how much money you actually had
+
+1034
+00:38:00,200 --> 00:38:02,450
+in your account right it's modeling some
+
+1035
+00:38:02,450 --> 00:38:05,750
+some process in the real world so we're
+
+1036
+00:38:05,750 --> 00:38:09,710
+gonna say that if we have our database
+
+1037
+00:38:09,710 --> 00:38:14,060
+be logically correct meaning we don't
+
+1038
+00:38:14,060 --> 00:38:15,110
+care has actually actually physically
+
+1039
+00:38:15,110 --> 00:38:16,760
+stored but the data integrity the
+
+1040
+00:38:16,760 --> 00:38:18,590
+referential integrity all those things
+
+1041
+00:38:18,590 --> 00:38:22,100
+are correct then any questions we asked
+
+1042
+00:38:22,100 --> 00:38:23,630
+about that our database will produce
+
+1043
+00:38:23,630 --> 00:38:27,770
+correct results and again that sounds
+
+1044
+00:38:27,770 --> 00:38:29,420
+very vague so let me go in or detail
+
+1045
+00:38:29,420 --> 00:38:31,190
+there's two types of consistency we
+
+1046
+00:38:31,190 --> 00:38:32,600
+could possibly have now database
+
+1047
+00:38:32,600 --> 00:38:34,540
+consistency and transaction consistency
+
+1048
+00:38:34,540 --> 00:38:36,740
+the spoiler would be database
+
+1049
+00:38:36,740 --> 00:38:38,030
+consistency is the one we actually care
+
+1050
+00:38:38,030 --> 00:38:40,010
+about we can actually we can't do the
+
+1051
+00:38:40,010 --> 00:38:42,400
+second one and we'll see why in a second
+
+1052
+00:38:42,400 --> 00:38:46,820
+so again the our krampus criteria is
+
+1053
+00:38:46,820 --> 00:38:49,070
+that our database actually reflects what
+
+1054
+00:38:49,070 --> 00:38:51,620
+the real world looks like and so how do
+
+1055
+00:38:51,620 --> 00:38:53,480
+we actually enforce that well we provide
+
+1056
+00:38:53,480 --> 00:38:54,530
+the data system with integrity
+
+1057
+00:38:54,530 --> 00:38:56,660
+constraints to say this is this is what
+
+1058
+00:38:56,660 --> 00:38:58,210
+it means to for us to have correct data
+
+1059
+00:38:58,210 --> 00:39:02,270
+so for example if I have a table of
+
+1060
+00:39:02,270 --> 00:39:04,340
+people or students and I'm keeping track
+
+1061
+00:39:04,340 --> 00:39:06,530
+of their age I can have an integrity
+
+1062
+00:39:06,530 --> 00:39:08,030
+constraint that says nobody's age could
+
+1063
+00:39:08,030 --> 00:39:10,160
+be less than zero all right there's no
+
+1064
+00:39:10,160 --> 00:39:13,250
+negative negative ages and so the data
+
+1065
+00:39:13,250 --> 00:39:14,360
+system could enforce that it sometimes
+
+1066
+00:39:14,360 --> 00:39:15,740
+insert something with a negative age you
+
+1067
+00:39:15,740 --> 00:39:17,780
+can say that's you can't have that in
+
+1068
+00:39:17,780 --> 00:39:19,970
+the real world I can't let you insert
+
+1069
+00:39:19,970 --> 00:39:23,810
+that data the other way to think about
+
+1070
+00:39:23,810 --> 00:39:27,560
+to also is that the so now in addition
+
+1071
+00:39:27,560 --> 00:39:29,330
+to these have experience now as
+
+1072
+00:39:29,330 --> 00:39:30,920
+transactions to start making changes to
+
+1073
+00:39:30,920 --> 00:39:34,160
+the database that any transaction that
+
+1074
+00:39:34,160 --> 00:39:36,500
+excuse in the future should be able to
+
+1075
+00:39:36,500 --> 00:39:39,830
+see the changes the correct the correct
+
+1076
+00:39:39,830 --> 00:39:42,290
+changes that a transaction in the past
+
+1077
+00:39:42,290 --> 00:39:45,590
+made so what does that mean so if I of
+
+1078
+00:39:45,590 --> 00:39:47,240
+transaction say I want run transaction
+
+1079
+00:39:47,240 --> 00:39:49,160
+right now and I make some change in the
+
+1080
+00:39:49,160 --> 00:39:50,960
+database if you now run a transaction
+
+1081
+00:39:50,960 --> 00:39:53,510
+one minute later long as nobody has
+
+1082
+00:39:53,510 --> 00:39:56,330
+overwritten my changes I you should be
+
+1083
+00:39:56,330 --> 00:40:01,010
+able to see my updates so in a single
+
+1084
+00:40:01,010 --> 00:40:02,870
+node database this is not that big you
+
+1085
+00:40:02,870 --> 00:40:04,460
+know this is not that big of a deal
+
+1086
+00:40:04,460 --> 00:40:05,990
+all right so my transaction commits I
+
+1087
+00:40:05,990 --> 00:40:07,160
+give back the acknowledgement that I
+
+1088
+00:40:07,160 --> 00:40:09,680
+committed then you come along and now do
+
+1089
+00:40:09,680 --> 00:40:11,660
+another transaction on that same machine
+
+1090
+00:40:11,660 --> 00:40:13,670
+and you read might you should we're
+
+1091
+00:40:13,670 --> 00:40:14,810
+gonna read my rights right away
+
+1092
+00:40:14,810 --> 00:40:17,300
+so for a single no database this is not
+
+1093
+00:40:17,300 --> 00:40:18,670
+that big this is not really an issue
+
+1094
+00:40:18,670 --> 00:40:20,660
+when this matters more is the
+
+1095
+00:40:20,660 --> 00:40:23,119
+distributed databases so now if I'm
+
+1096
+00:40:23,119 --> 00:40:24,560
+trying to guarantee strong consistency
+
+1097
+00:40:24,560 --> 00:40:26,990
+in my distributed database if I do a
+
+1098
+00:40:26,990 --> 00:40:30,800
+write and I update some some account and
+
+1099
+00:40:30,800 --> 00:40:33,290
+then you come one millisecond later on
+
+1100
+00:40:33,290 --> 00:40:36,140
+another machine for the same logical
+
+1101
+00:40:36,140 --> 00:40:37,640
+database but on the separate physical
+
+1102
+00:40:37,640 --> 00:40:39,550
+machine and you start you now do a read
+
+1103
+00:40:39,550 --> 00:40:42,470
+you should be able to see my change if I
+
+1104
+00:40:42,470 --> 00:40:44,270
+if I told the outside world that my
+
+1105
+00:40:44,270 --> 00:40:47,900
+transaction committed alright so this
+
+1106
+00:40:47,900 --> 00:40:49,430
+will matter more then for the Shiva
+
+1107
+00:40:49,430 --> 00:40:51,410
+databases because the no sequel guys
+
+1108
+00:40:51,410 --> 00:40:52,430
+will have this thing called adventurer
+
+1109
+00:40:52,430 --> 00:40:54,260
+Kristin C will say I'll propagate
+
+1110
+00:40:54,260 --> 00:40:57,109
+changes eventually and not guarantee
+
+1111
+00:40:57,109 --> 00:40:58,430
+that everyone sees the exact same state
+
+1112
+00:40:58,430 --> 00:41:00,740
+of the device at the exact same time but
+
+1113
+00:41:00,740 --> 00:41:02,119
+for our purposes today a single new
+
+1114
+00:41:02,119 --> 00:41:04,640
+database it doesn't really make sense it
+
+1115
+00:41:04,640 --> 00:41:08,330
+won't be an issue so the other type of
+
+1116
+00:41:08,330 --> 00:41:09,619
+constancy is transactional consistency
+
+1117
+00:41:09,619 --> 00:41:13,220
+and this one again is very hand wavy but
+
+1118
+00:41:13,220 --> 00:41:14,990
+it basically says that if the database
+
+1119
+00:41:14,990 --> 00:41:16,400
+is consistent before transaction runs
+
+1120
+00:41:16,400 --> 00:41:19,820
+and our transaction is consistent then
+
+1121
+00:41:19,820 --> 00:41:21,950
+after we run our transaction the N state
+
+1122
+00:41:21,950 --> 00:41:26,300
+of the database should be consistent all
+
+1123
+00:41:26,300 --> 00:41:27,560
+right so what does it mean to be you
+
+1124
+00:41:27,560 --> 00:41:29,750
+know consistent or correct right that's
+
+1125
+00:41:29,750 --> 00:41:31,369
+a higher level concept that we can't
+
+1126
+00:41:31,369 --> 00:41:35,810
+reason about in our database right we
+
+1127
+00:41:35,810 --> 00:41:37,430
+can try to enforce some some integrity
+
+1128
+00:41:37,430 --> 00:41:40,040
+constraints and we prevent the
+
+1129
+00:41:40,040 --> 00:41:42,230
+transaction from doing you know making
+
+1130
+00:41:42,230 --> 00:41:46,369
+some changes but you know if if my
+
+1131
+00:41:46,369 --> 00:41:48,589
+application says there should be no
+
+1132
+00:41:48,589 --> 00:41:51,500
+customer with an account that has you
+
+1133
+00:41:51,500 --> 00:41:55,520
+know at CMU edu email address and my
+
+1134
+00:41:55,520 --> 00:41:57,230
+transaction go ahead goes ahead and
+
+1135
+00:41:57,230 --> 00:42:00,020
+actually tries to do that I I can't stop
+
+1136
+00:42:00,020 --> 00:42:01,820
+that in my database that's not a bad
+
+1137
+00:42:01,820 --> 00:42:03,440
+it's not a good example because I you
+
+1138
+00:42:03,440 --> 00:42:06,650
+know it's me rephrase that let's say
+
+1139
+00:42:06,650 --> 00:42:08,990
+there's the application says that nobody
+
+1140
+00:42:08,990 --> 00:42:11,390
+taking this class is allowed to have an
+
+1141
+00:42:11,390 --> 00:42:14,150
+account on my on this one system but my
+
+1142
+00:42:14,150 --> 00:42:15,800
+database doesn't have access to whether
+
+1143
+00:42:15,800 --> 00:42:17,660
+you're enrolled in this class or not so
+
+1144
+00:42:17,660 --> 00:42:18,180
+the transact
+
+1145
+00:42:18,180 --> 00:42:19,380
+allowed to go ahead and do that and the
+
+1146
+00:42:19,380 --> 00:42:21,300
+DA says okay sure you want to do this in
+
+1147
+00:42:21,300 --> 00:42:23,490
+sir I'm allowed to do that but that's
+
+1148
+00:42:23,490 --> 00:42:25,530
+this high level concept this higher
+
+1149
+00:42:25,530 --> 00:42:27,300
+level constraint but the data stuff
+
+1150
+00:42:27,300 --> 00:42:28,230
+doesn't know anything about it so
+
+1151
+00:42:28,230 --> 00:42:30,480
+therefore the transaction can consistent
+
+1152
+00:42:30,480 --> 00:42:35,280
+and therefore we can't stop that so you
+
+1153
+00:42:35,280 --> 00:42:36,930
+know this is this is something that we
+
+1154
+00:42:36,930 --> 00:42:37,980
+can't simply just can't do in our
+
+1155
+00:42:37,980 --> 00:42:39,810
+database system we can we can enforce
+
+1156
+00:42:39,810 --> 00:42:40,950
+integrity constraints a referential
+
+1157
+00:42:40,950 --> 00:42:42,390
+integrity constraints we can't afford
+
+1158
+00:42:42,390 --> 00:42:45,050
+level things because we just don't know
+
+1159
+00:42:45,050 --> 00:42:47,550
+because it's a human value judgment that
+
+1160
+00:42:47,550 --> 00:42:51,200
+we can't codify in our system so there's
+
+1161
+00:42:51,200 --> 00:42:53,040
+there's nothing really else to say about
+
+1162
+00:42:53,040 --> 00:42:54,360
+this like if you understand the high
+
+1163
+00:42:54,360 --> 00:42:55,740
+level what I'm talking about and that's
+
+1164
+00:42:55,740 --> 00:42:59,090
+it right that's all that matters okay
+
+1165
+00:42:59,090 --> 00:43:01,080
+all right so the moment the other one we
+
+1166
+00:43:01,080 --> 00:43:03,240
+care about today is also isolation so
+
+1167
+00:43:03,240 --> 00:43:05,070
+isolation again is saying that if our
+
+1168
+00:43:05,070 --> 00:43:07,200
+transaction if we if we have our user
+
+1169
+00:43:07,200 --> 00:43:09,240
+submitting users many more transactions
+
+1170
+00:43:09,240 --> 00:43:12,240
+we want each of them to run assuming
+
+1171
+00:43:12,240 --> 00:43:14,880
+that they're running by themself and the
+
+1172
+00:43:14,880 --> 00:43:16,890
+reason why we want to provide this this
+
+1173
+00:43:16,890 --> 00:43:19,410
+guarantee is that it's a it makes it way
+
+1174
+00:43:19,410 --> 00:43:21,090
+easier to programmer application our
+
+1175
+00:43:21,090 --> 00:43:23,220
+logic in our transactions if that's the
+
+1176
+00:43:23,220 --> 00:43:24,720
+case we assume that we have exclusive
+
+1177
+00:43:24,720 --> 00:43:26,580
+access to the database we don't have to
+
+1178
+00:43:26,580 --> 00:43:30,120
+worry about any intermediate data we
+
+1179
+00:43:30,120 --> 00:43:31,560
+could be reading from other transactions
+
+1180
+00:43:31,560 --> 00:43:33,600
+then you know we just write our
+
+1181
+00:43:33,600 --> 00:43:35,220
+single-threaded code and that's fine and
+
+1182
+00:43:35,220 --> 00:43:41,640
+it makes life easier so we can achieve
+
+1183
+00:43:41,640 --> 00:43:43,650
+that we can achieve this by doing again
+
+1184
+00:43:43,650 --> 00:43:45,000
+my straw man approach in the beginning
+
+1185
+00:43:45,000 --> 00:43:45,870
+where I just have a single thread
+
+1186
+00:43:45,870 --> 00:43:48,300
+actually one by one but I said that we
+
+1187
+00:43:48,300 --> 00:43:49,140
+want to be able to interleave
+
+1188
+00:43:49,140 --> 00:43:52,350
+transactions to achieve better
+
+1189
+00:43:52,350 --> 00:43:56,730
+parallelism at concurrency and so we see
+
+1190
+00:43:56,730 --> 00:43:57,840
+if you want to be able guarantee this
+
+1191
+00:43:57,840 --> 00:43:59,070
+illusion property but we still want to
+
+1192
+00:43:59,070 --> 00:44:01,950
+interleave this that becomes difficult
+
+1193
+00:44:01,950 --> 00:44:05,730
+and so the way we're going to provide
+
+1194
+00:44:05,730 --> 00:44:06,930
+this way we're going to do this is
+
+1195
+00:44:06,930 --> 00:44:09,930
+through a concurrent roll protocol so
+
+1196
+00:44:09,930 --> 00:44:10,980
+we've already talked about control
+
+1197
+00:44:10,980 --> 00:44:12,270
+protocols slightly when we talked about
+
+1198
+00:44:12,270 --> 00:44:14,910
+index latching maybe we would have a
+
+1199
+00:44:14,910 --> 00:44:16,230
+single data structure and allow multiple
+
+1200
+00:44:16,230 --> 00:44:17,490
+threads to access it at the same time
+
+1201
+00:44:17,490 --> 00:44:20,010
+and we use our latches to enforce the
+
+1202
+00:44:20,010 --> 00:44:23,070
+the correctness of our data structure so
+
+1203
+00:44:23,070 --> 00:44:24,480
+now we're gonna do the same thing but
+
+1204
+00:44:24,480 --> 00:44:27,240
+for our database objects this is why I
+
+1205
+00:44:27,240 --> 00:44:28,710
+was making the distinguish between locks
+
+1206
+00:44:28,710 --> 00:44:30,210
+and latches so latches are protecting
+
+1207
+00:44:30,210 --> 00:44:31,980
+the internals of the data structure
+
+1208
+00:44:31,980 --> 00:44:33,690
+locks are gonna protect these database
+
+1209
+00:44:33,690 --> 00:44:37,620
+objects so you think I'll call as like
+
+1210
+00:44:37,620 --> 00:44:39,390
+the traffic cop for for the database
+
+1211
+00:44:39,390 --> 00:44:41,750
+system right it's it's sitting saying
+
+1212
+00:44:41,750 --> 00:44:44,850
+this we can let this operation go this
+
+1213
+00:44:44,850 --> 00:44:46,290
+operation has to wait or this operation
+
+1214
+00:44:46,290 --> 00:44:48,150
+has to abort it's it's trying to figure
+
+1215
+00:44:48,150 --> 00:44:50,100
+out how to interleave things in a way
+
+1216
+00:44:50,100 --> 00:44:53,040
+that we end up with a correct state so
+
+1217
+00:44:53,040 --> 00:44:54,900
+there's two categories of protocols that
+
+1218
+00:44:54,900 --> 00:44:56,790
+we're gonna care about and then this
+
+1219
+00:44:56,790 --> 00:44:59,490
+will this always cover on on next week
+
+1220
+00:44:59,490 --> 00:45:02,910
+right Italy both of these so the first
+
+1221
+00:45:02,910 --> 00:45:05,100
+one is a pessimistic protocol where
+
+1222
+00:45:05,100 --> 00:45:06,930
+we're gonna assume that our transactions
+
+1223
+00:45:06,930 --> 00:45:08,330
+are going to conflict to cause problems
+
+1224
+00:45:08,330 --> 00:45:12,120
+so we require them to acquire locks
+
+1225
+00:45:12,120 --> 00:45:15,780
+before it allowed to do anything right
+
+1226
+00:45:15,780 --> 00:45:17,460
+you assume that you know you're
+
+1227
+00:45:17,460 --> 00:45:18,570
+pessimistic we assume that there's many
+
+1228
+00:45:18,570 --> 00:45:21,270
+problems so you you you you make sure
+
+1229
+00:45:21,270 --> 00:45:23,700
+that there's you make sure that things
+
+1230
+00:45:23,700 --> 00:45:25,760
+go in the correct order by using locks
+
+1231
+00:45:25,760 --> 00:45:27,780
+obstinate sticker troll is where you
+
+1232
+00:45:27,780 --> 00:45:30,180
+assume that the conflicts are rare most
+
+1233
+00:45:30,180 --> 00:45:31,440
+of the time my transactions aren't going
+
+1234
+00:45:31,440 --> 00:45:33,510
+to conflict so rather than making them
+
+1235
+00:45:33,510 --> 00:45:34,980
+stall and acquire it locks at the very
+
+1236
+00:45:34,980 --> 00:45:37,980
+beginning I just let them run and do
+
+1237
+00:45:37,980 --> 00:45:39,420
+whatever they want and then when they go
+
+1238
+00:45:39,420 --> 00:45:41,970
+to commit go back and figure out whether
+
+1239
+00:45:41,970 --> 00:45:43,260
+that was actually the right thing to do
+
+1240
+00:45:43,260 --> 00:45:46,770
+whether there was a conflict so Monday's
+
+1241
+00:45:46,770 --> 00:45:47,910
+class next week will be on two-phase
+
+1242
+00:45:47,910 --> 00:45:48,330
+locking
+
+1243
+00:45:48,330 --> 00:45:49,680
+that's a pessimistic protocol
+
+1244
+00:45:49,680 --> 00:45:51,330
+Wednesday's class next week will be on
+
+1245
+00:45:51,330 --> 00:45:52,890
+timestamp ordering that's considered an
+
+1246
+00:45:52,890 --> 00:45:54,630
+optimistic protocol and optimistic
+
+1247
+00:45:54,630 --> 00:45:56,520
+encouraged goal protocol was actually
+
+1248
+00:45:56,520 --> 00:46:00,360
+better here at CMU in the 1980s all
+
+1249
+00:46:00,360 --> 00:46:03,240
+right so let's look now at some some
+
+1250
+00:46:03,240 --> 00:46:04,740
+real examples start understanding what
+
+1251
+00:46:04,740 --> 00:46:07,470
+it actually mean to have complex so
+
+1252
+00:46:07,470 --> 00:46:09,990
+again this is my bank account example
+
+1253
+00:46:09,990 --> 00:46:12,540
+where we have two accounts a and B it's
+
+1254
+00:46:12,540 --> 00:46:15,390
+Andy and is bookie and so we want to
+
+1255
+00:46:15,390 --> 00:46:16,710
+transfer 100 dollars out of my account
+
+1256
+00:46:16,710 --> 00:46:18,930
+into my bookies account but then at the
+
+1257
+00:46:18,930 --> 00:46:22,110
+same time the bank runs action where
+
+1258
+00:46:22,110 --> 00:46:24,090
+it's going to update the the monthly
+
+1259
+00:46:24,090 --> 00:46:25,440
+interest of all the bank accounts so
+
+1260
+00:46:25,440 --> 00:46:27,360
+we're going to update every account with
+
+1261
+00:46:27,360 --> 00:46:30,450
+an add 6% interest I so transaction one
+
+1262
+00:46:30,450 --> 00:46:32,310
+is taking hundred dollars out of a put a
+
+1263
+00:46:32,310 --> 00:46:33,870
+hundred dollars and B and then
+
+1264
+00:46:33,870 --> 00:46:35,430
+transaction two is just computing
+
+1265
+00:46:35,430 --> 00:46:37,290
+you're incrementing both accounts by
+
+1266
+00:46:37,290 --> 00:46:41,130
+adding six percent so if we assume that
+
+1267
+00:46:41,130 --> 00:46:43,260
+again both bank accounts have a thousand
+
+1268
+00:46:43,260 --> 00:46:45,000
+dollars
+
+1269
+00:46:45,000 --> 00:46:46,500
+and we want to EXCI at these two
+
+1270
+00:46:46,500 --> 00:46:48,690
+transactions what are the possible
+
+1271
+00:46:48,690 --> 00:46:50,400
+outcomes we could have for the state of
+
+1272
+00:46:50,400 --> 00:46:52,550
+the database
+
+1273
+00:46:52,550 --> 00:46:54,540
+all right zooming we have arbitrary
+
+1274
+00:46:54,540 --> 00:47:00,119
+interleavings well many right because we
+
+1275
+00:47:00,119 --> 00:47:02,220
+could have t1 maybe go do run run in one
+
+1276
+00:47:02,220 --> 00:47:04,170
+query then switch over to t2 then back
+
+1277
+00:47:04,170 --> 00:47:06,720
+and forth right there's a bunch of runt
+
+1278
+00:47:06,720 --> 00:47:07,920
+ways we can end up with these
+
+1279
+00:47:07,920 --> 00:47:10,680
+interleavings but the important thing to
+
+1280
+00:47:10,680 --> 00:47:13,290
+point out though is that at the end of
+
+1281
+00:47:13,290 --> 00:47:15,060
+the day after we execute transaction t1
+
+1282
+00:47:15,060 --> 00:47:19,290
+and t2 in any possible order to know
+
+1283
+00:47:19,290 --> 00:47:21,540
+that our database state is correct the
+
+1284
+00:47:21,540 --> 00:47:23,339
+final result when we add both the
+
+1285
+00:47:23,339 --> 00:47:26,670
+accounts together should be 2120 because
+
+1286
+00:47:26,670 --> 00:47:27,839
+I have a thousand dollars than a
+
+1287
+00:47:27,839 --> 00:47:29,790
+thousand dollars to be add that together
+
+1288
+00:47:29,790 --> 00:47:31,890
+that's two thousand and then the second
+
+1289
+00:47:31,890 --> 00:47:33,150
+transaction wants to add six percent
+
+1290
+00:47:33,150 --> 00:47:36,599
+interest so we want to guarantee that no
+
+1291
+00:47:36,599 --> 00:47:38,430
+matter how we order or interleave our
+
+1292
+00:47:38,430 --> 00:47:40,349
+operations we always at the end after
+
+1293
+00:47:40,349 --> 00:47:44,780
+executing t1 and t2 we end up with 2120
+
+1294
+00:47:44,780 --> 00:47:46,829
+so this is a very important property
+
+1295
+00:47:46,829 --> 00:47:48,180
+about transactions and database systems
+
+1296
+00:47:48,180 --> 00:47:50,130
+that's gonna be slightly different than
+
+1297
+00:47:50,130 --> 00:47:52,200
+maybe how you you you know or have
+
+1298
+00:47:52,200 --> 00:47:54,319
+experienced parallel programming before
+
+1299
+00:47:54,319 --> 00:47:58,109
+so in a database system that we're talk
+
+1300
+00:47:58,109 --> 00:48:01,380
+about here even though t1 may be
+
+1301
+00:48:01,380 --> 00:48:02,839
+submitted to the data system first
+
+1302
+00:48:02,839 --> 00:48:06,210
+followed by t2 there's no guarantee the
+
+1303
+00:48:06,210 --> 00:48:10,190
+database system is gonna run t1 first
+
+1304
+00:48:10,190 --> 00:48:12,930
+right and the reason why we're gonna do
+
+1305
+00:48:12,930 --> 00:48:14,819
+this is because because we can have any
+
+1306
+00:48:14,819 --> 00:48:16,650
+possible interleaving or any any
+
+1307
+00:48:16,650 --> 00:48:18,960
+possible ordering then this is gonna
+
+1308
+00:48:18,960 --> 00:48:20,900
+allow us to open up more opportunities
+
+1309
+00:48:20,900 --> 00:48:22,859
+to do interleaving to get better
+
+1310
+00:48:22,859 --> 00:48:27,359
+parallelism if I care my application
+
+1311
+00:48:27,359 --> 00:48:28,920
+absolutely had to care say well t1
+
+1312
+00:48:28,920 --> 00:48:30,720
+absolutely has to exit first then
+
+1313
+00:48:30,720 --> 00:48:32,640
+followed by t2 the way you would write
+
+1314
+00:48:32,640 --> 00:48:35,310
+that code is you admit t1 and then only
+
+1315
+00:48:35,310 --> 00:48:36,420
+when you get back to your knowledge
+
+1316
+00:48:36,420 --> 00:48:37,800
+meant that t1 committed then you submit
+
+1317
+00:48:37,800 --> 00:48:42,690
+T 2 coz the you can't guarantee that now
+
+1318
+00:48:42,690 --> 00:48:44,550
+in practice if you if you submit t1 and
+
+1319
+00:48:44,550 --> 00:48:46,410
+if you know it takes a minute then you
+
+1320
+00:48:46,410 --> 00:48:47,880
+submit t2 that's basically the same
+
+1321
+00:48:47,880 --> 00:48:50,310
+thing but if I sit vice with them at
+
+1322
+00:48:50,310 --> 00:48:52,710
+exactly the same time then the data's
+
+1323
+00:48:52,710 --> 00:48:53,970
+could enter leave them and it anyway it
+
+1324
+00:48:53,970 --> 00:48:56,240
+wants
+
+1325
+00:48:56,420 --> 00:48:58,190
+but what we're gonna care about those
+
+1326
+00:48:58,190 --> 00:49:01,160
+that for any arbitrary interleaving we
+
+1327
+00:49:01,160 --> 00:49:02,869
+want the end state of the database to be
+
+1328
+00:49:02,869 --> 00:49:04,910
+equivalent to one where we actually
+
+1329
+00:49:04,910 --> 00:49:06,529
+execute these transactions in Syria
+
+1330
+00:49:06,529 --> 00:49:09,380
+order with a single thread either t1
+
+1331
+00:49:09,380 --> 00:49:12,799
+followed by t2 or t2 followed by t1 the
+
+1332
+00:49:12,799 --> 00:49:13,760
+end state of the day this has to look
+
+1333
+00:49:13,760 --> 00:49:17,599
+like Val so now that means that the the
+
+1334
+00:49:17,599 --> 00:49:19,190
+number of possible outcomes we could
+
+1335
+00:49:19,190 --> 00:49:22,609
+have are for the state a and B could be
+
+1336
+00:49:22,609 --> 00:49:25,309
+different right so if I have say t1 go
+
+1337
+00:49:25,309 --> 00:49:26,359
+first all by t2
+
+1338
+00:49:26,359 --> 00:49:30,230
+I'll have 954 dollars in a and and 11
+
+1339
+00:49:30,230 --> 00:49:33,349
+$66 and B but I go the other order
+
+1340
+00:49:33,349 --> 00:49:37,010
+I'll have 960 and 1160 but again if I
+
+1341
+00:49:37,010 --> 00:49:38,900
+add both of these together I always get
+
+1342
+00:49:38,900 --> 00:49:41,990
+2120 and that's again that's equivalent
+
+1343
+00:49:41,990 --> 00:49:45,760
+to one where the xu2 in serial order
+
+1344
+00:49:46,000 --> 00:49:50,990
+this clip all right so let's actually
+
+1345
+00:49:50,990 --> 00:49:54,140
+look at what the database sees so for
+
+1346
+00:49:54,140 --> 00:49:56,299
+this this is this is called a schedule
+
+1347
+00:49:56,299 --> 00:49:58,279
+for our transactions in a way to read
+
+1348
+00:49:58,279 --> 00:50:00,019
+this is that going from the top to
+
+1349
+00:50:00,019 --> 00:50:03,529
+bottom for time and then for each of
+
+1350
+00:50:03,529 --> 00:50:04,490
+these columns here we have the
+
+1351
+00:50:04,490 --> 00:50:05,960
+transactions and we have the operations
+
+1352
+00:50:05,960 --> 00:50:08,180
+that they're actually doing so I call
+
+1353
+00:50:08,180 --> 00:50:10,160
+began on t1 I take a hundred dollars out
+
+1354
+00:50:10,160 --> 00:50:12,109
+of a take put a hundred hours and B and
+
+1355
+00:50:12,109 --> 00:50:14,210
+I call commit and then now annex --an
+
+1356
+00:50:14,210 --> 00:50:16,130
+time I do a context switch over here and
+
+1357
+00:50:16,130 --> 00:50:17,869
+now I call it t1 and it computes the
+
+1358
+00:50:17,869 --> 00:50:19,490
+interest in these guys so for this
+
+1359
+00:50:19,490 --> 00:50:21,289
+assume that we only have a single thread
+
+1360
+00:50:21,289 --> 00:50:23,119
+that can with a single program counter
+
+1361
+00:50:23,119 --> 00:50:25,069
+and we can only actually one operation
+
+1362
+00:50:25,069 --> 00:50:27,619
+at a time like we can interleave them of
+
+1363
+00:50:27,619 --> 00:50:29,059
+these different transactions but at any
+
+1364
+00:50:29,059 --> 00:50:32,089
+given time step we going do one thing so
+
+1365
+00:50:32,089 --> 00:50:34,730
+in this case here if we x2 t1 followed
+
+1366
+00:50:34,730 --> 00:50:36,980
+by t2 we end up with this this amounts
+
+1367
+00:50:36,980 --> 00:50:39,410
+for a and B if he asked you t2 first
+
+1368
+00:50:39,410 --> 00:50:41,390
+followed by t1 we end with these amounts
+
+1369
+00:50:41,390 --> 00:50:45,529
+here so again a doesn't match as 954
+
+1370
+00:50:45,529 --> 00:50:48,049
+over here at 960 over here so they're
+
+1371
+00:50:48,049 --> 00:50:49,970
+technically different from what you know
+
+1372
+00:50:49,970 --> 00:50:52,579
+from a from a finite exact amount but
+
+1373
+00:50:52,579 --> 00:50:54,289
+from a databases assistance perspective
+
+1374
+00:50:54,289 --> 00:50:55,460
+for what we're caring about with
+
+1375
+00:50:55,460 --> 00:50:57,470
+transactions you add them both up and
+
+1376
+00:50:57,470 --> 00:51:00,230
+you always get 2120 so both of these
+
+1377
+00:51:00,230 --> 00:51:01,549
+interleavings are both of these
+
+1378
+00:51:01,549 --> 00:51:03,170
+orderings are still are equivalent to
+
+1379
+00:51:03,170 --> 00:51:06,339
+each other they're correct
+
+1380
+00:51:06,670 --> 00:51:17,920
+yes sorry your question your question is
+
+1381
+00:51:17,920 --> 00:51:19,630
+if you know that you have you to
+
+1382
+00:51:19,630 --> 00:51:21,490
+transactions exactly the same time could
+
+1383
+00:51:21,490 --> 00:51:22,720
+you do it we're like you could you
+
+1384
+00:51:22,720 --> 00:51:32,019
+combine them yes but nobody does it that
+
+1385
+00:51:32,019 --> 00:51:33,880
+way and I think that would complicate
+
+1386
+00:51:33,880 --> 00:51:36,130
+things right now let's just assume that
+
+1387
+00:51:36,130 --> 00:51:37,960
+this is the case also say to what I'm
+
+1388
+00:51:37,960 --> 00:51:41,019
+showing here or like yeah here's why
+
+1389
+00:51:41,019 --> 00:51:42,220
+here's why you can't really do that so
+
+1390
+00:51:42,220 --> 00:51:43,990
+when I'm gonna talk about here today are
+
+1391
+00:51:43,990 --> 00:51:46,420
+like the the schedule is fixed meaning
+
+1392
+00:51:46,420 --> 00:51:48,069
+I know ahead of time exactly what all
+
+1393
+00:51:48,069 --> 00:51:49,480
+the transactions actually want to do in
+
+1394
+00:51:49,480 --> 00:51:51,849
+a real system it's not like that in a
+
+1395
+00:51:51,849 --> 00:51:53,230
+real system you have like you know
+
+1396
+00:51:53,230 --> 00:51:54,670
+transactions are showing up they're
+
+1397
+00:51:54,670 --> 00:51:56,650
+calling you know a client opens
+
+1398
+00:51:56,650 --> 00:51:58,450
+connection calls begin and then it
+
+1399
+00:51:58,450 --> 00:51:59,859
+starts executing a bunch of queries and
+
+1400
+00:51:59,859 --> 00:52:01,329
+you don't know what the next query is in
+
+1401
+00:52:01,329 --> 00:52:04,869
+this case here sort of to reason about
+
+1402
+00:52:04,869 --> 00:52:07,210
+correctness you see everything all at
+
+1403
+00:52:07,210 --> 00:52:07,650
+once
+
+1404
+00:52:07,650 --> 00:52:10,779
+right so on Monday when we talk about
+
+1405
+00:52:10,779 --> 00:52:11,529
+two-phase locking
+
+1406
+00:52:11,529 --> 00:52:13,839
+that's a dynamic conquerer protocol
+
+1407
+00:52:13,839 --> 00:52:15,700
+where you don't know what the queries
+
+1408
+00:52:15,700 --> 00:52:17,799
+are gonna be ahead of time now there's
+
+1409
+00:52:17,799 --> 00:52:20,289
+some cases where if you have some
+
+1410
+00:52:20,289 --> 00:52:21,490
+introspection but with the applications
+
+1411
+00:52:21,490 --> 00:52:22,779
+actually trying to do then you can
+
+1412
+00:52:22,779 --> 00:52:24,519
+actually do what you propose but that's
+
+1413
+00:52:24,519 --> 00:52:37,509
+hard nobody actually does that will get
+
+1414
+00:52:37,509 --> 00:52:39,700
+that too so case question is which is
+
+1415
+00:52:39,700 --> 00:52:41,950
+correct I said before the data sent only
+
+1416
+00:52:41,950 --> 00:52:44,710
+sees reads and writes water of this 8
+
+1417
+00:52:44,710 --> 00:52:47,589
+equals a minus 1 right yes that will get
+
+1418
+00:52:47,589 --> 00:52:49,210
+translated to a read followed by right
+
+1419
+00:52:49,210 --> 00:53:05,740
+I'll see that in a sec yes yes yeah
+
+1420
+00:53:05,740 --> 00:53:09,539
+we'll get to that yes question is so
+
+1421
+00:53:09,539 --> 00:53:12,279
+this 8 equal a minus 100 what is it
+
+1422
+00:53:12,279 --> 00:53:13,390
+actually gonna look like well in the
+
+1423
+00:53:13,390 --> 00:53:15,220
+program logic I would say do a get on a
+
+1424
+00:53:15,220 --> 00:53:17,470
+you're reading a have a copy my local
+
+1425
+00:53:17,470 --> 00:53:20,230
+variable then I can manipulate it and
+
+1426
+00:53:20,230 --> 00:53:21,820
+and write it back to the database so
+
+1427
+00:53:21,820 --> 00:53:23,410
+each of these transactions would have
+
+1428
+00:53:23,410 --> 00:53:24,609
+their own local variables that aren't
+
+1429
+00:53:24,609 --> 00:53:30,250
+shared these questions can you believe
+
+1430
+00:53:30,250 --> 00:53:31,390
+the operation between transactions yes
+
+1431
+00:53:31,390 --> 00:53:47,830
+we'll get there exactly yes the question
+
+1432
+00:53:47,830 --> 00:53:50,320
+is if I have two transactions that are
+
+1433
+00:53:50,320 --> 00:53:51,580
+touching completely different objects
+
+1434
+00:53:51,580 --> 00:53:56,530
+not to post objects do I need to still
+
+1435
+00:53:56,530 --> 00:54:04,840
+serialize this what I mean so for this
+
+1436
+00:54:04,840 --> 00:54:07,030
+one I'm just tryna show equivalency if
+
+1437
+00:54:07,030 --> 00:54:09,280
+they touch clearly three things and
+
+1438
+00:54:09,280 --> 00:54:10,720
+there's no conflicts then you can
+
+1439
+00:54:10,720 --> 00:54:11,410
+interleave them any way you want
+
+1440
+00:54:11,410 --> 00:54:20,050
+absolutely yes her question is how do I
+
+1441
+00:54:20,050 --> 00:54:21,100
+know whether another transaction is
+
+1442
+00:54:21,100 --> 00:54:22,230
+touching the same thing I'm touching
+
+1443
+00:54:22,230 --> 00:54:26,050
+again but this is a high-level example
+
+1444
+00:54:26,050 --> 00:54:27,580
+the database seeds and reads and writes
+
+1445
+00:54:27,580 --> 00:54:29,859
+so I do it I do a read on an object a
+
+1446
+00:54:29,859 --> 00:54:32,320
+you do a read an object a in order for
+
+1447
+00:54:32,320 --> 00:54:34,690
+me to serve your read request ask me to
+
+1448
+00:54:34,690 --> 00:54:37,330
+read it for you so I see everything but
+
+1449
+00:54:37,330 --> 00:54:39,010
+I don't see high-level things like I
+
+1450
+00:54:39,010 --> 00:54:41,560
+don't see that your your that you're
+
+1451
+00:54:41,560 --> 00:54:43,060
+going to take the value of a and then
+
+1452
+00:54:43,060 --> 00:54:45,900
+add 6% to it
+
+1453
+00:54:46,109 --> 00:54:48,850
+so again what everyone's sort of getting
+
+1454
+00:54:48,850 --> 00:54:50,290
+up to now is be able to interleave these
+
+1455
+00:54:50,290 --> 00:54:52,780
+these transactions really the operations
+
+1456
+00:54:52,780 --> 00:54:54,340
+and we've already covered this we want
+
+1457
+00:54:54,340 --> 00:54:56,290
+to do this because this is slow and we
+
+1458
+00:54:56,290 --> 00:55:00,100
+have a lot of CPU cores and so the idea
+
+1459
+00:55:00,100 --> 00:55:02,970
+here is again that instead of having the
+
+1460
+00:55:02,970 --> 00:55:05,290
+you know if we have to go to disk to get
+
+1461
+00:55:05,290 --> 00:55:07,750
+something or wait to acquire a latch on
+
+1462
+00:55:07,750 --> 00:55:09,730
+something we could have one transaction
+
+1463
+00:55:09,730 --> 00:55:11,230
+stall another transaction keep on
+
+1464
+00:55:11,230 --> 00:55:12,180
+running and still make forward progress
+
+1465
+00:55:12,180 --> 00:55:14,230
+so we're trying to figure out a schedule
+
+1466
+00:55:14,230 --> 00:55:16,420
+or interleaving such that we maximize
+
+1467
+00:55:16,420 --> 00:55:19,030
+the performance of the system and we get
+
+1468
+00:55:19,030 --> 00:55:21,490
+the best utilization of our hardware so
+
+1469
+00:55:21,490 --> 00:55:24,609
+if we go back here now to our example so
+
+1470
+00:55:24,609 --> 00:55:25,900
+now I made of leaving our transactions
+
+1471
+00:55:25,900 --> 00:55:29,020
+right going start takes 200 out of a
+
+1472
+00:55:29,020 --> 00:55:31,420
+then then does a context switch t2
+
+1473
+00:55:31,420 --> 00:55:33,970
+starts put compute 6% on
+
+1474
+00:55:33,970 --> 00:55:36,040
+hey then we go back and take put the
+
+1475
+00:55:36,040 --> 00:55:37,780
+hundred dollars back on B and go back
+
+1476
+00:55:37,780 --> 00:55:39,579
+here compute the three inches on that
+
+1477
+00:55:39,579 --> 00:55:42,130
+and then we go commit so now again now
+
+1478
+00:55:42,130 --> 00:55:43,869
+it's not one turns actually wanting
+
+1479
+00:55:43,869 --> 00:55:46,390
+running in its entirety at a time right
+
+1480
+00:55:46,390 --> 00:55:47,619
+we're now able to actually interleave
+
+1481
+00:55:47,619 --> 00:55:49,930
+things and this example here this is
+
+1482
+00:55:49,930 --> 00:55:51,670
+correct this is fine because this is
+
+1483
+00:55:51,670 --> 00:55:55,089
+this is equivalent to a serial ordering
+
+1484
+00:55:55,089 --> 00:55:57,790
+of our transactions right the end state
+
+1485
+00:55:57,790 --> 00:56:01,540
+of the database is equivalent alright
+
+1486
+00:56:01,540 --> 00:56:04,210
+and so the key thing to point out here
+
+1487
+00:56:04,210 --> 00:56:05,950
+is that the reason why this worked out
+
+1488
+00:56:05,950 --> 00:56:07,720
+okay and then we end up equivalent is
+
+1489
+00:56:07,720 --> 00:56:10,000
+that we always make sure that we did the
+
+1490
+00:56:10,000 --> 00:56:13,300
+operations on t1 first before on a given
+
+1491
+00:56:13,300 --> 00:56:15,700
+object before we did that operation on
+
+1492
+00:56:15,700 --> 00:56:19,030
+on t2 for that same object so I took a
+
+1493
+00:56:19,030 --> 00:56:21,460
+hundred Oz at a and then I keep you to
+
+1494
+00:56:21,460 --> 00:56:23,890
+the interest on a and then I put it on
+
+1495
+00:56:23,890 --> 00:56:24,940
+while back and B and then a computer
+
+1496
+00:56:24,940 --> 00:56:31,599
+enjoy some beat right so for this for
+
+1497
+00:56:31,599 --> 00:56:33,490
+this interleaving here is if we violate
+
+1498
+00:56:33,490 --> 00:56:36,369
+that so I take $1 out of a I compute
+
+1499
+00:56:36,369 --> 00:56:38,200
+there's interest on a then I can fit the
+
+1500
+00:56:38,200 --> 00:56:40,740
+interest on B then I put $200 back on B
+
+1501
+00:56:40,740 --> 00:56:44,319
+so now in this case here the when I add
+
+1502
+00:56:44,319 --> 00:56:46,000
+up these two values together I don't get
+
+1503
+00:56:46,000 --> 00:56:51,460
+21 28 2014 so the bank lost you know $10
+
+1504
+00:56:51,460 --> 00:56:57,010
+or 606 dollops all right now here's the
+
+1505
+00:56:57,010 --> 00:56:58,270
+hundreds of dollars but it's a billion
+
+1506
+00:56:58,270 --> 00:56:59,859
+dollars all right guys it's your account
+
+1507
+00:56:59,859 --> 00:57:01,510
+hundred dollars is a lot but like you
+
+1508
+00:57:01,510 --> 00:57:03,280
+know this is why we want to guarantee
+
+1509
+00:57:03,280 --> 00:57:04,420
+that we always have correctness for
+
+1510
+00:57:04,420 --> 00:57:06,310
+transactions especially when you're
+
+1511
+00:57:06,310 --> 00:57:09,460
+doing and ending involves money there's
+
+1512
+00:57:09,460 --> 00:57:11,290
+a famous example a few years ago where
+
+1513
+00:57:11,290 --> 00:57:13,089
+some Bitcoin exchange I forget where in
+
+1514
+00:57:13,089 --> 00:57:15,400
+the world was running on MongoDB MongoDB
+
+1515
+00:57:15,400 --> 00:57:16,960
+did at the time didn't have support
+
+1516
+00:57:16,960 --> 00:57:19,329
+transactions and so some hacker figured
+
+1517
+00:57:19,329 --> 00:57:22,599
+out that you can have you can manipulate
+
+1518
+00:57:22,599 --> 00:57:25,510
+the the API and have it drain out
+
+1519
+00:57:25,510 --> 00:57:29,400
+everyone's account so they wiped out the
+
+1520
+00:57:29,400 --> 00:57:31,990
+Bitcoin exchange in a single day because
+
+1521
+00:57:31,990 --> 00:57:34,300
+MongoDB wasn't doing transactions that's
+
+1522
+00:57:34,300 --> 00:57:38,500
+part of the story but they didn't have
+
+1523
+00:57:38,500 --> 00:57:39,520
+transactions that's a bad idea
+
+1524
+00:57:39,520 --> 00:57:42,160
+so came back to his point well what if
+
+1525
+00:57:42,160 --> 00:57:43,450
+the database system actually seen again
+
+1526
+00:57:43,450 --> 00:57:44,560
+it doesn't see these higher-level
+
+1527
+00:57:44,560 --> 00:57:46,839
+operations it just sees these reason
+
+1528
+00:57:46,839 --> 00:57:47,529
+right
+
+1529
+00:57:47,529 --> 00:57:49,579
+and so essentially we're trying to do is
+
+1530
+00:57:49,579 --> 00:57:51,739
+make sure that for any object that does
+
+1531
+00:57:51,739 --> 00:57:54,859
+a read or does a write or read on an
+
+1532
+00:57:54,859 --> 00:57:56,839
+object if another transaction is doing
+
+1533
+00:57:56,839 --> 00:57:58,759
+the same thing we're always going in in
+
+1534
+00:57:58,759 --> 00:58:01,999
+the right order to determine whether our
+
+1535
+00:58:01,999 --> 00:58:05,479
+schedule is correct so the way we're
+
+1536
+00:58:05,479 --> 00:58:06,440
+going to figure this out
+
+1537
+00:58:06,440 --> 00:58:07,700
+the way we're going to find correctness
+
+1538
+00:58:07,700 --> 00:58:08,989
+for what we're talking about here today
+
+1539
+00:58:08,989 --> 00:58:12,559
+is well say that a schedule of any
+
+1540
+00:58:12,559 --> 00:58:14,739
+arbitrary ordering of operations is
+
+1541
+00:58:14,739 --> 00:58:19,190
+correct if it's equivalent to one of a
+
+1542
+00:58:19,190 --> 00:58:22,339
+serial schedule so the Sira schedule
+
+1543
+00:58:22,339 --> 00:58:23,420
+we've already talked about Serie
+
+1544
+00:58:23,420 --> 00:58:24,589
+schedules just saying that we actually
+
+1545
+00:58:24,589 --> 00:58:26,450
+transactions one after another and no
+
+1546
+00:58:26,450 --> 00:58:28,460
+interleaving and then the equivalent
+
+1547
+00:58:28,460 --> 00:58:31,069
+sleep policy says that if the final
+
+1548
+00:58:31,069 --> 00:58:37,460
+state of the database is a of the of the
+
+1549
+00:58:37,460 --> 00:58:39,589
+the objects is equivalent or it has
+
+1550
+00:58:39,589 --> 00:58:42,319
+actually the same values of another
+
+1551
+00:58:42,319 --> 00:58:45,130
+database state than they are equivalent
+
+1552
+00:58:45,130 --> 00:58:51,229
+so a a ordering of a schedule well it
+
+1553
+00:58:51,229 --> 00:58:52,999
+could be equivalent to at least one
+
+1554
+00:58:52,999 --> 00:58:55,190
+exactly one serial ordering I'm not
+
+1555
+00:58:55,190 --> 00:58:57,289
+exactly one one or more serial orderings
+
+1556
+00:58:57,289 --> 00:58:59,450
+if the database is still the same
+
+1557
+00:58:59,450 --> 00:59:01,940
+statement but a given schedule could be
+
+1558
+00:59:01,940 --> 00:59:03,940
+correct it could still be serializable
+
+1559
+00:59:03,940 --> 00:59:06,559
+by being equivalent to any possible
+
+1560
+00:59:06,559 --> 00:59:10,160
+serial ordering so this is the form of
+
+1561
+00:59:10,160 --> 00:59:11,269
+property we're going to care about for
+
+1562
+00:59:11,269 --> 00:59:13,729
+our schedules serializability okay it
+
+1563
+00:59:13,729 --> 00:59:15,499
+just says that a schedule is that is
+
+1564
+00:59:15,499 --> 00:59:16,460
+equivalent to some serial execution
+
+1565
+00:59:16,460 --> 00:59:18,829
+doesn't matter which one it has to be it
+
+1566
+00:59:18,829 --> 00:59:21,380
+has to be one of them if that it's
+
+1567
+00:59:21,380 --> 00:59:22,880
+equivalent that serial ordering then
+
+1568
+00:59:22,880 --> 00:59:24,049
+whatever schedule what we're looking at
+
+1569
+00:59:24,049 --> 00:59:25,630
+is considered to be serializable and
+
+1570
+00:59:25,630 --> 00:59:27,920
+this is the gold standard of what you
+
+1571
+00:59:27,920 --> 00:59:29,390
+want to get in a database net system
+
+1572
+00:59:29,390 --> 00:59:31,690
+like this this is this is guaranteeing
+
+1573
+00:59:31,690 --> 00:59:33,799
+almost guaranteeing all the protections
+
+1574
+00:59:33,799 --> 00:59:36,019
+you could ever want the only one who
+
+1575
+00:59:36,019 --> 00:59:37,729
+doesn't guarantee is that if your
+
+1576
+00:59:37,729 --> 00:59:39,259
+transaction is t1 shows up first
+
+1577
+00:59:39,259 --> 00:59:42,069
+followed by t2 t1 will commit first
+
+1578
+00:59:42,069 --> 00:59:44,299
+that's called a strict serialize ability
+
+1579
+00:59:44,299 --> 00:59:46,579
+or external consistency we don't care
+
+1580
+00:59:46,579 --> 00:59:47,809
+about that here most systems don't
+
+1581
+00:59:47,809 --> 00:59:49,039
+provide that the only system to provide
+
+1582
+00:59:49,039 --> 00:59:50,989
+that that I'm aware of is Google spanner
+
+1583
+00:59:50,989 --> 00:59:53,749
+and they need it for some you know some
+
+1584
+00:59:53,749 --> 00:59:56,390
+some global ads thing this must don't do
+
+1585
+00:59:56,390 --> 00:59:58,249
+that most of this if they say the
+
+1586
+00:59:58,249 --> 00:59:59,599
+support sterilized ability they're
+
+1587
+00:59:59,599 --> 00:59:59,930
+getting
+
+1588
+00:59:59,930 --> 01:00:01,750
+you're getting what I'm defining here
+
+1589
+01:00:01,750 --> 01:00:04,240
+okay
+
+1590
+01:00:04,240 --> 01:00:08,539
+so again coming if you come over
+
+1591
+01:00:08,539 --> 01:00:10,099
+background from parallel programming
+
+1592
+01:00:10,099 --> 01:00:11,930
+this might seem kind of weird that I
+
+1593
+01:00:11,930 --> 01:00:15,039
+could say all right well I can have the
+
+1594
+01:00:15,039 --> 01:00:17,660
+you know there's not one single state of
+
+1595
+01:00:17,660 --> 01:00:19,010
+the database that I could say this is
+
+1596
+01:00:19,010 --> 01:00:20,480
+what it exactly should be to determine
+
+1597
+01:00:20,480 --> 01:00:21,950
+whether it's correct right it could be
+
+1598
+01:00:21,950 --> 01:00:24,740
+any possible thing and the reason why we
+
+1599
+01:00:24,740 --> 01:00:26,319
+want to do this is because if we have
+
+1600
+01:00:26,319 --> 01:00:28,369
+multiple choices for how we want to
+
+1601
+01:00:28,369 --> 01:00:29,750
+interleave our operations and multiple
+
+1602
+01:00:29,750 --> 01:00:32,059
+serial orderings that we could that we
+
+1603
+01:00:32,059 --> 01:00:36,529
+get a aspire to achieve then that gives
+
+1604
+01:00:36,529 --> 01:00:38,270
+us more options to decide how we want to
+
+1605
+01:00:38,270 --> 01:00:39,349
+schedule our operations for our
+
+1606
+01:00:39,349 --> 01:00:43,880
+transactions so to understand this bit
+
+1607
+01:00:43,880 --> 01:00:45,950
+better we now need a formal way to
+
+1608
+01:00:45,950 --> 01:00:47,630
+determine what it means to have a
+
+1609
+01:00:47,630 --> 01:00:49,430
+conflict that could violate the serial
+
+1610
+01:00:49,430 --> 01:00:50,690
+ordering or sir lies ability of a
+
+1611
+01:00:50,690 --> 01:00:53,359
+transaction so we're gonna say is that
+
+1612
+01:00:53,359 --> 01:00:54,829
+two transactions or two operations are
+
+1613
+01:00:54,829 --> 01:00:57,319
+going to conflict if they're if they're
+
+1614
+01:00:57,319 --> 01:00:58,819
+being run by different transactions at
+
+1615
+01:00:58,819 --> 01:01:01,730
+the same time and they're both operating
+
+1616
+01:01:01,730 --> 01:01:03,859
+on the same object and at least one of
+
+1617
+01:01:03,859 --> 01:01:09,890
+those operations is a right so there's
+
+1618
+01:01:09,890 --> 01:01:11,240
+three types on anomalies we're gonna
+
+1619
+01:01:11,240 --> 01:01:14,210
+care about we have read write write read
+
+1620
+01:01:14,210 --> 01:01:17,059
+and write write again y know read read
+
+1621
+01:01:17,059 --> 01:01:21,829
+conflicts just yeah it doesn't matter
+
+1622
+01:01:21,829 --> 01:01:23,480
+who cares like if you read something and
+
+1623
+01:01:23,480 --> 01:01:25,490
+I read something we read the same thing
+
+1624
+01:01:25,490 --> 01:01:28,220
+that's fine who cares it's when we have
+
+1625
+01:01:28,220 --> 01:01:29,359
+rights and when we it's one of the
+
+1626
+01:01:29,359 --> 01:01:30,890
+operations as a right is when we have
+
+1627
+01:01:30,890 --> 01:01:33,230
+problems but so let's go through each of
+
+1628
+01:01:33,230 --> 01:01:35,599
+these one by one so the first one is
+
+1629
+01:01:35,599 --> 01:01:38,390
+read write conflicts all right this is
+
+1630
+01:01:38,390 --> 01:01:40,339
+also sometimes called on a repeatable
+
+1631
+01:01:40,339 --> 01:01:42,170
+read so let's say I have two
+
+1632
+01:01:42,170 --> 01:01:44,690
+transactions t1 t2 t1 screen to a read
+
+1633
+01:01:44,690 --> 01:01:46,940
+or knife and then read only again t2 is
+
+1634
+01:01:46,940 --> 01:01:48,589
+gonna read on a file by a write or name
+
+1635
+01:01:48,589 --> 01:01:51,829
+so let's say I actually run this t1
+
+1636
+01:01:51,829 --> 01:01:54,260
+starts does the read on a gets $10 out
+
+1637
+01:01:54,260 --> 01:01:56,000
+of my bank account then there's a
+
+1638
+01:01:56,000 --> 01:01:59,270
+context which we start running t2 t2
+
+1639
+01:01:59,270 --> 01:02:02,480
+reads on a sees $10 that's that's fine
+
+1640
+01:02:02,480 --> 01:02:05,450
+but then it writes back $19 then it goes
+
+1641
+01:02:05,450 --> 01:02:08,299
+heads and commits and we get back to
+
+1642
+01:02:08,299 --> 01:02:09,890
+your knowledge but from the database
+
+1643
+01:02:09,890 --> 01:02:10,970
+system to say that our transaction
+
+1644
+01:02:10,970 --> 01:02:13,820
+committed but then now our transaction
+
+1645
+01:02:13,820 --> 01:02:15,470
+switches back the contact switch back
+
+1646
+01:02:15,470 --> 01:02:18,890
+over to t1 t1 now does it read and again
+
+1647
+01:02:18,890 --> 01:02:23,510
+gets back 19 but the first time I read a
+
+1648
+01:02:23,510 --> 01:02:26,720
+I got 10 so I'm trying to read the same
+
+1649
+01:02:26,720 --> 01:02:28,700
+object I'm not getting the same value I
+
+1650
+01:02:28,700 --> 01:02:31,100
+so that's I'm repeating what we try to
+
+1651
+01:02:31,100 --> 01:02:32,570
+read something I'm not seeing the same
+
+1652
+01:02:32,570 --> 01:02:34,550
+thing over and over again and again if
+
+1653
+01:02:34,550 --> 01:02:36,230
+we're trying to guarantee isolation and
+
+1654
+01:02:36,230 --> 01:02:39,350
+for our transactions it should not see
+
+1655
+01:02:39,350 --> 01:02:41,270
+this this change over here because if
+
+1656
+01:02:41,270 --> 01:02:43,070
+we're running this was in serie or
+
+1657
+01:02:43,070 --> 01:02:45,950
+during t1 should've just run completely
+
+1658
+01:02:45,950 --> 01:02:48,340
+and then finish and then t2 would iran
+
+1659
+01:02:48,340 --> 01:02:50,900
+right so that that couldn't happen under
+
+1660
+01:02:50,900 --> 01:02:55,700
+a serial order next conflict is write
+
+1661
+01:02:55,700 --> 01:02:57,700
+read also sometimes called dirty reads
+
+1662
+01:02:57,700 --> 01:03:00,860
+so so now T ones we do a read on a file
+
+1663
+01:03:00,860 --> 01:03:02,510
+I write an A and the teachers gonna do
+
+1664
+01:03:02,510 --> 01:03:03,800
+also do a reader name followed by writer
+
+1665
+01:03:03,800 --> 01:03:07,400
+named T one reads egg sees $10 then it
+
+1666
+01:03:07,400 --> 01:03:12,350
+writes back $12 now t t2 reads a and it
+
+1667
+01:03:12,350 --> 01:03:14,240
+sees the $12 that the first guy put in
+
+1668
+01:03:14,240 --> 01:03:17,950
+right but then now it writes back $14
+
+1669
+01:03:17,950 --> 01:03:20,810
+then the ghost hasn't commits and then
+
+1670
+01:03:20,810 --> 01:03:22,910
+you know we get back acknowledgment from
+
+1671
+01:03:22,910 --> 01:03:23,840
+the database system say yeah you
+
+1672
+01:03:23,840 --> 01:03:24,920
+committed you're good to go
+
+1673
+01:03:24,920 --> 01:03:26,990
+but now we do our context which we come
+
+1674
+01:03:26,990 --> 01:03:29,390
+back over here and now our first guy
+
+1675
+01:03:29,390 --> 01:03:32,450
+aborts so he said there's no partial
+
+1676
+01:03:32,450 --> 01:03:35,360
+transactions so this guy has to abort so
+
+1677
+01:03:35,360 --> 01:03:39,110
+we need to roll back our update but the
+
+1678
+01:03:39,110 --> 01:03:41,360
+problem was that this other transaction
+
+1679
+01:03:41,360 --> 01:03:44,330
+here already read my update and then a
+
+1680
+01:03:44,330 --> 01:03:45,890
+committed and it's hold the outside
+
+1681
+01:03:45,890 --> 01:03:48,050
+world but yeah when I read a I sold I
+
+1682
+01:03:48,050 --> 01:03:50,990
+saw $12 but that shouldn't have happened
+
+1683
+01:03:50,990 --> 01:03:53,180
+because again we can't that's a
+
+1684
+01:03:53,180 --> 01:03:55,490
+temporary inconsistent inconsistency we
+
+1685
+01:03:55,490 --> 01:03:59,570
+made a change to a that mean we have to
+
+1686
+01:03:59,570 --> 01:04:00,860
+make the change in order to actually you
+
+1687
+01:04:00,860 --> 01:04:02,480
+know pilot change of the database but
+
+1688
+01:04:02,480 --> 01:04:04,010
+nobody should have been able to see that
+
+1689
+01:04:04,010 --> 01:04:05,180
+change because our transaction didn't
+
+1690
+01:04:05,180 --> 01:04:06,830
+commit and furthermore because we
+
+1691
+01:04:06,830 --> 01:04:09,050
+aborted now we leak something into the
+
+1692
+01:04:09,050 --> 01:04:10,340
+outside world that shouldn't shouldn't
+
+1693
+01:04:10,340 --> 01:04:15,860
+have appeared the last conflict is write
+
+1694
+01:04:15,860 --> 01:04:17,750
+rights and this is overriding
+
+1695
+01:04:17,750 --> 01:04:20,540
+uncommitted data so t1 does it right on
+
+1696
+01:04:20,540 --> 01:04:23,870
+a puts in $10 t2 doesn't read a write on
+
+1697
+01:04:23,870 --> 01:04:26,560
+a puts in $19 without reading it then
+
+1698
+01:04:26,560 --> 01:04:28,840
+dates B inputs an Andy and then over
+
+1699
+01:04:28,840 --> 01:04:31,780
+here t2 t1 starts running again
+
+1700
+01:04:31,780 --> 01:04:35,860
+and it writes in beaver so now when we
+
+1701
+01:04:35,860 --> 01:04:38,020
+go to commit what's the issue well I
+
+1702
+01:04:38,020 --> 01:04:42,340
+have two objects a and B and so for for
+
+1703
+01:04:42,340 --> 01:04:46,000
+a I'm seeing the the write that the T to
+
+1704
+01:04:46,000 --> 01:04:47,490
+put in there it put in nineteen dollars
+
+1705
+01:04:47,490 --> 01:04:50,830
+but for object B I'm seeing Justin
+
+1706
+01:04:50,830 --> 01:04:53,290
+Bieber because that's what t1 put in so
+
+1707
+01:04:53,290 --> 01:04:55,390
+I have a torn-up date right I have I
+
+1708
+01:04:55,390 --> 01:04:58,150
+have data that I have two objects
+
+1709
+01:04:58,150 --> 01:04:59,620
+they've been modified by two different
+
+1710
+01:04:59,620 --> 01:05:01,540
+transactions when they both shouldn't
+
+1711
+01:05:01,540 --> 01:05:04,420
+modified atomically by one transaction
+
+1712
+01:05:04,420 --> 01:05:08,140
+and this occurred because you know this
+
+1713
+01:05:08,140 --> 01:05:10,090
+guy got to go got to go running while
+
+1714
+01:05:10,090 --> 01:05:12,430
+this guy was still running and that
+
+1715
+01:05:12,430 --> 01:05:13,690
+shouldn't happen if we were trying to
+
+1716
+01:05:13,690 --> 01:05:18,070
+guarantee you see row ordering so now
+
+1717
+01:05:18,070 --> 01:05:20,260
+given these conflicts we need to
+
+1718
+01:05:20,260 --> 01:05:21,850
+understand more formally you know how
+
+1719
+01:05:21,850 --> 01:05:22,930
+did she prove whether something's
+
+1720
+01:05:22,930 --> 01:05:26,200
+actually sterilizable so in the sake of
+
+1721
+01:05:26,200 --> 01:05:28,210
+time I'm gonna I'm gonna skip complex
+
+1722
+01:05:28,210 --> 01:05:31,030
+realisability or sorry we did you
+
+1723
+01:05:31,030 --> 01:05:31,960
+definitely know calm let's turtle eyes
+
+1724
+01:05:31,960 --> 01:05:33,280
+review I'm gonna I'm gonna skip user
+
+1725
+01:05:33,280 --> 01:05:35,980
+lies ability complex utilizability
+
+1726
+01:05:35,980 --> 01:05:38,410
+it's what you need to know for the for
+
+1727
+01:05:38,410 --> 01:05:41,980
+the homeworks I'll post on on Piazza the
+
+1728
+01:05:41,980 --> 01:05:43,780
+link to the lecture from last class last
+
+1729
+01:05:43,780 --> 01:05:44,920
+year what that talks like we
+
+1730
+01:05:44,920 --> 01:05:46,990
+survivability I did it's the same
+
+1731
+01:05:46,990 --> 01:05:48,190
+material that would have cover but we're
+
+1732
+01:05:48,190 --> 01:05:51,700
+at a time right so most eighty systems
+
+1733
+01:05:51,700 --> 01:05:52,930
+are going to try to give you this if
+
+1734
+01:05:52,930 --> 01:05:54,160
+they say these supports utilize what
+
+1735
+01:05:54,160 --> 01:05:55,150
+have to nor transactions the
+
+1736
+01:05:55,150 --> 01:05:56,650
+serializable serializable isolation
+
+1737
+01:05:56,650 --> 01:05:59,020
+level they'll give you this nobody does
+
+1738
+01:05:59,020 --> 01:06:00,430
+this one because this requires
+
+1739
+01:06:00,430 --> 01:06:01,900
+high-level information about what the
+
+1740
+01:06:01,900 --> 01:06:03,610
+applications trying to do and we can't
+
+1741
+01:06:03,610 --> 01:06:07,360
+get that automatically all right so now
+
+1742
+01:06:07,360 --> 01:06:09,700
+we're going to find our a new term and
+
+1743
+01:06:09,700 --> 01:06:11,590
+say that two schedules are considered to
+
+1744
+01:06:11,590 --> 01:06:13,960
+be conflict equivalent if and only if
+
+1745
+01:06:13,960 --> 01:06:16,030
+they are involved in the same set of
+
+1746
+01:06:16,030 --> 01:06:18,340
+operations and transactions running in
+
+1747
+01:06:18,340 --> 01:06:21,460
+at the same time and then every pair of
+
+1748
+01:06:21,460 --> 01:06:24,160
+conflicting transactions are ordered in
+
+1749
+01:06:24,160 --> 01:06:26,320
+the same way so again a conflicting
+
+1750
+01:06:26,320 --> 01:06:27,490
+transactions when were they're actually
+
+1751
+01:06:27,490 --> 01:06:29,410
+trying to update turn to a read or write
+
+1752
+01:06:29,410 --> 01:06:30,580
+on an object
+
+1753
+01:06:30,580 --> 01:06:33,400
+rate to transactions ones either read or
+
+1754
+01:06:33,400 --> 01:06:35,260
+write and ones either a read or write
+
+1755
+01:06:35,260 --> 01:06:36,340
+they always have to have at least one
+
+1756
+01:06:36,340 --> 01:06:39,340
+right so we'll say a schedule s is
+
+1757
+01:06:39,340 --> 01:06:40,450
+conflict serializable
+
+1758
+01:06:40,450 --> 01:06:42,460
+if it's complement to some serial
+
+1759
+01:06:42,460 --> 01:06:47,890
+schedule so the way we're going to
+
+1760
+01:06:47,890 --> 01:06:49,060
+figure out how to determine whether
+
+1761
+01:06:49,060 --> 01:06:51,820
+something's complex are liable is by
+
+1762
+01:06:51,820 --> 01:06:53,770
+just swapping the order of non
+
+1763
+01:06:53,770 --> 01:06:55,360
+completing operations the idea is that
+
+1764
+01:06:55,360 --> 01:06:57,580
+we can do these swapping steps on
+
+1765
+01:06:57,580 --> 01:07:00,160
+operations and that'll to push a bunch
+
+1766
+01:07:00,160 --> 01:07:01,750
+of operations to the top for one
+
+1767
+01:07:01,750 --> 01:07:03,370
+transaction put a bunch of operations to
+
+1768
+01:07:03,370 --> 01:07:04,780
+the bottom for another transaction until
+
+1769
+01:07:04,780 --> 01:07:08,080
+we end up with a serial order so going
+
+1770
+01:07:08,080 --> 01:07:09,400
+back to this example here so we do a
+
+1771
+01:07:09,400 --> 01:07:10,990
+read on a file write an A and read them
+
+1772
+01:07:10,990 --> 01:07:13,630
+a peanut B file I read on B for t1 and
+
+1773
+01:07:13,630 --> 01:07:16,990
+t2 so we have here we want to start
+
+1774
+01:07:16,990 --> 01:07:18,820
+swapping here so we have a read on B and
+
+1775
+01:07:18,820 --> 01:07:22,030
+a write on a so this case here they're
+
+1776
+01:07:22,030 --> 01:07:24,160
+not touching the same object so I can go
+
+1777
+01:07:24,160 --> 01:07:25,930
+ahead and swap their order I can make
+
+1778
+01:07:25,930 --> 01:07:27,850
+read a read on B happen before the write
+
+1779
+01:07:27,850 --> 01:07:30,460
+on a same thing the next one here the
+
+1780
+01:07:30,460 --> 01:07:32,200
+read on B can happen before the read on
+
+1781
+01:07:32,200 --> 01:07:35,170
+a I can swap their order that's fine now
+
+1782
+01:07:35,170 --> 01:07:36,160
+I can do the same thing there's other
+
+1783
+01:07:36,160 --> 01:07:38,110
+one the rewrite on B could happen before
+
+1784
+01:07:38,110 --> 01:07:40,540
+the read on a write on a swap that the
+
+1785
+01:07:40,540 --> 01:07:42,010
+right on B can happen for the read on a
+
+1786
+01:07:42,010 --> 01:07:45,040
+can swap so I can do that so now I end
+
+1787
+01:07:45,040 --> 01:07:48,070
+up with a serial ordering it's got
+
+1788
+01:07:48,070 --> 01:07:51,820
+equipment to this one here so this is
+
+1789
+01:07:51,820 --> 01:07:53,710
+the one where you can't do this so in
+
+1790
+01:07:53,710 --> 01:07:55,660
+this case here I have a write on a file
+
+1791
+01:07:55,660 --> 01:07:57,700
+by write on a I can't swap their order
+
+1792
+01:07:57,700 --> 01:08:00,310
+so therefore it's it's not equivalent to
+
+1793
+01:08:00,310 --> 01:08:04,150
+a serial ordering right this is pretty
+
+1794
+01:08:04,150 --> 01:08:06,820
+straightforward but of course now this
+
+1795
+01:08:06,820 --> 01:08:08,620
+is kind of like stupid to do right like
+
+1796
+01:08:08,620 --> 01:08:10,960
+what if I have a lot of transactions and
+
+1797
+01:08:10,960 --> 01:08:13,000
+I have a lot of operations this is gonna
+
+1798
+01:08:13,000 --> 01:08:15,550
+be very expensive for me to do so we
+
+1799
+01:08:15,550 --> 01:08:18,160
+need a better way to figure out to
+
+1800
+01:08:18,160 --> 01:08:19,810
+determine whether something is is gonna
+
+1801
+01:08:19,810 --> 01:08:21,640
+be serializable or not without having to
+
+1802
+01:08:21,640 --> 01:08:23,830
+do this the swapping thing and so the
+
+1803
+01:08:23,830 --> 01:08:24,819
+way we can do this is through a
+
+1804
+01:08:24,819 --> 01:08:27,700
+dependency graph and the textbook I
+
+1805
+01:08:27,700 --> 01:08:30,100
+think calls this a precedence graph so
+
+1806
+01:08:30,100 --> 01:08:32,229
+dependency graph is just gonna say we're
+
+1807
+01:08:32,229 --> 01:08:34,149
+have a node for every single transaction
+
+1808
+01:08:34,149 --> 01:08:37,000
+in our schedule and that will have an
+
+1809
+01:08:37,000 --> 01:08:39,850
+edge between two transactions if there's
+
+1810
+01:08:39,850 --> 01:08:41,500
+some operation in one transaction
+
+1811
+01:08:41,500 --> 01:08:43,720
+conflicts with another operation in the
+
+1812
+01:08:43,720 --> 01:08:46,540
+other transaction and the first
+
+1813
+01:08:46,540 --> 01:08:48,490
+operation of court occurs earlier and
+
+1814
+01:08:48,490 --> 01:08:49,750
+then schedule than the other other
+
+1815
+01:08:49,750 --> 01:08:53,799
+transaction right and
+
+1816
+01:08:53,799 --> 01:08:56,529
+so if I look at my entire schedule and I
+
+1817
+01:08:56,529 --> 01:08:59,529
+generate my dependency graph if I see a
+
+1818
+01:08:59,529 --> 01:09:02,319
+cycle then I know that it's not
+
+1819
+01:09:02,319 --> 01:09:04,149
+sterilized well because I won't be able
+
+1820
+01:09:04,149 --> 01:09:06,429
+to swap their ordering but if there's no
+
+1821
+01:09:06,429 --> 01:09:09,149
+cycles than it is conflict serializable
+
+1822
+01:09:09,149 --> 01:09:11,259
+so let's look at this example here that
+
+1823
+01:09:11,259 --> 01:09:13,420
+we had before so in this case here I
+
+1824
+01:09:13,420 --> 01:09:15,939
+have a right on a followed by a read on
+
+1825
+01:09:15,939 --> 01:09:18,069
+a so the write on a conflicts with a
+
+1826
+01:09:18,069 --> 01:09:19,960
+read on a obviously and the write on a
+
+1827
+01:09:19,960 --> 01:09:21,609
+and T one happens before the read on a
+
+1828
+01:09:21,609 --> 01:09:24,009
+and T 2 so I'll have an edge from t1 to
+
+1829
+01:09:24,009 --> 01:09:27,719
+t2 and I label it for the object egg
+
+1830
+01:09:27,719 --> 01:09:30,210
+same thing here I have a right on B for
+
+1831
+01:09:30,210 --> 01:09:34,000
+B so I have an edge from t2 to t1 on B
+
+1832
+01:09:34,000 --> 01:09:37,029
+and now at this point I have a cycle so
+
+1833
+01:09:37,029 --> 01:09:38,469
+therefore I know that this this ordering
+
+1834
+01:09:38,469 --> 01:09:40,599
+is not complex at high school again just
+
+1835
+01:09:40,599 --> 01:09:42,069
+looking at the code this is the the
+
+1836
+01:09:42,069 --> 01:09:44,139
+justin beiber example i have before i do
+
+1837
+01:09:44,139 --> 01:09:46,389
+a read on a follow i run on a here then
+
+1838
+01:09:46,389 --> 01:09:47,979
+reading a a follow right on a real don't
+
+1839
+01:09:47,979 --> 01:09:49,750
+be fall that right on b then read on be
+
+1840
+01:09:49,750 --> 01:09:51,698
+fall by right on B so I would have the
+
+1841
+01:09:51,698 --> 01:09:54,610
+update to be how occur from t1 and the
+
+1842
+01:09:54,610 --> 01:09:56,650
+update to a would occur at t2 and that's
+
+1843
+01:09:56,650 --> 01:10:01,599
+a torn update so let's get even crazier
+
+1844
+01:10:01,599 --> 01:10:03,460
+now we'd have an arbitrary number of
+
+1845
+01:10:03,460 --> 01:10:06,070
+transactions so in this case here I have
+
+1846
+01:10:06,070 --> 01:10:08,050
+a read on B and a right on B so I have
+
+1847
+01:10:08,050 --> 01:10:10,780
+an edge from t2 to t1 on B and just keep
+
+1848
+01:10:10,780 --> 01:10:14,230
+going down the line one by one right and
+
+1849
+01:10:14,230 --> 01:10:15,760
+then we end up something like this so
+
+1850
+01:10:15,760 --> 01:10:16,719
+the question is is this is this
+
+1851
+01:10:16,719 --> 01:10:19,150
+considered equivalent yes because we can
+
+1852
+01:10:19,150 --> 01:10:21,219
+take any arbitrary take or during t2 t1
+
+1853
+01:10:21,219 --> 01:10:24,280
+t3 and that'll end up with the correct
+
+1854
+01:10:24,280 --> 01:10:26,829
+zero order but we want it so but if we
+
+1855
+01:10:26,829 --> 01:10:28,329
+generate the dependency graph just look
+
+1856
+01:10:28,329 --> 01:10:30,400
+to see whether we have a cycle that'll
+
+1857
+01:10:30,400 --> 01:10:31,780
+tell us whether we're conflicts at alive
+
+1858
+01:10:31,780 --> 01:10:37,820
+or not huh all right
+
+1859
+01:10:37,820 --> 01:10:39,470
+we have a little more time we keep going
+
+1860
+01:10:39,470 --> 01:10:42,740
+okay um let's look let's bring back now
+
+1861
+01:10:42,740 --> 01:10:45,680
+the operations we had before these
+
+1862
+01:10:45,680 --> 01:10:46,820
+high-level things that the application
+
+1863
+01:10:46,820 --> 01:10:48,380
+may want to do so now we still have our
+
+1864
+01:10:48,380 --> 01:10:49,610
+Reason rights but now I'm showing you
+
+1865
+01:10:49,610 --> 01:10:51,440
+like what the program actually program
+
+1866
+01:10:51,440 --> 01:10:53,030
+logic is actually doing so the reason
+
+1867
+01:10:53,030 --> 01:10:54,020
+rights are always going to the database
+
+1868
+01:10:54,020 --> 01:10:56,000
+but any of these other operations like
+
+1869
+01:10:56,000 --> 01:10:57,680
+you know B equals B plus 10 these are
+
+1870
+01:10:57,680 --> 01:10:59,810
+happening within the applications action
+
+1871
+01:10:59,810 --> 01:11:02,090
+state so any change I make the B is not
+
+1872
+01:11:02,090 --> 01:11:03,380
+written to the database into I have to
+
+1873
+01:11:03,380 --> 01:11:06,470
+do the right on B all right so in this
+
+1874
+01:11:06,470 --> 01:11:09,080
+case here I never going to point out too
+
+1875
+01:11:09,080 --> 01:11:10,100
+is like what we're doing and this one
+
+1876
+01:11:10,100 --> 01:11:11,540
+here we're taking ten dollars at a one
+
+1877
+01:11:11,540 --> 01:11:13,640
+account and then putting ten dollars in
+
+1878
+01:11:13,640 --> 01:11:15,590
+this account the second transaction I
+
+1879
+01:11:15,590 --> 01:11:17,510
+just want to compute the sum of the
+
+1880
+01:11:17,510 --> 01:11:19,310
+total amount of money that are in a and
+
+1881
+01:11:19,310 --> 01:11:21,350
+B and then this is like this fake echo
+
+1882
+01:11:21,350 --> 01:11:22,490
+command this is not a real thing I'm
+
+1883
+01:11:22,490 --> 01:11:23,450
+just showing this for demonstration
+
+1884
+01:11:23,450 --> 01:11:25,160
+purposes this is just printing out to
+
+1885
+01:11:25,160 --> 01:11:27,020
+you returning the actual sum of the two
+
+1886
+01:11:27,020 --> 01:11:30,230
+values so in this case here right we
+
+1887
+01:11:30,230 --> 01:11:31,940
+would we want to generate a dependency
+
+1888
+01:11:31,940 --> 01:11:33,860
+graph we have a write on a and read on a
+
+1889
+01:11:33,860 --> 01:11:35,900
+so we have an edge from t1 to t2 on a
+
+1890
+01:11:35,900 --> 01:11:38,510
+bin down here we have a read on write on
+
+1891
+01:11:38,510 --> 01:11:40,670
+B and a read on B so we would have an
+
+1892
+01:11:40,670 --> 01:11:43,040
+edge going the other direction on B so
+
+1893
+01:11:43,040 --> 01:11:44,780
+we have a cycle so therefore this is not
+
+1894
+01:11:44,780 --> 01:11:49,340
+conflict sterilizable but there is
+
+1895
+01:11:49,340 --> 01:11:52,940
+actually a way for first if we can
+
+1896
+01:11:52,940 --> 01:11:55,040
+modern we could potentially modify this
+
+1897
+01:11:55,040 --> 01:11:56,210
+application and do something different
+
+1898
+01:11:56,210 --> 01:11:58,060
+than just computing the sum this way
+
+1899
+01:11:58,060 --> 01:12:01,220
+where we could end up with something
+
+1900
+01:12:01,220 --> 01:12:03,740
+that would still follow in the same
+
+1901
+01:12:03,740 --> 01:12:05,210
+state as a serial ordering of a
+
+1902
+01:12:05,210 --> 01:12:07,310
+transaction but it would actually not be
+
+1903
+01:12:07,310 --> 01:12:09,470
+conflict serializable because of this
+
+1904
+01:12:09,470 --> 01:12:12,920
+cycle up here so instead of just me
+
+1905
+01:12:12,920 --> 01:12:15,770
+going reading a and then adding to my
+
+1906
+01:12:15,770 --> 01:12:17,480
+sum and reading being added to my sum
+
+1907
+01:12:17,480 --> 01:12:19,430
+what if instead of actually giving them
+
+1908
+01:12:19,430 --> 01:12:22,100
+the exact sum for both accounts what do
+
+1909
+01:12:22,100 --> 01:12:23,540
+I just want to know what are the total
+
+1910
+01:12:23,540 --> 01:12:27,560
+number accounts that have more than zero
+
+1911
+01:12:27,560 --> 01:12:30,290
+dollars I'm computing a counter the
+
+1912
+01:12:30,290 --> 01:12:31,700
+number accounts that are greater than
+
+1913
+01:12:31,700 --> 01:12:34,430
+greater than zero so if I rewrote my
+
+1914
+01:12:34,430 --> 01:12:36,530
+application to say if a greater than
+
+1915
+01:12:36,530 --> 01:12:40,070
+equal to zero add one to my counter then
+
+1916
+01:12:40,070 --> 01:12:42,710
+in that case when I print out my count
+
+1917
+01:12:42,710 --> 01:12:46,700
+sure even though I interleaved my-my-my
+
+1918
+01:12:46,700 --> 01:12:48,290
+transaction while t1 was still running
+
+1919
+01:12:48,290 --> 01:12:51,170
+and that money was missing assuming that
+
+1920
+01:12:51,170 --> 01:12:51,800
+I did have
+
+1921
+01:12:51,800 --> 01:12:54,170
+exactly $10 and they didn't go negative
+
+1922
+01:12:54,170 --> 01:12:55,970
+then this thing would actually still
+
+1923
+01:12:55,970 --> 01:12:59,840
+produce the correct result so what's up
+
+1924
+01:12:59,840 --> 01:13:01,040
+with that that's kind of weird right I
+
+1925
+01:13:01,040 --> 01:13:03,410
+said complex realisability says that I
+
+1926
+01:13:03,410 --> 01:13:05,420
+need to end up the same stated the same
+
+1927
+01:13:05,420 --> 01:13:06,770
+state of the database so the same result
+
+1928
+01:13:06,770 --> 01:13:08,150
+as if I was running a serial ordering
+
+1929
+01:13:08,150 --> 01:13:10,820
+but in this case here I'm not complex
+
+1930
+01:13:10,820 --> 01:13:13,570
+there Eliza below getting the same
+
+1931
+01:13:13,570 --> 01:13:17,050
+result on the same state of database as
+
+1932
+01:13:17,050 --> 01:13:21,370
+if I was running in a Serie ordering so
+
+1933
+01:13:21,370 --> 01:13:23,900
+this is what view serializable T is and
+
+1934
+01:13:23,900 --> 01:13:26,180
+again the spoiler is that nobody
+
+1935
+01:13:26,180 --> 01:13:27,830
+actually does this because it requires
+
+1936
+01:13:27,830 --> 01:13:29,690
+us to have some reasoning about what the
+
+1937
+01:13:29,690 --> 01:13:30,890
+hell's the application or transaction
+
+1938
+01:13:30,890 --> 01:13:32,420
+that you're trying to do here to know
+
+1939
+01:13:32,420 --> 01:13:33,710
+whether it's okay for me to interleave
+
+1940
+01:13:33,710 --> 01:13:34,910
+them by plopping these guys in the
+
+1941
+01:13:34,910 --> 01:13:37,640
+middle of these other ones here so this
+
+1942
+01:13:37,640 --> 01:13:38,930
+what I was saying nobody actually does
+
+1943
+01:13:38,930 --> 01:13:40,010
+this but it's actually a really
+
+1944
+01:13:40,010 --> 01:13:42,080
+interesting concept and eventually you
+
+1945
+01:13:42,080 --> 01:13:44,150
+know maybe 50 years from now people have
+
+1946
+01:13:44,150 --> 01:13:45,200
+better programming models and
+
+1947
+01:13:45,200 --> 01:13:46,520
+programming application frameworks where
+
+1948
+01:13:46,520 --> 01:13:47,930
+we could actually do use turtle eyes
+
+1949
+01:13:47,930 --> 01:13:50,330
+ability but it does it doesn't exist
+
+1950
+01:13:50,330 --> 01:13:52,060
+today it's only theoretical
+
+1951
+01:13:52,060 --> 01:13:55,970
+so let's look another example here so we
+
+1952
+01:13:55,970 --> 01:13:57,860
+have three transactions running T
+
+1953
+01:13:57,860 --> 01:13:59,390
+moments do a read on a a follow I write
+
+1954
+01:13:59,390 --> 01:14:01,640
+on a and then T 2 and T 3 are doing what
+
+1955
+01:14:01,640 --> 01:14:03,710
+I call blind writes on a so we're
+
+1956
+01:14:03,710 --> 01:14:05,270
+writing to a without actually reading it
+
+1957
+01:14:05,270 --> 01:14:09,020
+first which we could do so again if I
+
+1958
+01:14:09,020 --> 01:14:10,190
+just go through and generate my
+
+1959
+01:14:10,190 --> 01:14:13,040
+dependency graph we're gonna generate a
+
+1960
+01:14:13,040 --> 01:14:15,920
+bunch edges and we have a cycle so we
+
+1961
+01:14:15,920 --> 01:14:17,420
+therefore we know that it's that it's
+
+1962
+01:14:17,420 --> 01:14:21,050
+not complex or let sterilizable but if I
+
+1963
+01:14:21,050 --> 01:14:22,310
+just actually look at the transaction a
+
+1964
+01:14:22,310 --> 01:14:25,790
+little bit well I see well assuming that
+
+1965
+01:14:25,790 --> 01:14:27,080
+these are the only transactions that are
+
+1966
+01:14:27,080 --> 01:14:28,610
+running at this right now which we said
+
+1967
+01:14:28,610 --> 01:14:32,390
+that was the case T 1 doesn't read on a
+
+1968
+01:14:32,390 --> 01:14:34,280
+file I write an 82 doesn't write on at a
+
+1969
+01:14:34,280 --> 01:14:36,260
+but in the end the day the answer to
+
+1970
+01:14:36,260 --> 01:14:38,390
+database the only thing that matters is
+
+1971
+01:14:38,390 --> 01:14:43,970
+this last write on T 3 so this ordering
+
+1972
+01:14:43,970 --> 01:14:46,930
+here is actually views view equivalent
+
+1973
+01:14:46,930 --> 01:14:49,520
+to one where I xq to them in this order
+
+1974
+01:14:49,520 --> 01:14:53,480
+like this so as long as T 3 is the last
+
+1975
+01:14:53,480 --> 01:14:55,430
+write that get that gets persisted to
+
+1976
+01:14:55,430 --> 01:14:57,800
+the data is a who cares how these other
+
+1977
+01:14:57,800 --> 01:15:00,920
+ones up here about interleaved but I
+
+1978
+01:15:00,920 --> 01:15:02,570
+need to know that in my in my
+
+1979
+01:15:02,570 --> 01:15:04,310
+application it's ok for this thing to be
+
+1980
+01:15:04,310 --> 01:15:05,490
+the last writer
+
+1981
+01:15:05,490 --> 01:15:08,040
+and as I said next class when we talk
+
+1982
+01:15:08,040 --> 01:15:08,870
+talked about two phase locking
+
+1983
+01:15:08,870 --> 01:15:11,070
+transactions are showing up in arbitrary
+
+1984
+01:15:11,070 --> 01:15:13,320
+orderings at different times that you
+
+1985
+01:15:13,320 --> 01:15:15,060
+know during during execution and you
+
+1986
+01:15:15,060 --> 01:15:16,110
+don't know exactly what they're gonna be
+
+1987
+01:15:16,110 --> 01:15:18,270
+doing ahead of time so you can't
+
+1988
+01:15:18,270 --> 01:15:24,390
+guarantee this so just real quickly skip
+
+1989
+01:15:24,390 --> 01:15:27,420
+all this the way to think about the
+
+1990
+01:15:27,420 --> 01:15:30,240
+these schedules that we talked about is
+
+1991
+01:15:30,240 --> 01:15:32,010
+that you have this universe of all
+
+1992
+01:15:32,010 --> 01:15:33,810
+possible orderings of schedule or all
+
+1993
+01:15:33,810 --> 01:15:34,890
+possible schedule orderings you could
+
+1994
+01:15:34,890 --> 01:15:36,420
+have for any training transaction in
+
+1995
+01:15:36,420 --> 01:15:38,730
+your in your application right that's
+
+1996
+01:15:38,730 --> 01:15:40,410
+this giant space here it's any possible
+
+1997
+01:15:40,410 --> 01:15:41,970
+ordering but but you're not in regarding
+
+1998
+01:15:41,970 --> 01:15:43,260
+you're not even considering what it
+
+1999
+01:15:43,260 --> 01:15:46,470
+means to be correct or not the then you
+
+2000
+01:15:46,470 --> 01:15:49,160
+a smaller portion here of vary ordering
+
+2001
+01:15:49,160 --> 01:15:51,090
+all right these are ones where exiting
+
+2002
+01:15:51,090 --> 01:15:53,340
+transactions one after another and then
+
+2003
+01:15:53,340 --> 01:15:54,750
+around that would be conflict
+
+2004
+01:15:54,750 --> 01:15:57,570
+serializable where again these are some
+
+2005
+01:15:57,570 --> 01:15:59,430
+inter Lehman's that may not be serial it
+
+2006
+01:15:59,430 --> 01:16:00,960
+includes all stereo orderings but
+
+2007
+01:16:00,960 --> 01:16:02,940
+includes ones that aren't and then
+
+2008
+01:16:02,940 --> 01:16:04,350
+around that will be the view
+
+2009
+01:16:04,350 --> 01:16:10,530
+sterilizable orderings yes yes coming
+
+2010
+01:16:10,530 --> 01:16:21,810
+back cuz again so say the this is what
+
+2011
+01:16:21,810 --> 01:16:24,120
+I'm given and I would say run these
+
+2012
+01:16:24,120 --> 01:16:26,370
+transactions again I'm not wearing a
+
+2013
+01:16:26,370 --> 01:16:28,200
+transaction showing up arbitrarily it's
+
+2014
+01:16:28,200 --> 01:16:29,310
+saying this is what I have I want to run
+
+2015
+01:16:29,310 --> 01:16:32,550
+this right now what's the end there's
+
+2016
+01:16:32,550 --> 01:16:35,040
+only one object in the database so the
+
+2017
+01:16:35,040 --> 01:16:36,690
+only thing I'm gonna see after I run
+
+2018
+01:16:36,690 --> 01:16:39,240
+these transactions is what's this what's
+
+2019
+01:16:39,240 --> 01:16:44,130
+the value of a and so who cares that t1
+
+2020
+01:16:44,130 --> 01:16:46,260
+and t2 wrote a because t3 is gonna
+
+2021
+01:16:46,260 --> 01:16:48,420
+overwrite it so at the end of day all
+
+2022
+01:16:48,420 --> 01:16:49,830
+what matters is whatever this guy wrote
+
+2023
+01:16:49,830 --> 01:16:53,450
+who cares what these guys actually did
+
+2024
+01:16:54,440 --> 01:16:56,910
+what correct this one not work in the
+
+2025
+01:16:56,910 --> 01:17:00,620
+first example what is the first example
+
+2026
+01:17:00,620 --> 01:17:02,520
+yeah taking money I don't want to count
+
+2027
+01:17:02,520 --> 01:17:05,400
+put in another account computing the
+
+2028
+01:17:05,400 --> 01:17:07,970
+interest yes
+
+2029
+01:17:09,770 --> 01:17:11,640
+this is just meant to illustrate the
+
+2030
+01:17:11,640 --> 01:17:16,140
+concept okay so I'm gonna skip all this
+
+2031
+01:17:16,140 --> 01:17:18,480
+for transaction durability we've already
+
+2032
+01:17:18,480 --> 01:17:20,160
+covered this that's the log itself and
+
+2033
+01:17:20,160 --> 01:17:22,830
+we'll spend a whole week on this the
+
+2034
+01:17:22,830 --> 01:17:24,240
+asset properties we've already covered
+
+2035
+01:17:24,240 --> 01:17:26,520
+atavistic insisting I slay ssin today
+
+2036
+01:17:26,520 --> 01:17:28,410
+moves to focus on these two we'll cover
+
+2037
+01:17:28,410 --> 01:17:29,580
+this more distributed databases we'll
+
+2038
+01:17:29,580 --> 01:17:31,170
+cover this for login checkpoints but for
+
+2039
+01:17:31,170 --> 01:17:32,400
+next week we're gonna focus on these
+
+2040
+01:17:32,400 --> 01:17:35,610
+these two further so the the last thing
+
+2041
+01:17:35,610 --> 01:17:37,640
+I'll just sort of say too is that
+
+2042
+01:17:37,640 --> 01:17:39,720
+commercial is hard it's hard to get
+
+2043
+01:17:39,720 --> 01:17:41,790
+correct hard to get performed well this
+
+2044
+01:17:41,790 --> 01:17:44,070
+is why a lot of newer database systems
+
+2045
+01:17:44,070 --> 01:17:45,300
+that come along
+
+2046
+01:17:45,300 --> 01:17:47,880
+except for more recently they initially
+
+2047
+01:17:47,880 --> 01:17:49,710
+did not support transactions because
+
+2048
+01:17:49,710 --> 01:17:50,910
+they said they want to get best
+
+2049
+01:17:50,910 --> 01:17:53,180
+performance and they didn't worry about
+
+2050
+01:17:53,180 --> 01:17:55,140
+you know running transaction they wanted
+
+2051
+01:17:55,140 --> 01:17:56,010
+to make sure the system was always
+
+2052
+01:17:56,010 --> 01:17:58,710
+available and you know they didn't want
+
+2053
+01:17:58,710 --> 01:18:00,420
+to burden burden themself with
+
+2054
+01:18:00,420 --> 01:18:05,400
+transactions and so the the thing I
+
+2055
+01:18:05,400 --> 01:18:07,190
+always like to point out though is
+
+2056
+01:18:07,190 --> 01:18:11,460
+Google in the 19 2004 2005 they were
+
+2057
+01:18:11,460 --> 01:18:13,110
+sort of the Harbinger or the vanguard of
+
+2058
+01:18:13,110 --> 01:18:14,880
+the new sequel system they put out this
+
+2059
+01:18:14,880 --> 01:18:16,620
+thing called BigTable they said joins
+
+2060
+01:18:16,620 --> 01:18:18,240
+are slow sequel slow transactions are
+
+2061
+01:18:18,240 --> 01:18:20,060
+slow we're not gonna do any of that and
+
+2062
+01:18:20,060 --> 01:18:23,340
+then like seven or eight years later
+
+2063
+01:18:23,340 --> 01:18:24,690
+after everyone's sort of copied what
+
+2064
+01:18:24,690 --> 01:18:27,990
+Google had done like a Sondra a
+
+2065
+01:18:27,990 --> 01:18:30,750
+bunch of other key value stores HBase
+
+2066
+01:18:30,750 --> 01:18:33,090
+they came out this paper called on
+
+2067
+01:18:33,090 --> 01:18:34,740
+spanner which is their transactional
+
+2068
+01:18:34,740 --> 01:18:36,240
+database system that they use internally
+
+2069
+01:18:36,240 --> 01:18:38,850
+and there's this great line in the paper
+
+2070
+01:18:38,850 --> 01:18:43,230
+that says that for their programmers
+
+2071
+01:18:43,230 --> 01:18:45,120
+they think it's better to provide an
+
+2072
+01:18:45,120 --> 01:18:46,860
+abstraction or programming model that
+
+2073
+01:18:46,860 --> 01:18:50,100
+uses transactions because that's easier
+
+2074
+01:18:50,100 --> 01:18:51,090
+for them the reason about the
+
+2075
+01:18:51,090 --> 01:18:52,290
+correctness of the program of whether
+
+2076
+01:18:52,290 --> 01:18:55,110
+the rachie doing the right operations in
+
+2077
+01:18:55,110 --> 01:18:57,330
+the right order it's better for the have
+
+2078
+01:18:57,330 --> 01:18:59,010
+baby you know the the the unwashed
+
+2079
+01:18:59,010 --> 01:19:00,540
+masses your average you know Rando
+
+2080
+01:19:00,540 --> 01:19:02,190
+javascript program or whatever they're
+
+2081
+01:19:02,190 --> 01:19:05,010
+using you read them all program to using
+
+2082
+01:19:05,010 --> 01:19:06,330
+the transaction programming model and
+
+2083
+01:19:06,330 --> 01:19:08,070
+then instead you have a bunch of really
+
+2084
+01:19:08,070 --> 01:19:09,330
+smart people that can do the systems
+
+2085
+01:19:09,330 --> 01:19:11,550
+development like Jeff Dean they're jobs
+
+2086
+01:19:11,550 --> 01:19:12,480
+that worried about how to make those
+
+2087
+01:19:12,480 --> 01:19:15,540
+transactions go faster so transactions
+
+2088
+01:19:15,540 --> 01:19:17,610
+are super important every system that
+
+2089
+01:19:17,610 --> 01:19:19,020
+they didn't have them before is now
+
+2090
+01:19:19,020 --> 01:19:21,449
+trying to start to add them
+
+2091
+01:19:21,449 --> 01:19:23,640
+because again it's it provides all these
+
+2092
+01:19:23,640 --> 01:19:25,110
+nice guarantees that you want to have in
+
+2093
+01:19:25,110 --> 01:19:26,840
+your system okay
+
+2094
+01:19:26,840 --> 01:19:29,100
+again I'm rushing I apologize but I
+
+2095
+01:19:29,100 --> 01:19:29,850
+won't quickly when I get through a
+
+2096
+01:19:29,850 --> 01:19:31,530
+project for you real quickly all right
+
+2097
+01:19:31,530 --> 01:19:33,480
+so project reads out which your building
+
+2098
+01:19:33,480 --> 01:19:35,280
+is the query execution engine for bus
+
+2099
+01:19:35,280 --> 01:19:37,650
+tub so what you're gonna end up
+
+2100
+01:19:37,650 --> 01:19:39,929
+implementing is the executors for the
+
+2101
+01:19:39,929 --> 01:19:43,050
+actual query plan operators so say you
+
+2102
+01:19:43,050 --> 01:19:45,449
+have a query pan like this then for each
+
+2103
+01:19:45,449 --> 01:19:46,530
+of these operators you're going to
+
+2104
+01:19:46,530 --> 01:19:48,270
+generate this executor that's gonna
+
+2105
+01:19:48,270 --> 01:19:49,650
+follow the iterator model that we talked
+
+2106
+01:19:49,650 --> 01:19:51,150
+about where they'll all have an X
+
+2107
+01:19:51,150 --> 01:19:52,980
+function that shoves up you know you
+
+2108
+01:19:52,980 --> 01:19:54,660
+call next on the OP on the executor and
+
+2109
+01:19:54,660 --> 01:19:57,210
+it gives you back either the next tuple
+
+2110
+01:19:57,210 --> 01:19:59,219
+that it has or a null pointer to say
+
+2111
+01:19:59,219 --> 01:20:02,400
+that it's it's done okay so you guys are
+
+2112
+01:20:02,400 --> 01:20:03,360
+doing it could be single threaded
+
+2113
+01:20:03,360 --> 01:20:06,000
+execution no exchange operators and you
+
+2114
+01:20:06,000 --> 01:20:07,050
+don't have to worry about transactions
+
+2115
+01:20:07,050 --> 01:20:09,330
+you don't have to worry about you know
+
+2116
+01:20:09,330 --> 01:20:12,090
+doing updates or deletes so what do you
+
+2117
+01:20:12,090 --> 01:20:14,070
+have to what do you have to build so the
+
+2118
+01:20:14,070 --> 01:20:15,449
+first thing we're asking you to do is
+
+2119
+01:20:15,449 --> 01:20:17,070
+build out the catalog there's allows you
+
+2120
+01:20:17,070 --> 01:20:18,780
+to install install tables into the
+
+2121
+01:20:18,780 --> 01:20:20,400
+database and then go back and get those
+
+2122
+01:20:20,400 --> 01:20:22,290
+tables back from the Cal using the name
+
+2123
+01:20:22,290 --> 01:20:24,150
+or the internal turn-on identify ER and
+
+2124
+01:20:24,150 --> 01:20:25,620
+then you're building executors for
+
+2125
+01:20:25,620 --> 01:20:27,120
+insert central scans hash joints and
+
+2126
+01:20:27,120 --> 01:20:30,360
+hash aggregation for the hash join you
+
+2127
+01:20:30,360 --> 01:20:33,210
+can implement it first using a you know
+
+2128
+01:20:33,210 --> 01:20:35,160
+in-memory hash table that will provide
+
+2129
+01:20:35,160 --> 01:20:36,989
+you but the ultimate goal is that you
+
+2130
+01:20:36,989 --> 01:20:38,429
+want to use your linear probe hash table
+
+2131
+01:20:38,429 --> 01:20:40,140
+that you built from project two because
+
+2132
+01:20:40,140 --> 01:20:42,360
+that allow you to do joins for on tables
+
+2133
+01:20:42,360 --> 01:20:44,400
+that don't fit in disk so you can do the
+
+2134
+01:20:44,400 --> 01:20:46,350
+first two tasks without having to do
+
+2135
+01:20:46,350 --> 01:20:48,390
+that working linear probe hash table the
+
+2136
+01:20:48,390 --> 01:20:49,530
+last one will require you to have that
+
+2137
+01:20:49,530 --> 01:20:54,330
+one working so even up the catalog
+
+2138
+01:20:54,330 --> 01:20:55,440
+insert an executor first because
+
+2139
+01:20:55,440 --> 01:20:56,940
+obviously you can't do special scans
+
+2140
+01:20:56,940 --> 01:20:58,730
+unless you have data in your database
+
+2141
+01:20:58,730 --> 01:21:00,390
+you don't need to worry about any
+
+2142
+01:21:00,390 --> 01:21:02,429
+transactions and then when posted this
+
+2143
+01:21:02,429 --> 01:21:03,870
+on Piazza and I'll just emphasize this
+
+2144
+01:21:03,870 --> 01:21:06,060
+again great scope is not meant to be for
+
+2145
+01:21:06,060 --> 01:21:09,420
+debugging right we if you submit it and
+
+2146
+01:21:09,420 --> 01:21:10,650
+it takes a half an hour or four starts
+
+2147
+01:21:10,650 --> 01:21:12,929
+running we can't fix that right that's
+
+2148
+01:21:12,929 --> 01:21:14,040
+up to great scope there's a queue of
+
+2149
+01:21:14,040 --> 01:21:15,810
+other students with 100 unit hunter
+
+2150
+01:21:15,810 --> 01:21:17,730
+students in the class he's not gonna run
+
+2151
+01:21:17,730 --> 01:21:20,640
+right away so we provide some basic
+
+2152
+01:21:20,640 --> 01:21:21,900
+tests as a framework to figure out how
+
+2153
+01:21:21,900 --> 01:21:23,760
+to write more tests but he's you doing
+
+2154
+01:21:23,760 --> 01:21:26,130
+as much as all the development want to
+
+2155
+01:21:26,130 --> 01:21:27,239
+figure out what your problem is to be
+
+2156
+01:21:27,239 --> 01:21:29,790
+done locally and then if you find this
+
+2157
+01:21:29,790 --> 01:21:31,050
+thing timing out because it's running
+
+2158
+01:21:31,050 --> 01:21:32,880
+too slow you should figure out why your
+
+2159
+01:21:32,880 --> 01:21:34,170
+system is running flow locally don't
+
+2160
+01:21:34,170 --> 01:21:35,190
+make a bunch of you know minor
+
+2161
+01:21:35,190 --> 01:21:36,300
+changes and keep submitting them to
+
+2162
+01:21:36,300 --> 01:21:37,410
+great scope and try to measure how long
+
+2163
+01:21:37,410 --> 01:21:39,210
+great script takes you can figure these
+
+2164
+01:21:39,210 --> 01:21:42,270
+things out locally so we've already
+
+2165
+01:21:42,270 --> 01:21:44,550
+covered this don't shoot any file and
+
+2166
+01:21:44,550 --> 01:21:46,350
+then once we give you you want to rebase
+
+2167
+01:21:46,350 --> 01:21:47,460
+over the bus-stop master there's
+
+2168
+01:21:47,460 --> 01:21:48,719
+instruction Piazza how to do this and
+
+2169
+01:21:48,719 --> 01:21:50,880
+then come to office hours if you have
+
+2170
+01:21:50,880 --> 01:21:52,650
+questions I always have to say this
+
+2171
+01:21:52,650 --> 01:21:54,210
+don't plagiarize we will destroy you
+
+2172
+01:21:54,210 --> 01:21:55,800
+right because what'll happen is if we do
+
+2173
+01:21:55,800 --> 01:21:57,770
+plagiarize new copy from other people
+
+2174
+01:21:57,770 --> 01:21:59,730
+University comes back to me say hey did
+
+2175
+01:21:59,730 --> 01:22:01,260
+you tell your students not to play
+
+2176
+01:22:01,260 --> 01:22:02,489
+drives and I show them the video and I
+
+2177
+01:22:02,489 --> 01:22:03,660
+guess here's me telling you not to
+
+2178
+01:22:03,660 --> 01:22:05,460
+plagiarize don't plagiarize and that's
+
+2179
+01:22:05,460 --> 01:22:06,960
+evidence against you you're screwed okay
+
+2180
+01:22:06,960 --> 01:22:10,290
+all right next class again I will be
+
+2181
+01:22:10,290 --> 01:22:15,210
+gone yes no we go on it's how we good
+
+2182
+01:22:15,210 --> 01:22:18,510
+all right we'll recover TV's locking and
+
+2183
+01:22:18,510 --> 01:22:19,949
+that'll build upon what we talked about
+
+2184
+01:22:19,949 --> 01:22:24,230
+today okay guys
+
+2185
+01:22:33,660 --> 01:22:37,000
+it's Wednesday nights in my system I'm
+
+2186
+01:22:37,000 --> 01:22:37,420
+blessed
+
+2187
+01:22:37,420 --> 01:22:44,800
+let's go get the next one get over now
+
+2188
+01:22:44,800 --> 01:22:46,930
+good never be son ricochet jelly hit the
+
+2189
+01:22:46,930 --> 01:22:49,090
+deli for a boat one naturally bless ya
+
+2190
+01:22:49,090 --> 01:22:50,560
+what rappers like the laser beam the
+
+2191
+01:22:50,560 --> 01:22:53,020
+boys in the bush say nothing like a king
+
+2192
+01:22:53,020 --> 01:22:55,120
+wrap the bottle of us a nice sympathy
+
+2193
+01:22:55,120 --> 01:22:57,520
+goes don't feel like drinking a pony -
+
+2194
+01:22:57,520 --> 01:23:00,310
+you drunk you can't drop me at the stake
+
+2195
+01:23:00,310 --> 01:23:04,110
+don't know you forget a pancake
+

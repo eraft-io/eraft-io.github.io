@@ -56,9 +56,17 @@ gitbook serve
 ```
 gitbook build
 ```
-## 5.提交上传修改到 git 仓库
+
+## 5.拷贝产出物到 docs
+```
+rm -rf docs/*
+cp -R _book/* docs
+```
+
+## 6.提交上传修改到 git 仓库
 
 ```
 fork 一个分支
 修改完提交 mr 到 gitbook 分支
 ```
+
