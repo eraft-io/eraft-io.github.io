@@ -59,7 +59,7 @@ gitbook build
 
 ## 5.拷贝产出物到 docs
 ```
-rm -rf docs/*
+rm -rf docs
 cp -R _book/* docs
 ```
 
