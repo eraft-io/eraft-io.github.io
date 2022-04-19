@@ -66,3 +66,34 @@ Statistics Storage: 统计数据存储
 Histograms: We assumed values were uniformly distributed. But in real databases values are not uniformly distributed, and thus maintaining a histogram is expensive. We can put values into buckets to reduce the size of the histograms. However, this can lead to inaccuracies as frequent values will sway the count of infrequent values. To counteract this, we can size the buckets such that their spread is the same. They each hold a similar amount of values.
 
 直方图：我们假设值是均匀分布的。但是在真实的数据库中，值并不是均匀分布的，因此维护直方图的开销是昂贵的。我们可以将值放入桶中来见减小直方图的大小。然而，这可能会导致不精确，因为那些频繁访问的值会影响不频繁访问值的计数。为了抵消这一点，我们可以调整桶的大小，使得其排列相同。它们各自持有相同数量的值。
+
+Sampling: Modern DBMSs also employ sampling to estimate predicate selectivities. Randomly select and maintain a subset of tuples from a table and estimate the selectivity of the predicate by applying the predicate to the small sample.
+
+抽样：现代数据库管理系统也使用抽样来估计谓词的可选择性。从表中随机选择并维护元组的子集，并通过将谓词应用于小样本来估计谓词的可选择性。
+
+### 3 Search Algorithm  搜索算法
+
+The basic cost-based search algorithm for a query optimizer is the following:
+
+查询优化器基于成本的基本搜索算法如下：
+
+1. Bring query in internal form into canonical form.
+
+1.将内部形式的查询转换为规范形式，
+
+2. Generate alternative plans.
+
+生成替代计划
+
+3. Generate costs for each plan.
+
+为每个查询计划计算成本
+
+4. Select plan with smallest cost.
+
+选择成本最低的计划
+
+It is important to pick the best access method (i.e., sequential scan, binary search, index scan) for each table accessed in the query. Simple heuristics are sometimes good enough for simple OLTP queries (i.e., queries that only access a single table). For example, queries where it easy to pick the right index to use are called sargable (Search Argument Able). Joins in OLTP queries are also almost always on foreign key relationships with small cardinality.
+
+为查询中访问的每个表选择最佳的访问方法是非常重要的（如：顺序扫描、二分搜索、索引扫描）。对于简单的 OLTP 查询（即值访问一个表的查询），简单的试探法有时候就已经有足够好的效果了。例如，选择正确的索引的查询称为 sargable（可搜索参数）。OLTP 中 JOIN 查询也几乎总是基于基数较小的外键关系。
+
