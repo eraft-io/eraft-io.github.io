@@ -12,6 +12,8 @@
 
 5. Function/Expression Indexes: Store the output of a function or expression as the key instead of the original value. It is the DBMS’s job to recognize which queries can use that index.
 
+
+
 1. 隐式索引：大多数 DBMS 会自动创建一个索引来强制实施完整性约束（例如，主键、唯一约束）。
    代码案例：CREATE UNIQUE INDEX 索引名 ON 表名(字段名);
    
