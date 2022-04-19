@@ -30,6 +30,7 @@
 5. Function/Expression Indexes: Store the output of a function or expression as the key instead of the original value. It is the DBMS’s job to recognize which queries can use that index.
 
 函数索引：将函数或表达式的输出存储为键，而不是原始值。DBMS的工作是识别哪些查询可以使用该索引。
+
 代码案例：若要查询SELECT * FROM user WHERE EXTRACT(dow from login) =2; 可通过以下方式构建函数索引：
 
         方式一：CREATE INDEX 索引名 ON user(EXTRACT(dow from login)); 
