@@ -1,11 +1,12 @@
 # Lecture 8 树索引 II
 
 ## Additional Index Usage 附加索引的使用
+
 * Implicit Indexes: Most DBMSs will automatically create an index to enforce integrity constraints (e.g., primary keys, unique constraints).
 
 * 隐式索引：大多数 DBMS 会自动创建一个索引来强制实施完整性约束（例如，主键、唯一约束）。
 
-代码案例：CREATE UNIQUE INDEX 索引名 ON 表名(字段名);
+&emsp &emsp 代码案例：CREATE UNIQUE INDEX 索引名 ON 表名(字段名);
 
 * Partial Indexes: Create an index on a subset of the entire table. This potentially reduces size and the amount of overhead to maintain it.
 
@@ -43,14 +44,6 @@ A radix tree is a variant of a trie data structure. It uses digital representati
 The height of tree depends on the length of keys and not the number of keys like in a B+Tree. The path to a leaf nodes represents the key of the leaf. Not all attribute types can be decomposed into binary comparable digits for a radix tree.
 
 树的高度取决于键的长度，而不是像B+树是取决于键的数量，并且叶节点的路径可以表示键值。但是并非所有属性类型都可以分解为基数树中的二进制可比数字。
-
-% \textbf{RADIX TREE数据结构案例：}根据K10、K25和K31构建的Radix tree.
-% \begin{figure}[htbp]
-%     \centering
-%     \includegraphics[width=5cm,hight=5cm]{lec8_figure1.png}
-%     \caption{Radix tree.}
-%     \label{figure1}
-% \end{figure}
 
 
 ## Inverted Indexes 倒排索引
