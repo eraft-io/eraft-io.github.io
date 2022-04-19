@@ -4,32 +4,31 @@
 
 1. Implicit Indexes: Most DBMSs will automatically create an index to enforce integrity constraints (e.g., primary keys, unique constraints).
 
+隐式索引：大多数 DBMS 会自动创建一个索引来强制实施完整性约束（例如，主键、唯一约束）。
+代码案例：CREATE UNIQUE INDEX 索引名 ON 表名(字段名);
+   
 2. Partial Indexes: Create an index on a subset of the entire table. This potentially reduces size and the amount of overhead to maintain it.
 
+局部索引：在整个表的子集上创建索引。这可能会减小大小和维护它的开销量。
+代码案例：CREATE INDEX 索引名 ON 表名(字段名) WHERE 子集筛选条件;
+   
 3. Convering Indexes: All attributes needed to process the query are available in an index, then the DBMS does not need to retrieve the tuple. The DBMS can complete the entire query just based on the data available in the index.
+
+覆盖索引：查询所需的所有字段都已包含在索引中，DBMS 可以根据索引中的可用数据完成整个查询，不需要通过回表操作检索数据元组(在组合索引中出现)。
+代码案例：CREATE INDEX 索引名 ON 表名(字段1，字段2); SELECT 字段2 FROM 表名 WHERE 筛选字段1;
+   
 
 4. Index Include Columns: Embed additional columns in index to support index-only queries.
 
+包含索引：在索引中嵌入其他列以支持仅索引查询（防止回表操作）。
+代码案例：CREATE INDEX 索引名 ON 表名(字段1，字段2) INCLUDE (字段3); SELECT 字段2 FROM 表名 WHERE 筛选字段1 AND 筛选字段2;
+   
 5. Function/Expression Indexes: Store the output of a function or expression as the key instead of the original value. It is the DBMS’s job to recognize which queries can use that index.
 
-
-
-1. 隐式索引：大多数 DBMS 会自动创建一个索引来强制实施完整性约束（例如，主键、唯一约束）。
-   代码案例：CREATE UNIQUE INDEX 索引名 ON 表名(字段名);
-   
-2. 局部索引：在整个表的子集上创建索引。这可能会减小大小和维护它的开销量。
-   代码案例：CREATE INDEX 索引名 ON 表名(字段名) WHERE 子集筛选条件;
-
-3. 覆盖索引：查询所需的所有字段都已包含在索引中，DBMS 可以根据索引中的可用数据完成整个查询，不需要通过回表操作检索数据元组(在组合索引中出现)。
-   代码案例：CREATE INDEX 索引名 ON 表名(字段1，字段2); SELECT 字段2 FROM 表名 WHERE 筛选字段1;
-
-4. 包含索引：在索引中嵌入其他列以支持仅索引查询（防止回表操作）。
-   代码案例：CREATE INDEX 索引名 ON 表名(字段1，字段2) INCLUDE (字段3); SELECT 字段2 FROM 表名 WHERE 筛选字段1 AND 筛选字段2;
-
-5. 函数索引：将函数或表达式的输出存储为键，而不是原始值。DBMS的工作是识别哪些查询可以使用该索引。
-   代码案例：若要查询SELECT * FROM user WHERE EXTRACT(dow from login) =2; 可通过以下方式构建函数索引：
-   方式一：CREATE INDEX 索引名 ON user(EXTRACT(dow from login)); 
-   方式二：CREATE INDEX 索引名 ON user(login) WHERE EXTRACT(dow from login)=2;
+函数索引：将函数或表达式的输出存储为键，而不是原始值。DBMS的工作是识别哪些查询可以使用该索引。
+代码案例：若要查询SELECT * FROM user WHERE EXTRACT(dow from login) =2; 可通过以下方式构建函数索引：
+        方式一：CREATE INDEX 索引名 ON user(EXTRACT(dow from login)); 
+        方式二：CREATE INDEX 索引名 ON user(login) WHERE EXTRACT(dow from login)=2;
 
 
 ## Radix Tree 基数树
