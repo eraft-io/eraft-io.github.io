@@ -1,4 +1,4 @@
-# Lecture 8 索引并发控制(Index Concurrency Control)
+# Lecture 9 索引并发控制(Index Concurrency Control)
 
 ## Index Concurrency Control 索引并发控制
 
