@@ -19,9 +19,11 @@ Divide-and-conquer sorting algorithm that splits the data set into separate runs
 分而治之排序算法，该算法将数据集拆分为单独的运行，然后对它们进行单独排序。它可以根据需要将运行溢出到磁盘，然后一次读取一个。
 
 Phase #1 – Sorting: Sort small chunks of data that fit in main memory, and then write back to disk.
+
 Phase #2 – Merge: Combine sorted sub-files into a larger single file.
 
 阶段#1 - 排序：对适合主内存的小块数据进行排序，然后写回磁盘。
+
 阶段#2 - 合并：将排序的子文件合并为一个更大的单个文件。
 
 ### Two-way Merge Sort 双向合并排序
