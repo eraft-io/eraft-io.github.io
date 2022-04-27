@@ -1406,7 +1406,160 @@
     
                                 <section class="normal markdown-section">
                                 
-                                <h1 id="&#x7B2C;&#x4E5D;&#x8BB2;">&#x7B2C;&#x4E5D;&#x8BB2;</h1>
+                                <h1 id="lecture-9-&#x7D22;&#x5F15;&#x5E76;&#x53D1;&#x63A7;&#x5236;index-concurrency-control">Lecture 9 &#x7D22;&#x5F15;&#x5E76;&#x53D1;&#x63A7;&#x5236;(Index Concurrency Control)</h1>
+<h2 id="index-concurrency-control-&#x7D22;&#x5F15;&#x5E76;&#x53D1;&#x63A7;&#x5236;">Index Concurrency Control &#x7D22;&#x5F15;&#x5E76;&#x53D1;&#x63A7;&#x5236;</h2>
+<p>A concurrency control protocol is the method that the DBMS uses to ensure &#x201C;correct&#x201D; results for concurrent
+operations on a shared object.</p>
+<p>&#x5E76;&#x53D1;&#x63A7;&#x5236;&#x534F;&#x8BAE;&#x662F; DBMS &#x7528;&#x4E8E;&#x786E;&#x4FDD;&#x5BF9;&#x5171;&#x4EAB;&#x5BF9;&#x8C61;&#x7684;&#x5E76;&#x53D1;&#x64CD;&#x4F5C;&#x5F97;&#x5230;&#x201C;&#x6B63;&#x786E;&#x201D;&#x7ED3;&#x679C;&#x7684;&#x65B9;&#x6CD5;&#x3002;</p>
+<p>A protocol&#x2019;s correctness criteria can vary:</p>
+<pre><code>* Logical Correctness: Can I see the data that I am supposed to see? This means that the thread is able to read values that it should be allowed to read.
+* Physical Correctness: Is the internal representation of the object sound? This means that there are not pointers in our data structure that will cause a thread to read invalid memory locations.
+</code></pre><p>&#x534F;&#x8BAE;&#x7684;&#x6B63;&#x786E;&#x6027;&#x6807;&#x51C6;&#x53EF;&#x80FD;&#x4F1A;&#x6709;&#x6240;&#x4E0D;&#x540C;&#xFF1A;</p>
+<pre><code>* &#x903B;&#x8F91;&#x6B63;&#x786E;&#x6027;&#xFF1A;&#x6211;&#x80FD;&#x770B;&#x5230;&#x6211;&#x5E94;&#x8BE5;&#x770B;&#x5230;&#x7684;&#x6570;&#x636E;&#x5417;&#xFF1F;&#x8FD9;&#x610F;&#x5473;&#x7740;&#x7EBF;&#x7A0B;&#x80FD;&#x591F;&#x8BFB;&#x53D6;&#x5E94;&#x5141;&#x8BB8;&#x5176;&#x8BFB;&#x53D6;&#x7684;&#x503C;&#x3002;
+* &#x7269;&#x7406;&#x6B63;&#x786E;&#x6027;&#xFF1A;&#x7269;&#x4F53;&#x7684;&#x5185;&#x90E8;&#x8868;&#x5F81;&#x662F;&#x58F0;&#x97F3;&#x5417;&#xFF1F;&#x8FD9;&#x610F;&#x5473;&#x7740;&#x6211;&#x4EEC;&#x7684;&#x6570;&#x636E;&#x7ED3;&#x6784;&#x4E2D;&#x6CA1;&#x6709;&#x4F1A;&#x5BFC;&#x81F4;&#x7EBF;&#x7A0B;&#x8BFB;&#x53D6;&#x65E0;&#x6548;&#x5185;&#x5B58;&#x4F4D;&#x7F6E;&#x7684;&#x6307;&#x9488;&#x3002;
+</code></pre><p>The logical contents of the index is the only thing we care about in this lecture. They are not quite like other database elements so we can treat them differently.</p>
+<p>&#x7D22;&#x5F15;&#x7684;&#x903B;&#x8F91;&#x5185;&#x5BB9;&#x662F;&#x6211;&#x4EEC;&#x5728;&#x672C;&#x8BB2;&#x5EA7;&#x4E2D;&#x552F;&#x4E00;&#x5173;&#x5FC3;&#x7684;&#x4E8B;&#x60C5;&#x3002;&#x5B83;&#x4EEC;&#x4E0E;&#x5176;&#x4ED6;&#x6570;&#x636E;&#x5E93;&#x5143;&#x7D20;&#x4E0D;&#x592A;&#x76F8;&#x4F3C;&#xFF0C;&#x56E0;&#x6B64;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x533A;&#x522B;&#x5BF9;&#x5F85;&#x5B83;&#x4EEC;&#x3002;</p>
+<h2 id="locks-vs-latches-&#x9501;&#x4E0E;&#x95E9;&#x9501;">Locks vs. Latches &#x9501;&#x4E0E;&#x95E9;&#x9501;</h2>
+<p>Locks:</p>
+<ul>
+<li>Protects the indexs logical contents from other transactions.</li>
+<li>Held for (mostly) the entire duration of the transaction.</li>
+<li>The DBMS needs to be able to rollback changes.
+Latches:</li>
+<li>Protects the critical sections of the indexs internal data structure from other threads.</li>
+<li>Held for operation duration.</li>
+<li>The DBMS does not need to be able to rollback changes.</li>
+<li>Two Modes:<ol>
+<li>READ: Multiple threads are allowed to read the same item at the same time. A thread can acquire the read latch if another thread has it in read mode.</li>
+<li>WRITE: Only one thread is allowed to access the item. A thread cannot acquire a write latch if
+another thread holds the latch in any mode.</li>
+</ol>
+</li>
+</ul>
+<p>&#x9501;&#xFF1A;</p>
+<ul>
+<li>&#x4FDD;&#x62A4;&#x7D22;&#x5F15;&#x903B;&#x8F91;&#x5185;&#x5BB9;&#x514D;&#x53D7;&#x5176;&#x4ED6;&#x4E8B;&#x52A1;&#x7684;&#x5F71;&#x54CD;&#x3002;</li>
+<li>&#x5728;&#x51E0;&#x4E4E;&#x6574;&#x4E2A;&#x4E8B;&#x52A1;&#x671F;&#x95F4;&#x6301;&#x6709;&#x3002;</li>
+<li>DBMS&#x9700;&#x8981;&#x80FD;&#x591F;&#x56DE;&#x6EDA;&#x66F4;&#x6539;&#x3002;</li>
+</ul>
+<p>&#x95E9;&#xFF1A;</p>
+<ul>
+<li>&#x4FDD;&#x62A4;&#x7D22;&#x5F15;&#x5185;&#x90E8;&#x6570;&#x636E;&#x7ED3;&#x6784;&#x7684;&#x5173;&#x952E;&#x90E8;&#x5206;&#x514D;&#x53D7;&#x5176;&#x4ED6;&#x7EBF;&#x7A0B;&#x7684;&#x653B;&#x51FB;&#x3002;</li>
+<li>&#x5728;&#x8FD0;&#x884C;&#x671F;&#x95F4;&#x4FDD;&#x6301;&#x3002;</li>
+<li>DBMS&#x4E0D;&#x9700;&#x8981;&#x80FD;&#x591F;&#x56DE;&#x6EDA;&#x66F4;&#x6539;&#x3002;</li>
+<li>&#x4E24;&#x79CD;&#x6A21;&#x5F0F;&#xFF1A;<ol>
+<li>&#x8BFB;&#x53D6;&#xFF1A;&#x5141;&#x8BB8;&#x591A;&#x4E2A;&#x7EBF;&#x7A0B;&#x540C;&#x65F6;&#x8BFB;&#x53D6;&#x540C;&#x4E00;&#x9879;&#x76EE;&#x3002;&#x5982;&#x679C;&#x53E6;&#x4E00;&#x4E2A;&#x7EBF;&#x7A0B;&#x5904;&#x4E8E;&#x8BFB;&#x53D6;&#x6A21;&#x5F0F;&#xFF0C;&#x5219;&#x7EBF;&#x7A0B;&#x53EF;&#x4EE5;&#x83B7;&#x53D6;&#x8BFB;&#x53D6;&#x95E9;&#x9501;&#x3002;</li>
+<li>&#x5199;&#x5165;&#xFF1A;&#x53EA;&#x5141;&#x8BB8;&#x4E00;&#x4E2A;&#x7EBF;&#x7A0B;&#x8BBF;&#x95EE;&#x8BE5;&#x9879;&#x76EE;&#x3002;&#x5728;&#x4EE5;&#x4E0B;&#x60C5;&#x51B5;&#x4E0B;&#xFF0C;&#x7EBF;&#x7A0B;&#x65E0;&#x6CD5;&#x83B7;&#x53D6;&#x5199;&#x95E9;&#x9501;&#x53E6;&#x4E00;&#x4E2A;&#x7EBF;&#x7A0B;&#x4EE5;&#x4EFB;&#x4F55;&#x6A21;&#x5F0F;&#x56FA;&#x5B9A;&#x95E9;&#x9501;&#x3002;</li>
+</ol>
+</li>
+</ul>
+<h2 id="latch-implementations-&#x95E9;&#x7684;&#x5B9E;&#x73B0;">Latch Implementations &#x95E9;&#x7684;&#x5B9E;&#x73B0;</h2>
+<p>The underlying primitive that we can use to implement a latch is through an atomic compare-and-swap (CAS) instruction that modern CPUs provide. With this, a thread can check the contents of a memory location to see whether it has a certain value. If it does, then the CPU will swap the old value with a new
+one. Otherwise the memory location remains unmodified.</p>
+<p>&#x95E9;&#x9501;&#x5B9E;&#x73B0;&#x7684;&#x57FA;&#x7840;&#x662F;&#x73B0;&#x4EE3;CPU&#x63D0;&#x4F9B;&#x7684;&#x539F;&#x5B50;&#x6BD4;&#x8F83;&#x548C;&#x4EA4;&#x6362;&#xFF08;CAS&#xFF09;&#x6307;&#x4EE4;&#x3002;&#x901A;&#x8FC7;CAS&#xFF0C;&#x7EBF;&#x7A0B;&#x53EF;&#x4EE5;&#x68C0;&#x67E5;&#x5185;&#x5B58;&#x4F4D;&#x7F6E;&#x7684;&#x5185;&#x5BB9;&#xFF0C;&#x4EE5;&#x67E5;&#x770B;&#x5B83;&#x662F;&#x5426;&#x5177;&#x6709;&#x7279;&#x5B9A;&#x503C;&#x3002;&#x5982;&#x679C;&#x662F;&#x8FD9;&#x6837;&#xFF0C;&#x5219;CPU&#x4F1A;&#x5C06;&#x65E7;&#x503C;&#x6362;&#x6210;&#x65B0;&#x503C;&#x3002;&#x5426;&#x5219;&#xFF0C;&#x5185;&#x5B58;&#x4F4D;&#x7F6E;&#x5C06;&#x4FDD;&#x6301;&#x4E0D;&#x53D8;&#x3002;</p>
+<p>There are several approaches to implementing a latch in a DBMS. Each approach have different trade-offs in terms of engineering complexity and runtime performance. These test-and-set steps are performed atomically (i.e., no other thread can update the value after one thread checks it but before it updates it).</p>
+<p>&#x6709;&#x51E0;&#x79CD;&#x65B9;&#x6CD5;&#x53EF;&#x4EE5;&#x5728;DBMS&#x4E2D;&#x5B9E;&#x73B0;&#x95E9;&#x9501;&#x3002;&#x6BCF;&#x79CD;&#x65B9;&#x6CD5;&#x5728;&#x5DE5;&#x7A0B;&#x590D;&#x6742;&#x6027;&#x548C;&#x8FD0;&#x884C;&#x65F6;&#x6027;&#x80FD;&#x65B9;&#x9762;&#x90FD;&#x6709;&#x4E0D;&#x540C;&#x7684;&#x6743;&#x8861;&#x3002;&#x8FD9;&#x4E9B;&#x6D4B;&#x8BD5;&#x548C;&#x8BBE;&#x7F6E;&#x6B65;&#x9AA4;&#x662F;&#x4EE5;&#x539F;&#x5B50;&#x65B9;&#x5F0F;&#x6267;&#x884C;&#x7684;&#xFF08;&#x5373;&#xFF0C;&#x5728;&#x4E00;&#x4E2A;&#x7EBF;&#x7A0B;&#x68C0;&#x67E5;&#x503C;&#x4E4B;&#x540E;&#xFF0C;&#x4F46;&#x5728;&#x66F4;&#x65B0;&#x503C;&#x4E4B;&#x524D;&#xFF0C;&#x6CA1;&#x6709;&#x5176;&#x4ED6;&#x7EBF;&#x7A0B;&#x53EF;&#x4EE5;&#x66F4;&#x65B0;&#x8BE5;&#x503C;&#xFF09;&#x3002;</p>
+<h3 id="blocking-os-mutex">Blocking OS Mutex</h3>
+<p>Use the OS built-in mutex infrastructure as a latch. The futex (fast user-space mutex) is comprised of (1) a spin latch in user-space and (2) a OS-level mutex. If the DBMS can acquire the user-space latch, then the latch is set. It appears as a single latch to the DBMS even though it contains two internal latches. If the DBMS fails to acquire the user-space latch, then it goes down into the kernel and tries to acquire a more expensive mutex. If the DBMS fails to acquire this second mutex, then the thread notifies the OS that it is blocked on the lock and then it is descheduled.</p>
+<p>&#x4F7F;&#x7528;&#x64CD;&#x4F5C;&#x7CFB;&#x7EDF;&#x5185;&#x7F6E;&#x4E92;&#x65A5;&#x4F53;&#x57FA;&#x7840;&#x7ED3;&#x6784;&#x4F5C;&#x4E3A;&#x95E9;&#x9501;&#x3002;futex&#xFF08;&#x5FEB;&#x901F;&#x7528;&#x6237;&#x7A7A;&#x95F4;&#x4E92;&#x65A5;&#x4F53;&#xFF09;&#x7531;&#xFF08;1&#xFF09;&#x7528;&#x6237;&#x7A7A;&#x95F4;&#x4E2D;&#x7684;&#x65CB;&#x8F6C;&#x95E9;&#x9501;&#x548C;&#xFF08;2&#xFF09;&#x64CD;&#x4F5C;&#x7CFB;&#x7EDF;&#x7EA7;&#x4E92;&#x65A5;&#x4F53;&#x7EC4;&#x6210;&#x3002;&#x5982;&#x679C;DBMS&#x53EF;&#x4EE5;&#x83B7;&#x53D6;&#x7528;&#x6237;&#x7A7A;&#x95F4;&#x95E9;&#x9501;&#xFF0C;&#x5219;&#x8BBE;&#x7F6E;&#x95E9;&#x9501;&#x3002;&#x5B83;&#x663E;&#x793A;&#x4E3A;DBMS&#x7684;&#x5355;&#x4E2A;&#x95E9;&#x9501;&#xFF0C;&#x5373;&#x4F7F;&#x5B83;&#x5305;&#x542B;&#x4E24;&#x4E2A;&#x5185;&#x90E8;&#x95E9;&#x9501;&#x3002;&#x5982;&#x679C;DBMS&#x65E0;&#x6CD5;&#x83B7;&#x53D6;&#x7528;&#x6237;&#x7A7A;&#x95F4;&#x95E9;&#x9501;&#xFF0C;&#x5219;&#x5B83;&#x4F1A;&#x8FDB;&#x5165;&#x5185;&#x6838;&#x5E76;&#x5C1D;&#x8BD5;&#x83B7;&#x53D6;&#x66F4;&#x6602;&#x8D35;&#x7684;&#x4E92;&#x65A5;&#x9501;&#x3002;&#x5982;&#x679C;DBMS&#x65E0;&#x6CD5;&#x83B7;&#x53D6;&#x7B2C;&#x4E8C;&#x4E2A;&#x4E92;&#x65A5;&#x4F53;&#xFF0C;&#x5219;&#x7EBF;&#x7A0B;&#x4F1A;&#x901A;&#x77E5;&#x64CD;&#x4F5C;&#x7CFB;&#x7EDF;&#x5B83;&#x5728;&#x9501;&#x4E0A;&#x88AB;&#x963B;&#x6B62;&#xFF0C;&#x7136;&#x540E;&#x53D6;&#x6D88;&#x8BA1;&#x5212;&#x3002;</p>
+<p>OS mutex is generally a bad idea inside of DBMSs as it is managed by OS and has large overhead.</p>
+<ul>
+<li>Example: std::mutex</li>
+<li>Advantages: Simple to use and requires no additional coding in DBMS.</li>
+<li>Disadvantages: Expensive and non-scalable (about 25 ns per lock/unlock invocation) because of OS scheduling.</li>
+</ul>
+<p>&#x64CD;&#x4F5C;&#x7CFB;&#x7EDF;&#x4E92;&#x65A5;&#x9501;&#x901A;&#x5E38;&#x662F;DBMS&#x5185;&#x90E8;&#x7684;&#x4E00;&#x4E2A;&#x574F;&#x4E3B;&#x610F;&#xFF0C;&#x56E0;&#x4E3A;&#x5B83;&#x662F;&#x7531;&#x64CD;&#x4F5C;&#x7CFB;&#x7EDF;&#x7BA1;&#x7406;&#x7684;&#xFF0C;&#x5E76;&#x4E14;&#x5F00;&#x9500;&#x5F88;&#x5927;&#x3002;</p>
+<ul>
+<li>&#x793A;&#x4F8B;&#xFF1A;std&#xFF1A;&#xFF1A;&#x4E92;&#x65A5;&#x4F53;</li>
+<li>&#x4F18;&#x70B9;&#xFF1A;&#x6613;&#x4E8E;&#x4F7F;&#x7528;&#xFF0C;&#x4E0D;&#x9700;&#x8981;&#x5728;DBMS&#x4E2D;&#x8FDB;&#x884C;&#x989D;&#x5916;&#x7684;&#x7F16;&#x7801;&#x3002;</li>
+<li>&#x7F3A;&#x70B9;&#xFF1A;&#x7531;&#x4E8E;&#x64CD;&#x4F5C;&#x7CFB;&#x7EDF;&#x8C03;&#x5EA6;&#xFF0C;&#x6602;&#x8D35;&#x4E14;&#x4E0D;&#x53EF;&#x6269;&#x5C55;&#xFF08;&#x6BCF;&#x6B21;&#x9501;&#x5B9A;/&#x89E3;&#x9501;&#x8C03;&#x7528;&#x7EA6;25ns&#xFF09;&#x3002;</li>
+</ul>
+<h3 id="test-and-set-spin-latch-tas">Test-and-Set Spin Latch (TAS)</h3>
+<p>Spin latches are a more efficient alternative to an OS mutex as it is controlled by the DBMSs. A spin latch is essentially a location in memory that threads try to update (e.g., setting a boolean value to true). A thread performs CAS to attempt to update the memory location. If it cannot, then it spins in a while loop forever trying to update it.</p>
+<ul>
+<li>Example: std::atomic<t></t></li>
+<li>Advantages: Latch/unlatch operations are efficient (single instruction to lock/unlock).</li>
+<li>Disadvantages: Not scalable nor cache friendly because with multiple threads, the CAS instructions will be executed multiple times in different threads. These wasted instructions will pile up in high contention environments; the threads look busy to the OS even though they are not doing useful work. This leads to cache coherence problems because threads are polling cache lines on other CPUs.</li>
+</ul>
+<p>&#x81EA;&#x65CB;&#x9501;&#x5B58;&#x5668;&#x662F;&#x64CD;&#x4F5C;&#x7CFB;&#x7EDF;&#x4E92;&#x65A5;&#x9501;&#x7684;&#x66F4;&#x6709;&#x6548;&#x7684;&#x66FF;&#x4EE3;&#x65B9;&#x6848;&#xFF0C;&#x56E0;&#x4E3A;&#x5B83;&#x7531;DBMS&#x63A7;&#x5236;&#x3002;&#x81EA;&#x65CB;&#x9501;&#x5B58;&#x5668;&#x672C;&#x8D28;&#x4E0A;&#x662F;&#x7EBF;&#x7A0B;&#x5C1D;&#x8BD5;&#x66F4;&#x65B0;&#x7684;&#x5185;&#x5B58;&#x4E2D;&#x7684;&#x4E00;&#x4E2A;&#x4F4D;&#x7F6E;&#xFF08;&#x4F8B;&#x5982;&#xFF0C;&#x5C06;&#x5E03;&#x5C14;&#x503C;&#x8BBE;&#x7F6E;&#x4E3A;true&#xFF09;&#x3002;&#x7EBF;&#x7A0B;&#x6267;&#x884C;CAS&#x4EE5;&#x5C1D;&#x8BD5;&#x66F4;&#x65B0;&#x5185;&#x5B58;&#x4F4D;&#x7F6E;&#x3002;&#x5982;&#x679C;&#x4E0D;&#x80FD;&#xFF0C;&#x5B83;&#x5C31;&#x4F1A;&#x5728;&#x4E00;&#x4E2A;while&#x5FAA;&#x73AF;&#x4E2D;&#x65CB;&#x8F6C;&#xFF0C;&#x6C38;&#x8FDC;&#x8BD5;&#x56FE;&#x66F4;&#x65B0;&#x5B83;&#x3002;</p>
+<ul>
+<li>&#x793A;&#x4F8B;&#xFF1A;std::atomic<t></t></li>
+<li>&#x4F18;&#x70B9;&#xFF1A;&#x95E9;&#x9501;/&#x89E3;&#x9501;&#x64CD;&#x4F5C;&#x9AD8;&#x6548;&#xFF08;&#x9501;&#x5B9A;/&#x89E3;&#x9501;&#x5355;&#x6307;&#x4EE4;&#xFF09;&#x3002;</li>
+<li>&#x7F3A;&#x70B9;&#xFF1A;&#x4E0D;&#x53EF;&#x6269;&#x5C55;&#x6216;&#x7F13;&#x5B58;&#x53CB;&#x597D;&#xFF0C;&#x56E0;&#x4E3A;&#x4F7F;&#x7528;&#x591A;&#x4E2A;&#x7EBF;&#x7A0B;&#xFF0C;CAS&#x6307;&#x4EE4;&#x5C06;&#x5728;&#x4E0D;&#x540C;&#x7684;&#x7EBF;&#x7A0B;&#x4E2D;&#x591A;&#x6B21;&#x6267;&#x884C;&#x3002;&#x8FD9;&#x4E9B;&#x6D6A;&#x8D39;&#x7684;&#x6307;&#x4EE4;&#x5C06;&#x5806;&#x79EF;&#x5728;&#x9AD8;&#x4E89;&#x7528;&#x73AF;&#x5883;&#x4E2D;;&#x7EBF;&#x7A0B;&#x5728;&#x64CD;&#x4F5C;&#x7CFB;&#x7EDF;&#x4E0A;&#x770B;&#x8D77;&#x6765;&#x5F88;&#x5FD9;&#xFF0C;&#x5373;&#x4F7F;&#x5B83;&#x4EEC;&#x6CA1;&#x6709;&#x505A;&#x6709;&#x7528;&#x7684;&#x5DE5;&#x4F5C;&#x3002;&#x8FD9;&#x4F1A;&#x5BFC;&#x81F4;&#x7F13;&#x5B58;&#x4E00;&#x81F4;&#x6027;&#x95EE;&#x9898;&#xFF0C;&#x56E0;&#x4E3A;&#x7EBF;&#x7A0B;&#x6B63;&#x5728;&#x8F6E;&#x8BE2;&#x5176;&#x4ED6; CPU &#x4E0A;&#x7684;&#x7F13;&#x5B58;&#x884C;&#x3002;</li>
+</ul>
+<h3 id="reader-writer-latches">Reader-Writer Latches</h3>
+<p>Mutexes and Spin Latches do not differentiate between reads / writes (i.e., they do not support different modes). We need a way to allow for concurrent reads, so if the application has heavy reads it will have better performance because readers can share resources instead of waiting.</p>
+<p>&#x4E92;&#x65A5;&#x9501;&#x548C;&#x81EA;&#x65CB;&#x9501;&#x5B58;&#x5668;&#x4E0D;&#x533A;&#x5206;&#x8BFB;/&#x5199;&#xFF08;&#x5373;&#xFF0C;&#x5B83;&#x4EEC;&#x4E0D;&#x652F;&#x6301;&#x4E0D;&#x540C;&#x7684;&#x6A21;&#x5F0F;&#xFF09;&#x3002;&#x6211;&#x4EEC;&#x9700;&#x8981;&#x4E00;&#x79CD;&#x65B9;&#x6CD5;&#x6765;&#x5141;&#x8BB8;&#x5E76;&#x53D1;&#x8BFB;&#x53D6;&#xFF0C;&#x56E0;&#x6B64;&#xFF0C;&#x5982;&#x679C;&#x5E94;&#x7528;&#x7A0B;&#x5E8F;&#x5177;&#x6709;&#x5927;&#x91CF;&#x8BFB;&#x53D6;&#xFF0C;&#x5B83;&#x5C06;&#x5177;&#x6709;&#x66F4;&#x597D;&#x7684;&#x6027;&#x80FD;&#xFF0C;&#x56E0;&#x4E3A;&#x8BFB;&#x53D6;&#x5668;&#x53EF;&#x4EE5;&#x5171;&#x4EAB;&#x8D44;&#x6E90;&#x800C;&#x4E0D;&#x662F;&#x7B49;&#x5F85;&#x3002;
+&#x8BFB;&#x5199;&#x5668;&#x95E9;&#x9501;&#x5141;&#x8BB8;&#x5728;&#x8BFB;&#x6216;&#x5199;&#x6A21;&#x5F0F;&#x4E0B;&#x4FDD;&#x6301;&#x95E9;&#x9501;&#x3002;&#x5B83;&#x8DDF;&#x8E2A;&#x6709;&#x591A;&#x5C11;&#x7EBF;&#x7A0B;&#x4FDD;&#x6301;&#x95E9;&#x9501;&#xFF0C;&#x5E76;&#x7B49;&#x5F85;&#x5728;&#x6BCF;&#x79CD;&#x6A21;&#x5F0F;&#x4E0B;&#x83B7;&#x53D6;&#x95E9;&#x9501;&#x3002;</p>
+<p>A Reader-Writer Latch allows a latch to be held in either read or write mode. It keeps track of how many threads hold the latch and are waiting to acquire the latch in each mode.</p>
+<ul>
+<li>Example: This is implemented on top of Spin Latches.</li>
+<li>Advantages: Allows for concurrent readers.</li>
+<li>Disadvantages: The DBMS has to manage read/write queues to avoid starvation. Larger storage overhead than Spin Latches due to additional meta-data.</li>
+</ul>
+<p>&#x8BFB;&#x5199;&#x5668;&#x95E9;&#x9501;&#x5141;&#x8BB8;&#x5728;&#x8BFB;&#x6216;&#x5199;&#x6A21;&#x5F0F;&#x4E0B;&#x4FDD;&#x6301;&#x95E9;&#x9501;&#x3002;&#x5B83;&#x8DDF;&#x8E2A;&#x6709;&#x591A;&#x5C11;&#x7EBF;&#x7A0B;&#x4FDD;&#x6301;&#x95E9;&#x9501;&#xFF0C;&#x5E76;&#x7B49;&#x5F85;&#x5728;&#x6BCF;&#x79CD;&#x6A21;&#x5F0F;&#x4E0B;&#x83B7;&#x53D6;&#x95E9;&#x9501;&#x3002;</p>
+<ul>
+<li>&#x793A;&#x4F8B;&#xFF1A;&#x8FD9;&#x662F;&#x5728;&#x81EA;&#x65CB;&#x9501;&#x5B58;&#x5668;&#x4E4B;&#x4E0A;&#x5B9E;&#x73B0;&#x7684;&#x3002;</li>
+<li>&#x4F18;&#x70B9;&#xFF1A;&#x5141;&#x8BB8;&#x5E76;&#x53D1;&#x8BFB;&#x53D6;&#x5668;&#x3002;</li>
+<li>&#x7F3A;&#x70B9;&#xFF1A;DBMS&#x5FC5;&#x987B;&#x7BA1;&#x7406;&#x8BFB;/&#x5199;&#x961F;&#x5217;&#x4EE5;&#x907F;&#x514D;&#x9965;&#x997F;&#x3002;&#x7531;&#x4E8E;&#x989D;&#x5916;&#x7684;&#x5143;&#x6570;&#x636E;&#xFF0C;&#x5B58;&#x50A8;&#x5F00;&#x9500;&#x6BD4;&#x81EA;&#x65CB;&#x9501;&#x5B58;&#x5668;&#x5927;&#x3002;</li>
+</ul>
+<h2 id="hash-table-latching">Hash Table Latching</h2>
+<p>It is easy to support concurrent access in a static hash table due to the limited ways threads access the data structure. For example, all threads move in the same direction when moving from slot to the next (i.e., top-down). Threads also only access a single page/slot at a time. Thus, deadlocks are not possible in this situation because no two threads could be competing for latches held by the other. To resize the table, take a global latch on the entire table (i.e., in the header page).</p>
+<p>&#x7531;&#x4E8E;&#x7EBF;&#x7A0B;&#x8BBF;&#x95EE;&#x6570;&#x636E;&#x7ED3;&#x6784;&#x7684;&#x65B9;&#x5F0F;&#x6709;&#x9650;&#xFF0C;&#x56E0;&#x6B64;&#x5F88;&#x5BB9;&#x6613;&#x5728;&#x9759;&#x6001;&#x54C8;&#x5E0C;&#x8868;&#x4E2D;&#x652F;&#x6301;&#x5E76;&#x53D1;&#x8BBF;&#x95EE;&#x3002;&#x4F8B;&#x5982;&#xFF0C;&#x5F53;&#x4ECE;&#x63D2;&#x69FD;&#x79FB;&#x52A8;&#x5230;&#x4E0B;&#x4E00;&#x4E2A;&#x63D2;&#x69FD;&#x65F6;&#xFF0C;&#x6240;&#x6709;&#x7EBF;&#x7A0B;&#x90FD;&#x671D;&#x540C;&#x4E00;&#x65B9;&#x5411;&#x79FB;&#x52A8;&#xFF08;&#x5373;&#x81EA;&#x4E0A;&#x800C;&#x4E0B;&#xFF09;&#x3002;&#x7EBF;&#x7A0B;&#x4E00;&#x6B21;&#x4E5F;&#x53EA;&#x80FD;&#x8BBF;&#x95EE;&#x5355;&#x4E2A;&#x9875;&#x9762;/&#x63D2;&#x69FD;&#x3002;&#x56E0;&#x6B64;&#xFF0C;&#x5728;&#x8FD9;&#x79CD;&#x60C5;&#x51B5;&#x4E0B;&#x4E0D;&#x53EF;&#x80FD;&#x51FA;&#x73B0;&#x6B7B;&#x9501;&#xFF0C;&#x56E0;&#x4E3A;&#x6CA1;&#x6709;&#x4E24;&#x4E2A;&#x7EBF;&#x7A0B;&#x53EF;&#x4EE5;&#x4E89;&#x7528;&#x53E6;&#x4E00;&#x4E2A;&#x7EBF;&#x7A0B;&#x6301;&#x6709;&#x7684;&#x95E9;&#x9501;&#x3002;&#x8981;&#x8C03;&#x6574;&#x8868;&#x7684;&#x5927;&#x5C0F;&#xFF0C;&#x8BF7;&#x5728;&#x6574;&#x4E2A;&#x8868;&#x4E0A;&#xFF08;&#x5373;&#x5728;&#x9875;&#x7709;&#x9875;&#x4E2D;&#xFF09;&#x8FDB;&#x884C;&#x5168;&#x5C40;&#x95E9;&#x9501;&#x3002;</p>
+<p>Latching in a dynamic hashing scheme (e.g., extendible) is slightly more complicated because there is more shared state to update, but the general approach is the same.</p>
+<p>&#x52A8;&#x6001;&#x54C8;&#x5E0C;&#x65B9;&#x6848;&#xFF08;&#x4F8B;&#x5982;&#xFF0C;&#x53EF;&#x6269;&#x5C55;&#xFF09;&#x4E2D;&#x7684;&#x95E9;&#x9501;&#x7A0D;&#x5FAE;&#x590D;&#x6742;&#x4E00;&#x4E9B;&#xFF0C;&#x56E0;&#x4E3A;&#x8981;&#x66F4;&#x65B0;&#x7684;&#x5171;&#x4EAB;&#x72B6;&#x6001;&#x66F4;&#x591A;&#xFF0C;&#x4F46;&#x4E00;&#x822C;&#x65B9;&#x6CD5;&#x662F;&#x76F8;&#x540C;&#x7684;&#x3002;</p>
+<p>In general, there are two approaches to support latching in a hash table:</p>
+<ul>
+<li>Page Latches: Each page has its own Reader-Writer latch that protects its entire contents. Threads acquire either a read or write latch before they access a page. This decreases parallelism because potentially only one thread can access a page at a time, but accessing multiple slots in a page will be
+fast because a thread only has to acquire a single latch.</li>
+<li>Slot Latches: Each slot has its own latch. This increases parallelism because two threads can access different slots in the same page. But it increases the storage and computational overhead of accessing the table because threads have to acquire a latch for every slot they access. The DBMS can use a single mode latch (i.e., Spin Latch) to reduce meta-data and computational overhead.</li>
+</ul>
+<p>&#x901A;&#x5E38;&#xFF0C;&#x6709;&#x4E24;&#x79CD;&#x65B9;&#x6CD5;&#x53EF;&#x4EE5;&#x652F;&#x6301;&#x54C8;&#x5E0C;&#x8868;&#x4E2D;&#x7684;&#x95E9;&#x9501;&#xFF1A;</p>
+<ul>
+<li>&#x9875;&#x9762;&#x95E9;&#x9501;&#xFF1A;&#x6BCF;&#x4E2A;&#x9875;&#x9762;&#x90FD;&#x6709;&#x81EA;&#x5DF1;&#x7684;&#x8BFB;&#x5199;&#x5668;&#x95E9;&#x9501;&#xFF0C;&#x53EF;&#x4FDD;&#x62A4;&#x5176;&#x5168;&#x90E8;&#x5185;&#x5BB9;&#x3002;&#x7EBF;&#x7A0B;&#x5728;&#x8BBF;&#x95EE;&#x9875;&#x9762;&#x4E4B;&#x524D;&#x83B7;&#x53D6;&#x8BFB;&#x53D6;&#x6216;&#x5199;&#x5165;&#x95E9;&#x9501;&#x3002;&#x8FD9;&#x4F1A;&#x964D;&#x4F4E;&#x5E76;&#x884C;&#x6027;&#xFF0C;&#x56E0;&#x4E3A;&#x4E00;&#x6B21;&#x53EF;&#x80FD;&#x53EA;&#x6709;&#x4E00;&#x4E2A;&#x7EBF;&#x7A0B;&#x53EF;&#x4EE5;&#x8BBF;&#x95EE;&#x4E00;&#x4E2A;&#x9875;&#x9762;&#xFF0C;&#x4F46;&#x8BBF;&#x95EE;&#x9875;&#x9762;&#x4E2D;&#x7684;&#x591A;&#x4E2A;&#x69FD;&#x5C06;
+&#x5FEB;&#x901F;&#xFF0C;&#x56E0;&#x4E3A;&#x87BA;&#x7EB9;&#x53EA;&#x9700;&#x8981;&#x83B7;&#x53D6;&#x5355;&#x4E2A;&#x95E9;&#x9501;&#x3002;</li>
+<li>&#x63D2;&#x69FD;&#x95E9;&#x9501;&#xFF1A;&#x6BCF;&#x4E2A;&#x63D2;&#x69FD;&#x90FD;&#x6709;&#x81EA;&#x5DF1;&#x7684;&#x95E9;&#x9501;&#x3002;&#x8FD9;&#x589E;&#x52A0;&#x4E86;&#x5E76;&#x884C;&#x5EA6;&#xFF0C;&#x56E0;&#x4E3A;&#x4E24;&#x4E2A;&#x7EBF;&#x7A0B;&#x53EF;&#x4EE5;&#x8BBF;&#x95EE;&#x540C;&#x4E00;&#x9875;&#x9762;&#x4E2D;&#x7684;&#x4E0D;&#x540C;&#x63D2;&#x69FD;&#x3002;&#x4F46;&#x5B83;&#x589E;&#x52A0;&#x4E86;&#x8BBF;&#x95EE;&#x8868;&#x7684;&#x5B58;&#x50A8;&#x548C;&#x8BA1;&#x7B97;&#x5F00;&#x9500;&#xFF0C;&#x56E0;&#x4E3A;&#x7EBF;&#x7A0B;&#x5FC5;&#x987B;&#x4E3A;&#x5B83;&#x4EEC;&#x8BBF;&#x95EE;&#x7684;&#x6BCF;&#x4E2A;&#x63D2;&#x69FD;&#x83B7;&#x53D6;&#x95E9;&#x9501;&#x3002;DBMS&#x53EF;&#x4EE5;&#x4F7F;&#x7528;&#x5355;&#x6A21;&#x9501;&#x5B58;&#x5668;&#xFF08;&#x5373;&#x81EA;&#x65CB;&#x9501;&#x5B58;&#x5668;&#xFF09;&#x6765;&#x51CF;&#x5C11;&#x5143;&#x6570;&#x636E;&#x548C;&#x8BA1;&#x7B97;&#x5F00;&#x9500;&#x3002;</li>
+</ul>
+<h2 id="btree-latching">B+Tree Latching</h2>
+<p>Lock crabbing/coupling is a protocol to allow multiple threads to access/modify B+Tree at the same time:</p>
+<ol>
+<li>Get latch for parent.</li>
+<li>Get latch for child.</li>
+<li>Release latch for parent if it is deemed safe. A safe node is one that will not split or merge when updated (not full on insertion or more than half full on deletion).</li>
+</ol>
+<p>Lock crabbing/coupling&#x662F;&#x4E00;&#x79CD;&#x534F;&#x8BAE;&#xFF0C;&#x5141;&#x8BB8;&#x591A;&#x4E2A;&#x7EBF;&#x7A0B;&#x540C;&#x65F6;&#x8BBF;&#x95EE;/&#x4FEE;&#x6539;B+&#x6811;&#xFF1A;</p>
+<ol>
+<li>&#x83B7;&#x53D6;&#x7236;&#x6BCD;&#x8282;&#x70B9;&#x95E9;&#x9501;&#x3002;</li>
+<li>&#x83B7;&#x53D6;&#x5B69;&#x5B50;&#x8282;&#x70B9;&#x95E9;&#x9501;&#x3002;</li>
+<li>&#x5982;&#x679C;&#x7236;&#x6BCD;&#x8BA4;&#x4E3A;&#x5B89;&#x5168;&#xFF0C;&#x8BF7;&#x91CA;&#x653E;&#x95E9;&#x9501;&#x3002;&#x5B89;&#x5168;&#x8282;&#x70B9;&#x662F;&#x6307;&#x5728;&#x66F4;&#x65B0;&#x65F6;&#x4E0D;&#x4F1A;&#x62C6;&#x5206;&#x6216;&#x5408;&#x5E76;&#x7684;&#x8282;&#x70B9;&#xFF08;&#x63D2;&#x5165;&#x65F6;&#x4E0D;&#x6EE1;&#xFF0C;&#x5220;&#x9664;&#x65F6;&#x8D85;&#x8FC7;&#x4E00;&#x534A;&#xFF09;&#x3002;</li>
+</ol>
+<h3 id="basic-latch-crabbing-protocl-&#x57FA;&#x7840;latch-crabbing&#x534F;&#x8BAE;&#xFF1A;">Basic Latch Crabbing Protocl &#x57FA;&#x7840;Latch Crabbing&#x534F;&#x8BAE;&#xFF1A;</h3>
+<ul>
+<li>Search: Start at root and go down, repeatedly acquire latch on child and then unlatch parent.</li>
+<li><p>Insert/Delete: Start at root and go down, obtaining X latches as needed. Once child is latched, check if it is safe. If the child is safe, release latches on all its ancestors.  </p>
+</li>
+<li><p>&#x641C;&#x7D22;&#xFF1A;&#x4ECE;&#x6839;&#x90E8;&#x5F00;&#x59CB;&#xFF0C;&#x7136;&#x540E;&#x5411;&#x4E0B;&#xFF0C;&#x53CD;&#x590D;&#x83B7;&#x5F97;&#x5BF9;&#x5B50;&#x9879;&#x7684;&#x95E9;&#x9501;&#xFF0C;&#x7136;&#x540E;&#x89E3;&#x5F00;&#x7236;&#x9879;&#x7684;&#x95E9;&#x9501;&#x3002;</p>
+</li>
+<li>&#x63D2;&#x5165;/&#x5220;&#x9664;&#xFF1A;&#x4ECE;&#x6839;&#x5F00;&#x59CB;&#x5E76;&#x5411;&#x4E0B;&#xFF0C;&#x6839;&#x636E;&#x9700;&#x8981;&#x83B7;&#x5F97;X&#x95E9;&#x9501;&#x3002;&#x4E00;&#x65E6;&#x5B69;&#x5B50;&#x88AB;&#x9501;&#x4F4F;&#xFF0C;&#x68C0;&#x67E5;&#x5B83;&#x662F;&#x5426;&#x5B89;&#x5168;&#x3002;&#x5982;&#x679C;&#x5B69;&#x5B50;&#x662F;&#x5B89;&#x5168;&#x7684;&#xFF0C;&#x91CA;&#x653E;&#x5176;&#x6240;&#x6709;&#x7956;&#x5148;&#x7684;&#x95E9;&#x9501;&#x3002; </li>
+</ul>
+<p>Improved Lock Crabbing Protocol: The problem with the basic latch crabbing algorithm is that transactions always acquire an exclusive latch on the root for every insert/delete operation. This limits parallelism. 
+Instead, we can assume that having to resize (i.e., split/merge nodes) is rare, and thus transactions can acquire shared latches down to the leaf nodes. Each transaction will assume that the path to the target leaf node is safe, and use READ latches and crabbing to reach it, and verify. If any node in the path is not safe, then do previous algorithm (i.e., acquire WRITE latches).</p>
+<ul>
+<li>Search: Same algorithm as before.</li>
+<li>Insert/Delete: Set READ latches as if for search, go to leaf, and set WRITE latch on leaf. If leaf is not safe, release all previous latches, and restart transaction using previous Insert/Delete protocol.  </li>
+</ul>
+<p>&#x6539;&#x8FDB;&#x7684;Lock Crabbing&#x534F;&#x8BAE;&#xFF1A;&#x57FA;&#x7840;&#x7684;Lock Crabbing&#x7B97;&#x6CD5;&#x7684;&#x95EE;&#x9898;&#x5728;&#x4E8E;&#xFF0C;&#x4E8B;&#x52A1;&#x59CB;&#x7EC8;&#x4E3A;&#x6BCF;&#x4E2A;&#x63D2;&#x5165;/&#x5220;&#x9664;&#x64CD;&#x4F5C;&#x83B7;&#x53D6;&#x6839;&#x4E0A;&#x7684;&#x72EC;&#x5360;&#x95E9;&#x9501;&#x3002;&#x8FD9;&#x9650;&#x5236;&#x4E86;&#x5E76;&#x884C;&#x6027;&#x3002;&#x76F8;&#x53CD;&#xFF0C;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x5047;&#x8BBE;&#x5FC5;&#x987B;&#x8C03;&#x6574;&#x5927;&#x5C0F;&#xFF08;&#x5373;&#x62C6;&#x5206;/&#x5408;&#x5E76;&#x8282;&#x70B9;&#xFF09;&#x662F;&#x7F55;&#x89C1;&#x7684;&#xFF0C;&#x56E0;&#x6B64;&#x4E8B;&#x52A1;&#x53EF;&#x4EE5;&#x83B7;&#x5F97;&#x5171;&#x4EAB;&#x95E9;&#x9501;&#x5230;&#x53F6;&#x8282;&#x70B9;&#x3002;&#x6BCF;&#x4E2A;&#x4E8B;&#x52A1;&#x90FD;&#x5C06;&#x5047;&#x5B9A;&#x5230;&#x76EE;&#x6807;&#x53F6;&#x8282;&#x70B9;&#x7684;&#x8DEF;&#x5F84;&#x662F;&#x5B89;&#x5168;&#x7684;&#xFF0C;&#x5E76;&#x4F7F;&#x7528;READ&#x95E9;&#x9501;&#x548C;crabbing&#x6765;&#x8BBF;&#x95EE;&#x5B83;&#x5E76;&#x8FDB;&#x884C;&#x9A8C;&#x8BC1;&#x3002;&#x5982;&#x679C;&#x8DEF;&#x5F84;&#x4E2D;&#x7684;&#x4EFB;&#x4F55;&#x8282;&#x70B9;&#x4E0D;&#x5B89;&#x5168;&#xFF0C;&#x5219;&#x6267;&#x884C;&#x5148;&#x524D;&#x7684;&#x7B97;&#x6CD5;&#xFF08;&#x5373;&#x83B7;&#x53D6; WRITE&#x95E9;&#x9501;&#xFF09;&#x3002;</p>
+<ul>
+<li>&#x641C;&#x7D22;&#xFF1A;&#x4E0E;&#x4E4B;&#x524D;&#x76F8;&#x540C;&#x7684;&#x7B97;&#x6CD5;&#x3002;</li>
+<li>&#x63D2;&#x5165;/&#x5220;&#x9664;&#xFF1A;&#x5C06;&#x8BFB;&#x95E9;&#x9501;&#x8BBE;&#x7F6E;&#x4E3A;&#x7528;&#x4E8E;&#x641C;&#x7D22;&#xFF0C;&#x76F4;&#x5230;&#x5230;&#x53F6;&#x8282;&#x70B9;&#xFF0C;&#x5E76;&#x5728;&#x53F6;&#x8282;&#x70B9;&#x4E0A;&#x8BBE;&#x7F6E;&#x5199;&#x95E9;&#x9501;&#x3002;&#x5982;&#x679C;&#x53F6;&#x8282;&#x70B9;&#x4E0D;&#x5B89;&#x5168;&#xFF0C;&#x91CA;&#x653E;&#x6240;&#x6709;&#x4EE5;&#x524D;&#x7684;&#x9501;&#x5B58;&#xFF0C;&#x5E76;&#x4F7F;&#x7528;&#x4EE5;&#x524D;&#x7684;&#x63D2;&#x5165;/&#x5220;&#x9664;&#x534F;&#x8BAE;&#x91CD;&#x65B0;&#x542F;&#x52A8;&#x4E8B;&#x52A1;&#x3002;</li>
+</ul>
+<h2 id="leaf-node-scans-&#x53F6;&#x8282;&#x70B9;&#x626B;&#x63CF;">Leaf Node Scans &#x53F6;&#x8282;&#x70B9;&#x626B;&#x63CF;</h2>
+<p>The threads in these protocols acquire latches in a &#x201C;top-down&#x201D; manner. This means that a thread can only acquire a latch from a node that is below its current node. If the desired latch is unavailable, the thread must wait until it becomes available. Given this, there can never be deadlocks.</p>
+<p>&#x8FD9;&#x4E9B;&#x534F;&#x8BAE;&#x4E2D;&#x7684;&#x7EBF;&#x7A0B;&#x4EE5;&#x201C;&#x81EA;&#x4E0A;&#x800C;&#x4E0B;&#x201D;&#x7684;&#x65B9;&#x5F0F;&#x83B7;&#x53D6;&#x95E9;&#x9501;&#x3002;&#x8FD9;&#x610F;&#x5473;&#x7740;&#x7EBF;&#x7A0B;&#x53EA;&#x80FD;&#x4ECE;&#x5176;&#x5F53;&#x524D;&#x8282;&#x70B9;&#x4E0B;&#x65B9;&#x7684;&#x8282;&#x70B9;&#x83B7;&#x53D6;&#x95E9;&#x9501;&#x3002;&#x5982;&#x679C;&#x6240;&#x9700;&#x7684;&#x95E9;&#x9501;&#x4E0D;&#x53EF;&#x7528;&#xFF0C;&#x5219;&#x7EBF;&#x7A0B;&#x5FC5;&#x987B;&#x7B49;&#x5F85;&#xFF0C;&#x76F4;&#x5230;&#x5B83;&#x53D8;&#x4E3A;&#x53EF;&#x7528;&#x3002;&#x9274;&#x4E8E;&#x6B64;&#xFF0C;&#x6C38;&#x8FDC;&#x4E0D;&#x4F1A;&#x51FA;&#x73B0;&#x50F5;&#x5C40;&#x3002;</p>
+<p>Leaf node scans are susceptible to deadlocks because now we have threads trying to acquire locks in two different directions at the same time (i.e., left-to-right and right-to-left). Index latches do not support deadlock detection or avoidance.</p>
+<p>&#x53F6;&#x8282;&#x70B9;&#x626B;&#x63CF;&#x5BB9;&#x6613;&#x53D7;&#x5230;&#x6B7B;&#x9501;&#x7684;&#x5F71;&#x54CD;&#xFF0C;&#x56E0;&#x4E3A;&#x73B0;&#x5728;&#x6211;&#x4EEC;&#x6709;&#x7EBF;&#x7A0B;&#x5C1D;&#x8BD5;&#x540C;&#x65F6;&#x5728;&#x4E24;&#x4E2A;&#x4E0D;&#x540C;&#x7684;&#x65B9;&#x5411;&#x4E0A;&#x83B7;&#x53D6;&#x9501;&#xFF08;&#x5373;&#xFF0C;&#x4ECE;&#x5DE6;&#x5230;&#x53F3;&#x548C;&#x4ECE;&#x53F3;&#x5230;&#x5DE6;&#xFF09;&#x3002;&#x7D22;&#x5F15;&#x95E9;&#x9501;&#x4E0D;&#x652F;&#x6301;&#x6B7B;&#x9501;&#x68C0;&#x6D4B;&#x6216;&#x907F;&#x514D;&#x3002;</p>
+<p>Thus, the only way we can deal with this problem is through coding discipline. The leaf node sibling latch acquisition protocol must support a &#x201C;no-wait&#x201D; mode. That is, B+tree code must cope with failed latch acquisitions. This means that if a thread tries to acquire a latch on a leaf node but that latch is unavailable, then it will immediately abort its operation (releasing any latches that it holds) and then restart the operation.</p>
+<p>&#x56E0;&#x6B64;&#xFF0C;&#x6211;&#x4EEC;&#x5904;&#x7406;&#x8FD9;&#x4E2A;&#x95EE;&#x9898;&#x7684;&#x552F;&#x4E00;&#x65B9;&#x6CD5;&#x662F;&#x901A;&#x8FC7;&#x7F16;&#x7801;&#x7EAA;&#x5F8B;&#x3002;&#x53F6;&#x5B50;&#x8282;&#x70B9;&#x540C;&#x7EA7;&#x95E9;&#x9501;&#x83B7;&#x53D6;&#x534F;&#x8BAE;&#x5FC5;&#x987B;&#x652F;&#x6301;&#x201C;&#x65E0;&#x7B49;&#x5F85;&#x201D;&#x6A21;&#x5F0F;&#x3002;&#x4E5F;&#x5C31;&#x662F;&#x8BF4;&#xFF0C;B+&#x6811;&#x4EE3;&#x7801;&#x5FC5;&#x987B;&#x5E94;&#x5BF9;&#x5931;&#x8D25;&#x7684;&#x95E9;&#x9501;&#x83B7;&#x53D6;&#x3002;&#x8FD9;&#x610F;&#x5473;&#x7740;&#xFF0C;&#x5982;&#x679C;&#x7EBF;&#x7A0B;&#x5C1D;&#x8BD5;&#x83B7;&#x53D6;&#x53F6;&#x8282;&#x70B9;&#x4E0A;&#x7684;&#x95E9;&#x9501;&#xFF0C;&#x4F46;&#x8BE5;&#x95E9;&#x9501;&#x4E0D;&#x53EF;&#x7528;&#xFF0C;&#x5219;&#x5B83;&#x5C06;&#x7ACB;&#x5373;&#x4E2D;&#x6B62;&#x5176;&#x64CD;&#x4F5C;&#xFF08;&#x91CA;&#x653E;&#x5B83;&#x6301;&#x6709;&#x7684;&#x4EFB;&#x4F55;&#x95E9;&#x9501;&#xFF09;&#xFF0C;&#x7136;&#x540E;&#x91CD;&#x65B0;&#x542F;&#x52A8;&#x8BE5;&#x64CD;&#x4F5C;&#x3002;</p>
 
                                 
                                 </section>
@@ -1450,7 +1603,7 @@
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"第九讲","level":"1.3.9","depth":2,"next":{"title":"第十讲","level":"1.3.10","depth":2,"path":"cmu15455/LEC10.md","ref":"cmu15455/LEC10.md","articles":[]},"previous":{"title":"第八讲","level":"1.3.8","depth":2,"path":"cmu15455/LEC8.md","ref":"cmu15455/LEC8.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["livereload"],"pluginsConfig":{"livereload":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"cmu15455/LEC9.md","mtime":"2022-04-17T03:17:05.177Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2022-04-19T00:43:59.585Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"第九讲","level":"1.3.9","depth":2,"next":{"title":"第十讲","level":"1.3.10","depth":2,"path":"cmu15455/LEC10.md","ref":"cmu15455/LEC10.md","articles":[]},"previous":{"title":"第八讲","level":"1.3.8","depth":2,"path":"cmu15455/LEC8.md","ref":"cmu15455/LEC8.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"cmu15455/LEC9.md","mtime":"2022-04-27T00:12:41.522Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2022-04-27T00:14:21.207Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
@@ -1458,10 +1611,6 @@
         
     <script src="../gitbook/gitbook.js"></script>
     <script src="../gitbook/theme.js"></script>
-    
-        
-        <script src="../gitbook/gitbook-plugin-livereload/plugin.js"></script>
-        
     
         
         <script src="../gitbook/gitbook-plugin-search/search-engine.js"></script>

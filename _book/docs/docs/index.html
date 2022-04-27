@@ -1407,35 +1407,7 @@
                                 <h1 id="&#x5173;&#x4E8E;&#x6211;&#x4EEC;">&#x5173;&#x4E8E;&#x6211;&#x4EEC;</h1>
 <p>&#x6211;&#x4EEC;&#x662F;&#x4E00;&#x4E2A;&#x4E13;&#x6CE8;&#x4E8E;&#x89E3;&#x8BFB;&#x56FD;&#x5916;&#x540D;&#x6821;&#x5206;&#x5E03;&#x5F0F;&#x5B58;&#x50A8;&#x76F8;&#x5173;&#x5F00;&#x6E90;&#x8BFE;&#x7A0B;&#x7684;&#x7EC4;&#x7EC7;&#xFF0C;&#x4EE5;&#x4E0B;&#x662F;&#x5206;&#x5E03;&#x5F0F;&#x5B58;&#x50A8;&#x65B9;&#x5411;&#x7684;&#x81EA;&#x5B66;&#x8BFE;&#x7A0B;&#x8BA1;&#x5212;&#xFF1A;</p>
 <p><img src="figures/course_arch.svg" alt="&#x8BFE;&#x7A0B;&#x4F53;&#x7CFB;"></p>
-<h1 id="&#x5982;&#x4F55;&#x53C2;&#x4E0E;&#x672C;&#x4E66;&#x7F16;&#x8F91;">&#x5982;&#x4F55;&#x53C2;&#x4E0E;&#x672C;&#x4E66;&#x7F16;&#x8F91;</h1>
-<h2 id="1&#x514B;&#x9686;&#x4EE3;&#x7801;">1.&#x514B;&#x9686;&#x4EE3;&#x7801;</h2>
-<pre><code>git clone https://github.com/eraft-io/eraft-io.github.io.git
-git checkout gitbook
-</code></pre><h2 id="2&#x5728;&#x672C;&#x5730;&#x5B89;&#x88C5;-gitbook-&#x73AF;&#x5883;&#xFF08;&#x4EE5;-linux-mac-&#x4E3A;&#x4F8B;&#xFF09;">2.&#x5728;&#x672C;&#x5730;&#x5B89;&#x88C5; gitbook &#x73AF;&#x5883;&#xFF08;&#x4EE5; linux mac &#x4E3A;&#x4F8B;&#xFF09;</h2>
-<p>&#x5148;&#x5B89;&#x88C5; nvm</p>
-<pre><code>curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | bash
-</code></pre><p>&#x4FEE;&#x6539; ~/.bash_profile &#x6587;&#x4EF6; vim ~/.bash_profile</p>
-<pre><code># This loads nvm
-export NVM_DIR=&quot;$HOME/.nvm&quot;
-[ -s &quot;$NVM_DIR/nvm.sh&quot; ] &amp;&amp; . &quot;$NVM_DIR/nvm.sh&quot;
-</code></pre><p>&#x6539;&#x5B8C;&#x4E4B;&#x540E;</p>
-<pre><code>source ~/.bash_profile
-</code></pre><p>&#x5207;&#x5408;&#x9002;&#x7684; node &#x7248;&#x672C;</p>
-<pre><code>nvm install 10.21.0
-nvm use v10.21.0
-</code></pre><p>&#x5B89;&#x88C5; gitbook-cli</p>
-<pre><code>npm install gitbook-cli -g
-</code></pre><h2 id="3&#x672C;&#x5730;&#x8FD0;&#x884C;">3.&#x672C;&#x5730;&#x8FD0;&#x884C;</h2>
-<pre><code>gitbook serve
-</code></pre><h2 id="4&#x6539;&#x5B8C;-markdown-&#x6587;&#x4EF6;&#x4E4B;&#x540E;&#xFF0C;build-&#x4EA7;&#x51FA;&#x5230;-book-&#x76EE;&#x5F55;">4.&#x6539;&#x5B8C; markdown &#x6587;&#x4EF6;&#x4E4B;&#x540E;&#xFF0C;build &#x4EA7;&#x51FA;&#x5230; _book &#x76EE;&#x5F55;</h2>
-<pre><code>gitbook build
-</code></pre><h2 id="5&#x62F7;&#x8D1D;&#x4EA7;&#x51FA;&#x7269;&#x5230;-docs">5.&#x62F7;&#x8D1D;&#x4EA7;&#x51FA;&#x7269;&#x5230; docs</h2>
-<pre><code>rm -rf docs
-cp -R _book/* docs
-</code></pre><h2 id="6&#x63D0;&#x4EA4;&#x4E0A;&#x4F20;&#x4FEE;&#x6539;&#x5230;-git-&#x4ED3;&#x5E93;">6.&#x63D0;&#x4EA4;&#x4E0A;&#x4F20;&#x4FEE;&#x6539;&#x5230; git &#x4ED3;&#x5E93;</h2>
-<pre><code>fork &#x4E00;&#x4E2A;&#x5206;&#x652F;
-&#x4FEE;&#x6539;&#x5B8C;&#x63D0;&#x4EA4; mr &#x5230; gitbook &#x5206;&#x652F;
-</code></pre>
+
                                 
                                 </section>
                             
@@ -1474,7 +1446,7 @@ cp -R _book/* docs
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"关于这个小本子","level":"1.1","depth":1,"next":{"title":"如何贡献","level":"1.2","depth":1,"path":"CONTRIBUTION.md","ref":"CONTRIBUTION.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["livereload"],"pluginsConfig":{"livereload":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"README.md","mtime":"2022-04-17T03:30:59.247Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2022-04-17T03:49:40.970Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"关于这个小本子","level":"1.1","depth":1,"next":{"title":"如何贡献","level":"1.2","depth":1,"path":"CONTRIBUTION.md","ref":"CONTRIBUTION.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["livereload"],"pluginsConfig":{"livereload":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"README.md","mtime":"2022-04-18T14:26:14.209Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2022-04-18T16:04:04.789Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>
