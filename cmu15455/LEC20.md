@@ -106,21 +106,111 @@ Implementation:
 
 • Organize the database pages in a tree structure where the root is a single disk page.
 
-以树结构组织数据库页面，其中根时单个磁盘页面
+以树结构组织数据库页面，其中根是单个磁盘页面
 
 • There are two copies of the tree, the master and the shadow:
 
+树存在两个副本，主副本和影子副本
+
 – The root points to the master copy
+
+根指向主副本
 
 – Updates are applied to the shadow copy
 
+更新应用于影子副本
+
 • To install updates, overwrite the root so it points to the shadow, thereby swapping the master and shadow.
 
-Before overwriting the root,none of the transactions updates are part of the disk-resident database.
+要安装更新，覆盖根节点指向影子页面，从而交换主目录和影子
+
+Before overwriting the root, none of the transactions updates are part of the disk-resident database.
+
+在覆盖根之前，所有的事务更新都还不是磁盘上数据库的一部分
 
 After overwriting the root, all of the transactions updates are part of the disk resident database.
 
-• UNDO: Remove the shadow pages. Leave master and the DB root pointer alone
+覆盖根之后，所有的事务更新都是磁盘数据库上的一部分了
+
+• UNDO: Remove the shaduow pages. Leave master and the DB root pointer alone
+
+• UNDO: 删除影子页面，不理会 master 以及 db 根指针
 
 • REDO: Not needed at all
 
+• REDO: 不需要
+
+
+## Write-Ahead Logging
+
+The DBMS records all the changes made to the database in a log file (on stable storage) before the change is made to a disk page. The log contains sufficient information to perform the necessary undo and redo   
+actions to restore the database after a crash. This is an example of a STEAL + NO-FORCE system.
+
+在对磁盘页面进行更改之前，DBMS 会将数据库所做的所有更改记录到一个日志文件中（存储在稳定存储器上）。这个日志包含了足够的信息来执行必要的撤销和重做操作以便在系统崩溃后恢复数据库。这是一个 STEAL + NO-FORCE 系统的例子
+
+Almost every DBMS uses write-ahead logging (WAL) because it has the fastest runtime performance. But the DBMS’s recovery time with WAL is slower than shadow paging because it has to replay the log.
+
+几乎每个 DBMS 都使用预写日志（WAL），因为它具有最快的运行时性能。但是 DBMS 使用 WAL 的恢复时间比影子分页慢，因为它必须重放日志。
+
+Implementation:
+
+实现：
+
+- All log records pertaining to an updated page are written to non-volatile storage before the page itself is allowed to be overwritten in non-volatile storage.
+
+在页面本身被允许在非易失性存储中覆盖之前，与更新页面有关的所有日志记录都被写入非易失性存储。
+
+- A transaction is not considered committed until all its log records have been written to stable storage.
+
+- 在所有日志记录都写入稳定存储之前，不会认为事务已经提交
+
+When the transaction starts, write a <BEGIN> record to the log for each transaction to mark its starting point.
+
+当事务开始的时候，为每个事务写入一个 <BEGIN> 的记录到日志中，以标记它的起始点
+
+• When a transaction finishes, write a <COMMIT> record to the log and make sure all log records are flushed before it returns an acknowledgment to the application.
+
+
+• Each log entry contains information about the change to a single object: 
+
+– Transaction ID.
+– Object ID.
+– Before Value (used for UNDO). 
+– After Value (used for REDO).
+
+• Log entries to disk should be done when transaction commits. You can use group commit to batch multiple log flushes together to amortize overhead.
+
+## Checkpoints
+
+The main problem with write-ahead logging is that the log file will grow forever. After a crash, the DBMS has to replay the entire log, which can take a long time if the log file is large. Thus, the DBMS can periodically takes a checkpoint where it flushes all buffers out to disk.
+
+How often the DBMS should take a checkpoint depends on the application’s performance and downtime requirements. Taking a checkpoint too often causes the DBMS’s runtime performance to degrade. But waiting a long time between checkpoints can potentially be just as bad, as the system’s recovery time after a restart increases.
+
+### Blocking Checkpoint Implementation:
+
+• The DBMS stops accepting new transactions and waits for all active transactions to complete. 
+
+• Flush all log records and dirty blocks currently residing in main memory to stable storage.
+
+• Write a <CHECKPOINT> entry to the log and flush to stable storage.
+
+## Logging Schemes
+
+Physical Logging:
+
+• Record the changes made to a specific location in the database 
+
+• Example: Position of a record in a page
+
+Logical Logging:
+
+Record the high level operations executed by transactions. Not necessarily restricted to single page. Requires less data written in each log record than physical logging. Difficult to implement recovery with logical logging if you have concurrent transactions in a non-deterministic concurrency control scheme.
+
+• Example: The UPDATE, DELETE, and INSERT queries invoked by a transaction.
+
+Physiological Logging:
+
+
+• Hybrid approach where log records target a single page but do not specify data organization of the page.
+
+• Most commonly used approach.
