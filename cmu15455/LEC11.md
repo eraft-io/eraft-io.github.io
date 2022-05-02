@@ -1,4 +1,4 @@
-# Lecture #11: Joins Algorithms 连接算法
+# Lecture11: Joins Algorithms 连接算法
 ## 1. Joins 
 The goal of a good database design is to minimize the amount of information repetition. This is why we compose tables based on normalization theory. Joins are therefore needed to reconstruct original tables.
 
