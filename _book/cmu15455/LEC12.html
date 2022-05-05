@@ -1406,7 +1406,106 @@
     
                                 <section class="normal markdown-section">
                                 
-                                <h1 id="&#x7B2C;&#x5341;&#x4E8C;&#x8BB2;">&#x7B2C;&#x5341;&#x4E8C;&#x8BB2;</h1>
+                                <h1 id="query-processing-i-&#x67E5;&#x8BE2;&#x8FC7;&#x7A0B;i">Query Processing I &#x67E5;&#x8BE2;&#x8FC7;&#x7A0B;I</h1>
+<h2 id="1-query-plan-&#x67E5;&#x8BE2;&#x8BA1;&#x5212;">1. Query Plan &#x67E5;&#x8BE2;&#x8BA1;&#x5212;</h2>
+<p>The DBMS converts a SQL statement into a query plan. Operators are arranged in a tree. Data flows from the leaves towards the root. The output of the root node in the tree is the result of the query. Typically operators are binary (1&#x2013;2 children). The same query plan can be executed in multiple ways. Most DBMSs will want to use an index scan as much as possible.</p>
+<p>DBMS&#x5C06;SQL&#x8BED;&#x53E5;&#x8F6C;&#x6362;&#x4E3A;&#x67E5;&#x8BE2;&#x8BA1;&#x5212;&#x3002;&#x8FD0;&#x7B97;&#x7B26;&#x6392;&#x5217;&#x5728;&#x6811;&#x4E2D;&#x3002;&#x6570;&#x636E;&#x4ECE;&#x53F6;&#x5B50;&#x6D41;&#x5411;&#x6839;&#x3002;&#x6811;&#x4E2D;&#x6839;&#x8282;&#x70B9;&#x7684;&#x8F93;&#x51FA;&#x662F;&#x67E5;&#x8BE2;&#x7684;&#x7ED3;&#x679C;&#x3002;&#x901A;&#x5E38;&#x8FD0;&#x7B97;&#x7B26;&#x662F;&#x4E8C;&#x8FDB;&#x5236;&#x7684;&#xFF08;1-2 &#x4E2A;&#x5B50;&#x9879;&#xFF09;&#x3002;&#x53EF;&#x4EE5;&#x901A;&#x8FC7;&#x591A;&#x79CD;&#x65B9;&#x5F0F;&#x6267;&#x884C;&#x76F8;&#x540C;&#x7684;&#x67E5;&#x8BE2;&#x8BA1;&#x5212;&#x3002;&#x5927;&#x591A;&#x6570;DBMS&#x90FD;&#x5E0C;&#x671B;&#x5C3D;&#x53EF;&#x80FD;&#x591A;&#x5730;&#x4F7F;&#x7528;&#x7D22;&#x5F15;&#x626B;&#x63CF;&#x3002;</p>
+<h2 id="2-processing-models-&#x5904;&#x7406;&#x6A21;&#x578B;">2. Processing Models &#x5904;&#x7406;&#x6A21;&#x578B;</h2>
+<p>A DBMS processing model defines how the system executes a query plan. There are different models that have various trade-offs for different workloads.</p>
+<p>DBMS&#x5904;&#x7406;&#x6A21;&#x578B;&#x5B9A;&#x4E49;&#x7CFB;&#x7EDF;&#x5982;&#x4F55;&#x6267;&#x884C;&#x67E5;&#x8BE2;&#x8BA1;&#x5212;&#x3002;&#x5BF9;&#x4E8E;&#x4E0D;&#x540C;&#x7684;&#x5DE5;&#x4F5C;&#x8D1F;&#x8F7D;&#xFF0C;&#x5177;&#x6709;&#x4E0D;&#x540C;&#x6743;&#x8861;&#x7684;&#x5404;&#x79CD;&#x6A21;&#x578B;&#x3002;</p>
+<p>These models can also be implemented to invoke the operators either from top-to-bottom (most common) or from bottom-to-top.</p>
+<p>&#x8FD8;&#x53EF;&#x4EE5;&#x5B9E;&#x73B0;&#x8FD9;&#x4E9B;&#x6A21;&#x578B;&#xFF0C;&#x4EE5;&#x4FBF;&#x4ECE;&#x4E0A;&#x5230;&#x4E0B;&#xFF08;&#x6700;&#x5E38;&#x89C1;&#xFF09;&#x6216;&#x4ECE;&#x4E0B;&#x5230;&#x4E0A;&#x8C03;&#x7528;&#x8FD0;&#x7B97;&#x7B26;&#x3002;</p>
+<h3 id="iterator-model-&#x8FED;&#x4EE3;&#x5668;&#x6A21;&#x578B;">Iterator Model &#x8FED;&#x4EE3;&#x5668;&#x6A21;&#x578B;</h3>
+<p>This is the most common processing model and is used by almost every (row-based) DBMS. Allows for pipelining where the DBMS can process a tuple through as many operators as possible before having to retrieve the next tuple.</p>
+<p>&#x8FD9;&#x662F;&#x6700;&#x5E38;&#x89C1;&#x7684;&#x5904;&#x7406;&#x6A21;&#x578B;&#xFF0C;&#x51E0;&#x4E4E;&#x6BCF;&#x4E2A;&#xFF08;&#x57FA;&#x4E8E;&#x884C;&#x7684;&#xFF09;DBMS &#x90FD;&#x4F7F;&#x7528;&#x3002;&#x5141;&#x8BB8;&#x6D41;&#x6C34;&#x7EBF;&#xFF0C;&#x5176;&#x4E2D;DBMS&#x53EF;&#x4EE5;&#x5728;&#x5FC5;&#x987B;&#x68C0;&#x7D22;&#x4E0B;&#x4E00;&#x4E2A;&#x5143;&#x7EC4;&#x4E4B;&#x524D;&#x901A;&#x8FC7;&#x5C3D;&#x53EF;&#x80FD;&#x591A;&#x7684;&#x8FD0;&#x7B97;&#x7B26;&#x5904;&#x7406;&#x5143;&#x7EC4;&#x3002;</p>
+<p>Every query plan operator implements a next function:</p>
+<ul>
+<li>On each call to next, the operator returns either a single tuple or a null marker if there are no more tuples.</li>
+<li>The operator implements a loop that calls next on its children to retrieve their tuples and then process them (i.e., calling next on a parent calls next on their children).</li>
+</ul>
+<p>&#x6BCF;&#x4E2A;&#x67E5;&#x8BE2;&#x8BA1;&#x5212;&#x8FD0;&#x7B97;&#x7B26;&#x90FD;&#x5B9E;&#x73B0;next&#x51FD;&#x6570;&#xFF1A;</p>
+<ul>
+<li>&#x5728;&#x6BCF;&#x6B21;&#x8C03;&#x7528;next&#x65F6;&#xFF0C;&#x5982;&#x679C;&#x6CA1;&#x6709;&#x66F4;&#x591A;&#x7684;&#x5143;&#x7EC4;&#xFF0C;&#x5219;&#x8FD0;&#x7B97;&#x7B26;&#x8FD4;&#x56DE;&#x5355;&#x4E2A;&#x5143;&#x7EC4;&#x6216;&#x7A7A;&#x6807;&#x8BB0;&#x3002;</li>
+<li>&#x8FD0;&#x7B97;&#x7B26;&#x5B9E;&#x73B0;&#x4E00;&#x4E2A;&#x5FAA;&#x73AF;&#xFF0C;&#x8BE5;&#x5FAA;&#x73AF;&#x5728;&#x5176;&#x5B50;&#x7EA7;&#x4E0A;&#x8C03;&#x7528; next &#x4EE5;&#x68C0;&#x7D22;&#x5176;&#x5143;&#x7EC4;&#xFF0C;&#x7136;&#x540E;&#x5904;&#x7406;&#x5B83;&#x4EEC;&#xFF08;&#x5373;&#xFF0C;&#x5728;&#x5B50;&#x7EA7;&#x8C03;&#x7528;&#x7684;&#x7236;&#x7EA7;&#x8C03;&#x7528;next&#x65F6;&#x8C03;&#x7528;next&#xFF09;&#x3002;</li>
+</ul>
+<p>Some operators will block until children emit all of their tuples (joins, subqueries, order by). These are known as pipeline breakers.</p>
+<p>&#x67D0;&#x4E9B;&#x8FD0;&#x7B97;&#x7B26;&#x5C06;&#x963B;&#x585E;&#xFF0C;&#x76F4;&#x5230;&#x5B50;&#x7EA7;&#x53D1;&#x51FA;&#x5176;&#x6240;&#x6709;&#x5143;&#x7EC4;&#xFF08;&#x8FDE;&#x63A5;&#x3001;&#x5B50;&#x67E5;&#x8BE2;&#x3001;&#x6392;&#x5E8F;&#x4F9D;&#x636E;&#xFF09;&#x3002;&#x8FD9;&#x4E9B;&#x88AB;&#x79F0;&#x4E3A;&#x7BA1;&#x9053;&#x65AD;&#x8DEF;&#x5668;&#x3002;</p>
+<p>Output control works easily with this approach (LIMIT) because an operator can stop invoking next on its children operators once it has all the tuples that it requires.</p>
+<p>&#x8F93;&#x51FA;&#x63A7;&#x5236;&#x4F7F;&#x7528;LIMIT&#x65B9;&#x6CD5;&#x5F88;&#x5BB9;&#x6613;&#xFF0C;&#x56E0;&#x4E3A;&#x4E00;&#x65E6;&#x64CD;&#x4F5C;&#x5458;&#x62E5;&#x6709;&#x6240;&#x9700;&#x7684;&#x6240;&#x6709;&#x5143;&#x7EC4;&#xFF0C;&#x5C31;&#x53EF;&#x4EE5;&#x505C;&#x6B62;&#x5728;&#x5176;&#x5B50;&#x8FD0;&#x7B97;&#x7B26;&#x4E0A;&#x8C03;&#x7528; next&#x3002;</p>
+<h3 id="materialization-model-&#x7269;&#x5316;&#x6A21;&#x578B;">Materialization Model &#x7269;&#x5316;&#x6A21;&#x578B;</h3>
+<p>Each operator processes its input all at once and then emits its output all at once. The operator &#x201C;materializes&#x201D; its output as a single result.</p>
+<p>&#x6BCF;&#x4E2A;&#x64CD;&#x4F5C;&#x5458;&#x4E00;&#x6B21;&#x5904;&#x7406;&#x5176;&#x6240;&#x6709;&#x8F93;&#x5165;&#xFF0C;&#x7136;&#x540E;&#x4E00;&#x6B21;&#x53D1;&#x51FA;&#x6240;&#x6709;&#x8F93;&#x51FA;&#x3002;&#x8FD0;&#x8425;&#x5546;&#x201C;&#x5177;&#x4F53;&#x5316;&#x201D;&#x5176;&#x8F93;&#x51FA;&#x4E3A;&#x5355;&#x4E2A;&#x7ED3;&#x679C;&#x3002;</p>
+<p>Every query plan operator implements an output function:
+&#x2022; The operator processes all the tuples from its children at once.
+&#x2022; The return result of this function is all the tuples that operator will ever emit. When the operator finishes executing, the DBMS never needs to return to it to retrieve more data.</p>
+<p>&#x6BCF;&#x4E2A;&#x67E5;&#x8BE2;&#x8BA1;&#x5212;&#x8FD0;&#x7B97;&#x7B26;&#x90FD;&#x5B9E;&#x73B0;&#x4E00;&#x4E2A;&#x8F93;&#x51FA;&#x51FD;&#x6570;&#xFF1A;
+&#x2022; &#x64CD;&#x4F5C;&#x5458;&#x4E00;&#x6B21;&#x5904;&#x7406;&#x5176;&#x5B50;&#x7EA7;&#x4E2D;&#x7684;&#x6240;&#x6709;&#x5143;&#x7EC4;&#x3002;
+&#x2022; &#x6B64;&#x51FD;&#x6570;&#x7684;&#x8FD4;&#x56DE;&#x7ED3;&#x679C;&#x662F;&#x8FD0;&#x7B97;&#x7B26;&#x5C06;&#x53D1;&#x51FA;&#x7684;&#x6240;&#x6709;&#x5143;&#x7EC4;&#x3002;&#x5F53;&#x64CD;&#x4F5C;&#x5458;&#x5B8C;&#x6210;&#x6267;&#x884C;&#x65F6;&#xFF0C;DBMS&#x6C38;&#x8FDC;&#x4E0D;&#x9700;&#x8981;&#x8FD4;&#x56DE;&#x5230;&#x5B83;&#x6765;&#x68C0;&#x7D22;&#x66F4;&#x591A;&#x6570;&#x636E;&#x3002;</p>
+<p>This approach is better for OLTP workloads because queries typically only access a small number of tuples at a time. Thus, there are fewer function calls to retrieve tuples. Not good for OLAP queries with large intermediate results because the DBMS may have to spill those results to disk between operators.</p>
+<p>&#x6B64;&#x65B9;&#x6CD5;&#x66F4;&#x9002;&#x5408;OLTP&#x5DE5;&#x4F5C;&#x8D1F;&#x8377;&#xFF0C;&#x56E0;&#x4E3A;&#x67E5;&#x8BE2;&#x901A;&#x5E38;&#x4E00;&#x6B21;&#x53EA;&#x80FD;&#x8BBF;&#x95EE;&#x5C11;&#x91CF;&#x5143;&#x7EC4;&#x3002;&#x56E0;&#x6B64;&#xFF0C;&#x7528;&#x4E8E;&#x68C0;&#x7D22;&#x5143;&#x7EC4;&#x7684;&#x51FD;&#x6570;&#x8C03;&#x7528;&#x8F83;&#x5C11;&#x3002;&#x8FD9;&#x4E0D;&#x5229;&#x4E8E;&#x5177;&#x6709;&#x8F83;&#x5927;&#x4E2D;&#x95F4;&#x7ED3;&#x679C;&#x7684;OLAP&#x67E5;&#x8BE2;&#xFF0C;&#x56E0;&#x4E3A;DBMS&#x53EF;&#x80FD;&#x5FC5;&#x987B;&#x5728;&#x8FD0;&#x7B97;&#x7B26;&#x4E4B;&#x95F4;&#x5C06;&#x8FD9;&#x4E9B;&#x7ED3;&#x679C;&#x6EA2;&#x51FA;&#x5230;&#x78C1;&#x76D8;&#x3002;</p>
+<h3 id="vectorization-model-&#x77E2;&#x91CF;&#x5316;&#x6A21;&#x578B;">Vectorization Model &#x77E2;&#x91CF;&#x5316;&#x6A21;&#x578B;</h3>
+<p>Like the iterator model where each operator implements a next function. But each operator emits a batch (i.e., vector) of data instead of a single tuple:</p>
+<ul>
+<li>The operator implementation can be optimized for processing batches of data instead of a single item at a time.
+This approach is ideal for OLAP queries that have to scan a large number of tuples because there are fewer invocations of the next function.</li>
+</ul>
+<p>&#x5C31;&#x50CF;&#x8FED;&#x4EE3;&#x5668;&#x6A21;&#x578B;&#x4E00;&#x6837;&#xFF0C;&#x6BCF;&#x4E2A;&#x8FD0;&#x7B97;&#x7B26;&#x5B9E;&#x73B0;&#x4E0B;&#x4E00;&#x4E2A;&#x51FD;&#x6570;&#x3002;&#x4F46;&#x662F;&#x6BCF;&#x4E2A;&#x8FD0;&#x7B97;&#x7B26;&#x53D1;&#x51FA;&#x4E00;&#x6279;&#xFF08;&#x5373;&#x5411;&#x91CF;&#xFF09;&#x6570;&#x636E;&#xFF0C;&#x800C;&#x4E0D;&#x662F;&#x5355;&#x4E2A;&#x5143;&#x7EC4;&#xFF1A;</p>
+<ul>
+<li>&#x64CD;&#x4F5C;&#x5458;&#x5B9E;&#x73B0;&#x53EF;&#x4EE5;&#x9488;&#x5BF9;&#x5904;&#x7406;&#x6279;&#x91CF;&#x6570;&#x636E;&#x8FDB;&#x884C;&#x4F18;&#x5316;&#xFF0C;&#x800C;&#x4E0D;&#x662F;&#x4E00;&#x6B21;&#x5904;&#x7406;&#x5355;&#x4E2A;&#x9879;&#x76EE;&#x3002;
+&#x6B64;&#x65B9;&#x6CD5;&#x975E;&#x5E38;&#x9002;&#x5408;&#x5FC5;&#x987B;&#x626B;&#x63CF;&#x5927;&#x91CF;&#x5143;&#x7EC4;&#x7684;OLAP&#x67E5;&#x8BE2;&#xFF0C;&#x56E0;&#x4E3A;&#x5BF9;&#x4E0B;&#x4E00;&#x4E2A;&#x51FD;&#x6570;&#x7684;&#x8C03;&#x7528;&#x8F83;&#x5C11;&#x3002;</li>
+</ul>
+<h2 id="access-methods-&#x8BBF;&#x95EE;&#x65B9;&#x6CD5;">Access Methods &#x8BBF;&#x95EE;&#x65B9;&#x6CD5;</h2>
+<p>An access method is the how the DBMS accesses the data stored in a table. These will be the bottom operators in a query plan that &#x201C;feed&#x201D; data into the operators above it in the tree. There is no corresponding operator in relational algebra.</p>
+<p>&#x8BBF;&#x95EE;&#x65B9;&#x6CD5;&#x662F;DBMS&#x8BBF;&#x95EE;&#x5B58;&#x50A8;&#x5728;&#x8868;&#x4E2D;&#x7684;&#x6570;&#x636E;&#x7684;&#x65B9;&#x5F0F;&#x3002;&#x8FD9;&#x4E9B;&#x5C06;&#x662F;&#x67E5;&#x8BE2;&#x8BA1;&#x5212;&#x4E2D;&#x7684;&#x5E95;&#x90E8;&#x8FD0;&#x7B97;&#x7B26;&#xFF0C;&#x5B83;&#x4EEC;&#x5C06;&#x6570;&#x636E;&#x201C;&#x9988;&#x9001;&#x5230;&#x201D;&#x6811;&#x4E2D;&#x5176;&#x4E0A;&#x65B9;&#x7684;&#x8FD0;&#x7B97;&#x7B26;&#x4E2D;&#x3002;&#x5173;&#x7CFB;&#x4EE3;&#x6570;&#x4E2D;&#x6CA1;&#x6709;&#x76F8;&#x5E94;&#x7684;&#x8FD0;&#x7B97;&#x7B26;&#x3002;</p>
+<h3 id="sequential-scan-&#x5E8F;&#x5217;&#x626B;&#x63CF;">Sequential Scan &#x5E8F;&#x5217;&#x626B;&#x63CF;</h3>
+<p>For each page in table, iterate over each page and retrieve it from the buffer pool. For each page, iterate over all the tuples and evaluate the predicate to decide whether to include tuple or not.</p>
+<p>&#x5BF9;&#x4E8E;&#x8868;&#x4E2D;&#x7684;&#x6BCF;&#x4E2A;&#x9875;&#x9762;&#xFF0C;&#x5FAA;&#x73AF;&#x8BBF;&#x95EE;&#x6BCF;&#x4E2A;&#x9875;&#x9762;&#x5E76;&#x4ECE;&#x7F13;&#x51B2;&#x6C60;&#x4E2D;&#x68C0;&#x7D22;&#x5B83;&#x3002;&#x5BF9;&#x4E8E;&#x6BCF;&#x4E2A;&#x9875;&#x9762;&#xFF0C;&#x5FAA;&#x73AF;&#x8BBF;&#x95EE;&#x6240;&#x6709;&#x5143;&#x7EC4;&#x5E76;&#x8BA1;&#x7B97;&#x8C13;&#x8BCD;&#x4EE5;&#x51B3;&#x5B9A;&#x662F;&#x5426;&#x5305;&#x542B;&#x5143;&#x7EC4;&#x3002;</p>
+<p>Optimizations:</p>
+<ul>
+<li>Prefetching: Fetches next few pages in advance so that the DBMS does not have to block when accessing each page.</li>
+<li>Parallelization: Execute the scan using multiple threads/processes in parallel. </li>
+<li>Buffer Pool Bypass: The scan operator stores pages that it fetches from disk in its local memory instead of the buffer pool. This avoids the sequential flooding problem.</li>
+<li>Zone Map: Pre-compute aggregations for each tuple attribute in a page. The DBMS can then check whether it needs to access a page by checking its Zone Map first. The Zone Maps for each page are stored in separate pages and there are typically multiple entries in each Zone Map page. Thus, it is possible to reduce the total number of pages examined in a sequential scan.</li>
+<li>Late Materialization: Each operator passes the minimal amount of information needed to by the next operator (e.g., record id). This is only useful in column-store systems (i.e., DSM).</li>
+<li>Heap Clustering: Tuples are stored in the heap pages using an order specified by a clustering index.</li>
+</ul>
+<p>&#x4F18;&#x5316;&#xFF1A;</p>
+<ul>
+<li>&#x9884;&#x6293;&#x53D6;&#xFF1A;&#x63D0;&#x524D;&#x6293;&#x53D6;&#x63A5;&#x4E0B;&#x6765;&#x7684;&#x51E0;&#x9875;&#xFF0C;&#x8FD9;&#x6837;DBMS&#x5728;&#x8BBF;&#x95EE;&#x6BCF;&#x4E2A;&#x9875;&#x9762;&#x65F6;&#x5C31;&#x4E0D;&#x5FC5;&#x88AB;&#x963B;&#x585E;&#x4E86;&#x3002;</li>
+<li>&#x5E76;&#x884C;&#x5316;&#xFF1A;&#x4F7F;&#x7528;&#x591A;&#x4E2A;&#x7EBF;&#x7A0B;/&#x8FDB;&#x7A0B;&#x5E76;&#x884C;&#x6267;&#x884C;&#x626B;&#x63CF;&#x3002;</li>
+<li>&#x7F13;&#x51B2;&#x6C60;&#x7ED5;&#x8FC7;&#xFF1A;&#x626B;&#x63CF;&#x8FD0;&#x7B97;&#x7B26;&#x5C06;&#x4ECE;&#x78C1;&#x76D8;&#x83B7;&#x53D6;&#x7684;&#x9875;&#x9762;&#x5B58;&#x50A8;&#x5728;&#x5176;&#x672C;&#x5730;&#x5185;&#x5B58;&#xFF08;&#x800C;&#x4E0D;&#x662F;&#x7F13;&#x51B2;&#x6C60;&#xFF09;&#x4E2D;&#x3002;&#x8FD9;&#x907F;&#x514D;&#x4E86;&#x987A;&#x5E8F;&#x6CDB;&#x6D2A;&#x95EE;&#x9898;&#x3002;</li>
+<li>&#x533A;&#x57DF;&#x6620;&#x5C04;&#xFF1A;&#x4E3A;&#x9875;&#x9762;&#x4E2D;&#x7684;&#x6BCF;&#x4E2A;&#x5143;&#x7EC4;&#x5C5E;&#x6027;&#x9884;&#x5148;&#x8BA1;&#x7B97;&#x805A;&#x5408;&#x3002;&#x7136;&#x540E;&#xFF0C;DBMS &#x53EF;&#x4EE5;&#x901A;&#x8FC7;&#x5148;&#x68C0;&#x67E5;&#x5176;&#x533A;&#x57DF;&#x6620;&#x5C04;&#x6765;&#x68C0;&#x67E5;&#x662F;&#x5426;&#x9700;&#x8981;&#x8BBF;&#x95EE;&#x9875;&#x9762;&#x3002;&#x6BCF;&#x4E2A;&#x9875;&#x9762;&#x7684;&#x533A;&#x57DF;&#x5730;&#x56FE;&#x90FD;&#x5B58;&#x50A8;&#x5728;&#x5355;&#x72EC;&#x7684;&#x9875;&#x9762;&#x4E2D;&#xFF0C;&#x5E76;&#x4E14;&#x6BCF;&#x4E2A;&#x533A;&#x57DF;&#x5730;&#x56FE;&#x9875;&#x9762;&#x4E2D;&#x901A;&#x5E38;&#x6709;&#x591A;&#x4E2A;&#x6761;&#x76EE;&#x3002;&#x56E0;&#x6B64;&#xFF0C;&#x53EF;&#x4EE5;&#x51CF;&#x5C11;&#x987A;&#x5E8F;&#x626B;&#x63CF;&#x4E2D;&#x68C0;&#x67E5;&#x7684;&#x603B;&#x9875;&#x6570;&#x3002;</li>
+<li>&#x665A;&#x7269;&#x5316;&#xFF1A;&#x6BCF;&#x4E2A;&#x64CD;&#x4F5C;&#x5458;&#x4F20;&#x9012;&#x4E0B;&#x4E00;&#x4E2A;&#x64CD;&#x4F5C;&#x5458;&#x6240;&#x9700;&#x7684;&#x6700;&#x5C11;&#x4FE1;&#x606F;&#x91CF;&#xFF08;&#x4F8B;&#x5982;&#xFF0C;&#x8BB0;&#x5F55; ID&#xFF09;&#x3002;&#x8FD9;&#x4EC5;&#x5728;&#x5217;&#x5B58;&#x50A8;&#x7CFB;&#x7EDF;&#xFF08;&#x5373;DSM&#xFF09;&#x4E2D;&#x6709;&#x7528;&#x3002;</li>
+<li>&#x5806;&#x805A;&#x7C7B;&#xFF1A;&#x5143;&#x7EC4;&#x4F7F;&#x7528;&#x805A;&#x7C7B;&#x7D22;&#x5F15;&#x6307;&#x5B9A;&#x7684;&#x987A;&#x5E8F;&#x5B58;&#x50A8;&#x5728;&#x5806;&#x9875;&#x4E2D;&#x3002;</li>
+</ul>
+<h3 id="index-scan-&#x7D22;&#x5F15;&#x626B;&#x63CF;">Index Scan &#x7D22;&#x5F15;&#x626B;&#x63CF;</h3>
+<p>The DBMS picks an index (or indexes) to find the tuples that the query needs.</p>
+<p>DBMS &#x9009;&#x53D6;&#x4E00;&#x4E2A;&#xFF08;&#x6216;&#x591A;&#x4E2A;&#x7D22;&#x5F15;&#xFF09;&#x4EE5;&#x67E5;&#x627E;&#x67E5;&#x8BE2;&#x6240;&#x9700;&#x7684;&#x5143;&#x7EC4;&#x3002;</p>
+<p>When using multiple indexes, the DBMS executes the search on each index and generates the set of matching record ids. One can implement this record id using bitmaps, hash tables, or Bloom filters. The DBMS combines these sets based on the query&#x2019;s predicates (union vs. intersect). It then retrieve the records and apply any remaining terms. The more advanced DBMSs support multi-index scans.</p>
+<p>&#x4F7F;&#x7528;&#x591A;&#x4E2A;&#x7D22;&#x5F15;&#x65F6;&#xFF0C;DBMS &#x5C06;&#x5BF9;&#x6BCF;&#x4E2A;&#x7D22;&#x5F15;&#x6267;&#x884C;&#x641C;&#x7D22;&#x5E76;&#x751F;&#x6210;&#x4E00;&#x7EC4;&#x5339;&#x914D;&#x7684;recordID&#x3002;&#x53EF;&#x4EE5;&#x4F7F;Bitmap&#x3001;&#x54C8;&#x5E0C;&#x8868;&#x6216;Bloom&#x6EE4;&#x6CE2;&#x5668;&#x5B9E;&#x73B0;&#x6B64;recordID&#x3002;DBMS&#x6839;&#x636E;&#x67E5;&#x8BE2;&#x7684;&#x8C13;&#x8BCD;&#xFF08;&#x5E76;&#x96C6;&#x4E0E;&#x76F8;&#x4EA4;&#xFF09;&#x7EC4;&#x5408;&#x8FD9;&#x4E9B;&#x96C6;&#x3002;&#x7136;&#x540E;&#xFF0C;&#x5B83;&#x68C0;&#x7D22;&#x8BB0;&#x5F55;&#x5E76;&#x5E94;&#x7528;&#x4EFB;&#x4F55;&#x5269;&#x4F59;&#x7684;&#x672F;&#x8BED;&#x3002;&#x66F4;&#x9AD8;&#x7EA7;&#x7684;DBMS&#x652F;&#x6301;&#x591A;&#x7D22;&#x5F15;&#x626B;&#x63CF;&#x3002;</p>
+<p>Retrieving tuples in the order that they appear in an unclustered index is inefficient. The DBMS can first figure out all the tuples that it needs and then sort them based on their page id.</p>
+<p>&#x6309;&#x5143;&#x7EC4;&#x5728;&#x975E;&#x805A;&#x96C6;&#x7D22;&#x5F15;&#x4E2D;&#x51FA;&#x73B0;&#x7684;&#x987A;&#x5E8F;&#x68C0;&#x7D22;&#x5143;&#x7EC4;&#x662F;&#x4F4E;&#x6548;&#x7684;&#x3002;DBMS&#x53EF;&#x4EE5;&#x9996;&#x5148;&#x627E;&#x51FA;&#x5B83;&#x9700;&#x8981;&#x7684;&#x6240;&#x6709;&#x5143;&#x7EC4;&#xFF0C;&#x7136;&#x540E;&#x6839;&#x636E;&#x5176;pageID&#x5BF9;&#x5B83;&#x4EEC;&#x8FDB;&#x884C;&#x6392;&#x5E8F;&#x3002;</p>
+<h2 id="expression-evaluation-&#x8868;&#x8FBE;&#x5F0F;&#x8BA1;&#x7B97;">Expression Evaluation &#x8868;&#x8FBE;&#x5F0F;&#x8BA1;&#x7B97;</h2>
+<p>The DBMS represents a query plan as a tree. Inside of the operators will be an expression tree. For example, the WHERE clause for a filter operator.
+The nodes in the tree represent different expression types:</p>
+<ul>
+<li>Comparisons (=, &lt;, &gt;, !=) </li>
+<li>Conjunction (AND), Disjunction (OR) </li>
+<li>Arithmetic Operators (+, -, *, /, %) </li>
+<li>Constant and Parameter Values</li>
+<li>Tuple Attribute References
+To evaluate an expression tree at runtime, the DBMS maintains a context handle that contains metadata for the execution, such as the current tuple, the parameters, and the table schema. The DBMS then walks the tree to evaluate its operators and produce a result.</li>
+</ul>
+<p>DBMS&#x5C06;&#x67E5;&#x8BE2;&#x8BA1;&#x5212;&#x8868;&#x793A;&#x4E3A;&#x6811;&#x3002;&#x8FD0;&#x7B97;&#x7B26;&#x5185;&#x90E8;&#x5C06;&#x662F;&#x4E00;&#x4E2A;&#x8868;&#x8FBE;&#x5F0F;&#x6811;&#x3002;&#x4F8B;&#x5982;&#xFF0C;&#x7B5B;&#x9009;&#x5668;&#x8FD0;&#x7B97;&#x7B26;&#x7684; WHERE &#x5B50;&#x53E5;&#x3002;
+&#x6811;&#x4E2D;&#x7684;&#x8282;&#x70B9;&#x8868;&#x793A;&#x4E0D;&#x540C;&#x7684;&#x8868;&#x8FBE;&#x5F0F;&#x7C7B;&#x578B;&#xFF1A;</p>
+<ul>
+<li>&#x6BD4;&#x8F83; &#xFF08;=&#xFF0C; &lt;&#xFF0C; &gt;&#xFF0C; &#xFF01;=&#xFF09; </li>
+<li>&#x8FDE;&#x8BCD; &#xFF08;AND&#xFF09;&#xFF0C; &#x6790;&#x53D6; &#xFF08;OR&#xFF09;</li>
+<li>&#x7B97;&#x672F;&#x8FD0;&#x7B97;&#x7B26; &#xFF08;+&#xFF0C; -&#xFF0C; *&#xFF0C; /&#xFF0C; %&#xFF09; </li>
+<li>&#x5E38;&#x91CF;&#x548C;&#x53C2;&#x6570;&#x503C;</li>
+<li>&#x5143;&#x7EC4;&#x5C5E;&#x6027;&#x5F15;&#x7528;
+&#x4E3A;&#x4E86;&#x5728;&#x8FD0;&#x884C;&#x65F6;&#x8BA1;&#x7B97;&#x8868;&#x8FBE;&#x5F0F;&#x6811;&#xFF0C;DBMS &#x7EF4;&#x62A4;&#x4E00;&#x4E2A;&#x4E0A;&#x4E0B;&#x6587;&#x53E5;&#x67C4;&#xFF0C;&#x5176;&#x4E2D;&#x5305;&#x542B;&#x6267;&#x884C;&#x7684;&#x5143;&#x6570;&#x636E;&#xFF0C;&#x4F8B;&#x5982;&#x5F53;&#x524D;&#x5143;&#x7EC4;&#x3001;&#x53C2;&#x6570;&#x548C;&#x8868;&#x67B6;&#x6784;&#x3002;&#x7136;&#x540E;&#xFF0C;DBMS&#x904D;&#x5386;&#x6811;&#x4EE5;&#x8BC4;&#x4F30;&#x5176;&#x8FD0;&#x7B97;&#x7B26;&#x5E76;&#x751F;&#x6210;&#x7ED3;&#x679C;&#x3002;</li>
+</ul>
 
                                 
                                 </section>
@@ -1450,7 +1549,7 @@
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"第十二讲","level":"1.3.12","depth":2,"next":{"title":"第十三讲","level":"1.3.13","depth":2,"path":"cmu15455/LEC13.md","ref":"cmu15455/LEC13.md","articles":[]},"previous":{"title":"第十一讲","level":"1.3.11","depth":2,"path":"cmu15455/LEC11.md","ref":"cmu15455/LEC11.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"cmu15455/LEC12.md","mtime":"2022-04-17T03:17:05.179Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2022-04-27T00:14:21.207Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"第十二讲","level":"1.3.12","depth":2,"next":{"title":"第十三讲","level":"1.3.13","depth":2,"path":"cmu15455/LEC13.md","ref":"cmu15455/LEC13.md","articles":[]},"previous":{"title":"第十一讲","level":"1.3.11","depth":2,"path":"cmu15455/LEC11.md","ref":"cmu15455/LEC11.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"cmu15455/LEC12.md","mtime":"2022-05-05T00:25:34.645Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2022-05-05T00:26:13.799Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

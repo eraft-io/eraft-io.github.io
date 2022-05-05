@@ -1406,7 +1406,130 @@
     
                                 <section class="normal markdown-section">
                                 
-                                <h1 id="&#x7B2C;&#x4E8C;&#x5341;&#x8BB2;">&#x7B2C;&#x4E8C;&#x5341;&#x8BB2;</h1>
+                                <h1 id="lecture-20-logging-schemes---&#x65E5;&#x5FD7;&#x8BB0;&#x5F55;&#x65B9;&#x6848;">Lecture 20: Logging Schemes   &#x65E5;&#x5FD7;&#x8BB0;&#x5F55;&#x65B9;&#x6848;</h1>
+<h2 id="crash-recovery--&#x5D29;&#x6E83;&#x6062;&#x590D;">Crash Recovery  &#x5D29;&#x6E83;&#x6062;&#x590D;</h2>
+<p>Recovery algorithms are techniques to ensure database consistency, transaction atomicity, and durability despite failures. DBMS is divided into different components based on the underlying storage device. We must also classify the different types of failures that the DBMS needs to handle.</p>
+<p>&#x6062;&#x590D;&#x7B97;&#x6CD5;&#x662F;&#x5728;&#x6545;&#x969C;&#x65F6;&#x786E;&#x4FDD;&#x6570;&#x636E;&#x5E93;&#x7684;&#x4E00;&#x81F4;&#x6027;&#x3001;&#x4E8B;&#x52A1;&#x7684;&#x539F;&#x5B50;&#x6027;&#x4EE5;&#x53CA;&#x6301;&#x4E45;&#x6027;&#x7684;&#x6280;&#x672F;&#x3002;DBMS &#x6839;&#x636E;&#x5E95;&#x5C42;&#x5B58;&#x50A8;&#x8BBE;&#x5907;&#x5206;&#x4E3A;&#x4E0D;&#x540C;&#x7684;&#x7EC4;&#x4EF6;&#x3002;&#x6211;&#x4EEC;&#x8FD8;&#x5FC5;&#x987B;&#x5BF9; DBMS &#x9700;&#x8981;&#x5904;&#x7406;&#x5BF9;&#x7684;&#x4E0D;&#x540C;&#x7C7B;&#x578B;&#x7684;&#x6545;&#x969C;&#x8FDB;&#x884C;&#x5206;&#x7C7B;&#x3002;</p>
+<p>Every recovery algorithm has two parts:
+&#x6BCF;&#x4E2A;&#x6062;&#x590D;&#x7B97;&#x6CD5;&#x90FD;&#x6709;&#x4E24;&#x4E2A;&#x90E8;&#x5206;&#xFF1A;</p>
+<p>&#x2022; Actions during normal transaction processing to ensure that the DBMS can recover from a failure.</p>
+<p>&#x6B63;&#x5E38;&#x4E8B;&#x52A1;&#x5904;&#x7406;&#x671F;&#x95F4;&#x7684;&#x64CD;&#x4F5C;&#xFF0C;&#x4EE5;&#x786E;&#x4FDD; DBMS &#x53EF;&#x4EE5;&#x4ECE;&#x5931;&#x8D25;&#x4E2D;&#x6062;&#x590D;&#x3002;</p>
+<p>&#x2022; Actions after a failure to to recover the database to a state that ensures atomicity, consistency, and durability.</p>
+<p>&#x5931;&#x8D25;&#x540E;&#x7684;&#x64CD;&#x4F5C;&#xFF1A;&#x7528;&#x6765;&#x5C06;&#x6570;&#x636E;&#x5E93;&#x6062;&#x590D;&#x5230;&#x786E;&#x4FDD;&#x539F;&#x5B50;&#x6027;&#x3001;&#x4E00;&#x81F4;&#x6027;&#x548C;&#x6301;&#x4E45;&#x6027;&#x7684;&#x72B6;&#x6001;&#x3002;</p>
+<p>The key primitives that we are going to use in a recovery algorithm are UNDO and REDO. Not all algorithms use both of these:</p>
+<p>&#x6211;&#x4EEC;&#x5C06;&#x5728;&#x6062;&#x590D;&#x7B97;&#x6CD5;&#x4E2D;&#x4F7F;&#x7528;&#x5230;&#x5173;&#x952E;&#x7684;&#x539F;&#x8BED;&#x662F; UNDO &#x548C; REDO&#xFF0C;&#x5E76;&#x975E;&#x6240;&#x6709;&#x7B97;&#x6CD5;&#x90FD;&#x4F7F;&#x7528;&#x8FD9;&#x4E24;&#x79CD;&#x65B9;&#x6CD5;&#xFF1A;</p>
+<p>&#x2022; UNDO: The process of removing the effects of an incomplete or aborted transaction.</p>
+<p>UNDO&#xFF1A;&#x6D88;&#x9664;&#x4E0D;&#x5B8C;&#x6574;&#x6216;&#x8005;&#x4E2D;&#x6B62;&#x4E8B;&#x52A1;&#x5F71;&#x54CD;&#x7684;&#x5904;&#x7406;&#x8FC7;&#x7A0B;</p>
+<p>&#x2022; REDO: The process of re-instating the effects of a committed transaction for durability.</p>
+<p>REDO&#xFF1A;&#x4E3A;&#x4E86;&#x6301;&#x4E45;&#x6027;&#x800C;&#x91CD;&#x65B0;&#x6267;&#x884C;&#x5DF2;&#x63D0;&#x4EA4;&#x4E8B;&#x52A1;&#x7684;&#x6548;&#x679C;&#x7684;&#x5904;&#x7406;&#x8FC7;&#x7A0B;</p>
+<h2 id="failure-classification--&#x6545;&#x969C;&#x5206;&#x7C7B;">Failure Classification  &#x6545;&#x969C;&#x5206;&#x7C7B;</h2>
+<h3 id="type-1-transaction-failures--&#x4E8B;&#x52A1;&#x5931;&#x8D25;">Type 1: Transaction Failures  &#x4E8B;&#x52A1;&#x5931;&#x8D25;</h3>
+<ul>
+<li>Logical Errors: A transaction cannot complete due to some internal error condition (e.g., integrity, constraint violation).</li>
+</ul>
+<p>&#x903B;&#x8F91;&#x9519;&#x8BEF;&#xFF1A;&#x7531;&#x4E8E;&#x67D0;&#x4E9B;&#x5185;&#x90E8;&#x9519;&#x8BEF;&#x6761;&#x4EF6;&#xFF08;&#x4F8B;&#x5982;&#xFF1A;&#x5B8C;&#x6574;&#x6027;&#x3001;&#x8FDD;&#x53CD;&#x7EA6;&#x675F;&#x6761;&#x4EF6;&#xFF09;&#xFF0C;&#x4E8B;&#x52A1;&#x65E0;&#x6CD5;&#x6267;&#x884C;&#x5B8C;&#x6210;</p>
+<ul>
+<li>Internal State Errors: The DBMS must terminate an active transaction due to an error condition (e.g., deadlock)</li>
+</ul>
+<p>&#x5185;&#x90E8;&#x72B6;&#x6001;&#x9519;&#x8BEF;&#xFF1A;&#x7531;&#x4E8E;&#x9519;&#x8BEF;&#x6761;&#x4EF6;&#xFF08;&#x4F8B;&#x5982;&#xFF1A;&#x6B7B;&#x9501;&#xFF09;&#xFF0C;DBMS &#x5FC5;&#x987B;&#x7EC8;&#x6B62;&#x4E00;&#x4E2A;&#x8FD0;&#x884C;&#x4E2D;&#x7684;&#x4E8B;&#x52A1;</p>
+<h3 id="type-2-system-failures--&#x7CFB;&#x7EDF;&#x6545;&#x969C;">Type 2: System Failures  &#x7CFB;&#x7EDF;&#x6545;&#x969C;</h3>
+<ul>
+<li>Software Failure: There is a problem with the DBMS implementation (e.g. uncaught divide-by-zero exception) and the system has to halt.</li>
+</ul>
+<p>&#x8F6F;&#x4EF6;&#x7684;&#x6545;&#x969C;&#xFF1A;DBMS &#x7684;&#x5B9E;&#x73B0;&#x5B58;&#x5728;&#x95EE;&#x9898;&#xFF08;&#x4F8B;&#x5982;&#xFF1A;&#x6CA1;&#x6709;&#x6355;&#x83B7;&#x9664;&#x4EE5; 0 &#x7684;&#x5F02;&#x5E38;&#xFF09;&#xFF0C;&#x7CFB;&#x7EDF;&#x5FC5;&#x987B;&#x7EC8;&#x6B62;&#x3002;</p>
+<ul>
+<li>Hardware Failure: The computer hosting the DBMS crashes. We assume that non-volatile storage contents are not corrupted by system crash.</li>
+</ul>
+<p>&#x786C;&#x4EF6;&#x6545;&#x969C;&#xFF1A;&#x6258;&#x7BA1; DBMS &#x7684;&#x8BA1;&#x7B97;&#x673A;&#x5D29;&#x6E83;&#x3002;&#x6211;&#x4EEC;&#x5047;&#x8BBE;&#x975E;&#x6613;&#x5931;&#x6027;&#x5B58;&#x50A8;&#x7684;&#x5185;&#x5BB9;&#x4E0D;&#x4F1A;&#x56E0;&#x7CFB;&#x7EDF;&#x5D29;&#x6E83;&#x800C;&#x635F;&#x574F;</p>
+<h3 id="type-3-storage-media-failure--&#x5B58;&#x50A8;&#x4ECB;&#x8D28;&#x6545;&#x969C;&#x4E86;">Type 3: Storage Media Failure  &#x5B58;&#x50A8;&#x4ECB;&#x8D28;&#x6545;&#x969C;&#x4E86;</h3>
+<ul>
+<li>Non-Repairable Hardware Failure: A head crash or similar disk failure destroys all or parts of non-volatile storage. Destruction is assumed to be detectable. No DBMS can recover from this. Database must be restored from archived version</li>
+</ul>
+<p>&#x4E0D;&#x53EF;&#x4FEE;&#x590D;&#x7684;&#x786C;&#x4EF6;&#x6545;&#x969C;&#xFF1A;&#x78C1;&#x5934;&#x5D29;&#x6E83;&#x6216;&#x8005;&#x7C7B;&#x4F3C;&#x7684;&#x78C1;&#x76D8;&#x6545;&#x969C;&#x4F1A;&#x7834;&#x574F;&#x5168;&#x90E8;&#x6216;&#x8005;&#x90E8;&#x5206;&#x975E;&#x6613;&#x5931;&#x6027;&#x5B58;&#x50A8;&#x3002;&#x5047;&#x8BBE;&#x7834;&#x574F;&#x662F;&#x53EF;&#x4EE5;&#x68C0;&#x6D4B;&#x7684;&#x3002;&#x6CA1;&#x6709;DBMS&#x53EF;&#x4EE5;&#x4ECE;&#x4E2D;&#x6062;&#x590D;&#x3002;&#x5FC5;&#x987B;&#x4ECE;&#x5B58;&#x6863;&#x7684;&#x7248;&#x672C;&#x6062;&#x590D;&#x6570;&#x636E;&#x5E93;&#x3002;</p>
+<h2 id="buffer-pool-management-policies--&#x7F13;&#x51B2;&#x6C60;&#x7BA1;&#x7406;&#x7B56;&#x7565;">Buffer Pool Management Policies  &#x7F13;&#x51B2;&#x6C60;&#x7BA1;&#x7406;&#x7B56;&#x7565;</h2>
+<p>Steal Policy: Whether the DBMS allows an uncommitted transaction to overwrite the most recent committed value of an object in non-volatile storage (can a transaction write uncommitted changes to disk).</p>
+<p>&#x7A83;&#x53D6;&#x7B56;&#x7565;&#xFF1A;DBMS &#x662F;&#x5426;&#x5141;&#x8BB8;&#x672A;&#x63D0;&#x4EA4;&#x7684;&#x4E8B;&#x52A1;&#x8986;&#x76D6;&#x975E;&#x6613;&#x5931;&#x6027;&#x5B58;&#x50A8;&#x4E2D;&#x5BF9;&#x8C61;&#x7684;&#x6700;&#x65B0;&#x63D0;&#x4EA4;&#x503C;&#xFF08;&#x4E8B;&#x52A1;&#x662F;&#x5426;&#x53EF;&#x4EE5;&#x5C06;&#x672A;&#x63D0;&#x4EA4;&#x7684;&#x66F4;&#x6539;&#x5199;&#x5165;&#x78C1;&#x76D8;&#xFF09;&#x3002;</p>
+<p>&#x2022; STEAL: is allowed
+&#x2022; NO-STEAL: is not allowed.</p>
+<p>Force Policy: Whether the DBMS ensures that all updates made by a transaction are reflected on non-volatile storage before the transaction is allowed to commit</p>
+<p>&#x5F3A;&#x5236;&#x7B56;&#x7565;&#xFF1A;DBMS &#x662F;&#x5426;&#x786E;&#x4FDD;&#x5728;&#x5141;&#x8BB8;&#x63D0;&#x4EA4;&#x4E8B;&#x52A1;&#x4E4B;&#x524D;&#xFF0C;&#x4E8B;&#x52A1;&#x6240;&#x505A;&#x7684;&#x6240;&#x6709;&#x66F4;&#x65B0;&#x90FD;&#x53CD;&#x6620;&#x5728;&#x975E;&#x6613;&#x5931;&#x6027;&#x5B58;&#x50A8;&#x4E0A;</p>
+<p>&#x2022; FORCE: Is enforced
+&#x2022; NO-FORCE: Is not enforced</p>
+<p>Force writes makes it easier to recover but results in poor runtime performance.</p>
+<p>&#x5F3A;&#x5236;&#x5199;&#x5165;&#x66F4;&#x5BB9;&#x6613;&#x6062;&#x590D;&#xFF0C;&#x4F46;&#x662F;&#x4F1A;&#x5BFC;&#x81F4;&#x8FD0;&#x884C;&#x65F6;&#x6027;&#x80FD;&#x4E0D;&#x4F73;</p>
+<p>Easiest System to implement: NO-STEAL + FORCE</p>
+<p>&#x6700;&#x5BB9;&#x6613;&#x5B9E;&#x73B0;&#x7684;&#x7CFB;&#x7EDF;&#xFF1A;NO-STEAL + FORCE</p>
+<p>&#x2022; The DBMS never has to undo changes of an aborted transaction because the changes were not written to disk.</p>
+<p>DBMS &#x6C38;&#x8FDC;&#x4E0D;&#x5FC5;&#x64A4;&#x9500;&#x4E2D;&#x6B62;&#x4E8B;&#x52A1;&#x7684;&#x66F4;&#x6539;&#xFF0C;&#x56E0;&#x4E3A;&#x66F4;&#x6539;&#x6CA1;&#x6709;&#x5199;&#x5165;&#x78C1;&#x76D8;&#x3002;</p>
+<p>&#x2022; It also never has to redo changes of a committed transaction because all the changes are guaranteed to be written to disk at committed.</p>
+<p>&#x5B83;&#x4E5F;&#x6C38;&#x8FDC;&#x4E0D;&#x5FC5;&#x91CD;&#x505A;&#x5DF2;&#x7ECF;&#x63D0;&#x4EA4;&#x7684;&#x4E8B;&#x52A1;&#x66F4;&#x6539;&#xFF0C;&#x56E0;&#x4E3A;&#x6240;&#x6709;&#x7684;&#x66F4;&#x6539;&#x90FD;&#x4FDD;&#x8BC1;&#x5728;&#x63D0;&#x4EA4;&#x65F6;&#x5199;&#x5165;&#x78C1;&#x76D8;</p>
+<p>&#x2022; Limitation: If all of the data that a transaction needs to modify does not fit on memory, then that transaction cannot execute because the DBMS is not allowed to write out dirty pages to disk before the transaction commits.</p>
+<p>&#x9650;&#x5236;&#xFF1A;&#x5982;&#x679C;&#x4E00;&#x4E2A;&#x4E8B;&#x52A1;&#x9700;&#x8981;&#x4FEE;&#x6539;&#x7684;&#x6240;&#x6709;&#x6570;&#x636E;&#x90FD;&#x4E0D;&#x9002;&#x5408;&#x5185;&#x5B58;&#xFF0C;&#x90A3;&#x4E48;&#x8BE5;&#x4E8B;&#x52A1;&#x5C06;&#x65E0;&#x6CD5;&#x6267;&#x884C;&#xFF0C;&#x56E0;&#x4E3A;&#x4E0D;&#x5141;&#x8BB8; DBMS &#x5728;&#x4E8B;&#x52A1;&#x63D0;&#x4EA4;&#x4E4B;&#x524D;&#x5C06;&#x5C06;&#x810F;&#x9875;&#x5199;&#x51FA;&#x5230;&#x78C1;&#x76D8;</p>
+<h2 id="shadow-paging----&#x5F71;&#x5B50;&#x5206;&#x9875;">Shadow Paging    &#x5F71;&#x5B50;&#x5206;&#x9875;</h2>
+<p>The DBMS maintains two separate copies of the database (master, shadow). Updates are only made in the shadow copy. When a transaction commits, atomically switch the shadow to become the new master. This is an example of a NO-STEAL + FORCE system.</p>
+<p>DBMS &#x7EF4;&#x62A4;&#x6570;&#x636E;&#x5E93;&#x7684;&#x4E24;&#x4E2A;&#x72EC;&#x7ACB;&#x526F;&#x672C;&#xFF08;&#x4E3B;&#x526F;&#x672C;&#x3001;&#x5F71;&#x5B50;&#x526F;&#x672C;&#xFF09;&#x3002;&#x4EC5;&#x5728;&#x5F71;&#x5B50;&#x526F;&#x672C;&#x4E2D;&#x8FDB;&#x884C;&#x66F4;&#x65B0;&#xFF0C;&#x5F53;&#x4E8B;&#x52A1;&#x63D0;&#x4EA4;&#x65F6;&#xFF0C;&#x539F;&#x5B50;&#x7684;&#x5207;&#x6362;&#x5F71;&#x5B50;&#x526F;&#x672C;&#x6210;&#x4E3A;&#x65B0;&#x7684; master. &#x8FD9;&#x662F;&#x4E00;&#x4E2A; NO-STEAL + FORCE &#x7CFB;&#x7EDF;&#x7684;&#x4F8B;&#x5B50;</p>
+<p>Implementation:</p>
+<p>&#x2022; Organize the database pages in a tree structure where the root is a single disk page.</p>
+<p>&#x4EE5;&#x6811;&#x7ED3;&#x6784;&#x7EC4;&#x7EC7;&#x6570;&#x636E;&#x5E93;&#x9875;&#x9762;&#xFF0C;&#x5176;&#x4E2D;&#x6839;&#x662F;&#x5355;&#x4E2A;&#x78C1;&#x76D8;&#x9875;&#x9762;</p>
+<p>&#x2022; There are two copies of the tree, the master and the shadow:</p>
+<p>&#x6811;&#x5B58;&#x5728;&#x4E24;&#x4E2A;&#x526F;&#x672C;&#xFF0C;&#x4E3B;&#x526F;&#x672C;&#x548C;&#x5F71;&#x5B50;&#x526F;&#x672C;</p>
+<p>&#x2013; The root points to the master copy</p>
+<p>&#x6839;&#x6307;&#x5411;&#x4E3B;&#x526F;&#x672C;</p>
+<p>&#x2013; Updates are applied to the shadow copy</p>
+<p>&#x66F4;&#x65B0;&#x5E94;&#x7528;&#x4E8E;&#x5F71;&#x5B50;&#x526F;&#x672C;</p>
+<p>&#x2022; To install updates, overwrite the root so it points to the shadow, thereby swapping the master and shadow.</p>
+<p>&#x8981;&#x5B89;&#x88C5;&#x66F4;&#x65B0;&#xFF0C;&#x8986;&#x76D6;&#x6839;&#x8282;&#x70B9;&#x6307;&#x5411;&#x5F71;&#x5B50;&#x9875;&#x9762;&#xFF0C;&#x4ECE;&#x800C;&#x4EA4;&#x6362;&#x4E3B;&#x76EE;&#x5F55;&#x548C;&#x5F71;&#x5B50;</p>
+<p>Before overwriting the root, none of the transactions updates are part of the disk-resident database.</p>
+<p>&#x5728;&#x8986;&#x76D6;&#x6839;&#x4E4B;&#x524D;&#xFF0C;&#x6240;&#x6709;&#x7684;&#x4E8B;&#x52A1;&#x66F4;&#x65B0;&#x90FD;&#x8FD8;&#x4E0D;&#x662F;&#x78C1;&#x76D8;&#x4E0A;&#x6570;&#x636E;&#x5E93;&#x7684;&#x4E00;&#x90E8;&#x5206;</p>
+<p>After overwriting the root, all of the transactions updates are part of the disk resident database.</p>
+<p>&#x8986;&#x76D6;&#x6839;&#x4E4B;&#x540E;&#xFF0C;&#x6240;&#x6709;&#x7684;&#x4E8B;&#x52A1;&#x66F4;&#x65B0;&#x90FD;&#x662F;&#x78C1;&#x76D8;&#x6570;&#x636E;&#x5E93;&#x4E0A;&#x7684;&#x4E00;&#x90E8;&#x5206;&#x4E86;</p>
+<p>&#x2022; UNDO: Remove the shaduow pages. Leave master and the DB root pointer alone</p>
+<p>&#x2022; UNDO: &#x5220;&#x9664;&#x5F71;&#x5B50;&#x9875;&#x9762;&#xFF0C;&#x4E0D;&#x7406;&#x4F1A; master &#x4EE5;&#x53CA; db &#x6839;&#x6307;&#x9488;</p>
+<p>&#x2022; REDO: Not needed at all</p>
+<p>&#x2022; REDO: &#x4E0D;&#x9700;&#x8981;</p>
+<h2 id="write-ahead-logging">Write-Ahead Logging</h2>
+<p>The DBMS records all the changes made to the database in a log file (on stable storage) before the change is made to a disk page. The log contains sufficient information to perform the necessary undo and redo<br>actions to restore the database after a crash. This is an example of a STEAL + NO-FORCE system.</p>
+<p>&#x5728;&#x5BF9;&#x78C1;&#x76D8;&#x9875;&#x9762;&#x8FDB;&#x884C;&#x66F4;&#x6539;&#x4E4B;&#x524D;&#xFF0C;DBMS &#x4F1A;&#x5C06;&#x6570;&#x636E;&#x5E93;&#x6240;&#x505A;&#x7684;&#x6240;&#x6709;&#x66F4;&#x6539;&#x8BB0;&#x5F55;&#x5230;&#x4E00;&#x4E2A;&#x65E5;&#x5FD7;&#x6587;&#x4EF6;&#x4E2D;&#xFF08;&#x5B58;&#x50A8;&#x5728;&#x7A33;&#x5B9A;&#x5B58;&#x50A8;&#x5668;&#x4E0A;&#xFF09;&#x3002;&#x8FD9;&#x4E2A;&#x65E5;&#x5FD7;&#x5305;&#x542B;&#x4E86;&#x8DB3;&#x591F;&#x7684;&#x4FE1;&#x606F;&#x6765;&#x6267;&#x884C;&#x5FC5;&#x8981;&#x7684;&#x64A4;&#x9500;&#x548C;&#x91CD;&#x505A;&#x64CD;&#x4F5C;&#x4EE5;&#x4FBF;&#x5728;&#x7CFB;&#x7EDF;&#x5D29;&#x6E83;&#x540E;&#x6062;&#x590D;&#x6570;&#x636E;&#x5E93;&#x3002;&#x8FD9;&#x662F;&#x4E00;&#x4E2A; STEAL + NO-FORCE &#x7CFB;&#x7EDF;&#x7684;&#x4F8B;&#x5B50;</p>
+<p>Almost every DBMS uses write-ahead logging (WAL) because it has the fastest runtime performance. But the DBMS&#x2019;s recovery time with WAL is slower than shadow paging because it has to replay the log.</p>
+<p>&#x51E0;&#x4E4E;&#x6BCF;&#x4E2A; DBMS &#x90FD;&#x4F7F;&#x7528;&#x9884;&#x5199;&#x65E5;&#x5FD7;&#xFF08;WAL&#xFF09;&#xFF0C;&#x56E0;&#x4E3A;&#x5B83;&#x5177;&#x6709;&#x6700;&#x5FEB;&#x7684;&#x8FD0;&#x884C;&#x65F6;&#x6027;&#x80FD;&#x3002;&#x4F46;&#x662F; DBMS &#x4F7F;&#x7528; WAL &#x7684;&#x6062;&#x590D;&#x65F6;&#x95F4;&#x6BD4;&#x5F71;&#x5B50;&#x5206;&#x9875;&#x6162;&#xFF0C;&#x56E0;&#x4E3A;&#x5B83;&#x5FC5;&#x987B;&#x91CD;&#x653E;&#x65E5;&#x5FD7;&#x3002;</p>
+<p>Implementation:</p>
+<p>&#x5B9E;&#x73B0;&#xFF1A;</p>
+<ul>
+<li>All log records pertaining to an updated page are written to non-volatile storage before the page itself is allowed to be overwritten in non-volatile storage.</li>
+</ul>
+<p>&#x5728;&#x9875;&#x9762;&#x672C;&#x8EAB;&#x88AB;&#x5141;&#x8BB8;&#x5728;&#x975E;&#x6613;&#x5931;&#x6027;&#x5B58;&#x50A8;&#x4E2D;&#x8986;&#x76D6;&#x4E4B;&#x524D;&#xFF0C;&#x4E0E;&#x66F4;&#x65B0;&#x9875;&#x9762;&#x6709;&#x5173;&#x7684;&#x6240;&#x6709;&#x65E5;&#x5FD7;&#x8BB0;&#x5F55;&#x90FD;&#x88AB;&#x5199;&#x5165;&#x975E;&#x6613;&#x5931;&#x6027;&#x5B58;&#x50A8;&#x3002;</p>
+<ul>
+<li><p>A transaction is not considered committed until all its log records have been written to stable storage.</p>
+</li>
+<li><p>&#x5728;&#x6240;&#x6709;&#x65E5;&#x5FD7;&#x8BB0;&#x5F55;&#x90FD;&#x5199;&#x5165;&#x7A33;&#x5B9A;&#x5B58;&#x50A8;&#x4E4B;&#x524D;&#xFF0C;&#x4E0D;&#x4F1A;&#x8BA4;&#x4E3A;&#x4E8B;&#x52A1;&#x5DF2;&#x7ECF;&#x63D0;&#x4EA4;</p>
+</li>
+</ul>
+<p>When the transaction starts, write a <begin> record to the log for each transaction to mark its starting point.</begin></p>
+<p>&#x5F53;&#x4E8B;&#x52A1;&#x5F00;&#x59CB;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x4E3A;&#x6BCF;&#x4E2A;&#x4E8B;&#x52A1;&#x5199;&#x5165;&#x4E00;&#x4E2A; <begin> &#x7684;&#x8BB0;&#x5F55;&#x5230;&#x65E5;&#x5FD7;&#x4E2D;&#xFF0C;&#x4EE5;&#x6807;&#x8BB0;&#x5B83;&#x7684;&#x8D77;&#x59CB;&#x70B9;</begin></p>
+<p>&#x2022; When a transaction finishes, write a <commit> record to the log and make sure all log records are flushed before it returns an acknowledgment to the application.</commit></p>
+<p>&#x2022; Each log entry contains information about the change to a single object: </p>
+<p>&#x2013; Transaction ID.
+&#x2013; Object ID.
+&#x2013; Before Value (used for UNDO). 
+&#x2013; After Value (used for REDO).</p>
+<p>&#x2022; Log entries to disk should be done when transaction commits. You can use group commit to batch multiple log flushes together to amortize overhead.</p>
+<h2 id="checkpoints">Checkpoints</h2>
+<p>The main problem with write-ahead logging is that the log file will grow forever. After a crash, the DBMS has to replay the entire log, which can take a long time if the log file is large. Thus, the DBMS can periodically takes a checkpoint where it flushes all buffers out to disk.</p>
+<p>How often the DBMS should take a checkpoint depends on the application&#x2019;s performance and downtime requirements. Taking a checkpoint too often causes the DBMS&#x2019;s runtime performance to degrade. But waiting a long time between checkpoints can potentially be just as bad, as the system&#x2019;s recovery time after a restart increases.</p>
+<h3 id="blocking-checkpoint-implementation">Blocking Checkpoint Implementation:</h3>
+<p>&#x2022; The DBMS stops accepting new transactions and waits for all active transactions to complete. </p>
+<p>&#x2022; Flush all log records and dirty blocks currently residing in main memory to stable storage.</p>
+<p>&#x2022; Write a <checkpoint> entry to the log and flush to stable storage.</checkpoint></p>
+<h2 id="logging-schemes">Logging Schemes</h2>
+<p>Physical Logging:</p>
+<p>&#x2022; Record the changes made to a specific location in the database </p>
+<p>&#x2022; Example: Position of a record in a page</p>
+<p>Logical Logging:</p>
+<p>Record the high level operations executed by transactions. Not necessarily restricted to single page. Requires less data written in each log record than physical logging. Difficult to implement recovery with logical logging if you have concurrent transactions in a non-deterministic concurrency control scheme.</p>
+<p>&#x2022; Example: The UPDATE, DELETE, and INSERT queries invoked by a transaction.</p>
+<p>Physiological Logging:</p>
+<p>&#x2022; Hybrid approach where log records target a single page but do not specify data organization of the page.</p>
+<p>&#x2022; Most commonly used approach.</p>
 
                                 
                                 </section>
@@ -1450,7 +1573,7 @@
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"第二十讲","level":"1.3.20","depth":2,"next":{"title":"第二一讲","level":"1.3.21","depth":2,"path":"cmu15455/LEC21.md","ref":"cmu15455/LEC21.md","articles":[]},"previous":{"title":"第十九讲","level":"1.3.19","depth":2,"path":"cmu15455/LEC19.md","ref":"cmu15455/LEC19.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"cmu15455/LEC20.md","mtime":"2022-04-17T03:17:05.193Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2022-04-27T00:14:21.207Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"第二十讲","level":"1.3.20","depth":2,"next":{"title":"第二一讲","level":"1.3.21","depth":2,"path":"cmu15455/LEC21.md","ref":"cmu15455/LEC21.md","articles":[]},"previous":{"title":"第十九讲","level":"1.3.19","depth":2,"path":"cmu15455/LEC19.md","ref":"cmu15455/LEC19.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"cmu15455/LEC20.md","mtime":"2022-05-05T00:25:34.647Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2022-05-05T00:26:13.799Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
