@@ -1406,7 +1406,185 @@
     
                                 <section class="normal markdown-section">
                                 
-                                <h1 id="&#x7B2C;&#x5341;&#x516D;&#x8BB2;">&#x7B2C;&#x5341;&#x516D;&#x8BB2;</h1>
+                                <h1 id="concurrency-control-theory---&#x5E76;&#x53D1;&#x63A7;&#x5236;&#x539F;&#x7406;">Concurrency Control Theory   &#x5E76;&#x53D1;&#x63A7;&#x5236;&#x539F;&#x7406;</h1>
+<h2 id="transactions-&#x4E8B;&#x52A1;">Transactions &#x4E8B;&#x52A1;</h2>
+<p>A transaction is the execution of a sequence of one or more operations (e.g., SQL queries) on a shared database to perform some higher level function. They are the basic unit of change in a DBMS. Partial transactions are not allowed.</p>
+<p>&#x4E8B;&#x52A1;&#x662F;&#x5728;&#x5171;&#x4EAB;&#x6570;&#x636E;&#x5E93;&#x4E0A;&#x6267;&#x884C;&#x7684;&#x4E00;&#x7CFB;&#x5217;&#x4E00;&#x4E2A;&#x6216;&#x8005;&#x591A;&#x4E2A;&#x64CD;&#x4F5C;&#xFF08;&#x4F8B;&#x5982; SQL &#x67E5;&#x8BE2;&#xFF09;, &#x4EE5;&#x6267;&#x884C;&#x66F4;&#x9AD8;&#x7EA7;&#x522B;&#x7684;&#x529F;&#x80FD;&#x3002;&#x5B83;&#x4EEC;&#x662F;&#x6570;&#x636E;&#x5E93;&#x7BA1;&#x7406;&#x7CFB;&#x7EDF;&#x4E2D;&#x57FA;&#x672C;&#x7684;&#x5355;&#x4F4D;&#xFF0C;&#x5B83;&#x4E0D;&#x5141;&#x8BB8;&#x88AB;&#x4E0D;&#x5B8C;&#x5168;&#x7684;&#x5B9E;&#x73B0;&#x3002;</p>
+<p>Example: Move $100 from Andy&#x2019;s bank account to his bookie&#x2019;s account</p>
+<p>&#x4F8B;&#x5982;&#xFF1A;&#x4ECE;&#x5B89;&#x8FEA;&#x7684;&#x94F6;&#x884C;&#x8D26;&#x6237;&#x4E2D;&#x8F6C;&#x79FB;&#x51FA; $100 &#x5230;&#x4ED6;&#x7684;&#x535A;&#x5F69;&#x8D26;&#x6237;</p>
+<p>1 Check whether Andy has $100.</p>
+<p>&#x68C0;&#x67E5; Andy &#x662F;&#x5426;&#x6709; $100</p>
+<p>2 Deduct $100 from his account.</p>
+<p>&#x4ECE;&#x4ED6;&#x7684;&#x8D26;&#x6237;&#x4E2D;&#x6263;&#x9664; $100</p>
+<p>3 Add $100 to his bookie&#x2019;s account.</p>
+<p>&#x5728;&#x4ED6;&#x7684;&#x535A;&#x5F69;&#x8D26;&#x6237;&#x4E0A;&#x52A0;&#x4E0A; $100</p>
+<p>Executing concurrent transactions in a DBMS is challenging. It is difficult to ensure correctness while also executing transactions quickly. We need formal correctness criteria:</p>
+<p>&#x5728;&#x6570;&#x636E;&#x5E93;&#x7BA1;&#x7406;&#x7CFB;&#x7EDF;&#x4E0A;&#x5E76;&#x53D1;&#x7684;&#x6267;&#x884C;&#x4E8B;&#x52A1;&#x662F;&#x5F88;&#x6709;&#x6311;&#x6218;&#x7684;&#x4E8B;&#x60C5;&#x3002;&#x5728;&#x5FEB;&#x901F;&#x6267;&#x884C;&#x4E8B;&#x52A1;&#x7684;&#x8FC7;&#x7A0B;&#x4E2D;&#x5F88;&#x96BE;&#x4FDD;&#x8BC1;&#x6B63;&#x786E;&#x6027;&#x3002;&#x6211;&#x4EEC;&#x9700;&#x8981;&#x6B63;&#x5F0F;&#x7684;&#x6B63;&#x786E;&#x6027;&#x51C6;&#x5219;&#x3002;</p>
+<p>&#x2022; Temporary inconsistency is allowed.</p>
+<p>&#x5141;&#x8BB8;&#x6682;&#x65F6;&#x4E0D;&#x4E00;&#x81F4;</p>
+<p>&#x2022; Permanent inconsistency is bad.</p>
+<p>&#x6C38;&#x4E45;&#x7684;&#x4E0D;&#x4E00;&#x81F4;&#x662F;&#x4E0D;&#x597D;&#x7684;&#x3002;</p>
+<p>The scope of a transaction is only inside the database. It cannot make changes to the outside world because it cannot roll those back.</p>
+<p>&#x4E8B;&#x52A1;&#x7684;&#x4F5C;&#x7528;&#x57DF;&#x4EC5;&#x5728;&#x6570;&#x636E;&#x5E93;&#x7CFB;&#x7EDF;&#x5185;&#x90E8;&#xFF0C;&#x5B83;&#x65E0;&#x6CD5;&#x9006;&#x8F6C;&#x7CFB;&#x7EDF;&#x5916;&#x90E8;&#x7684;&#x53D8;&#x66F4;&#x3002;</p>
+<h2 id="definitions--&#x5B9A;&#x4E49;">Definitions  &#x5B9A;&#x4E49;</h2>
+<p>A database is a set of named data objects (A, B, C, ..). A transaction is a sequence of read and write operations (R(A), W(B)).</p>
+<p>&#x6570;&#x636E;&#x5E93;&#x7531;&#x4E00;&#x4E2A;&#x5BF9;&#x8C61;&#x96C6;&#x5408;&#x7EC4;&#x6210; (A, B, C)&#xFF0C;&#x4E8B;&#x52A1;&#x662F;&#x9488;&#x5BF9;&#x8FD9;&#x4E9B;&#x5BF9;&#x8C61;&#x7684;&#x4E00;&#x7CFB;&#x5217;&#x8BFB;&#x5199;&#x64CD;&#x4F5C; (R(A), W(B))&#x3002;</p>
+<p>The outcome of a transaction is either COMMIT or ABORT.</p>
+<p>&#x4E8B;&#x52A1;&#x7684;&#x6267;&#x884C;&#x7ED3;&#x679C;&#x662F;&#x63D0;&#x4EA4;&#x6216;&#x8005;&#x7EC8;&#x6B62;&#x3002;</p>
+<ul>
+<li><p>If COMMIT, all of the transaction&#x2019;s modifications are saved to the database.</p>
+</li>
+<li><p>&#x4E00;&#x65E6;&#x4E8B;&#x52A1;&#x63D0;&#x4EA4;&#xFF0C;&#x6240;&#x6709;&#x7684;&#x4E8B;&#x52A1;&#x4FEE;&#x6539;&#x90FD;&#x4F1A;&#x88AB;&#x5B58;&#x50A8;&#x5230;&#x6570;&#x636E;&#x5E93;&#x4E2D;&#x3002;</p>
+</li>
+<li><p>If ABORT, all of the transaction&#x2019;s changes are undone so that it is like the transaction never happened. Aborts can be either self-inflicted or caused by the DBMS.</p>
+</li>
+<li><p>&#x5982;&#x679C;&#x4E2D;&#x6B62;&#xFF0C;&#x4E8B;&#x52A1;&#x6240;&#x6709;&#x7684;&#x66F4;&#x6539;&#x90FD;&#x5C06;&#x64A4;&#x9500;&#xFF0C;&#x5C31;&#x597D;&#x50CF;&#x4E8B;&#x52A1;&#x4ECE;&#x672A;&#x53D1;&#x751F;&#x8FC7;&#x4E00;&#x6837;&#x3002;&#x4E8B;&#x52A1;&#x7684;&#x4E2D;&#x6B62;&#x53EF;&#x4EE5;&#x662F;&#x7528;&#x6237;&#x81EA;&#x5DF1;&#x9020;&#x6210;&#x7684;&#xFF0C;&#x4E5F;&#x53EF;&#x4EE5;&#x662F; DBMS &#x5185;&#x90E8;&#x5F15;&#x8D77;&#x7684;&#x3002;</p>
+</li>
+</ul>
+<p>Correctness Criteria: ACID</p>
+<p>&#x4FDD;&#x8BC1;&#x4E8B;&#x52A1;&#x6B63;&#x786E;&#x6027;&#x5B9A;&#x4E49;&#x7684;&#x6807;&#x51C6;&#xFF1A;ACID</p>
+<ul>
+<li><p>Atomicity: All actions in the transaction happen, or none happen. &#x201C;All or Nothing&#x201D;</p>
+</li>
+<li><p>&#x539F;&#x5B50;&#x6027;&#xFF1A;&#x4E8B;&#x52A1;&#x4E2D;&#x7684;&#x6240;&#x6709;&#x64CD;&#x4F5C;&#x8981;&#x4E48;&#x90FD;&#x4F1A;&#x53D1;&#x751F;&#xFF0C;&#x8981;&#x4E48;&#x90FD;&#x4E0D;&#x4F1A;&#x3002;</p>
+</li>
+<li><p>Consistency: If each transaction is consistent and the database is consistent at the beginning of the transaction, then the database is guaranteed to be consistent when the transaction completes. &#x201C;It looks correct to me...&#x201D;</p>
+</li>
+<li><p>&#x5982;&#x679C;&#x6BCF;&#x4E2A;&#x4E8B;&#x52A1;&#x90FD;&#x662F;&#x4E00;&#x81F4;&#x7684;&#xFF0C;&#x5E76;&#x4E14;&#x6570;&#x636E;&#x5E93;&#x5728;&#x6240;&#x6709;&#x4E8B;&#x52A1;&#x5F00;&#x59CB;&#x7684;&#x65F6;&#x5019;&#x4E5F;&#x662F;&#x4E00;&#x81F4;&#x7684;&#xFF0C;&#x90A3;&#x4E48;&#x5F53;&#x4E8B;&#x52A1;&#x5B8C;&#x6210;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x6570;&#x636E;&#x5E93;&#x4FDD;&#x8BC1;&#x662F;&#x4E00;&#x81F4;&#x7684;&#x3002;</p>
+</li>
+<li><p>Isolation: The execution of one transaction is isolated from that of other transactions. &#x201C;As if alone&#x201D;</p>
+</li>
+<li><p>&#x4E00;&#x4E2A;&#x4E8B;&#x52A1;&#x7684;&#x6267;&#x884C;&#x548C;&#x5176;&#x4ED6;&#x7684;&#x4E8B;&#x52A1;&#x7684;&#x6267;&#x884C;&#x662F;&#x9694;&#x79BB;&#x7684;</p>
+</li>
+<li><p>Durability: If a transaction commits, then its effects on the database persist. &#x201C;The transaction&#x2019;s changes can survive failures...&#x201D;</p>
+</li>
+<li><p>&#x6301;&#x4E45;&#x6027;&#xFF1A;&#x5982;&#x679C;&#x4E8B;&#x52A1;&#x63D0;&#x4EA4;&#xFF0C;&#x90A3;&#x4E48;&#x5B83;&#x5BF9;&#x6570;&#x636E;&#x5E93;&#x7684;&#x5F71;&#x54CD;&#x5C06;&#x662F;&#x6301;&#x4E45;&#x7684;- &#x201C;&#x4E5F;&#x5C31;&#x662F;&#x8BF4;&#xFF0C;&#x4E8B;&#x52A1;&#x7684;&#x53D8;&#x66F4;&#x64CD;&#x4F5C;&#x53EF;&#x4EE5;&#x7ECF;&#x53D7;&#x4F4F;&#x6267;&#x884C;&#x5931;&#x8D25;&#x7684;&#x8003;&#x9A8C;&#x201D;</p>
+</li>
+</ul>
+<h2 id="acid-atomicity--&#x539F;&#x5B50;&#x6027;">ACID: Atomicity  &#x539F;&#x5B50;&#x6027;</h2>
+<p>The DBMS guarantees that transactions are atomic. The transaction either executes all its actions or none of them.</p>
+<p>&#x6570;&#x636E;&#x5E93;&#x7BA1;&#x7406;&#x7CFB;&#x7EDF;&#x4FDD;&#x8BC1;&#x4E8B;&#x52A1;&#x662F;&#x539F;&#x5B50;&#x7684;&#xFF0C;&#x4E8B;&#x52A1;&#x8981;&#x4E48;&#x6267;&#x884C;&#x5176;&#x6240;&#x6709;&#x64CD;&#x4F5C;&#xFF0C;&#x8981;&#x4E48;&#x4E0D;&#x6267;&#x884C;&#x4EFB;&#x4F55;&#x64CD;&#x4F5C;&#x3002;</p>
+<h3 id="approach--shadow-paging-&#x5F71;&#x5B50;&#x9875;&#x9762;">Approach : Shadow Paging &#x5F71;&#x5B50;&#x9875;&#x9762;</h3>
+<ul>
+<li><p>DBMS makes copies of pages and transactions make changes to those copies. Only when the transaction commits is the page made visible to others.</p>
+</li>
+<li><p>DBMS &#x590D;&#x5236;&#x9875;&#x9762;&#xFF0C;&#x4E8B;&#x52A1;&#x5BF9;&#x8FD9;&#x4E9B;&#x526F;&#x672C;&#x8FDB;&#x884C;&#x64CD;&#x4F5C;&#x3002;&#x53EA;&#x6709;&#x5F53;&#x4E8B;&#x52A1;&#x63D0;&#x4EA4;&#x65F6;&#xFF0C;&#x9875;&#x9762;&#x624D;&#x5BF9;&#x5176;&#x4ED6;&#x4EBA;&#x53EF;&#x89C1;&#x3002;</p>
+</li>
+</ul>
+<h3 id="approach--logging-&#x65E5;&#x5FD7;">Approach : Logging &#x65E5;&#x5FD7;</h3>
+<ul>
+<li><p>DBMS logs all actions so that it can undo the actions of aborted transactions.</p>
+</li>
+<li><p>&#x6570;&#x636E;&#x5E93;&#x7BA1;&#x7406;&#x7CFB;&#x7EDF;&#x7528;&#x65E5;&#x5FD7;&#x8BB0;&#x5F55;&#x6240;&#x6709;&#x7684;&#x64CD;&#x4F5C;&#xFF0C;&#x4EE5;&#x4FBF;&#x53EF;&#x4EE5;&#x5728;&#x4E8B;&#x52A1;&#x6267;&#x884C;&#x5F02;&#x5E38;&#x4E2D;&#x6B62;&#x7684;&#x65F6;&#x5019;&#x64A4;&#x9500;&#x8FD9;&#x4E9B;&#x4E8B;&#x52A1;&#x64CD;&#x4F5C;&#x3002;</p>
+</li>
+<li><p>Think of this like the black box in airplanes.</p>
+</li>
+<li><p>&#x53EF;&#x4EE5;&#x628A;&#x5B83;&#x5BF9;&#x6BD4;&#x6210;&#x98DE;&#x673A;&#x7684;&#x9ED1;&#x5323;&#x5B50;</p>
+</li>
+<li><p>Logging is used by all modern systems for audit and efficiency reasons.</p>
+</li>
+<li><p>&#x51FA;&#x4E8E;&#x5BA1;&#x8BA1;&#x548C;&#x6548;&#x7387;&#x7684;&#x539F;&#x56E0;&#xFF0C;&#x6240;&#x6709;&#x7684;&#x73B0;&#x4EE3;&#x6570;&#x636E;&#x5E93;&#x7CFB;&#x7EDF;&#x90FD;&#x4F7F;&#x7528;&#x4E86;&#x65E5;&#x5FD7;&#x3002;</p>
+</li>
+</ul>
+<h2 id="acid-consistency--&#x4E00;&#x81F4;&#x6027;">ACID: Consistency  &#x4E00;&#x81F4;&#x6027;</h2>
+<p>The &#x201C;world&#x201D; represented by the database is consistent (e.g., correct). All questions (i.e , queries) that the application asks about the data will return correct results.</p>
+<p>&#x8FD9;&#x4E2A;&#x8BCD;&#x8868;&#x793A;&#x6570;&#x636E;&#x5E93;&#x662F;&#x4E00;&#x81F4;&#x7684;&#x3002;&#x5E94;&#x7528;&#x7A0B;&#x5E8F;&#x8BBF;&#x95EE;&#x7684;&#x6709;&#x5173;&#x6570;&#x636E;&#x7684;&#x6240;&#x6709;&#x67E5;&#x8BE2;&#x90FD;&#x5C06;&#x8FD4;&#x56DE;&#x6B63;&#x786E;&#x7684;&#x7ED3;&#x679C;&#x3002;</p>
+<h3 id="database-consistency--&#x6570;&#x636E;&#x5E93;&#x4E00;&#x81F4;&#x6027;">Database Consistency:  &#x6570;&#x636E;&#x5E93;&#x4E00;&#x81F4;&#x6027;</h3>
+<ul>
+<li>The database accurately represents the real world entity it is modeling and follows integrity constraints.</li>
+</ul>
+<p>&#x6570;&#x636E;&#x5E93;&#x51C6;&#x786E;&#x7684;&#x8868;&#x793A;&#x5B83;&#x6B63;&#x5728;&#x5EFA;&#x6A21;&#x7684;&#x771F;&#x5B9E;&#x4E16;&#x754C;&#x5B9E;&#x4F53;&#xFF0C;&#x5E76;&#x9075;&#x5FAA;&#x5B8C;&#x6574;&#x6027;&#x7EA6;&#x675F;&#x3002;</p>
+<ul>
+<li>Transactions in the future see the effects of transactions committed in the past inside of the database.</li>
+</ul>
+<p>&#x5C06;&#x6765;&#x7684;&#x4E8B;&#x52A1;&#x53EF;&#x4EE5;&#x5728;&#x6570;&#x636E;&#x5E93;&#x4E2D;&#x770B;&#x5230;&#x8FC7;&#x53BB;&#x5DF2;&#x63D0;&#x4EA4;&#x4E8B;&#x52A1;&#x7684;&#x5F71;&#x54CD;&#x3002;</p>
+<h3 id="transaction-consistency--&#x4E8B;&#x52A1;&#x4E00;&#x81F4;&#x6027;">Transaction Consistency:  &#x4E8B;&#x52A1;&#x4E00;&#x81F4;&#x6027;</h3>
+<ul>
+<li>If the database is consistent before the transaction starts, it will also be consistent after.</li>
+</ul>
+<p>&#x5982;&#x679C;&#x6570;&#x636E;&#x5E93;&#x7CFB;&#x7EDF;&#x5728;&#x4E8B;&#x52A1;&#x5F00;&#x59CB;&#x4E4B;&#x524D;&#x662F;&#x4E00;&#x81F4;&#x7684;&#xFF0C;&#x90A3;&#x4E48;&#x5728;&#x4E8B;&#x52A1;&#x6267;&#x884C;&#x4E4B;&#x540E;&#x4E5F;&#x662F;&#x4E00;&#x81F4;&#x7684;&#x3002;</p>
+<ul>
+<li>Ensuring transaction consistency is the application&#x2019;s responsibility.</li>
+</ul>
+<p>&#x786E;&#x4FDD;&#x4E8B;&#x52A1;&#x4E00;&#x81F4;&#x6027;&#x662F;&#x5E94;&#x7528;&#x7A0B;&#x5E8F;&#x7684;&#x8D23;&#x4EFB;&#x3002;</p>
+<h2 id="acid-isolation">ACID: Isolation</h2>
+<p>The DBMS provides transactions the illusion that they are running alone in the system. They do not see the effects of concurrent transactions. This is equivalent to a system where transactions are executed in serial order (i.e., one at a time). But in order to get better performance, the DBMS has to interleave the operations of concurrent transactions.</p>
+<p>&#x6570;&#x636E;&#x5E93;&#x7BA1;&#x7406;&#x7CFB;&#x7EDF;&#x63D0;&#x4F9B;&#x4E86;&#x4E8B;&#x52A1;&#x5728;&#x7CFB;&#x7EDF;&#x4E2D;&#x5355;&#x72EC;&#x8FD0;&#x884C;&#x7684;&#x5047;&#x8C61;&#x3002;&#x4ED6;&#x4EEC;&#x770B;&#x4E0D;&#x5230;&#x5E76;&#x53D1;&#x4E8B;&#x52A1;&#x7684;&#x5F71;&#x54CD;&#x3002;&#x8FD9;&#x7B49;&#x540C;&#x4E8E;&#x4E8B;&#x52A1;&#x7684;&#x6267;&#x884C;&#x662F;&#x4EE5;&#x4E32;&#x884C;&#x7684;&#x987A;&#x5E8F;&#x7684;&#x3002;&#x4F46;&#x662F;&#x4E3A;&#x4E86;&#x66F4;&#x597D;&#x7684;&#x6027;&#x80FD;&#xFF0C;&#x6570;&#x636E;&#x5E93;&#x7BA1;&#x7406;&#x7CFB;&#x7EDF;&#x5FC5;&#x987B;&#x4EA4;&#x9519;&#x5E76;&#x53D1;&#x7684;&#x6267;&#x884C;&#x4E8B;&#x52A1;&#x64CD;&#x4F5C;&#x3002;</p>
+<h3 id="concurrency-control--&#x5E76;&#x53D1;&#x63A7;&#x5236;">Concurrency Control  &#x5E76;&#x53D1;&#x63A7;&#x5236;</h3>
+<p>A concurrency control protocol is how the DBMS decides the proper interleaving of operations from multiple transactions.</p>
+<p>&#x5E76;&#x53D1;&#x63A7;&#x5236;&#x534F;&#x8BAE;&#x662F;&#x6307;&#x6570;&#x636E;&#x5E93;&#x7BA1;&#x7406;&#x7CFB;&#x7EDF;&#x5982;&#x4F55;&#x51B3;&#x5B9A;&#x6765;&#x81EA;&#x591A;&#x4E2A;&#x4E8B;&#x52A1;&#x7684;&#x64CD;&#x4F5C;&#x4EE5;&#x6B63;&#x786E;&#x7684;&#x65B9;&#x5F0F;&#x4EA4;&#x9519;&#x6267;&#x884C;&#x3002;</p>
+<p>There are two categories of concurrency control protocols:</p>
+<p>&#x6709;&#x4E24;&#x5927;&#x7C7B;&#x7684;&#x5E76;&#x53D1;&#x63A7;&#x5236;&#x534F;&#x8BAE;:</p>
+<ul>
+<li><p>Pessimistic: The DBMS assumes that transactions will conflict, so it doesn&#x2019;t let problems arise in the first place.</p>
+</li>
+<li><p>&#x60B2;&#x89C2;&#x7684;&#xFF1A;DBMS &#x5047;&#x8BBE;&#x4E8B;&#x52A1;&#x4F1A;&#x53D1;&#x751F;&#x51B2;&#x7A81;&#xFF0C;&#x6240;&#x4EE5;&#x4E00;&#x5F00;&#x59CB;&#x5B83;&#x5C31;&#x4E0D;&#x4F1A;&#x8BA9;&#x95EE;&#x9898;&#x51FA;&#x73B0;&#x3002;</p>
+</li>
+<li><p>Optimistic: The DBMS assumes that conflicts between transactions are rare, so it chooses to deal
+with conflicts when they happen.</p>
+</li>
+<li><p>&#x4E50;&#x89C2;&#x7684;&#xFF1A;DBMS &#x5047;&#x8BBE;&#x4E8B;&#x52A1;&#x4E4B;&#x95F4;&#x7684;&#x51B2;&#x7A81;&#x5F88;&#x5C11;&#xFF0C;&#x6240;&#x4EE5;&#x5B83;&#x9009;&#x62E9;&#x5728;&#x51B2;&#x7A81;&#x53D1;&#x751F;&#x7684;&#x65F6;&#x5019;&#x518D;&#x53BB;&#x5904;&#x7406;&#x51B2;&#x7A81;&#x3002;</p>
+</li>
+</ul>
+<p>The order in which the DBMS executes operations is called an execution schedule. The goal of a concurrency control protocol is to generate an execution schedule that is is equivalent to some serial execution:</p>
+<p>DBMS &#x6267;&#x884C;&#x64CD;&#x4F5C;&#x7684;&#x987A;&#x5E8F;&#x79F0;&#x4E3A;&#x6267;&#x884C;&#x8BA1;&#x5212;&#xFF0C;&#x5E76;&#x53D1;&#x63A7;&#x5236;&#x534F;&#x8BAE;&#x7684;&#x76EE;&#x6807;&#x662F;&#x751F;&#x6210;&#x4E00;&#x4E2A;&#x7B49;&#x4EF7;&#x4E8E;&#x4E32;&#x884C;&#x6267;&#x884C;&#x67D0;&#x4E9B;&#x64CD;&#x4F5C;&#x7684;&#x6267;&#x884C;&#x8BA1;&#x5212;&#x3002;</p>
+<ul>
+<li>Serial Schedule: A schedule that does not interleave the actions of different transactions.</li>
+</ul>
+<p>&#x4E32;&#x884C;&#x8BA1;&#x5212;&#xFF1A;&#x4E0D;&#x4EA4;&#x9519;&#x4E0D;&#x540C;&#x4E8B;&#x52A1;&#x64CD;&#x4F5C;&#x7684;&#x8BA1;&#x5212;&#x3002;</p>
+<ul>
+<li>Equivalent Schedules: For any database state, the effect of execution the first schedule is identical to the effect of executing the second schedule.</li>
+</ul>
+<p>&#x7B49;&#x4EF7;&#x8C03;&#x5EA6;&#xFF1A;&#x5BF9;&#x4E8E;&#x4EFB;&#x4F55;&#x6570;&#x636E;&#x5E93;&#x72B6;&#x6001;&#xFF0C;&#x6267;&#x884C;&#x7B2C;&#x4E00;&#x4E2A;&#x8C03;&#x5EA6;&#x7684;&#x6548;&#x679C;&#x4E0E;&#x6267;&#x884C;&#x7B2C;&#x4E8C;&#x4E2A;&#x8C03;&#x5EA6;&#x7684;&#x6548;&#x679C;&#x76F8;&#x540C;&#x3002;</p>
+<ul>
+<li>Serializable Schedule: A schedule that is equivalent to some serial execution of the transactions. When the DBMS interleaves the operations of concurrent transactions, it can create anomalies:</li>
+</ul>
+<p>&#x7EBF;&#x6027;&#x5316;&#x8C03;&#x5EA6;&#xFF1A;&#x76F8;&#x5F53;&#x4E8E;&#x4E8B;&#x52A1;&#x7684;&#x67D0;&#x4E9B;&#x4E32;&#x884C;&#x6267;&#x884C;&#x7684;&#x8BA1;&#x5212;&#x3002;&#x5F53;DBMS&#x4EA4;&#x53C9;&#x6267;&#x884C;&#x5E76;&#x53D1;&#x4E8B;&#x52A1;&#x7684;&#x64CD;&#x4F5C;&#x65F6;&#xFF0C;&#x5B83;&#x53EF;&#x80FD;&#x4F1A;&#x4EA7;&#x751F;&#x5F02;&#x5E38;</p>
+<ul>
+<li>Read-Write Conflicts (&#x201C;Unrepeatable Reads&#x201D;): A<br>transaction is not able to get the same value when reading the same object multiple times.</li>
+</ul>
+<p>&#x8BFB;-&#x5199;&#x51B2;&#x7A81;&#xFF08;&#x4E0D;&#x53EF;&#x91CD;&#x590D;&#x8BFB;&#x53D6;&#xFF09;&#xFF1A;&#x4E8B;&#x52A1;&#x5728;&#x591A;&#x6B21;&#x8BFB;&#x53D6;&#x540C;&#x4E00;&#x4E2A;&#x5BF9;&#x8C61;&#x65F6;&#x65E0;&#x6CD5;&#x83B7;&#x53D6;&#x76F8;&#x540C;&#x7684;&#x503C;&#x3002;</p>
+<ul>
+<li>Write-Read Conflicts (&#x201C;Dirty Reads&#x201D;): A transaction sees the write effects of a different transaction before that transaction committed its changes.</li>
+</ul>
+<p>&#x5199;-&#x8BFB;&#x51B2;&#x7A81;&#xFF08;&#x810F;&#x8BFB;&#xFF09;&#xFF1A;&#x4E00;&#x4E2A;&#x4E8B;&#x52A1;&#x5728;&#x63D0;&#x4EA4;&#x66F4;&#x6539;&#x4E4B;&#x524D;&#x4F1A;&#x770B;&#x5230;&#x53E6;&#x4E00;&#x4E2A;&#x4E8B;&#x52A1;&#x7684;&#x5199;&#x7684;&#x5F71;&#x54CD;&#x3002;</p>
+<ul>
+<li>Write-Write conflict (&#x201C;Lost Updates&#x201D;): One transaction overwrites the uncommitted data of another concurrent transaction.</li>
+</ul>
+<p>&#x5199;-&#x5199;&#x51B2;&#x7A81;&#xFF08;&#x4E22;&#x5931;&#x66F4;&#x65B0;&#x64CD;&#x4F5C;&#xFF09;&#xFF1A;&#x4E00;&#x4E2A;&#x4E8B;&#x52A1;&#x8986;&#x76D6;&#x53E6;&#x4E00;&#x4E2A;&#x5E76;&#x53D1;&#x4E8B;&#x52A1;&#x672A;&#x63D0;&#x4EA4;&#x7684;&#x6570;&#x636E;&#x3002;</p>
+<p>There are actually two types for serializability:(1) conflict and (2) view. Neither definition allows all schedules that you would consider serializable. In practice, DBMSs support conflict serializability because it can be enforced efficiently. To allow more concurrency, some special schedules are handled at the application level.</p>
+<p>&#x53EF;&#x4E32;&#x884C;&#x6027;&#x5B9E;&#x9645;&#x6709;&#x4E24;&#x79CD;&#x7C7B;&#x578B;&#xFF1A;
+&#xFF08;1&#xFF09;&#x51B2;&#x7A81; &#xFF08;2&#xFF09;&#x89C6;&#x56FE;&#x3002;</p>
+<p>&#x8FD9;&#x4E24;&#x79CD;&#x5B9A;&#x4E49;&#x90FD;&#x4E0D;&#x5141;&#x8BB8;&#x8003;&#x8651;&#x53EF;&#x4E32;&#x884C;&#x5316;&#x7684;&#x6240;&#x6709;&#x8BA1;&#x5212;&#x3002;&#x5B9E;&#x9645;&#x4E0A;&#xFF0C;DBMS &#x652F;&#x6301;&#x51B2;&#x7A81;&#x4E32;&#x884C;&#x5316;&#x3002;&#x4E3A;&#x4E86;&#x5141;&#x8BB8;&#x66F4;&#x591A;&#x7684;&#x5E76;&#x53D1;&#xFF0C;&#x5728;&#x5E94;&#x7528;&#x7A0B;&#x5E8F;&#x7EA7;&#x522B;&#x53BB;&#x52A0;&#x4E00;&#x4E9B;&#x7279;&#x6B8A;&#x7684;&#x8C03;&#x5EA6;&#x3002;</p>
+<p>Conflict Serializability  &#x51B2;&#x7A81;&#x53EF;&#x4E32;&#x884C;&#x5316;</p>
+<p>Schedules are equivalent to some serial schedule. This is what (almost) every DBMS supports when you
+ask for the SERIALIZABLE isolation level.</p>
+<p>&#x51E0;&#x4E4E;&#x6240;&#x6709;&#x7684;&#x6570;&#x636E;&#x5E93;&#x7BA1;&#x7406;&#x7CFB;&#x7EDF;&#x90FD;&#x652F;&#x6301; SERIALIZABLE &#x9694;&#x79BB;&#x7EA7;&#x522B;</p>
+<p>Schedule S is conflict serializable if you are able to transform S into a serial schedule by swapping consecutive non-conflicting operations of different transactions&#x3002;</p>
+<p>&#x5982;&#x679C;&#x53EF;&#x4EE5;&#x901A;&#x8FC7;&#x4EA4;&#x6362;&#x4E0D;&#x540C;&#x4E8B;&#x52A1;&#x7684;&#x8FDE;&#x7EED;&#x975E;&#x51B2;&#x7A81;&#x64CD;&#x4F5C;&#x5C06; S &#x8F6C;&#x6362;&#x4E3A;&#x4E32;&#x884C;&#x8BA1;&#x5212;&#xFF0C;&#x90A3;&#x4E48; S &#x662F;&#x51B2;&#x7A81;&#x5E8F;&#x5217;&#x5316;&#x7684;</p>
+<p>Verify using either the swapping method or dependency graphs.</p>
+<p>&#x4F7F;&#x7528;&#x4EA4;&#x6362;&#x6216;&#x8005;&#x4F9D;&#x8D56;&#x56FE;&#x7684;&#x65B9;&#x6CD5;&#x6765;&#x9A8C;&#x8BC1;&#x3002;</p>
+<p>Dependency Graphs (aka &#x201C;precedence graph&#x201D;):
+&#x4F9D;&#x8D56;&#x5173;&#x7CFB;&#x56FE;&#xFF08;&#x53C8;&#x540D;&#x201C;&#x4F18;&#x5148;&#x56FE;&#x201D;&#xFF09;</p>
+<ul>
+<li><p>One node per transaction.</p>
+</li>
+<li><p>&#x6BCF;&#x4E2A;&#x8282;&#x70B9;&#x4EE3;&#x8868;&#x4E00;&#x4E2A;&#x4E8B;&#x52A1;</p>
+</li>
+<li><p>Edge from Ti to Tj if an operation Oi of Ti conflicts with an operation Oj of Tj and Oi appears earlier in the schedule than Oj.</p>
+</li>
+<li><p>(..)</p>
+</li>
+<li><p>A schedule is conflict serializable if and only if its dependency graph is acyclic.</p>
+</li>
+<li><p>&#x5F53;&#x4E14;&#x4EC5;&#x5F53;&#x8BA1;&#x5212;&#x7684;&#x4F9D;&#x8D56;&#x5173;&#x7CFB;&#x56FE;&#x662F;&#x975E;&#x73AF;&#x72B6;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x8BA1;&#x5212;&#x662F;&#x51B2;&#x7A81;&#x4E32;&#x884C;&#x5316;&#x7684;&#x3002;</p>
+</li>
+</ul>
+<p>View Serializability  &#x89C6;&#x56FE;&#x53EF;&#x4E32;&#x884C;&#x5316;</p>
+<p>Allows for all schedules that are conflict serializable and &#x201C;blind writes&#x201D;. Thus allows for slightly more schedules than Conflict serializability, but difficult to enforce efficiently. This is because the DBMS does not now how the application will &#x201C;interpret&#x201D; values.</p>
+<h2 id="acid-durability">ACID: Durability</h2>
+<p>All of the changes of committed transactions must be durable (i.e., persistent) after a crash or restart. The DBMS can either use logging or shadow paging to ensure that all changes are durable.</p>
+<p>&#x5728;&#x7CFB;&#x7EDF;&#x5D29;&#x6E83;&#x548C;&#x91CD;&#x542F;&#x4E4B;&#x540E;&#xFF0C;&#x63D0;&#x4EA4;&#x4E8B;&#x52A1;&#x7684;&#x6240;&#x6709;&#x66F4;&#x6539;&#x90FD;&#x5FC5;&#x987B;&#x662F;&#x6301;&#x4E45;&#x5316;&#x7684;&#x3002;&#x6570;&#x636E;&#x5E93;&#x7BA1;&#x7406;&#x7CFB;&#x7EDF;&#x53EF;&#x4EE5;&#x4F7F;&#x7528;&#x65E5;&#x5FD7;&#x8BB0;&#x5F55;&#x6216;&#x8005;&#x5F71;&#x5B50;&#x9875;&#x9762;&#x6765;&#x786E;&#x4FDD;&#x6240;&#x6709;&#x7684;&#x66F4;&#x6539;&#x90FD;&#x662F;&#x6301;&#x4E45;&#x5316;&#x7684;&#x3002;</p>
 
                                 
                                 </section>
@@ -1450,7 +1628,7 @@
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"第十六讲","level":"1.3.16","depth":2,"next":{"title":"第十七讲","level":"1.3.17","depth":2,"path":"cmu15455/LEC17.md","ref":"cmu15455/LEC17.md","articles":[]},"previous":{"title":"第十五讲","level":"1.3.15","depth":2,"path":"cmu15455/LEC15.md","ref":"cmu15455/LEC15.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["livereload"],"pluginsConfig":{"livereload":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"cmu15455/LEC16.md","mtime":"2022-04-17T03:17:05.189Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2022-04-19T00:43:59.585Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"第十六讲","level":"1.3.16","depth":2,"next":{"title":"第十七讲","level":"1.3.17","depth":2,"path":"cmu15455/LEC17.md","ref":"cmu15455/LEC17.md","articles":[]},"previous":{"title":"第十五讲","level":"1.3.15","depth":2,"path":"cmu15455/LEC15.md","ref":"cmu15455/LEC15.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"cmu15455/LEC16.md","mtime":"2022-04-27T00:12:41.519Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2022-04-27T00:14:21.207Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
@@ -1458,10 +1636,6 @@
         
     <script src="../gitbook/gitbook.js"></script>
     <script src="../gitbook/theme.js"></script>
-    
-        
-        <script src="../gitbook/gitbook-plugin-livereload/plugin.js"></script>
-        
     
         
         <script src="../gitbook/gitbook-plugin-search/search-engine.js"></script>

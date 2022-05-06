@@ -1406,7 +1406,154 @@
     
                                 <section class="normal markdown-section">
                                 
-                                <h1 id="&#x7B2C;&#x4E8C;&#x4E00;&#x8BB2;">&#x7B2C;&#x4E8C;&#x4E00;&#x8BB2;</h1>
+                                <h1 id="lecture-21-aries-database-crash-recovery-algorithms">Lecture 21: ARIES Database Crash Recovery Algorithms</h1>
+<h1 id="aries-&#x6570;&#x636E;&#x5E93;&#x5D29;&#x6E83;&#x6062;&#x590D;&#x7B97;&#x6CD5;">ARIES &#x6570;&#x636E;&#x5E93;&#x5D29;&#x6E83;&#x6062;&#x590D;&#x7B97;&#x6CD5;</h1>
+<h2 id="aries">ARIES</h2>
+<p>Algorithms for Recovery and Isolation Exploiting Semantics. Developed at IBM research in early 1990s.
+Not all systems implement ARIES exactly as defined in the original paper, but they are similar enough.</p>
+<p>&#x5229;&#x7528;&#x8BED;&#x4E49;&#x6062;&#x590D;&#x548C;&#x9694;&#x79BB;&#x7B97;&#x6CD5;&#xFF0C;&#x4E8E; 1990 &#x5E74;&#x4EE3;&#x521D;&#x5728; IBM &#x7814;&#x7A76;&#x4E2D;&#x5F00;&#x53D1;&#x3002;&#x5E76;&#x975E;&#x6240;&#x6709;&#x7684;&#x7CFB;&#x7EDF;&#x90FD;&#x5B8C;&#x5168;&#x6309;&#x7167;&#x539F;&#x59CB;&#x8BBA;&#x6587;&#x4E2D;&#x7684;&#x5B9A;&#x4E49;&#x53BB;&#x5B9E;&#x73B0; ARIES&#xFF0C;&#x4F46;&#x662F;&#x5B83;&#x4EEC;&#x5B9E;&#x73B0;&#x90FD;&#x5F88;&#x7C7B;&#x4F3C;&#x3002;</p>
+<p>Main ideas of the ARIES recovery protocol:</p>
+<p>ARIES &#x6062;&#x590D;&#x534F;&#x8BAE;&#x7684;&#x4E3B;&#x8981;&#x601D;&#x60F3;&#xFF1A;</p>
+<ul>
+<li>Write Ahead Logging: Any change is recorded in log on stable storage before the database change is written to disk (STEAL + NO-FORCE).</li>
+</ul>
+<p>&#x9884;&#x5199;&#x65E5;&#x5FD7;&#x8BB0;&#x5F55;&#xFF1A;&#x5728;&#x5C06;&#x6570;&#x636E;&#x5E93;&#x66F4;&#x6539;&#x5199;&#x5165;&#x78C1;&#x76D8;&#x4E4B;&#x524D;&#xFF0C;&#x4EFB;&#x4F55;&#x7684;&#x4FEE;&#x6539;&#x90FD;&#x4F1A;&#x88AB;&#x8BB0;&#x5F55;&#x5728;&#x7A33;&#x5B9A;&#x5B58;&#x50A8;&#x4E0A;&#x7684;&#x65E5;&#x5FD7;&#x4E2D; &#xFF08;STEAL + NO-FORCE&#xFF09;</p>
+<ul>
+<li><p>Repeating History During Redo: On restart, retrace actions and restore database to exact state before crash.</p>
+</li>
+<li><p>&#x91CD;&#x505A;&#x671F;&#x95F4;&#x91CD;&#x65B0;&#x6267;&#x884C;&#x5386;&#x53F2;&#x64CD;&#x4F5C;&#xFF1A; &#x91CD;&#x65B0;&#x542F;&#x52A8;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x56DE;&#x6EAF;&#x64CD;&#x4F5C;&#x5C06;&#x6570;&#x636E;&#x5E93;&#x6062;&#x590D;&#x5230;&#x5D29;&#x6E83;&#x524D;&#x7684;&#x72B6;&#x6001;</p>
+</li>
+<li><p>Logging Changes During Undo: Record undo actions to log to ensure action is not repeated in the event of repeated failures.</p>
+</li>
+<li><p>&#x5728;&#x64A4;&#x9500;&#x671F;&#x95F4;&#x8BB0;&#x5F55;&#x66F4;&#x6539;&#xFF1A;&#x5C06;&#x64A4;&#x9500;&#x64CD;&#x4F5C;&#x8BB0;&#x5F55;&#x5230;&#x65E5;&#x5FD7;&#x4E2D;&#xFF0C;&#x4EE5;&#x786E;&#x4FDD;&#x5728;&#x91CD;&#x590D;&#x5931;&#x8D25;&#x7684;&#x60C5;&#x51B5;&#x4E0D;&#x4F1A;&#x91CD;&#x590D;&#x64CD;&#x4F5C;</p>
+</li>
+</ul>
+<h2 id="wal-records--wal-&#x8BB0;&#x5F55;">WAL Records  WAL &#x8BB0;&#x5F55;</h2>
+<p>We need to extend the DBMS&#x2019;s log record format to include additional info. Every log record now includes a globally unique log sequence number (LSN). Various components in the system keep track of LSNs that pertain to them:</p>
+<p>&#x6211;&#x4EEC;&#x9700;&#x8981;&#x6269;&#x5C55; DBMS &#x7684;&#x65E5;&#x5FD7;&#x8BB0;&#x5F55;&#x683C;&#x5F0F;&#x4EE5;&#x5305;&#x542B;&#x9644;&#x52A0;&#x4FE1;&#x606F;&#x3002;&#x6BCF;&#x4E2A;&#x65E5;&#x5FD7;&#x8BB0;&#x5F55;&#x4E2D;&#x90FD;&#x5305;&#x542B;&#x4E00;&#x4E2A;&#x5168;&#x5C40;&#x552F;&#x4E00;&#x7684;&#x65E5;&#x5FD7;&#x5E8F;&#x5217;&#x53F7;&#xFF08;LSN&#xFF09;&#x3002;&#x7CFB;&#x7EDF;&#x4E2D;&#x7684;&#x5404;&#x4E2A;&#x7EC4;&#x4EF6;&#x90FD;&#x4F1A;&#x8FFD;&#x8E2A;&#x4E0E;&#x5176;&#x76F8;&#x5173;&#x7684; LSN:</p>
+<ul>
+<li><p>Each data page contains a pageLSN: The LSN of the most recent update to that page.</p>
+</li>
+<li><p>&#x6BCF;&#x4E2A;&#x6570;&#x636E;&#x9875;&#x9762;&#x90FD;&#x5305;&#x542B;&#x4E00;&#x4E2A; pageLSN: &#x8BE5;&#x9875;&#x6700;&#x8FD1;&#x66F4;&#x65B0;&#x7684; LSN</p>
+</li>
+<li><p>System keeps track of flushedLSN: The max LSN flushed so far</p>
+</li>
+<li><p>&#x7CFB;&#x7EDF;&#x8DDF;&#x8E2A;&#x7684; flushedLSN: &#x5230;&#x76EE;&#x524D;&#x4E3A;&#x6B62;&#x5DF2;&#x7ECF;&#x6267;&#x884C;&#x5237;&#x76D8;&#x64CD;&#x4F5C;&#x7684;&#x6700;&#x5927; LSN</p>
+</li>
+<li><p>Before page i can be written to disk, we must flush log at least to the point where pageLSN i &#x2264; flushedLSN</p>
+</li>
+<li><p>&#x5728;&#x7B2C; i &#x9875;&#x53EF;&#x4EE5;&#x88AB;&#x5199;&#x5165;&#x78C1;&#x76D8;&#x4E4B;&#x524D;&#xFF0C;&#x6211;&#x4EEC;&#x5FC5;&#x987B;&#x81F3;&#x5C11;&#x5C06;&#x65E5;&#x5FD7;&#x5237;&#x65B0;&#x5230; pageLSN i &lt;= flushedLSN</p>
+</li>
+</ul>
+<h2 id="normal-execution">Normal Execution</h2>
+<p>We first discuss the steps that the DBMS takes at runtime while it executes transactions.</p>
+<p>&#x6211;&#x4EEC;&#x9996;&#x5148;&#x8BA8;&#x8BBA;&#x5728; DBMS &#x8FD0;&#x884C;&#x65F6;&#x6267;&#x884C;&#x4E8B;&#x52A1;&#x7684;&#x65F6;&#x5019;&#x6240;&#x91C7;&#x53D6;&#x7684;&#x6B65;&#x9AA4;</p>
+<p>Transaction Commit</p>
+<p>&#x4E8B;&#x52A1;&#x63D0;&#x4EA4;</p>
+<p>When a transaction goes to commit, the DBMS first writes COMMIT record to log buffer in memory. Then the DBMS flushes all log records up to and including the transaction&#x2019;s COMMIT record to disk. Note that these log flushes are sequential, synchronous writes to disk.</p>
+<p>&#x5F53;&#x4E8B;&#x52A1;&#x63D0;&#x4EA4;&#x7684;&#x65F6;&#x5019;&#xFF0C;DBMS &#x9996;&#x5148;&#x5C06; COMMIT &#x8BB0;&#x5F55;&#x5199;&#x5165;&#x5230;&#x5185;&#x5B58;&#x4E2D;&#x7684;&#x65E5;&#x5FD7;&#x7F13;&#x51B2;&#x533A;&#x3002;&#x7136;&#x540E; DBMS &#x5C06;&#x6240;&#x6709;&#x65E5;&#x5FD7;&#x8BB0;&#x5F55;&#x5237;&#x65B0;&#x5230;&#x78C1;&#x76D8;&#xFF0C;&#x5305;&#x62EC;&#x4E8B;&#x52A1;&#x7684; COMMIT &#x8BB0;&#x5F55;&#x3002;&#x6CE8;&#x610F;&#x8FD9;&#x91CC;&#x7684;&#x65E5;&#x5FD7;&#x5237;&#x65B0;&#x65F6;&#x5BF9;&#x78C1;&#x76D8;&#x987A;&#x5E8F;&#x3001;&#x540C;&#x6B65;&#x7684;&#x5199;&#x5165;</p>
+<p>Once the COMMIT record is safely stored on disk, the DBMS returns an acknowledgment back to the application that the transaction has committed. At some later point, the DBMS will write a special TXN-END record to log. This indicates that the transaction is completely finished in the system and there will not be anymore log records for it. These TXN-END records are used for internal bookkeeping and do not need to be flushed immediately.</p>
+<p>&#x4E00;&#x65E6; COMMIT &#x8BB0;&#x5F55;&#x5B89;&#x5168;&#x5730;&#x5B58;&#x50A8;&#x5728;&#x78C1;&#x76D8;&#x4E0A;&#xFF0C;DBMS &#x5C31;&#x4F1A;&#x5411;&#x5E94;&#x7528;&#x8FD4;&#x56DE;&#x4E00;&#x4E2A;&#x4E8B;&#x52A1;&#x5DF2;&#x63D0;&#x4EA4;&#x7684;&#x786E;&#x8BA4;&#x3002;&#x7A0D;&#x540E;&#xFF0C;DBMS &#x5C06;&#x5199;&#x5165;&#x4E00;&#x4E2A;&#x7279;&#x6B8A;&#x7684; TXN-END &#x8BB0;&#x5F55;&#x5230;&#x65E5;&#x5FD7;&#x4E2D;&#x3002;&#x8FD9;&#x8868;&#x660E;&#x4E8B;&#x52A1;&#x5728;&#x7CFB;&#x7EDF;&#x4E2D;&#x5DF2;&#x5B8C;&#x5168;&#x5B8C;&#x6210;&#xFF0C;&#x4E0D;&#x4F1A;&#x518D;&#x6709;&#x4EFB;&#x4F55;&#x540E;&#x7EED;&#x7684;&#x65E5;&#x5FD7;&#x8BB0;&#x5F55;&#x3002;&#x8FD9;&#x4E9B; TXN-END &#x8BB0;&#x5F55;&#x7528;&#x4E8E;&#x5185;&#x90E8;&#x8BB0;&#x5F55;&#xFF0C;&#x4E0D;&#x9700;&#x8981;&#x7ACB;&#x5373;&#x5237;&#x65B0;&#x3002;</p>
+<p>Transaction Abort</p>
+<p>&#x4E8B;&#x52A1;&#x4E2D;&#x65AD;</p>
+<p>Aborting a transaction is a special case of the ARIES undo operation applied to only one transaction.</p>
+<p>&#x4E2D;&#x6B62;&#x4E8B;&#x52A1;&#x662F;&#x4EC5;&#x9002;&#x7528;&#x4E8E;&#x4E00;&#x4E2A;&#x4E8B;&#x52A1;&#x7684; ARIES &#x64A4;&#x9500;&#x64CD;&#x4F5C;&#x7684;&#x4E00;&#x79CD;&#x7279;&#x6B8A;&#x60C5;&#x51B5;</p>
+<p>We need to add another field to our log records called the prevLSN. This corresponds to the previous LSN for the transaction. The DBMS uses these prevLSNs to maintain a linked-list for each transaction that makes it easier to walk through the log to find its records.</p>
+<p>&#x6211;&#x4EEC;&#x9700;&#x8981;&#x5728;&#x6211;&#x4EEC;&#x7684;&#x65E5;&#x5FD7;&#x8BB0;&#x5F55;&#x4E2D;&#x6DFB;&#x52A0;&#x53E6;&#x4E00;&#x4E2A;&#x5B57;&#x6BB5;&#xFF0C;&#x79F0;&#x4E3A; prevLSN. &#x8FD9;&#x5BF9;&#x5E94;&#x4E8E;&#x4E8B;&#x52A1;&#x5148;&#x524D;&#x7684; LSN. DBMS &#x9002;&#x7528;&#x8FD9;&#x4E9B; prevLSN &#x4E3A;&#x6BCF;&#x4E2A;&#x4E8B;&#x52A1;&#x7EF4;&#x62A4;&#x4E00;&#x4E2A;&#x94FE;&#x8868;&#xFF0C;&#x4EE5;&#x4FBF;&#x8F7B;&#x677E;&#x7684;&#x904D;&#x5386;&#x65E5;&#x5FD7;&#x67E5;&#x627E;&#x5BF9;&#x5E94;&#x7684;&#x8BB0;&#x5F55;</p>
+<p>We also need to introduce a new type of record called the compensation log record (CLR). A CLR describes the actions taken to undo the actions of a previous update record. It has all the fields of an update log record plus the undoNext pointer (i.e., the next-to-be-undone LSN). The DBMS adds CLRs to the log like any other record but they never need to be undone.</p>
+<p>&#x6211;&#x4EEC;&#x8FD8;&#x9700;&#x8981;&#x5F15;&#x5165;&#x4E00;&#x79CD;&#x79F0;&#x4E3A;&#x8865;&#x507F;&#x65E5;&#x5FD7;&#x8BB0;&#x5F55;&#xFF08;CLR&#xFF09;&#x7684;&#x65B0;&#x578B;&#x8BB0;&#x5F55;&#x3002;CLR &#x63CF;&#x8FF0;&#x4E86;&#x4E3A;&#x64A4;&#x9500;&#x5148;&#x524D;&#x66F4;&#x65B0;&#x8BB0;&#x5F55;&#x7684;&#x64CD;&#x4F5C;&#x800C;&#x91C7;&#x53D6;&#x7684;&#x64CD;&#x4F5C;&#x3002;&#x5B83;&#x5177;&#x6709;&#x66F4;&#x65B0;&#x65E5;&#x5FD7;&#x8BB0;&#x5F55;&#x6240;&#x6709;&#x5B57;&#x6BB5;&#x4EE5;&#x53CA; undoNext &#x6307;&#x9488;&#xFF08;&#x5373;&#x4E0B;&#x4E00;&#x4E2A;&#x8981;&#x64A4;&#x9500;&#x7684; LSN&#xFF09;. DBMS &#x50CF;&#x5176;&#x4ED6;&#x8BB0;&#x5F55;&#x4E00;&#x6837;&#x5C06; CLR &#x6DFB;&#x52A0;&#x5230;&#x65E5;&#x5FD7;&#x4E2D;&#xFF0C;&#x4F46;&#x662F;&#x5B83;&#x4EEC;&#x6C38;&#x8FDC;&#x4E0D;&#x9700;&#x8981;&#x88AB;&#x64A4;&#x9500;&#x3002;</p>
+<p>To abort a transaction, the DBMS first appends a ABORT record to the log buffer in memory. It then undoes the transaction&#x2019;s updates in reverse order to remove their effects from the database. For each undone update, the DBMS creates CLR entry in the log and restore old value. After all of the aborted transaction&#x2019;s updates are reversed, the DBMS then writes a TXN-END log record.</p>
+<p>&#x8981;&#x4E2D;&#x6B62;&#x4E8B;&#x52A1;&#xFF0C;DBMS &#x9996;&#x5148;&#x9700;&#x8981;&#x5C06; ABORT &#x8BB0;&#x5F55;&#x8FFD;&#x52A0;&#x5230;&#x5185;&#x5B58;&#x4E2D;&#x7684;&#x65E5;&#x5FD7;&#x7F13;&#x51B2;&#x533A;&#x3002;&#x7136;&#x540E;&#x5B83;&#x4EEC;&#x4EE5;&#x76F8;&#x53CD;&#x7684;&#x987A;&#x5E8F;&#x64A4;&#x9500;&#x4E8B;&#x52A1;&#x7684;&#x66F4;&#x65B0;&#xFF0C;&#x4EE5;&#x4ECE;&#x6570;&#x636E;&#x5E93;&#x4E2D;&#x5220;&#x9664;&#x5B83;&#x4EEC;&#x7684;&#x5F71;&#x54CD;&#x3002;&#x5BF9;&#x4E8E;&#x6BCF;&#x4E2A;&#x64A4;&#x9500;&#x7684;&#x66F4;&#x65B0;&#xFF0C;DBMS &#x5728;&#x65E5;&#x5FD7;&#x4E2D;&#x521B;&#x5EFA; CLR &#x6761;&#x76EE;&#x5E76;&#x6062;&#x590D;&#x5176;&#x65E7;&#x503C;&#x3002;&#x5728;&#x6240;&#x6709;&#x5DF2;&#x4E2D;&#x6B62;&#x7684;&#x4E8B;&#x52A1;&#x66F4;&#x65B0;&#x5168;&#x90E8;&#x90FD;&#x88AB;&#x56DE;&#x6EDA;&#x4EE5;&#x540E;&#xFF0C;DBMS &#x5C06;&#x5199;&#x5165;&#x4E00;&#x4E2A; TXN-END &#x7684;&#x65E5;&#x5FD7;&#x8BB0;&#x5F55;</p>
+<h2 id="checkpointing">Checkpointing</h2>
+<p>The DBMS periodically takes checkpoints where it writes the dirty pages in its buffer pool out to disk. This is used to minimize how much of the log it has to replay upon recovery.</p>
+<p>DBMS &#x5B9A;&#x671F;&#x7684;&#x83B7;&#x53D6;&#x68C0;&#x67E5;&#x70B9;&#xFF0C;&#x5C06;&#x7F13;&#x51B2;&#x533A;&#x4E2D;&#x7684;&#x810F;&#x9875;&#x5199;&#x5165;&#x78C1;&#x76D8;&#x3002;&#x5B83;&#x7684;&#x4F5C;&#x7528;&#x662F;&#x6700;&#x5C0F;&#x5316;&#x6062;&#x590D;&#x65F6;&#x5FC5;&#x987B;&#x91CD;&#x64AD;&#x7684;&#x65E5;&#x5FD7;&#x91CF;</p>
+<p>We first discuss two blocking checkpoint methods where the DBMS pauses transactions during the checkpoint process. This pausing is necessary to ensure that the DBMS does not miss updates to pages during the checkpoint. We then present a better approach that allows transactions to continue to execute during the checkpoint but requires the DBMS to record additional information to determine what updates it may have missed.</p>
+<p>&#x6211;&#x4EEC;&#x9996;&#x5148;&#x8BA8;&#x8BBA;&#x4E24;&#x79CD;&#x963B;&#x585E;&#x521B;&#x5EFA;&#x68C0;&#x67E5;&#x70B9;&#x7684;&#x65B9;&#x6CD5;&#xFF0C;&#x5176;&#x4E2D;DBMS&#x5728;&#x521B;&#x5EFA;&#x68C0;&#x67E5;&#x70B9;&#x8FC7;&#x7A0B;&#x4E2D;&#x9700;&#x8981;&#x6682;&#x505C;&#x4E8B;&#x52A1;&#x3002;&#x8FD9;&#x79CD;&#x6682;&#x505C;&#x662F;&#x5FC5;&#x8981;&#x7684;&#xFF0C;&#x4EE5;&#x786E;&#x4FDD; DBMS &#x5728;&#x521B;&#x5EFA;&#x68C0;&#x67E5;&#x70B9;&#x7684;&#x671F;&#x95F4;&#x4E0D;&#x4F1A;&#x4E22;&#x5931;&#x5BF9;&#x9875;&#x9762;&#x7684;&#x66F4;&#x65B0;&#x64CD;&#x4F5C;&#x3002;&#x6211;&#x4EEC;&#x6709;&#x63D0;&#x51FA;&#x4E86;&#x4E00;&#x79CD;&#x66F4;&#x597D;&#x7684;&#x65B9;&#x6CD5;&#xFF0C;&#x5141;&#x8BB8;&#x4E8B;&#x52A1;&#x5728;&#x521B;&#x5EFA;&#x68C0;&#x67E5;&#x70B9;&#x671F;&#x95F4;&#x7EE7;&#x7EED;&#x6267;&#x884C;&#xFF0C;&#x4F46;&#x662F;&#x9700;&#x8981; DBMS &#x5B58;&#x50A8;&#x9644;&#x52A0;&#x7684;&#x4FE1;&#x606F;&#x4EE5;&#x786E;&#x5B9A;&#x5B83;&#x53EF;&#x80FD;&#x9519;&#x8FC7;&#x7684;&#x66F4;&#x65B0;&#x64CD;&#x4F5C;</p>
+<h3 id="blocking-checkpoints">Blocking Checkpoints</h3>
+<p>The DBMS halts everything when it takes a checkpoint to ensure that it writes a consistent snapshot of the database to disk. The is the same approach discussed in previous lecture:</p>
+<p>DBMS &#x5728;&#x521B;&#x5EFA;&#x68C0;&#x67E5;&#x70B9;&#x7684;&#x65F6;&#x5019;&#x4F1A;&#x6682;&#x505C;&#x6240;&#x6709;&#x7684;&#x64CD;&#x4F5C;&#xFF0C;&#x4EE5;&#x786E;&#x4FDD;&#x5C06;&#x6570;&#x636E;&#x5E93;&#x7684;&#x4E00;&#x81F4;&#x6027;&#x5FEB;&#x7167;&#x5199;&#x5165;&#x5230;&#x78C1;&#x76D8;&#x4E2D;&#x3002;&#x8FD9;&#x4E0E;&#x4E0A;&#x4E00;&#x5C06;&#x4E2D;&#x8BA8;&#x8BBA;&#x7684;&#x65B9;&#x6CD5;&#x76F8;&#x540C;&#xFF1A;</p>
+<p>&#x2022; Halt the start of any new transactions.</p>
+<p>&#x505C;&#x6B62;&#x4EFB;&#x4F55;&#x65B0;&#x4E8B;&#x7269;&#x7684;&#x5F00;&#x59CB;</p>
+<p>&#x2022; Wait until all active transactions finish executing.</p>
+<p>&#x7B49;&#x6240;&#x6709;&#x6D3B;&#x52A8;&#x4E2D;&#x7684;&#x4E8B;&#x52A1;&#x90FD;&#x6267;&#x884C;&#x5B8C;&#x6210;</p>
+<p>&#x2022; Flush dirty pages on disk.</p>
+<p>&#x5237;&#x65B0;&#x78C1;&#x76D8;&#x4E0A;&#x7684;&#x810F;&#x9875;</p>
+<h3 id="slightly-better-blocking-checkpoints">Slightly Better Blocking Checkpoints</h3>
+<p>&#x66F4;&#x597D;&#x7684;&#x963B;&#x585E;&#x5F0F;&#x68C0;&#x67E5;&#x70B9;&#x521B;&#x5EFA;</p>
+<p>Like previous checkpoint scheme except that you the DBMS does not have to wait for active transactions to
+finish executing. We have to now record internal system state as of the beginning of the checkpoint.</p>
+<p>&#x4E0E;&#x4E4B;&#x524D;&#x521B;&#x5EFA;&#x68C0;&#x67E5;&#x70B9;&#x7684;&#x65B9;&#x6848;&#x7C7B;&#x4F3C;&#xFF0C;&#x53EA;&#x662F; DBMS &#x4E0D;&#x5FC5;&#x7B49;&#x5F85;&#x6240;&#x6709;&#x6D3B;&#x52A8;&#x7684;&#x4E8B;&#x52A1;&#x5B8C;&#x6210;&#x6267;&#x884C;&#x3002;&#x6211;&#x4EEC;&#x5FC5;&#x987B;&#x8BB0;&#x5F55;&#x521B;&#x5EFA;&#x68C0;&#x67E5;&#x70B9;&#x5F00;&#x59CB;&#x65F6;&#x5185;&#x90E8;&#x7684;&#x7CFB;&#x7EDF;&#x72B6;&#x6001;</p>
+<p>&#x2022; Halt the start of any new transactions.</p>
+<p>&#x505C;&#x6B62;&#x4EFB;&#x4F55;&#x65B0;&#x4E8B;&#x7269;&#x7684;&#x5F00;&#x59CB;</p>
+<p>&#x2022; Pause transactions while the DBMS takes the checkpoint</p>
+<p>&#x5728;DBMS&#x6267;&#x884C;&#x68C0;&#x67E5;&#x70B9;&#x7684;&#x65F6;&#x5019;&#x6682;&#x505C;&#x4E8B;&#x52A1;</p>
+<p>Active Transaction Table (ATT): The ATT represents the state of transactions that are actively running in the DBMS. A transaction&#x2019;s entry is removed after the DBMS completes the commit/abort process for that transaction. For each transaction entry, the ATT contains the following information:</p>
+<p>&#x6D3B;&#x52A8;&#x4E8B;&#x52A1;&#x8868;&#xFF08;ATT&#xFF09;: ATT &#x8868;&#x793A;&#x5728; DBMS &#x4E2D;&#x6B63;&#x5728;&#x8FD0;&#x884C;&#x7684;&#x4E8B;&#x52A1;&#x7684;&#x72B6;&#x6001;&#xFF0C;&#x5728; DBMS &#x5B8C;&#x6210;&#x8BE5;&#x4E8B;&#x52A1;&#x63D0;&#x4EA4; / &#x4E2D;&#x6B62;&#x8FC7;&#x7A0B;&#x4E4B;&#x540E;&#xFF0C;&#x5C06;&#x5220;&#x9664;&#x8BE5;&#x4E8B;&#x52A1;&#x7684;&#x6761;&#x76EE;&#x3002;&#x5BF9;&#x4E8E;&#x6BCF;&#x4E2A;&#x4E8B;&#x52A1;&#x6761;&#x76EE;&#xFF0C;ATT &#x5305;&#x542B;&#x4EE5;&#x4E0B;&#x4FE1;&#x606F;&#xFF1A;</p>
+<p>&#x2022; transactionId: Unique transaction identifier</p>
+<p>&#x4E8B;&#x52A1; ID&#xFF1A;&#x4E8B;&#x52A1;&#x7684;&#x552F;&#x4E00;&#x6807;&#x8BC6;</p>
+<p>&#x2022; status: the current &#x201C;mode&#x201D; of the transaction (Running, Committing, Undo candidate)</p>
+<p>&#x72B6;&#x6001;&#xFF1A;&#x4E8B;&#x52A1;&#x5F53;&#x524D;&#x7684;&#x6A21;&#x5F0F; &#xFF08;&#x8FD0;&#x884C;&#x4E2D;&#xFF0C;&#x63D0;&#x4EA4;&#x4E2D;&#xFF0C;&#x64A4;&#x9500;&#x5019;&#x9009;&#xFF09;</p>
+<p>&#x2022; lastLSN: Most recent LSN written by transaction</p>
+<p>lastLSN&#xFF1A;&#x4E8B;&#x52A1;&#x5199;&#x5165;&#x6700;&#x65B0;&#x7684; LSN</p>
+<p>Dirty Page Table (DPT): The DPT contains information about the pages in the buffer pool that were modified by uncommitted transactions. There is one entry per dirty page containing the recLSN (i.e., the LSN of the log record that first caused the page to be dirty).</p>
+<p>&#x810F;&#x9875;&#x8868;&#xFF08;DPT&#xFF09;: DPT &#x5305;&#x542B;&#x6709;&#x5173;&#x7F13;&#x51B2;&#x6C60;&#x4E2D;&#x7531;&#x672A;&#x63D0;&#x4EA4;&#x4E8B;&#x52A1;&#x4FEE;&#x6539;&#x7684;&#x9875;&#x9762;&#x4FE1;&#x606F;&#x3002;&#x6BCF;&#x4E2A;&#x810F;&#x9875;&#x7531;&#x4E00;&#x4E2A;&#x6761;&#x76EE;&#x5305;&#x542B; &#xFF08;recLSN&#xFF09;- &#x5373;&#xFF0C;&#x9996;&#x5148;&#x5BFC;&#x81F4;&#x9875;&#x9762;&#x53D8;&#x810F;&#x7684;&#x65E5;&#x5FD7;&#x8BB0;&#x5F55;&#x7684; LSN</p>
+<h3 id="fuzzy-checkpoints--&#x6A21;&#x7CCA;&#x68C0;&#x67E5;&#x70B9;">Fuzzy Checkpoints  &#x6A21;&#x7CCA;&#x68C0;&#x67E5;&#x70B9;</h3>
+<p>A fuzzy checkpoint is where the DBMS allows other transactions to continue to run. This is what ARIES uses in its protocol.</p>
+<p>&#x6A21;&#x7CCA;&#x68C0;&#x67E5;&#x70B9;&#x662F;DBMS&#x5141;&#x8BB8;&#x5176;&#x4ED6;&#x4E8B;&#x52A1;&#x7EE7;&#x7EED;&#x8FD0;&#x884C;&#x7684;&#x5730;&#x65B9;&#xFF0C;&#x8FD9;&#x662F; ARIES &#x5728;&#x5176;&#x534F;&#x8BAE;&#x4E2D;&#x4F7F;&#x7528;&#x7684;&#x5185;&#x5BB9;</p>
+<p>The DBMS uses additional log records to track checkpoint boundaries:</p>
+<p>DBMS &#x4F7F;&#x7528;&#x989D;&#x5916;&#x7684;&#x65E5;&#x5FD7;&#x8BB0;&#x5F55;&#x6765;&#x8DDF;&#x8E2A;&#x68C0;&#x67E5;&#x70B9;&#x8FB9;&#x754C;</p>
+<p>&#x2022; <checkpoint-begin>: Indicates the start of the checkpoint.</checkpoint-begin></p>
+<p>&#x2022; <checkpoint-begin>: &#x8868;&#x793A;&#x68C0;&#x67E5;&#x70B9;&#x7684;&#x5F00;&#x59CB;</checkpoint-begin></p>
+<p>&#x2022; <checkpoint-end>: When the checkpoint has completed. It contains the ATT + DPT.</checkpoint-end></p>
+<p>&#x2022; <checkpoint-end>: &#x68C0;&#x67E5;&#x70B9;&#x521B;&#x5EFA;&#x5B8C;&#x6210;&#x65F6;&#x3002;&#x5B83;&#x5305;&#x542B;&#x4E86; ATT + DPT</checkpoint-end></p>
+<h2 id="aries-recovery---aries-&#x6062;&#x590D;">ARIES Recovery   ARIES &#x6062;&#x590D;</h2>
+<p>The ARIES protocol is comprised of three phases. Upon start-up after a crash, the DBMS will execute the following phases:</p>
+<p>ARIES &#x534F;&#x8BAE;&#x7531;&#x4E09;&#x4E2A;&#x9636;&#x6BB5;&#x7EC4;&#x6210;&#x3002;&#x5728;&#x5D29;&#x6E83;&#x540E;&#x542F;&#x52A8;&#x65F6;&#xFF0C;DBMS &#x5C06;&#x6267;&#x884C;&#x4EE5;&#x4E0B;&#x9636;&#x6BB5;&#xFF1A;</p>
+<ol>
+<li>Analysis: Read the WAL to identify dirty pages in the buffer pool and active transactions at the time of the crash.</li>
+</ol>
+<p>&#x5206;&#x6790;&#xFF1A;&#x8BFB;&#x53D6; WAL &#x4EE5;&#x8BC6;&#x522B;&#x5D29;&#x6E83;&#x65F6;&#x7F13;&#x51B2;&#x6C60;&#x4E2D;&#x810F;&#x9875;&#x548C;&#x6D3B;&#x52A8;&#x7684;&#x4E8B;&#x52A1;</p>
+<ol>
+<li>Redo: Repeat all actions starting from an appropriate point in the log.</li>
+</ol>
+<p>&#x91CD;&#x505A;&#xFF1A;&#x5728;&#x65E5;&#x5FD7;&#x4E2D;&#x7684;&#x9002;&#x5F53;&#x70B9;&#x5F00;&#x59CB;&#x91CD;&#x590D;&#x6240;&#x6709;&#x64CD;&#x4F5C;</p>
+<ol>
+<li>Undo: Reverse the actions of transactions that did not commit before the crash.</li>
+</ol>
+<p>&#x64A4;&#x9500;&#xFF1A;&#x64A4;&#x9500;&#x5728;&#x5D29;&#x6E83;&#x524D;&#x6CA1;&#x6709;&#x63D0;&#x4EA4;&#x7684;&#x4E8B;&#x52A1;&#x7684;&#x64CD;&#x4F5C;</p>
+<h3 id="analysis-phase--&#x5206;&#x6790;&#x9636;&#x6BB5;">Analysis Phase  &#x5206;&#x6790;&#x9636;&#x6BB5;</h3>
+<p>Start from last checkpoint found via the database&#x2019;s MasterRecord LSN.</p>
+<p>&#x4ECE;&#x6570;&#x636E;&#x5E93;&#x7684;  MasterRecord LSN &#x627E;&#x5230;&#x6700;&#x540E;&#x4E00;&#x4E2A;&#x68C0;&#x67E5;&#x70B9;&#x5F00;&#x59CB;</p>
+<p>&#x2022; Scan log forward from the checkpoint.</p>
+<p>&#x4ECE;&#x68C0;&#x67E5;&#x70B9;&#x5411;&#x524D;&#x626B;&#x63CF;&#x65E5;&#x5FD7;</p>
+<p>&#x2022; If the DBMS finds a TXN-END record, remove its transaction from ATT.</p>
+<p>&#x5982;&#x679C; DBMS &#x627E;&#x5230;&#x4E00;&#x6761; TXN-END &#x8BB0;&#x5F55;&#xFF0C;&#x5219;&#x4ECE; ATT &#x4E2D;&#x5220;&#x9664;&#x5176;&#x4E8B;&#x52A1;</p>
+<p>&#x2022; All other records, add transaction to ATT with status UNDO, and on commit, change transaction status to COMMIT.</p>
+<p>&#x6240;&#x6709;&#x5176;&#x4ED6;&#x8BB0;&#x5F55;&#xFF0C;&#x5C06;&#x4E8B;&#x52A1;&#x6DFB;&#x52A0;&#x5230;&#x72B6;&#x6001;&#x4E3A; UNDO &#x7684; ATT, &#x5E76;&#x5728;&#x63D0;&#x4EA4;&#x65F6;&#x5C06;&#x4E8B;&#x52A1;&#x72B6;&#x6001;&#x6539;&#x4E3A; COMMIT</p>
+<p>&#x2022; For UPDATE log records, if page P is not in the DPT, then add P to DPT and set P&#x2019;s recLSN to the log record&#x2019;s LSN.</p>
+<p>&#x5BF9;&#x4E8E; UPDATE &#x7684;&#x65E5;&#x5FD7;&#x8BB0;&#x5F55;&#xFF0C;&#x5982;&#x679C;&#x9875;&#x9762; P &#x4E0D;&#x5728; DPT &#x4E2D;&#xFF0C;&#x5219;&#x5C06; P &#x6DFB;&#x52A0;&#x5230; DPT &#x4E2D;&#x5E76;&#x5C06;  P &#x7684; recLSN &#x8BBE;&#x7F6E;&#x4E3A;&#x65E5;&#x5FD7;&#x8BB0;&#x5F55;&#x7684; LSN</p>
+<h3 id="redo-phase-&#x91CD;&#x505A;&#x9636;&#x6BB5;">Redo Phase &#x91CD;&#x505A;&#x9636;&#x6BB5;</h3>
+<p>The goal is to repeat history to reconstruct state at the moment of the crash. Reapply all updates (even aborted transactions) and redo CLRs.</p>
+<p>&#x76EE;&#x6807;&#x662F;&#x91CD;&#x590D;&#x5386;&#x53F2;&#x64CD;&#x4F5C;&#x4EE5;&#x91CD;&#x5EFA;&#x5D29;&#x6E83;&#x65F6;&#x5019;&#x7684;&#x72B6;&#x6001;&#xFF0C;&#x91CD;&#x65B0; APPLY &#x6240;&#x6709;&#x7684;&#x66F4;&#x65B0;&#x5E76;&#x91CD;&#x505A; CLR</p>
+<p>The DBMS scans forward from log record containing smallest recLSN in the DPT. For each update log record or CLR with a given LSN, the DBMS re-applies the update unless:</p>
+<p>DBMS &#x4ECE; DPT &#x4E2D;&#x5305;&#x542B;&#x6700;&#x5C0F;&#x7684; recLSN &#x7684;&#x65E5;&#x5FD7;&#x8BB0;&#x5F55;&#x5F00;&#x59CB;&#x5411;&#x524D;&#x626B;&#x63CF;&#xFF0C;&#x5BF9;&#x4E8E;&#x5177;&#x6709;&#x7ED9;&#x5B9A; LSN &#x7684;&#x6BCF;&#x4E2A;&#x66F4;&#x65B0;&#x65E5;&#x5FD7;&#x8BB0;&#x5F55;&#x6216;&#x8005; CLR &#xFF0C;DBMS &#x4F1A;&#x91CD;&#x65B0;&#x5E94;&#x7528;&#x66F4;&#x65B0;&#x64CD;&#x4F5C;&#xFF0C;&#x9664;&#x975E;&#xFF1A;</p>
+<p>&#x2022; Affected page is not in the DPT, or</p>
+<p>&#x53D7;&#x5F71;&#x54CD;&#x7684;&#x9875;&#x9762;&#x4E0D;&#x5728; DPT &#x4E2D;&#xFF0C;&#x6216;&#x8005;</p>
+<p>&#x2022; Affected page is in DPT but that record&#x2019;s LSN is greater than smallest recLSN, or</p>
+<p>&#x53D7;&#x5F71;&#x54CD;&#x7684;&#x9875;&#x9762;&#x5728; DPT &#x4E2D;&#xFF0C;&#x4F46;&#x662F;&#x8BE5;&#x8BB0;&#x5F55;&#x7684; LSN &#x5927;&#x4E8E;&#x6700;&#x5C0F;&#x7684; recLSN, &#x6216;&#x8005;</p>
+<p>&#x2022; Affected pageLSN (on disk) &#x2265; LSN.</p>
+<p>&#x53D7;&#x5F71;&#x54CD;&#x7684; pageLSN &gt; LSN</p>
+<p>To redo an action, the DBMS re-applies the change in the log record and then sets the affected page&#x2019;s pageLSN to that log record&#x2019;s LSN.</p>
+<p>&#x8981;&#x91CD;&#x505A;&#x64CD;&#x4F5C;&#xFF0C;DBMS &#x91CD;&#x65B0;&#x5E94;&#x7528;&#x65E5;&#x5FD7;&#x8BB0;&#x5F55;&#x4E2D;&#x7684;&#x66F4;&#x6539;&#xFF0C;&#x7136;&#x540E;&#x5C06;&#x53D7;&#x5F71;&#x54CD;&#x7684;&#x9875;&#x9762;&#x7684; pageLSN &#x8BBE;&#x7F6E;&#x4E3A;&#x8BE5;&#x65E5;&#x5FD7;&#x8BB0;&#x5F55;&#x7684; LSN</p>
+<p>At the end of the redo phase, write TXN-END log records for all transactions with status COMMIT and remove them from the ATT.</p>
+<p>&#x5728;&#x91CD;&#x505A;&#x9636;&#x6BB5;&#x7ED3;&#x675F;&#x65F6;&#xFF0C;&#x4E3A;&#x6240;&#x6709;&#x72B6;&#x6001;&#x4E3A; COMMIT &#x7684;&#x4E8B;&#x52A1;&#x5199;&#x5165; TXN-END &#x65E5;&#x5FD7;&#x8BB0;&#x5F55;&#xFF0C;&#x5E76;&#x5C06;&#x5B83;&#x4EEC;&#x4ECE; ATT &#x4E2D;&#x5220;&#x9664;</p>
+<h3 id="undo-phase--&#x64A4;&#x9500;&#x9636;&#x6BB5;">Undo Phase  &#x64A4;&#x9500;&#x9636;&#x6BB5;</h3>
+<p>In the last phase, the DBMS reverses all transactions that were active at the time of crash. These are all transactions with UNDO status in the ATT after the Analysis phase.</p>
+<p>&#x5728;&#x6700;&#x540E;&#x4E00;&#x4E2A;&#x9636;&#x6BB5;&#xFF0C;DBMS &#x4F1A;&#x56DE;&#x6EDA;&#x6240;&#x6709;&#x5D29;&#x6E83;&#x65F6;&#x5904;&#x4E8E;&#x6D3B;&#x52A8;&#x72B6;&#x6001;&#x4E2D;&#x7684;&#x6240;&#x6709;&#x4E8B;&#x52A1;&#x3002;&#x8FD9;&#x4E9B;&#x90FD;&#x662F;&#x5728;&#x5206;&#x6790;&#x9636;&#x6BB5;&#x4E4B;&#x540E;&#x5728; ATT &#x4E2D;&#x6709; UNDO &#x72B6;&#x6001;&#x7684;&#x4E8B;&#x52A1;</p>
+<p>The DBMS processes transactions in reverse LSN order using the lastLSN to speed up traversal. As it reverses the updates of a transaction, the DBMS writes a CLR entry to the log for each modification.</p>
+<p>DBMS &#x4F7F;&#x7528; lastLSN &#x4EE5;&#x53CD;&#x8F6C; LSN &#x987A;&#x5E8F;&#x5904;&#x7406;&#x4E8B;&#x52A1;&#x4EE5;&#x52A0;&#x5FEB;&#x904D;&#x5386;&#x901F;&#x5EA6;&#xFF0C;&#x5F53;&#x5B83;&#x53CD;&#x5411;&#x7684;&#x904D;&#x5386;&#x4E8B;&#x52A1;&#x66F4;&#x65B0;&#x65F6;&#xFF0C;DBMS &#x4F1A;&#x4E3A;&#x6BCF;&#x6B21;&#x4FEE;&#x6539;&#x5199;&#x5165;&#x4E00;&#x4E2A; CLR &#x6761;&#x76EE;&#x5230;&#x65E5;&#x5FD7;&#x4E2D; </p>
+<p>Once the last transaction has been successfully aborted, the DBMS flushes out the log and then is ready to start processing new transactions.</p>
+<p>&#x4E00;&#x65E6;&#x6700;&#x540E;&#x4E00;&#x4E2A;&#x4E8B;&#x52A1;&#x6210;&#x529F;&#x4E2D;&#x6B62;&#xFF0C;DBMS &#x5C31;&#x4F1A;&#x5237;&#x65B0;&#x65E5;&#x5FD7;&#xFF0C;&#x7136;&#x540E;&#x51C6;&#x5907;&#x5F00;&#x59CB;&#x5904;&#x7406;&#x65B0;&#x7684;&#x4E8B;&#x52A1;</p>
 
                                 
                                 </section>
@@ -1450,7 +1597,7 @@
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"第二一讲","level":"1.3.21","depth":2,"next":{"title":"第二二讲","level":"1.3.22","depth":2,"path":"cmu15455/LEC22.md","ref":"cmu15455/LEC22.md","articles":[]},"previous":{"title":"第二十讲","level":"1.3.20","depth":2,"path":"cmu15455/LEC20.md","ref":"cmu15455/LEC20.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"cmu15455/LEC21.md","mtime":"2022-04-17T03:17:05.194Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2022-04-27T00:14:21.207Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"第二一讲","level":"1.3.21","depth":2,"next":{"title":"第二二讲","level":"1.3.22","depth":2,"path":"cmu15455/LEC22.md","ref":"cmu15455/LEC22.md","articles":[]},"previous":{"title":"第二十讲","level":"1.3.20","depth":2,"path":"cmu15455/LEC20.md","ref":"cmu15455/LEC20.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"cmu15455/LEC21.md","mtime":"2022-05-05T00:25:34.648Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2022-05-05T00:26:13.799Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

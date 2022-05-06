@@ -1,1563 +1,1677 @@
-
 <!DOCTYPE HTML>
-<html lang="" >
-    <head>
-        <meta charset="UTF-8">
-        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
-        <title>第十讲 · GitBook</title>
-        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-        <meta name="description" content="">
-        <meta name="generator" content="GitBook 3.2.3">
-        
-        
-        
-    
+<html lang="">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+    <title>第十讲 · GitBook</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="description" content="">
+    <meta name="generator" content="GitBook 3.2.3">
+
+
+
+
     <link rel="stylesheet" href="../gitbook/style.css">
 
-    
-            
-                
-                <link rel="stylesheet" href="../gitbook/gitbook-plugin-highlight/website.css">
-                
-            
-                
-                <link rel="stylesheet" href="../gitbook/gitbook-plugin-search/search.css">
-                
-            
-                
-                <link rel="stylesheet" href="../gitbook/gitbook-plugin-fontsettings/website.css">
-                
-            
-        
 
-    
 
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
 
-        
-    
-    
-    <meta name="HandheldFriendly" content="true"/>
+    <link rel="stylesheet" href="../gitbook/gitbook-plugin-highlight/website.css">
+
+
+
+    <link rel="stylesheet" href="../gitbook/gitbook-plugin-search/search.css">
+
+
+
+    <link rel="stylesheet" href="../gitbook/gitbook-plugin-fontsettings/website.css">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <meta name="HandheldFriendly" content="true" />
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152"
+        href="../gitbook/images/apple-touch-icon-precomposed-152.png">
     <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
 
-    
+
     <link rel="next" href="LEC11.html" />
-    
-    
+
+
     <link rel="prev" href="LEC9.html" />
-    
 
-    </head>
-    <body>
-        
-<div class="book">
-    <div class="book-summary">
-        
-            
-<div id="book-search-input" role="search">
-    <input type="text" placeholder="Type to search" />
-</div>
 
-            
-                <nav role="navigation">
-                
+</head>
 
+<body>
 
-<ul class="summary">
-    
-    
+    <div class="book">
+        <div class="book-summary">
 
-    
 
-    
-        
-        
-    
-        <li class="chapter " data-level="1.1" data-path="../">
-            
-                <a href="../">
-            
-                    
-                    关于这个小本子
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.2" data-path="../CONTRIBUTION.html">
-            
-                <a href="../CONTRIBUTION.html">
-            
-                    
-                    如何贡献
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.3" >
-            
-                <span>
-            
-                    
-                    cmu15455 Introduction to DataBase Systems
-            
-                </span>
-            
-
-            
-            <ul class="articles">
-                
-    
-        <li class="chapter " data-level="1.3.1" data-path="LEC1.html">
-            
-                <a href="LEC1.html">
-            
-                    
-                    第一讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.3.2" data-path="LEC2.html">
-            
-                <a href="LEC2.html">
-            
-                    
-                    第二讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.3.3" data-path="LEC3.html">
-            
-                <a href="LEC3.html">
-            
-                    
-                    第三讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.3.4" data-path="LEC4.html">
-            
-                <a href="LEC4.html">
-            
-                    
-                    第四讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.3.5" data-path="LEC5.html">
-            
-                <a href="LEC5.html">
-            
-                    
-                    第五讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.3.6" data-path="LEC6.html">
-            
-                <a href="LEC6.html">
-            
-                    
-                    第六讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.3.7" data-path="LEC7.html">
-            
-                <a href="LEC7.html">
-            
-                    
-                    第七讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.3.8" data-path="LEC8.html">
-            
-                <a href="LEC8.html">
-            
-                    
-                    第八讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.3.9" data-path="LEC9.html">
-            
-                <a href="LEC9.html">
-            
-                    
-                    第九讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter active" data-level="1.3.10" data-path="LEC10.html">
-            
-                <a href="LEC10.html">
-            
-                    
-                    第十讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.3.11" data-path="LEC11.html">
-            
-                <a href="LEC11.html">
-            
-                    
-                    第十一讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.3.12" data-path="LEC12.html">
-            
-                <a href="LEC12.html">
-            
-                    
-                    第十二讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.3.13" data-path="LEC13.html">
-            
-                <a href="LEC13.html">
-            
-                    
-                    第十三讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.3.14" data-path="LEC14.html">
-            
-                <a href="LEC14.html">
-            
-                    
-                    第十四讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.3.15" data-path="LEC15.html">
-            
-                <a href="LEC15.html">
-            
-                    
-                    第十五讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.3.16" data-path="LEC16.html">
-            
-                <a href="LEC16.html">
-            
-                    
-                    第十六讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.3.17" data-path="LEC17.html">
-            
-                <a href="LEC17.html">
-            
-                    
-                    第十七讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.3.18" data-path="LEC18.html">
-            
-                <a href="LEC18.html">
-            
-                    
-                    第十八讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.3.19" data-path="LEC19.html">
-            
-                <a href="LEC19.html">
-            
-                    
-                    第十九讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.3.20" data-path="LEC20.html">
-            
-                <a href="LEC20.html">
-            
-                    
-                    第二十讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.3.21" data-path="LEC21.html">
-            
-                <a href="LEC21.html">
-            
-                    
-                    第二一讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.3.22" data-path="LEC22.html">
-            
-                <a href="LEC22.html">
-            
-                    
-                    第二二讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-
-            </ul>
-            
-        </li>
-    
-        <li class="chapter " data-level="1.4" >
-            
-                <span>
-            
-                    
-                    cmu15-213 Introdution to Computer Systems
-            
-                </span>
-            
-
-            
-            <ul class="articles">
-                
-    
-        <li class="chapter " data-level="1.4.1" data-path="../cmu15213/LEC1.html">
-            
-                <a href="../cmu15213/LEC1.html">
-            
-                    
-                    第一讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.4.2" data-path="../cmu15213/LEC2.html">
-            
-                <a href="../cmu15213/LEC2.html">
-            
-                    
-                    第二讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.4.3" data-path="../cmu15213/LEC3.html">
-            
-                <a href="../cmu15213/LEC3.html">
-            
-                    
-                    第三讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.4.4" data-path="../cmu15213/LEC4.html">
-            
-                <a href="../cmu15213/LEC4.html">
-            
-                    
-                    第四讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.4.5" data-path="../cmu15213/LEC5.html">
-            
-                <a href="../cmu15213/LEC5.html">
-            
-                    
-                    第五讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.4.6" data-path="../cmu15213/LEC6.html">
-            
-                <a href="../cmu15213/LEC6.html">
-            
-                    
-                    第六讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.4.7" data-path="../cmu15213/LEC7.html">
-            
-                <a href="../cmu15213/LEC7.html">
-            
-                    
-                    第七讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.4.8" data-path="../cmu15213/LEC8.html">
-            
-                <a href="../cmu15213/LEC8.html">
-            
-                    
-                    第八讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.4.9" data-path="../cmu15213/LEC9.html">
-            
-                <a href="../cmu15213/LEC9.html">
-            
-                    
-                    第九讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.4.10" data-path="../cmu15213/LEC10.html">
-            
-                <a href="../cmu15213/LEC10.html">
-            
-                    
-                    第十讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.4.11" data-path="../cmu15213/LEC11.html">
-            
-                <a href="../cmu15213/LEC11.html">
-            
-                    
-                    第十一讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.4.12" data-path="../cmu15213/LEC12.html">
-            
-                <a href="../cmu15213/LEC12.html">
-            
-                    
-                    第十二讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.4.13" data-path="../cmu15213/LEC13.html">
-            
-                <a href="../cmu15213/LEC13.html">
-            
-                    
-                    第十三讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.4.14" data-path="../cmu15213/LEC14.html">
-            
-                <a href="../cmu15213/LEC14.html">
-            
-                    
-                    第十四讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.4.15" data-path="../cmu15213/LEC15.html">
-            
-                <a href="../cmu15213/LEC15.html">
-            
-                    
-                    第十五讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.4.16" data-path="../cmu15213/LEC16.html">
-            
-                <a href="../cmu15213/LEC16.html">
-            
-                    
-                    第十六讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.4.17" data-path="../cmu15213/LEC17.html">
-            
-                <a href="../cmu15213/LEC17.html">
-            
-                    
-                    第十七讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.4.18" data-path="../cmu15213/LEC18.html">
-            
-                <a href="../cmu15213/LEC18.html">
-            
-                    
-                    第十八讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.4.19" data-path="../cmu15213/LEC19.html">
-            
-                <a href="../cmu15213/LEC19.html">
-            
-                    
-                    第十九讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.4.20" data-path="../cmu15213/LEC20.html">
-            
-                <a href="../cmu15213/LEC20.html">
-            
-                    
-                    第二十讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.4.21" data-path="../cmu15213/LEC21.html">
-            
-                <a href="../cmu15213/LEC21.html">
-            
-                    
-                    第二一讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.4.22" data-path="../cmu15213/LEC22.html">
-            
-                <a href="../cmu15213/LEC22.html">
-            
-                    
-                    第二二讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.4.23" data-path="../cmu15213/LEC23.html">
-            
-                <a href="../cmu15213/LEC23.html">
-            
-                    
-                    第二三讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.4.24" data-path="../cmu15213/LEC24.html">
-            
-                <a href="../cmu15213/LEC24.html">
-            
-                    
-                    第二四讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.4.25" data-path="../cmu15213/LEC25.html">
-            
-                <a href="../cmu15213/LEC25.html">
-            
-                    
-                    第二五讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.4.26" data-path="../cmu15213/LEC26.html">
-            
-                <a href="../cmu15213/LEC26.html">
-            
-                    
-                    第二六讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-
-            </ul>
-            
-        </li>
-    
-        <li class="chapter " data-level="1.5" >
-            
-                <span>
-            
-                    
-                    cs106L Stanford C++
-            
-                </span>
-            
-
-            
-            <ul class="articles">
-                
-    
-        <li class="chapter " data-level="1.5.1" data-path="../cs106L/LEC1.html">
-            
-                <a href="../cs106L/LEC1.html">
-            
-                    
-                    第一讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.5.2" data-path="../cs106L/LEC2.html">
-            
-                <a href="../cs106L/LEC2.html">
-            
-                    
-                    第二讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.5.3" data-path="../cs106L/LEC3.html">
-            
-                <a href="../cs106L/LEC3.html">
-            
-                    
-                    第三讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.5.4" data-path="../cs106L/LEC4.html">
-            
-                <a href="../cs106L/LEC4.html">
-            
-                    
-                    第四讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.5.5" data-path="../cs106L/LEC5.html">
-            
-                <a href="../cs106L/LEC5.html">
-            
-                    
-                    第五讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.5.6" data-path="../cs106L/LEC6.html">
-            
-                <a href="../cs106L/LEC6.html">
-            
-                    
-                    第六讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.5.7" data-path="../cs106L/LEC7.html">
-            
-                <a href="../cs106L/LEC7.html">
-            
-                    
-                    第七讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.5.8" data-path="../cs106L/LEC8.html">
-            
-                <a href="../cs106L/LEC8.html">
-            
-                    
-                    第八讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.5.9" data-path="../cs106L/LEC9.html">
-            
-                <a href="../cs106L/LEC9.html">
-            
-                    
-                    第九讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.5.10" data-path="../cs106L/LEC10.html">
-            
-                <a href="../cs106L/LEC10.html">
-            
-                    
-                    第十讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.5.11" data-path="../cs106L/LEC11.html">
-            
-                <a href="../cs106L/LEC11.html">
-            
-                    
-                    第十一讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.5.12" data-path="../cs106L/LEC12.html">
-            
-                <a href="../cs106L/LEC12.html">
-            
-                    
-                    第十二讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.5.13" data-path="../cs106L/LEC13.html">
-            
-                <a href="../cs106L/LEC13.html">
-            
-                    
-                    第十三讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.5.14" data-path="../cs106L/LEC14.html">
-            
-                <a href="../cs106L/LEC14.html">
-            
-                    
-                    第十四讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.5.15" data-path="../cs106L/LEC15.html">
-            
-                <a href="../cs106L/LEC15.html">
-            
-                    
-                    第十五讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.5.16" data-path="../cs106L/LEC16.html">
-            
-                <a href="../cs106L/LEC16.html">
-            
-                    
-                    第十六讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.5.17" data-path="../cs106L/LEC17.html">
-            
-                <a href="../cs106L/LEC17.html">
-            
-                    
-                    第十七讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.5.18" data-path="../cs106L/LEC18.html">
-            
-                <a href="../cs106L/LEC18.html">
-            
-                    
-                    第十八讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.5.19" data-path="../cs106L/LEC19.html">
-            
-                <a href="../cs106L/LEC19.html">
-            
-                    
-                    第十九讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.5.20" data-path="../cs106L/LEC20.html">
-            
-                <a href="../cs106L/LEC20.html">
-            
-                    
-                    第二十讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.5.21" data-path="../cs106L/LEC21.html">
-            
-                <a href="../cs106L/LEC21.html">
-            
-                    
-                    第二一讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.5.22" data-path="../cs106L/LEC22.html">
-            
-                <a href="../cs106L/LEC22.html">
-            
-                    
-                    第二二讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-
-            </ul>
-            
-        </li>
-    
-        <li class="chapter " data-level="1.6" >
-            
-                <span>
-            
-                    
-                    mit6.824 Distributed Systems
-            
-                </span>
-            
-
-            
-            <ul class="articles">
-                
-    
-        <li class="chapter " data-level="1.6.1" data-path="../mit6824/LEC1.html">
-            
-                <a href="../mit6824/LEC1.html">
-            
-                    
-                    第一讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.6.2" data-path="../mit6824/LEC2.html">
-            
-                <a href="../mit6824/LEC2.html">
-            
-                    
-                    第二讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.6.3" data-path="../mit6824/LEC3.html">
-            
-                <a href="../mit6824/LEC3.html">
-            
-                    
-                    第三讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.6.4" data-path="../mit6824/LEC4.html">
-            
-                <a href="../mit6824/LEC4.html">
-            
-                    
-                    第四讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.6.5" data-path="../mit6824/LEC5.html">
-            
-                <a href="../mit6824/LEC5.html">
-            
-                    
-                    第五讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.6.6" data-path="../mit6824/LEC6.html">
-            
-                <a href="../mit6824/LEC6.html">
-            
-                    
-                    第六讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.6.7" data-path="../mit6824/LEC7.html">
-            
-                <a href="../mit6824/LEC7.html">
-            
-                    
-                    第七讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.6.8" data-path="../mit6824/LEC8.html">
-            
-                <a href="../mit6824/LEC8.html">
-            
-                    
-                    第八讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.6.9" data-path="../mit6824/LEC9.html">
-            
-                <a href="../mit6824/LEC9.html">
-            
-                    
-                    第九讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.6.10" data-path="../mit6824/LEC10.html">
-            
-                <a href="../mit6824/LEC10.html">
-            
-                    
-                    第十讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.6.11" data-path="../mit6824/LEC11.html">
-            
-                <a href="../mit6824/LEC11.html">
-            
-                    
-                    第十一讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.6.12" data-path="../mit6824/LEC12.html">
-            
-                <a href="../mit6824/LEC12.html">
-            
-                    
-                    第十二讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.6.13" data-path="../mit6824/LEC13.html">
-            
-                <a href="../mit6824/LEC13.html">
-            
-                    
-                    第十三讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.6.14" data-path="../mit6824/LEC14.html">
-            
-                <a href="../mit6824/LEC14.html">
-            
-                    
-                    第十四讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.6.15" data-path="../mit6824/LEC15.html">
-            
-                <a href="../mit6824/LEC15.html">
-            
-                    
-                    第十五讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.6.16" data-path="../mit6824/LEC16.html">
-            
-                <a href="../mit6824/LEC16.html">
-            
-                    
-                    第十六讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.6.17" data-path="../mit6824/LEC17.html">
-            
-                <a href="../mit6824/LEC17.html">
-            
-                    
-                    第十七讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.6.18" data-path="../mit6824/LEC18.html">
-            
-                <a href="../mit6824/LEC18.html">
-            
-                    
-                    第十八讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.6.19" data-path="../mit6824/LEC19.html">
-            
-                <a href="../mit6824/LEC19.html">
-            
-                    
-                    第十九讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.6.20" data-path="../mit6824/LEC20.html">
-            
-                <a href="../mit6824/LEC20.html">
-            
-                    
-                    第二十讲
-            
-                </a>
-            
-
-            
-        </li>
-    
-
-            </ul>
-            
-        </li>
-    
-
-    
-
-    <li class="divider"></li>
-
-    <li>
-        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
-            Published with GitBook
-        </a>
-    </li>
-</ul>
-
-
-                </nav>
-            
-        
-    </div>
-
-    <div class="book-body">
-        
-            <div class="body-inner">
-                
-                    
-
-<div class="book-header" role="navigation">
-    
-
-    <!-- Title -->
-    <h1>
-        <i class="fa fa-circle-o-notch fa-spin"></i>
-        <a href=".." >第十讲</a>
-    </h1>
-</div>
-
-
-
-
-                    <div class="page-wrapper" tabindex="-1" role="main">
-                        <div class="page-inner">
-                            
-<div id="book-search-results">
-    <div class="search-noresults">
-    
-                                <section class="normal markdown-section">
-                                
-                                <h1 id="lecture-10-sorting--aggregation-altorithms-&#x6392;&#x5E8F;--&#x805A;&#x96C6;&#x7B97;&#x6CD5;">Lecture 10 Sorting &amp; Aggregation Altorithms &#x6392;&#x5E8F; &amp; &#x805A;&#x96C6;&#x7B97;&#x6CD5;</h1>
-<h2 id="sorting-&#x6392;&#x5E8F;">Sorting &#x6392;&#x5E8F;</h2>
-<p>We need sorting because in the relation model, tuples in a table have no specific order Sorting is (potentially) used in ORDER BY, GROUP BY, JOIN, and DISTINCT operators.</p>
-<p>&#x6211;&#x4EEC;&#x9700;&#x8981;&#x6392;&#x5E8F;&#xFF0C;&#x56E0;&#x4E3A;&#x5728;&#x5173;&#x7CFB;&#x6A21;&#x578B;&#x4E2D;&#xFF0C;&#x8868;&#x4E2D;&#x7684;&#x5143;&#x7EC4;&#x6CA1;&#x6709;&#x7279;&#x5B9A;&#x7684;&#x987A;&#x5E8F;&#x6392;&#x5E8F;&#xFF08;&#x53EF;&#x80FD;&#xFF09;&#x7528;&#x4E8E; ORDER BY&#x3001;GROUP BY&#x3001;JOIN &#x548C; DISTINCT&#x8FD0;&#x7B97;&#x7B26;&#x3002;</p>
-<p>We can accelerate sorting using a clustered B+tree by scanning the leaf nodes from left to right. This is a bad idea, however, if we use an unclustered B+tree to sort because it causes a lot of I/O reads (random access through pointer chasing).</p>
-<p>&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x901A;&#x8FC7;&#x4ECE;&#x5DE6;&#x5230;&#x53F3;&#x626B;&#x63CF;&#x805A;&#x96C6;B+&#x6811;&#x53F6;&#x8282;&#x70B9;&#x6765;&#x52A0;&#x901F;&#x6392;&#x5E8F;&#x3002;&#x4F46;&#x662F;&#xFF0C;&#x5982;&#x679C;&#x6211;&#x4EEC;&#x4F7F;&#x7528;&#x672A;&#x805A;&#x96C6;&#x7684;B+&#x6811;&#x8FDB;&#x884C;&#x6392;&#x5E8F;&#xFF0C;&#x8FD9;&#x662F;&#x4E00;&#x4E2A;&#x574F;&#x4E3B;&#x610F;&#xFF0C;&#x56E0;&#x4E3A;&#x5B83;&#x4F1A;&#x5BFC;&#x81F4;&#x5927;&#x91CF;&#x7684; I/O &#x8BFB;&#x53D6;&#xFF08;&#x901A;&#x8FC7;&#x6307;&#x9488;&#x8FFD;&#x9010;&#x8FDB;&#x884C;&#x968F;&#x673A;&#x8BBF;&#x95EE;&#xFF09;&#x3002;</p>
-<p>If the data that we need to sort fits in memory, then the DBMS can use a standard sorting algorithms (e.g., quicksort). If the data does not fit, then the DBMS needs to use external sorting that is able to spill to disk as needed and prefers sequential over random I/O.</p>
-<p>&#x5982;&#x679C;&#x6211;&#x4EEC;&#x9700;&#x8981;&#x6392;&#x5E8F;&#x7684;&#x6570;&#x636E;&#x9002;&#x5408;&#x5185;&#x5B58;&#xFF0C;&#x5219;DBMS&#x53EF;&#x4EE5;&#x4F7F;&#x7528;&#x6807;&#x51C6;&#x7684;&#x6392;&#x5E8F;&#x7B97;&#x6CD5;&#xFF08;&#x4F8B;&#x5982;&#xFF0C;&#x5FEB;&#x901F;&#x6392;&#x5E8F;&#xFF09;&#x3002;&#x5982;&#x679C;&#x6570;&#x636E;&#x4E0D;&#x5408;&#x9002;&#xFF0C;&#x5219; DBMS &#x9700;&#x8981;&#x4F7F;&#x7528;&#x80FD;&#x591F;&#x6839;&#x636E;&#x9700;&#x8981;&#x6EA2;&#x51FA;&#x5230;&#x78C1;&#x76D8;&#x7684;&#x5916;&#x90E8;&#x6392;&#x5E8F;&#xFF0C;&#x5E76;&#x4E14;&#x4F18;&#x5148;&#x9009;&#x62E9;&#x987A;&#x5E8F;&#x800C;&#x4E0D;&#x662F;&#x968F;&#x673A;I/O&#x3002;&#x3001;</p>
-<h2 id="external-merge-sort-&#x5916;&#x90E8;&#x5408;&#x5E76;&#x6392;&#x5E8F;">External Merge Sort &#x5916;&#x90E8;&#x5408;&#x5E76;&#x6392;&#x5E8F;</h2>
-<p>Divide-and-conquer sorting algorithm that splits the data set into separate runs and then sorts them individually. It can spill runs to disk as needed then read them back in one at a time.</p>
-<p>&#x5206;&#x800C;&#x6CBB;&#x4E4B;&#x6392;&#x5E8F;&#x7B97;&#x6CD5;&#xFF0C;&#x8BE5;&#x7B97;&#x6CD5;&#x5C06;&#x6570;&#x636E;&#x96C6;&#x62C6;&#x5206;&#x4E3A;&#x5355;&#x72EC;&#x7684;&#x8FD0;&#x884C;&#xFF0C;&#x7136;&#x540E;&#x5BF9;&#x5B83;&#x4EEC;&#x8FDB;&#x884C;&#x5355;&#x72EC;&#x6392;&#x5E8F;&#x3002;&#x5B83;&#x53EF;&#x4EE5;&#x6839;&#x636E;&#x9700;&#x8981;&#x5C06;&#x8FD0;&#x884C;&#x6EA2;&#x51FA;&#x5230;&#x78C1;&#x76D8;&#xFF0C;&#x7136;&#x540E;&#x4E00;&#x6B21;&#x8BFB;&#x53D6;&#x4E00;&#x4E2A;&#x3002;</p>
-<p>Phase #1 &#x2013; Sorting: Sort small chunks of data that fit in main memory, and then write back to disk.</p>
-<p>Phase #2 &#x2013; Merge: Combine sorted sub-files into a larger single file.</p>
-<p>&#x9636;&#x6BB5;#1 - &#x6392;&#x5E8F;&#xFF1A;&#x5BF9;&#x9002;&#x5408;&#x4E3B;&#x5185;&#x5B58;&#x7684;&#x5C0F;&#x5757;&#x6570;&#x636E;&#x8FDB;&#x884C;&#x6392;&#x5E8F;&#xFF0C;&#x7136;&#x540E;&#x5199;&#x56DE;&#x78C1;&#x76D8;&#x3002;</p>
-<p>&#x9636;&#x6BB5;#2 - &#x5408;&#x5E76;&#xFF1A;&#x5C06;&#x6392;&#x5E8F;&#x7684;&#x5B50;&#x6587;&#x4EF6;&#x5408;&#x5E76;&#x4E3A;&#x4E00;&#x4E2A;&#x66F4;&#x5927;&#x7684;&#x5355;&#x4E2A;&#x6587;&#x4EF6;&#x3002;</p>
-<h3 id="two-way-merge-sort-&#x53CC;&#x5411;&#x5408;&#x5E76;&#x6392;&#x5E8F;">Two-way Merge Sort &#x53CC;&#x5411;&#x5408;&#x5E76;&#x6392;&#x5E8F;</h3>
-<ol>
-<li>Pass #0: Reads every B pages of the table into memory. Sorts them, and writes them back into disk. Each sorted set of pages is called a run.</li>
-<li><p>Pass #1,2,3...: Recursively merges pairs of runs into runs twice as long. 
-Number of Passes: 1 + log_2^N
-Total I/O Cost: 2N &#xD7; (# of passes)</p>
-</li>
-<li><p>&#x4F20;&#x9012; #0&#xFF1A;&#x5C06;&#x8868;&#x7684;&#x6BCF;B&#x9875;&#x8BFB;&#x53D6;&#x5230;&#x5185;&#x5B58;&#x4E2D;&#x3002;&#x5BF9;&#x5B83;&#x4EEC;&#x8FDB;&#x884C;&#x6392;&#x5E8F;&#xFF0C;&#x5E76;&#x5C06;&#x5B83;&#x4EEC;&#x5199;&#x56DE;&#x78C1;&#x76D8;&#x3002;&#x6BCF;&#x7EC4;&#x7ECF;&#x8FC7;&#x6392;&#x5E8F;&#x7684;&#x9875;&#x9762;&#x79F0;&#x4E3A;&#x4E00;&#x6B21;&#x8FD0;&#x884C;&#x3002;</p>
-</li>
-<li>&#x4F20;&#x9012; #1&#xFF0C;2&#xFF0C;3...&#xFF1A;&#x9012;&#x5F52;&#x5730;&#x5C06;&#x8FD0;&#x884C;&#x5BF9;&#x5408;&#x5E76;&#x4E3A;&#x4E24;&#x500D;&#x7684;&#x8FD0;&#x884C;&#x3002;
-&#x901A;&#x8FC7;&#x6B21;&#x6570;&#xFF1A; 1 +&#x300C;lg_2^N&#x300D;
-&#x603B;I/O&#x6210;&#x672C;&#xFF1A;2N &#xD7;&#xFF08;&#x901A;&#x8FC7;&#x6B21;&#x6570;&#xFF09;</li>
-</ol>
-<h3 id="general-k-way-merge-sort-&#x5E38;&#x89C4;&#xFF08;k-way&#xFF09;&#x5408;&#x5E76;&#x6392;&#x5E8F;">General (K-way) Merge Sort &#x5E38;&#x89C4;&#xFF08;K-way&#xFF09;&#x5408;&#x5E76;&#x6392;&#x5E8F;</h3>
-<ol>
-<li>Pass #0: Use B buffer pages, produce N/B sorted runs of size B.</li>
-<li><p>Pass #1,2,3...: Recursively merge B B 1 runs.
-Number of Passes = 1 + &#x300C;log_{B-1}^ &#x300C;N/B&#x300D;&#x300D;
-Total I/O Cost: 2N &#xD7; (# of passes)</p>
-</li>
-<li><p>&#x901A;&#x8FC7; #0&#xFF1A;&#x4F7F;&#x7528; B &#x7F13;&#x51B2;&#x533A;&#x9875;&#x9762;&#xFF0C;&#x751F;&#x6210;&#x5927;&#x5C0F;&#x4E3A;B&#x7684;N/B&#x6392;&#x5E8F;&#x8FD0;&#x884C;&#x3002;</p>
-</li>
-<li>&#x4F20;&#x9012; #1&#xFF0C;2&#xFF0C;3...&#xFF1A;&#x9012;&#x5F52;&#x5408;&#x5E76;B-1&#x6B21;
-&#x901A;&#x8FC7;&#x6B21;&#x6570; = 1 + &#x300C;log_{B-1}^ &#x300C;N/B&#x300D;&#x300D;
-&#x603B;I/O&#x6210;&#x672C;&#xFF1A;2N &#xD7;&#xFF08;&#x901A;&#x8FC7;&#x6B21;&#x6570;&#xFF09;</li>
-</ol>
-<h3 id="double-buffering-optimization-&#x53CC;&#x7F13;&#x51B2;&#x4F18;&#x5316;">Double Buffering Optimization &#x53CC;&#x7F13;&#x51B2;&#x4F18;&#x5316;</h3>
-<p>Prefetch the next run in the background and store it in a second buffer while the system is processing the current run. This reduces the wait time for I/O requests at each step by continuously utilizing the disk.</p>
-<p>&#x5728;&#x540E;&#x53F0;&#x9884;&#x53D6;&#x4E0B;&#x4E00;&#x6B21;&#x8FD0;&#x884C;&#xFF0C;&#x5E76;&#x5728;&#x7CFB;&#x7EDF;&#x5904;&#x7406;&#x6570;&#x636E;&#x65F6;&#x5C06;&#x5176;&#x5B58;&#x50A8;&#x5728;&#x7B2C;&#x4E8C;&#x4E2A;&#x7F13;&#x51B2;&#x533A;&#x4E2D;&#x5F53;&#x524D;&#x8FD0;&#x884C;&#x3002;&#x8FD9;&#x901A;&#x8FC7;&#x6301;&#x7EED;&#x5229;&#x7528;&#x78C1;&#x76D8;&#x51CF;&#x5C11;&#x4E86;&#x6BCF;&#x4E00;&#x6B65;I/O&#x8BF7;&#x6C42;&#x7684;&#x7B49;&#x5F85;&#x65F6;&#x95F4;&#x3002;</p>
-<h2 id="aggregations-&#x805A;&#x96C6;">Aggregations &#x805A;&#x96C6;</h2>
-<p>An aggregation operator in a query plan collapses the values of one or more tuples into a single scalar value. There are two approaches for implementing an aggregation: (1) sorting and (2) hashing.</p>
-<p>&#x67E5;&#x8BE2;&#x8BA1;&#x5212;&#x4E2D;&#x7684;&#x805A;&#x5408;&#x8FD0;&#x7B97;&#x7B26;&#x5C06;&#x4E00;&#x4E2A;&#x6216;&#x591A;&#x4E2A;&#x5143;&#x7EC4;&#x7684;&#x503C;&#x6298;&#x53E0;&#x4E3A;&#x5355;&#x4E2A;&#x6807;&#x91CF;&#x503C;&#x3002;&#x6709;&#x4E24;&#x79CD;&#x5B9E;&#x73B0;&#x805A;&#x5408;&#x7684;&#x65B9;&#x6CD5;&#xFF1A;&#xFF08;1&#xFF09; &#x6392;&#x5E8F;&#x548C; &#xFF08;2&#xFF09; &#x54C8;&#x5E0C;&#x3002;</p>
-<h3 id="sorting-&#x6392;&#x5E8F;">Sorting &#x6392;&#x5E8F;</h3>
-<p>The DBMS first sorts the tuples on the GROUP BY key(s). It can use either an in-memory sorting algorithm if everything fits in the buffer pool (e.g., quicksort) or the external merge sort algorithm if the size of the data exceeds memory.</p>
-<p>DBMS &#x9996;&#x5148;&#x5BF9; GROUP BY &#x952E;&#x4E0A;&#x7684;&#x5143;&#x7EC4;&#x8FDB;&#x884C;&#x6392;&#x5E8F;&#x3002;&#x5982;&#x679C;&#x6240;&#x6709;&#x5185;&#x5BB9;&#x90FD;&#x9002;&#x5408;&#x7F13;&#x51B2;&#x6C60;&#xFF08;&#x4F8B;&#x5982;&#xFF0C;&#x5FEB;&#x901F;&#x6392;&#x5E8F;&#xFF09;&#xFF0C;&#x5219;&#x53EF;&#x4EE5;&#x4F7F;&#x7528;&#x5185;&#x5B58;&#x4E2D;&#x6392;&#x5E8F;&#x7B97;&#x6CD5;&#xFF0C;&#x5982;&#x679C;&#x6570;&#x636E;&#x5927;&#x5C0F;&#x8D85;&#x8FC7;&#x5185;&#x5B58;&#xFF0C;&#x5219;&#x53EF;&#x4EE5;&#x4F7F;&#x7528;&#x5916;&#x90E8;&#x5408;&#x5E76;&#x6392;&#x5E8F;&#x7B97;&#x6CD5;&#x3002;</p>
-<p>The DBMS then performs a sequential scan over the sorted data to compute the aggregation. The output of the operator will be sorted on the keys</p>
-<p>&#x7136;&#x540E;&#xFF0C;DBMS &#x5BF9;&#x6392;&#x5E8F;&#x7684;&#x6570;&#x636E;&#x6267;&#x884C;&#x987A;&#x5E8F;&#x626B;&#x63CF;&#x4EE5;&#x8BA1;&#x7B97;&#x805A;&#x5408;&#x3002;&#x8FD0;&#x7B97;&#x7B26;&#x7684;&#x8F93;&#x51FA;&#x5C06;&#x6309;&#x952E;&#x6392;&#x5E8F;</p>
-<h2 id="hashing-&#x54C8;&#x5E0C;">Hashing &#x54C8;&#x5E0C;</h2>
-<p>Hashing can be computationally cheaper than sorting for computing aggregations. The DBMS populates an ephemeral hash table as it scans the table. For each record, check whether there is already an entry in the hash table and perform the appropriate modification.</p>
-<p>&#x6563;&#x5217;&#x5728;&#x8BA1;&#x7B97;&#x4E0A;&#x53EF;&#x80FD;&#x6BD4;&#x8BA1;&#x7B97;&#x805A;&#x5408;&#x7684;&#x6392;&#x5E8F;&#x66F4;&#x4FBF;&#x5B9C;&#x3002;DBMS &#x5728;&#x626B;&#x63CF;&#x4E34;&#x65F6;&#x54C8;&#x5E0C;&#x8868;&#x65F6;&#x586B;&#x5145;&#x8BE5;&#x8868;&#x3002;&#x5BF9;&#x4E8E;&#x6BCF;&#x6761;&#x8BB0;&#x5F55;&#xFF0C;&#x8BF7;&#x68C0;&#x67E5;&#x5BF9;&#x54C8;&#x5E0C;&#x8868;&#x6267;&#x884C;&#x9002;&#x5F53;&#x7684;&#x4FEE;&#x6539;&#x3002;</p>
-<p>If the size of the hash table is too large to fit in memory, then the DBMS has to spill it to disk:</p>
-<ul>
-<li>Phase #1 &#x2013; Partition: Use a hash function h1 to split tuples into partitions on disk based on target hash key. This will put all tuples that match into the same partition. The DBMS spills partitions to disk via output buffers.</li>
-<li>Phase #2 &#x2013; ReHash: For each partition on disk, read its pages into memory and build an in-memory hash table based on a second hash function h2 (where h1  not equal to h2). Then go through each bucket of this hash table to bring together matching tuples to compute the aggregation. Note that this assumes that each partition fits in memory</li>
-</ul>
-<p>&#x5982;&#x679C;&#x54C8;&#x5E0C;&#x8868;&#x7684;&#x5927;&#x5C0F;&#x592A;&#x5927;&#x800C;&#x65E0;&#x6CD5;&#x653E;&#x5165;&#x5185;&#x5B58;&#xFF0C;&#x5219;DBMS&#x5FC5;&#x987B;&#x5C06;&#x5176;&#x6EA2;&#x51FA;&#x5230;&#x78C1;&#x76D8;&#xFF1A;</p>
-<ul>
-<li>&#x9636;&#x6BB5; #1 &#x2013; &#x5206;&#x533A;&#xFF1A;&#x4F7F;&#x7528;&#x54C8;&#x5E0C;&#x51FD;&#x6570; h1 &#x6839;&#x636E;&#x76EE;&#x6807;&#x54C8;&#x5E0C;&#x952E;&#x5C06;&#x5143;&#x7EC4;&#x62C6;&#x5206;&#x4E3A;&#x78C1;&#x76D8;&#x4E0A;&#x7684;&#x5206;&#x533A;&#x3002;&#x8FD9;&#x4F1A;&#x5C06;&#x6240;&#x6709;&#x5339;&#x914D;&#x7684;&#x5143;&#x7EC4;&#x653E;&#x5165;&#x540C;&#x4E00;&#x5206;&#x533A;&#x4E2D;&#x3002;DBMS &#x901A;&#x8FC7;&#x8F93;&#x51FA;&#x7F13;&#x51B2;&#x533A;&#x5C06;&#x5206;&#x533A;&#x6EA2;&#x51FA;&#x5230;&#x78C1;&#x76D8;&#x3002;</li>
-<li>&#x9636;&#x6BB5; #2 &#x2013; &#x91CD;&#x65B0;&#x54C8;&#x5E0C;&#xFF1A;&#x5BF9;&#x4E8E;&#x78C1;&#x76D8;&#x4E0A;&#x7684;&#x6BCF;&#x4E2A;&#x5206;&#x533A;&#xFF0C;&#x5C06;&#x5176;&#x9875;&#x9762;&#x8BFB;&#x5165;&#x5185;&#x5B58;&#xFF0C;&#x5E76;&#x6839;&#x636E;&#x7B2C;&#x4E8C;&#x4E2A;&#x54C8;&#x5E0C;&#x51FD;&#x6570; h2&#xFF08;&#x5176;&#x4E2D; h1&#x4E0D;&#x7B49;&#x4E8E;h2&#xFF09;&#x6784;&#x5EFA;&#x5185;&#x5B58;&#x4E2D;&#x54C8;&#x5E0C;&#x8868;&#x3002;&#x7136;&#x540E;&#x904D;&#x5386;&#x6B64;&#x54C8;&#x5E0C;&#x8868;&#x7684;&#x6BCF;&#x4E2A;&#x5B58;&#x50A8;&#x6876;&#xFF0C;&#x4EE5;&#x5C06;&#x5339;&#x914D;&#x7684;&#x5143;&#x7EC4;&#x7EC4;&#x5408;&#x5728;&#x4E00;&#x8D77;&#x4EE5;&#x8BA1;&#x7B97;&#x805A;&#x5408;&#x3002;&#x8BF7;&#x6CE8;&#x610F;&#xFF0C;&#x8FD9;&#x5047;&#x8BBE;&#x6BCF;&#x4E2A;&#x5206;&#x533A;&#x90FD;&#x9002;&#x5408;&#x5185;&#x5B58;&#x3002;</li>
-</ul>
-<p>During the ReHash phase, the DBMS can store pairs of the form (GroupByKey&#x2192;RunningValue) to compute the aggregation. The contents of RunningValue depends on the aggregation function. To insert a new tuple into the hash table:</p>
-<ul>
-<li>If it finds a matching GroupByKey, then update the RunningValue appropriately.</li>
-<li>Else insert a new (GroupByKey&#x2192;RunningValue) pair.</li>
-</ul>
-<p>&#x5728;&#x91CD;&#x54C8;&#x5E0C;&#x9636;&#x6BB5;&#xFF0C;DBMS &#x53EF;&#x4EE5;&#x5B58;&#x50A8;&#x8868;&#x5355;&#xFF08;GroupByKey&#x2192;RunningValue&#xFF09;&#x7684;&#x5BF9;&#x6765;&#x8BA1;&#x7B97;&#x805A;&#x5408;&#x3002;&#x8FD0;&#x884C;&#x503C;&#x7684;&#x5185;&#x5BB9;&#x53D6;&#x51B3;&#x4E8E;&#x805A;&#x5408;&#x51FD;&#x6570;&#x3002;&#x5C06;&#x65B0;&#x5143;&#x7EC4;&#x63D2;&#x5165;&#x5230;&#x54C8;&#x5E0C;&#x8868;&#x4E2D;&#xFF1A;</p>
-<ul>
-<li>&#x5982;&#x679C;&#x627E;&#x5230;&#x5339;&#x914D;&#x7684; GroupByKey&#xFF0C;&#x8BF7;&#x76F8;&#x5E94;&#x5730;&#x66F4;&#x65B0;&#x8FD0;&#x884C;&#x503C;&#x3002;</li>
-<li>&#x5426;&#x5219;&#xFF0C;&#x63D2;&#x5165;&#x4E00;&#x4E2A;&#x65B0;&#x7684;&#xFF08;GroupByKey&#x2192;RunningValue&#xFF09;&#x5BF9;&#x3002;</li>
-</ul>
-
-                                
-                                </section>
-                            
-    </div>
-    <div class="search-results">
-        <div class="has-results">
-            
-            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
-            <ul class="search-results-list"></ul>
-            
-        </div>
-        <div class="no-results">
-            
-            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
-            
-        </div>
-    </div>
-</div>
-
-                        </div>
-                    </div>
-                
+            <div id="book-search-input" role="search">
+                <input type="text" placeholder="Type to search" />
             </div>
 
-            
-                
-                <a href="LEC9.html" class="navigation navigation-prev " aria-label="Previous page: 第九讲">
-                    <i class="fa fa-angle-left"></i>
-                </a>
-                
-                
-                <a href="LEC11.html" class="navigation navigation-next " aria-label="Next page: 第十一讲">
-                    <i class="fa fa-angle-right"></i>
-                </a>
-                
-            
-        
+
+            <nav role="navigation">
+
+
+
+                <ul class="summary">
+
+
+
+
+
+
+
+
+
+                    <li class="chapter " data-level="1.1" data-path="../">
+
+                        <a href="../">
+
+
+                            关于这个小本子
+
+                        </a>
+
+
+
+                    </li>
+
+                    <li class="chapter " data-level="1.2" data-path="../CONTRIBUTION.html">
+
+                        <a href="../CONTRIBUTION.html">
+
+
+                            如何贡献
+
+                        </a>
+
+
+
+                    </li>
+
+                    <li class="chapter " data-level="1.3">
+
+                        <span>
+
+
+                            cmu15455 Introduction to DataBase Systems
+
+                        </span>
+
+
+
+                        <ul class="articles">
+
+
+                            <li class="chapter " data-level="1.3.1" data-path="LEC1.html">
+
+                                <a href="LEC1.html">
+
+
+                                    第一讲
+
+                                </a>
+
+
+
+                            </li>
+
+                            <li class="chapter " data-level="1.3.2" data-path="LEC2.html">
+
+                                <a href="LEC2.html">
+
+
+                                    第二讲
+
+                                </a>
+
+
+
+                            </li>
+
+                            <li class="chapter " data-level="1.3.3" data-path="LEC3.html">
+
+                                <a href="LEC3.html">
+
+
+                                    第三讲
+
+                                </a>
+
+
+
+                            </li>
+
+                            <li class="chapter " data-level="1.3.4" data-path="LEC4.html">
+
+                                <a href="LEC4.html">
+
+
+                                    第四讲
+
+                                </a>
+
+
+
+                            </li>
+
+                            <li class="chapter " data-level="1.3.5" data-path="LEC5.html">
+
+                                <a href="LEC5.html">
+
+
+                                    第五讲
+
+                                </a>
+
+
+
+                            </li>
+
+                            <li class="chapter " data-level="1.3.6" data-path="LEC6.html">
+
+                                <a href="LEC6.html">
+
+
+                                    第六讲
+
+                                </a>
+
+
+
+                            </li>
+
+                            <li class="chapter " data-level="1.3.7" data-path="LEC7.html">
+
+                                <a href="LEC7.html">
+
+
+                                    第七讲
+
+                                </a>
+
+
+
+                            </li>
+
+                            <li class="chapter " data-level="1.3.8" data-path="LEC8.html">
+
+                                <a href="LEC8.html">
+
+
+                                    第八讲
+
+                                </a>
+
+
+
+                            </li>
+
+                            <li class="chapter " data-level="1.3.9" data-path="LEC9.html">
+
+                                <a href="LEC9.html">
+
+
+                                    第九讲
+
+                                </a>
+
+
+
+                            </li>
+
+                            <li class="chapter active" data-level="1.3.10" data-path="LEC10.html">
+
+                                <a href="LEC10.html">
+
+
+                                    第十讲
+
+                                </a>
+
+
+
+                            </li>
+
+                            <li class="chapter " data-level="1.3.11" data-path="LEC11.html">
+
+                                <a href="LEC11.html">
+
+
+                                    第十一讲
+
+                                </a>
+
+
+
+                            </li>
+
+                            <li class="chapter " data-level="1.3.12" data-path="LEC12.html">
+
+                                <a href="LEC12.html">
+
+
+                                    第十二讲
+
+                                </a>
+
+
+
+                            </li>
+
+                            <li class="chapter " data-level="1.3.13" data-path="LEC13.html">
+
+                                <a href="LEC13.html">
+
+
+                                    第十三讲
+
+                                </a>
+
+
+
+                            </li>
+
+                            <li class="chapter " data-level="1.3.14" data-path="LEC14.html">
+
+                                <a href="LEC14.html">
+
+
+                                    第十四讲
+
+                                </a>
+
+
+
+                            </li>
+
+                            <li class="chapter " data-level="1.3.15" data-path="LEC15.html">
+
+                                <a href="LEC15.html">
+
+
+                                    第十五讲
+
+                                </a>
+
+
+
+                            </li>
+
+                            <li class="chapter " data-level="1.3.16" data-path="LEC16.html">
+
+                                <a href="LEC16.html">
+
+
+                                    第十六讲
+
+                                </a>
+
+
+
+                            </li>
+
+                            <li class="chapter " data-level="1.3.17" data-path="LEC17.html">
+
+                                <a href="LEC17.html">
+
+
+                                    第十七讲
+
+                                </a>
+
+
+
+                            </li>
+
+                            <li class="chapter " data-level="1.3.18" data-path="LEC18.html">
+
+                                <a href="LEC18.html">
+
+
+                                    第十八讲
+
+                                </a>
+
+
+
+                            </li>
+
+                            <li class="chapter " data-level="1.3.19" data-path="LEC19.html">
+
+                                <a href="LEC19.html">
+
+
+                                    第十九讲
+
+                                </a>
+
+
+
+                            </li>
+
+                            <li class="chapter " data-level="1.3.20" data-path="LEC20.html">
+
+                                <a href="LEC20.html">
+
+
+                                    第二十讲
+
+                                </a>
+
+
+
+                            </li>
+
+                            <li class="chapter " data-level="1.3.21" data-path="LEC21.html">
+
+                                <a href="LEC21.html">
+
+
+                                    第二一讲
+
+                                </a>
+
+
+
+                            </li>
+
+                            <li class="chapter " data-level="1.3.22" data-path="LEC22.html">
+
+                                <a href="LEC22.html">
+
+
+                                    第二二讲
+
+                                </a>
+
+
+
+                            </li>
+
+
+                        </ul>
+
+                    </li>
+
+                    <li class="chapter " data-level="1.4">
+
+                        <span>
+
+
+                            cmu15-213 Introdution to Computer Systems
+
+                        </span>
+
+
+
+                        <ul class="articles">
+
+
+                            <li class="chapter " data-level="1.4.1" data-path="../cmu15213/LEC1.html">
+
+                                <a href="../cmu15213/LEC1.html">
+
+
+                                    第一讲
+
+                                </a>
+
+
+
+                            </li>
+
+                            <li class="chapter " data-level="1.4.2" data-path="../cmu15213/LEC2.html">
+
+                                <a href="../cmu15213/LEC2.html">
+
+
+                                    第二讲
+
+                                </a>
+
+
+
+                            </li>
+
+                            <li class="chapter " data-level="1.4.3" data-path="../cmu15213/LEC3.html">
+
+                                <a href="../cmu15213/LEC3.html">
+
+
+                                    第三讲
+
+                                </a>
+
+
+
+                            </li>
+
+                            <li class="chapter " data-level="1.4.4" data-path="../cmu15213/LEC4.html">
+
+                                <a href="../cmu15213/LEC4.html">
+
+
+                                    第四讲
+
+                                </a>
+
+
+
+                            </li>
+
+                            <li class="chapter " data-level="1.4.5" data-path="../cmu15213/LEC5.html">
+
+                                <a href="../cmu15213/LEC5.html">
+
+
+                                    第五讲
+
+                                </a>
+
+
+
+                            </li>
+
+                            <li class="chapter " data-level="1.4.6" data-path="../cmu15213/LEC6.html">
+
+                                <a href="../cmu15213/LEC6.html">
+
+
+                                    第六讲
+
+                                </a>
+
+
+
+                            </li>
+
+                            <li class="chapter " data-level="1.4.7" data-path="../cmu15213/LEC7.html">
+
+                                <a href="../cmu15213/LEC7.html">
+
+
+                                    第七讲
+
+                                </a>
+
+
+
+                            </li>
+
+                            <li class="chapter " data-level="1.4.8" data-path="../cmu15213/LEC8.html">
+
+                                <a href="../cmu15213/LEC8.html">
+
+
+                                    第八讲
+
+                                </a>
+
+
+
+                            </li>
+
+                            <li class="chapter " data-level="1.4.9" data-path="../cmu15213/LEC9.html">
+
+                                <a href="../cmu15213/LEC9.html">
+
+
+                                    第九讲
+
+                                </a>
+
+
+
+                            </li>
+
+                            <li class="chapter " data-level="1.4.10" data-path="../cmu15213/LEC10.html">
+
+                                <a href="../cmu15213/LEC10.html">
+
+
+                                    第十讲
+
+                                </a>
+
+
+
+                            </li>
+
+                            <li class="chapter " data-level="1.4.11" data-path="../cmu15213/LEC11.html">
+
+                                <a href="../cmu15213/LEC11.html">
+
+
+                                    第十一讲
+
+                                </a>
+
+
+
+                            </li>
+
+                            <li class="chapter " data-level="1.4.12" data-path="../cmu15213/LEC12.html">
+
+                                <a href="../cmu15213/LEC12.html">
+
+
+                                    第十二讲
+
+                                </a>
+
+
+
+                            </li>
+
+                            <li class="chapter " data-level="1.4.13" data-path="../cmu15213/LEC13.html">
+
+                                <a href="../cmu15213/LEC13.html">
+
+
+                                    第十三讲
+
+                                </a>
+
+
+
+                            </li>
+
+                            <li class="chapter " data-level="1.4.14" data-path="../cmu15213/LEC14.html">
+
+                                <a href="../cmu15213/LEC14.html">
+
+
+                                    第十四讲
+
+                                </a>
+
+
+
+                            </li>
+
+                            <li class="chapter " data-level="1.4.15" data-path="../cmu15213/LEC15.html">
+
+                                <a href="../cmu15213/LEC15.html">
+
+
+                                    第十五讲
+
+                                </a>
+
+
+
+                            </li>
+
+                            <li class="chapter " data-level="1.4.16" data-path="../cmu15213/LEC16.html">
+
+                                <a href="../cmu15213/LEC16.html">
+
+
+                                    第十六讲
+
+                                </a>
+
+
+
+                            </li>
+
+                            <li class="chapter " data-level="1.4.17" data-path="../cmu15213/LEC17.html">
+
+                                <a href="../cmu15213/LEC17.html">
+
+
+                                    第十七讲
+
+                                </a>
+
+
+
+                            </li>
+
+                            <li class="chapter " data-level="1.4.18" data-path="../cmu15213/LEC18.html">
+
+                                <a href="../cmu15213/LEC18.html">
+
+
+                                    第十八讲
+
+                                </a>
+
+
+
+                            </li>
+
+                            <li class="chapter " data-level="1.4.19" data-path="../cmu15213/LEC19.html">
+
+                                <a href="../cmu15213/LEC19.html">
+
+
+                                    第十九讲
+
+                                </a>
+
+
+
+                            </li>
+
+                            <li class="chapter " data-level="1.4.20" data-path="../cmu15213/LEC20.html">
+
+                                <a href="../cmu15213/LEC20.html">
+
+
+                                    第二十讲
+
+                                </a>
+
+
+
+                            </li>
+
+                            <li class="chapter " data-level="1.4.21" data-path="../cmu15213/LEC21.html">
+
+                                <a href="../cmu15213/LEC21.html">
+
+
+                                    第二一讲
+
+                                </a>
+
+
+
+                            </li>
+
+                            <li class="chapter " data-level="1.4.22" data-path="../cmu15213/LEC22.html">
+
+                                <a href="../cmu15213/LEC22.html">
+
+
+                                    第二二讲
+
+                                </a>
+
+
+
+                            </li>
+
+                            <li class="chapter " data-level="1.4.23" data-path="../cmu15213/LEC23.html">
+
+                                <a href="../cmu15213/LEC23.html">
+
+
+                                    第二三讲
+
+                                </a>
+
+
+
+                            </li>
+
+                            <li class="chapter " data-level="1.4.24" data-path="../cmu15213/LEC24.html">
+
+                                <a href="../cmu15213/LEC24.html">
+
+
+                                    第二四讲
+
+                                </a>
+
+
+
+                            </li>
+
+                            <li class="chapter " data-level="1.4.25" data-path="../cmu15213/LEC25.html">
+
+                                <a href="../cmu15213/LEC25.html">
+
+
+                                    第二五讲
+
+                                </a>
+
+
+
+                            </li>
+
+                            <li class="chapter " data-level="1.4.26" data-path="../cmu15213/LEC26.html">
+
+                                <a href="../cmu15213/LEC26.html">
+
+
+                                    第二六讲
+
+                                </a>
+
+
+
+                            </li>
+
+
+                        </ul>
+
+                    </li>
+
+                    <li class="chapter " data-level="1.5">
+
+                        <span>
+
+
+                            cs106L Stanford C++
+
+                        </span>
+
+
+
+                        <ul class="articles">
+
+
+                            <li class="chapter " data-level="1.5.1" data-path="../cs106L/LEC1.html">
+
+                                <a href="../cs106L/LEC1.html">
+
+
+                                    第一讲
+
+                                </a>
+
+
+
+                            </li>
+
+                            <li class="chapter " data-level="1.5.2" data-path="../cs106L/LEC2.html">
+
+                                <a href="../cs106L/LEC2.html">
+
+
+                                    第二讲
+
+                                </a>
+
+
+
+                            </li>
+
+                            <li class="chapter " data-level="1.5.3" data-path="../cs106L/LEC3.html">
+
+                                <a href="../cs106L/LEC3.html">
+
+
+                                    第三讲
+
+                                </a>
+
+
+
+                            </li>
+
+                            <li class="chapter " data-level="1.5.4" data-path="../cs106L/LEC4.html">
+
+                                <a href="../cs106L/LEC4.html">
+
+
+                                    第四讲
+
+                                </a>
+
+
+
+                            </li>
+
+                            <li class="chapter " data-level="1.5.5" data-path="../cs106L/LEC5.html">
+
+                                <a href="../cs106L/LEC5.html">
+
+
+                                    第五讲
+
+                                </a>
+
+
+
+                            </li>
+
+                            <li class="chapter " data-level="1.5.6" data-path="../cs106L/LEC6.html">
+
+                                <a href="../cs106L/LEC6.html">
+
+
+                                    第六讲
+
+                                </a>
+
+
+
+                            </li>
+
+                            <li class="chapter " data-level="1.5.7" data-path="../cs106L/LEC7.html">
+
+                                <a href="../cs106L/LEC7.html">
+
+
+                                    第七讲
+
+                                </a>
+
+
+
+                            </li>
+
+                            <li class="chapter " data-level="1.5.8" data-path="../cs106L/LEC8.html">
+
+                                <a href="../cs106L/LEC8.html">
+
+
+                                    第八讲
+
+                                </a>
+
+
+
+                            </li>
+
+                            <li class="chapter " data-level="1.5.9" data-path="../cs106L/LEC9.html">
+
+                                <a href="../cs106L/LEC9.html">
+
+
+                                    第九讲
+
+                                </a>
+
+
+
+                            </li>
+
+                            <li class="chapter " data-level="1.5.10" data-path="../cs106L/LEC10.html">
+
+                                <a href="../cs106L/LEC10.html">
+
+
+                                    第十讲
+
+                                </a>
+
+
+
+                            </li>
+
+                            <li class="chapter " data-level="1.5.11" data-path="../cs106L/LEC11.html">
+
+                                <a href="../cs106L/LEC11.html">
+
+
+                                    第十一讲
+
+                                </a>
+
+
+
+                            </li>
+
+                            <li class="chapter " data-level="1.5.12" data-path="../cs106L/LEC12.html">
+
+                                <a href="../cs106L/LEC12.html">
+
+
+                                    第十二讲
+
+                                </a>
+
+
+
+                            </li>
+
+                            <li class="chapter " data-level="1.5.13" data-path="../cs106L/LEC13.html">
+
+                                <a href="../cs106L/LEC13.html">
+
+
+                                    第十三讲
+
+                                </a>
+
+
+
+                            </li>
+
+                            <li class="chapter " data-level="1.5.14" data-path="../cs106L/LEC14.html">
+
+                                <a href="../cs106L/LEC14.html">
+
+
+                                    第十四讲
+
+                                </a>
+
+
+
+                            </li>
+
+                            <li class="chapter " data-level="1.5.15" data-path="../cs106L/LEC15.html">
+
+                                <a href="../cs106L/LEC15.html">
+
+
+                                    第十五讲
+
+                                </a>
+
+
+
+                            </li>
+
+                            <li class="chapter " data-level="1.5.16" data-path="../cs106L/LEC16.html">
+
+                                <a href="../cs106L/LEC16.html">
+
+
+                                    第十六讲
+
+                                </a>
+
+
+
+                            </li>
+
+                            <li class="chapter " data-level="1.5.17" data-path="../cs106L/LEC17.html">
+
+                                <a href="../cs106L/LEC17.html">
+
+
+                                    第十七讲
+
+                                </a>
+
+
+
+                            </li>
+
+                            <li class="chapter " data-level="1.5.18" data-path="../cs106L/LEC18.html">
+
+                                <a href="../cs106L/LEC18.html">
+
+
+                                    第十八讲
+
+                                </a>
+
+
+
+                            </li>
+
+                            <li class="chapter " data-level="1.5.19" data-path="../cs106L/LEC19.html">
+
+                                <a href="../cs106L/LEC19.html">
+
+
+                                    第十九讲
+
+                                </a>
+
+
+
+                            </li>
+
+                            <li class="chapter " data-level="1.5.20" data-path="../cs106L/LEC20.html">
+
+                                <a href="../cs106L/LEC20.html">
+
+
+                                    第二十讲
+
+                                </a>
+
+
+
+                            </li>
+
+                            <li class="chapter " data-level="1.5.21" data-path="../cs106L/LEC21.html">
+
+                                <a href="../cs106L/LEC21.html">
+
+
+                                    第二一讲
+
+                                </a>
+
+
+
+                            </li>
+
+                            <li class="chapter " data-level="1.5.22" data-path="../cs106L/LEC22.html">
+
+                                <a href="../cs106L/LEC22.html">
+
+
+                                    第二二讲
+
+                                </a>
+
+
+
+                            </li>
+
+
+                        </ul>
+
+                    </li>
+
+                    <li class="chapter " data-level="1.6">
+
+                        <span>
+
+
+                            mit6.824 Distributed Systems
+
+                        </span>
+
+
+
+                        <ul class="articles">
+
+
+                            <li class="chapter " data-level="1.6.1" data-path="../mit6824/LEC1.html">
+
+                                <a href="../mit6824/LEC1.html">
+
+
+                                    第一讲
+
+                                </a>
+
+
+
+                            </li>
+
+                            <li class="chapter " data-level="1.6.2" data-path="../mit6824/LEC2.html">
+
+                                <a href="../mit6824/LEC2.html">
+
+
+                                    第二讲
+
+                                </a>
+
+
+
+                            </li>
+
+                            <li class="chapter " data-level="1.6.3" data-path="../mit6824/LEC3.html">
+
+                                <a href="../mit6824/LEC3.html">
+
+
+                                    第三讲
+
+                                </a>
+
+
+
+                            </li>
+
+                            <li class="chapter " data-level="1.6.4" data-path="../mit6824/LEC4.html">
+
+                                <a href="../mit6824/LEC4.html">
+
+
+                                    第四讲
+
+                                </a>
+
+
+
+                            </li>
+
+                            <li class="chapter " data-level="1.6.5" data-path="../mit6824/LEC5.html">
+
+                                <a href="../mit6824/LEC5.html">
+
+
+                                    第五讲
+
+                                </a>
+
+
+
+                            </li>
+
+                            <li class="chapter " data-level="1.6.6" data-path="../mit6824/LEC6.html">
+
+                                <a href="../mit6824/LEC6.html">
+
+
+                                    第六讲
+
+                                </a>
+
+
+
+                            </li>
+
+                            <li class="chapter " data-level="1.6.7" data-path="../mit6824/LEC7.html">
+
+                                <a href="../mit6824/LEC7.html">
+
+
+                                    第七讲
+
+                                </a>
+
+
+
+                            </li>
+
+                            <li class="chapter " data-level="1.6.8" data-path="../mit6824/LEC8.html">
+
+                                <a href="../mit6824/LEC8.html">
+
+
+                                    第八讲
+
+                                </a>
+
+
+
+                            </li>
+
+                            <li class="chapter " data-level="1.6.9" data-path="../mit6824/LEC9.html">
+
+                                <a href="../mit6824/LEC9.html">
+
+
+                                    第九讲
+
+                                </a>
+
+
+
+                            </li>
+
+                            <li class="chapter " data-level="1.6.10" data-path="../mit6824/LEC10.html">
+
+                                <a href="../mit6824/LEC10.html">
+
+
+                                    第十讲
+
+                                </a>
+
+
+
+                            </li>
+
+                            <li class="chapter " data-level="1.6.11" data-path="../mit6824/LEC11.html">
+
+                                <a href="../mit6824/LEC11.html">
+
+
+                                    第十一讲
+
+                                </a>
+
+
+
+                            </li>
+
+                            <li class="chapter " data-level="1.6.12" data-path="../mit6824/LEC12.html">
+
+                                <a href="../mit6824/LEC12.html">
+
+
+                                    第十二讲
+
+                                </a>
+
+
+
+                            </li>
+
+                            <li class="chapter " data-level="1.6.13" data-path="../mit6824/LEC13.html">
+
+                                <a href="../mit6824/LEC13.html">
+
+
+                                    第十三讲
+
+                                </a>
+
+
+
+                            </li>
+
+                            <li class="chapter " data-level="1.6.14" data-path="../mit6824/LEC14.html">
+
+                                <a href="../mit6824/LEC14.html">
+
+
+                                    第十四讲
+
+                                </a>
+
+
+
+                            </li>
+
+                            <li class="chapter " data-level="1.6.15" data-path="../mit6824/LEC15.html">
+
+                                <a href="../mit6824/LEC15.html">
+
+
+                                    第十五讲
+
+                                </a>
+
+
+
+                            </li>
+
+                            <li class="chapter " data-level="1.6.16" data-path="../mit6824/LEC16.html">
+
+                                <a href="../mit6824/LEC16.html">
+
+
+                                    第十六讲
+
+                                </a>
+
+
+
+                            </li>
+
+                            <li class="chapter " data-level="1.6.17" data-path="../mit6824/LEC17.html">
+
+                                <a href="../mit6824/LEC17.html">
+
+
+                                    第十七讲
+
+                                </a>
+
+
+
+                            </li>
+
+                            <li class="chapter " data-level="1.6.18" data-path="../mit6824/LEC18.html">
+
+                                <a href="../mit6824/LEC18.html">
+
+
+                                    第十八讲
+
+                                </a>
+
+
+
+                            </li>
+
+                            <li class="chapter " data-level="1.6.19" data-path="../mit6824/LEC19.html">
+
+                                <a href="../mit6824/LEC19.html">
+
+
+                                    第十九讲
+
+                                </a>
+
+
+
+                            </li>
+
+                            <li class="chapter " data-level="1.6.20" data-path="../mit6824/LEC20.html">
+
+                                <a href="../mit6824/LEC20.html">
+
+
+                                    第二十讲
+
+                                </a>
+
+
+
+                            </li>
+
+
+                        </ul>
+
+                    </li>
+
+
+
+
+                    <li class="divider"></li>
+
+                    <li>
+                        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+                            Published with GitBook
+                        </a>
+                    </li>
+                </ul>
+
+
+            </nav>
+
+
+        </div>
+
+        <div class="book-body">
+
+            <div class="body-inner">
+
+
+
+                <div class="book-header" role="navigation">
+
+
+                    <!-- Title -->
+                    <h1>
+                        <i class="fa fa-circle-o-notch fa-spin"></i>
+                        <a href="..">第十讲</a>
+                    </h1>
+                </div>
+
+
+
+
+                <div class="page-wrapper" tabindex="-1" role="main">
+                    <div class="page-inner">
+
+                        <div id="book-search-results">
+                            <div class="search-noresults">
+
+                                <section class="normal markdown-section">
+
+                                    <h1
+                                        id="lecture-10-sorting--aggregation-altorithms-&#x6392;&#x5E8F;--&#x805A;&#x96C6;&#x7B97;&#x6CD5;">
+                                        Lecture 10 Sorting &amp; Aggregation Altorithms &#x6392;&#x5E8F; &amp;
+                                        &#x805A;&#x96C6;&#x7B97;&#x6CD5;</h1>
+                                    <h2 id="sorting-&#x6392;&#x5E8F;">Sorting &#x6392;&#x5E8F;</h2>
+                                    <p>We need sorting because in the relation model, tuples in a table have no specific
+                                        order Sorting is (potentially) used in ORDER BY, GROUP BY, JOIN, and DISTINCT
+                                        operators.</p>
+                                    <p>&#x6211;&#x4EEC;&#x9700;&#x8981;&#x6392;&#x5E8F;&#xFF0C;&#x56E0;&#x4E3A;&#x5728;&#x5173;&#x7CFB;&#x6A21;&#x578B;&#x4E2D;&#xFF0C;&#x8868;&#x4E2D;&#x7684;&#x5143;&#x7EC4;&#x6CA1;&#x6709;&#x7279;&#x5B9A;&#x7684;&#x987A;&#x5E8F;&#x6392;&#x5E8F;&#xFF08;&#x53EF;&#x80FD;&#xFF09;&#x7528;&#x4E8E;
+                                        ORDER BY&#x3001;GROUP BY&#x3001;JOIN &#x548C;
+                                        DISTINCT&#x8FD0;&#x7B97;&#x7B26;&#x3002;</p>
+                                    <p>We can accelerate sorting using a clustered B+tree by scanning the leaf nodes
+                                        from left to right. This is a bad idea, however, if we use an unclustered B+tree
+                                        to sort because it causes a lot of I/O reads (random access through pointer
+                                        chasing).</p>
+                                    <p>&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x901A;&#x8FC7;&#x4ECE;&#x5DE6;&#x5230;&#x53F3;&#x626B;&#x63CF;&#x805A;&#x96C6;B+&#x6811;&#x53F6;&#x8282;&#x70B9;&#x6765;&#x52A0;&#x901F;&#x6392;&#x5E8F;&#x3002;&#x4F46;&#x662F;&#xFF0C;&#x5982;&#x679C;&#x6211;&#x4EEC;&#x4F7F;&#x7528;&#x672A;&#x805A;&#x96C6;&#x7684;B+&#x6811;&#x8FDB;&#x884C;&#x6392;&#x5E8F;&#xFF0C;&#x8FD9;&#x662F;&#x4E00;&#x4E2A;&#x574F;&#x4E3B;&#x610F;&#xFF0C;&#x56E0;&#x4E3A;&#x5B83;&#x4F1A;&#x5BFC;&#x81F4;&#x5927;&#x91CF;&#x7684;
+                                        I/O
+                                        &#x8BFB;&#x53D6;&#xFF08;&#x901A;&#x8FC7;&#x6307;&#x9488;&#x8FFD;&#x9010;&#x8FDB;&#x884C;&#x968F;&#x673A;&#x8BBF;&#x95EE;&#xFF09;&#x3002;
+                                    </p>
+                                    <p>If the data that we need to sort fits in memory, then the DBMS can use a standard
+                                        sorting algorithms (e.g., quicksort). If the data does not fit, then the DBMS
+                                        needs to use external sorting that is able to spill to disk as needed and
+                                        prefers sequential over random I/O.</p>
+                                    <p>&#x5982;&#x679C;&#x6211;&#x4EEC;&#x9700;&#x8981;&#x6392;&#x5E8F;&#x7684;&#x6570;&#x636E;&#x9002;&#x5408;&#x5185;&#x5B58;&#xFF0C;&#x5219;DBMS&#x53EF;&#x4EE5;&#x4F7F;&#x7528;&#x6807;&#x51C6;&#x7684;&#x6392;&#x5E8F;&#x7B97;&#x6CD5;&#xFF08;&#x4F8B;&#x5982;&#xFF0C;&#x5FEB;&#x901F;&#x6392;&#x5E8F;&#xFF09;&#x3002;&#x5982;&#x679C;&#x6570;&#x636E;&#x4E0D;&#x5408;&#x9002;&#xFF0C;&#x5219;
+                                        DBMS
+                                        &#x9700;&#x8981;&#x4F7F;&#x7528;&#x80FD;&#x591F;&#x6839;&#x636E;&#x9700;&#x8981;&#x6EA2;&#x51FA;&#x5230;&#x78C1;&#x76D8;&#x7684;&#x5916;&#x90E8;&#x6392;&#x5E8F;&#xFF0C;&#x5E76;&#x4E14;&#x4F18;&#x5148;&#x9009;&#x62E9;&#x987A;&#x5E8F;&#x800C;&#x4E0D;&#x662F;&#x968F;&#x673A;I/O&#x3002;&#x3001;
+                                    </p>
+                                    <h2 id="external-merge-sort-&#x5916;&#x90E8;&#x5408;&#x5E76;&#x6392;&#x5E8F;">
+                                        External Merge Sort &#x5916;&#x90E8;&#x5408;&#x5E76;&#x6392;&#x5E8F;</h2>
+                                    <p>Divide-and-conquer sorting algorithm that splits the data set into separate runs
+                                        and then sorts them individually. It can spill runs to disk as needed then read
+                                        them back in one at a time.</p>
+                                    <p>&#x5206;&#x800C;&#x6CBB;&#x4E4B;&#x6392;&#x5E8F;&#x7B97;&#x6CD5;&#xFF0C;&#x8BE5;&#x7B97;&#x6CD5;&#x5C06;&#x6570;&#x636E;&#x96C6;&#x62C6;&#x5206;&#x4E3A;&#x5355;&#x72EC;&#x7684;&#x8FD0;&#x884C;&#xFF0C;&#x7136;&#x540E;&#x5BF9;&#x5B83;&#x4EEC;&#x8FDB;&#x884C;&#x5355;&#x72EC;&#x6392;&#x5E8F;&#x3002;&#x5B83;&#x53EF;&#x4EE5;&#x6839;&#x636E;&#x9700;&#x8981;&#x5C06;&#x8FD0;&#x884C;&#x6EA2;&#x51FA;&#x5230;&#x78C1;&#x76D8;&#xFF0C;&#x7136;&#x540E;&#x4E00;&#x6B21;&#x8BFB;&#x53D6;&#x4E00;&#x4E2A;&#x3002;
+                                    </p>
+                                    <p>Phase #1 &#x2013; Sorting: Sort small chunks of data that fit in main memory, and
+                                        then write back to disk.</p>
+                                    <p>Phase #2 &#x2013; Merge: Combine sorted sub-files into a larger single file.</p>
+                                    <p>&#x9636;&#x6BB5;#1 -
+                                        &#x6392;&#x5E8F;&#xFF1A;&#x5BF9;&#x9002;&#x5408;&#x4E3B;&#x5185;&#x5B58;&#x7684;&#x5C0F;&#x5757;&#x6570;&#x636E;&#x8FDB;&#x884C;&#x6392;&#x5E8F;&#xFF0C;&#x7136;&#x540E;&#x5199;&#x56DE;&#x78C1;&#x76D8;&#x3002;
+                                    </p>
+                                    <p>&#x9636;&#x6BB5;#2 -
+                                        &#x5408;&#x5E76;&#xFF1A;&#x5C06;&#x6392;&#x5E8F;&#x7684;&#x5B50;&#x6587;&#x4EF6;&#x5408;&#x5E76;&#x4E3A;&#x4E00;&#x4E2A;&#x66F4;&#x5927;&#x7684;&#x5355;&#x4E2A;&#x6587;&#x4EF6;&#x3002;
+                                    </p>
+                                    <h3 id="two-way-merge-sort-&#x53CC;&#x5411;&#x5408;&#x5E76;&#x6392;&#x5E8F;">Two-way
+                                        Merge Sort &#x53CC;&#x5411;&#x5408;&#x5E76;&#x6392;&#x5E8F;</h3>
+                                    <ol>
+                                        <li>Pass #0: Reads every B pages of the table into memory. Sorts them, and
+                                            writes them back into disk. Each sorted set of pages is called a run.</li>
+                                        <li>
+                                            <p>Pass #1,2,3...: Recursively merges pairs of runs into runs twice as long.
+                                                Number of Passes: 1 + log_2^N
+                                                Total I/O Cost: 2N &#xD7; (# of passes)</p>
+                                        </li>
+                                        <li>
+                                            <p>&#x4F20;&#x9012;
+                                                #0&#xFF1A;&#x5C06;&#x8868;&#x7684;&#x6BCF;B&#x9875;&#x8BFB;&#x53D6;&#x5230;&#x5185;&#x5B58;&#x4E2D;&#x3002;&#x5BF9;&#x5B83;&#x4EEC;&#x8FDB;&#x884C;&#x6392;&#x5E8F;&#xFF0C;&#x5E76;&#x5C06;&#x5B83;&#x4EEC;&#x5199;&#x56DE;&#x78C1;&#x76D8;&#x3002;&#x6BCF;&#x7EC4;&#x7ECF;&#x8FC7;&#x6392;&#x5E8F;&#x7684;&#x9875;&#x9762;&#x79F0;&#x4E3A;&#x4E00;&#x6B21;&#x8FD0;&#x884C;&#x3002;
+                                            </p>
+                                        </li>
+                                        <li>&#x4F20;&#x9012;
+                                            #1&#xFF0C;2&#xFF0C;3...&#xFF1A;&#x9012;&#x5F52;&#x5730;&#x5C06;&#x8FD0;&#x884C;&#x5BF9;&#x5408;&#x5E76;&#x4E3A;&#x4E24;&#x500D;&#x7684;&#x8FD0;&#x884C;&#x3002;
+                                            &#x901A;&#x8FC7;&#x6B21;&#x6570;&#xFF1A; 1 +&#x300C;lg_2^N&#x300D;
+                                            &#x603B;I/O&#x6210;&#x672C;&#xFF1A;2N
+                                            &#xD7;&#xFF08;&#x901A;&#x8FC7;&#x6B21;&#x6570;&#xFF09;</li>
+                                    </ol>
+                                    <h3
+                                        id="general-k-way-merge-sort-&#x5E38;&#x89C4;&#xFF08;k-way&#xFF09;&#x5408;&#x5E76;&#x6392;&#x5E8F;">
+                                        General (K-way) Merge Sort
+                                        &#x5E38;&#x89C4;&#xFF08;K-way&#xFF09;&#x5408;&#x5E76;&#x6392;&#x5E8F;</h3>
+                                    <ol>
+                                        <li>Pass #0: Use B buffer pages, produce N/B sorted runs of size B.</li>
+                                        <li>
+                                            <p>Pass #1,2,3...: Recursively merge B B 1 runs.
+                                                Number of Passes = 1 + &#x300C;log_{B-1}^ &#x300C;N/B&#x300D;&#x300D;
+                                                Total I/O Cost: 2N &#xD7; (# of passes)</p>
+                                        </li>
+                                        <li>
+                                            <p>&#x901A;&#x8FC7; #0&#xFF1A;&#x4F7F;&#x7528; B
+                                                &#x7F13;&#x51B2;&#x533A;&#x9875;&#x9762;&#xFF0C;&#x751F;&#x6210;&#x5927;&#x5C0F;&#x4E3A;B&#x7684;N/B&#x6392;&#x5E8F;&#x8FD0;&#x884C;&#x3002;
+                                            </p>
+                                        </li>
+                                        <li>&#x4F20;&#x9012;
+                                            #1&#xFF0C;2&#xFF0C;3...&#xFF1A;&#x9012;&#x5F52;&#x5408;&#x5E76;B-1&#x6B21;
+                                            &#x901A;&#x8FC7;&#x6B21;&#x6570; = 1 + &#x300C;log_{B-1}^
+                                            &#x300C;N/B&#x300D;&#x300D;
+                                            &#x603B;I/O&#x6210;&#x672C;&#xFF1A;2N
+                                            &#xD7;&#xFF08;&#x901A;&#x8FC7;&#x6B21;&#x6570;&#xFF09;</li>
+                                    </ol>
+                                    <h3 id="double-buffering-optimization-&#x53CC;&#x7F13;&#x51B2;&#x4F18;&#x5316;">
+                                        Double Buffering Optimization &#x53CC;&#x7F13;&#x51B2;&#x4F18;&#x5316;</h3>
+                                    <p>Prefetch the next run in the background and store it in a second buffer while the
+                                        system is processing the current run. This reduces the wait time for I/O
+                                        requests at each step by continuously utilizing the disk.</p>
+                                    <p>&#x5728;&#x540E;&#x53F0;&#x9884;&#x53D6;&#x4E0B;&#x4E00;&#x6B21;&#x8FD0;&#x884C;&#xFF0C;&#x5E76;&#x5728;&#x7CFB;&#x7EDF;&#x5904;&#x7406;&#x6570;&#x636E;&#x65F6;&#x5C06;&#x5176;&#x5B58;&#x50A8;&#x5728;&#x7B2C;&#x4E8C;&#x4E2A;&#x7F13;&#x51B2;&#x533A;&#x4E2D;&#x5F53;&#x524D;&#x8FD0;&#x884C;&#x3002;&#x8FD9;&#x901A;&#x8FC7;&#x6301;&#x7EED;&#x5229;&#x7528;&#x78C1;&#x76D8;&#x51CF;&#x5C11;&#x4E86;&#x6BCF;&#x4E00;&#x6B65;I/O&#x8BF7;&#x6C42;&#x7684;&#x7B49;&#x5F85;&#x65F6;&#x95F4;&#x3002;
+                                    </p>
+                                    <h2 id="aggregations-&#x805A;&#x96C6;">Aggregations &#x805A;&#x96C6;</h2>
+                                    <p>An aggregation operator in a query plan collapses the values of one or more
+                                        tuples into a single scalar value. There are two approaches for implementing an
+                                        aggregation: (1) sorting and (2) hashing.</p>
+                                    <p>&#x67E5;&#x8BE2;&#x8BA1;&#x5212;&#x4E2D;&#x7684;&#x805A;&#x5408;&#x8FD0;&#x7B97;&#x7B26;&#x5C06;&#x4E00;&#x4E2A;&#x6216;&#x591A;&#x4E2A;&#x5143;&#x7EC4;&#x7684;&#x503C;&#x6298;&#x53E0;&#x4E3A;&#x5355;&#x4E2A;&#x6807;&#x91CF;&#x503C;&#x3002;&#x6709;&#x4E24;&#x79CD;&#x5B9E;&#x73B0;&#x805A;&#x5408;&#x7684;&#x65B9;&#x6CD5;&#xFF1A;&#xFF08;1&#xFF09;
+                                        &#x6392;&#x5E8F;&#x548C; &#xFF08;2&#xFF09; &#x54C8;&#x5E0C;&#x3002;</p>
+                                    <h3 id="sorting-&#x6392;&#x5E8F;">Sorting &#x6392;&#x5E8F;</h3>
+                                    <p>The DBMS first sorts the tuples on the GROUP BY key(s). It can use either an
+                                        in-memory sorting algorithm if everything fits in the buffer pool (e.g.,
+                                        quicksort) or the external merge sort algorithm if the size of the data exceeds
+                                        memory.</p>
+                                    <p>DBMS &#x9996;&#x5148;&#x5BF9; GROUP BY
+                                        &#x952E;&#x4E0A;&#x7684;&#x5143;&#x7EC4;&#x8FDB;&#x884C;&#x6392;&#x5E8F;&#x3002;&#x5982;&#x679C;&#x6240;&#x6709;&#x5185;&#x5BB9;&#x90FD;&#x9002;&#x5408;&#x7F13;&#x51B2;&#x6C60;&#xFF08;&#x4F8B;&#x5982;&#xFF0C;&#x5FEB;&#x901F;&#x6392;&#x5E8F;&#xFF09;&#xFF0C;&#x5219;&#x53EF;&#x4EE5;&#x4F7F;&#x7528;&#x5185;&#x5B58;&#x4E2D;&#x6392;&#x5E8F;&#x7B97;&#x6CD5;&#xFF0C;&#x5982;&#x679C;&#x6570;&#x636E;&#x5927;&#x5C0F;&#x8D85;&#x8FC7;&#x5185;&#x5B58;&#xFF0C;&#x5219;&#x53EF;&#x4EE5;&#x4F7F;&#x7528;&#x5916;&#x90E8;&#x5408;&#x5E76;&#x6392;&#x5E8F;&#x7B97;&#x6CD5;&#x3002;
+                                    </p>
+                                    <p>The DBMS then performs a sequential scan over the sorted data to compute the
+                                        aggregation. The output of the operator will be sorted on the keys</p>
+                                    <p>&#x7136;&#x540E;&#xFF0C;DBMS
+                                        &#x5BF9;&#x6392;&#x5E8F;&#x7684;&#x6570;&#x636E;&#x6267;&#x884C;&#x987A;&#x5E8F;&#x626B;&#x63CF;&#x4EE5;&#x8BA1;&#x7B97;&#x805A;&#x5408;&#x3002;&#x8FD0;&#x7B97;&#x7B26;&#x7684;&#x8F93;&#x51FA;&#x5C06;&#x6309;&#x952E;&#x6392;&#x5E8F;
+                                    </p>
+                                    <h2 id="hashing-&#x54C8;&#x5E0C;">Hashing &#x54C8;&#x5E0C;</h2>
+                                    <p>Hashing can be computationally cheaper than sorting for computing aggregations.
+                                        The DBMS populates an ephemeral hash table as it scans the table. For each
+                                        record, check whether there is already an entry in the hash table and perform
+                                        the appropriate modification.</p>
+                                    <p>&#x6563;&#x5217;&#x5728;&#x8BA1;&#x7B97;&#x4E0A;&#x53EF;&#x80FD;&#x6BD4;&#x8BA1;&#x7B97;&#x805A;&#x5408;&#x7684;&#x6392;&#x5E8F;&#x66F4;&#x4FBF;&#x5B9C;&#x3002;DBMS
+                                        &#x5728;&#x626B;&#x63CF;&#x4E34;&#x65F6;&#x54C8;&#x5E0C;&#x8868;&#x65F6;&#x586B;&#x5145;&#x8BE5;&#x8868;&#x3002;&#x5BF9;&#x4E8E;&#x6BCF;&#x6761;&#x8BB0;&#x5F55;&#xFF0C;&#x8BF7;&#x68C0;&#x67E5;&#x5BF9;&#x54C8;&#x5E0C;&#x8868;&#x6267;&#x884C;&#x9002;&#x5F53;&#x7684;&#x4FEE;&#x6539;&#x3002;
+                                    </p>
+                                    <p>If the size of the hash table is too large to fit in memory, then the DBMS has to
+                                        spill it to disk:</p>
+                                    <ul>
+                                        <li>Phase #1 &#x2013; Partition: Use a hash function h1 to split tuples into
+                                            partitions on disk based on target hash key. This will put all tuples that
+                                            match into the same partition. The DBMS spills partitions to disk via output
+                                            buffers.</li>
+                                        <li>Phase #2 &#x2013; ReHash: For each partition on disk, read its pages into
+                                            memory and build an in-memory hash table based on a second hash function h2
+                                            (where h1 not equal to h2). Then go through each bucket of this hash table
+                                            to bring together matching tuples to compute the aggregation. Note that this
+                                            assumes that each partition fits in memory</li>
+                                    </ul>
+                                    <p>&#x5982;&#x679C;&#x54C8;&#x5E0C;&#x8868;&#x7684;&#x5927;&#x5C0F;&#x592A;&#x5927;&#x800C;&#x65E0;&#x6CD5;&#x653E;&#x5165;&#x5185;&#x5B58;&#xFF0C;&#x5219;DBMS&#x5FC5;&#x987B;&#x5C06;&#x5176;&#x6EA2;&#x51FA;&#x5230;&#x78C1;&#x76D8;&#xFF1A;
+                                    </p>
+                                    <ul>
+                                        <li>&#x9636;&#x6BB5; #1 &#x2013;
+                                            &#x5206;&#x533A;&#xFF1A;&#x4F7F;&#x7528;&#x54C8;&#x5E0C;&#x51FD;&#x6570; h1
+                                            &#x6839;&#x636E;&#x76EE;&#x6807;&#x54C8;&#x5E0C;&#x952E;&#x5C06;&#x5143;&#x7EC4;&#x62C6;&#x5206;&#x4E3A;&#x78C1;&#x76D8;&#x4E0A;&#x7684;&#x5206;&#x533A;&#x3002;&#x8FD9;&#x4F1A;&#x5C06;&#x6240;&#x6709;&#x5339;&#x914D;&#x7684;&#x5143;&#x7EC4;&#x653E;&#x5165;&#x540C;&#x4E00;&#x5206;&#x533A;&#x4E2D;&#x3002;DBMS
+                                            &#x901A;&#x8FC7;&#x8F93;&#x51FA;&#x7F13;&#x51B2;&#x533A;&#x5C06;&#x5206;&#x533A;&#x6EA2;&#x51FA;&#x5230;&#x78C1;&#x76D8;&#x3002;
+                                        </li>
+                                        <li>&#x9636;&#x6BB5; #2 &#x2013;
+                                            &#x91CD;&#x65B0;&#x54C8;&#x5E0C;&#xFF1A;&#x5BF9;&#x4E8E;&#x78C1;&#x76D8;&#x4E0A;&#x7684;&#x6BCF;&#x4E2A;&#x5206;&#x533A;&#xFF0C;&#x5C06;&#x5176;&#x9875;&#x9762;&#x8BFB;&#x5165;&#x5185;&#x5B58;&#xFF0C;&#x5E76;&#x6839;&#x636E;&#x7B2C;&#x4E8C;&#x4E2A;&#x54C8;&#x5E0C;&#x51FD;&#x6570;
+                                            h2&#xFF08;&#x5176;&#x4E2D;
+                                            h1&#x4E0D;&#x7B49;&#x4E8E;h2&#xFF09;&#x6784;&#x5EFA;&#x5185;&#x5B58;&#x4E2D;&#x54C8;&#x5E0C;&#x8868;&#x3002;&#x7136;&#x540E;&#x904D;&#x5386;&#x6B64;&#x54C8;&#x5E0C;&#x8868;&#x7684;&#x6BCF;&#x4E2A;&#x5B58;&#x50A8;&#x6876;&#xFF0C;&#x4EE5;&#x5C06;&#x5339;&#x914D;&#x7684;&#x5143;&#x7EC4;&#x7EC4;&#x5408;&#x5728;&#x4E00;&#x8D77;&#x4EE5;&#x8BA1;&#x7B97;&#x805A;&#x5408;&#x3002;&#x8BF7;&#x6CE8;&#x610F;&#xFF0C;&#x8FD9;&#x5047;&#x8BBE;&#x6BCF;&#x4E2A;&#x5206;&#x533A;&#x90FD;&#x9002;&#x5408;&#x5185;&#x5B58;&#x3002;
+                                        </li>
+                                    </ul>
+                                    <p>During the ReHash phase, the DBMS can store pairs of the form
+                                        (GroupByKey&#x2192;RunningValue) to compute the aggregation. The contents of
+                                        RunningValue depends on the aggregation function. To insert a new tuple into the
+                                        hash table:</p>
+                                    <ul>
+                                        <li>If it finds a matching GroupByKey, then update the RunningValue
+                                            appropriately.</li>
+                                        <li>Else insert a new (GroupByKey&#x2192;RunningValue) pair.</li>
+                                    </ul>
+                                    <p>&#x5728;&#x91CD;&#x54C8;&#x5E0C;&#x9636;&#x6BB5;&#xFF0C;DBMS
+                                        &#x53EF;&#x4EE5;&#x5B58;&#x50A8;&#x8868;&#x5355;&#xFF08;GroupByKey&#x2192;RunningValue&#xFF09;&#x7684;&#x5BF9;&#x6765;&#x8BA1;&#x7B97;&#x805A;&#x5408;&#x3002;&#x8FD0;&#x884C;&#x503C;&#x7684;&#x5185;&#x5BB9;&#x53D6;&#x51B3;&#x4E8E;&#x805A;&#x5408;&#x51FD;&#x6570;&#x3002;&#x5C06;&#x65B0;&#x5143;&#x7EC4;&#x63D2;&#x5165;&#x5230;&#x54C8;&#x5E0C;&#x8868;&#x4E2D;&#xFF1A;
+                                    </p>
+                                    <ul>
+                                        <li>&#x5982;&#x679C;&#x627E;&#x5230;&#x5339;&#x914D;&#x7684;
+                                            GroupByKey&#xFF0C;&#x8BF7;&#x76F8;&#x5E94;&#x5730;&#x66F4;&#x65B0;&#x8FD0;&#x884C;&#x503C;&#x3002;
+                                        </li>
+                                        <li>&#x5426;&#x5219;&#xFF0C;&#x63D2;&#x5165;&#x4E00;&#x4E2A;&#x65B0;&#x7684;&#xFF08;GroupByKey&#x2192;RunningValue&#xFF09;&#x5BF9;&#x3002;
+                                        </li>
+                                    </ul>
+
+                                    <!-- 来必力City版安装代码 -->
+                                    <div id="lv-container" data-id="city" data-uid="MTAyMC81NTc3NS8zMjI0MQ==">
+                                        <script type="text/javascript">
+                                            (function (d, s) {
+                                                var j, e = d.getElementsByTagName(s)[0];
+
+                                                if (typeof LivereTower === 'function') { return; }
+
+                                                j = d.createElement(s);
+                                                j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+                                                j.async = true;
+
+                                                e.parentNode.insertBefore(j, e);
+                                            })(document, 'script');
+                                        </script>
+                                        <noscript> 为正常使用来必力评论功能请激活JavaScript</noscript>
+                                    </div>
+                                    <!-- City版安装代码已完成 -->
+
+                                </section>
+
+                            </div>
+                            <div class="search-results">
+                                <div class="has-results">
+
+                                    <h1 class="search-results-title"><span class='search-results-count'></span> results
+                                        matching "<span class='search-query'></span>"</h1>
+                                    <ul class="search-results-list"></ul>
+
+                                </div>
+                                <div class="no-results">
+
+                                    <h1 class="search-results-title">No results matching "<span
+                                            class='search-query'></span>"</h1>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+
+
+            <a href="LEC9.html" class="navigation navigation-prev " aria-label="Previous page: 第九讲">
+                <i class="fa fa-angle-left"></i>
+            </a>
+
+
+            <a href="LEC11.html" class="navigation navigation-next " aria-label="Next page: 第十一讲">
+                <i class="fa fa-angle-right"></i>
+            </a>
+
+
+
+        </div>
+
+        <script>
+            var gitbook = gitbook || [];
+            gitbook.push(function () {
+                gitbook.page.hasChanged({ "page": { "title": "第十讲", "level": "1.3.10", "depth": 2, "next": { "title": "第十一讲", "level": "1.3.11", "depth": 2, "path": "cmu15455/LEC11.md", "ref": "cmu15455/LEC11.md", "articles": [] }, "previous": { "title": "第九讲", "level": "1.3.9", "depth": 2, "path": "cmu15455/LEC9.md", "ref": "cmu15455/LEC9.md", "articles": [] }, "dir": "ltr" }, "config": { "gitbook": "*", "theme": "default", "variables": {}, "plugins": [], "pluginsConfig": { "highlight": {}, "search": {}, "lunr": { "maxIndexSize": 1000000, "ignoreSpecialCharacters": false }, "sharing": { "facebook": true, "twitter": true, "google": false, "weibo": false, "instapaper": false, "vk": false, "all": ["facebook", "google", "twitter", "weibo", "instapaper"] }, "fontsettings": { "theme": "white", "family": "sans", "size": 2 }, "theme-default": { "styles": { "website": "styles/website.css", "pdf": "styles/pdf.css", "epub": "styles/epub.css", "mobi": "styles/mobi.css", "ebook": "styles/ebook.css", "print": "styles/print.css" }, "showLevel": false } }, "structure": { "langs": "LANGS.md", "readme": "README.md", "glossary": "GLOSSARY.md", "summary": "SUMMARY.md" }, "pdf": { "pageNumbers": true, "fontSize": 12, "fontFamily": "Arial", "paperSize": "a4", "chapterMark": "pagebreak", "pageBreaksBefore": "/", "margin": { "right": 62, "left": 62, "top": 56, "bottom": 56 } }, "styles": { "website": "styles/website.css", "pdf": "styles/pdf.css", "epub": "styles/epub.css", "mobi": "styles/mobi.css", "ebook": "styles/ebook.css", "print": "styles/print.css" } }, "file": { "path": "cmu15455/LEC10.md", "mtime": "2022-04-27T00:12:41.518Z", "type": "markdown" }, "gitbook": { "version": "3.2.3", "time": "2022-05-06T15:43:07.681Z" }, "basePath": "..", "book": { "language": "" } });
+            });
+        </script>
     </div>
 
-    <script>
-        var gitbook = gitbook || [];
-        gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"第十讲","level":"1.3.10","depth":2,"next":{"title":"第十一讲","level":"1.3.11","depth":2,"path":"cmu15455/LEC11.md","ref":"cmu15455/LEC11.md","articles":[]},"previous":{"title":"第九讲","level":"1.3.9","depth":2,"path":"cmu15455/LEC9.md","ref":"cmu15455/LEC9.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"cmu15455/LEC10.md","mtime":"2022-04-27T00:12:41.518Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2022-05-05T00:26:13.799Z"},"basePath":"..","book":{"language":""}});
-        });
-    </script>
-</div>
 
-        
     <script src="../gitbook/gitbook.js"></script>
     <script src="../gitbook/theme.js"></script>
-    
-        
-        <script src="../gitbook/gitbook-plugin-search/search-engine.js"></script>
-        
-    
-        
-        <script src="../gitbook/gitbook-plugin-search/search.js"></script>
-        
-    
-        
-        <script src="../gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
-        
-    
-        
-        <script src="../gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
-        
-    
-        
-        <script src="../gitbook/gitbook-plugin-sharing/buttons.js"></script>
-        
-    
-        
-        <script src="../gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
-        
-    
 
-    </body>
+
+    <script src="../gitbook/gitbook-plugin-search/search-engine.js"></script>
+
+
+
+    <script src="../gitbook/gitbook-plugin-search/search.js"></script>
+
+
+
+    <script src="../gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+
+
+
+    <script src="../gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+
+
+
+    <script src="../gitbook/gitbook-plugin-sharing/buttons.js"></script>
+
+
+
+    <script src="../gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+
+
+
+</body>
+
 </html>
-
