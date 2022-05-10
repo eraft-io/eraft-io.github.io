@@ -1,6 +1,7 @@
 # Summary
 
 * [关于这个小本子](README.md)
+* [English](Syllabus.md)
 * [如何贡献](CONTRIBUTION.md)
 * cmu15455 Introduction to DataBase Systems
     * [第一讲](cmu15455/LEC1.md)
