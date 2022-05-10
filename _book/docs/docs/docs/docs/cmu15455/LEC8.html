@@ -1406,7 +1406,70 @@
     
                                 <section class="normal markdown-section">
                                 
-                                <h1 id="&#x7B2C;&#x516B;&#x8BB2;">&#x7B2C;&#x516B;&#x8BB2;</h1>
+                                <p>\name{Lecture8: Tree index II}
+\name{Lecture 13 &#x6811;&#x7D22;&#x5F15; II}</p>
+<p>\section{Additional Index Usage &#x9644;&#x52A0;&#x7D22;&#x5F15;&#x7684;&#x4F7F;&#x7528;}
+\textbf{Implicit Indexes:} Most DBMSs will automatically create an index to enforce integrity constraints (e.g.,
+primary keys, unique constraints).</p>
+<p>\textbf{&#x9690;&#x5F0F;&#x7D22;&#x5F15;&#xFF1A;}&#x5927;&#x591A;&#x6570; DBMS &#x4F1A;&#x81EA;&#x52A8;&#x521B;&#x5EFA;&#x4E00;&#x4E2A;&#x7D22;&#x5F15;&#x6765;&#x5F3A;&#x5236;&#x5B9E;&#x65BD;&#x5B8C;&#x6574;&#x6027;&#x7EA6;&#x675F;&#xFF08;&#x4F8B;&#x5982;&#xFF0C;&#x4E3B;&#x952E;&#x3001;&#x552F;&#x4E00;&#x7EA6;&#x675F;&#xFF09;&#x3002;</p>
+<p>&#x4EE3;&#x7801;&#x6848;&#x4F8B;&#xFF1A;CREATE UNIQUE INDEX &#x7D22;&#x5F15;&#x540D; ON &#x8868;&#x540D;(&#x5B57;&#x6BB5;&#x540D;);</p>
+<p>\textbf{Partial Indexes: } Create an index on a subset of the entire table. This potentially reduces size and the amount of overhead to maintain it.</p>
+<p>\textbf{&#x5C40;&#x90E8;&#x7D22;&#x5F15;&#xFF1A;}&#x5728;&#x6574;&#x4E2A;&#x8868;&#x7684;&#x5B50;&#x96C6;&#x4E0A;&#x521B;&#x5EFA;&#x7D22;&#x5F15;&#x3002;&#x8FD9;&#x53EF;&#x80FD;&#x4F1A;&#x51CF;&#x5C0F;&#x5927;&#x5C0F;&#x548C;&#x7EF4;&#x62A4;&#x5B83;&#x7684;&#x5F00;&#x9500;&#x91CF;&#x3002;</p>
+<p>&#x4EE3;&#x7801;&#x6848;&#x4F8B;&#xFF1A;CREATE INDEX &#x7D22;&#x5F15;&#x540D; ON &#x8868;&#x540D;(&#x5B57;&#x6BB5;&#x540D;) WHERE &#x5B50;&#x96C6;&#x7B5B;&#x9009;&#x6761;&#x4EF6;;</p>
+<p>\textbf{Convering Indexes: } All attributes needed to process the query are available in an index, then the DBMS does not need to retrieve the tuple. The DBMS can complete the entire query just based on the data available in the index.</p>
+<p>\textbf{&#x8986;&#x76D6;&#x7D22;&#x5F15;&#xFF1A;}&#x67E5;&#x8BE2;&#x6240;&#x9700;&#x7684;&#x6240;&#x6709;&#x5B57;&#x6BB5;&#x90FD;&#x5DF2;&#x5305;&#x542B;&#x5728;&#x7D22;&#x5F15;&#x4E2D;&#xFF0C;DBMS &#x53EF;&#x4EE5;&#x6839;&#x636E;&#x7D22;&#x5F15;&#x4E2D;&#x7684;&#x53EF;&#x7528;&#x6570;&#x636E;&#x5B8C;&#x6210;&#x6574;&#x4E2A;&#x67E5;&#x8BE2;&#xFF0C;&#x4E0D;&#x9700;&#x8981;&#x901A;&#x8FC7;&#x56DE;&#x8868;&#x64CD;&#x4F5C;&#x68C0;&#x7D22;&#x6570;&#x636E;&#x5143;&#x7EC4;(&#x5728;&#x7EC4;&#x5408;&#x7D22;&#x5F15;&#x4E2D;&#x51FA;&#x73B0;)&#x3002;</p>
+<p>&#x4EE3;&#x7801;&#x6848;&#x4F8B;&#xFF1A;CREATE INDEX &#x7D22;&#x5F15;&#x540D; ON &#x8868;&#x540D;(&#x5B57;&#x6BB5;1&#xFF0C;&#x5B57;&#x6BB5;2); </p>
+<p>\qquad \qquad \quad SELECT &#x5B57;&#x6BB5;2 FROM &#x8868;&#x540D; WHERE &#x7B5B;&#x9009;&#x5B57;&#x6BB5;1;</p>
+<p>\textbf{Index Include Columns: } Embed additional columns in index to support index-only queries.</p>
+<p>\textbf{&#x5305;&#x542B;&#x7D22;&#x5F15;&#xFF1A;}&#x5728;&#x7D22;&#x5F15;&#x4E2D;&#x5D4C;&#x5165;&#x5176;&#x4ED6;&#x5217;&#x4EE5;&#x652F;&#x6301;&#x4EC5;&#x7D22;&#x5F15;&#x67E5;&#x8BE2;&#xFF08;&#x9632;&#x6B62;&#x56DE;&#x8868;&#x64CD;&#x4F5C;&#xFF09;&#x3002;</p>
+<p>&#x4EE3;&#x7801;&#x6848;&#x4F8B;&#xFF1A;CREATE INDEX &#x7D22;&#x5F15;&#x540D; ON &#x8868;&#x540D;(&#x5B57;&#x6BB5;1&#xFF0C;&#x5B57;&#x6BB5;2) INCLUDE (&#x5B57;&#x6BB5;3); </p>
+<p>\qquad \qquad \quad SELECT &#x5B57;&#x6BB5;2 FROM &#x8868;&#x540D; WHERE &#x7B5B;&#x9009;&#x5B57;&#x6BB5;1 AND &#x7B5B;&#x9009;&#x5B57;&#x6BB5;2;</p>
+<p>\textbf{Function/Expression Indexes:} Store the output of a function or expression as the key instead of the original value. It is the DBMS&#x2019;s job to recognize which queries can use that index.</p>
+<p>\textbf{&#x51FD;&#x6570;&#x7D22;&#x5F15;&#xFF1A;}&#x5C06;&#x51FD;&#x6570;&#x6216;&#x8868;&#x8FBE;&#x5F0F;&#x7684;&#x8F93;&#x51FA;&#x5B58;&#x50A8;&#x4E3A;&#x952E;&#xFF0C;&#x800C;&#x4E0D;&#x662F;&#x539F;&#x59CB;&#x503C;&#x3002;DBMS&#x7684;&#x5DE5;&#x4F5C;&#x662F;&#x8BC6;&#x522B;&#x54EA;&#x4E9B;&#x67E5;&#x8BE2;&#x53EF;&#x4EE5;&#x4F7F;&#x7528;&#x8BE5;&#x7D22;&#x5F15;&#x3002;</p>
+<p>&#x4EE3;&#x7801;&#x6848;&#x4F8B;&#xFF1A;&#x82E5;&#x8981;&#x67E5;&#x8BE2;SELECT * FROM user WHERE EXTRACT(dow from login) =2; &#x53EF;&#x901A;&#x8FC7;&#x4EE5;&#x4E0B;&#x65B9;&#x5F0F;&#x6784;&#x5EFA;&#x51FD;&#x6570;&#x7D22;&#x5F15;&#xFF1A;</p>
+<p>\qquad \qquad \quad &#x65B9;&#x5F0F;&#x4E00;&#xFF1A;CREATE INDEX &#x7D22;&#x5F15;&#x540D; ON user(EXTRACT(dow from login));</p>
+<p>\qquad \qquad \quad &#x65B9;&#x5F0F;&#x4E8C;&#xFF1A;CREATE INDEX &#x7D22;&#x5F15;&#x540D; ON user(login) WHERE EXTRACT(dow from login)=2;</p>
+<p>\section{Radix Tree &#x57FA;&#x6570;&#x6811;}
+A radix tree is a variant of a trie data structure. It uses digital representation of keys to examine prefixes one-by-one instead of comparing entire key. It is different than a trie in that there is not a node for each element in key, nodes are consolidated to represent the largest prefix before keys differ.</p>
+<p>&#x57FA;&#x6570;&#x6811;&#x662F;trie&#x6570;&#x636E;&#x7ED3;&#x6784;&#x7684;&#x53D8;&#x4F53;&#xFF08;&#x5728;&#x6811;&#x7684;&#x6A2A;&#x5411;&#x548C;&#x7EB5;&#x5411;&#x7ED3;&#x6784;&#x4E0A;&#x90FD;&#x8FDB;&#x884C;&#x4E86;&#x4F18;&#x5316;&#xFF09;&#x3002;&#x5B83;&#x662F;&#x9010;&#x4E2A;&#x6BD4;&#x8F83;&#x6784;&#x6210;&#x952E;&#x7684;&#x6570;&#x5B57;&#x7684;&#x524D;&#x7F00;&#x5143;&#x7D20;&#xFF0C;&#x800C;&#x4E0D;&#x662F;&#x6BD4;&#x8F83;&#x6574;&#x4E2A;&#x952E;&#x3002;&#x5B83;&#x4E0E;trie&#x7684;&#x4E0D;&#x540C;&#x4E4B;&#x5904;&#x5728;&#x4E8E;&#xFF0C;&#x952E;&#x4E2D;&#x7684;&#x6BCF;&#x4E2A;&#x5143;&#x7D20;&#x5E76;&#x4E0D;&#x4E00;&#x5B9A;&#x90FD;&#x5360;&#x6709;&#x4E00;&#x4E2A;&#x8282;&#x70B9;&#xFF0C;&#x53EF;&#x4EE5;&#x8868;&#x793A;&#x952E;&#x4E0D;&#x540C;&#x4E4B;&#x524D;&#x7684;&#x6700;&#x5927;&#x524D;&#x7F00;&#x4F1A;&#x8FDB;&#x884C;&#x5408;&#x5E76;&#x3002;</p>
+<p>The height of tree depends on the length of keys and not the number of keys like in a B+Tree. The path to a leaf nodes represents the key of the leaf. Not all attribute types can be decomposed into binary comparable digits for a radix tree.</p>
+<p>&#x6811;&#x7684;&#x9AD8;&#x5EA6;&#x53D6;&#x51B3;&#x4E8E;&#x952E;&#x7684;&#x957F;&#x5EA6;&#xFF0C;&#x800C;&#x4E0D;&#x662F;&#x50CF;B+&#x6811;&#x662F;&#x53D6;&#x51B3;&#x4E8E;&#x952E;&#x7684;&#x6570;&#x91CF;&#xFF0C;&#x5E76;&#x4E14;&#x53F6;&#x8282;&#x70B9;&#x7684;&#x8DEF;&#x5F84;&#x53EF;&#x4EE5;&#x8868;&#x793A;&#x952E;&#x503C;&#x3002;&#x4F46;&#x662F;&#x5E76;&#x975E;&#x6240;&#x6709;&#x5C5E;&#x6027;&#x7C7B;&#x578B;&#x90FD;&#x53EF;&#x4EE5;&#x5206;&#x89E3;&#x4E3A;&#x57FA;&#x6570;&#x6811;&#x4E2D;&#x7684;&#x4E8C;&#x8FDB;&#x5236;&#x53EF;&#x6BD4;&#x6570;&#x5B57;&#x3002;</p>
+<p>% \textbf{RADIX TREE&#x6570;&#x636E;&#x7ED3;&#x6784;&#x6848;&#x4F8B;&#xFF1A;}&#x6839;&#x636E;K10&#x3001;K25&#x548C;K31&#x6784;&#x5EFA;&#x7684;Radix tree.
+% \begin{figure}[htbp]
+%     \centering
+%     \includegraphics[width=5cm,hight=5cm]{lec8_figure1.png}
+%     \caption{Radix tree.}
+%     \label{figure1}
+% \end{figure}</p>
+<p>\section{Inverted Indexes &#x5012;&#x6392;&#x7D22;&#x5F15;}
+An inverted index stores a mapping of words to records that contain those words in the target attribute. These are sometimes called a full-text search indexes in DBMSs.</p>
+<p>&#x5012;&#x6392;&#x7D22;&#x5F15;&#x5B58;&#x50A8;&#x5355;&#x8BCD;&#x5230;&#x76EE;&#x6807;&#x5C5E;&#x6027;&#x4E2D;&#x5305;&#x542B;&#x8FD9;&#x4E9B;&#x5355;&#x8BCD;&#x7684;&#x8BB0;&#x5F55;&#x7684;&#x6620;&#x5C04;&#x3002;&#x8FD9;&#x4E9B;&#x7D22;&#x5F15;&#x6709;&#x65F6;&#x79F0;&#x4E3A; DBMS &#x4E2D;&#x7684;&#x5168;&#x6587;&#x641C;&#x7D22;&#x7D22;&#x5F15;&#x3002;</p>
+<p>Most of the major DBMSs support inverted indexes natively, but there are specialized DBMSs where this is the only table index data structure available.</p>
+<p>&#x5927;&#x591A;&#x6570;&#x4E3B;&#x8981;&#x7684;DBMS&#x672C;&#x8EAB;&#x90FD;&#x652F;&#x6301;&#x5012;&#x6392;&#x7D22;&#x5F15;&#xFF0C;&#x4F46;&#x4E5F;&#x6709;&#x4E13;&#x95E8;&#x7684;DBMS&#xFF0C;&#x5E76;&#x4E14;&#x662F;&#x5176;&#x4E2D;&#x552F;&#x4E00;&#x53EF;&#x7528;&#x7684;&#x8868;&#x7D22;&#x5F15;&#x6570;&#x636E;&#x7ED3;&#x6784;&#x3002;</p>
+<p>\textbf{Query Types:}</p>
+<p>\begin{itemize}
+    \item Phrase Searches: Find records that contain a list of words in the given order.
+    \item Proximity Searches: Find records where two words occur within n words of each other.
+    \item WildcardSearches:Findrecordsthatcontainwordsthatmatchsomepattern(e.g.,regularexpression).
+\end{itemize}</p>
+<p>\textbf{&#x67E5;&#x8BE2;&#x7C7B;&#x578B;&#xFF1A;}
+\begin{itemize}
+    \item &#x77ED;&#x8BED;&#x641C;&#x7D22;&#xFF1A;&#x6309;&#x7ED9;&#x5B9A;&#x987A;&#x5E8F;&#x67E5;&#x627E;&#x5B57;&#x5305;&#x542B;&#x8BCD;&#x5217;&#x8868;&#x7684;&#x8BB0;&#x5F55;&#x3002;
+    \item &#x901A;&#x914D;&#x7B26;&#x641C;&#x7D22;&#xFF1A;&#x67E5;&#x627E;&#x5305;&#x542B;&#x4E0E;&#x67D0;&#x4E9B;&#x6A21;&#x5F0F;&#x5339;&#x914D;&#x7684;&#x5355;&#x8BCD;&#xFF08;&#x4F8B;&#x5982;&#xFF0C;&#x6B63;&#x5219;&#x8868;&#x8FBE;&#x5F0F;&#xFF09;&#x7684;&#x8BB0;&#x5F55;&#x3002;
+\end{itemize}</p>
+<p>\textbf{Design Decisions: }
+\begin{itemize}
+    \item What To Store: The index needs to store at least the words contained in each record (separated by punctuation characters). It can also include additional information such as the word frequency, position, and other meta-data.</p>
+<pre><code>\item When To Update: Updating an inverted index every time the table is modified is expensive and slow. Thus, most DBMSs will maintain auxiliary data structures to &#x201C;stage&#x201D; updates and then update the index in batches.
+</code></pre><p>\end{itemize}</p>
+<p>\textbf{&#x51B3;&#x7B56;&#x8BBE;&#x8BA1;&#xFF1A;}
+\begin{itemize}
+    \item &#x8981;&#x5B58;&#x50A8;&#x7684;&#x5185;&#x5BB9;&#xFF1A;&#x7D22;&#x5F15;&#x81F3;&#x5C11;&#x9700;&#x8981;&#x5B58;&#x50A8;&#x6BCF;&#x6761;&#x8BB0;&#x5F55;&#x4E2D;&#x5305;&#x542B;&#x7684;&#x5355;&#x8BCD;&#xFF08;&#x7528;&#x6807;&#x70B9;&#x7B26;&#x53F7;&#x5206;&#x9694;&#xFF09;&#x3002;&#x5B83;&#x8FD8;&#x53EF;&#x4EE5;&#x5305;&#x62EC;&#x5176;&#x4ED6;&#x4FE1;&#x606F;&#xFF0C;&#x4F8B;&#x5982;&#x8BCD;&#x9891;&#xFF0C;&#x4F4D;&#x7F6E;&#x548C;&#x5176;&#x4ED6;&#x5143;&#x6570;&#x636E;&#x3002;
+    \item &#x4F55;&#x65F6;&#x66F4;&#x65B0;&#xFF1A;&#x6BCF;&#x6B21;&#x4FEE;&#x6539;&#x8868;&#x65F6;&#x66F4;&#x65B0;&#x5012;&#x6392;&#x7D22;&#x5F15;&#x65E2;&#x6602;&#x8D35;&#x53C8;&#x7F13;&#x6162;&#x3002;&#x56E0;&#x6B64;&#xFF0C;&#x5927;&#x591A;&#x6570;DBMS&#x5C06;&#x7EF4;&#x62A4;&#x8F85;&#x52A9;&#x6570;&#x636E;&#x7ED3;&#x6784;&#x4EE5;&quot;&#x6682;&#x5B58;&quot;&#x66F4;&#x65B0;&#xFF0C;&#x7136;&#x540E;&#x6279;&#x91CF;&#x66F4;&#x65B0;&#x7D22;&#x5F15;&#x3002;
+\end{itemize}</p>
+<p>\section{&#x603B;&#x7ED3;}</p>
+<p>&#x672C;&#x7AE0;&#x4E2D;&#x63D0;&#x5230;&#x7684;&#x9644;&#x52A0;&#x7D22;&#x5F15;&#x548C;Radix&#x6811;&#x7D22;&#x5F15;&#x90FD;&#x53EF;&#x4EE5;&#x652F;&#x6301;&#x5355;&#x70B9;&#x67E5;&#x8BE2;&#x548C;&#x8303;&#x56F4;&#x67E5;&#x8BE2;&#xFF0C;&#x800C;&#x5012;&#x6392;&#x7D22;&#x5F15;(&#x4E00;&#x79CD;&#x5355;&#x8BCD;-&#x6587;&#x6863;&#x5F62;&#x5F0F;&#x7684;&#x77E9;&#x9635;&#x6570;&#x636E;&#x7ED3;&#x6784;)&#x5219;&#x662F;&#x4E00;&#x79CD;&#x652F;&#x6301;&#x5168;&#x6587;&#x7D22;&#x5F15;&#x7684;&#x6570;&#x636E;&#x7ED3;&#x6784;&#xFF0C;&#x66F4;&#x9002;&#x5408;&#x7528;&#x4E8E;&#x6A21;&#x7CCA;&#x67E5;&#x8BE2;&#x7684;&#x573A;&#x666F;&#x3002;
+\end{document}</p>
 
                                 
                                 </section>
@@ -1450,7 +1513,7 @@
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"第八讲","level":"1.3.8","depth":2,"next":{"title":"第九讲","level":"1.3.9","depth":2,"path":"cmu15455/LEC9.md","ref":"cmu15455/LEC9.md","articles":[]},"previous":{"title":"第七讲","level":"1.3.7","depth":2,"path":"cmu15455/LEC7.md","ref":"cmu15455/LEC7.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["livereload"],"pluginsConfig":{"livereload":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"cmu15455/LEC8.md","mtime":"2022-04-17T03:17:05.176Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2022-04-18T16:04:04.789Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"第八讲","level":"1.3.8","depth":2,"next":{"title":"第九讲","level":"1.3.9","depth":2,"path":"cmu15455/LEC9.md","ref":"cmu15455/LEC9.md","articles":[]},"previous":{"title":"第七讲","level":"1.3.7","depth":2,"path":"cmu15455/LEC7.md","ref":"cmu15455/LEC7.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["livereload"],"pluginsConfig":{"livereload":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"cmu15455/LEC8.md","mtime":"2022-04-19T00:44:00.380Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2022-04-19T00:43:59.585Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
