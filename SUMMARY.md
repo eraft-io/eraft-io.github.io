@@ -3,6 +3,18 @@
 * [关于这个小本子](README.md)
 * [English](Syllabus.md)
 * [如何贡献](CONTRIBUTION.md)
+* 设计和实现分布式系统
+    * [分布式系统中脑裂的问题](eraft_base/brain_spilt.md)
+    * [多数派投票机制](eraft_base/majority_vote.md)
+    * [Raft 算法概览](eraft_base/raft_basic.md)
+    * [eraft 中实现的 raft 接口](eraft_base/eraft_interface.md)
+    * [领导选举](eraft_base/leader_election.md)
+    * [日志复制](eraft_base/eraft_log_replication.md)
+    * [Raft如何保证系统崩溃时候的安全性](eraft_base/eraft_safety.md)
+    * [数据分片](eraft_base/eraft_shard.md)
+    * [ekv 集群架构](eraft_base/eraftkv_arch.md)
+    * [ekv 状态存储设计](eraft_base/eraftkv_storage.md)
+    * [ekv 开发计划](eraft_base/eraftkv_dev_sche.md)
 * cmu15455 Introduction to DataBase Systems
     * [第一讲](cmu15455/LEC1.md)
     * [第二讲](cmu15455/LEC2.md)
