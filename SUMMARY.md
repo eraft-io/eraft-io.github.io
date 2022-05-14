@@ -13,6 +13,7 @@
     * [Raft如何保证系统崩溃时候的安全性](eraft_doc_v1/eraft_safety.md)
     * [数据分片](eraft_doc_v1/eraft_shard.md)
     * [数据迁移](eraft_doc_v1/bucket_migrate.md)
+    * [leveldb存储引擎原理解读](eraft_doc_v1/leveldb_stack.md)
     * [ekv 集群架构](eraft_doc_v1/eraftkv_arch.md)
     * [ekv 状态存储设计](eraft_doc_v1/eraftkv_storage.md)
     * [ekv 开发计划](eraft_doc_v1/eraftkv_dev_sche.md)
