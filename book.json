@@ -1,0 +1,9 @@
+{
+    "plugins": ["valine"],
+    "pluginsConfig": {
+        "valine": {
+            "appId": "llVlxHTVN6Qfid7vmRxupfVy-9Nh9j0Va",
+            "appKey": "MMitndxOIUGnNsblXRkGoDv6"
+        }
+    }
+}
