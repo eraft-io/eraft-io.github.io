@@ -1,1 +1,17 @@
-见 gitbook [https://gitbook.cn/gitchat/author/5d7fad728aef5b7c8fd126a3](https://gitbook.cn/gitchat/author/5d7fad728aef5b7c8fd126a3)
+### 基于 Raft 库，实现简单分布式 kv 存储系统
+
+#### 系统架构概览
+
+#### 对外接口定义
+
+#### 服务端核心实现分析
+
+#### 客户端实现介绍
+
+我们后续会将更新发不到 gitbook 上，整理这本书耗费了我们大量的时间和精力。故上述章节尚未开放，一瓶矿泉水的价格支持我们继续输出优质的分布式存储知识体系，2.99¥，感谢大家的支持。
+
+![](resources/gitchat.png)
+
+见我们 gitbook eraft 主页 [https://gitbook.cn/gitchat/author/5d7fad728aef5b7c8fd126a3](https://gitbook.cn/gitchat/author/5d7fad728aef5b7c8fd126a3)
+
+文章审核通过之后我们会发布我们的主页，欢迎大家订阅。

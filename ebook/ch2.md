@@ -40,7 +40,6 @@ a[low:high]
 
 你可以运行下面的示例，理解这个切片操作
 
-示例1：
 
 ```
 package main
@@ -63,7 +62,6 @@ Slice s =  [Beta Gamma Delta]
 
 ```
 
-示例2：
 
 ```
 # Output
