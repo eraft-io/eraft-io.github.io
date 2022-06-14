@@ -409,19 +409,19 @@ redis - C - 8GiB 内存
 
 128 bytes kv set
 
-![](resources/128_bytes_kv_set.pdf)
+![](resources/128_bytes_kv_set-1.png)
 
 128 bytes kv get
 
-![](resources/128_bytes_kv_get.pdf)
+![](resources/128_bytes_kv_get-1.png)
 
 10240 bytes kv set
 
-![](resources/10240_bytes_kv_set.pdf)
+![](resources/10240_bytes_kv_set-1.png)
 
 10240 bytes kv get
 
-![](resources/10240_bytes_kv_get.pdf)
+![](resources/10240_bytes_kv_get-1.png)
 
 
 #### 捐赠

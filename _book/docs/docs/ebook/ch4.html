@@ -1,0 +1,769 @@
+
+<!DOCTYPE HTML>
+<html lang="" >
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>第四章：构建 Raft 库 · GitBook</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.3">
+        
+        
+        
+    
+    <link rel="stylesheet" href="../gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    <link rel="next" href="ch5.html" />
+    
+    
+    <link rel="prev" href="ch3.html" />
+    
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="../">
+            
+                <a href="../">
+            
+                    
+                    Introduction
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="../CONTRIBUTION.html">
+            
+                <a href="../CONTRIBUTION.html">
+            
+                    
+                    如何贡献
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" data-path="ch1.html">
+            
+                <a href="ch1.html">
+            
+                    
+                    第一章：体验分布式 KV 存储系统 eraftkv
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4" data-path="ch2.html">
+            
+                <a href="ch2.html">
+            
+                    
+                    第二章：Go 语言基础知识
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5" data-path="ch3.html">
+            
+                <a href="ch3.html">
+            
+                    
+                    第三章：Raft 论文解读
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter active" data-level="1.6" data-path="ch4.html">
+            
+                <a href="ch4.html">
+            
+                    
+                    第四章：构建 Raft 库
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7" data-path="ch5.html">
+            
+                <a href="ch5.html">
+            
+                    
+                    第五章：基于 Raft 库，实现简单的分布式 kv 系统
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8" data-path="ch6.html">
+            
+                <a href="ch6.html">
+            
+                    
+                    第六章：Multi-Raft 设计与实现
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9" data-path="ch7.html">
+            
+                <a href="ch7.html">
+            
+                    
+                    第七章：分布式事务初探
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            Published with GitBook
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href=".." >第四章：构建 Raft 库</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <h3 id="&#x6784;&#x5EFA;-raft-&#x5E93;">&#x6784;&#x5EFA; Raft &#x5E93;</h3>
+<h4 id="&#x6838;&#x5FC3;&#x6570;&#x636E;&#x7ED3;&#x6784;&#x8BBE;&#x8BA1;">&#x6838;&#x5FC3;&#x6570;&#x636E;&#x7ED3;&#x6784;&#x8BBE;&#x8BA1;</h4>
+<p>&#x6211;&#x4EEC;&#x4E0A;&#x4E00;&#x7AE0;&#x8282;&#x8BB2;&#x4E86; Raft &#x7B97;&#x6CD5;&#x7684;&#x4E3B;&#x8981;&#x5185;&#x5BB9;&#xFF0C;&#x73B0;&#x5728;&#x6211;&#x4EEC;&#x8981;&#x4EE3;&#x7801;&#x5B9E;&#x73B0;&#x5B83;&#x4EEC;&#x4E86;&#x3002;&#x9996;&#x5148;&#x6211;&#x4EEC;&#x9700;&#x8981;&#x62BD;&#x8C61;&#x51FA;&#x6211;&#x4EEC;&#x9700;&#x8981;&#x7684;&#x6570;&#x636E;&#x7ED3;&#x6784;&#x3002;&#x5148;&#x6765;&#x68B3;&#x7406;&#x4E00;&#x4E0B;&#x53EF;&#x80FD;&#x7528;&#x5230;&#x7684;&#x6570;&#x636E;&#x7ED3;&#x6784;&#xFF0C;&#x9996;&#x5148;&#x8282;&#x70B9;&#x4E4B;&#x95F4;&#x9700;&#x8981;&#x4E92;&#x76F8;&#x8BBF;&#x95EE;&#xFF0C;&#x90A3;&#x6211;&#x4EEC;&#x9700;&#x8981;&#x5B9A;&#x4E49;&#x8BBF;&#x95EE;&#x5176;&#x4ED6;&#x8282;&#x70B9;&#x7684;&#x7F51;&#x7EDC;&#x5BA2;&#x6237;&#x7AEF;&#xFF0C;&#x8FD9;&#x91CC;&#x9762;&#x8981;&#x5305;&#x542B;&#x8282;&#x70B9;&#x7684; id, &#x5730;&#x5740;&#xFF0C;&#x8FD8;&#x6709; rpc &#x7684;&#x5BA2;&#x6237;&#x7AEF;&#xFF0C;&#x6574;&#x4E2A;&#x7ED3;&#x6784;&#x6211;&#x4EEC;&#x62BD;&#x8C61;&#x4E3A; RaftClientEnd&#xFF0C;&#x4E3B;&#x8981;&#x6570;&#x636E;&#x5185;&#x5BB9;&#x5982;&#x4E0B;&#xFF1A;</p>
+<pre><code>
+type RaftClientEnd struct {
+    id             uint64
+    addr           string
+    raftServiceCli *raftpb.RaftServiceClient  // grpc &#x5BA2;&#x6237;&#x7AEF;
+}
+</code></pre><p>&#x8282;&#x70B9;&#x72B6;&#x6001;&#x6211;&#x4EEC;&#x4E4B;&#x524D;&#x63CF;&#x8FF0;&#x7684;&#x6709;&#x4E09;&#x79CD;&#xFF0C;&#x5B9A;&#x4E49;&#x5982;&#x4E0B;&#xFF1A;</p>
+<pre><code>
+const (
+    NodeRoleFollower NodeRole = iota
+    NodeRoleCandidate
+    NodeRoleLeader
+)
+</code></pre><p>&#x6211;&#x4EEC;&#x8981;&#x5B8C;&#x6210;&#x9009;&#x4E3E;&#x64CD;&#x4F5C;&#x7684;&#x8BDD;&#x9700;&#x8981;&#x4E24;&#x4E2A;&#x8D85;&#x65F6;&#x65F6;&#x95F4;&#xFF0C;&#x8FD9;&#x91CC;&#x6211;&#x4EEC;&#x4F7F;&#x7528;  Golang time &#x5E93;&#x91CC;&#x9762;&#x7684; Timer &#x5B9E;&#x73B0;&#xFF0C;&#x5B83;&#x53EF;&#x4EE5;&#x5B9A;&#x65F6;&#x7684;&#x7ED9;&#x4E00;&#x4E2A;&#x901A;&#x9053;&#x53D1;&#x9001;&#x6D88;&#x606F;&#xFF0C;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x7528;&#x5B83;&#x6765;&#x5B9E;&#x73B0;&#x9009;&#x4E3E;&#x8D85;&#x65F6;&#x548C;&#x5FC3;&#x8DF3;&#x8D85;&#x65F6;&#x3002;</p>
+<pre><code>
+electionTimer    *time.Timer
+heartbeatTimer   *time.Timer
+</code></pre><p>&#x9664;&#x6B64;&#x4E4B;&#x5916;&#x6211;&#x4EEC;&#x8FD8;&#x9700;&#x8981;&#x8BB0;&#x5F55;&#x5F53;&#x524D;&#x8282;&#x70B9;&#x7684; id, &#x5F53;&#x524D;&#x7684;&#x4EFB;&#x671F;&#x53F7;&#xFF0C;&#x4E3A;&#x8C01;&#x6295;&#x7968;&#xFF0C;&#x83B7;&#x5F97;&#x7968;&#x6570;&#x7684;&#x7EDF;&#x8BA1;&#xFF0C;&#x5DF2;&#x7ECF;&#x63D0;&#x4EA4;&#x7684;&#x65E5;&#x5FD7;&#x7D22;&#x5F15;&#x53F7;&#xFF0C;&#x6700;&#x540E; apply &#x5230;&#x72B6;&#x6001;&#x673A;&#x7684;&#x65E5;&#x5FD7;&#x53F7;&#xFF0C;&#x4EE5;&#x53CA;&#x8282;&#x70B9;&#x5982;&#x679C;&#x662F; Leader &#x7684;&#x8BDD;&#x9700;&#x8981;&#x8BB0;&#x5F55;&#x5230;&#x5176;&#x4ED6;&#x8282;&#x70B9;&#x590D;&#x5236;&#x6700;&#x65B0;&#x5339;&#x914D;&#x7684;&#x65E5;&#x5FD7;&#x53F7;&#xFF0C;&#x8FD9;&#x5199;&#x6570;&#x636E;&#x7ED3;&#x6784;&#x5B9A;&#x4E49;&#x5982;&#x4E0B;&#xFF1A;</p>
+<pre><code>
+type Raft struct {
+    mu             sync.RWMutex
+    peers          []*RaftClientEnd // rpc &#x5BA2;&#x6237;&#x7AEF;
+    me_            int  // &#x81EA;&#x5DF1;&#x7684; id
+    dead           int32 // &#x8282;&#x70B9;&#x7684;&#x72B6;&#x6001;
+    applyCh        chan *pb.ApplyMsg // apply &#x534F;&#x7A0B;&#x901A;&#x9053;&#xFF0C;&#x534F;&#x7A0B;&#x6A21;&#x578B;&#x4E2D;&#x4F1A;&#x8BB2;&#x5230;
+    applyCond      *sync.Cond // apply &#x6D41;&#x7A0B;&#x63A7;&#x5236;&#x7684;&#x4FE1;&#x53F7;&#x91CF;
+    replicatorCond []*sync.Cond // &#x590D;&#x5236;&#x64CD;&#x4F5C;&#x63A7;&#x5236;&#x7684;&#x4FE1;&#x53F7;&#x91CF;
+    role           NodeRole  // &#x8282;&#x70B9;&#x5F53;&#x524D;&#x7684;&#x72B6;&#x6001;
+    curTerm        int64  // &#x5F53;&#x524D;&#x7684;&#x4EFB;&#x671F;
+    votedFor       int64  // &#x4E3A;&#x8C01;&#x6295;&#x7968;
+    grantedVotes   int    // &#x5DF2;&#x7ECF;&#x83B7;&#x5F97;&#x7684;&#x7968;&#x6570; 
+    logs           *RaftLog  // &#x65E5;&#x5FD7;&#x4FE1;&#x606F;
+    commitIdx      int64     // &#x5DF2;&#x7ECF;&#x63D0;&#x4EA4;&#x7684;&#x6700;&#x5927;&#x7684;&#x65E5;&#x5FD7; id
+    lastApplied    int64     // &#x5DF2;&#x7ECF; apply &#x7684;&#x6700;&#x5927;&#x65E5;&#x5FD7;&#x7684; id
+    nextIdx        []int     // &#x5230;&#x5176;&#x4ED6;&#x8282;&#x70B9;&#x4E0B;&#x4E00;&#x4E2A;&#x5339;&#x914D;&#x7684;&#x65E5;&#x5FD7; id &#x4FE1;&#x606F;
+    matchIdx       []int     // &#x5230;&#x5176;&#x4ED6;&#x8282;&#x70B9;&#x5F53;&#x524D;&#x5339;&#x914D;&#x7684;&#x65E5;&#x5FD7; id &#x4FE1;&#x606F;
+
+    leaderId         int64   // &#x96C6;&#x7FA4;&#x4E2D;&#x5F53;&#x524D; Leader &#x8282;&#x70B9;&#x7684; id
+    electionTimer    *time.Timer  // &#x9009;&#x4E3E;&#x8D85;&#x65F6;&#x5B9A;&#x65F6;&#x5668;
+    heartbeatTimer   *time.Timer  // &#x5FC3;&#x8DF3;&#x8D85;&#x65F6;&#x5B9A;&#x65F6;&#x5668;
+    heartBeatTimeout uint64       // &#x5FC3;&#x8DF3;&#x8D85;&#x65F6;&#x65F6;&#x95F4;
+    baseElecTimeout  uint64       // &#x9009;&#x4E3E;&#x8D85;&#x65F6;&#x65F6;&#x95F4;
+}
+</code></pre><p>&#x9996;&#x5148;&#x7CFB;&#x7EDF;&#x542F;&#x52A8;&#x7684;&#x65F6;&#x5019;&#x9700;&#x8981;&#x6784;&#x9020; Raft &#x8FD9;&#x4E2A;&#x7ED3;&#x6784;&#x4F53;&#xFF0C;&#x8FD9;&#x4E2A;&#x6D41;&#x7A0B;&#x662F;&#x5728; MakeRaft &#x91CC;&#x9762;&#x5B9E;&#x73B0;&#x7684;&#xFF0C;&#x5B83;&#x4E3B;&#x8981;&#x662F;&#x521D;&#x59CB;&#x5316;&#x4E0E;&#x4E00;&#x4E9B;&#x53D8;&#x91CF;&#xFF0C;&#x4E24;&#x4E2A;&#x5B9A;&#x65F6;&#x5668;&#xFF0C;&#x5E76;&#x542F;&#x52A8;&#x76F8;&#x5173;&#x7684;&#x534F;&#x7A0B;&#xFF0C;&#x6211;&#x4EEC;&#x8FD9;&#x91CC;&#x5BF9;&#x6BCF;&#x4E2A;&#x5BF9;&#x7AEF;&#x8282;&#x70B9;&#x590D;&#x5236;&#x6709; Replicator &#x534F;&#x7A0B;&#xFF0C;&#x89E6;&#x53D1;&#x4E24;&#x4E2A;&#x8D85;&#x65F6;&#x65F6;&#x95F4;&#x6709; Tick &#x534F;&#x7A0B;&#xFF0C;&#x5E94;&#x7528;&#x5DF2;&#x7ECF;&#x63D0;&#x4EA4;&#x7684;&#x65E5;&#x5FD7;&#x6709; Applier &#x534F;&#x7A0B;&#x3002;</p>
+<h4 id="&#x534F;&#x7A0B;&#x6A21;&#x578B;">&#x534F;&#x7A0B;&#x6A21;&#x578B;</h4>
+<p><img src="resources/goruntine_model.png" alt=""></p>
+<p>&#x4E0A;&#x56FE;&#x5C55;&#x793A;&#x4E86;&#x6211;&#x4EEC; raftcore &#x91CC;&#x9762;&#x7684;&#x534F;&#x7A0B;&#x6A21;&#x578B;&#xFF0C;&#x5F53;&#x5E94;&#x7528;&#x5C42;&#x63D0;&#x6848; (propose) &#x5230;&#x6765;&#x4E4B;&#x540E;&#x4E3B;&#x534F;&#x7A0B;&#x4F1A;&#x5728;&#x672C;&#x5730;&#x8FFD;&#x52A0;&#x65E5;&#x5FD7;&#xFF0C;&#x7136;&#x540E;&#x53D1;&#x9001; BroadcastAppend&#xFF0C;&#x7136;&#x540E;&#x5230;&#x5176;&#x4ED6;&#x8282;&#x70B9;&#x590D;&#x5236;&#x65E5;&#x5FD7;&#x7684;&#x534F;&#x7A0B;&#x7684;&#x7B49;&#x5F85;&#x5C31;&#x4F1A;&#x88AB;&#x5524;&#x9192;&#xFF0C;&#x5F00;&#x59CB;&#x8FDB;&#x884C;&#x4E00;&#x8F6E;&#x7684;&#x7684;&#x590D;&#x5236;&#xFF0C;replicateOneRound &#x6210;&#x529F;&#x590D;&#x5236;&#x534A;&#x6570;&#x8282;&#x70B9;&#x65E5;&#x5FD7;&#x4E4B;&#x540E;&#x4F1A;&#x89E6;&#x53D1; commit, rf.applyCond.Signal() &#x4F1A;&#x5524;&#x9192;&#x7B49;&#x5F85;&#x505A; Apply &#x64CD;&#x4F5C;&#x7684; Applier &#x534F;&#x7A0B;&#x3002;</p>
+<p>&#x53E6;&#x5916; Tick &#x534F;&#x7A0B;&#x4F1A;&#x76D1;&#x542C; Timer &#x4E24;&#x4E2A;&#x8D85;&#x65F6;&#x7684; C &#x901A;&#x9053;&#x4FE1;&#x53F7;&#xFF0C;&#x4E00;&#x65E6;&#x5FC3;&#x8DF3;&#x8D85;&#x65F6;&#x5E76;&#x4E14;&#x5F53;&#x524D;&#x8282;&#x70B9;&#x7684;&#x72B6;&#x6001;&#x662F; Leader&#xFF0C;&#x5C31;&#x4F1A;&#x8C03;&#x7528; BroadcastHeartbeat &#x53D1;&#x9001;&#x5FC3;&#x8DF3;&#xFF0C;&#x53D1;&#x5FC3;&#x8DF3;&#x7684;&#x65F6;&#x5019;&#x4E5F;&#x4F1A; replicateOneRound &#x5C31;&#x548C;&#x4E0A;&#x8FF0;&#x4E00;&#x6837;&#xFF0C;&#x5982;&#x679C;&#x6210;&#x529F;&#x590D;&#x5236;&#x534A;&#x6570;&#x8282;&#x70B9;&#x65E5;&#x5FD7;&#x4E4B;&#x540E;&#x4F1A;&#x89E6;&#x53D1; commit, rf.applyCond.Signal() &#x5C31;&#x4F1A;&#x5524;&#x9192;&#x7B49;&#x5F85;&#x505A; Apply &#x64CD;&#x4F5C;&#x7684; Applier &#x534F;&#x7A0B;&#x3002;</p>
+<p>Applier &#x534F;&#x7A0B; apply &#x5B8C;&#x6D88;&#x606F;&#x4E4B;&#x540E;&#x4F1A;&#x628A; ApplyMsg &#x6D88;&#x606F;&#x5199;&#x5165; rf.applyCh &#x901A;&#x77E5;&#x5E94;&#x7528;&#x5C42;&#xFF0C;&#x5E94;&#x7528;&#x5C42;&#x7684;&#x534F;&#x7A0B;&#x548C;&#x4EE5;&#x76D1;&#x542C;&#x8FD9;&#x4E2A;&#x901A;&#x9053;&#xFF0C;&#x5982;&#x679C;&#x6709; ApplyMsg &#x5230;&#x6765;&#x5C31;&#x628A;&#x5B83;&#x5E94;&#x7528;&#x5230;&#x72B6;&#x6001;&#x673A;&#x3002;</p>
+<h4 id="rpc-&#x5B9A;&#x4E49;">Rpc &#x5B9A;&#x4E49;</h4>
+<p>eraft &#x7684; rpc &#x5B9A;&#x4E49;&#x6587;&#x4EF6;&#x5728; pbs &#x76EE;&#x5F55;&#x4E0B;&#x7684; raftbasic.proto &#x6587;&#x4EF6;&#x4E2D;&#xFF0C;&#x4E3B;&#x8981;&#x7684;&#x6D88;&#x606F;&#x5982;&#x4E0B;&#xFF1A;</p>
+<h5 id="entry">Entry</h5>
+<p>&#x8FD9;&#x4E2A;&#x662F;&#x4E00;&#x4E2A;&#x65E5;&#x5FD7;&#x6761;&#x76EE;&#x4FE1;&#x606F;&#x8868;&#x793A;&#xFF0C;&#x548C;&#x6211;&#x4EEC;&#x4E4B;&#x524D;&#x63CF;&#x8FF0;&#x7684;&#x4E00;&#x6837;&#xFF0C;&#x5B83;&#x6709;&#x4EFB;&#x671F;&#x53F7; term&#xFF0C;&#x7D22;&#x5F15;&#x53F7; index, &#x4EE5;&#x53CA;&#x64CD;&#x4F5C;&#x7684;&#x5E8F;&#x5217;&#x5316;&#x6570;&#x636E; data &#x6211;&#x4EEC;&#x7528;&#x4E00;&#x4E2A;&#x5B57;&#x8282;&#x6D41;&#x6765;&#x5B58;&#x50A8;&#xFF0C;&#x65E5;&#x5FD7;&#x6761;&#x76EE;&#x6709;&#x4E24;&#x79CD;&#x7C7B;&#x578B;&#x4E00;&#x79CD;&#x662F; Normal &#x6B63;&#x5E38;&#x65E5;&#x5FD7;&#xFF0C;&#x53E6;&#x4E00;&#x79CD;&#x662F; ConfChange &#x914D;&#x7F6E;&#x53D8;&#x66F4;&#x7684;&#x65E5;&#x5FD7;&#xFF1A;</p>
+<pre><code>
+enum EntryType {
+    EntryNormal = 0;
+    EntryConfChange = 1;
+}
+
+message Entry {
+    EntryType entry_type = 1;
+    uint64    term = 2;
+    int64     index = 3;
+    bytes     data = 4;
+}
+</code></pre><h5 id="requestvote-&#x76F8;&#x5173;">RequestVote &#x76F8;&#x5173;</h5>
+<p>&#x4E0B;&#x9762;&#x662F;&#x8BF7;&#x6C42;&#x6295;&#x7968; RPC &#x7684;&#x5B9A;&#x4E49;&#xFF0C;&#x57FA;&#x672C;&#x548C;&#x8BBA;&#x6587;&#x91CC;&#x9762;&#x4FDD;&#x6301;&#x4E00;&#x81F4;&#xFF1A;</p>
+<p>&#x8BF7;&#x6C42;&#x6295;&#x7968;&#x91CC;&#x9762;&#x6709;&#x5019;&#x9009;&#x4EBA;&#x7684;&#x4EFB;&#x671F;&#x53F7;&#xFF0C;&#x5B83;&#x7684; id &#x4EE5;&#x53CA;&#x5B83;&#x6700;&#x540E;&#x4E00;&#x6761;&#x65E5;&#x5FD7;&#x7684;&#x7D22;&#x5F15;&#x4EE5;&#x53CA;&#x4EFB;&#x671F;&#x53F7;&#x4FE1;&#x606F;&#x3002;</p>
+<p>&#x54CD;&#x5E94;&#x91CC;&#x9762;&#x6709;&#x4E2A;&#x4EFB;&#x671F;&#x53F7;&#xFF0C;&#x8FD9;&#x4E2A;&#x7528;&#x6765;&#x7ED9;&#x5019;&#x9009;&#x4EBA;&#x5728;&#x9009;&#x4E3E;&#x5931;&#x8D25;&#x7684;&#x65F6;&#x5019;&#x66F4;&#x65B0;&#x81EA;&#x5DF1;&#x7684;&#x4EFB;&#x671F;&#xFF0C;&#x8FD8;&#x6709;&#x4E00;&#x4E2A; vote_granted &#x8868;&#x793A;&#x8FD9;&#x4E2A;&#x8BF7;&#x6C42;&#x6295;&#x7968;&#x64CD;&#x4F5C;&#x662F;&#x5426;&#x88AB;&#x5BF9;&#x7AEF;&#x8282;&#x70B9;&#x63A5;&#x53D7;&#x3002;</p>
+<pre><code>
+message RequestVoteRequest {
+    int64 term = 1;
+    int64 candidate_id = 2;
+    int64 last_log_index = 3;
+    int64 last_log_term = 4;
+}
+
+message RequestVoteResponse {
+    int64 term = 1;
+    bool  vote_granted = 2;
+}
+
+service RaftService {
+    //...
+    rpc RequestVote (RequestVoteRequest) returns (RequestVoteResponse) {}
+}
+</code></pre><h5 id="appendentries-&#x76F8;&#x5173;">AppendEntries &#x76F8;&#x5173;</h5>
+<p>&#x65E5;&#x5FD7;&#x8FFD;&#x52A0;&#x64CD;&#x4F5C;&#x7684;&#x5B9A;&#x4E49;&#x5982;&#x4E0B;&#xFF0C;&#x57FA;&#x672C;&#x4E5F;&#x548C;&#x8BBA;&#x6587;&#x91CC;&#x9762;&#x4E00;&#x81F4;&#xFF1A;</p>
+<p>&#x8BF7;&#x6C42;&#x91CC;&#x9762;&#x6709; Leader &#x7684;&#x4EFB;&#x671F;&#xFF0C;id &#xFF08;&#x7528;&#x6765;&#x544A;&#x8BC9; follower, &#x8FD9;&#x6837; client &#x8BBF;&#x95EE;&#x4E86; follower &#x4E4B;&#x540E;&#x53EF;&#x4EE5;&#x88AB;&#x544A;&#x77E5; leader &#x8282;&#x70B9;&#x662F;&#x54EA;&#x4E2A;&#xFF09;&#xFF0C;
+prev_log_index &#x8868;&#x793A;&#x6D88;&#x606F;&#x91CC;&#x9762;&#x5C06;&#x8981;&#x540C;&#x6B65;&#x7684;&#x7B2C;&#x4E00;&#x6761;&#x65E5;&#x5FD7;&#x524D;&#x4E00;&#x6761;&#x65E5;&#x5FD7;&#x7684;&#x7684;&#x7D22;&#x5F15;&#x4FE1;&#x606F;&#xFF0C;prev_log_term &#x662F;&#x5B83;&#x7684;&#x4EFB;&#x671F;&#x4FE1;&#x606F;&#xFF0C;leader_commit &#x5219;&#x662F; leader &#x7684; commit &#x53F7; (&#x53EF;&#x4EE5;&#x7528;&#x6765;&#x5468;&#x77E5; follower &#x8282;&#x70B9;&#x5F53;&#x524D;&#x7684; commit &#x8FDB;&#x5EA6;)&#xFF0C;entries &#x8868;&#x793A;&#x65E5;&#x5FD7;&#x6761;&#x76EE;&#x4FE1;&#x606F;&#x3002;</p>
+<p>&#x54CD;&#x5E94;&#x91CC;&#x9762; term &#x7528;&#x6765;&#x544A;&#x8BC9; leader &#x662F;&#x5426;&#x51FA;&#x65B0;&#x7684;&#x4EFB;&#x671F;&#x7684;&#x6D88;&#x606F;&#xFF0C;&#x53EF;&#x4EE5;&#x7528;&#x6765;&#x66F4;&#x65B0; leader &#x7684;&#x4EFB;&#x671F;&#x53F7;&#xFF0C;success &#x8868;&#x793A;&#x65E5;&#x5FD7;&#x8FFD;&#x52A0;&#x64CD;&#x4F5C;&#x662F;&#x5426;&#x6210;&#x529F;&#xFF0C;conflict_index &#x7528;&#x6765;&#x8BB0;&#x5F55;&#x51B2;&#x7A81;&#x65E5;&#x5FD7;&#x7684;&#x7D22;&#x5F15;&#x53F7;&#xFF0C;conflict_term &#x7528;&#x6765;&#x8BB0;&#x5F55;&#x51B2;&#x7A81;&#x65E5;&#x5FD7;&#x7684;&#x4EFB;&#x671F;&#x53F7;&#x3002;</p>
+<pre><code>
+message AppendEntriesRequest {
+    int64    term = 1;
+    int64    leader_id = 2;
+    int64    prev_log_index = 3;
+    int64    prev_log_term = 4;
+    int64    leader_commit = 5;
+    repeated Entry entries = 6;
+}
+
+message AppendEntriesResponse {
+    int64  term = 1;
+    bool  success = 2;
+    int64 conflict_index = 3;
+    int64 conflict_term = 4;
+}
+
+
+service RaftService {
+    //...
+    rpc AppendEntries (AppendEntriesRequest) returns (AppendEntriesResponse) {}
+}
+</code></pre><h4 id="leader-&#x9009;&#x4E3E;&#x5B9E;&#x73B0;&#x5206;&#x6790;">Leader &#x9009;&#x4E3E;&#x5B9E;&#x73B0;&#x5206;&#x6790;</h4>
+<p>Raft &#x5B98;&#x7F51;&#x63D0;&#x4F9B;&#x4E86;&#x4E00;&#x4E2A;&#x7B97;&#x6CD5;&#x7684;&#x52A8;&#x6001;&#x6F14;&#x793A;&#x52A8;&#x753B;&#xFF0C;&#x6211;&#x4EEC;&#x5148;&#x6765;&#x76F4;&#x89C2;&#x611F;&#x53D7;&#x4E0B; Leader &#x9009;&#x4E3E;&#x7684;&#x6D41;&#x7A0B;&#xFF0C;&#x7136;&#x540E;&#x7ED3;&#x5408;&#x4EE3;&#x7801;&#x4ECB;&#x7ECD;&#x8FD9;&#x4E2A;&#x6D41;&#x7A0B;&#x3002;</p>
+<p>&#x9996;&#x5148; Raft &#x7B97;&#x6CD5;&#x4E2D;&#x6709;&#x4E24;&#x4E2A;&#x8D85;&#x65F6;&#x65F6;&#x95F4;&#x7528;&#x6765;&#x63A7;&#x5236;&#x7740; Leader &#x9009;&#x4E3E;&#x7684;&#x6D41;&#x7A0B;&#xFF0C;&#x9996;&#x5148;&#x662F;&#x9009;&#x4E3E;&#x8D85;&#x65F6;&#xFF0C;&#x8FD9;&#x4E2A;&#x662F; Candidate &#x7B49;&#x5F85;&#x53D8;&#x6210; Leader &#x7684;&#x65F6;&#x95F4;&#x8DE8;&#x5EA6;&#xFF0C;&#x5982;&#x679C;&#x5728;&#x8FD9;&#x4E2A;&#x65F6;&#x95F4;&#x5185;&#x8FD8;&#x6CA1;&#x88AB;&#x9009;&#x6210; Leader, &#x8FD9;&#x4E2A;&#x8D85;&#x65F6;&#x5B9A;&#x65F6;&#x5668;&#x4F1A;&#x88AB;&#x91CD;&#x7F6E;&#x3002;&#x6211;&#x4EEC;&#x524D;&#x9762;&#x4E5F;&#x4ECB;&#x7ECD;&#x8FC7;&#xFF0C;&#x8FD9;&#x4E2A;&#x8D85;&#x65F6;&#x65F6;&#x95F4;&#x8BBE;&#x7F6E;&#x4E00;&#x822C;&#x5728; 150ms &#x5230; 300ms &#x4E4B;&#x95F4;&#x3002;</p>
+<p><img src="resources/raft_elec001.png" alt=""></p>
+<p>&#x542F;&#x52A8;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x6240;&#x6709;&#x8282;&#x70B9;&#x7684;&#x9009;&#x4E3E;&#x8D85;&#x5E02;&#x65F6;&#x95F4;&#x90FD;&#x88AB;&#x8BBE;&#x7F6E;&#x5230; 150&#xFF5E;300ms &#x4E4B;&#x95F4;&#x7684;&#x968F;&#x673A;&#x503C;&#xFF0C;&#x90A3;&#x4E48;&#x5927;&#x6982;&#x7387;&#x6709;&#x4E00;&#x4E2A;&#x8282;&#x70B9;&#x4F1A;&#x7387;&#x5148;&#x8FBE;&#x5230;&#x8D85;&#x5E02;&#x65F6;&#x95F4;&#xFF0C;&#x5982;&#x56FE; A,B,C &#x8282;&#x70B9;&#x7684; C &#x5148;&#x8FBE;&#x5230;&#x8D85;&#x65F6;&#x65F6;&#x95F4;&#xFF0C;&#x5B83;&#x4ECE; Follower &#x53D8;&#x6210; Candidate, &#x968F;&#x540E;&#x5F00;&#x59CB;&#x65B0;&#x4EFB;&#x671F;&#x7684;&#x9009;&#x4E3E;&#xFF0C;&#x5B83;&#x4F1A;&#x7ED9;&#x81EA;&#x5DF1;&#x6295;&#x4E00;&#x7968;&#xFF0C;&#x7136;&#x540E;&#x5411;&#x96C6;&#x7FA4;&#x4E2D;&#x7684;&#x5176;&#x4ED6;&#x8282;&#x70B9;&#x53D1;&#x9001; RequestVoteRequest rpc &#x8BF7;&#x6C42;&#x5B83;&#x4EEC;&#x7684;&#x6295;&#x7968;&#x3002;</p>
+<p>1.eraft &#x4EE3;&#x7801;&#x4E2D;&#x5728;&#x542F;&#x52A8;&#xFF0C;&#x4E5F;&#x5C31;&#x662F;&#x5E94;&#x7528;&#x5C42;&#x8C03;&#x7528; MakeRaft &#x51FD;&#x6570;&#x7684;&#x65F6;&#x5019;&#x4F1A;&#x4F20;&#x5165; baseElectionTimeOutMs &#x548C; heartbeatTimeOutMs&#xFF0C;
+&#x8FD9;&#x91CC;&#x5FC3;&#x8DF3;&#x8D85;&#x5E02;&#x65F6;&#x95F4;&#x662F;&#x56FA;&#x5B9A;&#x7684;&#xFF0C;&#x9009;&#x4E3E;&#x8D85;&#x65F6;&#x65F6;&#x95F4;&#x6211;&#x4EEC;&#x4F7F;&#x7528; MakeAnRandomElectionTimeout &#x6784;&#x9020;&#x751F;&#x6210;&#x4E86;&#x4E00;&#x4E2A;&#x968F;&#x673A;&#x8D85;&#x5E02;&#x65F6;&#x95F4;&#x3002;</p>
+<pre><code>
+func MakeRaft(peers []*RaftClientEnd, me int, newdbEng storage_eng.KvStore, applyCh chan *pb.ApplyMsg, heartbeatTimeOutMs uint64, baseElectionTimeOutMs uint64) *Raft {
+
+...
+
+heartbeatTimer:   time.NewTimer(time.Millisecond * time.Duration(heartbeatTimeOutMs)),
+electionTimer:    time.NewTimer(time.Millisecond * time.Duration(MakeAnRandomElectionTimeout(int(baseElectionTimeOutMs)))),
+...
+</code></pre><p>2.&#x8FBE;&#x5230;&#x9009;&#x4E3E;&#x8D85;&#x65F6;&#x540E;, &#x8282;&#x70B9; C &#x9996;&#x5148;&#x628A;&#x81EA;&#x5DF1;&#x72B6;&#x6001;&#x6539;&#x6210; Candidate&#xFF0C;&#x7136;&#x540E;&#x589E;&#x52A0;&#x81EA;&#x5DF1;&#x7684;&#x4EFB;&#x671F;&#x53F7;&#xFF0C;&#x5F00;&#x59CB;&#x9009;&#x4E3E;&#x3002;</p>
+<pre><code>
+//
+// Tick raft heart, this ticket trigger raft main flow running
+//
+func (rf *Raft) Tick() {
+    for !rf.IsKilled() {
+        select {
+        case &lt;-rf.electionTimer.C:
+            {
+                rf.SwitchRaftNodeRole(NodeRoleCandidate)
+                rf.IncrCurrentTerm()
+                rf.Election()
+                rf.electionTimer.Reset(time.Millisecond * time.Duration(MakeAnRandomElectionTimeout(int(rf.baseElecTimeout))))
+            }
+        ...
+    }
+}
+</code></pre><p>3.&#x4E0B;&#x9762;&#x8FD9;&#x6BB5;&#x4EE3;&#x7801;&#x5C31;&#x662F;&#x53D1;&#x8D77;&#x9009;&#x4E3E;&#x7684;&#x6838;&#x5FC3;&#x903B;&#x8F91;&#x4E86;&#xFF0C;&#x9996;&#x5148;&#x8282;&#x70B9; IncrGrantedVotes &#x7ED9;&#x81EA;&#x5DF1;&#x6295;&#x4E00;&#x7968;&#xFF0C;&#x7136;&#x540E;&#x628A; votedFor &#x8BBE;&#x7F6E;&#x6210;&#x81EA;&#x5DF1;&#xFF0C;&#x4E4B;&#x540E;&#x6784;&#x9020; RequestVoteRequest rpc &#x8BF7;&#x6C42;&#xFF0C;&#x5E26;&#x4E0A;&#x81EA;&#x5DF1;&#x7684;&#x4EFB;&#x671F;&#x53F7;&#xFF0C;CandidateId &#x4E5F;&#x5C31;&#x662F;&#x81EA;&#x5DF1;&#x7684; id, &#x6700;&#x540E;&#x4E00;&#x4E2A;&#x65E5;&#x5FD7;&#x6761;&#x76EE;&#x7684;&#x7D22;&#x5F15;&#x8FD8;&#x6709;&#x4EFB;&#x671F;&#x53F7;&#xFF0C;&#x7136;&#x540E;&#x628A;&#x5F53;&#x524D; Raft &#x72B6;&#x6001;&#x6301;&#x4E45;&#x5316;&#xFF0C;&#x5411;&#x96C6;&#x7FA4;&#x4E2D;&#x7684;&#x5176;&#x4ED6;&#x8282;&#x70B9;&#x5E76;&#x884C;&#x7684;&#x53D1;&#x9001;&#xFF0C;RequestVote &#x8BF7;&#x6C42;</p>
+<pre><code>
+//
+// Election  make a new election
+//
+func (rf *Raft) Election() {
+    fmt.Printf(&quot;%d start election \n&quot;, rf.me_)
+    rf.IncrGrantedVotes()
+    rf.votedFor = int64(rf.me_)
+    voteReq := &amp;pb.RequestVoteRequest{
+        Term:         rf.curTerm,
+        CandidateId:  int64(rf.me_),
+        LastLogIndex: int64(rf.logs.GetLast().Index),
+        LastLogTerm:  int64(rf.logs.GetLast().Term),
+    }
+    rf.PersistRaftState()
+    for _, peer := range rf.peers {
+        if int(peer.id) == rf.me_ {
+            continue
+        }
+        go func(peer *RaftClientEnd) {
+            PrintDebugLog(fmt.Sprintf(&quot;send request vote to %s %s\n&quot;, peer.addr, voteReq.String()))
+
+            requestVoteResp, err := (*peer.raftServiceCli).RequestVote(context.Background(), voteReq)
+            if err != nil {
+                PrintDebugLog(fmt.Sprintf(&quot;send request vote to %s failed %v\n&quot;, peer.addr, err.Error()))
+            }
+            ...
+        }(peer)
+    }
+}
+</code></pre><p><img src="resources/raft_elec002.png" alt=""></p>
+<p>&#x5982;&#x679C; A,B &#x6536;&#x5230;&#x8BF7;&#x6C42;&#x7684;&#x65F6;&#x5019;&#x8FD8;&#x6CA1;&#x6709;&#x53D1;&#x51FA;&#x6295;&#x7968;&#xFF08;&#x56E0;&#x4E3A;&#x5B83;&#x4EEC;&#x8FD8;&#x6CA1;&#x8FBE;&#x5230;&#x9009;&#x4E3E;&#x8D85;&#x65F6;&#x65F6;&#x95F4;&#xFF09;&#xFF0C;&#x5B83;&#x4EEC;&#x5C31;&#x4F1A;&#x7ED9;&#x5019;&#x9009;&#x4EBA;&#x8282;&#x70B9; C &#x6295;&#x7968;, &#x540C;&#x65F6;&#x91CD;&#x8BBE;&#x81EA;&#x5DF1;&#x7684;&#x9009;&#x4E3E;&#x8D85;&#x65F6;&#x5B9A;&#x65F6;&#x5668;&#x3002;</p>
+<ol>
+<li>eraft &#x5904;&#x7406;&#x6295;&#x7968;&#x8BF7;&#x6C42;&#x7684;&#x7EC6;&#x8282;&#x5982;&#x4E0B;, &#x6211;&#x4EEC;&#x7ED3;&#x5408;&#x56FE;&#x4E2D;&#x7684;&#x4F8B;&#x5B50;&#x5206;&#x6790;&#x4E0B;&#x9762;&#x7684;&#x903B;&#x8F91;&#xFF0C;&#x5047;&#x8BBE; A &#x8282;&#x70B9;&#x6B63;&#x5728;&#x5904;&#x7406;&#x6765;&#x81EA; C &#x7684;&#x6295;&#x7968;&#x8BF7;&#x6C42;&#xFF0C;&#x90A3;&#x4E48;&#x9996;&#x5148; C &#x7684; &#x4EFB;&#x671F;&#x53F7;&#x5927;&#x4E8E; A &#x7684;, &#x4EE3;&#x7801;&#x4E2D; 1 &#x7684; if &#x5206;&#x652F;&#x4E0D;&#x4F1A;&#x6267;&#x884C;, &#x5728; 2 &#x8FD9;&#x91CC;&#xFF0C; A &#x8282;&#x70B9;&#x53D1;&#x73B0;&#x6765;&#x81EA; C &#x7684;&#x8BF7;&#x6C42;&#x6295;&#x7968;&#x6D88;&#x606F;&#x7684;&#x4EFB;&#x671F;&#x53F7;&#x5927;&#x4E8E;&#x81EA;&#x5DF1;&#x7684;&#xFF0C;&#x5B83;&#x4F1A;&#x8C03;&#x7528; SwitchRaftNodeRole &#x53D8;&#x6210; Follower &#x8282;&#x70B9;, &#x5728;&#x56DE; C &#x6D88;&#x606F;&#x4E4B;&#x524D;&#xFF0C;&#x4EE3;&#x7801;&#x4E2D; 3 &#x53F7;&#x4F4D;&#x7F6E; A &#x8C03;&#x7528; electionTimer.Reset &#x91CD;&#x8BBE;&#x4E86;&#x81EA;&#x5DF1;&#x7684;&#x9009;&#x4E3E;&#x8D85;&#x65F6;&#x5B9A;&#x65F6;&#x5668;&#x3002;</li>
+</ol>
+<pre><code>
+//
+// HandleRequestVote  handle request vote from other node
+//
+func (rf *Raft) HandleRequestVote(req *pb.RequestVoteRequest, resp *pb.RequestVoteResponse) {
+    rf.mu.Lock()
+    defer rf.mu.Unlock()
+    defer rf.PersistRaftState()
+
+    // 1
+    if req.Term &lt; rf.curTerm || (req.Term == rf.curTerm &amp;&amp; rf.votedFor != -1 &amp;&amp; rf.votedFor != req.CandidateId) {
+        resp.Term, resp.VoteGranted = rf.curTerm, false
+        return
+    }
+
+    // 2 
+    if req.Term &gt; rf.curTerm {
+        rf.SwitchRaftNodeRole(NodeRoleFollower)
+        rf.curTerm, rf.votedFor = req.Term, -1
+    }
+
+    ...
+
+    rf.votedFor = req.CandidateId
+
+    // 3
+    rf.electionTimer.Reset(time.Millisecond * time.Duration(MakeAnRandomElectionTimeout(int(rf.baseElecTimeout))))
+    resp.Term, resp.VoteGranted = rf.curTerm, true
+}
+</code></pre><p><img src="resources/raft_elec003.png" alt=""></p>
+<p>C &#x6536;&#x5230;&#x534A;&#x6570;&#x7968;&#x4EE5;&#x4E0A;&#xFF0C;&#x4E5F;&#x5C31;&#x662F; A, B &#x8282;&#x70B9;&#x7684;&#x4EFB;&#x610F;&#x4E00;&#x4E2A;&#x7684;&#x6295;&#x7968;&#x52A0;&#x4E0A;&#x81EA;&#x5DF1;&#x90A3;&#x4E00;&#x5F20;&#x9009;&#x7968;&#xFF0C;&#x5B83;&#x5C31;&#x53D8;&#x6210;&#x4E86; Leader&#xFF0C;&#x7136;&#x540E;&#x505C;&#x6B62;&#x81EA;&#x5DF1;&#x7684;&#x9009;&#x4E3E;&#x8D85;&#x65F6;&#x5B9A;&#x65F6;&#x5668;&#x3002;</p>
+<p>5.C &#x7EDF;&#x8BA1;&#x7968;&#x6570;&#x5904;&#x7406;&#x8BF7;&#x6C42;&#x6295;&#x7968;&#x7684;&#x54CD;&#x5E94;&#x5982;&#x4E0B;&#xFF0C;&#x6CE8;&#x610F;&#xFF1A;&#x8FD9;&#x6BB5;&#x4EE3;&#x7801;&#x52A0;&#x4E86;&#x9501;&#xFF0C;&#x5E94;&#x4E3A;&#x8FD9;&#x91CC;&#x6D89;&#x53CA;&#x5230;&#x591A;&#x4E2A; Goruntine &#x53BB;&#x4FEE;&#x6539; rf &#x4E2D;&#x7684;&#x975E;&#x539F;&#x5B50;&#x53D8;&#x91CF;&#xFF0C;&#x5982;&#x679C;&#x4E0D;&#x52A0;&#x9501;&#x53EF;&#x80FD;&#x4F1A;&#x5BFC;&#x81F4;&#x903B;&#x8F91;&#x9519;&#x8BEF;&#x3002;&#x4EE3;&#x7801;&#x4E2D; 1 &#x5904;&#xFF0C;&#x5982;&#x679C;&#x6536;&#x5230;&#x6295;&#x7968;&#x7684;&#x54CD;&#x5E94; VoteGranted &#x662F; true&#x3002;C &#x5C31;&#x4F1A;&#x8C03;&#x7528; IncrGrantedVotes &#x9012;&#x589E;&#x81EA;&#x5DF1;&#x62E5;&#x6709;&#x7684;&#x7968;&#x4E66;&#xFF0C;&#x7136;&#x540E; if rf.grantedVotes &gt; len(rf.peers)/2 &#x5224;&#x65AD;&#x662F;&#x5426;&#x62FF;&#x5230;&#x4E86;&#x534A;&#x6570;&#x4EE5;&#x4E0A;&#x7968;&#xFF0C;&#x5982;&#x679C;&#x662F;&#x7684;&#x8C03;&#x7528; SwitchRaftNodeRole &#x5207;&#x6362;&#x81EA;&#x5DF1;&#x7684;&#x72B6;&#x6001;&#x4E3A; Leader&#xFF0C;&#x4E4B;&#x540E; BroadcastHeartbeat &#x5E7F;&#x64AD;&#x5FC3;&#x8DF3;&#x6D88;&#x606F;&#xFF0C;&#x5E76;&#x91CD;&#x65B0;&#x8BBE;&#x7F6E;&#x81EA;&#x5DF1;&#x7684;&#x5F97;&#x7968;&#x6570; grantedVotes &#x4E3A; 0&#x3002;</p>
+<pre><code>if requestVoteResp != nil {
+    rf.mu.Lock()
+    defer rf.mu.Unlock()
+    PrintDebugLog(fmt.Sprintf(&quot;send request vote to %s recive -&gt; %s, curterm %d, req term %d&quot;, peer.addr, requestVoteResp.String(), rf.curTerm, voteReq.Term))
+    if rf.curTerm == voteReq.Term &amp;&amp; rf.role == NodeRoleCandidate {
+        // 1
+        if requestVoteResp.VoteGranted {
+            // success granted the votes
+            PrintDebugLog(&quot;I grant vote&quot;)
+            rf.IncrGrantedVotes()
+            if rf.grantedVotes &gt; len(rf.peers)/2 {
+                PrintDebugLog(fmt.Sprintf(&quot;node %d get majority votes int term %d &quot;, rf.me_, rf.curTerm))
+                rf.SwitchRaftNodeRole(NodeRoleLeader)
+                rf.BroadcastHeartbeat()
+                rf.grantedVotes = 0
+            }
+        // 2
+        } else if requestVoteResp.Term &gt; rf.curTerm {
+            // request vote reject
+            rf.SwitchRaftNodeRole(NodeRoleFollower)
+            rf.curTerm, rf.votedFor = requestVoteResp.Term, -1
+            rf.PersistRaftState()
+        }
+    }
+}
+</code></pre><p><img src="resources/raft_elec004.png" alt=""></p>
+<p>&#x6211;&#x4EEC;&#x77E5;&#x9053; A,B &#x5728;&#x524D;&#x9762;&#x5904;&#x7406;&#x6295;&#x7968;&#x8BF7;&#x6C42;&#x7684;&#x65F6;&#x5019;&#x53EA;&#x662F;&#x91CD;&#x8BBE;&#x7684;&#x8D85;&#x65F6;&#x5B9A;&#x65F6;&#x5668;&#xFF0C;&#x90A3;&#x4E48;&#x4E07;&#x4E00;&#x518D;&#x4E00;&#x6B21;&#x8D85;&#x65F6;&#x5B9A;&#x65F6;&#x5668;&#x5230;&#x8FBE;&#xFF0C;&#x4F1A;&#x4E0D;&#x4F1A;&#x91CD;&#x65B0;&#x51FA;&#x53D1;&#x9009;&#x4E3E;&#xFF0C;&#x7136;&#x540E;&#x9677;&#x5165;&#x9009;&#x4E3E;&#x5FAA;&#x73AF;&#x5462;&#xFF1F;</p>
+<p>&#x7B54;&#x6848;&#x662F;&#x4E0D;&#x4F1A;&#x7684;&#xFF0C;&#x6211;&#x4EEC;&#x524D;&#x9762;&#x53EA;&#x4ECB;&#x7ECD;&#x4E86;&#x9009;&#x4E3E;&#x8D85;&#x65F6;&#x65F6;&#x95F4;&#xFF0C;&#x8FD8;&#x6709;&#x4E00;&#x4E2A;&#x5FC3;&#x8DF3;&#x8D85;&#x65F6;&#x65F6;&#x95F4;&#xFF0C;&#x8FD9;&#x4E2A;&#x8D85;&#x65F6;&#x65F6;&#x95F4;&#x6BD4;&#x9009;&#x4E3E;&#x8D85;&#x5E02;&#x65F6;&#x95F4;&#x77ED;&#xFF0C;&#x4E00;&#x822C;&#x662F;&#x9009;&#x4E3E;&#x8D85;&#x65F6;&#x65F6;&#x95F4;&#x7684; 1/3&#x3002;&#x4E5F;&#x5C31;&#x662F;&#x8BF4;&#x5728; A, B &#x8FD8;&#x6CA1;&#x5230;&#x8FBE;&#x9009;&#x4E3E;&#x8D85;&#x65F6;&#x65F6;&#x95F4;&#x4E4B;&#x524D;&#xFF0C;&#x8FD9;&#x4E2A;&#x5FC3;&#x8DF3;&#x8D85;&#x5E02;&#x65F6;&#x95F4;&#x4F1A;&#x5148;&#x51FA;&#x53D1;&#xFF0C;&#x5982;&#x679C;&#x662F; Leader &#x8282;&#x70B9;&#x7684;&#x8BDD;&#xFF0C;&#x5B83;&#x4F1A;&#x7ED9;&#x96C6;&#x7FA4;&#x4E2D;&#x5176;&#x4ED6;&#x8282;&#x70B9;&#x53D1;&#x9001;&#x5FC3;&#x8DF3;&#x5305;&#xFF0C;&#x5176;&#x4ED6;&#x8282;&#x70B9; (A, B) &#x63A5;&#x53D7;&#x5230;&#x5FC3;&#x8DF3;&#x5305;&#x4E4B;&#x540E;, &#x53C8;&#x4F1A;&#x91CD;&#x8BBE;&#x81EA;&#x5DF1;&#x7684;&#x9009;&#x4E3E;&#x8D85;&#x65F6;&#x5B9A;&#x65F6;&#x5668;&#x3002;&#x4E5F;&#x5C31;&#x662F;&#x8BF4;&#xFF0C;&#x53EA;&#x8981; Leader C &#x4E00;&#x76F4;&#x6B63;&#x5E38;&#x8FD0;&#x5FC3;&#x53D1;&#x9001;&#x5FC3;&#x8DF3;&#x5305;&#xFF0C;&#x90A3;&#x4E48; A,B &#x8282;&#x70B9;&#x4E0D;&#x53EF;&#x80FD;&#x89E6;&#x53D1;&#x9009;&#x4E3E;&#xFF0C;&#x53EA;&#x6709;&#x5F53; Leader C &#x6302;&#x4E86;&#x3002;A,B &#x8282;&#x70B9;&#x624D;&#x4F1A;&#x5F00;&#x59CB;&#x4E0B;&#x4E00;&#x8F6E;&#x9009;&#x4E3E;&#x3002;</p>
+<p><img src="resources/raft_elec005.png" alt=""></p>
+<h4 id="&#x65E5;&#x5FD7;&#x590D;&#x5236;&#x5B9E;&#x73B0;&#x5206;&#x6790;">&#x65E5;&#x5FD7;&#x590D;&#x5236;&#x5B9E;&#x73B0;&#x5206;&#x6790;</h4>
+<p>&#x7ECF;&#x8FC7;&#x4E0A;&#x8FF0;&#x7684;&#x9009;&#x4E3E;&#x6D41;&#x7A0B;&#xFF0C;&#x6211;&#x4EEC;&#x73B0;&#x5728;&#x5C31;&#x6709;&#x4E00;&#x4E2A;&#x62E5;&#x6709;&#x4E3B;&#x8282;&#x70B9;&#x548C;&#x591A;&#x4E2A;&#x4ECE;&#x8282;&#x70B9;&#x7684;&#x7CFB;&#x7EDF;&#x4E86;&#xFF0C;&#x4E3B;&#x8282;&#x70B9;&#x4F1A;&#x4E0D;&#x65AD;&#x7684;&#x7ED9;&#x4ECE;&#x8282;&#x70B9;&#x53D1;&#x9001;&#x5FC3;&#x8DF3;&#x6D88;&#x606F;&#x3002;&#x73B0;&#x5728;&#x6211;&#x4EEC;&#x8981;&#x5F00;&#x59CB;&#x8003;&#x8651;&#x5904;&#x7406;&#x5BA2;&#x6237;&#x7AEF;&#x8BF7;&#x6C42;&#x4E86;&#xFF0C;&#x5982;&#x679C;&#x5BA2;&#x6237;&#x7AEF;&#x53D1;&#x9001;&#x4E00;&#x4E2A;&#x64CD;&#x4F5C;&#x8FC7;&#x6765;&#xFF0C;&#x6211;&#x4EEC;&#x8FD9;&#x4E2A;&#x7CFB;&#x7EDF;&#x662F;&#x5982;&#x4F55;&#x5904;&#x7406;&#x7684;&#x5462;&#xFF1F;</p>
+<p>&#x9996;&#x5148;&#xFF0C;Raft &#x89C4;&#x5B9A;&#x53EA;&#x6709; Leader &#x8282;&#x70B9;&#x80FD;&#x5904;&#x7406;&#x8BF7;&#x6C42;&#x5199;&#x5165;&#xFF0C;&#x5BA2;&#x6237;&#x7AEF;&#x53D1;&#x9001;&#x8BF7;&#x6C42;&#x9996;&#x5148;&#x4F1A;&#x5230;&#x8FBE; Leader &#x8282;&#x70B9;&#x3002;</p>
+<p>&#x5728; eraft &#x5E93;&#x4E2D;&#x7528;&#x6237;&#x8BF7;&#x6C42;&#x5230;&#x6765;&#x548C; raft &#x4EA4;&#x4E92;&#x7684;&#x5165;&#x53E3;&#x51FD;&#x6570;&#x662F; Propose&#xFF0C;&#x8FD9;&#x4E2A;&#x51FD;&#x6570;&#x9996;&#x5148;&#x4F1A;&#x67E5;&#x8BE2;&#x5F53;&#x524D;&#x8282;&#x70B9;&#x72B6;&#x6001;&#xFF0C;&#x53EA;&#x6709; Leader &#x8282;&#x70B9;&#x624D;&#x80FD;&#x5904;&#x7406;&#x63D0;&#x6848;&#xFF08;propose&#xFF09;&#xFF0C;&#x4E4B;&#x540E;&#x4F1A;&#x628A;&#x7528;&#x6237;&#x64CD;&#x4F5C;&#x7684;&#x5E8F;&#x5217;&#x5316;&#x4E4B;&#x540E;&#x7684; []byte &#x8C03;&#x7528; Append &#x8FFD;&#x52A0;&#x5230;&#x81EA;&#x5DF1;&#x7684;&#x65E5;&#x5FD7;&#x4E2D;&#xFF0C;&#x4E4B;&#x540E; BroadcastAppend &#x5C06;&#x65E5;&#x5FD7;&#x5185;&#x5BB9;&#x53D1;&#x9001;&#x7ED9;&#x96C6;&#x7FA4;&#x4E2D;&#x7684; Follower &#x8282;&#x70B9;&#x3002;</p>
+<pre><code>//
+// Propose the interface to the appplication propose a operation
+//
+
+func (rf *Raft) Propose(payload []byte) (int, int, bool) {
+    rf.mu.Lock()
+    defer rf.mu.Unlock()
+    if rf.role != NodeRoleLeader {
+        return -1, -1, false
+    }
+    newLog := rf.Append(payload)
+    rf.BroadcastAppend()
+    return int(newLog.Index), int(newLog.Term), true
+}
+</code></pre><p><img src="resources/log_repl001.png" alt=""></p>
+<p>&#x5982;&#x4E0A;&#x56FE;&#x4E2D;&#xFF0C;&#x7EFF;&#x8272;&#x7684;&#x8868;&#x793A;&#x5BA2;&#x6237;&#x7AEF;&#x8282;&#x70B9;&#xFF0C;&#x5B83;&#x53D1;&#x9001; SET 5 &#x7684;&#x8BF7;&#x6C42;&#x8FC7;&#x6765;&#xFF0C;A &#x4F5C;&#x4E3A;&#x5F53;&#x524D;&#x96C6;&#x7FA4;&#x4E2D;&#x7684; Leader &#x8282;&#x70B9;&#x9996;&#x5148;&#x4F1A;&#x628A;&#x8FD9;&#x4E2A; SET 5 &#x64CD;&#x4F5C;&#x5C01;&#x88C5;&#x6210;&#x4E00;&#x4E2A;&#x65E5;&#x5FD7;&#x6761;&#x76EE;&#x5199;&#x5165;&#x5230;&#x81EA;&#x5DF1;&#x7684;&#x65E5;&#x5FD7;&#x5B58;&#x50A8;&#x7ED3;&#x6784;&#x4E2D;&#xFF0C;&#x7136;&#x540E;&#x5728;&#x4E0B;&#x4E00;&#x6B21;&#x7ED9;&#x4ECE;&#x8282;&#x70B9;&#x53D1;&#x9001;&#x5FC3;&#x8DF3;&#x6D88;&#x606F;&#x7684;&#x65F6;&#x5019;&#x5E26;&#x4E0A;&#x8FD9;&#x4E2A;&#x65E5;&#x5FD7;&#x53D1;&#x9001;&#x7ED9; Follower &#x8282;&#x70B9;&#x3002;</p>
+<p>&#x5728; eraft &#x5B9E;&#x73B0;&#x4E2D;&#xFF0C;&#x6211;&#x4EEC;&#x4E13;&#x95E8;&#x6709;&#x4E00;&#x7EC4; Goruntine &#x505A;&#x65E5;&#x5FD7;&#x590D;&#x5236;&#x76F8;&#x5173;&#x7684;&#x4E8B;&#x60C5;&#xFF0C;&#x7528;&#x6237;&#x63D0;&#x6848;&#x5230;&#x8FBE; Leader &#x4E4B;&#x540E;&#x8C03;&#x7528; BroadcastAppend &#x4F1A;&#x5524;&#x9192;&#x505A;&#x65E5;&#x5FD7;&#x590D;&#x5236;&#x64CD;&#x4F5C;&#x7684; Goruntine, replicatorCond &#x8FD9;&#x4E2A;&#x4FE1;&#x53F7;&#x91CF;&#x7528;&#x6765;&#x5B8C;&#x6210; Goruntine &#x4E4B;&#x95F4;&#x7684;&#x540C;&#x6B65;&#x64CD;&#x4F5C;&#x3002;</p>
+<pre><code>
+func (rf *Raft) BroadcastAppend() {
+    for _, peer := range rf.peers {
+        if peer.id == uint64(rf.me_) {
+            continue
+        }
+        rf.replicatorCond[peer.id].Signal()
+    }
+}
+</code></pre><p>&#x590D;&#x5236;&#x64CD;&#x4F5C;&#x7684; Goruntine &#x6267;&#x884C;&#x7684;&#x4EFB;&#x52A1;&#x51FD;&#x6570;&#x662F; Replicator&#xFF0C;&#x5F53; BroadcastAppend &#x4E2D;&#x901A;&#x8FC7; Signal &#x51FD;&#x6570;&#x5524;&#x9192;&#x4FE1;&#x53F7;&#x91CF;&#xFF0C;rf.replicatorCond[].Wait() &#x5C31;&#x4F1A;&#x505C;&#x6B62;&#x963B;&#x585E;&#xFF0C;&#x7EE7;&#x7EED;&#x5F80;&#x4E0B;&#x6267;&#x884C;&#xFF0C;&#x8C03;&#x7528; replicateOneRound &#x8FDB;&#x884C;&#x6570;&#x636E;&#x590D;&#x5236;&#x3002;</p>
+<pre><code>
+//
+// Replicator manager duplicate run
+//
+func (rf *Raft) Replicator(peer *RaftClientEnd) {
+    rf.replicatorCond[peer.id].L.Lock()
+    defer rf.replicatorCond[peer.id].L.Unlock()
+    for !rf.IsKilled() {
+        PrintDebugLog(&quot;peer id wait for replicating...&quot;)
+        for !(rf.role == NodeRoleLeader &amp;&amp; rf.matchIdx[peer.id] &lt; int(rf.logs.GetLast().Index)) {
+            rf.replicatorCond[peer.id].Wait()
+        }
+        rf.replicateOneRound(peer)
+    }
+}
+</code></pre><p>replicateOneRound &#x5C31;&#x4F1A;&#x628A;&#x65E5;&#x5FD7;&#x6253;&#x5305;&#x5230;&#x4E00;&#x4E2A; AppendEntriesRequest &#x4E2D;&#x53D1;&#x9001;&#x5230; Follower &#x8282;&#x70B9;&#x4E86;&#x3002;</p>
+<p><img src="resources/log_repl002.png" alt=""></p>
+<p>Follower &#x6536;&#x5230;&#x8FFD;&#x52A0;&#x8BF7;&#x6C42;&#x540E;&#x4F1A;&#x628A;&#x65E5;&#x5FD7;&#x6761;&#x76EE;&#x8FFD;&#x52A0;&#x5230;&#x81EA;&#x5DF1;&#x7684;&#x65E5;&#x5FD7;&#x5B58;&#x50A8;&#x7ED3;&#x6784;&#x4E2D;&#xFF0C;&#x7136;&#x540E;&#x7ED9; Leader &#x53D1;&#x9001;&#x6210;&#x529F;&#x8FFD;&#x52A0;&#x7684;&#x54CD;&#x5E94;&#x3002;Leader &#x7EDF;&#x8BA1;&#x5230;&#x96C6;&#x7FA4;&#x534A;&#x6570;&#x8282;&#x70B9;&#xFF08;&#x5305;&#x62EC;&#x81EA;&#x5DF1;&#xFF09;&#x65E5;&#x5FD7;&#x8FFD;&#x52A0;&#x6210;&#x529F;&#x4E4B;&#x540E;&#xFF0C;&#x5B83;&#x4F1A;&#x628A;&#x8FD9;&#x6761;&#x65E5;&#x5FD7;&#x72B6;&#x6001;&#x8BBE;&#x7F6E;&#x4E3A;&#x5DF2;&#x7ECF;&#x63D0;&#x4EA4; (committed)&#xFF0C;&#x7136;&#x540E;&#x5C06;&#x64CD;&#x4F5C;&#x7ED3;&#x679C;&#x53D1;&#x9001;&#x7ED9;&#x5BA2;&#x6237;&#x7AEF;, &#x5982;&#x4E0B;&#x56FE;&#x6240;&#x793A;&#xFF0C;A &#x8BBE;&#x7F6E; SET 5 </p>
+<p><img src="resources/log_repl003.png" alt=""></p>
+<p>&#x4E4B;&#x540E;&#x8FD9;&#x4E2A;&#x65E5;&#x5FD7;&#x63D0;&#x4EA4;&#x7684;&#x4FE1;&#x606F;&#x4F1A;&#x5728;&#x4E0B;&#x4E00;&#x6B21;&#x7ED9; Follower &#x53D1;&#x9001;&#x7684;&#x5FC3;&#x8DF3;&#x5305;&#x4E2D;&#x5E26;&#x8FC7;&#x53BB;&#xFF0C;Follower &#x6536;&#x5230;&#x65E5;&#x5FD7;&#x4E5F;&#x4F1A;&#x66F4;&#x65B0;&#x81EA;&#x5DF1;&#x7684;&#x65E5;&#x5FD7;&#x63D0;&#x4EA4;&#x72B6;&#x6001;&#x3002;</p>
+<p>&#x65E5;&#x5FD7;&#x63D0;&#x4EA4;&#x4E4B;&#x540E;&#xFF0C;Apply &#x534F;&#x7A0B;&#x4F1A;&#x6536;&#x5230;&#x901A;&#x77E5;&#xFF0C;&#x5F00;&#x59CB;&#x5C06;&#x5DF2;&#x7ECF;&#x63D0;&#x4EA4;&#x7684;&#x65E5;&#x5FD7; apply &#x5230;&#x72B6;&#x6001;&#x673A;&#x4E2D;&#xFF0C;&#x65E5;&#x5FD7;&#x7684;&#x6210;&#x529F; Apply &#x4E4B;&#x540E;&#x7ED9;&#x5BA2;&#x6237;&#x7AEF;&#x53D1;&#x9001;&#x6210;&#x529F;&#x5199;&#x5165;&#x7684;&#x54CD;&#x5E94;&#x5305;&#x3002;</p>
+<p>&#x5BF9;&#x5E94; eraft &#x5B9E;&#x73B0;&#x4E2D;&#xFF0C;&#x65E5;&#x5FD7;&#x63D0;&#x4EA4;&#x4E4B;&#x540E; Leader &#x8282;&#x70B9;&#x4F1A;&#x8C03;&#x7528; advanceCommitIndexForLeader &#x51FD;&#x6570;&#x3002;&#x5B83;&#x4F1A;&#x8BA1;&#x7B97;&#x5F53;&#x524D;&#x65E5;&#x5FD7;&#x63D0;&#x4EA4;&#x7684;&#x7D22;&#x5F15;&#x53F7;&#xFF0C;&#x7136;&#x540E;&#x548C;&#x4E4B;&#x524D;&#x5DF2;&#x7ECF;&#x63D0;&#x4EA4;&#x7684; commitIdx &#x8FDB;&#x884C;&#x5BF9;&#x6BD4;&#xFF0C;&#x5982;&#x679C;&#x66F4;&#x5927;&#xFF0C;&#x5C31;&#x4F1A;&#x66F4;&#x65B0; commitIdx&#xFF0C;&#x540C;&#x65F6;&#x8C03;&#x7528; rf.applyCond.Signal() &#x5524;&#x9192;&#x505A; Apply &#x64CD;&#x4F5C;&#x7684; Goruntine&#x3002;Applier &#x51FD;&#x6570;&#x662F; Apply Goruntine &#x8FD0;&#x884C;&#x7684;&#x4EFB;&#x52A1;&#x51FD;&#x6570;&#xFF0C;&#x5B83;&#x4F1A; Wait applyCond &#x8FD9;&#x4E2A;&#x4FE1;&#x53F7;&#x91CF;&#xFF0C;&#x5982;&#x679C;&#x88AB;&#x5524;&#x9192;&#xFF0C;&#x5B83;&#x4F1A;&#x62F7;&#x8D1D;&#x521D;&#x8282;&#x70B9;&#x4E2D;&#x5DF2;&#x7ECF;&#x63D0;&#x4EA4;&#x7684;&#x65E5;&#x5FD7;&#xFF0C;&#x6253;&#x5305;&#x6210;  ApplyMsg &#x53D1;&#x9001;&#x5230; applyCh &#x901A;&#x9053;&#x901A;&#x77E5;&#x5E94;&#x7528;&#x5C42;&#xFF0C;&#x5E94;&#x7528;&#x5C42;&#x62FF;&#x5230; apply &#x6D88;&#x606F;&#x4E4B;&#x540E;&#x4F1A;&#x66F4;&#x65B0;&#x72B6;&#x6001;&#x673A;&#x5E76;&#x56DE;&#x5305;&#x7ED9;&#x5BA2;&#x6237;&#x7AEF;&#x3002;</p>
+<pre><code>
+func (rf *Raft) advanceCommitIndexForLeader() {
+    sort.Ints(rf.matchIdx)
+    n := len(rf.matchIdx)
+    newCommitIndex := rf.matchIdx[n-(n/2+1)]
+    if newCommitIndex &gt; int(rf.commitIdx) {
+        if rf.MatchLog(rf.curTerm, int64(newCommitIndex)) {
+            PrintDebugLog(fmt.Sprintf(&quot;peer %d advance commit index %d at term %d&quot;, rf.me_, rf.commitIdx, rf.curTerm))
+            rf.commitIdx = int64(newCommitIndex)
+            rf.applyCond.Signal()
+        }
+    }
+}
+
+//
+// Applier() Write the commited message to the applyCh channel
+// and update lastApplied
+//
+func (rf *Raft) Applier() {
+    for !rf.IsKilled() {
+        rf.mu.Lock()
+        for rf.lastApplied &gt;= rf.commitIdx {
+            PrintDebugLog(&quot;applier ...&quot;)
+            rf.applyCond.Wait()
+        }
+        firstIndex, commitIndex, lastApplied := rf.logs.GetFirst().Index, rf.commitIdx, rf.lastApplied
+        entries := make([]*pb.Entry, commitIndex-lastApplied)
+        copy(entries, rf.logs.GetRange(lastApplied+1-int64(firstIndex), commitIndex+1-int64(firstIndex)))
+        rf.mu.Unlock()
+
+        PrintDebugLog(fmt.Sprintf(&quot;%d, applies entries %d-%d in term %d&quot;, rf.me_, rf.lastApplied, commitIndex, rf.curTerm))
+
+        for _, entry := range entries {
+            rf.applyCh &lt;- &amp;pb.ApplyMsg{
+                CommandValid: true,
+                Command:      entry.Data,
+                CommandTerm:  int64(entry.Term),
+                CommandIndex: int64(entry.Index),
+            }
+        }
+
+        rf.mu.Lock()
+        rf.lastApplied = int64(Max(int(rf.lastApplied), int(commitIndex)))
+        rf.mu.Unlock()
+    }
+}
+</code></pre><h4 id="raft-&#x5FEB;&#x7167;&#x5B9E;&#x73B0;&#x5206;&#x6790;">Raft &#x5FEB;&#x7167;&#x5B9E;&#x73B0;&#x5206;&#x6790;</h4>
+<p>&#x4E0B;&#x9762;&#x662F;&#x65E5;&#x5FD7;&#x5FEB;&#x7167;&#x7684; RPC &#x5B9A;&#x4E49;</p>
+<pre><code>message InstallSnapshotRequest {
+    int64 term =                1;
+    int64 leader_id =           2;
+    int64 last_included_index = 3;
+    int64 last_included_term  = 4;
+    bytes data                = 5;
+}
+
+message InstallSnapshotResponse {
+    int64 term = 1; 
+}
+
+rpc Snapshot (InstallSnapshotRequest) returns (InstallSnapshotResponse) {}
+</code></pre><p>InstallSnapshotRequest &#x4E2D; term &#x4EE3;&#x8868;&#x5F53;&#x524D;&#x53D1;&#x9001;&#x5FEB;&#x7167;&#x7684; Leader &#x7684;&#x4EFB;&#x671F;&#xFF0C;Follower &#x5C06;&#x5B83;&#x4E0E;&#x81EA;&#x5DF1;&#x7684;&#x4EFB;&#x671F;&#x53F7;&#x6765;&#x51B3;&#x5B9A;&#x662F;&#x5426;&#x8981;&#x63A5;&#x6536;&#x8FD9;&#x4E2A;&#x5FEB;&#x7167;&#x3002;leader_id &#x662F;&#x5F53;&#x524D; leader &#x7684; id, &#x8FD9;&#x6837;&#x5BA2;&#x6237;&#x7AEF;&#x8BBF;&#x95EE;&#x5230; Follower &#x8282;&#x70B9;&#x4E4B;&#x540E;&#x4E5F;&#x80FD;&#x5FEB;&#x901F;&#x77E5;&#x9053; Leader &#x4FE1;&#x606F;&#x3002;last_included_index &#x548C;  last_included_term &#x8FD8;&#x6709; data &#x53EF;&#x4EE5;&#x53C2;&#x89C1;&#x6211;&#x4EEC;&#x7B2C;&#x4E09;&#x7AE0;&#x56FE;&#x4E2D;&#x7684;&#x4ECB;&#x7ECD;&#xFF0C;&#x5B83;&#x4EEC;&#x8BB0;&#x5F55;&#x4E86;&#x6253;&#x5B8C;&#x5FEB;&#x7167;&#x4E4B;&#x540E;&#x7B2C;&#x4E00;&#x6761;&#x65E5;&#x5FD7;&#x7684;&#x7D22;&#x5F15;&#x53F7;&#x548C;&#x4EFB;&#x671F;&#x53F7;&#xFF0C;&#x4EE5;&#x53CA;&#x72B6;&#x6001;&#x673A;&#x5E8F;&#x5217;&#x5316;&#x4E4B;&#x540E;&#x7684;&#x6570;&#x636E;&#x3002;</p>
+<p>&#x4EC0;&#x4E48;&#x65F6;&#x95F4;&#x70B9; Raft &#x4F1A;&#x6253;&#x5FEB;&#x7167;&#x5462;?</p>
+<p>&#x6211;&#x4EEC;&#x77E5;&#x9053;&#x65E5;&#x5FD7;&#x6761;&#x76EE;&#x8FC7;&#x591A;&#x4E86;&#xFF0C;&#x6211;&#x4EEC;&#x5C31;&#x9700;&#x8981;&#x6253;&#x5FEB;&#x7167;&#x3002;&#x5728; eraft &#x4E2D;&#x5C31;&#x662F;&#x8BA1;&#x7B97;&#x5F53;&#x524D; level &#x4E2D;&#x7684;&#x65E5;&#x5FD7;&#x6761;&#x76EE; s.Rf.GetLogCount() &#x6765;&#x6253;&#x5FEB;&#x7167;&#x7684;&#xFF0C;&#x6253;&#x5FEB;&#x7167;&#x7684;&#x5165;&#x53E3;&#x51FD;&#x6570;&#x662F; takeSnapshot(index int), &#x4F20;&#x5165;&#x4E86;&#x5F53;&#x524D; applied &#x65E5;&#x5FD7;&#x7684; id, &#x7136;&#x540E;&#x5C06;&#x72B6;&#x6001;&#x673A;&#x7684;&#x6570;&#x636E;&#x5E8F;&#x5217;&#x5316;&#xFF0C;&#x8C03;&#x7528; Raft&#x5C42;&#x7684; Snapshot &#x51FD;&#x6570;&#x3002;
+&#x8FD9;&#x4E2A;&#x51FD;&#x6570;&#x901A;&#x8FC7; EraseBeforeWithDel &#x505A;&#x4E86;&#x5220;&#x9664;&#x65E5;&#x5FD7;&#x7684;&#x64CD;&#x4F5C;&#xFF0C;&#x7136;&#x540E; PersisSnapshot &#x5C06;&#x5FEB;&#x7167;&#x4E2D;&#x72B6;&#x6001;&#x6570;&#x636E;&#x7F13;&#x5B58;&#x5230;&#x4E86;&#x5B58;&#x50A8;&#x5F15;&#x64CE;&#x4E2D;&#x3002;</p>
+<pre><code>
+//
+// take a snapshot
+//
+func (rf *Raft) Snapshot(index int, snapshot []byte) {
+    rf.mu.Lock()
+    defer rf.mu.Unlock()
+    rf.isSnapshoting = true
+    snapshotIndex := rf.logs.GetFirstLogId()
+    if index &lt;= int(snapshotIndex) {
+        rf.isSnapshoting = false
+        PrintDebugLog(&quot;reject snapshot, current snapshotIndex is larger in cur term&quot;)
+        return
+    }
+    rf.logs.EraseBeforeWithDel(int64(index) - int64(snapshotIndex))
+    rf.logs.SetEntFirstData([]byte{}) // &#x7B2C;&#x4E00;&#x4E2A;&#x64CD;&#x4F5C;&#x65E5;&#x5FD7;&#x53F7;&#x8BBE;&#x4E3A;&#x7A7A;
+    PrintDebugLog(fmt.Sprintf(&quot;del log entry before idx %d&quot;, index))
+    rf.isSnapshoting = false
+    rf.logs.PersisSnapshot(snapshot)
+}
+</code></pre><p>&#x4EC0;&#x4E48;&#x65F6;&#x95F4;&#x70B9; Leader &#x4F1A;&#x53D1;&#x9001;&#x5FEB;&#x7167;&#x5462;&#xFF1F;</p>
+<p>&#x5728;&#x590D;&#x5236;&#x7684;&#x65F6;&#x5019;&#x6211;&#x4EEC;&#x4F1A;&#x5224;&#x65AD;&#x5230; peer &#x7684; prevLogIndex, &#x5982;&#x679C;&#x6BD4;&#x5F53;&#x524D;&#x65E5;&#x5FD7;&#x7684;&#x7B2C;&#x4E00;&#x6761;&#x7D22;&#x5F15;&#x53F7;&#x8FD8;&#x5C0F;&#xFF0C;&#x5C31;&#x8BF4;&#x660E; Leader &#x5DF2;&#x7ECF;&#x628A;&#x8FD9;&#x6761;&#x65E5;&#x5FD7;&#x6253;&#x5230;&#x5FEB;&#x7167;&#x4E2D;&#x4E86;&#xFF0C;&#x8FD9;&#x91CC;&#x6211;&#x4EEC;&#x5C31;&#x8981;&#x6784;&#x9020; InstallSnapshotRequest &#x8C03;&#x7528; Snapshot RPC &#x5C06;&#x5FEB;&#x7167;&#x6570;&#x636E;&#x53D1;&#x9001;&#x7ED9; Followr &#x8282;&#x70B9;&#xFF0C;&#x5728;&#x6536;&#x5230;&#x6210;&#x529F;&#x54CD;&#x5E94;&#x4E4B;&#x540E;&#xFF0C;&#x6211;&#x4EEC;&#x4F1A;&#x66F4;&#x65B0; rf.matchIdx&#xFF0C;rf.nextId &#x4E3A; LastIncludedIndex &#x548C; LastIncludedIndex + 1&#xFF0C;&#x66F4;&#x65B0;&#x5230; Follower &#x8282;&#x70B9;&#x590D;&#x5236;&#x8FDB;&#x5EA6;&#x3002;</p>
+<pre><code>
+if prevLogIndex &lt; uint64(rf.logs.GetFirst().Index) {
+    firstLog := rf.logs.GetFirst()
+    snapShotReq := &amp;pb.InstallSnapshotRequest{
+        Term:              rf.curTerm,
+        LeaderId:          int64(rf.me_),
+        LastIncludedIndex: firstLog.Index,
+        LastIncludedTerm:  int64(firstLog.Term),
+        Data:              rf.ReadSnapshot(),
+    }
+
+    rf.mu.RUnlock()
+
+    PrintDebugLog(fmt.Sprintf(&quot;send snapshot to %s with %s\n&quot;, peer.addr, snapShotReq.String()))
+
+    snapShotResp, err := (*peer.raftServiceCli).Snapshot(context.Background(), snapShotReq)
+    if err != nil {
+        PrintDebugLog(fmt.Sprintf(&quot;send snapshot to %s failed %v\n&quot;, peer.addr, err.Error()))
+    }
+
+    rf.mu.Lock()
+    PrintDebugLog(fmt.Sprintf(&quot;send snapshot to %s with resp %s\n&quot;, peer.addr, snapShotResp.String()))
+
+    if snapShotResp != nil {
+        if rf.role == NodeRoleLeader &amp;&amp; rf.curTerm == snapShotReq.Term {
+            if snapShotResp.Term &gt; rf.curTerm {
+                rf.SwitchRaftNodeRole(NodeRoleFollower)
+                rf.curTerm = snapShotResp.Term
+                rf.votedFor = -1
+                rf.PersistRaftState()
+            } else {
+                PrintDebugLog(fmt.Sprintf(&quot;set peer %d matchIdx %d\n&quot;, peer.id, snapShotReq.LastIncludedIndex))
+                rf.matchIdx[peer.id] = int(snapShotReq.LastIncludedIndex)
+                rf.nextIdx[peer.id] = int(snapShotReq.LastIncludedIndex) + 1
+            }
+        }
+    }
+    rf.mu.Unlock()
+}
+</code></pre><p>Follower &#x8FD9;&#x8FB9;&#x64CD;&#x4F5C;&#x5C31;&#x6BD4;&#x8F83;&#x7B80;&#x5355;&#x4E86;&#xFF0C;&#x5B83;&#x4F1A;&#x8C03;&#x7528; HandleInstallSnapshot &#x5904;&#x7406;&#x5FEB;&#x7167;&#x6570;&#x636E;&#xFF0C;&#x5E76;&#x628A;&#x5FEB;&#x7167;&#x6570;&#x636E;&#x6784;&#x9020; pb.ApplyMsg &#x5199;&#x5230; rf.applyCh&#xFF0C;&#x6700;&#x540E;&#x8D1F;&#x8D23;&#x65E5;&#x5FD7; Apply &#x7684; Goruntine &#x4F1A;&#x8C03;&#x7528; CondInstallSnapshot &#x5B89;&#x88C5;&#x5FEB;&#x7167;&#xFF0C;&#x6700;&#x540E;&#x5728; restoreSnapshot &#x4F1A;&#x5C06;&#x5FEB;&#x7167;&#x7684; data &#x6570;&#x636E;&#x89E3;&#x6790;&#xFF0C;&#x8BA9;&#x540E;&#x5199;&#x5165;&#x81EA;&#x5DF1;&#x7684;&#x72B6;&#x6001;&#x673A;&#x3002;</p>
+<h4 id="raft-&#x5982;&#x4F55;&#x5E94;&#x5BF9;&#x8111;&#x88C2;">Raft &#x5982;&#x4F55;&#x5E94;&#x5BF9;&#x8111;&#x88C2;</h4>
+<p>&#x5728;&#x7B2C;&#x4E09;&#x7AE0;&#x4E2D;&#x6211;&#x4EEC;&#xFF0C;&#x4ECB;&#x7ECD;&#x4E86;&#x8111;&#x88C2;&#x7684;&#x573A;&#x666F;&#xFF0C;&#x5E76;&#x4E14;&#x5206;&#x8FC7;&#x591A;&#x6570;&#x6D3E;&#x9009;&#x4E3E;&#x534F;&#x8BAE;&#x53EF;&#x4EE5;&#x907F;&#x514D;&#x8111;&#x88C2;&#x7684;&#x573A;&#x666F;&#xFF0C;&#x4F7F;&#x5F97;&#x5206;&#x5E03;&#x5F0F;&#x7CFB;&#x7EDF;&#x5728;&#x7F51;&#x7EDC;&#x5206;&#x533A;&#x7684;&#x60C5;&#x51B5;&#x4E0B;&#x4E5F;&#x80FD;&#x4FDD;&#x6301;&#x6B63;&#x786E;&#x6027;&#x3002;</p>
+<p>Raft &#x662F;&#x4E00;&#x79CD;&#x591A;&#x6570;&#x6D3E;&#x9009;&#x4E3E;&#x7684;&#x534F;&#x8BAE;&#xFF0C;&#x73B0;&#x5728;&#x6211;&#x4EEC;&#x5C31;&#x6765;&#x770B;&#x770B;&#x5B83;&#x662F;&#x5982;&#x4F55;&#x5E94;&#x5BF9;&#x8111;&#x88C2;&#x7684;&#x3002;</p>
+<p><img src="resources/split_net001.png" alt=""></p>
+<p>&#x6211;&#x4EEC;&#x770B;&#x5230;&#x4E0A;&#x56FE;&#x4E2D;&#x7684;&#x573A;&#x666F;&#xFF0C;&#x4E00;&#x4E2A;&#x4E94;&#x8282;&#x70B9;&#x7684;&#x7CFB;&#x7EDF;&#x88AB;&#x5206;&#x6210;&#x4E86;&#x4E24;&#x4E2A;&#x533A;&#xFF0C;C,D,E &#x4E3A;&#x4E00;&#x4E2A;&#x533A;&#xFF0C;A,B &#x4E3A;&#x4E00;&#x4E2A;&#x533A;&#x3002;&#x8FD9;&#x65F6;&#x5019;&#x4E24;&#x4E2A;&#x5206;&#x533A;&#x4E2D;&#x90FD;&#x9009;&#x51FA;&#x4E86;&#x5404;&#x81EA;&#x7684; Leader&#xFF0C;&#x4F46;&#x662F;&#x6CE8;&#x610F; B &#x662F;&#x4EFB;&#x671F; 1 &#x7684; Leader&#xFF0C;C &#x662F;&#x4EFB;&#x671F; 2 Leader&#x3002;&#x5927;&#x5BB6;&#x53EF;&#x80FD;&#x4F1A;&#x6709;&#x7591;&#x95EE;&#x4E3A;&#x4EC0;&#x4E48;&#x4E00;&#x5B9A;&#x6709;&#x4E00;&#x4E2A;&#x4EFB;&#x671F;&#x66F4;&#x9AD8;&#x7684; Leader&#xFF0C;&#x8FD9;&#x5176;&#x5B9E;&#x4E5F;&#x662F;&#x591A;&#x6570;&#x6D3E;&#x9009;&#x4E3E;&#x51B3;&#x5B9A;&#x7684;&#xFF0C;&#x5206;&#x533A;&#x540E;&#xFF0C;&#x80AF;&#x5B9A;&#x4F1A;&#x51FA;&#x73B0;&#x4E00;&#x4E2A;&#x591A;&#x6570;&#x8282;&#x70B9;&#x6240;&#x5728;&#x7684;&#x5206;&#x533A;&#xFF0C;&#x5982;&#x679C;&#x8FD9;&#x4E2A;&#x5206;&#x533A;&#x8FD8;&#x6CA1;&#x6709; Leader, &#x90A3;&#x4E48;&#x80AF;&#x5B9A;&#x4F1A;&#x89E6;&#x53D1;&#x9009;&#x4E3E;&#x3002;</p>
+<p><img src="resources/split_net002.png" alt=""></p>
+<p>&#x4E4B;&#x540E;&#x5982;&#x4E0B;&#x56FE;&#x6240;&#x793A;&#xFF0C;C,D,E &#x6240;&#x5728;&#x5206;&#x533A;&#x88AB;&#x5199;&#x5165;&#x4E86; SET 8 &#x7684;&#x64CD;&#x4F5C;&#xFF0C;&#x7531;&#x4E8E; C,D,E &#x6709;&#x4E09;&#x4E2A;&#x8282;&#x70B9;&#xFF0C;&#x8D85;&#x8FC7; 5 &#x4E2A;&#x8282;&#x70B9;&#x7684;&#x534A;&#x6570;&#x4EE5;&#x4E0A;&#xFF0C;&#x6240;&#x4EE5; SET 8 &#x8FD9;&#x4E2A;&#x64CD;&#x4F5C;&#x88AB;&#x63D0;&#x4EA4;&#x4E86;&#x3002;&#x7136;&#x540E; A,B &#x5206;&#x533A;&#x88AB;&#x5199;&#x5165; SET 3 &#x64CD;&#x4F5C;&#xFF0C;&#x4F46;&#x662F;&#x7531;&#x4E8E;&#x5B83;&#x4EEC;&#x662F;&#x5C11;&#x6570;&#x6D3E;&#xFF0C;&#x53EA;&#x6709;&#x4E24;&#x4E2A;&#x8282;&#x70B9;&#xFF0C;&#x6240;&#x4EE5; SET 3 &#x8FD9;&#x4E2A;&#x64CD;&#x4F5C;&#x5199;&#x5165;&#x5B83;&#x4EEC;&#x7684;&#x65E5;&#x5FD7;&#x4E4B;&#x540E;&#x5E76;&#x4E0D;&#x80FD;&#x88AB;&#x63D0;&#x4EA4;&#x3002;</p>
+<p><img src="resources/split_net003.png" alt=""></p>
+<p>&#x6700;&#x540E;&#x7F51;&#x7EDC;&#x6062;&#x590D;&#x4E86;&#xFF0C;B,A &#x6536;&#x5230;&#x6765;&#x81EA; C &#x7684;&#x66F4;&#x9AD8;&#x4EFB;&#x671F;&#x7684;&#x5FC3;&#x8DF3;&#x4F1A;&#x79D2;&#x53D8; Follower &#x5E76;&#x4E14;&#x4F1A;&#x5C06;&#x4E4B;&#x524D;&#x6CA1;&#x6709;&#x63D0;&#x4EA4;&#x7684;&#x65E5;&#x5FD7;&#x64E6;&#x9664;&#xFF0C;&#x5C06; Leader C &#x53D1;&#x8FC7;&#x6765;&#x7684;&#x65B0;&#x65E5;&#x5FD7;&#xFF08;&#x5E26;&#x6709; SET 8 &#x64CD;&#x4F5C;&#xFF09;&#x5199;&#x5230;&#x81EA;&#x5DF1;&#x7684;&#x65E5;&#x5FD7;&#x4E2D;&#xFF0C;&#x8FD9;&#x6837;&#x6574;&#x4E2A;&#x7CFB;&#x7EDF;&#x4ECD;&#x7136;&#x662F;&#x4E00;&#x81F4;&#x7684;&#x3002;</p>
+<p><hr><div id="vcomments"></div><script src="//unpkg.com/valine/dist/Valine.min.js"></script><script>new Valine({el: "#vcomments",appId: 'llVlxHTVN6Qfid7vmRxupfVy-9Nh9j0Va',appKey: 'MMitndxOIUGnNsblXRkGoDv6',placeholder: 'Just go go',avatar: '',meta: undefined,pageSize: 10,lang: 'zh-CN',recordIP: false})</script></p>
+
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="ch3.html" class="navigation navigation-prev " aria-label="Previous page: 第三章：Raft 论文解读">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+                <a href="ch5.html" class="navigation navigation-next " aria-label="Next page: 第五章：基于 Raft 库，实现简单的分布式 kv 系统">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"第四章：构建 Raft 库","level":"1.6","depth":1,"next":{"title":"第五章：基于 Raft 库，实现简单的分布式 kv 系统","level":"1.7","depth":1,"path":"ebook/ch5.md","ref":"ebook/ch5.md","articles":[]},"previous":{"title":"第三章：Raft 论文解读","level":"1.5","depth":1,"path":"ebook/ch3.md","ref":"ebook/ch3.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["valine"],"pluginsConfig":{"valine":{"avatar":"","lang":"zh-CN","pageSize":10,"placeholder":"Just go go","recordIP":false,"appId":"llVlxHTVN6Qfid7vmRxupfVy-9Nh9j0Va","appKey":"MMitndxOIUGnNsblXRkGoDv6"},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"ebook/ch4.md","mtime":"2022-06-12T02:41:23.391Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2022-06-12T03:02:07.429Z"},"basePath":"..","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="../gitbook/gitbook.js"></script>
+    <script src="../gitbook/theme.js"></script>
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-sharing/buttons.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+

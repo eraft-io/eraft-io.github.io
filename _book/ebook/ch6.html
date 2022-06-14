@@ -553,13 +553,13 @@ mount -o dax,noatime /dev/pmem0 /mnt/sdb
 [root@iZbp1gqpip163xihy2oh56Z ~]# redis-benchmark -t set,get -d 10240 -n 100000
 </code></pre><p>&#x6D4B;&#x8BD5;&#x7ED3;&#x679C;</p>
 <p>128 bytes kv set</p>
-<p><img src="resources/128_bytes_kv_set.pdf" alt=""></p>
+<p><img src="resources/128_bytes_kv_set-1.png" alt=""></p>
 <p>128 bytes kv get</p>
-<p><img src="resources/128_bytes_kv_get.pdf" alt=""></p>
+<p><img src="resources/128_bytes_kv_get-1.png" alt=""></p>
 <p>10240 bytes kv set</p>
-<p><img src="resources/10240_bytes_kv_set.pdf" alt=""></p>
+<p><img src="resources/10240_bytes_kv_set-1.png" alt=""></p>
 <p>10240 bytes kv get</p>
-<p><img src="resources/10240_bytes_kv_get.pdf" alt=""></p>
+<p><img src="resources/10240_bytes_kv_get-1.png" alt=""></p>
 <h4 id="&#x6350;&#x8D60;">&#x6350;&#x8D60;</h4>
 <p>&#x6574;&#x7406;&#x8FD9;&#x672C;&#x4E66;&#x8017;&#x8D39;&#x4E86;&#x6211;&#x4EEC;&#x5927;&#x91CF;&#x7684;&#x65F6;&#x95F4;&#x548C;&#x7CBE;&#x529B;&#x3002;&#x5982;&#x679C;&#x4F60;&#x89C9;&#x5F97;&#x6709;&#x5E2E;&#x52A9;&#xFF0C;&#x4E00;&#x74F6;&#x77FF;&#x6CC9;&#x6C34;&#x7684;&#x4EF7;&#x683C;&#x652F;&#x6301;&#x6211;&#x4EEC;&#x7EE7;&#x7EED;&#x8F93;&#x51FA;&#x4F18;&#x8D28;&#x7684;&#x5206;&#x5E03;&#x5F0F;&#x5B58;&#x50A8;&#x77E5;&#x8BC6;&#x4F53;&#x7CFB;&#xFF0C;2.99&#xA5;&#xFF0C;&#x611F;&#x8C22;&#x5927;&#x5BB6;&#x7684;&#x652F;&#x6301;&#x3002;</p>
 <p><img src="resources/alipay.jpeg" alt=""></p>
@@ -607,7 +607,7 @@ mount -o dax,noatime /dev/pmem0 /mnt/sdb
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"第六章：Multi-Raft 设计与实现","level":"1.8","depth":1,"next":{"title":"第七章：分布式事务初探","level":"1.9","depth":1,"path":"ebook/ch7.md","ref":"ebook/ch7.md","articles":[]},"previous":{"title":"第五章：基于 Raft 库，实现简单的分布式 kv 系统","level":"1.7","depth":1,"path":"ebook/ch5.md","ref":"ebook/ch5.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["valine"],"pluginsConfig":{"valine":{"avatar":"","lang":"zh-CN","pageSize":10,"placeholder":"Just go go","recordIP":false,"appId":"llVlxHTVN6Qfid7vmRxupfVy-9Nh9j0Va","appKey":"MMitndxOIUGnNsblXRkGoDv6"},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"ebook/ch6.md","mtime":"2022-06-14T14:56:53.963Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2022-06-14T15:03:16.848Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"第六章：Multi-Raft 设计与实现","level":"1.8","depth":1,"next":{"title":"第七章：分布式事务初探","level":"1.9","depth":1,"path":"ebook/ch7.md","ref":"ebook/ch7.md","articles":[]},"previous":{"title":"第五章：基于 Raft 库，实现简单的分布式 kv 系统","level":"1.7","depth":1,"path":"ebook/ch5.md","ref":"ebook/ch5.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["valine"],"pluginsConfig":{"valine":{"avatar":"","lang":"zh-CN","pageSize":10,"placeholder":"Just go go","recordIP":false,"appId":"llVlxHTVN6Qfid7vmRxupfVy-9Nh9j0Va","appKey":"MMitndxOIUGnNsblXRkGoDv6"},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"ebook/ch6.md","mtime":"2022-06-14T15:15:07.114Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2022-06-14T15:15:13.987Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
