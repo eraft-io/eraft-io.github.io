@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="zh-Hans" data-darkmode="auto">
+<head>
+  <meta charset="UTF-8">
+  <title>eraft开发组 - 解读国外优质计算机课程</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="./heti.css">
+  <link rel="stylesheet" href="./index.css">
+  <link rel="icon" href="./favicon.svg">
+</head>
+<body>
+  <main class="container">
+    <article class="article heti heti--classic">
+      <h1 class="article__title">eraft开发组</h1>
+      <blockquote>
+
+        我们团队致力于解读国外优秀的分布式存储相关开源课程，下面是课程体系图
+        我们始终坚信优秀的本科教学不应该是照本宣科以及应付考试，一门优秀的课程，应该具备让学生学会思考、动手实践、找到问题、反复试错、并解决问题的能力，同时应该尽量用最直白，最简单的语言传达关键的知识点。作为计算机工业界的工作者，我相信做课程和做技术一样，并不是越复杂越好，应该尽量的让设计出来的东西简单化。
+        关注我们的最新动态，欢迎关注
+         
+        <a href="https://www.zhihu.com/people/liu-jie-84-52" target="_blank">https://www.zhihu.com/people/liu-jie-84-52</a>
+        接下来我们进入正题，如何实现一个分布式系统。
+
+      </blockquote>
+
+      <div style="text-align: center; width: 100%; border: black solid 1px;">
+        <img src="./resources/arch.png" width="40%" style="display: inline-block; margin-bottom: 5%;"/>
+      </div>
+
+        <details open>
+          <summary></summary>
+          <ol>
+            <li>
+              <a href="#intro">MIT6.824 分布式系统系列</a>
+              <ul>
+                <li><a href="./index.html">（一）体验分布式KV存储系统eraftkv </a></li>
+                <li><a href="./ebook-ch2.html">（二）Go 语言基础知识</a></li>
+                <li><a href="./ebook-ch3.html">（三）Raft 论文解读 </a></li>
+                <li><a href="./ebook-ch4.html">（四）构建 Raft 库                </a></li>
+              </ul>
+            </li>
+          </ol>
+        </details>
+
+      <h2 id="intro"> MIT 分布式系统（一）构建 Raft 库   <a class="anchor" href="#intro">#</a></h2>
+
+      <h3>
+        核心数据结构设计
+      </h3>
+
+      <p>
+        我们上一章节讲了 Raft 算法的主要内容，现在我们要代码实现它们了。首先我们需要抽象出我们需要的数据结构。先来梳理一下可能用到的数据结构，首先节点之间需要互相访问，那我们需要定义访问其他节点的网络客户端，这里面要包含节点的 id, 地址，还有 rpc 的客户端，整个结构我们抽象为 RaftClientEnd，主要数据内容如下：
+      </p>
+
+      <blockquote>
+        type RaftClientEnd struct { <br/>
+            id             uint64<br/>
+            addr           string<br/>
+            raftServiceCli *raftpb.RaftServiceClient  // grpc 客户端
+        }        
+      </blockquote>
+      <p>
+        节点状态我们之前描述的有三种，定义如下：
+      </p>
+
+      <blockquote>
+        const (<br/>
+	NodeRoleFollower NodeRole = iota<br/>
+	NodeRoleCandidate<br/>
+	NodeRoleLeader<br/>
+    )
+      </blockquote>
+      我们要完成选举操作的话需要两个超时时间，这里我们使用 Golang time 库里面的 Timer 实现，它可以定时的给一个通道发送消息，我们可以用它来实现选举超时和心跳超时。
+
+      <blockquote>
+        electionTimer    *time.Timer<br/>
+heartbeatTimer   *time.Timer<br/>
+      </blockquote>
+      除此之外我们还需要记录当前节点的 id, 当前的任期号，为谁投票，获得票数的统计，已经提交的日志索引号，最后 apply 到状态机的日志号，以及节点如果是 Leader 的话需要记录到其他节点复制最新匹配的日志号，这写数据结构定义如下：
+
+
+      <blockquote>
+        type Raft struct {<br/>
+            mu             sync.RWMutex<br/>
+            peers          []*RaftClientEnd // rpc 客户端<br/>
+            me_            int  // 自己的 id<br/>
+            dead           int32 // 节点的状态<br/>
+            applyCh        chan *pb.ApplyMsg // apply 协程通道，协程模型中会讲到<br/>
+            applyCond      *sync.Cond // apply 流程控制的信号量<br/>
+            replicatorCond []*sync.Cond // 复制操作控制的信号量<br/>
+            role           NodeRole  // 节点当前的状态<br/>
+            curTerm        int64  // 当前的任期<br/>
+            votedFor       int64  // 为谁投票<br/>
+            grantedVotes   int    // 已经获得的票数 <br/>
+            logs           *RaftLog  // 日志信息<br/>
+            commitIdx      int64     // 已经提交的最大的日志 id<br/>
+            lastApplied    int64     // 已经 apply 的最大日志的 id<br/>
+            nextIdx        []int     // 到其他节点下一个匹配的日志 id 信息<br/>
+            matchIdx       []int     // 到其他节点当前匹配的日志 id 信息<br/>
+        
+            leaderId         int64   // 集群中当前 Leader 节点的 id<br/>
+            electionTimer    *time.Timer  // 选举超时定时器<br/>
+            heartbeatTimer   *time.Timer  // 心跳超时定时器<br/>
+            heartBeatTimeout uint64       // 心跳超时时间<br/>
+            baseElecTimeout  uint64       // 选举超时时间<br/>
+        }
+      </blockquote>
+      首先系统启动的时候需要构造 Raft 这个结构体，这个流程是在 MakeRaft 里面实现的，它主要是初始化与一些变量，两个定时器，并启动相关的协程，我们这里对每个对端节点复制有 Replicator 协程，触发两个超时时间有 Tick 协程，应用已经提交的日志有 Applier 协程。
+
+      <h3>
+        协程模型
+      </h3>
+      <div style="text-align: center; width: 100%; border: black solid 1px;">
+        <img src="./resources/goruntine_model.svg" width="90%" style="display: inline-block; margin-bottom: 5%;"/>
+      </div>
+
+      <p>上图展示了我们 raftcore 里面的协程模型，当应用层提案 (propose) 到来之后主协程会在本地追加日志，然后发送 BroadcastAppend，然后到其他节点复制日志的协程的等待就会被唤醒，开始进行一轮的的复制，replicateOneRound 成功复制半数节点日志之后会触发 commit, rf.applyCond.Signal() 会唤醒等待做 Apply 操作的 Applier 协程。
+
+    </p>
+
+    <p>另外 Tick 协程会监听 Timer 两个超时的 C 通道信号，一旦心跳超时并且当前节点的状态是 Leader，就会调用 BroadcastHeartbeat 发送心跳，发心跳的时候也会 replicateOneRound 就和上述一样，如果成功复制半数节点日志之后会触发 commit, rf.applyCond.Signal() 就会唤醒等待做 Apply 操作的 Applier 协程。
+
+    </p>
+
+    <p>
+        Applier 协程 apply 完消息之后会把 ApplyMsg 消息写入 rf.applyCh 通知应用层，应用层的协程和以监听这个通道，如果有 ApplyMsg 到来就把它应用到状态机。 
+    </p>
+
+    <h3>
+        Rpc 定义
+    </h3>
+    eraft 的 rpc 定义文件在 pbs 目录下的 raftbasic.proto 文件中，主要的消息如下：
+
+    <br/>
+    Entry
+
+    <p>
+        这个是一个日志条目信息表示，和我们之前描述的一样，它有任期号 term，索引号 index, 以及操作的序列化数据 data 我们用一个字节流来存储，日志条目有两种类型一种是 Normal 正常日志，另一种是 ConfChange 配置变更的日志：
+    </p>
+
+    <blockquote>
+        enum EntryType {<br/>
+            EntryNormal = 0;<br/>
+            EntryConfChange = 1;<br/>
+        }<br/>
+        <br/>
+        message Entry {<br/>
+            EntryType entry_type = 1;<br/>
+            uint64    term = 2;<br/>
+            int64     index = 3;<br/>
+            bytes     data = 4;<br/>
+        }
+    </blockquote>
+
+    <h3>
+        RequestVote 相关
+    </h3>
+
+    下面是请求投票 RPC 的定义，基本和论文里面保持一致：
+    <br/>
+请求投票里面有候选人的任期号，它的 id 以及它最后一条日志的索引以及任期号信息。
+<br/>
+响应里面有个任期号，这个用来给候选人在选举失败的时候更新自己的任期，还有一个 vote_granted 表示这个请求投票操作是否被对端节点接受。
+<br/>
+
+<blockquote>
+    message RequestVoteRequest {<br/>
+        int64 term = 1;<br/>
+        int64 candidate_id = 2;<br/>
+        int64 last_log_index = 3;<br/>
+        int64 last_log_term = 4;<br/>
+    }<br/>
+    
+    message RequestVoteResponse {<br/>
+        int64 term = 1;<br/>
+        bool  vote_granted = 2;<br/>
+    }<br/>
+    
+    service RaftService {<br/>
+        //...<br/>
+        rpc RequestVote (RequestVoteRequest) returns (RequestVoteResponse) {}<br/>
+    }<br/>
+</blockquote>
+
+<h3>
+    AppendEntries 相关
+</h3>
+
+<p>
+    日志追加操作的定义如下，基本也和论文里面一致：
+</p>
+
+<p>
+    请求里面有 Leader 的任期，id （用来告诉 follower, 这样 client 访问了 follower 之后可以被告知 leader 节点是哪个）， prev_log_index 表示消息里面将要同步的第一条日志前一条日志的的索引信息，prev_log_term 是它的任期信息，leader_commit 则是 leader 的 commit 号 (可以用来周知 follower 节点当前的 commit 进度)，entries 表示日志条目信息。
+</p>
+
+<p>
+    响应里面 term 用来告诉 leader 是否出新的任期的消息，可以用来更新 leader 的任期号，success 表示日志追加操作是否成功，conflict_index 用来记录冲突日志的索引号，conflict_term 用来记录冲突日志的任期号。 
+</p>
+
+<blockquote>
+
+message AppendEntriesRequest {<br/>
+    int64    term = 1;<br/>
+    int64    leader_id = 2;<br/>
+    int64    prev_log_index = 3;<br/>
+    int64    prev_log_term = 4;<br/>
+    int64    leader_commit = 5;<br/>
+    repeated Entry entries = 6;<br/>
+}<br/>
+
+message AppendEntriesResponse {<br/>
+    int64  term = 1;<br/>
+    bool  success = 2;<br/>
+    int64 conflict_index = 3;<br/>
+    int64 conflict_term = 4;<br/>
+}<br/>
+
+
+service RaftService {<br/>
+    //...<br/>
+    rpc AppendEntries (AppendEntriesRequest) returns (AppendEntriesResponse) {}<br/>
+}<br/>
+</blockquote>
+
+<h3>
+    Leader 选举实现分析
+</h3>
+
+<p>
+    Raft 官网提供了一个算法的动态演示动画，我们先来直观感受下 Leader 选举的流程，然后结合代码介绍这个流程。
+
+
+</p>
+
+<p>
+    首先 Raft 算法中有两个超时时间用来控制着 Leader 选举的流程，首先是选举超时，这个是 Candidate 等待变成 Leader 的时间跨度，如果在这个时间内还没被选成 Leader, 这个超时定时器会被重置。我们前面也介绍过，这个超时时间设置一般在 150ms 到 300ms 之间。
+</p>
+
+<div style="text-align: center; width: 100%; border: black solid 1px;">
+    <img src="./resources/raft_elec001.png" width="90%" style="display: inline-block; margin-bottom: 5%;"/>
+  </div>  
+      <h3>捐赠
+      </h3>
+
+      <p>
+        整理这本书耗费了我们大量的时间和精力。如果你觉得有帮助，一瓶矿泉水的价格支持我们继续输出优质的分布式存储知识体系，2.99¥，感谢大家的支持。
+      </p>
+
+      <div style="text-align: center; width: 100%; border: black solid 1px;">
+        <img src="./resources/alipay.jpeg" width="200px" style="display: inline-block;"/>
+      </div>
+
+      <h3 id="license">开源协议<a class="anchor" href="#tags">#</a></h3>
+      <p>「赫蹏」遵循MIT协议开源。</p>
+
+      <!-- <footer class="heti-fn">
+        <ol>
+          <li id="fn-01">
+            <a href="#ref-01" title="移至">^</a>
+            CSS Reset：指代类似Eric Meyer's Reset CSS的样式重置方案
+          </li>
+          <li id="fn-02">
+            <a href="#ref-02" title="移至">^</a>
+            《中文排版需求》：https://w3c.github.io/clreq/
+          </li>
+          <li id="fn-03">
+            <a href="#ref-03" title="移至">^</a>
+            在当下前端技术尚不能完美解决中西文混排间距的情况下，常见的输入习惯是手动在中西文间加入空格（https://github.com/vinta/pangu.js）。这样做的弊端一是间距不可控（有时显得过大），二是通过空格符来排版只能算无奈之举。好消息是在最新的macOS、iOS中，使用原生语言开发的文本区域会自动处理中西文混排的间距（无论是否加空格），期待不用手敲空格的日子早日到来。
+          </li>
+        </ol>
+      </footer> -->
+      <script src="https://giscus.app/client.js"
+      data-repo="eraft-io/eraft-io.github.io"
+      data-repo-id="MDEwOlJlcG9zaXRvcnkzOTYyMDM3NjU="
+      data-category="General"
+      data-category-id="DIC_kwDOF52W9c4CRblA"
+      data-mapping="pathname"
+      data-strict="0"
+      data-reactions-enabled="1"
+      data-emit-metadata="0"
+      data-input-position="bottom"
+      data-theme="preferred_color_scheme"
+      data-lang="zh-CN"
+      crossorigin="anonymous"
+      async>
+  </script>
+
+    </article>
+  </main>
+
+
+
+
+  <aside class="panel">
+    <ul class="panel-list panel-list--gray">
+      <li><input type="radio" class="J_fontStack" value="heti--classic" name="font" id="font-classic" checked><label for="font-classic">传统</label></li>
+      <li><input type="radio" class="J_fontStack" value="heti--sans" name="font" id="font-sans"><label for="font-sans">黑体</label></li>
+      <li><input type="radio" class="J_fontStack" value="heti--serif" name="font" id="font-serif"><label for="font-serif">宋体</label></li>
+    </ul>
+    <ul class="panel-list panel-list--gray">
+      <li><input type="radio" class="J_radioGrid" value="" name="grid" id="grid-disable" checked><label for="grid-disable">网格：关</label></li>
+      <li><input type="radio" class="J_radioGrid" value="grid-24" name="grid" id="grid-24"><label for="grid-24">大</label></li>
+      <li><input type="radio" class="J_radioGrid" value="grid-12" name="grid" id="grid-12"><label for="grid-12">小</label></li>
+    </ul>
+    <ul class="panel-list panel-list--gray panel-list--icon">
+      <li><input type="radio" class="J_darkMode" value="auto" name="darkmode" id="darkmode-auto" checked><label for="darkmode-auto">🌗</label></li>
+      <li><input type="radio" class="J_darkMode" value="light" name="darkmode" id="darkmode-light"><label for="darkmode-light">🌞</label></li>
+      <li><input type="radio" class="J_darkMode" value="dark" name="darkmode" id="darkmode-dark"><label for="darkmode-dark">🌙</label></li>
+    </ul>
+  </aside>
+
+  <script src="./heti-addon.js"></script>
+  <script>
+    const $$root = document.getElementsByTagName('html')[0]
+    const $$main = document.getElementsByTagName('main')[0]
+    const $$article = document.getElementsByTagName('article')[0]
+
+    function addEventListeners(nodeList, event, fn) {
+      [].forEach.call(nodeList, function(elm) {
+        elm.addEventListener(event, fn, false)
+      }, false)
+    }
+
+    addEventListeners(document.getElementsByClassName('J_darkMode'), 'change', function (e) {
+      $$root.setAttribute('data-darkmode', e.target.value)
+    })
+
+    addEventListeners(document.getElementsByClassName('J_radioGrid'), 'change', function (e) {
+      $$main.setAttribute('data-bg-grid', e.target.value)
+    })
+
+    addEventListeners(document.getElementsByClassName('J_fontStack'), 'change', function (e) {
+      $$article.className = ['article', 'heti', e.target.value].join(' ')
+    })
+
+    const heti = new Heti('.article')
+    heti.autoSpacing()
+  </script>
+</body>
+</html>
