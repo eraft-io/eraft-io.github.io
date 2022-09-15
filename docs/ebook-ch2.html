@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="zh-Hans" data-darkmode="auto">
+<head>
+  <meta charset="UTF-8">
+  <title>eraft开发组 - 解读国外优质计算机课程</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="./heti.css">
+  <link rel="stylesheet" href="./index.css">
+  <link rel="icon" href="./favicon.svg">
+</head>
+<body>
+  <main class="container">
+    <article class="article heti heti--classic">
+      <h1 class="article__title">eraft开发组</h1>
+      <blockquote>
+
+        我们团队致力于解读国外优秀的分布式存储相关开源课程，下面是课程体系图
+        我们始终坚信优秀的本科教学不应该是照本宣科以及应付考试，一门优秀的课程，应该具备让学生学会思考、动手实践、找到问题、反复试错、并解决问题的能力，同时应该尽量用最直白，最简单的语言传达关键的知识点。作为计算机工业界的工作者，我相信做课程和做技术一样，并不是越复杂越好，应该尽量的让设计出来的东西简单化。
+        关注我们的最新动态，欢迎关注
+         
+        <a href="https://www.zhihu.com/people/liu-jie-84-52" target="_blank">https://www.zhihu.com/people/liu-jie-84-52</a>
+        接下来我们进入正题，如何实现一个分布式系统。
+
+      </blockquote>
+
+      <div style="text-align: center; width: 100%; border: black solid 1px;">
+        <img src="./resources/arch.png" width="40%" style="display: inline-block;"/>
+      </div>
+      <details open>
+        <summary></summary>
+        <ol>
+          <li>
+            <a href="#intro">MIT6.824 分布式系统系列</a>
+            <ul>
+              <li><a href="./index.html">（一）体验分布式KV存储系统eraftkv </a></li>
+              <li><a href="./ebook-ch2.html">（二）Go 语言基础知识</a></li>
+              <li><a href="./ebook-ch3.html">（三）Raft 论文解读 </a></li>
+            </ul>
+          </li>
+        </ol>
+      </details>
+
+      <h2 id="intro"> MIT 分布式系统（二）Go 语言基础知识 <a class="anchor" href="#intro">#</a></h2>
+      
+      <h3>
+        Go语言优点
+      </h3>
+
+      <p>
+        首先 Go 是一门开源的语言，他出生名门 Google，社区有强有力的顶级技术人员支撑。它最开始的设计者是 Rob Pike，Robert Griesemer，Ken Thompson。 你可以在这个页面找到他们的资料 <a href="https://golang.design/history/">https://golang.design/history/</a> 其中 Ken Thompson 是 UNIX 系统的发明者。
+
+        Go 语言对于初学者很友好，很容易在短时间内快速上手，你可以通过这个网站上提供的代码示例快速的入门 Go 语言：<a href="https://gobyexample.com">https://gobyexample.com</a>。
+
+        作为多核时代的语言，Go 语言在设计之初就对并发编程有很多内置的支持，提供的及其健壮的相关标准库。利用它，我们可以快速的编写出高并发的应用程序。
+
+        最后，国内外很多大厂都在使用 Go 语言，它有一个强大的社区，全世界优秀的技术人员开发了丰富的工具生态，有很多脚手架帮你快速的构建应用程序。
+
+      </p>
+
+      <h3>
+        切片
+      </h3>
+
+      <p>
+        切片是一个数组的一段，它基于数组构建，并提供了更多丰富的数据操作功能，提供开发者灵活和便利的操作数组结构。
+
+        在 Go 语言内部，切片只是对底层数组数据结构的引用。接下来我们将熟悉如何创建和使用切片，并了解它底层是怎么工作的。
+
+        <h4> 使用字面量列表创建
+        </h4>
+        <br/>
+        
+        这种方式类似 c++ 里面的初始化列表
+
+        <blockquote>
+            var s = []int{3, 5, 7, 9, 11, 13, 17}
+        </blockquote>
+        这种方式创建切片的时候，它首先会创建一个数组，然后返回对该数组切片的引用。
+
+        <h4>
+            从已有数组创建切片
+        </h4>
+
+        <blockquote>
+            // Obtaining a slice from an array `a`
+            <br/>
+            a[low:high]
+        </blockquote>
+        这里我们对 a 数组进行切割得到切片，这个操作得到的结果是索引 [low, high) 的元素，生成的切片包括索引低，但是不包括索引高之间的所有数组元素。
+
+        <br/>
+        你可以运行下面的示例，理解这个切片操作
+
+        <blockquote>
+            package main
+            <br/>
+
+            import "fmt"
+            <br/>
+
+            func main() {
+                <br/>
+
+                var a = [5]string{"Alpha", "Beta", "Gamma", "Delta", "Epsilon"}
+                <br/>
+
+                // Creating a slice from the array
+                var s []string = a[1:4]
+                <br/>
+
+                fmt.Println("Array a = ", a)        <br/>
+
+                fmt.Println("Slice s = ", s)        <br/>
+
+            }        <br/>
+
+
+            // output        <br/>
+
+
+            Array a =  [Alpha Beta Gamma Delta Epsilon]        <br/>
+
+            Slice s =  [Beta Gamma Delta]        <br/>
+
+        </blockquote>
+
+      </p>
+
+      <h4> 修改切片中的元素
+      </h4>
+      由于切片是引用类型，它指向了底层的数组。所以当我们使用切片引用去修改数组中对应的元素的时候，引用相同数组的其他切片对象也会看到这个修改结果。
+
+      <blockquote>
+        package main<br/>
+import "fmt"<br/>
+
+func main() {<br/>
+	a := [7]string{"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"}<br/>
+
+	slice1 := a[1:]<br/>
+	slice2 := a[3:]<br/>
+
+	fmt.Println("------- Before Modifications -------")<br/>
+	fmt.Println("a  = ", a)<br/>
+	fmt.Println("slice1 = ", slice1)<br/>
+	fmt.Println("slice2 = ", slice2)<br/>
+
+	slice1[0] = "TUE"<br/>
+	slice1[1] = "WED"<br/>
+	slice1[2] = "THU"<br/>
+
+	slice2[1] = "FRIDAY"<br/>
+
+	fmt.Println("\n-------- After Modifications --------")<br/>
+	fmt.Println("a  = ", a)<br/>
+	fmt.Println("slice1 = ", slice1)<br/>
+	fmt.Println("slice2 = ", slice2)<br/>
+}<br/>
+
+// Output<br/>
+
+------- Before Modifications -------<br/>
+a  =  [Mon Tue Wed Thu Fri Sat Sun]<br/>
+slice1 =  [Tue Wed Thu Fri Sat Sun]<br/>
+slice2 =  [Thu Fri Sat Sun]<br/>
+
+type: post<br/>
+-------- After Modifications --------<br/>
+a  =  [Mon TUE WED THU FRIDAY Sat Sun]<br/>
+slice1 =  [TUE WED THU FRIDAY Sat Sun]<br/>
+slice2 =  [THU FRIDAY Sat Sun]<br/>
+
+      </blockquote>
+
+      <p>
+        例如上面这个示例，slice2 的修改操作在 slice1 中是能被看到的, slice1 的修改在 slice2 也能被看到。
+      </p>
+
+      <h3>
+        切片底层结构
+      </h3>
+
+      <p>
+
+      一个切片由三个部分组成，如图<br/>
+
+1.一个指向底层数组的指针 Ptr<br/>
+
+2.切片所包含数组段的长度 Len<br/>
+
+3.切片的容量 Cap<br/>
+
+<div style="text-align: center; width: 100%; border: black solid 1px;">
+    <img src="resources/slice01.png" width="80%" style="display: inline-block;"/>
+  </div>
+
+  我们看一个具体的切片结构的底层示例：
+
+  <blockquote>
+    var a = [6]int{10, 20, 30, 40, 50, 60} <br/>
+    var s = [1:4]
+  </blockquote>
+  s 在 Go 内部是这样表示的：
+  <br/>
+
+  <div style="text-align: center; width: 100%; border: black solid 1px;">
+    <img src="resources/slice02.png" width="80%" style="display: inline-block;"/>
+  </div>
+
+  一个切片的长度和容量我们是可以通过 len(), cap() 函数获取的，例如我们可以通过下面的方式获取 s 的长度和容量。
+
+  <blockquote>
+    package main<br/>
+import "fmt"<br/>
+
+func main() {<br/>
+	a := [6]int{10, 20, 30, 40, 50, 60}<br/>
+	s := a[1:4]<br/>
+
+	fmt.Printf("s = %v, len = %d, cap = %d\n", s, len(s), cap(s))<br/>
+}<br/>
+
+// output<br/>
+s = [20 30 40], len = 3, cap = 5
+  </blockquote>
+
+  <h3>Goruntine</h3>
+  Goruntine 是由 Go 运行时所管理的一个轻量级的线程，一个 Go 程序中的 Goroutines 在相同的地址空间中运行，因此对共享内存的访问必须同步。
+  <br/>
+  我们运行一个简单地示例来看看：
+  <blockquote>
+    package main
+    <br/>
+import (<br/>
+	"fmt"<br/>
+	"time"<br/>
+)<br/>
+
+func say(s string) {<br/>
+	for i := 0; i < 5; i++ {<br/>
+		time.Sleep(100 * time.Millisecond)<br/>
+		fmt.Println(s)<br/>
+	}<br/>
+}<br/>
+
+func main() {<br/>
+	go say("world")<br/>
+	say("hello")<br/>
+}<br/>
+
+// output<br/>
+
+hello<br/>
+world<br/>
+hello<br/>
+world<br/>
+hello<br/>
+world<br/>
+world<br/>
+hello<br/>
+hello<br/>
+
+  </blockquote>
+
+  <p>
+    我们可以看到主线程中 say("hello") 和 goruntine 的 say("world") 在交替的输出，它们在同时的运行，在其他语言做这个事情先要创建线程，然后绑定相关的执行函数，而 Go 语言直接把并发设计到了编译器语言支持层面，用 go 关键字就可以轻松地创建轻量级的线程。
+  </p>
+  
+  <h3>
+    调度器
+  </h3>
+
+  <h4>
+    调度器的设计决策
+  </h4>
+
+  在解释 Go 语言调度器之前，我们先一个例子：
+
+  <blockquote>
+
+func main() {<br/>
+    var wg sync.WaitGroup<br/>
+    wg.Add(11)<br/>
+    for i := 0; i <= 10; i++ {<br/>
+        go func(i int) {<br/>
+          defer wg.Done()<br/>
+          fmt.Printf("loop i is - %d\n", i)<br/>
+        }(i)<br/>
+    }<br/>
+    wg.Wait()<br/>
+    fmt.Println("Hello, Welcome to Go")<br/>
+}<br/>
+
+
+// output<br/>
+
+loop i is - 0<br/>
+loop i is - 4<br/>
+loop i is - 1<br/>
+loop i is - 2<br/>
+loop i is - 3<br/>
+loop i is - 8<br/>
+loop i is - 7<br/>
+loop i is - 9<br/>
+loop i is - 5<br/>
+loop i is - 10<br/>
+loop i is - 6<br/>
+Hello, Welcome to Go
+
+  </blockquote>
+</p>
+
+<p>
+    这个程序创建了 11 个 Goruntine，对于这个输出结果，我们可能会问：<br/>
+
+这 11 个 Goruntine 是如何并行运行的？<br/>
+
+它们运行有没有特别的顺序？<br/>
+
+要回答这两个问题，我们需要思考:<br/>
+
+如何将多个 Goruntine 分配到我们有限个数的 CPU 核心的机器上运行的多个 OS 线程上?<br/>
+
+为了公平的让这些 Goruntine 获得 CPU 资源，这些 Goruntine 应该以什么的顺序在这多个 CPU 核心上运行?<br/>
+</p>
+
+<h3>
+    Go 调度器的模型介绍
+</h3>
+
+<div style="text-align: center; width: 100%; border: black solid 1px;">
+    <img src="resources/scheduler01.png" width="80%" style="display: inline-block;"/>
+  </div>
+
+  <p>
+    为了解决上面的调度问题，Go 语言设计了图 d 中的调度器模型：
+    <br/>
+Go 语言使用协程调度被称为 GMP 模型，其中：
+<br/>
+G: 代表一个 Goruntine，是我们使用 go 关键字创建出来的可以并行运行的代码块。
+<br/>
+M: 代表一个操作系统线程
+<br/>
+P: 代表逻辑处理器
+<br/>
+我们看到上图中由两个 P 处理核心运行时调度正在调度执行 8 个 Goruntine。
+<br/>
+图中我们还看到了有两种类型的队列：
+<br/>
+本地队列 (Local Run Queue): 存放等待运行的 G，这个队列存储的数量有限，一般不能超过 256个，当用户新建 Goruntine 时，如果这个队列满了，Go 运行时会将一半的 G 移动到全局队列中。
+<br/>
+全局队列 (Global Queue): 存放等待运行的 G，其他的本地队列满了，会移动 G 过来。
+  </p>
+
+  <p>
+    <h3>
+        Go 调度器的工作流程
+    </h3>
+   
+
+GMP 调度器调度 Goruntine 执行的大致逻辑如下：
+<br/>
+1.线程想要调度 G 执行就必须要先与某个 P 关联
+<br/>
+2.然后从 P 的本地队列中获取 G
+<br/>
+3.如果本地队列中没有可运行的 G 了，M 就会从全局队列拿一批 G 放到本地的 P 队列
+<br/>
+4.如果全局队列也没有可以运行的 G 的时候，M 会随机的从其他的 P 的本地队列偷一半 G 任务放到自己（P）的本地队列中。
+<br/>
+5.拿到可以运行的 G 之后，M 运行 G, G 执行完成之后，M 会运行下一个 G，一直重复执行下去。
+
+<h3>
+    跟踪 Go 调度器工作流程
+</h3>
+
+Go 提供了 GODEBUG 工具可以跟踪调度器调度过程上述模型实时状态
+<br/>
+我们使用下面的程序示例来追踪一下 Go 调度器是如何调度执行程序中的 Goruntine 的
+  </p>
+
+  <blockquote>
+
+package main
+<br/>
+import (<br/>
+	"sync"<br/>
+	"time"<br/>
+)<br/>
+
+func main() {<br/>
+	var wg sync.WaitGroup<br/>
+	wg.Add(10)<br/>
+	for i := 0; i < 10; i++ {<br/>
+		go work(&wg)<br/>
+	}<br/>
+
+	wg.Wait()<br/>
+
+	// Wait to see the global run queue deplete.<br/>
+	time.Sleep(3 * time.Second)<br/>
+}<br/>
+
+func work(wg *sync.WaitGroup) {<br/>
+	time.Sleep(time.Second)<br/>
+
+	var counter int<br/>
+	for i := 0; i < 1e10; i++ {<br/>
+		counter++<br/>
+	}<br/>
+
+	wg.Done()<br/>
+}
+
+  </blockquote>
+
+  代码中创建了十个 Goruntine, 每个 Goruntine 都在做循环加 counter 值的操作。<br/>
+
+我们编译上述例子<br/>
+
+<blockquote>
+    go build go_demo.go
+</blockquote>
+
+然后使用 GODEBUG 工具来分析观察这些 Goruntine 的调度情况<br/>
+
+执行命令：
+
+<blockquote>
+    GOMAXPROCS=2 GODEBUG=schedtrace=1000 ./go_demo
+</blockquote>
+
+可以得到看到如下的输出，当然机器不一样可能输出会不一样, 以下是在我的笔记本上输出的， 我的本子有四个核心，下面的指令我指定了创建两个逻辑处理核心
+
+
+<blockquote>
+
+colin@book % GOMAXPROCS=2 GODEBUG=schedtrace=1000 ./go_demo<br/>
+SCHED 0ms: gomaxprocs=2 idleprocs=1 threads=4 spinningthreads=0 idlethreads=1 runqueue=0 [0 0]<br/>
+SCHED 1009ms: gomaxprocs=2 idleprocs=0 threads=4 spinningthreads=0 idlethreads=1 runqueue=0 [8 0]<br/>
+SCHED 2009ms: gomaxprocs=2 idleprocs=0 threads=4 spinningthreads=0 idlethreads=1 runqueue=2 [3 3]<br/>
+SCHED 3016ms: gomaxprocs=2 idleprocs=0 threads=4 spinningthreads=0 idlethreads=1 runqueue=2 [3 3]<br/>
+SCHED 4017ms: gomaxprocs=2 idleprocs=0 threads=4 spinningthreads=0 idlethreads=1 runqueue=7 [0 1]<br/>
+SCHED 5027ms: gomaxprocs=2 idleprocs=0 threads=4 spinningthreads=0 idlethreads=1 runqueue=5 [0 3]<br/>
+SCHED 6031ms: gomaxprocs=2 idleprocs=0 threads=4 spinningthreads=0 idlethreads=1 runqueue=3 [2 3]<br/>
+SCHED 7037ms: gomaxprocs=2 idleprocs=0 threads=4 spinningthreads=0 idlethreads=1 runqueue=5 [1 2]<br/>
+SCHED 8045ms: gomaxprocs=2 idleprocs=0 threads=4 spinningthreads=0 idlethreads=1 runqueue=4 [2 2]<br/>
+SCHED 9052ms: gomaxprocs=2 idleprocs=0 threads=4 spinningthreads=0 idlethreads=1 runqueue=8 [0 0]<br/>
+SCHED 10065ms: gomaxprocs=2 idleprocs=0 threads=4 spinningthreads=0 idlethreads=1 runqueue=4 [0 4]<br/>
+SCHED 11069ms: gomaxprocs=2 idleprocs=0 threads=4 spinningthreads=0 idlethreads=1 runqueue=4 [1 3]<br/>
+</blockquote>
+
+
+输出信息的含义如下<br/>
+
+我们选取第二条分析<br/>
+
+1009ms: 这个是从程序启动到这个 trace 采集度过的时间<br/>
+
+gomaxprocs=2：配置的逻辑处理核心，我们启动命令中写的<br/>
+
+idleprocs=0：空闲逻辑核心的数量<br/>
+
+threads=4：运行时正在管理的线程数量<br/>
+
+idlethreads=1：空闲线程的数量，这里有1个空闲，3个正在运行中<br/>
+
+runqueue=0：全局运行队列中 Goruntine 的数量<br/>
+
+[8 0]：表示逻辑核心上本地队列中排队中 Goruntine 的数量，我们看到有一个核心上面有 8 个 Goruntine，另一个有 0 个，当然我们看后面的 trace 后续这两个核心的本地队列上都有任务了<br/>
+
+<h3>
+    了解更多调度器原理
+</h3>
+
+
+Go 语言是开源的，你可以在这个文件里面找到调度器的主要逻辑，<a href="https://github.com/golang/go/blob/master/src/runtime/proc.go">https://github.com/golang/go/blob/master/src/runtime/proc.go</a> ，目前最新的代码有 6千多行了，值得去读一读，弄懂个大概也是很有收获的。
+
+<h3>
+    内存管理
+</h3>
+
+<h4>
+    内存管理架构概览
+</h4>
+
+Go 最早的内存分配发源自 tcmalloc，它比普通的 malloc 性能要好，随着 Go 语言的不断演进，当前的内存管理性能已经非常好了。
+
+<br/>
+
+我们首先通过图 e 来看 Go 内存管理架构的概览
+
+<div style="text-align: center; width: 100%; border: black solid 1px;">
+    <img src="resources/go_mem_arch.png" width="80%" style="display: inline-block;"/>
+  </div>
+
+
+  图中涉及到的主要结构如下：
+  <br/>
+resident set (常驻集)<br/>
+虚拟内存划分为每个 8kb 的页面，由一个全局的 mheap 对象管理<br/>
+
+mheap<br/>
+这里管理了 Go 语言动态存储的数据结构（即编译时无法计算大小的任何数据），这是最大的内存块，也是 Go 垃圾收集发生的地方。
+<br/>
+mheap 里面有管理了不同结构的页面，主要结构如下
+<br/>
+mspan<br/>
+mspan 是 mheap 中管理内存页的最基本结构，它底层结构是一个双向链表，span size class，以及 span 中的页面数量。和 tcmalloc 的操作一样，Go 将内存页面按大小划分为 67 个不同类的块，8b ~ 32kb 不等，如图所示
+
+<br/>
+
+<div style="text-align: center; width: 100%; border: black solid 1px;">
+    <img src="resources/mspan_arch.png" width="80%" style="display: inline-block;"/>
+  </div>
+  mcentral<br/>
+  mcentral 将相同大小 span 类组成分组，每个 mcentral 中包含两个 mspan：<br/>
+  
+  empty: 一个双向的 span 链表,其中没有空闲的对象或者 span 缓存在 mcache 中<br/>
+  
+  non-empty: 有空闲对象的双链接列表，当 mcentral 请求新的 span 的时候，会从 non-empty 移动到 empty list<br/>
+  
+  当 mcentral 没哟任何空闲的 span 是，它会向 mheap 请求一个新的运行页面<br/>
+  
+  arena<br/>
+  堆内存在分配的虚拟内存中根据需要进行扩大和收缩，当需要更多的内存时，mheap 从虚拟内存中拉大小为 64MB 的内存块出来，这个被叫做 arean。
+  <br/>
+  mcache<br/>
+  mcache 是提供给 P（逻辑处理核心）的内存缓存，用来存储小对象（也就是大小 <= 32kb）。这有点类似于线程栈，但是它其实是堆的一部分，用于动态数据。mcache 中包含了 scan 和 noscan 类型所有大小的 mspan 对象
+  <br/>
+  Goroutine 们可以从 mcache中获取内存，不需要加人任何锁，因为 P 在同一时刻只能调度一个 G, 因此这是很高效的， mcache 在需要的时候会向 mcentral 中获取新的 span
+  <br/>
+  Stack<br/>
+这里是管理堆栈的内存区域，每个 Goroutine 都有一个堆栈，这里用来存储静态数据，包括函数框架，静态的结构，原语值和指向动态数据机构的指针。
+<br/>
+内存分配流程概要<br/>
+分配器会按对象大小分配<br/>
+
+Tiny<br/>
+
+对于 Tiny (超小, size < 16 B) 对象:<br/>
+
+直接使用 mcache 的 tiny 分配器分配大小小于 16 字节的对象，这是非常高效的。<br/>
+
+Small<br/>
+
+对于 Small (小型，size 16B ~ 32KB) 对象：<br/>
+
+大小在 16 字节到 32 k字节的对象分配时，在运行中 G 的 P 上的 mcache 里面获取。<br/>
+
+在 Tiny 和 Small 分配中，如果 mspan 列表为空，没有页面用来分配了，分配器将从 mheap 获取一系列页面用于 mspan。<br/>
+
+Large<br/>
+
+对于 Large (大型，size > 32KB) 对象, 直接分配在 mheap 相应大小的类上。如果 mheap 为空或者没有足够大的页面来分配了，那么它会从操作系统的进程虚拟内存分配一组新的页面过来（至少 1MB）。<br/>
+
+      <h3>捐赠
+      </h3>
+
+      <p>
+        整理这本书耗费了我们大量的时间和精力。如果你觉得有帮助，一瓶矿泉水的价格支持我们继续输出优质的分布式存储知识体系，2.99¥，感谢大家的支持。
+      </p>
+
+      <div style="text-align: center; width: 100%; border: black solid 1px;">
+        <img src="./resources/alipay.jpeg" width="200px" style="display: inline-block;"/>
+      </div>
+
+      <h3 id="license">开源协议<a class="anchor" href="#tags">#</a></h3>
+      <p>「赫蹏」遵循MIT协议开源。</p>
+
+      <!-- <footer class="heti-fn">
+        <ol>
+          <li id="fn-01">
+            <a href="#ref-01" title="移至">^</a>
+            CSS Reset：指代类似Eric Meyer's Reset CSS的样式重置方案
+          </li>
+          <li id="fn-02">
+            <a href="#ref-02" title="移至">^</a>
+            《中文排版需求》：https://w3c.github.io/clreq/
+          </li>
+          <li id="fn-03">
+            <a href="#ref-03" title="移至">^</a>
+            在当下前端技术尚不能完美解决中西文混排间距的情况下，常见的输入习惯是手动在中西文间加入空格（https://github.com/vinta/pangu.js）。这样做的弊端一是间距不可控（有时显得过大），二是通过空格符来排版只能算无奈之举。好消息是在最新的macOS、iOS中，使用原生语言开发的文本区域会自动处理中西文混排的间距（无论是否加空格），期待不用手敲空格的日子早日到来。
+          </li>
+        </ol>
+      </footer> -->
+      <script src="https://giscus.app/client.js"
+      data-repo="eraft-io/eraft-io.github.io"
+      data-repo-id="MDEwOlJlcG9zaXRvcnkzOTYyMDM3NjU="
+      data-category="General"
+      data-category-id="DIC_kwDOF52W9c4CRblA"
+      data-mapping="pathname"
+      data-strict="0"
+      data-reactions-enabled="1"
+      data-emit-metadata="0"
+      data-input-position="bottom"
+      data-theme="preferred_color_scheme"
+      data-lang="zh-CN"
+      crossorigin="anonymous"
+      async>
+  </script>
+
+    </article>
+  </main>
+
+
+
+
+  <aside class="panel">
+    <ul class="panel-list panel-list--gray">
+      <li><input type="radio" class="J_fontStack" value="heti--classic" name="font" id="font-classic" checked><label for="font-classic">传统</label></li>
+      <li><input type="radio" class="J_fontStack" value="heti--sans" name="font" id="font-sans"><label for="font-sans">黑体</label></li>
+      <li><input type="radio" class="J_fontStack" value="heti--serif" name="font" id="font-serif"><label for="font-serif">宋体</label></li>
+    </ul>
+    <ul class="panel-list panel-list--gray">
+      <li><input type="radio" class="J_radioGrid" value="" name="grid" id="grid-disable" checked><label for="grid-disable">网格：关</label></li>
+      <li><input type="radio" class="J_radioGrid" value="grid-24" name="grid" id="grid-24"><label for="grid-24">大</label></li>
+      <li><input type="radio" class="J_radioGrid" value="grid-12" name="grid" id="grid-12"><label for="grid-12">小</label></li>
+    </ul>
+    <ul class="panel-list panel-list--gray panel-list--icon">
+      <li><input type="radio" class="J_darkMode" value="auto" name="darkmode" id="darkmode-auto" checked><label for="darkmode-auto">🌗</label></li>
+      <li><input type="radio" class="J_darkMode" value="light" name="darkmode" id="darkmode-light"><label for="darkmode-light">🌞</label></li>
+      <li><input type="radio" class="J_darkMode" value="dark" name="darkmode" id="darkmode-dark"><label for="darkmode-dark">🌙</label></li>
+    </ul>
+  </aside>
+
+  <script src="./heti-addon.js"></script>
+  <script>
+    const $$root = document.getElementsByTagName('html')[0]
+    const $$main = document.getElementsByTagName('main')[0]
+    const $$article = document.getElementsByTagName('article')[0]
+
+    function addEventListeners(nodeList, event, fn) {
+      [].forEach.call(nodeList, function(elm) {
+        elm.addEventListener(event, fn, false)
+      }, false)
+    }
+
+    addEventListeners(document.getElementsByClassName('J_darkMode'), 'change', function (e) {
+      $$root.setAttribute('data-darkmode', e.target.value)
+    })
+
+    addEventListeners(document.getElementsByClassName('J_radioGrid'), 'change', function (e) {
+      $$main.setAttribute('data-bg-grid', e.target.value)
+    })
+
+    addEventListeners(document.getElementsByClassName('J_fontStack'), 'change', function (e) {
+      $$article.className = ['article', 'heti', e.target.value].join(' ')
+    })
+
+    const heti = new Heti('.article')
+    heti.autoSpacing()
+  </script>
+</body>
+</html>
