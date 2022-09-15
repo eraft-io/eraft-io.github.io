@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="zh-Hans" data-darkmode="auto">
+<head>
+  <meta charset="UTF-8">
+  <title>eraft开发组 - 解读国外优质计算机课程</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="./heti.css">
+  <link rel="stylesheet" href="./index.css">
+  <link rel="icon" href="./favicon.svg">
+</head>
+<body>
+  <main class="container">
+    <article class="article heti heti--classic">
+      <h1 class="article__title">eraft开发组</h1>
+      <blockquote>
+
+        我们团队致力于解读国外优秀的分布式存储相关开源课程，下面是课程体系图
+        我们始终坚信优秀的本科教学不应该是照本宣科以及应付考试，一门优秀的课程，应该具备让学生学会思考、动手实践、找到问题、反复试错、并解决问题的能力，同时应该尽量用最直白，最简单的语言传达关键的知识点。作为计算机工业界的工作者，我相信做课程和做技术一样，并不是越复杂越好，应该尽量的让设计出来的东西简单化。
+        关注我们的最新动态，欢迎关注
+         
+        <a href="https://www.zhihu.com/people/liu-jie-84-52" target="_blank">https://www.zhihu.com/people/liu-jie-84-52</a>
+        接下来我们进入正题，如何实现一个分布式系统。
+
+      </blockquote>
+
+      <div style="text-align: center; width: 100%; border: black solid 1px;">
+        <img src="./resources/arch.png" width="40%" style="display: inline-block; margin-bottom: 5%;"/>
+      </div>
+
+        <details open>
+          <summary></summary>
+          <ol>
+            <li>
+              <a href="#intro">MIT6.824 分布式系统系列</a>
+              <ul>
+                <li><a href="./index.html">（一）体验分布式KV存储系统eraftkv </a></li>
+                <li><a href="./ebook-ch2.html">（二）Go 语言基础知识</a></li>
+                <li><a href="./ebook-ch3.html">（三）Raft 论文解读 </a></li>
+                <li><a href="./ebook-ch4.html">（四）构建 Raft 库                </a></li>
+                <li><a href="./ebook-ch5.html">（五）基于 Raft 库，实现简单的分布式 KV 系   </a></li>
+                <li><a href="./ebook-ch6.html">（六）Multi-Raft 设计与实现   </a></li>
+                <li><a href="./ebook-ch7.html">（七）分布式事务初探   </a></li>
+              </ul>
+            </li>
+          </ol>
+        </details>
+
+      <h2 id="intro"> MIT 分布式系统（五）基于 Raft 库，实现简单的分布式 KV 系统 <a class="anchor" href="#intro">#</a></h2>
+
+      <h3>
+        系统架构概览
+      </h3>
+
+      <p>
+        上一章中，我们已经介绍了我们构建好的 Raft 库，它在 eraft/raftcore 目录下。现在我们要使用这个库来构建一个高可用的分布式 KV 存储系统。
+      </p>
+
+      <div style="text-align: center; width: 100%; border: black solid 1px;">
+        <img src="./resources/raft_overview.png" width="80%" style="display: inline-block; margin-bottom: 5%;"/>
+      </div>
+
+     <p>
+        让我们回到上图，这个图在我们一开始介绍 Raft 的时候讲到过，我们这一章就要实现这样一个系统。
+     </p>
+
+     <h3>
+        对外接口定义
+     </h3>
+
+     <p>
+        第一步我们来定义系统与客户端的交互接口，客户端可以发送 Put 和 Get 操作将 KV 数据写到系统中。我们需要定义这两个操作的 RPC。我们将它们合并到一个 RPC 请求里面，定义如下：
+     </p>
+
+     <blockquote>
+        // <br/>
+// client op type <br/>
+//<br/>
+enum OpType {<br/>
+    OpPut = 0;<br/>
+    OpAppend = 1;<br/>
+    OpGet = 2;<br/>
+}<br/>
+<br/>
+//<br/>
+// client command request<br/>
+//<br/>
+message CommandRequest {<br/>
+    string key = 1;<br/>
+    string value = 2;<br/>
+    OpType op_type = 3;<br/>
+    int64  client_id = 4;<br/>
+    int64  command_id = 5;<br/>
+    bytes  context = 6;<br/>
+}<br/>
+<br/>
+//<br/>
+// client command response<br/>
+//<br/>
+message CommandResponse {<br/>
+    string value = 1;<br/>
+    int64  leader_id = 2;<br/>
+    int64  err_code = 3;<br/>
+}<br/>
+
+rpc DoCommand (CommandRequest) returns (CommandResponse) {}<br/>
+     </blockquote>
+
+     <p>
+        其中 OpType 定义了我们支持的操作类型：put,Append,get。 客户端请求的内容定义在了 CommandRequest 中。CommandRequest 中有我们的 key, value 以及操作类型，还有客户端 id 以及命令 id, 还有一个字节类型的 context （context 可以存放一些我们需要附加的不确定的内容）。
+     </p>
+
+     <p>
+        响应 CommandResponse 包括了返回值 value ，leader_id 字段（告诉我们当前 Leader 是哪个节点的。因为最开始客户端发送请求时，不知道那个节点被选成 Leader 。我们通过一次试探请求拿到 Leader 节点的 id, 然后再次发送请求给 Leader 节点。），以及错误码 err_code（记录可能出现的错误）。
+     </p>
+
+     <p>
+        客户端通过 DoCommand RPC 请求到我们的分布式 KV 系统。那我们的系统是怎么处理请求的呢？首先，我们来看看服务端的结构的定义。 mu 是一把读写锁，用来对可能出现并发冲突的操作加锁。dead 表示当前服务节点的状态，是不是存活。Rf 比较重要，这个是只想我们之前构建的 Raft 结构的指针。applyCh 是一个通道，用来从我们的算法库中返回已经 apply 的日志。我们的 server 拿到这个日之后需要 apply 到实际的状态机中。stm 就是我们的状态机了，我们一会儿介绍。notifyChans 是一个存储客户端响应的 map，其中值是一个通道。KvServer 在应用日志到状态机操作完之后，会给客户端发送响应到这个通道中。stopApplyCh 用来停止我们的 Apply 操作。 
+     </p>
+
+     <h3>
+        服务端核心实现分析
+     </h3>
+
+     <blockquote>
+        type KvServer struct {<br/>
+            <br/>
+            mu      sync.RWMutex<br/>
+            dead    int32<br/>
+            Rf      *raftcore.Raft<br/>
+            applyCh chan *pb.ApplyMsg<br/>
+        
+            lastApplied int<br/>
+        
+            stm         StateMachine<br/>
+            notifyChans map[int]chan *pb.CommandResponse<br/>
+            stopApplyCh chan interface{}<br/>
+            <br/>
+            pb.UnimplementedRaftServiceServer<br/>
+        }<br/>
+     </blockquote>
+
+     <p>有了这个结构之后，我们要如何应用 Raft 算法库实现图中高可用的 kv 分布式系统呢？
+    </p>
+
+    <p>
+
+        1.首先我们要构造到每个 server 的 rpc 客户端；
+        <br/>
+2.然后，构造 applyCh 通道，以及构造日志存储结构；
+<br/>
+3.之后，调用 MakeRaft 构造我们的 Raft 算法库核心结构；
+<br/>
+4.最后，启动 Apply Goruntine，从通道中监听在经过 Raft 算法库之后返回的消息。
+<br/>
+    </p>
+
+    <blockquote>
+        func MakeKvServer(nodeId int) *KvServer {<br/>
+            clientEnds := []*raftcore.RaftClientEnd{}<br/>
+            for id, addr := range PeersMap {<br/>
+                newEnd := raftcore.MakeRaftClientEnd(addr, uint64(id))<br/>
+                clientEnds = append(clientEnds, newEnd)<br/>
+            }<br/>
+            newApplyCh := make(chan *pb.ApplyMsg)<br/>
+            <br/>
+            logDbEng, err := storage_eng.MakeLevelDBKvStore("./data/kv_server" + "/node_" + strconv.Itoa(nodeId))<br/>
+            if err != nil {<br/>
+                raftcore.PrintDebugLog("boot storage engine err!")<br/>
+                panic(err)<br/>
+            }<br/>
+            <br/>
+            // 构造 Raft 结构，传入 clientEnds，当前节点 id, 日志存储的 db, apply 通道，心跳超时时间，和选举超时时间<br/>
+            // 由于是测试，为了方便观察选举的日志，我们设置的时间是 1s 和 3s, 你可以设置的更短<br/>
+            newRf := raftcore.MakeRaft(clientEnds, nodeId, logDbEng, newApplyCh, 1000, 3000)<br/>
+            kvSvr := &KvServer{Rf: newRf, applyCh: newApplyCh, dead: 0, lastApplied: 0, stm: NewMemKV(), notifyChans: make(map[int]chan *pb.CommandResponse)}<br/>
+            kvSvr.stopApplyCh = make(chan interface{})<br/>
+            <br/>
+            // 启动 apply Goruntine
+            go kvSvr.ApplingToStm(kvSvr.stopApplyCh)<br/>
+            <br/>
+            return kvSvr
+            <br/>
+        }
+        <br/>
+    </blockquote>
+
+    <p>
+        客户端命令到来之后，最开始调用的是 DoCommand 函数，我们来看看这个函数做了哪些工作：
+    </p>
+
+    <p>
+        首先，Docommand 函数调用 Marshal 序列化了我们的 CommandResponse 到 reqBytes 的字节数组中，然后调用 Raft 库的 Propose 接口，把提案提交到我们的算法库中。Raft 算法中只有 Leader 可以处理提案。如果节点不是 Leader 我们会直接返回给客户端 ErrCodeWrongLeader 的错误码。之后就是从 getNotifyChan 拿到当前日志 id 对应的 apply 通知通道。只有这条日志通知到了，下面 select 才会继续往下走，拿到值放到 cmdResp.Value 中，当然如果操作超过了 ErrCodeExecTimeout 时间也会生成错误码，响应客户端执行超超时。
+    </p>
+
+    <blockquote>
+        func (s *KvServer) DoCommand(ctx context.Context, req *pb.CommandRequest) (*pb.CommandResponse, error) {<br/>
+            raftcore.PrintDebugLog(fmt.Sprintf("do cmd %s", req.String()))<br/>
+            <br/>
+            cmdResp := &pb.CommandResponse{}<br/>
+            <br/>
+            if req != nil {<br/>
+                reqBytes, err := json.Marshal(req)<br/>
+                if err != nil {<br/>
+                    return nil, err<br/>
+                }<br/>
+                idx, _, isLeader := s.Rf.Propose(reqBytes)<br/>
+                if !isLeader {<br/>
+                    cmdResp.ErrCode = common.ErrCodeWrongLeader<br/>
+                    return cmdResp, nil<br/>
+                }<br/><br/>
+        
+                s.mu.Lock()<br/>
+                ch := s.getNotifyChan(idx)<br/>
+                s.mu.Unlock()<br/>
+                <br/>
+                select {<br/>
+                case res := <-ch:<br/>
+                    cmdResp.Value = res.Value<br/>
+                case <-time.After(ExecCmdTimeout):<br/>
+                    cmdResp.ErrCode = common.ErrCodeExecTimeout<br/>
+                    cmdResp.Value = "exec cmd timeout"<br/>
+                }<br/>
+                <br/>
+                go func() {<br/>
+                    s.mu.Lock()<br/>
+                    delete(s.notifyChans, idx)<br/>
+                    s.mu.Unlock()<br/>
+                }()<br/>
+                <br/>
+            }
+            <br/>
+            return cmdResp, nil<br/>
+        }<br/>
+    </blockquote>
+
+    <p>
+        最后我们来看看 Apply Goruntine 干的事情：
+    </p>
+
+    <p>
+        它等待 s.applyCh 通道中 apply 消息的到来。这个 applyCh 我们在 Raft 库中提到过，它用来通知应用层日志已经提交，应用层可以把日志应用到状态机了。当 applyCh 中 appliedMsg 到来之后，我们更新了 KvServer 的 lastApplied 号，然后根据客户端的操作类型对我们的状态机做不同的操作，做完之后把响应放到 notifyChan 中，也就是 DoCommand 等待的那个通道，至此整个请求处理的流程已经结束。
+    </p>
+
+    <blockquote>
+        <br/>
+        func (s *KvServer) ApplingToStm(done <-chan interface{}) {<br/>
+            for !s.IsKilled() {<br/>
+                select {<br/>
+                case <-done:<br/>
+                    return<br/>
+                case appliedMsg := <-s.applyCh:<br/>
+                    req := &pb.CommandRequest{}<br/>
+                    if err := json.Unmarshal(appliedMsg.Command, req); err != nil {<br/>
+                        raftcore.PrintDebugLog("Unmarshal CommandRequest err")<br/>
+                        continue<br/>
+                    }<br/>
+                    s.lastApplied = int(appliedMsg.CommandIndex)<br/>
+                    <br/>
+                    var value string<br/>
+                    switch req.OpType {<br/>
+                    case pb.OpType_OpPut:<br/>
+                        s.stm.Put(req.Key, req.Value)<br/>
+                    case pb.OpType_OpAppend:<br/>
+                        s.stm.Append(req.Key, req.Value)<br/>
+                    case pb.OpType_OpGet:<br/>
+                        value, _ = s.stm.Get(req.Key)<br/>
+                    }<br/>
+                    <br/>
+                    cmdResp := &pb.CommandResponse{}<br/>
+                    cmdResp.Value = value<br/>
+                    ch := s.getNotifyChan(int(appliedMsg.CommandIndex))<br/>
+                    ch <- cmdResp<br/>
+                }<br/>
+            }<br/>
+        }<br/>
+    </blockquote>
+
+    <h3>
+        客户端实现介绍
+    </h3>
+
+    <p>
+        客户端实现就比较简单了，主要是构造 Get 和 Put 的 CommandRequest 调用 DoCommand 发送到服务端，逻辑实现在 cmd/kvcli/kvcli.go 里面。
+    </p>
+
+    <p>
+        我们总结一下：
+    </p>
+
+    <p>
+        客户端请求到来之后， KvServer 首先会调用 Propose 提交日志到 Raft 中算法库。Raft 算法库经过共识之后提交这条日志，并通知 applyCh，KvServer 会在 Apply Goruntine 中将 applyCh 的消息解码，然后将操作应用到自己的状态机中，最后把结果写到通知客户端的 notifyChan 中，在DoCommand 中响应结果给客户端。
+    </p>
+
+      <h3>捐赠
+      </h3>
+
+      <p>
+        整理这本书耗费了我们大量的时间和精力。如果你觉得有帮助，一瓶矿泉水的价格支持我们继续输出优质的分布式存储知识体系，2.99¥，感谢大家的支持。
+      </p>
+
+      <div style="text-align: center; width: 100%; border: black solid 1px;">
+        <img src="./resources/alipay.jpeg" width="200px" style="display: inline-block;"/>
+      </div>
+
+      <h3 id="license">开源协议<a class="anchor" href="#tags">#</a></h3>
+      <p>「赫蹏」遵循MIT协议开源。</p>
+
+      <!-- <footer class="heti-fn">
+        <ol>
+          <li id="fn-01">
+            <a href="#ref-01" title="移至">^</a>
+            CSS Reset：指代类似Eric Meyer's Reset CSS的样式重置方案
+          </li>
+          <li id="fn-02">
+            <a href="#ref-02" title="移至">^</a>
+            《中文排版需求》：https://w3c.github.io/clreq/
+          </li>
+          <li id="fn-03">
+            <a href="#ref-03" title="移至">^</a>
+            在当下前端技术尚不能完美解决中西文混排间距的情况下，常见的输入习惯是手动在中西文间加入空格（https://github.com/vinta/pangu.js）。这样做的弊端一是间距不可控（有时显得过大），二是通过空格符来排版只能算无奈之举。好消息是在最新的macOS、iOS中，使用原生语言开发的文本区域会自动处理中西文混排的间距（无论是否加空格），期待不用手敲空格的日子早日到来。
+          </li>
+        </ol>
+      </footer> -->
+      <script src="https://giscus.app/client.js"
+      data-repo="eraft-io/eraft-io.github.io"
+      data-repo-id="MDEwOlJlcG9zaXRvcnkzOTYyMDM3NjU="
+      data-category="General"
+      data-category-id="DIC_kwDOF52W9c4CRblA"
+      data-mapping="pathname"
+      data-strict="0"
+      data-reactions-enabled="1"
+      data-emit-metadata="0"
+      data-input-position="bottom"
+      data-theme="preferred_color_scheme"
+      data-lang="zh-CN"
+      crossorigin="anonymous"
+      async>
+  </script>
+
+    </article>
+  </main>
+
+
+
+
+  <aside class="panel">
+    <ul class="panel-list panel-list--gray">
+      <li><input type="radio" class="J_fontStack" value="heti--classic" name="font" id="font-classic" checked><label for="font-classic">传统</label></li>
+      <li><input type="radio" class="J_fontStack" value="heti--sans" name="font" id="font-sans"><label for="font-sans">黑体</label></li>
+      <li><input type="radio" class="J_fontStack" value="heti--serif" name="font" id="font-serif"><label for="font-serif">宋体</label></li>
+    </ul>
+    <ul class="panel-list panel-list--gray">
+      <li><input type="radio" class="J_radioGrid" value="" name="grid" id="grid-disable" checked><label for="grid-disable">网格：关</label></li>
+      <li><input type="radio" class="J_radioGrid" value="grid-24" name="grid" id="grid-24"><label for="grid-24">大</label></li>
+      <li><input type="radio" class="J_radioGrid" value="grid-12" name="grid" id="grid-12"><label for="grid-12">小</label></li>
+    </ul>
+    <ul class="panel-list panel-list--gray panel-list--icon">
+      <li><input type="radio" class="J_darkMode" value="auto" name="darkmode" id="darkmode-auto" checked><label for="darkmode-auto">🌗</label></li>
+      <li><input type="radio" class="J_darkMode" value="light" name="darkmode" id="darkmode-light"><label for="darkmode-light">🌞</label></li>
+      <li><input type="radio" class="J_darkMode" value="dark" name="darkmode" id="darkmode-dark"><label for="darkmode-dark">🌙</label></li>
+    </ul>
+  </aside>
+
+  <script src="./heti-addon.js"></script>
+  <script>
+    const $$root = document.getElementsByTagName('html')[0]
+    const $$main = document.getElementsByTagName('main')[0]
+    const $$article = document.getElementsByTagName('article')[0]
+
+    function addEventListeners(nodeList, event, fn) {
+      [].forEach.call(nodeList, function(elm) {
+        elm.addEventListener(event, fn, false)
+      }, false)
+    }
+
+    addEventListeners(document.getElementsByClassName('J_darkMode'), 'change', function (e) {
+      $$root.setAttribute('data-darkmode', e.target.value)
+    })
+
+    addEventListeners(document.getElementsByClassName('J_radioGrid'), 'change', function (e) {
+      $$main.setAttribute('data-bg-grid', e.target.value)
+    })
+
+    addEventListeners(document.getElementsByClassName('J_fontStack'), 'change', function (e) {
+      $$article.className = ['article', 'heti', e.target.value].join(' ')
+    })
+
+    const heti = new Heti('.article')
+    heti.autoSpacing()
+  </script>
+</body>
+</html>
