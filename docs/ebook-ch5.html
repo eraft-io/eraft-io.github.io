@@ -11,8 +11,8 @@
 <body>
   <main class="container">
     <article class="article heti heti--classic">
-      <h1 class="article__title">eraft开发组</h1>
-      <blockquote>
+        <h1 class="article__title">eraft 精解课程</h1>
+        <blockquote>
 
         我们团队致力于解读国外优秀的分布式存储相关开源课程，下面是课程体系图
         我们始终坚信优秀的本科教学不应该是照本宣科以及应付考试，一门优秀的课程，应该具备让学生学会思考、动手实践、找到问题、反复试错、并解决问题的能力，同时应该尽量用最直白，最简单的语言传达关键的知识点。作为计算机工业界的工作者，我相信做课程和做技术一样，并不是越复杂越好，应该尽量的让设计出来的东西简单化。
@@ -72,6 +72,7 @@
      </p>
 
      <blockquote>
+        <pre>
         // <br/>
 // client op type <br/>
 //<br/>
@@ -103,6 +104,7 @@ message CommandResponse {<br/>
 }<br/>
 
 rpc DoCommand (CommandRequest) returns (CommandResponse) {}<br/>
+</pre>
      </blockquote>
 
      <p>
@@ -122,6 +124,7 @@ rpc DoCommand (CommandRequest) returns (CommandResponse) {}<br/>
      </h3>
 
      <blockquote>
+        <pre>
         type KvServer struct {<br/>
             <br/>
             mu      sync.RWMutex<br/>
@@ -137,6 +140,7 @@ rpc DoCommand (CommandRequest) returns (CommandResponse) {}<br/>
             <br/>
             pb.UnimplementedRaftServiceServer<br/>
         }<br/>
+    </pre>
      </blockquote>
 
      <p>有了这个结构之后，我们要如何应用 Raft 算法库实现图中高可用的 kv 分布式系统呢？
@@ -155,6 +159,7 @@ rpc DoCommand (CommandRequest) returns (CommandResponse) {}<br/>
     </p>
 
     <blockquote>
+        <pre>
         func MakeKvServer(nodeId int) *KvServer {<br/>
             clientEnds := []*raftcore.RaftClientEnd{}<br/>
             for id, addr := range PeersMap {<br/>
@@ -182,6 +187,7 @@ rpc DoCommand (CommandRequest) returns (CommandResponse) {}<br/>
             <br/>
         }
         <br/>
+    </pre>
     </blockquote>
 
     <p>
@@ -193,6 +199,7 @@ rpc DoCommand (CommandRequest) returns (CommandResponse) {}<br/>
     </p>
 
     <blockquote>
+        <pre>
         func (s *KvServer) DoCommand(ctx context.Context, req *pb.CommandRequest) (*pb.CommandResponse, error) {<br/>
             raftcore.PrintDebugLog(fmt.Sprintf("do cmd %s", req.String()))<br/>
             <br/>
@@ -231,6 +238,7 @@ rpc DoCommand (CommandRequest) returns (CommandResponse) {}<br/>
             <br/>
             return cmdResp, nil<br/>
         }<br/>
+    </pre>
     </blockquote>
 
     <p>
@@ -243,6 +251,7 @@ rpc DoCommand (CommandRequest) returns (CommandResponse) {}<br/>
 
     <blockquote>
         <br/>
+        <pre>
         func (s *KvServer) ApplingToStm(done <-chan interface{}) {<br/>
             for !s.IsKilled() {<br/>
                 select {<br/>
@@ -273,6 +282,7 @@ rpc DoCommand (CommandRequest) returns (CommandResponse) {}<br/>
                 }<br/>
             }<br/>
         }<br/>
+    </pre>
     </blockquote>
 
     <h3>

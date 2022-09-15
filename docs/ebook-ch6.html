@@ -11,8 +11,8 @@
 <body>
   <main class="container">
     <article class="article heti heti--classic">
-      <h1 class="article__title">eraft开发组</h1>
-      <blockquote>
+        <h1 class="article__title">eraft 精解课程</h1>
+        <blockquote>
 
         我们团队致力于解读国外优秀的分布式存储相关开源课程，下面是课程体系图
         我们始终坚信优秀的本科教学不应该是照本宣科以及应付考试，一门优秀的课程，应该具备让学生学会思考、动手实践、找到问题、反复试错、并解决问题的能力，同时应该尽量用最直白，最简单的语言传达关键的知识点。作为计算机工业界的工作者，我相信做课程和做技术一样，并不是越复杂越好，应该尽量的让设计出来的东西简单化。
@@ -116,12 +116,14 @@
       </p>
 
       <blockquote>
+        <pre>
         type ConfigStm interface { <br/>
             Join(groups map[int][]string) error<br/>
             Leave(gids []int) error<br/>
             Move(bucket_id, gid int) error<br/>
             Query(num int) (Config, error)<br/>
         }<br/>
+    </pre>
       </blockquote>
 
       <p>
@@ -140,6 +142,7 @@
       </p>
 
       <blockquote>
+        <pre>
         // a bucket is a logical partition in a distributed system <br/>
         //  it has a unique id, a pointer to db engine, and status<br/>
         //<br/>
@@ -148,6 +151,7 @@
             KvDB   storage_eng.KvStore<br/>
             Status buketStatus<br/>
         }<br/>
+    </pre>
       </blockquote>
 
       <p>
@@ -155,7 +159,7 @@
       </p>
 
       <blockquote>
-
+<pre>
         // <br/>
         // get encode key data from engine<br/>
         //<br/>
@@ -187,6 +191,7 @@
             return bu.Put(key, oldV+value)<br/>
         }<br/>
         <br/>
+    </pre>
       </blockquote>
 
       <p>
@@ -194,6 +199,7 @@
       </p>
 
       <blockquote>
+        <pre>
         type ShardKV struct {<br/>
             mu      sync.RWMutex<br/>
             dead    int32<br/>
@@ -216,6 +222,7 @@
         
             pb.UnimplementedRaftServiceServer<br/>
         } <br/>
+    </pre>
       </blockquote>
 
       <p>
@@ -227,6 +234,7 @@
       </p>
 
       <blockquote>
+        <pre>
 //<br/>
 // MakeShardKVServer make a new shard kv server<br/>
 // peerMaps: init peer map in the raft group<br/>
@@ -261,6 +269,7 @@ func MakeShardKVServer(peerMaps map[int]string, nodeId int, gid int, configServe
     <br/>
 	return shardKv<br/>
 }<br/>
+</pre>
       </blockquote>
 
       <p>
@@ -276,6 +285,7 @@ func MakeShardKVServer(peerMaps map[int]string, nodeId int, gid int, configServe
       </p>
 
       <blockquote>
+        <pre>
         if _, isLeader := s.rf.GetState(); isLeader {<br/>
             ...<br/>
                 nextConfig := s.cvCli.Query(int64(curConfVersion) + 1)<br/>
@@ -301,6 +311,7 @@ func MakeShardKVServer(peerMaps map[int]string, nodeId int, gid int, configServe
                     ...<br/>
                 }<br/>
             }<br/>
+        </pre>
       </blockquote>
 
       <p>

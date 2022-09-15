@@ -11,8 +11,8 @@
 <body>
   <main class="container">
     <article class="article heti heti--classic">
-      <h1 class="article__title">eraft开发组</h1>
-      <blockquote>
+        <h1 class="article__title">eraft 精解课程</h1>
+        <blockquote>
 
         我们团队致力于解读国外优秀的分布式存储相关开源课程，下面是课程体系图
         我们始终坚信优秀的本科教学不应该是照本宣科以及应付考试，一门优秀的课程，应该具备让学生学会思考、动手实践、找到问题、反复试错、并解决问题的能力，同时应该尽量用最直白，最简单的语言传达关键的知识点。作为计算机工业界的工作者，我相信做课程和做技术一样，并不是越复杂越好，应该尽量的让设计出来的东西简单化。
@@ -96,36 +96,37 @@
         你可以运行下面的示例，理解这个切片操作
 
         <blockquote>
-            package main
-            <br/>
+<pre>
+package main
+<br/>
 
-            import "fmt"
-            <br/>
+import "fmt"
+<br/>
 
-            func main() {
-                <br/>
+func main() {
+    <br/>
 
-                var a = [5]string{"Alpha", "Beta", "Gamma", "Delta", "Epsilon"}
-                <br/>
+    var a = [5]string{"Alpha", "Beta", "Gamma", "Delta", "Epsilon"}
+    <br/>
 
-                // Creating a slice from the array
-                var s []string = a[1:4]
-                <br/>
+    // Creating a slice from the array
+    var s []string = a[1:4]
+    <br/>
 
-                fmt.Println("Array a = ", a)        <br/>
+    fmt.Println("Array a = ", a)        <br/>
 
-                fmt.Println("Slice s = ", s)        <br/>
+    fmt.Println("Slice s = ", s)        <br/>
 
-            }        <br/>
-
-
-            // output        <br/>
+}        <br/>
 
 
-            Array a =  [Alpha Beta Gamma Delta Epsilon]        <br/>
+// output        <br/>
 
-            Slice s =  [Beta Gamma Delta]        <br/>
 
+Array a =  [Alpha Beta Gamma Delta Epsilon]        <br/>
+
+Slice s =  [Beta Gamma Delta]        <br/>
+        </pre>
         </blockquote>
 
       </p>
@@ -135,7 +136,8 @@
       由于切片是引用类型，它指向了底层的数组。所以当我们使用切片引用去修改数组中对应的元素的时候，引用相同数组的其他切片对象也会看到这个修改结果。
 
       <blockquote>
-        package main<br/>
+        <pre>
+package main<br/>
 import "fmt"<br/>
 
 func main() {<br/>
@@ -173,7 +175,7 @@ type: post<br/>
 a  =  [Mon TUE WED THU FRIDAY Sat Sun]<br/>
 slice1 =  [TUE WED THU FRIDAY Sat Sun]<br/>
 slice2 =  [THU FRIDAY Sat Sun]<br/>
-
+</pre>
       </blockquote>
 
       <p>
@@ -214,7 +216,8 @@ slice2 =  [THU FRIDAY Sat Sun]<br/>
   一个切片的长度和容量我们是可以通过 len(), cap() 函数获取的，例如我们可以通过下面的方式获取 s 的长度和容量。
 
   <blockquote>
-    package main<br/>
+    <pre>
+package main<br/>
 import "fmt"<br/>
 
 func main() {<br/>
@@ -226,6 +229,7 @@ func main() {<br/>
 
 // output<br/>
 s = [20 30 40], len = 3, cap = 5
+</pre>
   </blockquote>
 
   <h3>Goruntine</h3>
@@ -233,7 +237,8 @@ s = [20 30 40], len = 3, cap = 5
   <br/>
   我们运行一个简单地示例来看看：
   <blockquote>
-    package main
+    <pre>
+package main
     <br/>
 import (<br/>
 	"fmt"<br/>
@@ -263,7 +268,7 @@ world<br/>
 world<br/>
 hello<br/>
 hello<br/>
-
+</pre>
   </blockquote>
 
   <p>
@@ -281,7 +286,7 @@ hello<br/>
   在解释 Go 语言调度器之前，我们先一个例子：
 
   <blockquote>
-
+<pre>
 func main() {<br/>
     var wg sync.WaitGroup<br/>
     wg.Add(11)<br/>
@@ -310,7 +315,7 @@ loop i is - 5<br/>
 loop i is - 10<br/>
 loop i is - 6<br/>
 Hello, Welcome to Go
-
+</pre>
   </blockquote>
 </p>
 
@@ -384,7 +389,7 @@ Go 提供了 GODEBUG 工具可以跟踪调度器调度过程上述模型实时�
   </p>
 
   <blockquote>
-
+<pre>
 package main
 <br/>
 import (<br/>
@@ -415,7 +420,7 @@ func work(wg *sync.WaitGroup) {<br/>
 
 	wg.Done()<br/>
 }
-
+</pre>
   </blockquote>
 
   代码中创建了十个 Goruntine, 每个 Goruntine 都在做循环加 counter 值的操作。<br/>
@@ -439,6 +444,7 @@ func work(wg *sync.WaitGroup) {<br/>
 
 <blockquote>
 
+    <pre>
 colin@book % GOMAXPROCS=2 GODEBUG=schedtrace=1000 ./go_demo<br/>
 SCHED 0ms: gomaxprocs=2 idleprocs=1 threads=4 spinningthreads=0 idlethreads=1 runqueue=0 [0 0]<br/>
 SCHED 1009ms: gomaxprocs=2 idleprocs=0 threads=4 spinningthreads=0 idlethreads=1 runqueue=0 [8 0]<br/>
@@ -452,6 +458,7 @@ SCHED 8045ms: gomaxprocs=2 idleprocs=0 threads=4 spinningthreads=0 idlethreads=1
 SCHED 9052ms: gomaxprocs=2 idleprocs=0 threads=4 spinningthreads=0 idlethreads=1 runqueue=8 [0 0]<br/>
 SCHED 10065ms: gomaxprocs=2 idleprocs=0 threads=4 spinningthreads=0 idlethreads=1 runqueue=4 [0 4]<br/>
 SCHED 11069ms: gomaxprocs=2 idleprocs=0 threads=4 spinningthreads=0 idlethreads=1 runqueue=4 [1 3]<br/>
+</pre>
 </blockquote>
 
 
