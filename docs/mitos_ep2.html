@@ -27,6 +27,28 @@
         <img src="./resources/arch.png" width="40%" style="display: inline-block;"/>
       </div>
 
+      <details open>
+        <summary></summary>
+        <ol>
+          <li>
+            <ul>
+              <li><a href="./index.html">（一）体验分布式KV存储系统eraftkv </a></li>
+              <li><a href="./ebook-ch2.html">（二）Go 语言基础知识</a></li>
+              <li><a href="./ebook-ch3.html">（三）Raft 论文解读 </a></li>
+              <li><a href="./ebook-ch4.html">（四）构建 Raft 库                </a></li>
+              <li><a href="./ebook-ch5.html">（五）基于 Raft 库，实现简单的分布式 KV 系   </a></li>
+              <li><a href="./ebook-ch6.html">（六）Multi-Raft 设计与实现   </a></li>
+              <li><a href="./ebook-ch7.html">（七）分布式事务初探   </a></li>
+            </ul>
+            <a href="#intro">MIT6.828 操作系统系列</a>
+            <ul>
+              <li><a href="./mitos_ep1.html">（一）操作系统概念介绍 </a></li>
+              <li><a href="./mitos_ep2.html">（二）操作系统的特性和系统调用</a></li>
+            </ul>
+          </li>
+        </ol>
+      </details>
+
       <h2> MIT 操作系统系列-操作系统的特性和系统调用</h2>
 
       <h3>隔离性 (isolation)</h3>
@@ -47,10 +69,59 @@
       <li>
           3.还有个很大的问题就是内存的隔离问题，由于应用程序直接访问物理内存。一个应用可以去修改其他应用或者系统库占用的内存，这会导致出现不可预测的异常，是无法保证安全性的。
       </li>
+
+      解决办法：操作系统提供硬件抽象
+
+      <li>
+        进程（process）抽象 CPU
+      </li>
+
+      <li>
+        exec 通过管理应用程序内存镜像来抽象物理内存
+      </li>
       
+      <li>
+        文件（files）抽象了磁盘，通过文件可以保证不同进程之间、不同用户之间的文件隔离
+      </li>
+
+      <h3>防御性 （Defensive）</h3>
+
+      操作系统要确保它的所有组件都能正常的工作，能随时抵御来自应用程序的攻击，它需要具备一下的防御特性
+
+      <li>
+        1.应用程序的运行不应该使操作系统崩溃
+      </li>
+      <li>
+        2.应用程序不能打破操作系统对它的隔离保证
+      </li>
+      <li>
+        3.在应用和操作系统之前也要能保证强隔离性
+      </li>
+
+      <details open>
+        <summary></summary>
+        <ol>
+          <li>
+            <ul>
+              <li><a href="./index.html">（一）体验分布式KV存储系统eraftkv </a></li>
+              <li><a href="./ebook-ch2.html">（二）Go 语言基础知识</a></li>
+              <li><a href="./ebook-ch3.html">（三）Raft 论文解读 </a></li>
+              <li><a href="./ebook-ch4.html">（四）构建 Raft 库                </a></li>
+              <li><a href="./ebook-ch5.html">（五）基于 Raft 库，实现简单的分布式 KV 系   </a></li>
+              <li><a href="./ebook-ch6.html">（六）Multi-Raft 设计与实现   </a></li>
+              <li><a href="./ebook-ch7.html">（七）分布式事务初探   </a></li>
+            </ul>
+            <a href="#intro">MIT6.828 操作系统系列</a>
+            <ul>
+              <li><a href="./mitos_ep1.html">（一）操作系统概念介绍 </a></li>
+              <li><a href="./mitos_ep2.html">（二）操作系统的特性和系统调用</a></li>
+            </ul>
+          </li>
+        </ol>
+      </details>
+
       <h3>捐赠
       </h3>
-
       <p>
         整理这本书耗费了我们大量的时间和精力。如果你觉得有帮助，一瓶矿泉水的价格支持我们继续输出优质的分布式存储知识体系，2.99¥，感谢大家的支持。
       </p>
