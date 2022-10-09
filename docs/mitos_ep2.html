@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="zh-Hans" data-darkmode="auto">
+<head>
+  <meta charset="UTF-8">
+  <title>eraft开发组 - 解读国外优质计算机课程</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="./heti.css">
+  <link rel="stylesheet" href="./index.css">
+  <link rel="icon" href="./favicon.svg">
+</head>
+<body>
+  <main class="container">
+    <article class="article heti heti--classic">
+        <h1 class="article__title">eraft 精解课程</h1>
+        <blockquote>
+
+        我们团队致力于解读国外优秀的分布式存储相关开源课程，下面是课程体系图
+        我们始终坚信优秀的本科教学不应该是照本宣科以及应付考试，一门优秀的课程，应该具备让学生学会思考、动手实践、找到问题、反复试错、并解决问题的能力，同时应该尽量用最直白，最简单的语言传达关键的知识点。作为计算机工业界的工作者，我相信做课程和做技术一样，并不是越复杂越好，应该尽量的让设计出来的东西简单化。
+        关注我们的最新动态，欢迎关注
+         
+        <a href="https://www.zhihu.com/people/liu-jie-84-52" target="_blank">https://www.zhihu.com/people/liu-jie-84-52</a>
+        接下来我们进入正题，如何实现一个分布式系统。
+
+      </blockquote>
+
+      <div style="text-align: center; width: 100%; border: black solid 1px;">
+        <img src="./resources/arch.png" width="40%" style="display: inline-block;"/>
+      </div>
+
+      <h2> MIT 操作系统系列-操作系统的特性和系统调用</h2>
+
+      <h3>隔离性 (isolation)</h3>
+
+      在介绍隔离性之前，我们先看看如果没有操作系统的存在。如下图所示，用户程序 gcc 和 vi 直接通过系统库的方式使用硬件资源。
+        
+      <div style="text-align: center; width: 100%; border: black solid 1px;">
+        <img src="./resources/no_iso.jpg" width="40%" style="display: inline-block;"/>
+      </div>
+
+      这会导致哪些问题呢？
+      <li>
+          1.应用程序必须定期的释放对硬件的持有权，让其他的程序也能使用到硬件，这个成本对于应用程序开发来说是很大的。
+      </li>
+      <li>
+          2.如果某个应用程序出现了 bug，出现死循环或者忘记释放硬件资源，那么其他程序将都无法执行。
+      </li>
+      <li>
+          3.还有个很大的问题就是内存的隔离问题，由于应用程序直接访问物理内存。一个应用可以去修改其他应用或者系统库占用的内存，这会导致出现不可预测的异常，是无法保证安全性的。
+      </li>
+      
+      <h3>捐赠
+      </h3>
+
+      <p>
+        整理这本书耗费了我们大量的时间和精力。如果你觉得有帮助，一瓶矿泉水的价格支持我们继续输出优质的分布式存储知识体系，2.99¥，感谢大家的支持。
+      </p>
+
+      <div style="text-align: center; width: 100%; border: black solid 1px;">
+        <img src="./resources/alipay.jpeg" width="200px" style="display: inline-block;"/>
+      </div>
+
+      <p> 遵循MIT协议开源。</p>
+      <p> 感谢 「赫蹏」 提供如此优秀的中文排版系统 </p>
+
+      <!-- <footer class="heti-fn">
+        <ol>
+          <li id="fn-01">
+            <a href="#ref-01" title="移至">^</a>
+            CSS Reset：指代类似Eric Meyer's Reset CSS的样式重置方案
+          </li>
+          <li id="fn-02">
+            <a href="#ref-02" title="移至">^</a>
+            《中文排版需求》：https://w3c.github.io/clreq/
+          </li>
+          <li id="fn-03">
+            <a href="#ref-03" title="移至">^</a>
+            在当下前端技术尚不能完美解决中西文混排间距的情况下，常见的输入习惯是手动在中西文间加入空格（https://github.com/vinta/pangu.js）。这样做的弊端一是间距不可控（有时显得过大），二是通过空格符来排版只能算无奈之举。好消息是在最新的macOS、iOS中，使用原生语言开发的文本区域会自动处理中西文混排的间距（无论是否加空格），期待不用手敲空格的日子早日到来。
+          </li>
+        </ol>
+      </footer> -->
+      <script src="https://giscus.app/client.js"
+      data-repo="eraft-io/eraft-io.github.io"
+      data-repo-id="MDEwOlJlcG9zaXRvcnkzOTYyMDM3NjU="
+      data-category="General"
+      data-category-id="DIC_kwDOF52W9c4CRblA"
+      data-mapping="pathname"
+      data-strict="0"
+      data-reactions-enabled="1"
+      data-emit-metadata="0"
+      data-input-position="bottom"
+      data-theme="preferred_color_scheme"
+      data-lang="zh-CN"
+      crossorigin="anonymous"
+      async>
+  </script>
+
+    </article>
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span id="busuanzi_container_site_pv">本站总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+
+  </main>
+
+
+
+
+  <aside class="panel">
+    <ul class="panel-list panel-list--gray">
+      <li><input type="radio" class="J_fontStack" value="heti--classic" name="font" id="font-classic" checked><label for="font-classic">传统</label></li>
+      <li><input type="radio" class="J_fontStack" value="heti--sans" name="font" id="font-sans"><label for="font-sans">黑体</label></li>
+      <li><input type="radio" class="J_fontStack" value="heti--serif" name="font" id="font-serif"><label for="font-serif">宋体</label></li>
+    </ul>
+    <ul class="panel-list panel-list--gray">
+      <li><input type="radio" class="J_radioGrid" value="" name="grid" id="grid-disable" checked><label for="grid-disable">网格：关</label></li>
+      <li><input type="radio" class="J_radioGrid" value="grid-24" name="grid" id="grid-24"><label for="grid-24">大</label></li>
+      <li><input type="radio" class="J_radioGrid" value="grid-12" name="grid" id="grid-12"><label for="grid-12">小</label></li>
+    </ul>
+    <ul class="panel-list panel-list--gray panel-list--icon">
+      <li><input type="radio" class="J_darkMode" value="auto" name="darkmode" id="darkmode-auto" checked><label for="darkmode-auto">🌗</label></li>
+      <li><input type="radio" class="J_darkMode" value="light" name="darkmode" id="darkmode-light"><label for="darkmode-light">🌞</label></li>
+      <li><input type="radio" class="J_darkMode" value="dark" name="darkmode" id="darkmode-dark"><label for="darkmode-dark">🌙</label></li>
+    </ul>
+  </aside>
+
+  <script src="./heti-addon.js"></script>
+  <script>
+    const $$root = document.getElementsByTagName('html')[0]
+    const $$main = document.getElementsByTagName('main')[0]
+    const $$article = document.getElementsByTagName('article')[0]
+
+    function addEventListeners(nodeList, event, fn) {
+      [].forEach.call(nodeList, function(elm) {
+        elm.addEventListener(event, fn, false)
+      }, false)
+    }
+
+    addEventListeners(document.getElementsByClassName('J_darkMode'), 'change', function (e) {
+      $$root.setAttribute('data-darkmode', e.target.value)
+    })
+
+    addEventListeners(document.getElementsByClassName('J_radioGrid'), 'change', function (e) {
+      $$main.setAttribute('data-bg-grid', e.target.value)
+    })
+
+    addEventListeners(document.getElementsByClassName('J_fontStack'), 'change', function (e) {
+      $$article.className = ['article', 'heti', e.target.value].join(' ')
+    })
+
+    const heti = new Heti('.article')
+    heti.autoSpacing()
+  </script>
+</body>
+</html>
