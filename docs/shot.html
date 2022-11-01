@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="zh-Hans" data-darkmode="auto">
+<head>
+  <meta charset="UTF-8">
+  <title>eraft开发组 - 解读国外优质计算机课程</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="./heti.css">
+  <link rel="stylesheet" href="./index.css">
+  <link rel="icon" href="./favicon.svg">
+</head>
+<body>
+  <main class="container">
+    <article class="article heti heti--classic">
+        <h1 class="article__title">eraft 精解课程</h1>
+        <blockquote>
+          承接杭州地区航拍、摄影业务：
+          无人机：大疆 AVATA
+          相机：富士 X100V
+        </blockquote>
+ 
+     </div>
+      
+ 
+
+
+      <!-- <footer class="heti-fn">
+        <ol>
+          <li id="fn-01">
+            <a href="#ref-01" title="移至">^</a>
+            CSS Reset：指代类似Eric Meyer's Reset CSS的样式重置方案
+          </li>
+          <li id="fn-02">
+            <a href="#ref-02" title="移至">^</a>
+            《中文排版需求》：https://w3c.github.io/clreq/
+          </li>
+          <li id="fn-03">
+            <a href="#ref-03" title="移至">^</a>
+            在当下前端技术尚不能完美解决中西文混排间距的情况下，常见的输入习惯是手动在中西文间加入空格（https://github.com/vinta/pangu.js）。这样做的弊端一是间距不可控（有时显得过大），二是通过空格符来排版只能算无奈之举。好消息是在最新的macOS、iOS中，使用原生语言开发的文本区域会自动处理中西文混排的间距（无论是否加空格），期待不用手敲空格的日子早日到来。
+          </li>
+        </ol>
+      </footer> -->
+      <script src="https://giscus.app/client.js"
+      data-repo="eraft-io/eraft-io.github.io"
+      data-repo-id="MDEwOlJlcG9zaXRvcnkzOTYyMDM3NjU="
+      data-category="General"
+      data-category-id="DIC_kwDOF52W9c4CRblA"
+      data-mapping="pathname"
+      data-strict="0"
+      data-reactions-enabled="1"
+      data-emit-metadata="0"
+      data-input-position="bottom"
+      data-theme="preferred_color_scheme"
+      data-lang="zh-CN"
+      crossorigin="anonymous"
+      async>
+  </script>
+
+    </article>
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span id="busuanzi_container_site_pv">本站总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+
+  </main>
+
+
+
+
+  <aside class="panel">
+    <ul class="panel-list panel-list--gray">
+      <li><input type="radio" class="J_fontStack" value="heti--classic" name="font" id="font-classic" checked><label for="font-classic">传统</label></li>
+      <li><input type="radio" class="J_fontStack" value="heti--sans" name="font" id="font-sans"><label for="font-sans">黑体</label></li>
+      <li><input type="radio" class="J_fontStack" value="heti--serif" name="font" id="font-serif"><label for="font-serif">宋体</label></li>
+    </ul>
+    <ul class="panel-list panel-list--gray">
+      <li><input type="radio" class="J_radioGrid" value="" name="grid" id="grid-disable" checked><label for="grid-disable">网格：关</label></li>
+      <li><input type="radio" class="J_radioGrid" value="grid-24" name="grid" id="grid-24"><label for="grid-24">大</label></li>
+      <li><input type="radio" class="J_radioGrid" value="grid-12" name="grid" id="grid-12"><label for="grid-12">小</label></li>
+    </ul>
+    <ul class="panel-list panel-list--gray panel-list--icon">
+      <li><input type="radio" class="J_darkMode" value="auto" name="darkmode" id="darkmode-auto" checked><label for="darkmode-auto">🌗</label></li>
+      <li><input type="radio" class="J_darkMode" value="light" name="darkmode" id="darkmode-light"><label for="darkmode-light">🌞</label></li>
+      <li><input type="radio" class="J_darkMode" value="dark" name="darkmode" id="darkmode-dark"><label for="darkmode-dark">🌙</label></li>
+    </ul>
+  </aside>
+
+  <script src="./heti-addon.js"></script>
+  <script>
+    const $$root = document.getElementsByTagName('html')[0]
+    const $$main = document.getElementsByTagName('main')[0]
+    const $$article = document.getElementsByTagName('article')[0]
+
+    function addEventListeners(nodeList, event, fn) {
+      [].forEach.call(nodeList, function(elm) {
+        elm.addEventListener(event, fn, false)
+      }, false)
+    }
+
+    addEventListeners(document.getElementsByClassName('J_darkMode'), 'change', function (e) {
+      $$root.setAttribute('data-darkmode', e.target.value)
+    })
+
+    addEventListeners(document.getElementsByClassName('J_radioGrid'), 'change', function (e) {
+      $$main.setAttribute('data-bg-grid', e.target.value)
+    })
+
+    addEventListeners(document.getElementsByClassName('J_fontStack'), 'change', function (e) {
+      $$article.className = ['article', 'heti', e.target.value].join(' ')
+    })
+
+    const heti = new Heti('.article')
+    heti.autoSpacing()
+  </script>
+</body>
+</html>
