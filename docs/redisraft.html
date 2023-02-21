@@ -11,40 +11,59 @@
 <body>
   <main class="container">
     <article class="article heti heti--classic">
-        <h1 class="article__title">摄影商稿</h1>
+        <h1 class="article__title">eraft 精解课程</h1>
         <blockquote>
-          承接杭州地区航拍、摄影业务：
-          无人机：大疆 AVATA
-          相机：富士 X100V
-       
-        </blockquote>
- 
-     </div>
-      
-    <center>
-     <video controls width="80%">
-        <source src="https://eraft.oss-cn-beijing.aliyuncs.com/10-31.mp4" type="video/mp4">
-     </video>
-    </center>
-    <br/>
-    <br/>
-    <center>
-     <video controls width="80%">
-        <source src="https://eraft.oss-cn-beijing.aliyuncs.com/11-1.mp4" type="video/mp4">
-     </video>
-    </center>
-    
-      <center>
-      <p>
-        航拍，摄影需求可以扫码咸鱼上谈
-      </p>
-      </center>
 
+        我们团队致力于解读国外优秀的分布式存储相关开源课程以及开源工业化的分布式系统。
+        关注我们的最新动态，欢迎关注 <a href="https://www.zhihu.com/people/liu-jie-84-52">https://www.zhihu.com/people/liu-jie-84-52</a>
+      
+      </blockquote>
+
+        <details open>
+          <summary></summary>
+          <ol>
+            <li>
+              <a href="#intro">redisraft 介绍</a>
+              <!-- <ul>
+                <li><a href="./index.html">（一）体验分布式KV存储系统eraftkv </a></li>
+                <li><a href="./ebook-ch2.html">（二）Go 语言基础知识</a></li>
+                <li><a href="./ebook-ch3.html">（三）Raft 论文解读 </a></li>
+                <li><a href="./ebook-ch4.html">（四）构建 Raft 库                </a></li>
+                <li><a href="./ebook-ch5.html">（五）基于 Raft 库，实现简单的分布式 KV 系   </a></li>
+                <li><a href="./ebook-ch6.html">（六）Multi-Raft 设计与实现   </a></li>
+                <li><a href="./ebook-ch7.html">（七）分布式事务初探   </a></li>
+              </ul> -->
+            </li>
+          </ol>
+        </details>
+
+      <h2 id="intro"> RedisRaft 是什么 <a class="anchor" href="#intro">#</a></h2>
+
+      <h3>RedisRaft 整体架构</h3>
+      <div style="text-align: center; width: 100%; border: black solid 1px;">
+        <img src="./resources/redisraft_arch.png" width="100%" style="display: inline-block;"/>
+      </div>
+      <p>
+        RedisRaft 是 redis 社区官方使用 Raft 算法解决 redis 分布式中数据强一致问题的方案，它归属于 Redis7 的一个开发方向。
+        它基于 RedisModule 和 Raft 算法实现，可以灵活的插拔到 Redis7.0 以上的版本中。
+        图中是 RedisRaft 的架构，它基于一个 c 实现的 RaftLibrary 使用异步的 I/O 驱动的 RPC 在集群节点间
+        运行 Raft 算法，并且实现了持久化的 RafLog，用户的命令请求来到 RedisRaft 之后会排队提交到 Raft 线程中，它会提交请求到 Raft 状态机，当集群
+        复制组中半数节点以上投票之后，命令会被应用 (AppliedCommand) 到每一个节点中。
+      </p>
+
+      <h3>捐赠
+      </h3>
+
+      <p>
+        整理这本书耗费了我们大量的时间和精力。如果你觉得有帮助，一瓶矿泉水的价格支持我们继续输出优质的分布式存储知识体系，2.99¥，感谢大家的支持。
+      </p>
 
       <div style="text-align: center; width: 100%; border: black solid 1px;">
-        <img src="https://eraft.oss-cn-beijing.aliyuncs.com/xianyu.jpeg" width="300px" style="display: inline-block;"/>
+        <img src="./resources/alipay.jpeg" width="200px" style="display: inline-block;"/>
       </div>
 
+      <p> 遵循MIT协议开源。</p>
+      <p> 感谢 「赫蹏」 提供如此优秀的中文排版系统 </p>
 
       <!-- <footer class="heti-fn">
         <ol>
@@ -83,6 +102,8 @@
     <span id="busuanzi_container_site_pv">本站总访问量<span id="busuanzi_value_site_pv"></span>次</span>
 
   </main>
+
+
 
 
   <aside class="panel">

@@ -11,40 +11,66 @@
 <body>
   <main class="container">
     <article class="article heti heti--classic">
-        <h1 class="article__title">摄影商稿</h1>
+        <h1 class="article__title">eraft 精解课程</h1>
         <blockquote>
-          承接杭州地区航拍、摄影业务：
-          无人机：大疆 AVATA
-          相机：富士 X100V
-       
-        </blockquote>
- 
-     </div>
-      
-    <center>
-     <video controls width="80%">
-        <source src="https://eraft.oss-cn-beijing.aliyuncs.com/10-31.mp4" type="video/mp4">
-     </video>
-    </center>
-    <br/>
-    <br/>
-    <center>
-     <video controls width="80%">
-        <source src="https://eraft.oss-cn-beijing.aliyuncs.com/11-1.mp4" type="video/mp4">
-     </video>
-    </center>
-    
-      <center>
-      <p>
-        航拍，摄影需求可以扫码咸鱼上谈
-      </p>
-      </center>
 
+        我们团队致力于解读国外优秀的分布式存储相关开源课程，下面是课程体系图
+        我们始终坚信优秀的本科教学不应该是照本宣科以及应付考试，一门优秀的课程，应该具备让学生学会思考、动手实践、找到问题、反复试错、并解决问题的能力，同时应该尽量用最直白，最简单的语言传达关键的知识点。作为计算机工业界的工作者，我相信做课程和做技术一样，并不是越复杂越好，应该尽量的让设计出来的东西简单化。
+        关注我们的最新动态，欢迎关注
+         
+        <a href="https://www.zhihu.com/people/liu-jie-84-52" target="_blank">https://www.zhihu.com/people/liu-jie-84-52</a>
+        接下来我们进入正题，如何实现一个分布式系统。
+
+      </blockquote>
 
       <div style="text-align: center; width: 100%; border: black solid 1px;">
-        <img src="https://eraft.oss-cn-beijing.aliyuncs.com/xianyu.jpeg" width="300px" style="display: inline-block;"/>
+        <img src="./resources/arch.png" width="40%" style="display: inline-block;"/>
       </div>
 
+      <details open>
+        <summary></summary>
+        <ol>
+          <li>
+            <ul>
+              <li><a href="./index.html">（一）体验分布式KV存储系统eraftkv </a></li>
+              <li><a href="./ebook-ch2.html">（二）Go 语言基础知识</a></li>
+              <li><a href="./ebook-ch3.html">（三）Raft 论文解读 </a></li>
+              <li><a href="./ebook-ch4.html">（四）构建 Raft 库                </a></li>
+              <li><a href="./ebook-ch5.html">（五）基于 Raft 库，实现简单的分布式 KV 系   </a></li>
+              <li><a href="./ebook-ch6.html">（六）Multi-Raft 设计与实现   </a></li>
+              <li><a href="./ebook-ch7.html">（七）分布式事务初探   </a></li>
+            </ul>
+            <a href="#intro">MIT6.828 操作系统系列</a>
+            <ul>
+              <li><a href="./mitos_ep1.html">（一）操作系统概念介绍 </a></li>
+              <li><a href="./mitos_ep2.html">（二）操作系统的特性和系统调用</a></li>
+            </ul>
+          </li>
+        </ol>
+      </details>
+
+      <h2> MIT 操作系统系列-RCU</h2>
+
+      <div style="text-align: center; width: 100%; border: black solid 1px;">
+        <img src="./resources/ep23-001.png" width="200px" style="display: inline-block;"/>
+      </div>
+
+      CAS 指令是一个原子的指令 (在一条指令里面，出现异常中断也能保证原子性)，CAS (p, a, b) if *p == a, set *p = b, return true
+
+      问题：读者很多的之后，r_lock 操作开销是很大的。
+
+      <h3>捐赠
+      </h3>
+      <p>
+        整理这本书耗费了我们大量的时间和精力。如果你觉得有帮助，一瓶矿泉水的价格支持我们继续输出优质的分布式存储知识体系，2.99¥，感谢大家的支持。
+      </p>
+
+      <div style="text-align: center; width: 100%; border: black solid 1px;">
+        <img src="./resources/alipay.jpeg" width="200px" style="display: inline-block;"/>
+      </div>
+
+      <p> 遵循MIT协议开源。</p>
+      <p> 感谢 「赫蹏」 提供如此优秀的中文排版系统 </p>
 
       <!-- <footer class="heti-fn">
         <ol>
@@ -83,6 +109,8 @@
     <span id="busuanzi_container_site_pv">本站总访问量<span id="busuanzi_value_site_pv"></span>次</span>
 
   </main>
+
+
 
 
   <aside class="panel">
