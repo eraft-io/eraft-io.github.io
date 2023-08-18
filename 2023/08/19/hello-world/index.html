@@ -20,20 +20,23 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="theme-color" content="#f8f8f8">
   
-  <title>动手学习分布式 - Hexo</title>
+  <title>动手学习分布式-体验分布式系统 (Golang eraftkv 版) - Hexo</title>
 
   
     <meta name="description" content="体验分布式KV存储系统 eraftkv作为系列的开篇，我们将带着大家从顶层体验下分布式系统，我们将忽略系统实现的细节点，直观感受一个分布式系统所具备的能力。本书还是第一个版本，我们还在不断的校对完善中，评论区是放开的，欢迎大家讨论参与本书的优化。 安装go编译环境首先我们需要在电脑上安装好go语言编译器，你可以在 https:&#x2F;&#x2F;go.dev&#x2F;dl&#x2F;官网下载对应你系统版本的安装包。 按指示http">
 <meta property="og:type" content="article">
-<meta property="og:title" content="动手学习分布式">
+<meta property="og:title" content="动手学习分布式-体验分布式系统 (Golang eraftkv 版)">
 <meta property="og:url" content="http://example.com/2023/08/19/hello-world/index.html">
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="体验分布式KV存储系统 eraftkv作为系列的开篇，我们将带着大家从顶层体验下分布式系统，我们将忽略系统实现的细节点，直观感受一个分布式系统所具备的能力。本书还是第一个版本，我们还在不断的校对完善中，评论区是放开的，欢迎大家讨论参与本书的优化。 安装go编译环境首先我们需要在电脑上安装好go语言编译器，你可以在 https:&#x2F;&#x2F;go.dev&#x2F;dl&#x2F;官网下载对应你系统版本的安装包。 按指示http">
 <meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/images/eraftdb_arch.png">
+<meta property="og:image" content="http://example.com/images/alipay.jpeg">
 <meta property="article:published_time" content="2023-08-18T16:00:17.947Z">
-<meta property="article:modified_time" content="2023-08-18T16:09:44.401Z">
+<meta property="article:modified_time" content="2023-08-18T17:06:36.153Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/eraftdb_arch.png">
   
   
   
@@ -80,7 +83,7 @@
 <widget class="widget-wrapper search"><div class="widget-body"><div class="search-wrapper" id="search"><form class="search-form"><input type="text" class="search-input" id="search-input" data-filter="/blog/" placeholder="文章搜索"><svg t="1670596976048" class="icon search-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2676" width="200" height="200"><path d="M938.2 832.6L723.8 618.1c-2.5-2.5-5.3-4.4-7.9-6.4 36.2-55.6 57.3-121.8 57.3-193.1C773.3 222.8 614.6 64 418.7 64S64 222.8 64 418.6c0 195.9 158.8 354.6 354.6 354.6 71.3 0 137.5-21.2 193.2-57.4 2 2.7 3.9 5.4 6.3 7.8L832.5 938c14.6 14.6 33.7 21.9 52.8 21.9 19.1 0 38.2-7.3 52.8-21.8 29.2-29.1 29.2-76.4 0.1-105.5M418.7 661.3C284.9 661.3 176 552.4 176 418.6 176 284.9 284.9 176 418.7 176c133.8 0 242.6 108.9 242.6 242.7 0 133.7-108.9 242.6-242.6 242.6" p-id="2677"></path></svg></form><div id="search-result"></div><div class="search-no-result">No Results!</div></div></div></widget>
 
 
-<widget class="widget-wrapper toc single" id="data-toc"><div class="widget-header cap dis-select"><span class="name">动手学习分布式</span></div><div class="widget-body fs14"><div class="doc-tree active"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%93%E9%AA%8C%E5%88%86%E5%B8%83%E5%BC%8FKV%E5%AD%98%E5%82%A8%E7%B3%BB%E7%BB%9F-eraftkv"><span class="toc-text">体验分布式KV存储系统 eraftkv</span></a></li></ol></div></div></widget>
+<widget class="widget-wrapper toc single" id="data-toc"><div class="widget-header cap dis-select"><span class="name">动手学习分布式-体验分布式系统 (Golang eraftkv 版)</span></div><div class="widget-body fs14"><div class="doc-tree active"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%93%E9%AA%8C%E5%88%86%E5%B8%83%E5%BC%8FKV%E5%AD%98%E5%82%A8%E7%B3%BB%E7%BB%9F-eraftkv"><span class="toc-text">体验分布式KV存储系统 eraftkv</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9E%B6%E6%9E%84%E6%A6%82%E8%A7%88"><span class="toc-text">架构概览</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%B3%BB%E7%BB%9F%E4%B8%AD%E7%9A%84%E4%B8%80%E4%BA%9B%E6%A6%82%E5%BF%B5"><span class="toc-text">系统中的一些概念</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%B3%BB%E7%BB%9F%E4%B8%AD%E6%9C%89%E4%B8%89%E7%A7%8D%E8%A7%92%E8%89%B2"><span class="toc-text">系统中有三种角色</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AF%B7%E6%B1%82%E5%A4%84%E7%90%86%E6%B5%81%E7%A8%8B"><span class="toc-text">请求处理流程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%A9%E7%B3%BB%E7%BB%9F%E8%B7%91%E8%B5%B7%E6%9D%A5%EF%BC%8C%E4%BD%93%E9%AA%8C%E5%AE%83%EF%BC%81"><span class="toc-text">让系统跑起来，体验它！</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%AF%E6%89%A7%E8%A1%8C%E6%96%87%E4%BB%B6%E4%BB%8B%E7%BB%8D"><span class="toc-text">可执行文件介绍</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%AF%E5%8A%A8%E6%9C%8D%E5%8A%A1"><span class="toc-text">启动服务</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8D%90%E8%B5%A0"><span class="toc-text">捐赠</span></a></li></ol></li></ol></div></div></widget>
 
 
 
@@ -99,10 +102,76 @@
 <div class="bread-nav fs12"><div id="breadcrumb"><a class="cap breadcrumb" href="/">Home</a><span class="sep"></span><a class="cap breadcrumb" href="/">Blog</a></div><div id="post-meta">Posted on&nbsp;<time datetime="2023-08-18T16:00:17.947Z">2023-08-19</time></div></div>
 
 <article class='md-text content post'>
-<h1 class="article-title"><span>动手学习分布式</span></h1>
+<h1 class="article-title"><span>动手学习分布式-体验分布式系统 (Golang eraftkv 版)</span></h1>
 <h3 id="体验分布式KV存储系统-eraftkv"><a href="#体验分布式KV存储系统-eraftkv" class="headerlink" title="体验分布式KV存储系统 eraftkv"></a>体验分布式KV存储系统 eraftkv</h3><p>作为系列的开篇，我们将带着大家从顶层体验下分布式系统，我们将忽略系统实现的细节点，直观感受一个分布式系统所具备的能力。本书还是第一个版本，我们还在不断的校对完善中，评论区是放开的，欢迎大家讨论参与本书的优化。</p>
 <p>安装go编译环境<br>首先我们需要在电脑上安装好go语言编译器，你可以在 <a target="_blank" rel="noopener" href="https://go.dev/dl/%E5%AE%98%E7%BD%91%E4%B8%8B%E8%BD%BD%E5%AF%B9%E5%BA%94%E4%BD%A0%E7%B3%BB%E7%BB%9F%E7%89%88%E6%9C%AC%E7%9A%84%E5%AE%89%E8%A3%85%E5%8C%85%E3%80%82">https://go.dev/dl/官网下载对应你系统版本的安装包。</a> 按指示<a target="_blank" rel="noopener" href="https://go.dev/doc/install%E5%AE%89%E8%A3%85golang%E7%BC%96%E8%AF%91%E7%8E%AF%E5%A2%83%E3%80%82">https://go.dev/doc/install安装golang编译环境。</a></p>
 <p>编译构建 eraftkv<br>执行以下命令(确保你的机器上安装了Go语言编译器以及git, make等基础工具)编译很简单，下载代码之后，进入根目录直接 make</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/eraftorg/eraft.git -b mit6824_lab </span><br><span class="line">cd eraft </span><br><span class="line">make</span><br></pre></td></tr></table></figure>
+
+<h3 id="架构概览"><a href="#架构概览" class="headerlink" title="架构概览"></a>架构概览</h3><p>在我们运行eraftkv之前我们先概览以下它的架构，以便于我们对于接下来运行的程序功能有清晰的认识。</p>
+<div class="tag-plugin image"><div class="image-bg"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="/images/eraftdb_arch.png"/></div></div>
+
+<p>eraftkv作为一个分布式kv存储系统，其中包含的服务角色以及一些概念需要提前给大家介绍一下。</p>
+<h3 id="系统中的一些概念"><a href="#系统中的一些概念" class="headerlink" title="系统中的一些概念"></a>系统中的一些概念</h3><ul>
+<li><p>bucket -它是集群做数据管理的逻辑单元，一个分组的ShardServer服务可以负责多个bucket的数据。 </p>
+</li>
+<li><p>config table -集群配置表，它主要维护了集群服务分组与bucket的映射关系，客户端访问集群数据之前需要先到这个表查询要访问bucket所在的服务分组列表。</p>
+</li>
+</ul>
+<h3 id="系统中有三种角色"><a href="#系统中有三种角色" class="headerlink" title="系统中有三种角色"></a>系统中有三种角色</h3><ul>
+<li>Client -客户端，它是用户使用我们这个分布式的接入端。 </li>
+<li>ConfigServer -配置服务器，它是系统的配置管理中心，它存储了集群的路由配置信息。 </li>
+<li>ShardServer -数据服务器，它是系统中实际存储用户数据的服务器。</li>
+</ul>
+<h3 id="请求处理流程"><a href="#请求处理流程" class="headerlink" title="请求处理流程"></a>请求处理流程</h3><p>看了架构概览，大家可能有觉得概念有些模糊，我们接下来就分析一个具体的请求示例，看看这个分布式系统是如何工作起来的。<br>例如现在客户端来了一个put testkey testvalue的请求： </p>
+<p>1.客户端程序启动运行的时候会从ConfigServer获取到最新的路由信息表。 </p>
+<p>2.put testkey testvalue操作首先会计算testkey的CRC32哈希值对集群中的bucket数取模算到这个key命中了哪个bucket。 </p>
+<p>3.之后客户端将put请求内容打包成一个rpc请求包，发送到集群配置表中负责这个bucket的ShardServer服务分组。 </p>
+<p>4.Leader ShardServer服务收到这个rpc请求后并不是直接写入存储引擎，而是构造一个raft提案，提交到raft状态机，当分组中半数节点以上的ShardServer都同意这个操作后(如果你没有接触过分布式一致性算法，这里可以先不用理解细节，我们会在Raft论文解读一章详细解读为什么要这样做)，作为Leader的ShardServer服务器才能返回给客户端写入成功。</p>
+<h3 id="让系统跑起来，体验它！"><a href="#让系统跑起来，体验它！" class="headerlink" title="让系统跑起来，体验它！"></a>让系统跑起来，体验它！</h3><p>前面我们构建完eraftkv之后，在eraft目录有一个output文件夹，里面有我们需要运行的bin文件。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"> colin@B-M1-0045 eraft % ls -l output </span><br><span class="line">total 124120</span><br><span class="line">-rwxr-xr-x  1 colin  staff  12119296  5 25 20:40 bench_cli</span><br><span class="line">-rwxr-xr-x  1 colin  staff  12114784  5 25 20:40 cfgcli</span><br><span class="line">-rwxr-xr-x  1 colin  staff  13578848  5 25 20:40 cfgserver</span><br><span class="line">-rwxr-xr-x  1 colin  staff  12127328  5 25 20:40 shardcli</span><br><span class="line">-rwxr-xr-x  1 colin  staff  13600368  5 25 20:40 shardserver</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="可执行文件介绍"><a href="#可执行文件介绍" class="headerlink" title="可执行文件介绍"></a>可执行文件介绍</h3><p>1.cfgserver<br>ConfigServer的可执行文件，系统的配置管理中心，需要首先启动 </p>
+<p>2.cfgcli<br>ConfigServer的客户端工具，它和ConfigServer交互用来管理集群的配置 </p>
+<p>3.shardserver<br>ShardServer的可执行文件，它负责存储用户的数据 </p>
+<p>4.shardcli<br>ShardServer的客户端工具，用户可以使用它向集群中写入数据 </p>
+<p>5.bench_cli<br>系统的性能测试工具</p>
+<h3 id="启动服务"><a href="#启动服务" class="headerlink" title="启动服务"></a>启动服务</h3><p>1.启动配置服务器分组</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">./cfgserver 0 127.0.0.1:8088,127.0.0.1:8089,127.0.0.1:8090</span><br><span class="line">./cfgserver 1 127.0.0.1:8088,127.0.0.1:8089,127.0.0.1:8090</span><br><span class="line">./cfgserver 2 127.0.0.1:8088,127.0.0.1:8089,127.0.0.1:8090</span><br></pre></td></tr></table></figure>
+
+<p>2.初始化集群配置</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">./cfgcli 127.0.0.1:8088,127.0.0.1:8089,127.0.0.1:8090 join 1 127.0.0.1:6088,127.0.0.1:6089,127.0.0.1:6090</span><br><span class="line">./cfgcli 127.0.0.1:8088,127.0.0.1:8089,127.0.0.1:8090 join 2  127.0.0.1:7088,127.0.0.1:7089,127.0.0.1:7090</span><br><span class="line">./cfgcli 127.0.0.1:8088,127.0.0.1:8089,127.0.0.1:8090 move 0-4 1</span><br><span class="line">./cfgcli 127.0.0.1:8088,127.0.0.1:8089,127.0.0.1:8090 move 5-9 2</span><br></pre></td></tr></table></figure>
+
+<p>3.启动数据服务器分组</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">./shardserver 0 1 127.0.0.1:8088,127.0.0.1:8089,127.0.0.1:8090 127.0.0.1:6088,127.0.0.1:6089,127.0.0.1:6090</span><br><span class="line">./shardserver 1 1 127.0.0.1:8088,127.0.0.1:8089,127.0.0.1:8090 127.0.0.1:6088,127.0.0.1:6089,127.0.0.1:6090</span><br><span class="line">./shardserver 2 1 127.0.0.1:8088,127.0.0.1:8089,127.0.0.1:8090 127.0.0.1:6088,127.0.0.1:6089,127.0.0.1:6090</span><br><span class="line">./shardserver 0 2 127.0.0.1:8088,127.0.0.1:8089,127.0.0.1:8090 127.0.0.1:7088,127.0.0.1:7089,127.0.0.1:7090</span><br><span class="line">./shardserver 1 2 127.0.0.1:8088,127.0.0.1:8089,127.0.0.1:8090 127.0.0.1:7088,127.0.0.1:7089,127.0.0.1:7090</span><br><span class="line">./shardserver 2 2 127.0.0.1:8088,127.0.0.1:8089,127.0.0.1:8090</span><br><span class="line">127.0.0.1:7088,127.0.0.1:7089,127.0.0.1:7090</span><br></pre></td></tr></table></figure>
+
+<p>4.读写数据</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">./shardcli 127.0.0.1:8088,127.0.0.1:8089,127.0.0.1:8090 put testkey testvalue </span><br><span class="line">./shardcli 127.0.0.1:8088,127.0.0.1:8089,127.0.0.1:8090 get testkey</span><br></pre></td></tr></table></figure>
+<p>5.运行基准测试</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./bench_cli 127.0.0.1:8088,127.0.0.1:8089,127.0.0.1:8090 100 put</span><br></pre></td></tr></table></figure>
+
+<h4 id="捐赠"><a href="#捐赠" class="headerlink" title="捐赠"></a>捐赠</h4><p>整理这本书耗费了我们大量的时间和精力。如果你觉得有帮助，一瓶矿泉水的价格支持我们继续输出优质的分布式存储知识体系，2.99¥，感谢大家的支持。</p>
+<div class="tag-plugin image"><div class="image-bg"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="/images/alipay.jpeg"/></div></div>
+
+<p><a target="_blank" rel="noopener" href="https://github.com/eraft-io/eraft-io.github.io/blob/eraft_home/docs/resources/eraft_book.pdf">下载 PDF 版本</a></p>
+<script src="https://giscus.app/client.js"
+    data-repo="eraft-io/eraft-io.github.io"
+    data-repo-id="MDEwOlJlcG9zaXRvcnkzOTYyMDM3NjU="
+    data-category="General"
+    data-category-id="DIC_kwDOF52W9c4CRblA"
+    data-mapping="pathname"
+    data-strict="0"
+    data-reactions-enabled="1"
+    data-emit-metadata="0"
+    data-input-position="bottom"
+    data-theme="preferred_color_scheme"
+    data-lang="zh-CN"
+    crossorigin="anonymous"
+    async>
+</script>
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<p><span id="busuanzi_container_site_pv">本站总访问量<span id="busuanzi_value_site_pv"></span>次</span></p>
 
 
 
