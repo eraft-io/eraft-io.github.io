@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang='en'>
+
+<head>
+  <meta name="generator" content="Hexo 6.3.0">
+  <meta name="hexo-theme" content="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.19.0">
+  <meta charset="utf-8">
+  
+
+  <meta http-equiv='x-dns-prefetch-control' content='on' />
+  <link rel='dns-prefetch' href='https://gcore.jsdelivr.net'>
+  <link rel="preconnect" href="https://gcore.jsdelivr.net" crossorigin>
+  <link rel='dns-prefetch' href='//unpkg.com'>
+
+  <meta name="renderer" content="webkit">
+  <meta name="force-rendering" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="HandheldFriendly" content="True" >
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="theme-color" content="#f8f8f8">
+  
+  <title>动手学习分布式-Go语言基础知识 (Golang eraftkv 版) - Hexo</title>
+
+  
+    <meta name="description" content="Go语言优点首先Go是一门开源的语言，他出生名门Google，社区有强有力的顶级技术人员支撑。它最开始的设计者是Rob Pike，Robert Griesemer，Ken Thompson。 你可以在这个页面找到他们的资料 https:&#x2F;&#x2F;golang.design&#x2F;history&#x2F; 其中Ken Thompson是UNIX系统的发明者。 Go语言对于初学者很友好，很容易在短时间内快速上手，你可以通">
+<meta property="og:type" content="article">
+<meta property="og:title" content="动手学习分布式-Go语言基础知识 (Golang eraftkv 版)">
+<meta property="og:url" content="http://example.com/2023/08/19/1-2-gobasic/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="Go语言优点首先Go是一门开源的语言，他出生名门Google，社区有强有力的顶级技术人员支撑。它最开始的设计者是Rob Pike，Robert Griesemer，Ken Thompson。 你可以在这个页面找到他们的资料 https:&#x2F;&#x2F;golang.design&#x2F;history&#x2F; 其中Ken Thompson是UNIX系统的发明者。 Go语言对于初学者很友好，很容易在短时间内快速上手，你可以通">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/images/slice01.png">
+<meta property="og:image" content="http://example.com/images/slice02.png">
+<meta property="og:image" content="http://example.com/images/alipay.jpeg">
+<meta property="article:published_time" content="2023-08-18T17:09:17.000Z">
+<meta property="article:modified_time" content="2023-08-18T17:16:04.933Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/slice01.png">
+  
+  
+  
+  
+
+  <!-- feed -->
+  
+
+  
+    
+<link rel="stylesheet" href="/css/main.css">
+
+  
+
+  
+
+  
+
+  
+
+
+  
+</head>
+
+<body>
+  
+
+
+
+
+  <div class='l_body' id='start'>
+    <aside class='l_left' layout='post'>
+    
+
+  
+
+<header class="header"><div class="logo-wrap"><a class="title" href="/"><div class="main" ff="title">Hexo</div></a></div>
+
+<nav class="menu dis-select"></nav>
+</header>
+
+
+<div class="widgets">
+<widget class="widget-wrapper search"><div class="widget-body"><div class="search-wrapper" id="search"><form class="search-form"><input type="text" class="search-input" id="search-input" data-filter="/blog/" placeholder="文章搜索"><svg t="1670596976048" class="icon search-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2676" width="200" height="200"><path d="M938.2 832.6L723.8 618.1c-2.5-2.5-5.3-4.4-7.9-6.4 36.2-55.6 57.3-121.8 57.3-193.1C773.3 222.8 614.6 64 418.7 64S64 222.8 64 418.6c0 195.9 158.8 354.6 354.6 354.6 71.3 0 137.5-21.2 193.2-57.4 2 2.7 3.9 5.4 6.3 7.8L832.5 938c14.6 14.6 33.7 21.9 52.8 21.9 19.1 0 38.2-7.3 52.8-21.8 29.2-29.1 29.2-76.4 0.1-105.5M418.7 661.3C284.9 661.3 176 552.4 176 418.6 176 284.9 284.9 176 418.7 176c133.8 0 242.6 108.9 242.6 242.7 0 133.7-108.9 242.6-242.6 242.6" p-id="2677"></path></svg></form><div id="search-result"></div><div class="search-no-result">No Results!</div></div></div></widget>
+
+
+<widget class="widget-wrapper toc single" id="data-toc"><div class="widget-header cap dis-select"><span class="name">动手学习分布式-Go语言基础知识 (Golang eraftkv 版)</span></div><div class="widget-body fs14"><div class="doc-tree active"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#Go%E8%AF%AD%E8%A8%80%E4%BC%98%E7%82%B9"><span class="toc-text">Go语言优点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%87%E7%89%87"><span class="toc-text">切片</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E5%AD%97%E9%9D%A2%E9%87%8F%E5%88%97%E8%A1%A8%E5%88%9B%E5%BB%BA%E5%88%87%E7%89%87"><span class="toc-text">使用字面量列表创建切片</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BF%AE%E6%94%B9%E5%88%87%E7%89%87%E4%B8%AD%E7%9A%84%E5%85%83%E7%B4%A0"><span class="toc-text">修改切片中的元素</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%87%E7%89%87%E5%BA%95%E5%B1%82%E7%BB%93%E6%9E%84"><span class="toc-text">切片底层结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Goruntine"><span class="toc-text">Goruntine</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8D%90%E8%B5%A0"><span class="toc-text">捐赠</span></a></li></ol></li></ol></div></div></widget>
+
+
+
+
+</div>
+
+
+    </aside>
+    <div class='l_main'>
+      
+
+      
+
+
+
+<div class="bread-nav fs12"><div id="breadcrumb"><a class="cap breadcrumb" href="/">Home</a><span class="sep"></span><a class="cap breadcrumb" href="/">Blog</a></div><div id="post-meta">Posted on&nbsp;<time datetime="2023-08-18T17:09:17.000Z">2023-08-19</time></div></div>
+
+<article class='md-text content post'>
+<h1 class="article-title"><span>动手学习分布式-Go语言基础知识 (Golang eraftkv 版)</span></h1>
+<h3 id="Go语言优点"><a href="#Go语言优点" class="headerlink" title="Go语言优点"></a>Go语言优点</h3><p>首先Go是一门开源的语言，他出生名门Google，社区有强有力的顶级技术人员支撑。它最开始的设计者是Rob Pike，Robert Griesemer，Ken Thompson。 你可以在这个页面找到他们的资料 <a target="_blank" rel="noopener" href="https://golang.design/history/">https://golang.design/history/</a> 其中Ken Thompson是UNIX系统的发明者。 Go语言对于初学者很友好，很容易在短时间内快速上手，你可以通过这个网站上提供的代码示例快速的入门Go语言：<a target="_blank" rel="noopener" href="https://gobyexample.com./">https://gobyexample.com。</a> 作为多核时代的语言，Go语言在设计之初就对并发编程有很多内置的支持，提供的及其健壮的相关标准库。利用它，我们可以快速的编写出高并发的应用程序。 最后，国内外很多大厂都在使用Go语言，它有一个强大的社区，全世界优秀的技术人员开发了丰富的工具生态，有很多脚手架帮你快速的构建应用程序。</p>
+<h3 id="切片"><a href="#切片" class="headerlink" title="切片"></a>切片</h3><p>切片是一个数组的一段，它基于数组构建，并提供了更多丰富的数据操作功能，提供开发者灵活和便利的操作数组结构。 在Go语言内部，切片只是对底层数组数据结构的引用。接下来我们将熟悉如何创建和使用切片，并了解它底层是怎么工作的。</p>
+<h4 id="使用字面量列表创建切片"><a href="#使用字面量列表创建切片" class="headerlink" title="使用字面量列表创建切片"></a>使用字面量列表创建切片</h4><p>这种方式类似c++里面的初始化列表</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">var s = []int&#123;3, 5, 7, 9, 11, 13, 17&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>这种方式创建切片的时候，它首先会创建一个数组，然后返回对该数组切片的引用。</p>
+<p>从已有数组创建切片</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// Obtaining a slice from an array `a` </span><br><span class="line">a[low:high]</span><br></pre></td></tr></table></figure>
+
+<p>这里我们对a数组进行切割得到切片，这个操作得到的结果是索引[low, high)的元素，生成的切片包括索引低，但是不包括索引高之间的所有数组元素。<br>你可以运行下面的示例，理解这个切片操作</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">package main</span><br><span class="line"></span><br><span class="line">import &quot;fmt&quot;</span><br><span class="line"></span><br><span class="line">func main() &#123;</span><br><span class="line"></span><br><span class="line">    var a = [5]string&#123;&quot;Alpha&quot;, &quot;Beta&quot;, &quot;Gamma&quot;, &quot;Delta&quot;, &quot;Epsilon&quot;&#125;</span><br><span class="line"></span><br><span class="line">    // Creating a slice from the array</span><br><span class="line">    var s []string = a[1:4]</span><br><span class="line"></span><br><span class="line">    fmt.Println(&quot;Array a = &quot;, a)        </span><br><span class="line"></span><br><span class="line">    fmt.Println(&quot;Slice s = &quot;, s)        </span><br><span class="line"></span><br><span class="line">&#125;        </span><br><span class="line">// output        </span><br><span class="line"></span><br><span class="line">Array a =  [Alpha Beta Gamma Delta Epsilon]        </span><br><span class="line"></span><br><span class="line">Slice s =  [Beta Gamma Delta]        </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="修改切片中的元素"><a href="#修改切片中的元素" class="headerlink" title="修改切片中的元素"></a>修改切片中的元素</h3><p>由于切片是引用类型，它指向了底层的数组。所以当我们使用切片引用去修改数组中对应的元素的时候，引用相同数组的其他切片对象也会看到这个修改结果。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line">package main</span><br><span class="line"></span><br><span class="line">import &quot;fmt&quot;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">func main() &#123;</span><br><span class="line"></span><br><span class="line">	a := [7]string&#123;&quot;Mon&quot;, &quot;Tue&quot;, &quot;Wed&quot;, &quot;Thu&quot;, &quot;Fri&quot;, &quot;Sat&quot;, &quot;Sun&quot;&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	slice1 := a[1:]</span><br><span class="line"></span><br><span class="line">	slice2 := a[3:]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	fmt.Println(&quot;------- Before Modifications -------&quot;)</span><br><span class="line"></span><br><span class="line">	fmt.Println(&quot;a  = &quot;, a)</span><br><span class="line"></span><br><span class="line">	fmt.Println(&quot;slice1 = &quot;, slice1)</span><br><span class="line"></span><br><span class="line">	fmt.Println(&quot;slice2 = &quot;, slice2)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	slice1[0] = &quot;TUE&quot;</span><br><span class="line"></span><br><span class="line">	slice1[1] = &quot;WED&quot;</span><br><span class="line"></span><br><span class="line">	slice1[2] = &quot;THU&quot;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	slice2[1] = &quot;FRIDAY&quot;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	fmt.Println(&quot;\n-------- After Modifications --------&quot;)</span><br><span class="line"></span><br><span class="line">	fmt.Println(&quot;a  = &quot;, a)</span><br><span class="line"></span><br><span class="line">	fmt.Println(&quot;slice1 = &quot;, slice1)</span><br><span class="line"></span><br><span class="line">	fmt.Println(&quot;slice2 = &quot;, slice2)</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">// Output</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">------- Before Modifications -------</span><br><span class="line"></span><br><span class="line">a  =  [Mon Tue Wed Thu Fri Sat Sun]</span><br><span class="line"></span><br><span class="line">slice1 =  [Tue Wed Thu Fri Sat Sun]</span><br><span class="line"></span><br><span class="line">slice2 =  [Thu Fri Sat Sun]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">type: post</span><br><span class="line"></span><br><span class="line">-------- After Modifications --------</span><br><span class="line"></span><br><span class="line">a  =  [Mon TUE WED THU FRIDAY Sat Sun]</span><br><span class="line"></span><br><span class="line">slice1 =  [TUE WED THU FRIDAY Sat Sun]</span><br><span class="line"></span><br><span class="line">slice2 =  [THU FRIDAY Sat Sun]</span><br></pre></td></tr></table></figure>
+
+<p>例如上面这个示例，slice2的修改操作在slice1中是能被看到的, slice1的修改在slice2也能被看到。</p>
+<h3 id="切片底层结构"><a href="#切片底层结构" class="headerlink" title="切片底层结构"></a>切片底层结构</h3><p>一个切片由三个部分组成，如图</p>
+<p>1.一个指向底层数组的指针Ptr<br>2.切片所包含数组段的长度Len<br>3.切片的容量Cap</p>
+<div class="tag-plugin image"><div class="image-bg"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="/images/slice01.png"/></div></div>
+
+<p>我们看一个具体的切片结构的底层示例：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">var a = [6]int&#123;10, 20, 30, 40, 50, 60&#125; </span><br><span class="line">var s = [1:4]</span><br></pre></td></tr></table></figure>
+
+<p>s在Go内部是这样表示的： </p>
+<div class="tag-plugin image"><div class="image-bg"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="/images/slice02.png"/></div></div>
+
+<p>一个切片的长度和容量我们是可以通过len(), cap()函数获取的，例如我们可以通过下面的方式获取s的长度和容量。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">package main</span><br><span class="line"></span><br><span class="line">import &quot;fmt&quot;</span><br><span class="line"></span><br><span class="line">func main() &#123;</span><br><span class="line"></span><br><span class="line">	a := [6]int&#123;10, 20, 30, 40, 50, 60&#125;</span><br><span class="line">	s := a[1:4]</span><br><span class="line">	fmt.Printf(&quot;s = %v, len = %d, cap = %d\n&quot;, s, len(s), cap(s))</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// output</span><br><span class="line"></span><br><span class="line">s = [20 30 40], len = 3, cap = 5</span><br></pre></td></tr></table></figure>
+
+<h3 id="Goruntine"><a href="#Goruntine" class="headerlink" title="Goruntine"></a>Goruntine</h3><p>Goruntine是由Go运行时所管理的一个轻量级的线程，一个Go程序中的Goroutines在相同的地址空间中运行，因此对共享内存的访问必须同步。<br>我们运行一个简单地示例来看看：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line">package main</span><br><span class="line">    </span><br><span class="line"></span><br><span class="line">import (</span><br><span class="line"></span><br><span class="line">	&quot;fmt&quot;</span><br><span class="line"></span><br><span class="line">	&quot;time&quot;</span><br><span class="line"></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">func say(s string) &#123;</span><br><span class="line"></span><br><span class="line">	for i := 0; i &lt; 5; i++ &#123;</span><br><span class="line"></span><br><span class="line">		time.Sleep(100 * time.Millisecond)</span><br><span class="line"></span><br><span class="line">		fmt.Println(s)</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">func main() &#123;</span><br><span class="line"></span><br><span class="line">	go say(&quot;world&quot;)</span><br><span class="line"></span><br><span class="line">	say(&quot;hello&quot;)</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">// output</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">hello</span><br><span class="line"></span><br><span class="line">world</span><br><span class="line"></span><br><span class="line">hello</span><br><span class="line"></span><br><span class="line">world</span><br><span class="line"></span><br><span class="line">hello</span><br><span class="line"></span><br><span class="line">world</span><br><span class="line"></span><br><span class="line">world</span><br><span class="line"></span><br><span class="line">hello</span><br><span class="line"></span><br><span class="line">hello</span><br></pre></td></tr></table></figure>
+
+<p>我们可以看到主线程中say(“hello”)和goruntine的say(“world”)在交替的输出，它们在同时的运行，在其他语言做这个事情先要创建线程，然后绑定相关的执行函数，而Go语言直接把并发设计到了编译器语言支持层面，用go关键字就可以轻松地创建轻量级的线程。</p>
+<h4 id="捐赠"><a href="#捐赠" class="headerlink" title="捐赠"></a>捐赠</h4><p>整理这本书耗费了我们大量的时间和精力。如果你觉得有帮助，一瓶矿泉水的价格支持我们继续输出优质的分布式存储知识体系，2.99¥，感谢大家的支持。</p>
+<div class="tag-plugin image"><div class="image-bg"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="/images/alipay.jpeg"/></div></div>
+
+<p><a target="_blank" rel="noopener" href="https://github.com/eraft-io/eraft-io.github.io/blob/eraft_home/docs/resources/eraft_book.pdf">下载 PDF 版本</a></p>
+<script src="https://giscus.app/client.js"
+    data-repo="eraft-io/eraft-io.github.io"
+    data-repo-id="MDEwOlJlcG9zaXRvcnkzOTYyMDM3NjU="
+    data-category="General"
+    data-category-id="DIC_kwDOF52W9c4CRblA"
+    data-mapping="pathname"
+    data-strict="0"
+    data-reactions-enabled="1"
+    data-emit-metadata="0"
+    data-input-position="bottom"
+    data-theme="preferred_color_scheme"
+    data-lang="zh-CN"
+    crossorigin="anonymous"
+    async>
+</script>
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<p><span id="busuanzi_container_site_pv">本站总访问量<span id="busuanzi_value_site_pv"></span>次</span></p>
+
+
+
+<div class="article-footer reveal fs14"><section id="license"><div class="header"><span>License</span></div><div class="body"><p>本文采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">署名-非商业性使用-相同方式共享 4.0 国际</a> 许可协议，转载请注明出处。</p>
+</div></section></div>
+
+</article>
+
+<div class="related-wrap reveal" id="read-next"><section class="body"><div class="item" id="prev"></div><div class="item" id="next"><div class="note">Older</div><a href="/2023/08/19/hello-world/">动手学习分布式-体验分布式系统 (Golang eraftkv 版)</a></div></section></div>
+
+
+
+
+
+
+
+
+      
+<footer class="page-footer reveal fs12"><hr><div class="text"><p>本站由 <a href="/">@anonymity</a> 使用 <a target="_blank" rel="noopener" href="https://github.com/xaoxuu/hexo-theme-stellar">Stellar</a> 主题创建。<br>本博客所有文章除特别声明外，均采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议，转载请注明出处。</p>
+</div></footer>
+
+      <div class='float-panel mobile-only blur' style='display:none'>
+  <button type='button' class='sidebar-toggle mobile' onclick='sidebar.toggle()'>
+    <svg class="icon" style="width: 1em; height: 1em;vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="15301"><path d="M566.407 808.3c26.9-0.1 49.3-20.8 51.6-47.6-1.9-27.7-23.9-49.7-51.6-51.6h-412.6c-28.2-1.4-52.6 19.5-55.5 47.6 2.3 26.8 24.6 47.5 51.6 47.6h416.5v4z m309.3-249.9c26.9-0.1 49.3-20.8 51.6-47.6-2.2-26.8-24.6-47.5-51.6-47.6h-721.9c-27.7-2.8-52.5 17.4-55.3 45.1-0.1 0.8-0.1 1.7-0.2 2.5 0.9 27.2 23.6 48.5 50.7 47.6H875.707z m-103.1-245.9c26.9-0.1 49.3-20.8 51.6-47.6-0.4-28.3-23.2-51.1-51.5-51.6h-618.9c-29.5-1.1-54.3 21.9-55.5 51.4v0.2c1.4 27.8 25.2 49.2 53 47.8 0.8 0 1.7-0.1 2.5-0.2h618.8z" p-id="15302"></path><path d="M566.407 808.3c26.9-0.1 49.3-20.8 51.6-47.6-1.9-27.7-23.9-49.7-51.6-51.6h-412.6c-28.2-1.4-52.6 19.5-55.5 47.6 1.9 27.7 23.9 49.7 51.6 51.6h416.5z m309.3-249.9c26.9-0.1 49.3-20.8 51.6-47.6-2.2-26.8-24.6-47.5-51.6-47.6h-721.9c-27.7-2.8-52.5 17.4-55.3 45.1-0.1 0.8-0.1 1.7-0.2 2.5 0.9 27.2 23.6 48.5 50.7 47.6H875.707z m-103.1-245.9c26.9-0.1 49.3-20.8 51.6-47.6-0.4-28.3-23.2-51.1-51.5-51.6h-618.9c-29.5-1.1-54.3 21.9-55.5 51.4v0.2c1.4 27.8 25.2 49.2 53 47.8 0.8 0 1.7-0.1 2.5-0.2h618.8z" p-id="15303"></path></svg>
+  </button>
+</div>
+
+    </div>
+  </div>
+  <div class='scripts'>
+    <script type="text/javascript">
+  const stellar = {
+    // 懒加载 css https://github.com/filamentgroup/loadCSS
+    loadCSS: (href, before, media, attributes) => {
+      var doc = window.document;
+      var ss = doc.createElement("link");
+      var ref;
+      if (before) {
+        ref = before;
+      } else {
+        var refs = (doc.body || doc.getElementsByTagName("head")[0]).childNodes;
+        ref = refs[refs.length - 1];
+      }
+      var sheets = doc.styleSheets;
+      if (attributes) {
+        for (var attributeName in attributes) {
+          if (attributes.hasOwnProperty(attributeName)) {
+            ss.setAttribute(attributeName, attributes[attributeName]);
+          }
+        }
+      }
+      ss.rel = "stylesheet";
+      ss.href = href;
+      ss.media = "only x";
+      function ready(cb) {
+        if (doc.body) {
+          return cb();
+        }
+        setTimeout(function () {
+          ready(cb);
+        });
+      }
+      ready(function () {
+        ref.parentNode.insertBefore(ss, before ? ref : ref.nextSibling);
+      });
+      var onloadcssdefined = function (cb) {
+        var resolvedHref = ss.href;
+        var i = sheets.length;
+        while (i--) {
+          if (sheets[i].href === resolvedHref) {
+            return cb();
+          }
+        }
+        setTimeout(function () {
+          onloadcssdefined(cb);
+        });
+      };
+      function loadCB() {
+        if (ss.addEventListener) {
+          ss.removeEventListener("load", loadCB);
+        }
+        ss.media = media || "all";
+      }
+      if (ss.addEventListener) {
+        ss.addEventListener("load", loadCB);
+      }
+      ss.onloadcssdefined = onloadcssdefined;
+      onloadcssdefined(loadCB);
+      return ss;
+    },
+
+    // 从 butterfly 和 volantis 获得灵感
+    loadScript: (src, opt) => new Promise((resolve, reject) => {
+      var script = document.createElement('script');
+      if (src.startsWith('/')){
+        src = stellar.config.root + src.substring(1);
+      }
+      script.src = src;
+      if (opt) {
+        for (let key of Object.keys(opt)) {
+          script[key] = opt[key]
+        }
+      } else {
+        // 默认异步，如果需要同步，第二个参数传入 {} 即可
+        script.async = true
+      }
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    }),
+
+    // https://github.com/jerryc127/hexo-theme-butterfly
+    jQuery: (fn) => {
+      if (typeof jQuery === 'undefined') {
+        stellar.loadScript(stellar.plugins.jQuery).then(fn)
+      } else {
+        fn()
+      }
+    }
+  };
+  stellar.version = '1.19.0';
+  stellar.github = 'https://github.com/xaoxuu/hexo-theme-stellar/tree/1.19.0';
+  stellar.config = {
+    date_suffix: {
+      just: 'Just',
+      min: 'minutes ago',
+      hour: 'hours ago',
+      day: 'days ago',
+      month: 'months ago',
+    },
+    root : '/',
+  };
+
+  // required plugins (only load if needs)
+  stellar.plugins = {
+    jQuery: 'https://gcore.jsdelivr.net/npm/jquery@3.6.2/dist/jquery.min.js'
+  };
+
+  if ('local_search') {
+    stellar.search = {};
+    stellar.search.service = 'local_search';
+    if (stellar.search.service == 'local_search') {
+      let service_obj = Object.assign({}, {"field":"all","path":"/search.json","content":true,"sort":"-date"});
+      stellar.search[stellar.search.service] = service_obj;
+    }
+  }
+
+  // stellar js
+  stellar.plugins.stellar = Object.assign({"sites":"/js/plugins/sites.js","friends":"/js/plugins/friends.js","ghinfo":"/js/plugins/ghinfo.js","timeline":"/js/plugins/timeline.js","linkcard":"/js/plugins/linkcard.js","fcircle":"/js/plugins/fcircle.js","weibo":"/js/plugins/weibo.js"});
+
+  stellar.plugins.marked = Object.assign("https://cdn.bootcdn.net/ajax/libs/marked/4.0.18/marked.min.js");
+  // optional plugins
+  if ('true' == 'true') {
+    stellar.plugins.lazyload = Object.assign({"enable":true,"js":"https://gcore.jsdelivr.net/npm/vanilla-lazyload@17.8.3/dist/lazyload.min.js","transition":"blur"});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.swiper = Object.assign({"enable":true,"css":"https://unpkg.com/swiper@8.4.5/swiper-bundle.min.css","js":"https://unpkg.com/swiper@8.4.5/swiper-bundle.min.js"});
+  }
+  if ('' == 'true') {
+    stellar.plugins.scrollreveal = Object.assign({"enable":null,"js":"https://gcore.jsdelivr.net/npm/scrollreveal@4.0.9/dist/scrollreveal.min.js","distance":"8px","duration":500,"interval":100,"scale":1});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.preload = Object.assign({"enable":true,"service":"flying_pages","instant_page":"https://gcore.jsdelivr.net/gh/volantis-x/cdn-volantis@4.1.2/js/instant_page.js","flying_pages":"https://gcore.jsdelivr.net/gh/gijo-varghese/flying-pages@2.1.2/flying-pages.min.js"});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.fancybox = Object.assign({"enable":true,"js":"https://gcore.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.umd.js","css":"https://gcore.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.css","selector":".swiper-slide img"});
+  }
+  if ('false' == 'true') {
+    stellar.plugins.heti = Object.assign({"enable":false,"css":"https://unpkg.com/heti@0.9.2/umd/heti.min.css","js":"https://unpkg.com/heti@0.9.2/umd/heti-addon.min.js"});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.copycode = Object.assign({"enable":true,"js":"/js/plugins/copycode.js","default_text":"Copy","success_text":"Copied"});
+  }
+</script>
+
+<!-- required -->
+
+  
+<script src="/js/main.js" async></script>
+
+
+
+<!-- optional -->
+
+
+
+<!-- inject -->
+
+
+  </div>
+</body>
+</html>
