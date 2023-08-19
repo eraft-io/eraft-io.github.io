@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang='en'>
+<html lang='zh-CN'>
 
 <head>
   <meta name="generator" content="Hexo 6.3.0">
@@ -29,7 +29,7 @@
 <meta property="og:url" content="https://eraft.cn/2023/08/19/build-raft-lib/index.html">
 <meta property="og:site_name" content="ERaftBooks">
 <meta property="og:description" content="核心数据结构设计我们上一章节讲了Raft算法的主要内容，现在我们要代码实现它们了。首先我们需要抽象出我们需要的数据结构。先来梳理一下可能用到的数据结构，首先节点之间需要互相访问，那我们需要定义访问其他节点的网络客户端，这里面要包含节点的id,地址，还有rpc的客户端，整个结构我们抽象为RaftClientEnd，主要数据内容如下： 123456type RaftClientEnd struct &amp;">
-<meta property="og:locale" content="en_US">
+<meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://eraft.cn/images/goruntine_model.svg">
 <meta property="og:image" content="https://eraft.cn/images/raft_elec001.png">
 <meta property="og:image" content="https://eraft.cn/images/raft_elec002.png">
@@ -62,6 +62,8 @@
   
 
   
+    <link rel="shortcut icon" href="https://avatars.githubusercontent.com/u/84501959">
+  
 
   
 
@@ -90,7 +92,7 @@
 
 
 <div class="widgets">
-<widget class="widget-wrapper search"><div class="widget-body"><div class="search-wrapper" id="search"><form class="search-form"><input type="text" class="search-input" id="search-input" data-filter="/blog/" placeholder="文章搜索"><svg t="1670596976048" class="icon search-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2676" width="200" height="200"><path d="M938.2 832.6L723.8 618.1c-2.5-2.5-5.3-4.4-7.9-6.4 36.2-55.6 57.3-121.8 57.3-193.1C773.3 222.8 614.6 64 418.7 64S64 222.8 64 418.6c0 195.9 158.8 354.6 354.6 354.6 71.3 0 137.5-21.2 193.2-57.4 2 2.7 3.9 5.4 6.3 7.8L832.5 938c14.6 14.6 33.7 21.9 52.8 21.9 19.1 0 38.2-7.3 52.8-21.8 29.2-29.1 29.2-76.4 0.1-105.5M418.7 661.3C284.9 661.3 176 552.4 176 418.6 176 284.9 284.9 176 418.7 176c133.8 0 242.6 108.9 242.6 242.7 0 133.7-108.9 242.6-242.6 242.6" p-id="2677"></path></svg></form><div id="search-result"></div><div class="search-no-result">No Results!</div></div></div></widget>
+<widget class="widget-wrapper search"><div class="widget-body"><div class="search-wrapper" id="search"><form class="search-form"><input type="text" class="search-input" id="search-input" data-filter="/blog/" placeholder="文章搜索"><svg t="1670596976048" class="icon search-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2676" width="200" height="200"><path d="M938.2 832.6L723.8 618.1c-2.5-2.5-5.3-4.4-7.9-6.4 36.2-55.6 57.3-121.8 57.3-193.1C773.3 222.8 614.6 64 418.7 64S64 222.8 64 418.6c0 195.9 158.8 354.6 354.6 354.6 71.3 0 137.5-21.2 193.2-57.4 2 2.7 3.9 5.4 6.3 7.8L832.5 938c14.6 14.6 33.7 21.9 52.8 21.9 19.1 0 38.2-7.3 52.8-21.8 29.2-29.1 29.2-76.4 0.1-105.5M418.7 661.3C284.9 661.3 176 552.4 176 418.6 176 284.9 284.9 176 418.7 176c133.8 0 242.6 108.9 242.6 242.7 0 133.7-108.9 242.6-242.6 242.6" p-id="2677"></path></svg></form><div id="search-result"></div><div class="search-no-result">没有找到内容！</div></div></div></widget>
 
 
 <widget class="widget-wrapper toc single" id="data-toc"><div class="widget-header cap dis-select"><span class="name">动手学习分布式-构建Raft库 (Golang eraftkv 版)</span></div><div class="widget-body fs14"><div class="doc-tree active"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A0%B8%E5%BF%83%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E8%AE%BE%E8%AE%A1"><span class="toc-text">核心数据结构设计</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8D%8F%E7%A8%8B%E6%A8%A1%E5%9E%8B"><span class="toc-text">协程模型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Rpc%E5%AE%9A%E4%B9%89"><span class="toc-text">Rpc定义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#RequestVote%E7%9B%B8%E5%85%B3"><span class="toc-text">RequestVote相关</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#AppendEntries%E7%9B%B8%E5%85%B3"><span class="toc-text">AppendEntries相关</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Leader%E9%80%89%E4%B8%BE%E5%AE%9E%E7%8E%B0%E5%88%86%E6%9E%90"><span class="toc-text">Leader选举实现分析</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%97%A5%E5%BF%97%E5%A4%8D%E5%88%B6%E5%AE%9E%E7%8E%B0%E5%88%86%E6%9E%90"><span class="toc-text">日志复制实现分析</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Raft%E5%BF%AB%E7%85%A7%E5%AE%9E%E7%8E%B0%E5%88%86%E6%9E%90"><span class="toc-text">Raft快照实现分析</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Raft%E5%A6%82%E4%BD%95%E5%BA%94%E5%AF%B9%E8%84%91%E8%A3%82"><span class="toc-text">Raft如何应对脑裂</span></a></li></ol></div></div></widget>
@@ -109,7 +111,7 @@
 
 
 
-<div class="bread-nav fs12"><div id="breadcrumb"><a class="cap breadcrumb" href="/">Home</a><span class="sep"></span><a class="cap breadcrumb" href="/">Blog</a></div><div id="post-meta">Posted on&nbsp;<time datetime="2023-08-19T03:42:36.000Z">2023-08-19</time></div></div>
+<div class="bread-nav fs12"><div id="breadcrumb"><a class="cap breadcrumb" href="/">主页</a><span class="sep"></span><a class="cap breadcrumb" href="/">文章</a></div><div id="post-meta">发布于&nbsp;<time datetime="2023-08-19T03:42:36.000Z">2023-08-19</time></div></div>
 
 <article class='md-text content post'>
 <h1 class="article-title"><span>动手学习分布式-构建Raft库 (Golang eraftkv 版)</span></h1>
@@ -230,12 +232,12 @@
 
 
 
-<div class="article-footer reveal fs14"><section id="license"><div class="header"><span>License</span></div><div class="body"><p>本文采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">署名-非商业性使用-相同方式共享 4.0 国际</a> 许可协议，转载请注明出处。</p>
+<div class="article-footer reveal fs14"><section id="license"><div class="header"><span>许可协议</span></div><div class="body"><p>本文采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">署名-非商业性使用-相同方式共享 4.0 国际</a> 许可协议，转载请注明出处。</p>
 </div></section></div>
 
 </article>
 
-<div class="related-wrap reveal" id="read-next"><section class="body"><div class="item" id="prev"><div class="note">Newer</div><a href="/2023/08/19/kv-distributed-systems/">动手学习分布式-基于Raft库，实现简单的分布式KV系统 (Golang eraftkv 版)</a></div><div class="item" id="next"><div class="note">Older</div><a href="/2023/08/19/raftbasic/">动手学习分布式-Raft论文解读 (Golang eraftkv 版)</a></div></section></div>
+<div class="related-wrap reveal" id="read-next"><section class="body"><div class="item" id="prev"><div class="note">较新文章</div><a href="/2023/08/19/kv-distributed-systems/">动手学习分布式-基于Raft库，实现简单的分布式KV系统 (Golang eraftkv 版)</a></div><div class="item" id="next"><div class="note">较早文章</div><a href="/2023/08/19/raftbasic/">动手学习分布式-Raft论文解读 (Golang eraftkv 版)</a></div></section></div>
 
 
 
@@ -356,11 +358,11 @@
   stellar.github = 'https://github.com/xaoxuu/hexo-theme-stellar/tree/1.19.0';
   stellar.config = {
     date_suffix: {
-      just: 'Just',
-      min: 'minutes ago',
-      hour: 'hours ago',
-      day: 'days ago',
-      month: 'months ago',
+      just: '刚刚',
+      min: '分钟前',
+      hour: '小时前',
+      day: '天前',
+      month: '个月前',
     },
     root : '/',
   };

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang='en'>
+<html lang='zh-CN'>
 
 <head>
   <meta name="generator" content="Hexo 6.3.0">
@@ -29,7 +29,7 @@
 <meta property="og:url" content="https://eraft.cn/2023/08/19/distributed-tx/index.html">
 <meta property="og:site_name" content="ERaftBooks">
 <meta property="og:description" content="事务介绍在介绍分布式事务之前，我们先来通过一个例子看看事务是什么？   开始讨论我们系统中可能发生的事情之前，我们要重新说一下事务的定义。事务是对数据库的一系列操作，这些操作满足ACID的属性。 我们看到上图的例子，假设我们现在实现的分布式存储系统存储了银行账户数据。 T1表示储蓄用户的账户为Y，他有10块钱，然后他给X转账1块钱，那么对应的数据操作就是对x + 1,对Y - 1 。用户提交这个转">
-<meta property="og:locale" content="en_US">
+<meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://eraft.cn/images/demo1.png">
 <meta property="og:image" content="https://eraft.cn/images/2pc.png">
 <meta property="og:image" content="https://eraft.cn/images/2pc_flow.png">
@@ -53,6 +53,8 @@
 
   
 
+  
+    <link rel="shortcut icon" href="https://avatars.githubusercontent.com/u/84501959">
   
 
   
@@ -82,7 +84,7 @@
 
 
 <div class="widgets">
-<widget class="widget-wrapper search"><div class="widget-body"><div class="search-wrapper" id="search"><form class="search-form"><input type="text" class="search-input" id="search-input" data-filter="/blog/" placeholder="文章搜索"><svg t="1670596976048" class="icon search-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2676" width="200" height="200"><path d="M938.2 832.6L723.8 618.1c-2.5-2.5-5.3-4.4-7.9-6.4 36.2-55.6 57.3-121.8 57.3-193.1C773.3 222.8 614.6 64 418.7 64S64 222.8 64 418.6c0 195.9 158.8 354.6 354.6 354.6 71.3 0 137.5-21.2 193.2-57.4 2 2.7 3.9 5.4 6.3 7.8L832.5 938c14.6 14.6 33.7 21.9 52.8 21.9 19.1 0 38.2-7.3 52.8-21.8 29.2-29.1 29.2-76.4 0.1-105.5M418.7 661.3C284.9 661.3 176 552.4 176 418.6 176 284.9 284.9 176 418.7 176c133.8 0 242.6 108.9 242.6 242.7 0 133.7-108.9 242.6-242.6 242.6" p-id="2677"></path></svg></form><div id="search-result"></div><div class="search-no-result">No Results!</div></div></div></widget>
+<widget class="widget-wrapper search"><div class="widget-body"><div class="search-wrapper" id="search"><form class="search-form"><input type="text" class="search-input" id="search-input" data-filter="/blog/" placeholder="文章搜索"><svg t="1670596976048" class="icon search-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2676" width="200" height="200"><path d="M938.2 832.6L723.8 618.1c-2.5-2.5-5.3-4.4-7.9-6.4 36.2-55.6 57.3-121.8 57.3-193.1C773.3 222.8 614.6 64 418.7 64S64 222.8 64 418.6c0 195.9 158.8 354.6 354.6 354.6 71.3 0 137.5-21.2 193.2-57.4 2 2.7 3.9 5.4 6.3 7.8L832.5 938c14.6 14.6 33.7 21.9 52.8 21.9 19.1 0 38.2-7.3 52.8-21.8 29.2-29.1 29.2-76.4 0.1-105.5M418.7 661.3C284.9 661.3 176 552.4 176 418.6 176 284.9 284.9 176 418.7 176c133.8 0 242.6 108.9 242.6 242.7 0 133.7-108.9 242.6-242.6 242.6" p-id="2677"></path></svg></form><div id="search-result"></div><div class="search-no-result">没有找到内容！</div></div></div></widget>
 
 
 <widget class="widget-wrapper toc single" id="data-toc"><div class="widget-header cap dis-select"><span class="name">动手学习分布式-Multi-分布式事务初探 (Golang eraftkv 版)</span></div><div class="widget-body fs14"><div class="doc-tree active"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8B%E5%8A%A1%E4%BB%8B%E7%BB%8D"><span class="toc-text">事务介绍</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%A4%E9%98%B6%E6%AE%B5%E6%8F%90%E4%BA%A4"><span class="toc-text">两阶段提交</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8D%90%E8%B5%A0"><span class="toc-text">捐赠</span></a></li></ol></li></ol></div></div></widget>
@@ -101,7 +103,7 @@
 
 
 
-<div class="bread-nav fs12"><div id="breadcrumb"><a class="cap breadcrumb" href="/">Home</a><span class="sep"></span><a class="cap breadcrumb" href="/">Blog</a></div><div id="post-meta">Posted on&nbsp;<time datetime="2023-08-19T05:35:31.000Z">2023-08-19</time></div></div>
+<div class="bread-nav fs12"><div id="breadcrumb"><a class="cap breadcrumb" href="/">主页</a><span class="sep"></span><a class="cap breadcrumb" href="/">文章</a></div><div id="post-meta">发布于&nbsp;<time datetime="2023-08-19T05:35:31.000Z">2023-08-19</time></div></div>
 
 <article class='md-text content post'>
 <h1 class="article-title"><span>动手学习分布式-Multi-分布式事务初探 (Golang eraftkv 版)</span></h1>
@@ -140,12 +142,12 @@
 
 
 
-<div class="article-footer reveal fs14"><section id="license"><div class="header"><span>License</span></div><div class="body"><p>本文采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">署名-非商业性使用-相同方式共享 4.0 国际</a> 许可协议，转载请注明出处。</p>
+<div class="article-footer reveal fs14"><section id="license"><div class="header"><span>许可协议</span></div><div class="body"><p>本文采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">署名-非商业性使用-相同方式共享 4.0 国际</a> 许可协议，转载请注明出处。</p>
 </div></section></div>
 
 </article>
 
-<div class="related-wrap reveal" id="read-next"><section class="body"><div class="item" id="prev"></div><div class="item" id="next"><div class="note">Older</div><a href="/2023/08/19/multi-raft/">动手学习分布式-Multi-Raft设计与实现 (Golang eraftkv 版)</a></div></section></div>
+<div class="related-wrap reveal" id="read-next"><section class="body"><div class="item" id="prev"></div><div class="item" id="next"><div class="note">较早文章</div><a href="/2023/08/19/multi-raft/">动手学习分布式-Multi-Raft设计与实现 (Golang eraftkv 版)</a></div></section></div>
 
 
 
@@ -266,11 +268,11 @@
   stellar.github = 'https://github.com/xaoxuu/hexo-theme-stellar/tree/1.19.0';
   stellar.config = {
     date_suffix: {
-      just: 'Just',
-      min: 'minutes ago',
-      hour: 'hours ago',
-      day: 'days ago',
-      month: 'months ago',
+      just: '刚刚',
+      min: '分钟前',
+      hour: '小时前',
+      day: '天前',
+      month: '个月前',
     },
     root : '/',
   };

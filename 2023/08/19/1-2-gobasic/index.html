@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang='en'>
+<html lang='zh-CN'>
 
 <head>
   <meta name="generator" content="Hexo 6.3.0">
@@ -29,7 +29,7 @@
 <meta property="og:url" content="https://eraft.cn/2023/08/19/1-2-gobasic/index.html">
 <meta property="og:site_name" content="ERaftBooks">
 <meta property="og:description" content="Go语言优点首先Go是一门开源的语言，他出生名门Google，社区有强有力的顶级技术人员支撑。它最开始的设计者是Rob Pike，Robert Griesemer，Ken Thompson。 你可以在这个页面找到他们的资料 https:&#x2F;&#x2F;golang.design&#x2F;history&#x2F; 其中Ken Thompson是UNIX系统的发明者。 Go语言对于初学者很友好，很容易在短时间内快速上手，你可以通">
-<meta property="og:locale" content="en_US">
+<meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://eraft.cn/images/slice01.png">
 <meta property="og:image" content="https://eraft.cn/images/slice02.png">
 <meta property="og:image" content="https://eraft.cn/images/scheduler01.png">
@@ -55,6 +55,8 @@
 
   
 
+  
+    <link rel="shortcut icon" href="https://avatars.githubusercontent.com/u/84501959">
   
 
   
@@ -84,7 +86,7 @@
 
 
 <div class="widgets">
-<widget class="widget-wrapper search"><div class="widget-body"><div class="search-wrapper" id="search"><form class="search-form"><input type="text" class="search-input" id="search-input" data-filter="/blog/" placeholder="文章搜索"><svg t="1670596976048" class="icon search-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2676" width="200" height="200"><path d="M938.2 832.6L723.8 618.1c-2.5-2.5-5.3-4.4-7.9-6.4 36.2-55.6 57.3-121.8 57.3-193.1C773.3 222.8 614.6 64 418.7 64S64 222.8 64 418.6c0 195.9 158.8 354.6 354.6 354.6 71.3 0 137.5-21.2 193.2-57.4 2 2.7 3.9 5.4 6.3 7.8L832.5 938c14.6 14.6 33.7 21.9 52.8 21.9 19.1 0 38.2-7.3 52.8-21.8 29.2-29.1 29.2-76.4 0.1-105.5M418.7 661.3C284.9 661.3 176 552.4 176 418.6 176 284.9 284.9 176 418.7 176c133.8 0 242.6 108.9 242.6 242.7 0 133.7-108.9 242.6-242.6 242.6" p-id="2677"></path></svg></form><div id="search-result"></div><div class="search-no-result">No Results!</div></div></div></widget>
+<widget class="widget-wrapper search"><div class="widget-body"><div class="search-wrapper" id="search"><form class="search-form"><input type="text" class="search-input" id="search-input" data-filter="/blog/" placeholder="文章搜索"><svg t="1670596976048" class="icon search-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2676" width="200" height="200"><path d="M938.2 832.6L723.8 618.1c-2.5-2.5-5.3-4.4-7.9-6.4 36.2-55.6 57.3-121.8 57.3-193.1C773.3 222.8 614.6 64 418.7 64S64 222.8 64 418.6c0 195.9 158.8 354.6 354.6 354.6 71.3 0 137.5-21.2 193.2-57.4 2 2.7 3.9 5.4 6.3 7.8L832.5 938c14.6 14.6 33.7 21.9 52.8 21.9 19.1 0 38.2-7.3 52.8-21.8 29.2-29.1 29.2-76.4 0.1-105.5M418.7 661.3C284.9 661.3 176 552.4 176 418.6 176 284.9 284.9 176 418.7 176c133.8 0 242.6 108.9 242.6 242.7 0 133.7-108.9 242.6-242.6 242.6" p-id="2677"></path></svg></form><div id="search-result"></div><div class="search-no-result">没有找到内容！</div></div></div></widget>
 
 
 <widget class="widget-wrapper toc single" id="data-toc"><div class="widget-header cap dis-select"><span class="name">动手学习分布式-Go语言基础知识 (Golang eraftkv 版)</span></div><div class="widget-body fs14"><div class="doc-tree active"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#Go%E8%AF%AD%E8%A8%80%E4%BC%98%E7%82%B9"><span class="toc-text">Go语言优点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%87%E7%89%87"><span class="toc-text">切片</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E5%AD%97%E9%9D%A2%E9%87%8F%E5%88%97%E8%A1%A8%E5%88%9B%E5%BB%BA%E5%88%87%E7%89%87"><span class="toc-text">使用字面量列表创建切片</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BF%AE%E6%94%B9%E5%88%87%E7%89%87%E4%B8%AD%E7%9A%84%E5%85%83%E7%B4%A0"><span class="toc-text">修改切片中的元素</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%87%E7%89%87%E5%BA%95%E5%B1%82%E7%BB%93%E6%9E%84"><span class="toc-text">切片底层结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Goruntine"><span class="toc-text">Goruntine</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B0%83%E5%BA%A6%E5%99%A8"><span class="toc-text">调度器</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%B0%83%E5%BA%A6%E5%99%A8%E7%9A%84%E8%AE%BE%E8%AE%A1%E5%86%B3%E7%AD%96"><span class="toc-text">调度器的设计决策</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Go%E8%B0%83%E5%BA%A6%E5%99%A8%E7%9A%84%E6%A8%A1%E5%9E%8B%E4%BB%8B%E7%BB%8D"><span class="toc-text">Go调度器的模型介绍</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Go%E8%B0%83%E5%BA%A6%E5%99%A8%E7%9A%84%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B"><span class="toc-text">Go调度器的工作流程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B7%9F%E8%B8%AAGo%E8%B0%83%E5%BA%A6%E5%99%A8%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B"><span class="toc-text">跟踪Go调度器工作流程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%86%E8%A7%A3%E6%9B%B4%E5%A4%9A%E8%B0%83%E5%BA%A6%E5%99%A8%E5%8E%9F%E7%90%86"><span class="toc-text">了解更多调度器原理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86"><span class="toc-text">内存管理</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E6%9E%B6%E6%9E%84%E6%A6%82%E8%A7%88"><span class="toc-text">内存管理架构概览</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8D%90%E8%B5%A0"><span class="toc-text">捐赠</span></a></li></ol></li></ol></div></div></widget>
@@ -103,7 +105,7 @@
 
 
 
-<div class="bread-nav fs12"><div id="breadcrumb"><a class="cap breadcrumb" href="/">Home</a><span class="sep"></span><a class="cap breadcrumb" href="/">Blog</a></div><div id="post-meta">Posted on&nbsp;<time datetime="2023-08-18T17:09:17.000Z">2023-08-19</time></div></div>
+<div class="bread-nav fs12"><div id="breadcrumb"><a class="cap breadcrumb" href="/">主页</a><span class="sep"></span><a class="cap breadcrumb" href="/">文章</a></div><div id="post-meta">发布于&nbsp;<time datetime="2023-08-18T17:09:17.000Z">2023-08-19</time></div></div>
 
 <article class='md-text content post'>
 <h1 class="article-title"><span>动手学习分布式-Go语言基础知识 (Golang eraftkv 版)</span></h1>
@@ -205,12 +207,12 @@
 
 
 
-<div class="article-footer reveal fs14"><section id="license"><div class="header"><span>License</span></div><div class="body"><p>本文采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">署名-非商业性使用-相同方式共享 4.0 国际</a> 许可协议，转载请注明出处。</p>
+<div class="article-footer reveal fs14"><section id="license"><div class="header"><span>许可协议</span></div><div class="body"><p>本文采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">署名-非商业性使用-相同方式共享 4.0 国际</a> 许可协议，转载请注明出处。</p>
 </div></section></div>
 
 </article>
 
-<div class="related-wrap reveal" id="read-next"><section class="body"><div class="item" id="prev"><div class="note">Newer</div><a href="/2023/08/19/raftbasic/">动手学习分布式-Raft论文解读 (Golang eraftkv 版)</a></div><div class="item" id="next"><div class="note">Older</div><a href="/2023/08/19/hello-world/">动手学习分布式-体验分布式系统 (Golang eraftkv 版)</a></div></section></div>
+<div class="related-wrap reveal" id="read-next"><section class="body"><div class="item" id="prev"><div class="note">较新文章</div><a href="/2023/08/19/raftbasic/">动手学习分布式-Raft论文解读 (Golang eraftkv 版)</a></div><div class="item" id="next"><div class="note">较早文章</div><a href="/2023/08/19/hello-world/">动手学习分布式-体验分布式系统 (Golang eraftkv 版)</a></div></section></div>
 
 
 
@@ -331,11 +333,11 @@
   stellar.github = 'https://github.com/xaoxuu/hexo-theme-stellar/tree/1.19.0';
   stellar.config = {
     date_suffix: {
-      just: 'Just',
-      min: 'minutes ago',
-      hour: 'hours ago',
-      day: 'days ago',
-      month: 'months ago',
+      just: '刚刚',
+      min: '分钟前',
+      hour: '小时前',
+      day: '天前',
+      month: '个月前',
     },
     root : '/',
   };
