@@ -3,17 +3,21 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: Hexo
+title: ERaftBooks
 subtitle: ''
 description: ''
 keywords:
+favicon: https://avatars.githubusercontent.com/u/84501959
 author: John Doe
-language: en
+language:
+  - zh-CN
+  - en
+  - zh-TW
 timezone: ''
 
 # URL
 ## Set your site url here. For example, if you use GitHub Page, set url as 'https://username.github.io/project'
-url: http://example.com
+url: https://eraft.cn
 permalink: :year/:month/:day/:title/
 permalink_defaults:
 pretty_urls:
