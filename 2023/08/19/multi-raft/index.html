@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang='en'>
+
+<head>
+  <meta name="generator" content="Hexo 6.3.0">
+  <meta name="hexo-theme" content="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.19.0">
+  <meta charset="utf-8">
+  
+
+  <meta http-equiv='x-dns-prefetch-control' content='on' />
+  <link rel='dns-prefetch' href='https://gcore.jsdelivr.net'>
+  <link rel="preconnect" href="https://gcore.jsdelivr.net" crossorigin>
+  <link rel='dns-prefetch' href='//unpkg.com'>
+
+  <meta name="renderer" content="webkit">
+  <meta name="force-rendering" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="HandheldFriendly" content="True" >
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="theme-color" content="#f8f8f8">
+  
+  <title>动手学习分布式-Multi-Raft设计与实现 (Golang eraftkv 版) - ERaftBooks</title>
+
+  
+    <meta name="description" content="设计思考在上一章中，我们应用Raft实现了一个单分组的Raft KV集群。客户端写请求到Leader，Leader把操作复制到Follower节点。当Leader挂了，会按我们第四章描述的Raft算法库，进行一轮新的选举，选出新的Leader后继续提供服务。这样我们就有了一个高可用的集群。 我们通过单分组的KV集群实现了高可用，以及分区容忍性，但是分布式系统还有一个可扩展的特性，也就是我们可以通过">
+<meta property="og:type" content="article">
+<meta property="og:title" content="动手学习分布式-Multi-Raft设计与实现 (Golang eraftkv 版)">
+<meta property="og:url" content="https://eraft.cn/2023/08/19/multi-raft/index.html">
+<meta property="og:site_name" content="ERaftBooks">
+<meta property="og:description" content="设计思考在上一章中，我们应用Raft实现了一个单分组的Raft KV集群。客户端写请求到Leader，Leader把操作复制到Follower节点。当Leader挂了，会按我们第四章描述的Raft算法库，进行一轮新的选举，选出新的Leader后继续提供服务。这样我们就有了一个高可用的集群。 我们通过单分组的KV集群实现了高可用，以及分区容忍性，但是分布式系统还有一个可扩展的特性，也就是我们可以通过">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://eraft.cn/images/eraftdb_arch.png">
+<meta property="og:image" content="https://eraft.cn/images/alipay.jpeg">
+<meta property="article:published_time" content="2023-08-19T05:29:41.000Z">
+<meta property="article:modified_time" content="2023-08-19T05:34:51.177Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://eraft.cn/images/eraftdb_arch.png">
+  
+  
+  
+  
+
+  <!-- feed -->
+  
+
+  
+    
+<link rel="stylesheet" href="/css/main.css">
+
+  
+
+  
+
+  
+
+  
+
+
+  
+</head>
+
+<body>
+  
+
+
+
+
+  <div class='l_body' id='start'>
+    <aside class='l_left' layout='post'>
+    
+
+  
+
+<header class="header"><div class="logo-wrap"><a class="title" href="/"><div class="main" ff="title">ERaftBooks</div></a></div>
+
+<nav class="menu dis-select"></nav>
+</header>
+
+
+<div class="widgets">
+<widget class="widget-wrapper search"><div class="widget-body"><div class="search-wrapper" id="search"><form class="search-form"><input type="text" class="search-input" id="search-input" data-filter="/blog/" placeholder="文章搜索"><svg t="1670596976048" class="icon search-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2676" width="200" height="200"><path d="M938.2 832.6L723.8 618.1c-2.5-2.5-5.3-4.4-7.9-6.4 36.2-55.6 57.3-121.8 57.3-193.1C773.3 222.8 614.6 64 418.7 64S64 222.8 64 418.6c0 195.9 158.8 354.6 354.6 354.6 71.3 0 137.5-21.2 193.2-57.4 2 2.7 3.9 5.4 6.3 7.8L832.5 938c14.6 14.6 33.7 21.9 52.8 21.9 19.1 0 38.2-7.3 52.8-21.8 29.2-29.1 29.2-76.4 0.1-105.5M418.7 661.3C284.9 661.3 176 552.4 176 418.6 176 284.9 284.9 176 418.7 176c133.8 0 242.6 108.9 242.6 242.7 0 133.7-108.9 242.6-242.6 242.6" p-id="2677"></path></svg></form><div id="search-result"></div><div class="search-no-result">No Results!</div></div></div></widget>
+
+
+<widget class="widget-wrapper toc single" id="data-toc"><div class="widget-header cap dis-select"><span class="name">动手学习分布式-Multi-Raft设计与实现 (Golang eraftkv 版)</span></div><div class="widget-body fs14"><div class="doc-tree active"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%BE%E8%AE%A1%E6%80%9D%E8%80%83"><span class="toc-text">设计思考</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%AE%9E%E7%8E%B0%E5%88%86%E6%9E%90"><span class="toc-text">配置服务器实现分析</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%86%E7%89%87%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%AE%9E%E7%8E%B0%E5%88%86%E6%9E%90"><span class="toc-text">分片服务器实现分析</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%AE%9E%E7%8E%B0%E5%88%86%E6%9E%90"><span class="toc-text">客户端实现分析</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8D%90%E8%B5%A0"><span class="toc-text">捐赠</span></a></li></ol></li></ol></div></div></widget>
+
+
+
+
+</div>
+
+
+    </aside>
+    <div class='l_main'>
+      
+
+      
+
+
+
+<div class="bread-nav fs12"><div id="breadcrumb"><a class="cap breadcrumb" href="/">Home</a><span class="sep"></span><a class="cap breadcrumb" href="/">Blog</a></div><div id="post-meta">Posted on&nbsp;<time datetime="2023-08-19T05:29:41.000Z">2023-08-19</time></div></div>
+
+<article class='md-text content post'>
+<h1 class="article-title"><span>动手学习分布式-Multi-Raft设计与实现 (Golang eraftkv 版)</span></h1>
+<h3 id="设计思考"><a href="#设计思考" class="headerlink" title="设计思考"></a>设计思考</h3><p>在上一章中，我们应用Raft实现了一个单分组的Raft KV集群。客户端写请求到Leader，Leader把操作复制到Follower节点。当Leader挂了，会按我们第四章描述的Raft算法库，进行一轮新的选举，选出新的Leader后继续提供服务。这样我们就有了一个高可用的集群。</p>
+<p>我们通过单分组的KV集群实现了高可用，以及分区容忍性，但是分布式系统还有一个可扩展的特性，也就是我们可以通过堆机器的方式来让系统实现更高的吞吐量。我们第五章实现的是单分组集群，只有单个Leader节点承担客户端的写入。单分组集群系统的吞吐量上线取决于单机的性能。那么我们该如何实现分布式可扩展性呢？</p>
+<p>接下来我们将介绍Multi-Raft实现，它可以解决单分组集群的可扩展性问题。它的思路是这样的：既然单组有上限，那么我们可不可以用多组Raft KV集群来实现扩展呢？我们需要有一个配置中心来管理多个分组服务器的地址信息。有了多个分组之后，我们就要考虑怎么样把用户的请求均衡地分发到相应的分组服务器上了。我们可以使用哈希算法来解决这个问题，对用户的key做哈希计算，然后映射到不同的服务分组上，这样可以保证流量的均衡。</p>
+<p>整合一下上面的思路，我们可以得到如下的系统架构图a：</p>
+<div class="tag-plugin image"><div class="image-bg"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="/images/eraftdb_arch.png"/></div></div>
+
+<p>在第一章开篇，我们介绍了系统的整体架构并且带大家体验了系统的运行。之后，我们讲解了Go语言的基础知识、Raft算法库以及应用Raft算法库的示例。相信大家现在对这个系统已经有了一个更加深入的理解。</p>
+<p>首先，客户端启动之后，会从配置服务器（ConfigServer）拉取集群的分组信息，以及分组负责的数据桶（Bucket）信息到本地。客户端发送请求的时候会计算key的哈希值，找到相应的桶以及负责这个桶的服务器分组（ShardServer）地址信息，然后将操作发送到对应的服务器分组进行处理。这里ConfigServer服务器分组和ShardServer服务器分组都是高可用的，多个ShardServer实现了系统的可扩展性。</p>
+<h3 id="配置服务器实现分析"><a href="#配置服务器实现分析" class="headerlink" title="配置服务器实现分析"></a>配置服务器实现分析</h3><p>配置服务的实现在eraft&#x2F;configserver目录下。根据上面的架构图，我们大概可以知道配置服务器需要存储哪些信息：（1）每个服务分组的服务器地址信息；（2）服务分组负责的数据桶信息。这个结构定义如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">type Config struct &#123; Version int Buckets [common.NBuckets]int Groups map[int][]string &#125;</span><br></pre></td></tr></table></figure>
+
+<p>Version表示当前配置的版本号。Buckets存储了分组负责的桶信息。NBuckets是一个常量，表示系统中最大的桶数量。这里我们默认是10。对于大规模的分布式系统， Buckets值可以被设置为很大。</p>
+<p>我们看到下面的配置示例：配置版本号为6 ，10个桶和1个分组服务。</p>
+<p>我们设置127.0.0.1:6088，127.0.0.1:6089，127.0.0.1:6090这三台服务器组成分组1。Buckets数组中0-4号桶都是分组1负责的。5-9号桶为0，表示当前没有分组负责这些桶的数据写入。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&quot;Version&quot;:6,&quot;Buckets&quot;:[1,1,1,1,1,0,0,0,0,0],&quot;Groups&quot;:&#123;&quot;1&quot;:[&quot;127.0.0.1:6088&quot;,&quot;127.0.0.1:6089&quot;,&quot;127.0.0.1:6090&quot;]&#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>eraft中把上述配置信息存储到了leveldb中。下面是几个操作的接口，Join操作 是把一个分组的服务器加入到集群配置中；Leave操作是删除某些分组的服务器配置信息；Move操作是将某个桶分配给相应的分组负责；Query操作是查询配置信息。这些操作是通过修改Config这个结构，并将数据持久化到leveldb中实现。操作的代码实现逻辑在eraft&#x2F;configserver&#x2F;config_stm.go里面。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">type ConfigStm interface &#123; </span><br><span class="line"></span><br><span class="line">    Join(groups map[int][]string) error</span><br><span class="line"></span><br><span class="line">    Leave(gids []int) error</span><br><span class="line"></span><br><span class="line">    Move(bucket_id, gid int) error</span><br><span class="line"></span><br><span class="line">    Query(num int) (Config, error)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>配置服务器的核心逻辑在config_server.go里面，可以看到和我们第四章实现的单分组kv极其类似。这里只是把Put, Get操作给改成了对配置的Join、Leave、Move、Query操作。 每一次操作都经过一次共识，保证三个服务节点都有一致的配置。这样Leader配置节点挂掉后，集群中仍然可以从新的Leader配置服务器中获取配置信息。</p>
+<h3 id="分片服务器实现分析"><a href="#分片服务器实现分析" class="headerlink" title="分片服务器实现分析"></a>分片服务器实现分析</h3><p>首先，我们看到bucket定义如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">// a bucket is a logical partition in a distributed system </span><br><span class="line"></span><br><span class="line">//  it has a unique id, a pointer to db engine, and status</span><br><span class="line"></span><br><span class="line">//</span><br><span class="line"></span><br><span class="line">type Bucket struct &#123;</span><br><span class="line"></span><br><span class="line">    ID     int</span><br><span class="line"></span><br><span class="line">    KvDB   storage_eng.KvStore</span><br><span class="line"></span><br><span class="line">    Status buketStatus</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>桶具有一个唯一标识的ID。 前面我们介绍配置服务器的时，介绍过一个服务分组负责一部分桶的数据。在配置服务器中，1·桶关联的ID值就是配置数组的索引号。 同时，桶还关联了一个KvStore的接口。我们写数据的时候会传入当前服务器持有的数据存储引擎，下面是对桶中数据的操作，有Get, Put, Append。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line">// </span><br><span class="line"></span><br><span class="line">// get encode key data from engine</span><br><span class="line"></span><br><span class="line">//</span><br><span class="line"></span><br><span class="line">func (bu *Bucket) Get(key string) (string, error) &#123;</span><br><span class="line"></span><br><span class="line">    encodeKey := strconv.Itoa(bu.ID) + SPLIT + key</span><br><span class="line"></span><br><span class="line">    v, err := bu.KvDB.Get(encodeKey)</span><br><span class="line"></span><br><span class="line">    if err != nil &#123;</span><br><span class="line"></span><br><span class="line">        return &quot;&quot;, err</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    return v, nil</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">//</span><br><span class="line"></span><br><span class="line">// put key, value data to db engine</span><br><span class="line"></span><br><span class="line">//</span><br><span class="line"></span><br><span class="line">func (bu *Bucket) Put(key, value string) error &#123;</span><br><span class="line"></span><br><span class="line">    encodeKey := strconv.Itoa(bu.ID) + SPLIT + key</span><br><span class="line"></span><br><span class="line">    return bu.KvDB.Put(encodeKey, value)</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">//</span><br><span class="line"></span><br><span class="line">// appned data  to engine</span><br><span class="line"></span><br><span class="line">//</span><br><span class="line"></span><br><span class="line">func (bu *Bucket) Append(key, value string) error &#123;</span><br><span class="line"></span><br><span class="line">    oldV, err := bu.Get(key)</span><br><span class="line"></span><br><span class="line">    if err != nil &#123;</span><br><span class="line"></span><br><span class="line">        return err</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    return bu.Put(key, oldV+value)</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>接下来我们来看看ShardServer定义的结构体</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">type ShardKV struct &#123;</span><br><span class="line"></span><br><span class="line">    mu      sync.RWMutex</span><br><span class="line"></span><br><span class="line">    dead    int32</span><br><span class="line"></span><br><span class="line">    rf      *raftcore.Raft</span><br><span class="line"></span><br><span class="line">    applyCh chan *pb.ApplyMsg</span><br><span class="line"></span><br><span class="line">    gid_    int</span><br><span class="line"></span><br><span class="line">    cvCli   *configserver.CfgCli</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    lastApplied int</span><br><span class="line"></span><br><span class="line">    lastConfig  configserver.Config</span><br><span class="line"></span><br><span class="line">    curConfig   configserver.Config</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    stm map[int]*Bucket</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    dbEng storage_eng.KvStore</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    notifyChans map[int]chan *pb.CommandResponse</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    stopApplyCh chan interface&#123;&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    pb.UnimplementedRaftServiceServer</span><br><span class="line"></span><br><span class="line">&#125; </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>这个结构和我们应用Raft实现单组KvServer的结构特别类似。这里的状态机是map[int]*Bucket类型的，代表当前服务器的桶的数据。分片服务器需要和配置服务器交互，知道自己负责哪些分片的数据。cvCli定义了到配置服务器的客户端。lastConfig，curConfig分别记录了上一个版本以及当前版本的集群配置表。服务器知道这个表之后就知道自己负责哪些分片的数据。当集群拓扑变更后，配置表会变化，分片服务器能第一时间感知到变化，并且应用新的配置表。其他结构就和我们之前介绍单组KvServer一样了。</p>
+<p>我们看看ShardServer构造流程和单组KvServer的区别。首先， Server启动的时候我们初始化了两个引擎，一个用来存储Raft日志的logDbEng，另一个用来存储实际数据的newdbEng。cvCli是到配置服务器分组的连接客户。，我们调用MakeCfgSvrClient构造到配置服务器的客户端，传入配置服务器分组的地址列表。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line">//</span><br><span class="line"></span><br><span class="line">// MakeShardKVServer make a new shard kv server</span><br><span class="line"></span><br><span class="line">// peerMaps: init peer map in the raft group</span><br><span class="line"></span><br><span class="line">// nodeId: the peer&#x27;s nodeId in the raft group</span><br><span class="line"></span><br><span class="line">// gid: the node&#x27;s raft group id</span><br><span class="line"></span><br><span class="line">// configServerAddr: config server addr (leader addr, need to optimized into config server peer map)</span><br><span class="line"></span><br><span class="line">//</span><br><span class="line"></span><br><span class="line">func MakeShardKVServer(peerMaps map[int]string, nodeId int, gid int, configServerAddrs string) *ShardKV &#123;</span><br><span class="line"></span><br><span class="line">    ...</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	logDbEng := storage_eng.EngineFactory(&quot;leveldb&quot;, &quot;./log_data/shard_svr/group_&quot;+strconv.Itoa(gid)+&quot;/node_&quot;+strconv.Itoa(nodeId))</span><br><span class="line"></span><br><span class="line">	newRf := raftcore.MakeRaft(clientEnds, nodeId, logDbEng, newApplyCh, 500, 1500)</span><br><span class="line"></span><br><span class="line">	newdbEng := storage_eng.EngineFactory(&quot;leveldb&quot;, &quot;./data/group_&quot;+strconv.Itoa(gid)+&quot;/node_&quot;+strconv.Itoa(nodeId))</span><br><span class="line"></span><br><span class="line">    </span><br><span class="line"></span><br><span class="line">	shardKv := &amp;ShardKV&#123;</span><br><span class="line"></span><br><span class="line">        ...</span><br><span class="line"></span><br><span class="line">		cvCli:       configserver.MakeCfgSvrClient(common.UN_UNSED_TID, strings.Split(configServerAddrs, &quot;,&quot;)),</span><br><span class="line"></span><br><span class="line">		lastApplied: 0,</span><br><span class="line"></span><br><span class="line">		curConfig:   configserver.DefaultConfig(),</span><br><span class="line"></span><br><span class="line">		lastConfig:  configserver.DefaultConfig(),</span><br><span class="line"></span><br><span class="line">		stm:         make(map[int]*Bucket),</span><br><span class="line"></span><br><span class="line">		...</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line">    </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	shardKv.initStm(shardKv.dbEng)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	shardKv.curConfig = *shardKv.cvCli.Query(-1)</span><br><span class="line"></span><br><span class="line">	shardKv.lastConfig = *shardKv.cvCli.Query(-1)</span><br><span class="line"></span><br><span class="line">    ...</span><br><span class="line"></span><br><span class="line">    </span><br><span class="line"></span><br><span class="line">	go shardKv.ConfigAction()</span><br><span class="line"></span><br><span class="line">    </span><br><span class="line"></span><br><span class="line">	return shardKv</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>我们initStm函数初始化了状态机里面的每个Bucket。之后，调用cvCli.Query(-1)查询当前最新的配置缓存到本地的curConfig，lastConfig，初始启动，这两个配置是一样的。</p>
+<p>这里有一个执行任务为ConfigAction的Goruntine，我们来看看它干了啥。 核心逻辑如下，下面的逻辑是一个循环执行的，时间间隔是1s。 首先我们通过cvCli.Query尝试查询下一个配置版本信息，如果当前集群没有配置变更，返回nil，我们continue进入下一轮循环，啥也不干。</p>
+<p>如果有新的配置变更，比如加入了新的服务器分组，我们就会对比新的配置和当前配置的版本信息。如果匹配上，当前节点作为Leader需要把这个配置变化信息发送到这个服务器分组，让大家都知道新的配置变化。分组服务里面的每个服务器配置都要是一致的，这里我们通过Propose提交一个OpType_OpConfigChange的提案。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"> if _, isLeader := s.rf.GetState(); isLeader &#123;</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">nextConfig := s.cvCli.Query(int64(curConfVersion) + 1)</span><br><span class="line"></span><br><span class="line">if nextConfig == nil &#123;</span><br><span class="line"></span><br><span class="line">    continue</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">nextCfBytes, _ := json.Marshal(nextConfig)</span><br><span class="line"></span><br><span class="line">curCfBytes, _ := json.Marshal(s.curConfig)</span><br><span class="line"></span><br><span class="line">raftcore.PrintDebugLog(&quot;next config -&gt; &quot; + string(nextCfBytes))</span><br><span class="line"></span><br><span class="line">raftcore.PrintDebugLog(&quot;cur config -&gt; &quot; + string(curCfBytes))</span><br><span class="line"></span><br><span class="line">if nextConfig.Version == curConfVersion+1 &#123;</span><br><span class="line"></span><br><span class="line">    req := &amp;pb.CommandRequest&#123;&#125;</span><br><span class="line"></span><br><span class="line">    nextCfBytes, _ := json.Marshal(nextConfig)</span><br><span class="line"></span><br><span class="line">    raftcore.PrintDebugLog(&quot;can perform next conf -&gt; &quot; + string(nextCfBytes))</span><br><span class="line"></span><br><span class="line">    req.Context = nextCfBytes</span><br><span class="line"></span><br><span class="line">    req.OpType = pb.OpType_OpConfigChange</span><br><span class="line"></span><br><span class="line">    reqBytes, _ := json.Marshal(req)</span><br><span class="line"></span><br><span class="line">    idx, _, isLeader := s.rf.Propose(reqBytes)</span><br><span class="line"></span><br><span class="line">    if !isLeader &#123;</span><br><span class="line"></span><br><span class="line">        return</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    </span><br><span class="line"></span><br><span class="line">    ...</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>最后我们看看分组中的服务器是怎么Apply这个日志的</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">nextConfig := &amp;configserver.Config&#123;&#125;</span><br><span class="line">json.Unmarshal(req.Context, nextConfig)</span><br><span class="line">if nextConfig.Version == s.curConfig.Version+1 &#123;</span><br><span class="line">    ...</span><br><span class="line">	s.lastConfig = s.curConfig</span><br><span class="line">	s.curConfig = *nextConfig</span><br><span class="line">	cfBytes, _ := json.Marshal(s.curConfig)</span><br><span class="line">	raftcore.PrintDebugLog(&quot;applied config to server -&gt; &quot; + string(cfBytes))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们会更新Server的lastConfig和curConfig配置信息。</p>
+<h3 id="客户端实现分析"><a href="#客户端实现分析" class="headerlink" title="客户端实现分析"></a>客户端实现分析</h3><p>当客户端写入一个Key到系统中时，我们首先需要知道Key属于那个分组服务器负责。在构造客户端的时候，我们会先将最新的配置信息缓存到本地。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">// make a kv cilent</span><br><span class="line">//</span><br><span class="line">func MakeKvClient(csAddrs string) *KvClient &#123;</span><br><span class="line">	...</span><br><span class="line">	kvCli.config = kvCli.csCli.Query(-1)</span><br><span class="line">	return kvCli</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>客户端中我们提供了Get(key string)和Put(key, value string)的接口，它们都是调用公用的Command方法去访问我们的分组服务器。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line">//</span><br><span class="line">// Command</span><br><span class="line">// do user normal command</span><br><span class="line">//</span><br><span class="line">func (kvCli *KvClient) Command(req *pb.CommandRequest) (string, error) &#123;</span><br><span class="line">	bucket_id := common.Key2BucketID(req.Key)</span><br><span class="line">	gid := kvCli.config.Buckets[bucket_id]</span><br><span class="line">	if gid == 0 &#123;</span><br><span class="line">		return &quot;&quot;, errors.New(&quot;there is no shard in charge of this bucket, please join the server group before&quot;)</span><br><span class="line">	&#125;</span><br><span class="line">	if servers, ok := kvCli.config.Groups[gid]; ok &#123;</span><br><span class="line">		for _, svrAddr := range servers &#123;</span><br><span class="line">			if kvCli.GetConnFromCache(svrAddr) == nil &#123;</span><br><span class="line">				kvCli.rpcCli = raftcore.MakeRaftClientEnd(svrAddr, common.UN_UNSED_TID)</span><br><span class="line">			&#125; else &#123;</span><br><span class="line">				kvCli.rpcCli = kvCli.GetConnFromCache(svrAddr)</span><br><span class="line">			&#125;</span><br><span class="line">			resp, err := (*kvCli.rpcCli.GetRaftServiceCli()).DoCommand(context.Background(), req)</span><br><span class="line">			if err != nil &#123;</span><br><span class="line">				// node down</span><br><span class="line">				raftcore.PrintDebugLog(&quot;there is a node down is cluster, but we can continue with outher node&quot;)</span><br><span class="line">				continue</span><br><span class="line">			&#125;</span><br><span class="line">			switch resp.ErrCode &#123;</span><br><span class="line">			case common.ErrCodeNoErr:</span><br><span class="line">				kvCli.commandId++</span><br><span class="line">				return resp.Value, nil</span><br><span class="line">			case common.ErrCodeWrongGroup:</span><br><span class="line">				kvCli.config = kvCli.csCli.Query(-1)</span><br><span class="line">				return &quot;&quot;, errors.New(&quot;WrongGroup&quot;)</span><br><span class="line">			case common.ErrCodeWrongLeader:</span><br><span class="line">				kvCli.rpcCli = raftcore.MakeRaftClientEnd(servers[resp.LeaderId], common.UN_UNSED_TID)</span><br><span class="line">				resp, err := (*kvCli.rpcCli.GetRaftServiceCli()).DoCommand(context.Background(), req)</span><br><span class="line">				if err != nil &#123;</span><br><span class="line">					fmt.Printf(&quot;err %s&quot;, err.Error())</span><br><span class="line">					panic(err)</span><br><span class="line">				&#125;</span><br><span class="line">				if resp.ErrCode == common.ErrCodeNoErr &#123;</span><br><span class="line">					kvCli.commandId++</span><br><span class="line">					return resp.Value, nil</span><br><span class="line">				&#125;</span><br><span class="line">			default:</span><br><span class="line">				return &quot;&quot;, errors.New(&quot;unknow code&quot;)</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125; else &#123;</span><br><span class="line">		return &quot;&quot;, errors.New(&quot;please join the server group first&quot;)</span><br><span class="line">	&#125;</span><br><span class="line">	return &quot;&quot;, errors.New(&quot;unknow code&quot;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>1.首先我们会使用Key2BucketID函数对Key做CRC32运算，得到它应该被分配到桶的ID；<br>2.然后 从本地缓存的kvCli.config配置里面找到负责这个bucket id数据的服务器分组；<br>3.拿到服务器分组之后，我们会向第一个服务器发送DoCommand RPC；<br>4.如果这个服务器不是Leader，它会返回Leader的ID。然后客户端会重新发DoCommand RPC给Leader节点。</p>
+<h4 id="捐赠"><a href="#捐赠" class="headerlink" title="捐赠"></a>捐赠</h4><p>整理这本书耗费了我们大量的时间和精力。如果你觉得有帮助，一瓶矿泉水的价格支持我们继续输出优质的分布式存储知识体系，2.99¥，感谢大家的支持。</p>
+<div class="tag-plugin image"><div class="image-bg"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="/images/alipay.jpeg"/></div></div>
+
+<p><a target="_blank" rel="noopener" href="https://github.com/eraft-io/eraft-io.github.io/blob/eraft_home/docs/resources/eraft_book.pdf">下载 PDF 版本</a></p>
+<script src="https://giscus.app/client.js"
+    data-repo="eraft-io/eraft-io.github.io"
+    data-repo-id="MDEwOlJlcG9zaXRvcnkzOTYyMDM3NjU="
+    data-category="General"
+    data-category-id="DIC_kwDOF52W9c4CRblA"
+    data-mapping="pathname"
+    data-strict="0"
+    data-reactions-enabled="1"
+    data-emit-metadata="0"
+    data-input-position="bottom"
+    data-theme="preferred_color_scheme"
+    data-lang="zh-CN"
+    crossorigin="anonymous"
+    async>
+</script>
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<p><span id="busuanzi_container_site_pv">本站总访问量<span id="busuanzi_value_site_pv"></span>次</span></p>
+
+
+
+<div class="article-footer reveal fs14"><section id="license"><div class="header"><span>License</span></div><div class="body"><p>本文采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">署名-非商业性使用-相同方式共享 4.0 国际</a> 许可协议，转载请注明出处。</p>
+</div></section></div>
+
+</article>
+
+<div class="related-wrap reveal" id="read-next"><section class="body"><div class="item" id="prev"><div class="note">Newer</div><a href="/2023/08/19/distributed-tx/">动手学习分布式-Multi-分布式事务初探 (Golang eraftkv 版)</a></div><div class="item" id="next"><div class="note">Older</div><a href="/2023/08/19/kv-distributed-systems/">动手学习分布式-基于Raft库，实现简单的分布式KV系统 (Golang eraftkv 版)</a></div></section></div>
+
+
+
+
+
+
+
+
+      
+<footer class="page-footer reveal fs12"><hr><div class="text"><p>本站由 <a href="/">@anonymity</a> 使用 <a target="_blank" rel="noopener" href="https://github.com/xaoxuu/hexo-theme-stellar">Stellar</a> 主题创建。<br>本博客所有文章除特别声明外，均采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议，转载请注明出处。</p>
+</div></footer>
+
+      <div class='float-panel mobile-only blur' style='display:none'>
+  <button type='button' class='sidebar-toggle mobile' onclick='sidebar.toggle()'>
+    <svg class="icon" style="width: 1em; height: 1em;vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="15301"><path d="M566.407 808.3c26.9-0.1 49.3-20.8 51.6-47.6-1.9-27.7-23.9-49.7-51.6-51.6h-412.6c-28.2-1.4-52.6 19.5-55.5 47.6 2.3 26.8 24.6 47.5 51.6 47.6h416.5v4z m309.3-249.9c26.9-0.1 49.3-20.8 51.6-47.6-2.2-26.8-24.6-47.5-51.6-47.6h-721.9c-27.7-2.8-52.5 17.4-55.3 45.1-0.1 0.8-0.1 1.7-0.2 2.5 0.9 27.2 23.6 48.5 50.7 47.6H875.707z m-103.1-245.9c26.9-0.1 49.3-20.8 51.6-47.6-0.4-28.3-23.2-51.1-51.5-51.6h-618.9c-29.5-1.1-54.3 21.9-55.5 51.4v0.2c1.4 27.8 25.2 49.2 53 47.8 0.8 0 1.7-0.1 2.5-0.2h618.8z" p-id="15302"></path><path d="M566.407 808.3c26.9-0.1 49.3-20.8 51.6-47.6-1.9-27.7-23.9-49.7-51.6-51.6h-412.6c-28.2-1.4-52.6 19.5-55.5 47.6 1.9 27.7 23.9 49.7 51.6 51.6h416.5z m309.3-249.9c26.9-0.1 49.3-20.8 51.6-47.6-2.2-26.8-24.6-47.5-51.6-47.6h-721.9c-27.7-2.8-52.5 17.4-55.3 45.1-0.1 0.8-0.1 1.7-0.2 2.5 0.9 27.2 23.6 48.5 50.7 47.6H875.707z m-103.1-245.9c26.9-0.1 49.3-20.8 51.6-47.6-0.4-28.3-23.2-51.1-51.5-51.6h-618.9c-29.5-1.1-54.3 21.9-55.5 51.4v0.2c1.4 27.8 25.2 49.2 53 47.8 0.8 0 1.7-0.1 2.5-0.2h618.8z" p-id="15303"></path></svg>
+  </button>
+</div>
+
+    </div>
+  </div>
+  <div class='scripts'>
+    <script type="text/javascript">
+  const stellar = {
+    // 懒加载 css https://github.com/filamentgroup/loadCSS
+    loadCSS: (href, before, media, attributes) => {
+      var doc = window.document;
+      var ss = doc.createElement("link");
+      var ref;
+      if (before) {
+        ref = before;
+      } else {
+        var refs = (doc.body || doc.getElementsByTagName("head")[0]).childNodes;
+        ref = refs[refs.length - 1];
+      }
+      var sheets = doc.styleSheets;
+      if (attributes) {
+        for (var attributeName in attributes) {
+          if (attributes.hasOwnProperty(attributeName)) {
+            ss.setAttribute(attributeName, attributes[attributeName]);
+          }
+        }
+      }
+      ss.rel = "stylesheet";
+      ss.href = href;
+      ss.media = "only x";
+      function ready(cb) {
+        if (doc.body) {
+          return cb();
+        }
+        setTimeout(function () {
+          ready(cb);
+        });
+      }
+      ready(function () {
+        ref.parentNode.insertBefore(ss, before ? ref : ref.nextSibling);
+      });
+      var onloadcssdefined = function (cb) {
+        var resolvedHref = ss.href;
+        var i = sheets.length;
+        while (i--) {
+          if (sheets[i].href === resolvedHref) {
+            return cb();
+          }
+        }
+        setTimeout(function () {
+          onloadcssdefined(cb);
+        });
+      };
+      function loadCB() {
+        if (ss.addEventListener) {
+          ss.removeEventListener("load", loadCB);
+        }
+        ss.media = media || "all";
+      }
+      if (ss.addEventListener) {
+        ss.addEventListener("load", loadCB);
+      }
+      ss.onloadcssdefined = onloadcssdefined;
+      onloadcssdefined(loadCB);
+      return ss;
+    },
+
+    // 从 butterfly 和 volantis 获得灵感
+    loadScript: (src, opt) => new Promise((resolve, reject) => {
+      var script = document.createElement('script');
+      if (src.startsWith('/')){
+        src = stellar.config.root + src.substring(1);
+      }
+      script.src = src;
+      if (opt) {
+        for (let key of Object.keys(opt)) {
+          script[key] = opt[key]
+        }
+      } else {
+        // 默认异步，如果需要同步，第二个参数传入 {} 即可
+        script.async = true
+      }
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    }),
+
+    // https://github.com/jerryc127/hexo-theme-butterfly
+    jQuery: (fn) => {
+      if (typeof jQuery === 'undefined') {
+        stellar.loadScript(stellar.plugins.jQuery).then(fn)
+      } else {
+        fn()
+      }
+    }
+  };
+  stellar.version = '1.19.0';
+  stellar.github = 'https://github.com/xaoxuu/hexo-theme-stellar/tree/1.19.0';
+  stellar.config = {
+    date_suffix: {
+      just: 'Just',
+      min: 'minutes ago',
+      hour: 'hours ago',
+      day: 'days ago',
+      month: 'months ago',
+    },
+    root : '/',
+  };
+
+  // required plugins (only load if needs)
+  stellar.plugins = {
+    jQuery: 'https://gcore.jsdelivr.net/npm/jquery@3.6.2/dist/jquery.min.js'
+  };
+
+  if ('local_search') {
+    stellar.search = {};
+    stellar.search.service = 'local_search';
+    if (stellar.search.service == 'local_search') {
+      let service_obj = Object.assign({}, {"field":"all","path":"/search.json","content":true,"sort":"-date"});
+      stellar.search[stellar.search.service] = service_obj;
+    }
+  }
+
+  // stellar js
+  stellar.plugins.stellar = Object.assign({"sites":"/js/plugins/sites.js","friends":"/js/plugins/friends.js","ghinfo":"/js/plugins/ghinfo.js","timeline":"/js/plugins/timeline.js","linkcard":"/js/plugins/linkcard.js","fcircle":"/js/plugins/fcircle.js","weibo":"/js/plugins/weibo.js"});
+
+  stellar.plugins.marked = Object.assign("https://cdn.bootcdn.net/ajax/libs/marked/4.0.18/marked.min.js");
+  // optional plugins
+  if ('true' == 'true') {
+    stellar.plugins.lazyload = Object.assign({"enable":true,"js":"https://gcore.jsdelivr.net/npm/vanilla-lazyload@17.8.3/dist/lazyload.min.js","transition":"blur"});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.swiper = Object.assign({"enable":true,"css":"https://unpkg.com/swiper@8.4.5/swiper-bundle.min.css","js":"https://unpkg.com/swiper@8.4.5/swiper-bundle.min.js"});
+  }
+  if ('' == 'true') {
+    stellar.plugins.scrollreveal = Object.assign({"enable":null,"js":"https://gcore.jsdelivr.net/npm/scrollreveal@4.0.9/dist/scrollreveal.min.js","distance":"8px","duration":500,"interval":100,"scale":1});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.preload = Object.assign({"enable":true,"service":"flying_pages","instant_page":"https://gcore.jsdelivr.net/gh/volantis-x/cdn-volantis@4.1.2/js/instant_page.js","flying_pages":"https://gcore.jsdelivr.net/gh/gijo-varghese/flying-pages@2.1.2/flying-pages.min.js"});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.fancybox = Object.assign({"enable":true,"js":"https://gcore.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.umd.js","css":"https://gcore.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.css","selector":".swiper-slide img"});
+  }
+  if ('false' == 'true') {
+    stellar.plugins.heti = Object.assign({"enable":false,"css":"https://unpkg.com/heti@0.9.2/umd/heti.min.css","js":"https://unpkg.com/heti@0.9.2/umd/heti-addon.min.js"});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.copycode = Object.assign({"enable":true,"js":"/js/plugins/copycode.js","default_text":"Copy","success_text":"Copied"});
+  }
+</script>
+
+<!-- required -->
+
+  
+<script src="/js/main.js" async></script>
+
+
+
+<!-- optional -->
+
+
+
+<!-- inject -->
+
+
+  </div>
+</body>
+</html>
