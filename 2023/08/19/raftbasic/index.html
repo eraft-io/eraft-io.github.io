@@ -38,7 +38,7 @@
 <meta property="og:image" content="https://eraft.cn/images/snapshot.png">
 <meta property="og:image" content="https://eraft.cn/images/alipay.jpeg">
 <meta property="article:published_time" content="2023-08-19T03:32:20.000Z">
-<meta property="article:modified_time" content="2023-08-19T03:41:47.281Z">
+<meta property="article:modified_time" content="2023-08-24T00:21:54.100Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://eraft.cn/images/raft_overview.png">
@@ -141,7 +141,7 @@
 <p>那么如何解决这个问题呢，首先我们再分析下日志结构：</p>
 <div class="tag-plugin image"><div class="image-bg"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="/images/snapshot.png"/></div></div>
 
-<p>我们看到这里的操作，都是对x，y的操作，每次日志提交完，我们都会应用日志到状态机中。这里我们会发现其实我们并没有必要存储每一个日志条目，我们只关心一致的状态，也就是已经提交的日志让状态机最终到达一种什么样的状态。那么在图中，我们就可以把1,2,3,4号日志的操作之后状态机记录下来，也就是x &lt;- 0, y &#x3D; 9,并且记录这个状态之后第一条日制的信息，然后1～4号日志可以被安全的删除了。</p>
+<p>我们看到这里的操作，都是对x，y的操作，每次日志提交完，我们都会应用日志到状态机中。这里我们会发现其实我们并没有必要存储每一个日志条目，我们只关心一致的状态，也就是已经提交的日志让状态机最终到达一种什么样的状态。那么在图中，我们就可以把1,2,3,4,5 号日志的操作之后状态机记录下来，也就是x &#x3D; 0, y &#x3D; 9,并且记录这个状态之后第一条日制的信息，然后1～5号日志可以被安全的删除了。</p>
 <p>以上的整个操作在Raft里面被叫做快照(snapshot)，Raft会定期的打快照吧历史的状态记录下来。当集群中有某个节点挂了，并且日志完全无法找回之后，集群中Leader节点首先会发送快照给这个挂掉之后新加入的节点，并且用一个InstallSnapshot的RPC发送快照数据给它，对端安装快照数据之后，会继续同步增量的日志，这样新的节点能快速的恢复状态。</p>
 <h4 id="捐赠"><a href="#捐赠" class="headerlink" title="捐赠"></a>捐赠</h4><p>整理这本书耗费了我们大量的时间和精力。如果你觉得有帮助，一瓶矿泉水的价格支持我们继续输出优质的分布式存储知识体系，2.99¥，感谢大家的支持。</p>
 <div class="tag-plugin image"><div class="image-bg"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="/images/alipay.jpeg"/></div></div>
