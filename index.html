@@ -99,7 +99,10 @@
 
   <div class="post-list post"><a class="post-card post " href="/2023/08/24/raft-basic-algorithm-ch3/">
 <article class="md-text"><h2 class="post-title">raftpractice 大论文阅读-第三章 Raft 算法基础</h2><div class="excerpt"><p>这一章我们来介绍 Raft 算法，我们将 Raft 设计得尽可能易于理解，第一部分我们将介绍我们让算法易于理解的设计方法。剩下的部分我们描述了算法本身，并包括了我们为了让算法更容易理解做出来的设计的示例。
-为了容易理解而设计的算法Raft 概览</p></div><div class="meta cap"><span class="cap" id="post-meta">发布于&nbsp;<time datetime="2023-08-24T00:15:40.000Z">2023-08-24</time></span></div></article>
+为了容易理解而设计的算法Raft 概览Raft 算法管理了上一章我们介绍的复制状态机的日志。下面这个图我们以简洁的方式给出了算法的参考。
+
+
+还有 Raft 算法的关键属性如下，图中的其余...</p></div><div class="meta cap"><span class="cap" id="post-meta">发布于&nbsp;<time datetime="2023-08-24T00:15:40.000Z">2023-08-24</time></span></div></article>
 </a><a class="post-card post " href="/2023/08/21/raftpractice-ch2/">
 <article class="md-text"><h2 class="post-title">raftpractice 大论文阅读-第二章 设计 Raft 算法的动机</h2><div class="excerpt"><p>一、通过复制状态机来实现系统的容错共识算法通常伴随着复制状态机出现，通过共识算法，我们实现一组拥有相同状态的计算机，我们通常把这一组拥有相同状态的计算机称为副本集。在某些机器宕机的情况下，这些计算机仍然能够继续之前的工作进行操作。
 复制状态机通常通过复制日志来实现，如下图:
