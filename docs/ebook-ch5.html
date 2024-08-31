@@ -12,7 +12,7 @@
   <main class="container">
     <article class="article heti heti--classic">
         <h1 class="article__title">eraft 精解课程</h1>
-        <blockquote>
+         
 
         我们团队致力于解读国外优秀的分布式存储相关开源课程，下面是课程体系图
         我们始终坚信优秀的本科教学不应该是照本宣科以及应付考试，一门优秀的课程，应该具备让学生学会思考、动手实践、找到问题、反复试错、并解决问题的能力，同时应该尽量用最直白，最简单的语言传达关键的知识点。作为计算机工业界的工作者，我相信做课程和做技术一样，并不是越复杂越好，应该尽量的让设计出来的东西简单化。
@@ -21,11 +21,7 @@
         <a href="https://www.zhihu.com/people/liu-jie-84-52" target="_blank">https://www.zhihu.com/people/liu-jie-84-52</a>
         接下来我们进入正题，如何实现一个分布式系统。
 
-      </blockquote>
-
-      <div style="text-align: center; width: 100%; border: black solid 1px;">
-        <img src="./resources/arch.png" width="40%" style="display: inline-block; margin-bottom: 5%;"/>
-      </div>
+      
 
         <details open>
           <summary></summary>
@@ -71,7 +67,7 @@
         第一步我们来定义系统与客户端的交互接口，客户端可以发送 Put 和 Get 操作将 KV 数据写到系统中。我们需要定义这两个操作的 RPC。我们将它们合并到一个 RPC 请求里面，定义如下：
      </p>
 
-     <blockquote>
+      
         <pre>
         // <br/>
 // client op type <br/>
@@ -105,7 +101,7 @@ message CommandResponse {<br/>
 
 rpc DoCommand (CommandRequest) returns (CommandResponse) {}<br/>
 </pre>
-     </blockquote>
+       
 
      <p>
         其中 OpType 定义了我们支持的操作类型：put,Append,get。 客户端请求的内容定义在了 CommandRequest 中。CommandRequest 中有我们的 key, value 以及操作类型，还有客户端 id 以及命令 id, 还有一个字节类型的 context （context 可以存放一些我们需要附加的不确定的内容）。
@@ -123,7 +119,7 @@ rpc DoCommand (CommandRequest) returns (CommandResponse) {}<br/>
         服务端核心实现分析
      </h3>
 
-     <blockquote>
+      
         <pre>
         type KvServer struct {<br/>
             <br/>
@@ -141,7 +137,7 @@ rpc DoCommand (CommandRequest) returns (CommandResponse) {}<br/>
             pb.UnimplementedRaftServiceServer<br/>
         }<br/>
     </pre>
-     </blockquote>
+       
 
      <p>有了这个结构之后，我们要如何应用 Raft 算法库实现图中高可用的 kv 分布式系统呢？
     </p>
@@ -158,7 +154,7 @@ rpc DoCommand (CommandRequest) returns (CommandResponse) {}<br/>
 <br/>
     </p>
 
-    <blockquote>
+     
         <pre>
         func MakeKvServer(nodeId int) *KvServer {<br/>
             clientEnds := []*raftcore.RaftClientEnd{}<br/>
@@ -188,7 +184,7 @@ rpc DoCommand (CommandRequest) returns (CommandResponse) {}<br/>
         }
         <br/>
     </pre>
-    </blockquote>
+      
 
     <p>
         客户端命令到来之后，最开始调用的是 DoCommand 函数，我们来看看这个函数做了哪些工作：
@@ -198,7 +194,7 @@ rpc DoCommand (CommandRequest) returns (CommandResponse) {}<br/>
         首先，Docommand 函数调用 Marshal 序列化了我们的 CommandResponse 到 reqBytes 的字节数组中，然后调用 Raft 库的 Propose 接口，把提案提交到我们的算法库中。Raft 算法中只有 Leader 可以处理提案。如果节点不是 Leader 我们会直接返回给客户端 ErrCodeWrongLeader 的错误码。之后就是从 getNotifyChan 拿到当前日志 id 对应的 apply 通知通道。只有这条日志通知到了，下面 select 才会继续往下走，拿到值放到 cmdResp.Value 中，当然如果操作超过了 ErrCodeExecTimeout 时间也会生成错误码，响应客户端执行超超时。
     </p>
 
-    <blockquote>
+     
         <pre>
         func (s *KvServer) DoCommand(ctx context.Context, req *pb.CommandRequest) (*pb.CommandResponse, error) {<br/>
             raftcore.PrintDebugLog(fmt.Sprintf("do cmd %s", req.String()))<br/>
@@ -239,7 +235,7 @@ rpc DoCommand (CommandRequest) returns (CommandResponse) {}<br/>
             return cmdResp, nil<br/>
         }<br/>
     </pre>
-    </blockquote>
+      
 
     <p>
         最后我们来看看 Apply Goruntine 干的事情：
@@ -249,7 +245,7 @@ rpc DoCommand (CommandRequest) returns (CommandResponse) {}<br/>
         它等待 s.applyCh 通道中 apply 消息的到来。这个 applyCh 我们在 Raft 库中提到过，它用来通知应用层日志已经提交，应用层可以把日志应用到状态机了。当 applyCh 中 appliedMsg 到来之后，我们更新了 KvServer 的 lastApplied 号，然后根据客户端的操作类型对我们的状态机做不同的操作，做完之后把响应放到 notifyChan 中，也就是 DoCommand 等待的那个通道，至此整个请求处理的流程已经结束。
     </p>
 
-    <blockquote>
+     
         <br/>
         <pre>
         func (s *KvServer) ApplingToStm(done <-chan interface{}) {<br/>
@@ -283,7 +279,7 @@ rpc DoCommand (CommandRequest) returns (CommandResponse) {}<br/>
             }<br/>
         }<br/>
     </pre>
-    </blockquote>
+      
 
     <h3>
         客户端实现介绍

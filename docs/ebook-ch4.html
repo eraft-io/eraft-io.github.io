@@ -12,7 +12,7 @@
   <main class="container">
     <article class="article heti heti--classic">
         <h1 class="article__title">eraft 精解课程</h1>
-        <blockquote>
+         
 
         我们团队致力于解读国外优秀的分布式存储相关开源课程，下面是课程体系图
         我们始终坚信优秀的本科教学不应该是照本宣科以及应付考试，一门优秀的课程，应该具备让学生学会思考、动手实践、找到问题、反复试错、并解决问题的能力，同时应该尽量用最直白，最简单的语言传达关键的知识点。作为计算机工业界的工作者，我相信做课程和做技术一样，并不是越复杂越好，应该尽量的让设计出来的东西简单化。
@@ -21,11 +21,7 @@
         <a href="https://www.zhihu.com/people/liu-jie-84-52" target="_blank">https://www.zhihu.com/people/liu-jie-84-52</a>
         接下来我们进入正题，如何实现一个分布式系统。
 
-      </blockquote>
-
-      <div style="text-align: center; width: 100%; border: black solid 1px;">
-        <img src="./resources/arch.png" width="40%" style="display: inline-block; margin-bottom: 5%;"/>
-      </div>
+      
 
         <details open>
           <summary></summary>
@@ -55,66 +51,66 @@
         我们上一章节讲了 Raft 算法的主要内容，现在我们要代码实现它们了。首先我们需要抽象出我们需要的数据结构。先来梳理一下可能用到的数据结构，首先节点之间需要互相访问，那我们需要定义访问其他节点的网络客户端，这里面要包含节点的 id, 地址，还有 rpc 的客户端，整个结构我们抽象为 RaftClientEnd，主要数据内容如下：
       </p>
 
-      <blockquote>
-        <pre>
-        type RaftClientEnd struct { <br/>
-            id             uint64<br/>
-            addr           string<br/>
-            raftServiceCli *raftpb.RaftServiceClient  // grpc 客户端
-        }        
-    </pre>
-      </blockquote>
+       
+<pre>
+type RaftClientEnd struct { <br/>
+    id             uint64<br/>
+    addr           string<br/>
+    raftServiceCli *raftpb.RaftServiceClient  // grpc 客户端
+}        
+</pre>
+        
       <p>
         节点状态我们之前描述的有三种，定义如下：
       </p>
 
-      <blockquote>
-        <pre>
-        const (<br/>
+       
+<pre>
+  const (<br/>
 	NodeRoleFollower NodeRole = iota<br/>
 	NodeRoleCandidate<br/>
 	NodeRoleLeader<br/>
     )
 </pre>
-      </blockquote>
+        
       我们要完成选举操作的话需要两个超时时间，这里我们使用 Golang time 库里面的 Timer 实现，它可以定时的给一个通道发送消息，我们可以用它来实现选举超时和心跳超时。
 
-      <blockquote>
+       
         electionTimer    *time.Timer<br/>
 heartbeatTimer   *time.Timer<br/>
-      </blockquote>
+        
       除此之外我们还需要记录当前节点的 id, 当前的任期号，为谁投票，获得票数的统计，已经提交的日志索引号，最后 apply 到状态机的日志号，以及节点如果是 Leader 的话需要记录到其他节点复制最新匹配的日志号，这写数据结构定义如下：
 
 
-      <blockquote>
+       
 
-        <pre>
-        type Raft struct {<br/>
-            mu             sync.RWMutex<br/>
-            peers          []*RaftClientEnd // rpc 客户端<br/>
-            me_            int  // 自己的 id<br/>
-            dead           int32 // 节点的状态<br/>
-            applyCh        chan *pb.ApplyMsg // apply 协程通道，协程模型中会讲到<br/>
-            applyCond      *sync.Cond // apply 流程控制的信号量<br/>
-            replicatorCond []*sync.Cond // 复制操作控制的信号量<br/>
-            role           NodeRole  // 节点当前的状态<br/>
-            curTerm        int64  // 当前的任期<br/>
-            votedFor       int64  // 为谁投票<br/>
-            grantedVotes   int    // 已经获得的票数 <br/>
-            logs           *RaftLog  // 日志信息<br/>
-            commitIdx      int64     // 已经提交的最大的日志 id<br/>
-            lastApplied    int64     // 已经 apply 的最大日志的 id<br/>
-            nextIdx        []int     // 到其他节点下一个匹配的日志 id 信息<br/>
-            matchIdx       []int     // 到其他节点当前匹配的日志 id 信息<br/>
-        
-            leaderId         int64   // 集群中当前 Leader 节点的 id<br/>
-            electionTimer    *time.Timer  // 选举超时定时器<br/>
-            heartbeatTimer   *time.Timer  // 心跳超时定时器<br/>
-            heartBeatTimeout uint64       // 心跳超时时间<br/>
-            baseElecTimeout  uint64       // 选举超时时间<br/>
-        }
-    </pre>
-      </blockquote>
+<pre>
+type Raft struct {<br/>
+    mu             sync.RWMutex<br/>
+    peers          []*RaftClientEnd // rpc 客户端<br/>
+    me_            int  // 自己的 id<br/>
+    dead           int32 // 节点的状态<br/>
+    applyCh        chan *pb.ApplyMsg // apply 协程通道<br/>
+    applyCond      *sync.Cond // apply 流程控制的信号量<br/>
+    replicatorCond []*sync.Cond // 复制操作控制的信号量<br/>
+    role           NodeRole  // 节点当前的状态<br/>
+    curTerm        int64  // 当前的任期<br/>
+    votedFor       int64  // 为谁投票<br/>
+    grantedVotes   int    // 已经获得的票数 <br/>
+    logs           *RaftLog  // 日志信息<br/>
+    commitIdx      int64     // 已经提交的最大的日志 id<br/>
+    lastApplied    int64     // 已经 apply 的最大日志的 id<br/>
+    nextIdx        []int     // 到其他节点下一个匹配的日志 id 信息<br/>
+    matchIdx       []int     // 到其他节点当前匹配的日志 id 信息<br/>
+
+    leaderId         int64   // 集群中当前 Leader 节点的 id<br/>
+    electionTimer    *time.Timer  // 选举超时定时器<br/>
+    heartbeatTimer   *time.Timer  // 心跳超时定时器<br/>
+    heartBeatTimeout uint64       // 心跳超时时间<br/>
+    baseElecTimeout  uint64       // 选举超时时间<br/>
+}
+</pre>
+
       首先系统启动的时候需要构造 Raft 这个结构体，这个流程是在 MakeRaft 里面实现的，它主要是初始化与一些变量，两个定时器，并启动相关的协程，我们这里对每个对端节点复制有 Replicator 协程，触发两个超时时间有 Tick 协程，应用已经提交的日志有 Applier 协程。
 
       <h3>
@@ -148,21 +144,21 @@ heartbeatTimer   *time.Timer<br/>
         这个是一个日志条目信息表示，和我们之前描述的一样，它有任期号 term，索引号 index, 以及操作的序列化数据 data 我们用一个字节流来存储，日志条目有两种类型一种是 Normal 正常日志，另一种是 ConfChange 配置变更的日志：
     </p>
 
-    <blockquote>
-        <pre>
-        enum EntryType {<br/>
-            EntryNormal = 0;<br/>
-            EntryConfChange = 1;<br/>
-        }<br/>
-        <br/>
-        message Entry {<br/>
-            EntryType entry_type = 1;<br/>
-            uint64    term = 2;<br/>
-            int64     index = 3;<br/>
-            bytes     data = 4;<br/>
-        }
-    </pre>
-    </blockquote>
+     
+<pre>
+enum EntryType {<br/>
+    EntryNormal = 0;<br/>
+    EntryConfChange = 1;<br/>
+}<br/>
+<br/>
+message Entry {<br/>
+    EntryType entry_type = 1;<br/>
+    uint64    term = 2;<br/>
+    int64     index = 3;<br/>
+    bytes     data = 4;<br/>
+}
+</pre>
+      
 
     <h3>
         RequestVote 相关
@@ -175,26 +171,27 @@ heartbeatTimer   *time.Timer<br/>
 响应里面有个任期号，这个用来给候选人在选举失败的时候更新自己的任期，还有一个 vote_granted 表示这个请求投票操作是否被对端节点接受。
 <br/>
 
-<blockquote>
-    <pre>
-    message RequestVoteRequest {<br/>
-        int64 term = 1;<br/>
-        int64 candidate_id = 2;<br/>
-        int64 last_log_index = 3;<br/>
-        int64 last_log_term = 4;<br/>
-    }<br/>
-    
-    message RequestVoteResponse {<br/>
-        int64 term = 1;<br/>
-        bool  vote_granted = 2;<br/>
-    }<br/>
-    
-    service RaftService {<br/>
-        //...<br/>
-        rpc RequestVote (RequestVoteRequest) returns (RequestVoteResponse) {}<br/>
-    }<br/>
+ 
+<pre>
+message RequestVoteRequest {<br/>
+    int64 term = 1;<br/>
+    int64 candidate_id = 2;<br/>
+    int64 last_log_index = 3;<br/>
+    int64 last_log_term = 4;<br/>
+}<br/>
+
+message RequestVoteResponse {<br/>
+    int64 term = 1;<br/>
+    bool  vote_granted = 2;<br/>
+}<br/>
+
+service RaftService {<br/>
+    //...<br/>
+    rpc RequestVote (RequestVoteRequest) returns 
+    (RequestVoteResponse) {}<br/>
+}<br/>
 </pre>
-</blockquote>
+  
 
 <h3>
     AppendEntries 相关
@@ -212,7 +209,7 @@ heartbeatTimer   *time.Timer<br/>
     响应里面 term 用来告诉 leader 是否出新的任期的消息，可以用来更新 leader 的任期号，success 表示日志追加操作是否成功，conflict_index 用来记录冲突日志的索引号，conflict_term 用来记录冲突日志的任期号。 
 </p>
 
-<blockquote>
+ 
 
     <pre>
 message AppendEntriesRequest {<br/>
@@ -234,10 +231,11 @@ message AppendEntriesResponse {<br/>
 
 service RaftService {<br/>
     //...<br/>
-    rpc AppendEntries (AppendEntriesRequest) returns (AppendEntriesResponse) {}<br/>
+    rpc AppendEntries (AppendEntriesRequest) returns 
+    (AppendEntriesResponse) {}<br/>
 }<br/>
 </pre>
-</blockquote>
+  
 
 <h3>
     Leader 选举实现分析
@@ -264,50 +262,49 @@ service RaftService {<br/>
     1.eraft 代码中在启动，也就是应用层调用 MakeRaft 函数的时候会传入 baseElectionTimeOutMs 和 heartbeatTimeOutMs， 这里心跳超市时间是固定的，选举超时时间我们使用 MakeAnRandomElectionTimeout 构造生成了一个随机超市时间。
   </p>
 
-  <blockquote>
-    <pre>
-        func MakeRaft(peers []*RaftClientEnd, me int, newdbEng storage_eng.KvStore, applyCh chan *pb.ApplyMsg, heartbeatTimeOutMs uint64, baseElectionTimeOutMs uint64) *Raft {
+   
+<pre>
+func MakeRaft(peers []*RaftClientEnd, me int, newdbEng storage_eng.KvStore, applyCh chan *pb.ApplyMsg, heartbeatTimeOutMs uint64, baseElectionTimeOutMs uint64) *Raft {
 
-        ...
-        
-        heartbeatTimer:   time.NewTimer(time.Millisecond * time.Duration(heartbeatTimeOutMs)),
-        electionTimer:    time.NewTimer(time.Millisecond * time.Duration(MakeAnRandomElectionTimeout(int(baseElectionTimeOutMs)))),
-        ...
-    </pre>
-  </blockquote>
+...
+
+heartbeatTimer:   time.NewTimer(time.Millisecond * time.Duration(heartbeatTimeOutMs)),
+electionTimer:    time.NewTimer(time.Millisecond * time.Duration(MakeAnRandomElectionTimeout(int(baseElectionTimeOutMs)))),
+...
+</pre>
+  
 
   <p>
     2.达到选举超时后, 节点 C 首先把自己状态改成 Candidate，然后增加自己的任期号，开始选举。
   </p>
 
-  <blockquote>
-    <pre>
-        //
-        // Tick raft heart, this ticket trigger raft main flow running
-        //
-        func (rf *Raft) Tick() {
-            for !rf.IsKilled() {
-                select {
-                case <-rf.electionTimer.C:
-                    {
-                        rf.SwitchRaftNodeRole(NodeRoleCandidate)
-                        rf.IncrCurrentTerm()
-                        rf.Election()
-                        rf.electionTimer.Reset(time.Millisecond * time.Duration(MakeAnRandomElectionTimeout(int(rf.baseElecTimeout))))
-                    }
-                ...
+   
+<pre>
+//
+// Tick raft heart, this ticket trigger raft main flow running
+//
+func (rf *Raft) Tick() {
+    for !rf.IsKilled() {
+        select {
+        case <-rf.electionTimer.C:
+            {
+                rf.SwitchRaftNodeRole(NodeRoleCandidate)
+                rf.IncrCurrentTerm()
+                rf.Election()
+                rf.electionTimer.Reset(time.Millisecond * time.Duration(MakeAnRandomElectionTimeout(int(rf.baseElecTimeout))))
             }
-        }
-    </pre>
-  </blockquote>
+        ...
+    }
+}
+</pre>
+    
 
   <p>
     3.下面这段代码就是发起选举的核心逻辑了，首先节点 IncrGrantedVotes 给自己投一票，然后把 votedFor 设置成自己，之后构造 RequestVoteRequest rpc 请求，带上自己的任期号，CandidateId 也就是自己的 id, 最后一个日志条目的索引还有任期号，然后把当前 Raft 状态持久化，向集群中的其他节点并行的发送，RequestVote 请求
   </p>
 
-  <blockquote>
-    <pre>
-
+   
+<pre>
 //
 // Election  make a new election
 //
@@ -337,13 +334,13 @@ func (rf *Raft) Election() {
 		}(peer)
 	}
 }
-    </pre>
-  </blockquote>
+</pre>
+    
 
   <div style="text-align: center; width: 100%; border: black solid 1px;">
     <img src="./resources/raft_elec002.png" width="90%" style="display: inline-block; margin-bottom: 5%;"/>
   </div>  
- <p>
+<p>
     如果 A,B 收到请求的时候还没有发出投票（因为它们还没达到选举超时时间），它们就会给候选人节点 C 投票, 同时重设自己的选举超时定时器。
 </p>
 
@@ -351,8 +348,8 @@ func (rf *Raft) Election() {
     4.eraft 处理投票请求的细节如下, 我们结合图中的例子分析下面的逻辑，假设 A 节点正在处理来自 C 的投票请求，那么首先 C 的 任期号大于 A 的, 代码中 1 的 if 分支不会执行, 在 2 这里， A 节点发现来自 C 的请求投票消息的任期号大于自己的，它会调用 SwitchRaftNodeRole 变成 Follower 节点, 在回 C 消息之前，代码中 3 号位置 A 调用 electionTimer.Reset 重设了自己的选举超时定时器。
 </p>
 
-<blockquote>
-    <pre>
+ 
+<pre>
      
 //
 // HandleRequestVote  handle request vote from other node
@@ -383,7 +380,7 @@ func (rf *Raft) HandleRequestVote(req *pb.RequestVoteRequest, resp *pb.RequestVo
 	resp.Term, resp.VoteGranted = rf.curTerm, true
 }   
     </pre>
-</blockquote>
+  
 
 <div style="text-align: center; width: 100%; border: black solid 1px;">
     <img src="./resources/raft_elec003.png" width="90%" style="display: inline-block; margin-bottom: 5%;"/>
@@ -397,7 +394,7 @@ func (rf *Raft) HandleRequestVote(req *pb.RequestVoteRequest, resp *pb.RequestVo
     5.C 统计票数处理请求投票的响应如下，注意：这段代码加了锁，应为这里涉及到多个 Goruntine 去修改 rf 中的非原子变量，如果不加锁可能会导致逻辑错误。代码中 1 处，如果收到投票的响应 VoteGranted 是 true。C 就会调用 IncrGrantedVotes 递增自己拥有的票书，然后 if rf.grantedVotes > len(rf.peers)/2 判断是否拿到了半数以上票，如果是的调用 SwitchRaftNodeRole 切换自己的状态为 Leader，之后 BroadcastHeartbeat 广播心跳消息，并重新设置自己的得票数 grantedVotes 为 0。
   </p>
 
-  <blockquote>
+   
     <pre>
         if requestVoteResp != nil {
             rf.mu.Lock()
@@ -425,7 +422,7 @@ func (rf *Raft) HandleRequestVote(req *pb.RequestVoteRequest, resp *pb.RequestVo
             }
         }
     </pre>
-  </blockquote>
+    
 
   <div style="text-align: center; width: 100%; border: black solid 1px;">
     <img src="./resources/raft_elec004.png" width="90%" style="display: inline-block; margin-bottom: 5%;"/>
@@ -457,7 +454,7 @@ func (rf *Raft) HandleRequestVote(req *pb.RequestVoteRequest, resp *pb.RequestVo
 在 eraft 库中用户请求到来和 raft 交互的入口函数是 Propose，这个函数首先会查询当前节点状态，只有 Leader 节点才能处理提案（propose），之后会把用户操作的序列化之后的 []byte 调用 Append 追加到自己的日志中，之后 BroadcastAppend 将日志内容发送给集群中的 Follower 节点。
 </p>
 
-<blockquote>
+ 
     <pre>
         //
 // Propose the interface to the appplication propose a operation
@@ -474,7 +471,7 @@ func (rf *Raft) Propose(payload []byte) (int, int, bool) {
 	return int(newLog.Index), int(newLog.Term), true
 }
     </pre>
-</blockquote>
+  
 <div style="text-align: center; width: 100%; border: black solid 1px;">
     <img src="./resources/log_repl001.png" width="90%" style="display: inline-block; margin-bottom: 5%;"/>
   </div>  
@@ -487,7 +484,7 @@ func (rf *Raft) Propose(payload []byte) (int, int, bool) {
     在 eraft 实现中，我们专门有一组 Goruntine 做日志复制相关的事情，用户提案到达 Leader 之后调用 BroadcastAppend 会唤醒做日志复制操作的 Goruntine, replicatorCond 这个信号量用来完成 Goruntine 之间的同步操作。
   </p>
 
-  <blockquote>
+   
     <pre>
 
 func (rf *Raft) BroadcastAppend() {
@@ -499,13 +496,13 @@ func (rf *Raft) BroadcastAppend() {
 	}
 }
     </pre>
-  </blockquote>
+    
 
   <p>
     复制操作的 Goruntine 执行的任务函数是 Replicator，当 BroadcastAppend 中通过 Signal 函数唤醒信号量，rf.replicatorCond[].Wait() 就会停止阻塞，继续往下执行，调用 replicateOneRound 进行数据复制。
   </p>
 
-  <blockquote>
+   
     <pre>
 
 //
@@ -524,7 +521,7 @@ func (rf *Raft) Replicator(peer *RaftClientEnd) {
 }
 
     </pre>
-  </blockquote>
+    
   replicateOneRound 就会把日志打包到一个 AppendEntriesRequest 中发送到 Follower 节点了。
 
   <div style="text-align: center; width: 100%; border: black solid 1px;">
@@ -549,7 +546,7 @@ func (rf *Raft) Replicator(peer *RaftClientEnd) {
 对应 eraft 实现中，日志提交之后 Leader 节点会调用 advanceCommitIndexForLeader 函数。它会计算当前日志提交的索引号，然后和之前已经提交的 commitIdx 进行对比，如果更大，就会更新 commitIdx，同时调用 rf.applyCond.Signal() 唤醒做 Apply 操作的 Goruntine。Applier 函数是 Apply Goruntine 运行的任务函数，它会 Wait applyCond 这个信号量，如果被唤醒，它会拷贝初节点中已经提交的日志，打包成 ApplyMsg 发送到 applyCh 通道通知应用层，应用层拿到 apply 消息之后会更新状态机并回包给客户端。
 </p>
 
-<blockquote>
+ 
     <pre>
 
 func (rf *Raft) advanceCommitIndexForLeader() {
@@ -598,7 +595,7 @@ func (rf *Raft) Applier() {
 	}
 }
     </pre>
-</blockquote>
+  
 
 
 <h3>
@@ -608,7 +605,7 @@ func (rf *Raft) Applier() {
 下面是日志快照的 RPC 定义
 
 
-<blockquote>
+ 
     <pre>
         message InstallSnapshotRequest {
             int64 term =                1;
@@ -624,7 +621,7 @@ func (rf *Raft) Applier() {
         
         rpc Snapshot (InstallSnapshotRequest) returns (InstallSnapshotResponse) {}
     </pre>
-</blockquote>
+  
 
     <p>InstallSnapshotRequest 中 term 代表当前发送快照的 Leader 的任期，Follower 将它与自己的任期号来决定是否要接收这个快照。leader_id 是当前 leader 的 id, 这样客户端访问到 Follower 节点之后也能快速知道 Leader 信息。last_included_index 和 last_included_term 还有 data 可以参见我们第三章图中的介绍，它们记录了打完快照之后第一条日志的索引号和任期号，以及状态机序列化之后的数据。
 
@@ -639,7 +636,7 @@ func (rf *Raft) Applier() {
         我们知道日志条目过多了，我们就需要打快照。在 eraft 中就是计算当前 level 中的日志条目 s.Rf.GetLogCount() 来打快照的，打快照的入口函数是 takeSnapshot(index int), 传入了当前 applied 日志的 id, 然后将状态机的数据序列化，调用 Raft层的 Snapshot 函数。 这个函数通过 EraseBeforeWithDel 做了删除日志的操作，然后 PersisSnapshot 将快照中状态数据缓存到了存储引擎中。
     </p>
 
-    <blockquote>
+     
         <pre>
 
 //
@@ -662,7 +659,7 @@ func (rf *Raft) Snapshot(index int, snapshot []byte) {
 	rf.logs.PersisSnapshot(snapshot)
 }
         </pre>
-    </blockquote>
+      
 
     <p>
         什么时间点 Leader 会发送快照呢？
@@ -676,7 +673,7 @@ func (rf *Raft) Snapshot(index int, snapshot []byte) {
 
     </p>
 
-    <blockquote>
+     
         <pre>
 
 if prevLogIndex < uint64(rf.logs.GetFirst().Index) {
@@ -718,7 +715,7 @@ if prevLogIndex < uint64(rf.logs.GetFirst().Index) {
 	rf.mu.Unlock()
 }
         </pre>
-    </blockquote>
+      
 
     <p>
         Follower 这边操作就比较简单了，它会调用 HandleInstallSnapshot 处理快照数据，并把快照数据构造 pb.ApplyMsg 写到 rf.applyCh，最后负责日志 Apply 的 Goruntine 会调用 CondInstallSnapshot 安装快照，最后在 restoreSnapshot 会将快照的 data 数据解析，让后写入自己的状态机。

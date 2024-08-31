@@ -12,7 +12,7 @@
   <main class="container">
     <article class="article heti heti--classic">
       <h1 class="article__title">eraft 精解课程</h1>
-      <blockquote>
+       
 
         我们团队致力于解读国外优秀的分布式存储相关开源课程，下面是课程体系图
         我们始终坚信优秀的本科教学不应该是照本宣科以及应付考试，一门优秀的课程，应该具备让学生学会思考、动手实践、找到问题、反复试错、并解决问题的能力，同时应该尽量用最直白，最简单的语言传达关键的知识点。作为计算机工业界的工作者，我相信做课程和做技术一样，并不是越复杂越好，应该尽量的让设计出来的东西简单化。
@@ -21,11 +21,7 @@
         <a href="https://www.zhihu.com/people/liu-jie-84-52" target="_blank">https://www.zhihu.com/people/liu-jie-84-52</a>
         接下来我们进入正题，如何实现一个分布式系统。
 
-      </blockquote>
-
-      <div style="text-align: center; width: 100%; border: black solid 1px;">
-        <img src="./resources/arch.png" width="40%" style="display: inline-block; margin-bottom: 5%;"/>
-      </div>
+        
 
         <details open>
           <summary></summary>
@@ -40,11 +36,6 @@
                 <li><a href="./ebook-ch5.html">（五）基于 Raft 库，实现简单的分布式 KV 系   </a></li>
                 <li><a href="./ebook-ch6.html">（六）Multi-Raft 设计与实现   </a></li>
                 <li><a href="./ebook-ch7.html">（七）分布式事务初探   </a></li>
-              </ul>
-              <a href="#intro">MIT6.828 操作系统系列</a>
-              <ul>
-                <li><a href="./mitos_ep1.html">（一）操作系统概念介绍 </a></li>
-                <li><a href="./mitos_ep2.html">（二）操作系统的特性和系统调用</a></li>
               </ul>
             </li>
           </ol>
@@ -68,13 +59,11 @@
         执行以下命令 (确保你的机器上安装了 Go 语言编译器以及 git, make 等基础工具) 编译很简单，下载代码之后，进入根目录直接 make
       </p>
 
-      <blockquote>
-        git clone https://github.com/eraft-io/eraft.git -b mit6824_lab
-        <br/>
-        cd eraft
-        <br/>
-        make
-      </blockquote>
+<pre>
+git clone https://github.com/eraft-io/eraft.git -b mit6824_lab
+cd eraft
+make
+</pre>
 
       <h3>架构概览
       </h3>
@@ -147,17 +136,15 @@
        </p>
 
 
-       <blockquote>
-        <pre>
-        colin@B-M1-0045 eraft % ls -l output 
-        total 124120
-        -rwxr-xr-x  1 colin  staff  12119296  5 25 20:40 bench_cli
-        -rwxr-xr-x  1 colin  staff  12114784  5 25 20:40 cfgcli
-        -rwxr-xr-x  1 colin  staff  13578848  5 25 20:40 cfgserver
-        -rwxr-xr-x  1 colin  staff  12127328  5 25 20:40 shardcli
-        -rwxr-xr-x  1 colin  staff  13600368  5 25 20:40 shardserver
-      </pre>
-       </blockquote>
+<pre>
+colin@B-M1-0045 eraft % ls -l output 
+total 124120
+-rwxr-xr-x  1 colin  staff  12119296  5 25 20:40 bench_cli
+-rwxr-xr-x  1 colin  staff  12114784  5 25 20:40 cfgcli
+-rwxr-xr-x  1 colin  staff  13578848  5 25 20:40 cfgserver
+-rwxr-xr-x  1 colin  staff  12127328  5 25 20:40 shardcli
+-rwxr-xr-x  1 colin  staff  13600368  5 25 20:40 shardserver
+</pre>
 
        <h3>
         可执行文件介绍
@@ -202,61 +189,63 @@
         1.启动配置服务器分组
       </p>
 
-      <blockquote>
-        <pre>
-        ./cfgserver 0 127.0.0.1:8088,127.0.0.1:8089,127.0.0.1:8090
-        ./cfgserver 1 127.0.0.1:8088,127.0.0.1:8089,127.0.0.1:8090
-        ./cfgserver 2 127.0.0.1:8088,127.0.0.1:8089,127.0.0.1:8090
-        </pre>
-      </blockquote>
+<pre>
+./cfgserver 0 127.0.0.1:8088,127.0.0.1:8089,127.0.0.1:8090
+./cfgserver 1 127.0.0.1:8088,127.0.0.1:8089,127.0.0.1:8090
+./cfgserver 2 127.0.0.1:8088,127.0.0.1:8089,127.0.0.1:8090
+</pre>
       <p>
         2.初始化集群配置
       </p>
 
-      <blockquote>
-        <pre>
-./cfgcli 127.0.0.1:8088,127.0.0.1:8089,127.0.0.1:8090 join 1 127.0.0.1:6088,127.0.0.1:6089,127.0.0.1:6090
-./cfgcli 127.0.0.1:8088,127.0.0.1:8089,127.0.0.1:8090 join 2  127.0.0.1:7088,127.0.0.1:7089,127.0.0.1:7090
-./cfgcli 127.0.0.1:8088,127.0.0.1:8089,127.0.0.1:8090 move 0-4 1
-./cfgcli 127.0.0.1:8088,127.0.0.1:8089,127.0.0.1:8090 move 5-9 2
-        </pre>
-      </blockquote>
+<pre>
+./cfgcli 127.0.0.1:8088,127.0.0.1:8089,127.0.0.1:8090 join \
+1 127.0.0.1:6088,127.0.0.1:6089,127.0.0.1:6090
+./cfgcli 127.0.0.1:8088,127.0.0.1:8089,127.0.0.1:8090 join \
+2  127.0.0.1:7088,127.0.0.1:7089,127.0.0.1:7090
+./cfgcli 127.0.0.1:8088,127.0.0.1:8089,127.0.0.1:8090 move \
+0-4 1
+./cfgcli 127.0.0.1:8088,127.0.0.1:8089,127.0.0.1:8090 move \
+5-9 2
+</pre>
 
       <p>
         3.启动数据服务器分组
       </p>
 
-      <blockquote>
-
-        <pre>
-./shardserver 0 1 127.0.0.1:8088,127.0.0.1:8089,127.0.0.1:8090 127.0.0.1:6088,127.0.0.1:6089,127.0.0.1:6090
-./shardserver 1 1 127.0.0.1:8088,127.0.0.1:8089,127.0.0.1:8090 127.0.0.1:6088,127.0.0.1:6089,127.0.0.1:6090
-./shardserver 2 1 127.0.0.1:8088,127.0.0.1:8089,127.0.0.1:8090 127.0.0.1:6088,127.0.0.1:6089,127.0.0.1:6090
-./shardserver 0 2 127.0.0.1:8088,127.0.0.1:8089,127.0.0.1:8090 127.0.0.1:7088,127.0.0.1:7089,127.0.0.1:7090
-./shardserver 1 2 127.0.0.1:8088,127.0.0.1:8089,127.0.0.1:8090 127.0.0.1:7088,127.0.0.1:7089,127.0.0.1:7090
-./shardserver 2 2 127.0.0.1:8088,127.0.0.1:8089,127.0.0.1:8090
+<pre>
+./shardserver 0 1 127.0.0.1:8088,127.0.0.1:8089,127.0.0.1:8090 \
+127.0.0.1:6088,127.0.0.1:6089,127.0.0.1:6090
+./shardserver 1 1 127.0.0.1:8088,127.0.0.1:8089,127.0.0.1:8090 \
+127.0.0.1:6088,127.0.0.1:6089,127.0.0.1:6090
+./shardserver 2 1 127.0.0.1:8088,127.0.0.1:8089,127.0.0.1:8090 \
+127.0.0.1:6088,127.0.0.1:6089,127.0.0.1:6090
+./shardserver 0 2 127.0.0.1:8088,127.0.0.1:8089,127.0.0.1:8090 \
+127.0.0.1:7088,127.0.0.1:7089,127.0.0.1:7090
+./shardserver 1 2 127.0.0.1:8088,127.0.0.1:8089,127.0.0.1:8090 \
+127.0.0.1:7088,127.0.0.1:7089,127.0.0.1:7090
+./shardserver 2 2 127.0.0.1:8088,127.0.0.1:8089,127.0.0.1:8090 \
 127.0.0.1:7088,127.0.0.1:7089,127.0.0.1:7090
 </pre>
-      </blockquote>
 
       <p>
         4.读写数据
       </p>
 
-      <blockquote>
-        ./shardcli 127.0.0.1:8088,127.0.0.1:8089,127.0.0.1:8090 put  testkey testvalue
-<br/>
-
-./shardcli 127.0.0.1:8088,127.0.0.1:8089,127.0.0.1:8090 get testkey
-
-      </blockquote>
+<pre>
+./shardcli 127.0.0.1:8088,127.0.0.1:8089,127.0.0.1:8090 put \
+testkey testvalue
+./shardcli 127.0.0.1:8088,127.0.0.1:8089,127.0.0.1:8090 get \
+testkey
+</pre>
 
       <p>
         5.运行基准测试
       </p>
-      <blockquote>
-        ./bench_cli 127.0.0.1:8088,127.0.0.1:8089,127.0.0.1:8090 100 put
-      </blockquote>
+ 
+<pre>
+./bench_cli 127.0.0.1:8088,127.0.0.1:8089,127.0.0.1:8090 100 put
+</pre>
 
       <details open>
         <summary></summary>
@@ -271,11 +260,6 @@
               <li><a href="./ebook-ch5.html">（五）基于 Raft 库，实现简单的分布式 KV 系   </a></li>
               <li><a href="./ebook-ch6.html">（六）Multi-Raft 设计与实现   </a></li>
               <li><a href="./ebook-ch7.html">（七）分布式事务初探   </a></li>
-            </ul>
-            <a href="#intro">MIT6.828 操作系统系列</a>
-            <ul>
-              <li><a href="./mitos_ep1.html">（一）操作系统概念介绍 </a></li>
-              <li><a href="./mitos_ep2.html">（二）操作系统的特性和系统调用</a></li>
             </ul>
           </li>
         </ol>
@@ -297,22 +281,6 @@
       <p> 遵循MIT协议开源。</p>
       <p> 感谢 「赫蹏」 提供如此优秀的中文排版系统 </p>
 
-      <!-- <footer class="heti-fn">
-        <ol>
-          <li id="fn-01">
-            <a href="#ref-01" title="移至">^</a>
-            CSS Reset：指代类似Eric Meyer's Reset CSS的样式重置方案
-          </li>
-          <li id="fn-02">
-            <a href="#ref-02" title="移至">^</a>
-            《中文排版需求》：https://w3c.github.io/clreq/
-          </li>
-          <li id="fn-03">
-            <a href="#ref-03" title="移至">^</a>
-            在当下前端技术尚不能完美解决中西文混排间距的情况下，常见的输入习惯是手动在中西文间加入空格（https://github.com/vinta/pangu.js）。这样做的弊端一是间距不可控（有时显得过大），二是通过空格符来排版只能算无奈之举。好消息是在最新的macOS、iOS中，使用原生语言开发的文本区域会自动处理中西文混排的间距（无论是否加空格），期待不用手敲空格的日子早日到来。
-          </li>
-        </ol>
-      </footer> -->
       <script src="https://giscus.app/client.js"
       data-repo="eraft-io/eraft-io.github.io"
       data-repo-id="MDEwOlJlcG9zaXRvcnkzOTYyMDM3NjU="

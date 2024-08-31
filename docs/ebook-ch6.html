@@ -12,7 +12,7 @@
   <main class="container">
     <article class="article heti heti--classic">
         <h1 class="article__title">eraft 精解课程</h1>
-        <blockquote>
+         
 
         我们团队致力于解读国外优秀的分布式存储相关开源课程，下面是课程体系图
         我们始终坚信优秀的本科教学不应该是照本宣科以及应付考试，一门优秀的课程，应该具备让学生学会思考、动手实践、找到问题、反复试错、并解决问题的能力，同时应该尽量用最直白，最简单的语言传达关键的知识点。作为计算机工业界的工作者，我相信做课程和做技术一样，并不是越复杂越好，应该尽量的让设计出来的东西简单化。
@@ -21,11 +21,7 @@
         <a href="https://www.zhihu.com/people/liu-jie-84-52" target="_blank">https://www.zhihu.com/people/liu-jie-84-52</a>
         接下来我们进入正题，如何实现一个分布式系统。
 
-      </blockquote>
-
-      <div style="text-align: center; width: 100%; border: black solid 1px;">
-        <img src="./resources/arch.png" width="40%" style="display: inline-block; margin-bottom: 5%;"/>
-      </div>
+      
 
         <details open>
           <summary></summary>
@@ -87,13 +83,13 @@
         配置服务的实现在 eraft/configserver 目录下。根据上面的架构图，我们大概可以知道配置服务器需要存储哪些信息：（1）每个服务分组的服务器地址信息；（2）服务分组负责的数据桶信息。这个结构定义如下：
       </p>
 
-      <blockquote>
+       
         type Config struct {
             Version int
             Buckets [common.NBuckets]int
             Groups  map[int][]string
         }
-      </blockquote>
+        
 
       <p>
         Version 表示当前配置的版本号。Buckets 存储了分组负责的桶信息。NBuckets 是一个常量，表示系统中最大的桶数量。这里我们默认是 10。对于大规模的分布式系统， Buckets 值可以被设置为很大。
@@ -107,15 +103,15 @@
         我们设置 127.0.0.1:6088，127.0.0.1:6089，127.0.0.1:6090 这三台服务器组成分组 1。Buckets 数组中 0-4 号桶都是分组 1 负责的。5-9 号桶为 0，表示当前没有分组负责这些桶的数据写入。
       </p>
 
-      <blockquote>
+       
         {"Version":6,"Buckets":[1,1,1,1,1,0,0,0,0,0],"Groups":{"1":["127.0.0.1:6088","127.0.0.1:6089","127.0.0.1:6090"]}}
-      </blockquote>
+        
 
       <p>
         eraft 中把上述配置信息存储到了 leveldb 中。下面是几个操作的接口，Join 操作 是把一个分组的服务器加入到集群配置中；Leave 操作是删除某些分组的服务器配置信息；Move 操作是将某个桶分配给相应的分组负责；Query 操作是查询配置信息。这些操作是通过修改 Config 这个结构，并将数据持久化到 leveldb 中实现。操作的代码实现逻辑在 eraft/configserver/config_stm.go 里面。
       </p>
 
-      <blockquote>
+       
         <pre>
         type ConfigStm interface { <br/>
             Join(groups map[int][]string) error<br/>
@@ -124,7 +120,7 @@
             Query(num int) (Config, error)<br/>
         }<br/>
     </pre>
-      </blockquote>
+        
 
       <p>
         配置服务器的核心逻辑在 config_server.go 里面，可以看到和我们第四章实现的单分组 kv 极其类似。这里只是把 Put, Get 操作给改成了对配置的 Join、Leave、Move、Query 操作。 每一次操作都经过一次共识，保证三个服务节点都有一致的配置。这样 Leader 配置节点挂掉后，集群中仍然可以从新的 Leader 配置服务器中获取配置信息。
@@ -141,7 +137,7 @@
         首先，我们看到 bucket 定义如下：
       </p>
 
-      <blockquote>
+       
         <pre>
         // a bucket is a logical partition in a distributed system <br/>
         //  it has a unique id, a pointer to db engine, and status<br/>
@@ -152,13 +148,13 @@
             Status buketStatus<br/>
         }<br/>
     </pre>
-      </blockquote>
+        
 
       <p>
         桶具有一个唯一标识的 ID。 前面我们介绍配置服务器的时，介绍过一个服务分组负责一部分桶的数据。在配置服务器中，1·桶关联的 ID 值就是配置数组的索引号。 同时，桶还关联了一个 KvStore 的接口。我们写数据的时候会传入当前服务器持有的数据存储引擎，下面是对桶中数据的操作，有 Get, Put, Append。
       </p>
 
-      <blockquote>
+       
 <pre>
         // <br/>
         // get encode key data from engine<br/>
@@ -192,13 +188,13 @@
         }<br/>
         <br/>
     </pre>
-      </blockquote>
+        
 
       <p>
         接下来我们来看看 ShardServer 定义的结构体
       </p>
 
-      <blockquote>
+       
         <pre>
         type ShardKV struct {<br/>
             mu      sync.RWMutex<br/>
@@ -223,7 +219,7 @@
             pb.UnimplementedRaftServiceServer<br/>
         } <br/>
     </pre>
-      </blockquote>
+        
 
       <p>
         这个结构和我们应用 Raft 实现单组 KvServer 的结构特别类似。这里的状态机是 map[int]*Bucket 类型的，代表当前服务器的桶的数据。分片服务器需要和配置服务器交互，知道自己负责哪些分片的数据。cvCli 定义了到配置服务器的客户端。lastConfig，curConfig 分别记录了上一个版本以及当前版本的集群配置表。服务器知道这个表之后就知道自己负责哪些分片的数据。当集群拓扑变更后，配置表会变化，分片服务器能第一时间感知到变化，并且应用新的配置表。其他结构就和我们之前介绍单组 KvServer 一样了。
@@ -233,7 +229,7 @@
         我们看看 ShardServer 构造流程和单组 KvServer 的区别。首先， Server 启动的时候我们初始化了两个引擎，一个用来存储 Raft 日志的 logDbEng，另一个用来存储实际数据的 newdbEng。cvCli 是到配置服务器分组的连接客户。，我们调用 MakeCfgSvrClient 构造到配置服务器的客户端，传入配置服务器分组的地址列表。
       </p>
 
-      <blockquote>
+       
         <pre>
 //<br/>
 // MakeShardKVServer make a new shard kv server<br/>
@@ -270,7 +266,7 @@ func MakeShardKVServer(peerMaps map[int]string, nodeId int, gid int, configServe
 	return shardKv<br/>
 }<br/>
 </pre>
-      </blockquote>
+        
 
       <p>
         我们 initStm 函数初始化了状态机里面的每个 Bucket。之后，调用 cvCli.Query(-1) 查询当前最新的配置缓存到本地的 curConfig，lastConfig，初始启动，这两个配置是一样的。
@@ -284,7 +280,7 @@ func MakeShardKVServer(peerMaps map[int]string, nodeId int, gid int, configServe
         如果有新的配置变更，比如加入了新的服务器分组，我们就会对比新的配置和当前配置的版本信息。如果匹配上，当前节点作为 Leader 需要把这个配置变化信息发送到这个服务器分组，让大家都知道新的配置变化。分组服务里面的每个服务器配置都要是一致的，这里我们通过 Propose 提交一个 OpType_OpConfigChange 的提案。
       </p>
 
-      <blockquote>
+       
         <pre>
         if _, isLeader := s.rf.GetState(); isLeader {<br/>
             ...<br/>
@@ -312,13 +308,13 @@ func MakeShardKVServer(peerMaps map[int]string, nodeId int, gid int, configServe
                 }<br/>
             }<br/>
         </pre>
-      </blockquote>
+        
 
       <p>
         最后我们看看分组中的服务器是怎么 Apply 这个日志的
       </p>
 
-      <blockquote>
+       
         <pre>
 nextConfig := &configserver.Config{}
 json.Unmarshal(req.Context, nextConfig)
@@ -331,7 +327,7 @@ if nextConfig.Version == s.curConfig.Version+1 {
 }
         </pre>
 				
-      </blockquote>
+        
 <p>
     我们会更新 Server 的 lastConfig 和 curConfig 配置信息。
 </p>
@@ -345,7 +341,7 @@ if nextConfig.Version == s.curConfig.Version+1 {
     当客户端写入一个 Key 到系统中时，我们首先需要知道 Key 属于那个分组服务器负责。在构造客户端的时候，我们会先将最新的配置信息缓存到本地。
 </p>
 
-<blockquote>
+ 
     <pre>
 // make a kv cilent
 //
@@ -356,14 +352,14 @@ func MakeKvClient(csAddrs string) *KvClient {
 }
 </pre>
 
-</blockquote>
+  
 
 <p>
     客户端中我们提供了 Get(key string) 和 Put(key, value string) 的接口，它们都是调用公用的 Command 方法去访问我们的分组服务器。  
 </p>
 
 
-<blockquote>
+ 
     <pre>
 //
 // Command
@@ -416,7 +412,7 @@ func (kvCli *KvClient) Command(req *pb.CommandRequest) (string, error) {
 	return "", errors.New("unknow code")
 }
 </pre>
-</blockquote>
+  
 
 <p>
 1.首先我们会使用 Key2BucketID 函数对 Key 做 CRC32 运算，得到它应该被分配到桶的 ID； <br/>
