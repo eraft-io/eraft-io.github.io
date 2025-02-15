@@ -493,7 +493,460 @@ if(fork() == 0) {
 
 <p>
 在子进程关闭文件描述符 0 后，open 将保证该文件用于新打开的 input.txt：0将是最小的可用文件描述符。然后
-，cat使用引用 input.txt 的文件描述符 0（标准输入）执行。
+，cat将使用打开 input.txt 的文件描述符代替 0（标准输入）执行。
+</p>
+
+<p>
+    The code for I/O redirection in the xv6 shell works in exactly this way (8630). Recall 
+    that at this point in the code the shell has already forked the child shell and that
+     runcmd will call exec to load the new program. Now it should be clear why 
+     it is a good idea that fork and exec are separate calls. Because if they are 
+     separate, the shell can fork a child, use open, close, dup in the child to 
+     change the standard input and output file descriptors, and then exec. 
+     No changes to the program being execed (cat in our example) are required. 
+     If fork and exec were combined into a single system call, some other (probably 
+     more complex) scheme would be required for the shell to redirect standard input and 
+     output, or the program itself would have to understand how to redirect I/O.
+</p>
+
+<p>
+    xv6 中 shell 实现 I/O 重定向的代码正是以这种方式运行。回想这一点，在代码中 shell 刚 fork 了子 shell
+    并且 runcmd 将会调用 exec 来加载新的程序。现在你应该能知道为啥 fork 和  exec 分开单独调用是一个好主意。
+    因为如果它们是分开的，shell 可以启动一个子进程，在子进程中使用 open\close\dump 来更改标准输入和标准输出描述符、
+    然后调用 exec。不需要对正在执行的程序 （示例中的 cat）做任何修改。如果 fork 和 exec 组合成一个系统调用，
+    那么 shell 需要其他一些（可能更复杂）的方案来重定向标准输入和输出，或者程序本身也必须了解如何重定向 I/O。
+</p>
+
+<p>
+    Although fork copies the file descriptor table, each underlying file offset is
+    shared between parent and child. Consider this example:
+
+<pre>
+if(fork() == 0) {
+    write(1, "hello ", 6);
+    exit();
+    } else {
+    wait();
+    write(1, "world\n", 6);
+}
+</pre>
+
+ At the end of this fragment, the file attached to file descriptor 1 will contain the data 
+ hello world. The write in the parent (which, thanks to wait, runs only after the child 
+ is done) picks up where the child’s write left off. This behavior helps produce sequential 
+ output from sequences of shell commands, like (echo hello; echo world) > output.txt.
+</p>
+
+
+<p>
+    虽然 fork 复制了文件描述符表，但是每个底层文件offset 是在父进程和子进程之间共享的。考虑到下面的例子：
+<pre>
+if(fork() == 0) {
+    write(1, "hello ", 6);
+    exit();
+    } else {
+    wait();
+    write(1, "world\n", 6);
+}
+</pre>
+    在这个代码执行之后，写到文件描述符 1 的文件数据将包含 hello world。父节点中的写入（由于等待，只有在子进程执行完之后之后才执行）从
+    子进程写入停止的地方继续写入。这种行为有助于从一系列 shell 命令中顺序输出的实现，例如 (echo hello; echo world) > output.txt。
+</p>
+
+
+<p>
+    The dup system call duplicates an existing file descriptor, returning a new one that 
+    refers to the same underlying I/O object. Both file descriptors share an offset, 
+    just as the file descriptors duplicated by fork do. This is another way to 
+    write hello world into a file:
+</p>
+
+<p>
+    dup 系统调用复制一个现有的文件描述符，返回一个新的文件描述符，该描述符指向相同的底层 I/O 对象。
+    两个文件描述符共享一个偏移量，就像通过 fork 复制的文件描述符一样。这是另一种将 "hello world" 写入文件的方式：
+</p>
+
+<pre>
+fd = dup(1);
+write(1, "hello ", 6);
+write(fd, "world\n", 6);
+</pre>
+
+<p>
+    Two file descriptors share an offset if they were derived from the same original file 
+    descriptor by a sequence of fork and dup calls. Otherwise file descriptors do not 
+    share offsets, even if they resulted from open calls for the same file. Dup allows 
+    shells to implement commands like this: ls existing-file non-existing-file > tmp1 
+    pipe 2>&1. The 2>&1 tells the shell to give the command a file descriptor 2 that
+     is a duplicate of descriptor 1. Both the name of the existing file and the error 
+     message for the non-existing file will show up in the file tmp1. The xv6 shell 
+     doesn’t support I/O redi- rection for the error file descriptor, but now you know how 
+     to implement it. 
+</p>
+
+<p>
+    如果两个文件描述符是通过一系列 `fork` 和 `dup` 调用从同一个原始文件描述符派生出来的，那么它们会共享一个偏移量。
+    否则，即使这些文件描述符是通过对同一个文件的 `open` 调用生成的，它们也不会共享偏移量。`dup` 系统调用允许 shell 
+    实现如下命令：`ls existing-file non-existing-file > tmp1 2>&1`。这里的 `2>&1` 告诉 shell 给命令
+    一个文件描述符 2，它是描述符 1 的副本。这样，现有文件的名称和非现有文件的错误消息都会出现在文件 `tmp1` 中。xv6 shell 不支持针对错误文件描述符的 I/O 重定向，但你现在知道如何实现它了。
+</p>
+
+<p>
+    File descriptors are a powerful abstraction, because they hide the details of what they are 
+    connected to: a process writing to file descriptor 1 may be writing to a file, to a 
+    device like the console, or to a pipe.
+</p>
+
+<p>
+    文件描述符是一种强大的抽象，因为它隐藏了其连接目标的细节：一个进程向文件描述符 1 写入数据时，可能是在写入文件、
+    像控制台这样的设备，或者是一个管道。
+</p>
+
+
+<h2> Pipes - 管道</h2>
+
+<p>
+    A pipe is a small kernel buffer exposed to processes as a pair of file descriptors, 
+    one for reading and one for writing. Writing data to one end of the pipe makes that 
+    data available for reading from the other end of the pipe. Pipes provide a way for 
+    processes to communicate.
+</p>
+
+<p>
+    管道是一个小型的内核缓冲区，以一对文件描述符的形式暴露给进程，一个用于读取，一个用于写入。
+    将数据写入管道的一端后，数据可以从管道的另一端读取。管道提供了一种进程间通信的方式。
+</p>
+
+<p>
+    The following example code runs the program wc with standard input connected 
+    to the read end of a pipe.
+</p>
+
+<p>
+    下面的示例代码会运行程序 `wc`，并将它的标准输入连接到管道的读取端。
+</p>
+
+<pre>
+
+int p[2];
+char *argv[2];
+argv[0] = "wc";
+argv[1] = 0;
+pipe(p);
+if(fork() == 0) {
+    close(0);
+    dup(p[0]);
+    close(p[0]);
+    close(p[1]);
+    exec("/bin/wc", argv);
+} else {
+    close(p[0]);
+    write(p[1], "hello world\n", 12);
+    close(p[1]);
+}
+</pre>
+
+<p>
+    The program calls pipe, which creates a new pipe and records the read and write 
+    file descriptors in the array p. After fork, both parent and child have file 
+    descriptors referring to the pipe. The child dups the read end onto file descriptor 0, 
+    closes the file descriptors in p, and execs wc. When wc reads from its standard input, 
+    it reads from the pipe. The parent closes the read side of the pipe, writes to the pipe,
+     and then closes the write side.
+</p>
+
+<p>
+    该程序调用 `pipe`，创建一个新的管道，并将读取和写入的文件描述符记录在数组 `p` 中。
+    在调用 `fork` 之后，父进程和子进程都有指向该管道的文件描述符。子进程将管道的读取端复制
+    到文件描述符 0，然后关闭数组 `p` 中的文件描述符，并执行 `wc` 命令。当 `wc` 从其标准输入
+    读取数据时，实际上是从管道中读取数据。父进程关闭管道的读取端，向管道写入数据，然后关闭管道的写入端。
+</p>
+
+<p>
+    If no data is available, a read on a pipe waits for either data to be written 
+    or all file descriptors referring to the write end to be closed; in the latter case, 
+    read will re- turn 0, just as if the end of a data file had been reached. The 
+    fact that read blocks until it is impossible for new data to arrive is one reason 
+    that it’s important for the child to close the write end of the pipe before executing 
+    wc above: if one of wc’s file descriptors referred to the write end of the pipe, 
+    wc would never see end-of-file.
+</p>
+
+<p>
+    如果管道中没有可用的数据，读取操作会等待，直到有数据被写入或者所有指向管道写入端的文件描述符都被关闭；
+    在后一种情况下，`read` 将返回 0，就像到达数据文件末尾一样。`read` 会阻塞直到不可能有新数据到来，这
+    就是为什么在上面的例子中，子进程在执行 `wc` 之前关闭管道的写入端非常重要：如果 `wc` 的某个文件描述符
+    仍然指向管道的写入端，`wc` 就永远不会看到文件结束符（EOF）。
+</p>
+
+<p>
+    The xv6 shell implements pipelines such as grep fork sh.c | wc -l in a manner similar to the above code (8650). 
+    The child process creates a pipe to connect the path left end of the pipeline with the right end. 
+    Then it calls fork and runcmd for the left end of the pipeline and fork and runcmd for the 
+    right end, and waits for both to finish. The right end of the pipeline may be a 
+    command that itself includes a pipe (e.g., a | b | c), which itself forks two new 
+    child processes (one for b and one for c). Thus, the shell may create a tree of processes. 
+    The leaves of this tree are commands and the interior nodes are processes that wait until 
+    the left and right children complete. In principle, you could have the interior nodes
+     run the left end of a pipeline, but doing so correctly would complicate the implementation.
+</p>
+
+<p>
+    xv6 shell 以类似于上述代码的方式（8650）实现了类似 `grep fork sh.c | wc -l` 的管道功能。子进程创建一个管道，
+    将管道的左端与右端连接起来。然后它调用 `fork` 和 `runcmd` 来处理管道的左端，再调用 `fork` 和 `runcmd` 
+    来处理管道的右端，并等待这两部分都完成。管道的右端可能是一个本身包含管道的命令（例如 `a | b | c`），
+    这会再次分叉出两个新的子进程（一个用于 `b`，一个用于 `c`）。因此，shell 可能会生成一个进程树。
+    这棵树的叶子节点是具体的命令，而内部节点是等待左右子进程完成的进程。原则上，可以让内部节点运行管道的左端，
+    但这样做会增加实现的复杂性。
+</p>
+
+<p>
+    Pipes may seem no more powerful than temporary files: the pipeline
+</p>
+
+<pre>
+    echo hello world | wc
+</pre>
+
+<p>
+    could be implemented without pipes as
+</p>
+
+<pre>
+    echo hello world >/tmp/xyz; wc < /tmp/xyz
+</pre>
+
+<p>管道可能看起来并不比临时文件更强大。例如，管道命令：
+
+<pre>
+echo hello world | wc
+</pre>
+
+可以在没有管道的情况下通过以下方式实现：
+
+<pre>
+echo hello world >/tmp/xyz; wc < /tmp/xyz
+</pre>
+
+即使用临时文件 `/tmp/xyz` 来传递数据。
+</p>
+
+<p>
+    Pipes have at least four advantages over temporary files in this situation.
+    First, pipes automatically clean themselves up; with the file redirection, 
+    a shell would have to be careful to remove /tmp/xyz when done. Second, 
+    pipes can pass arbitrarily long streams of data, while file redirection 
+    requires enough free space on disk to store all the data. Third, pipes 
+    allow for parallel execution of pipeline stages, while the file approach requires 
+    the first program to finish before the second starts. Fourth, if you are implementing 
+    inter-process communication, pipes’ blocking reads and writes are more efficient 
+    than the non-blocking semantics of files.
+</p>
+
+<p>
+    在这种情况下，管道相对于临时文件至少有四个优势：
+
+    首先，管道会自动清理自身资源；而使用文件重定向时，shell 必须小心确保在操作完成后删除 `/tmp/xyz`。
+    
+    其次，管道可以传递任意长度的数据流，而文件重定向需要磁盘上有足够的空闲空间来存储所有数据。
+    
+    第三，管道允许管道阶段的并行执行，而文件方法要求第一个程序完成之后，第二个程序才能开始。
+    
+    第四，如果你正在实现进程间通信，管道的阻塞式读写比文件的非阻塞语义更高效。
+</p>
+
+
+<h2> File system - 文件系统 </h2>
+
+<p>
+The xv6 file system provides data files, which are uninterpreted byte arrays, 
+and directories, which contain named references to data files and other directories.
+The directories form a tree, starting at a special directory called the root. A path 
+like /a/b/c refers to the file or directory named c inside the directory named b i
+nside the directory named a in the root directory /. Paths that don’t begin with / are 
+evaluated relative to the calling process’s current directory, which can be changed 
+with the chdir system call. Both these code fragments open the same file (assuming all 
+the directories involved exist):
+</p>
+
+<p>
+    xv6 文件系统提供了数据文件（未解释的字节数组）和目录（包含指向数据文件和其他目录的命名引用）。
+    目录构成了一棵树，从一个名为根（root）的特殊目录开始。像 `/a/b/c` 这样的路径指的是根目录 `/` 
+    中名为 `a` 的目录内的、名为 `b` 的目录中的、名为 `c` 的文件或目录。不以 `/` 开头的路径是
+    相对于调用进程当前工作目录进行解析的，当前工作目录可以通过 `chdir` 系统调用来更改。以下这两
+    段代码片段打开的是同一个文件（假设涉及的所有目录都存在）：
+</p>
+
+<pre>
+chdir("/a");
+chdir("b");
+open("c", O_RDONLY);
+open("/a/b/c", O_RDONLY);
+</pre>
+
+<p>
+    The first fragment changes the process’s current directory to /a/b; the second neither 
+    refers to nor changes the process’s current directory.
+</p>
+
+<p>
+    第一段代码将进程的当前工作目录更改为了 `/a/b`；而第二段代码既没有引用也没有更改进程的当前工作目录。
+</p>
+
+<p>
+    There are multiple system calls to create a new file or directory: mkdir creates a 
+    new directory, open with the O_CREATE flag creates a new data file, and mknod creates 
+    a new device file. This example illustrates all three:
+</p>
+
+<p>
+    有多种系统调用可以用于创建新文件或目录：`mkdir` 用于创建新目录，带有 `O_CREATE` 标志的 `open` 用于
+    创建新数据文件，而 `mknod` 用于创建新设备文件。以下示例展示了这三种调用的使用：
+</p>
+
+<pre>
+mkdir("/dir");
+fd = open("/dir/file", O_CREATE|O_WRONLY);
+close(fd);
+mknod("/console", 1, 1);
+</pre>
+
+<p>
+    Mknod creates a file in the file system, but the file has no contents. Instead, 
+    the file’s metadata marks it as a device file and records the major and minor 
+    device numbers (the two arguments to mknod), which uniquely identify a kernel 
+    device. When a process later opens the file, the kernel diverts read and 
+    write system calls to the kernel device implementation instead of passing 
+    them to the file system.
+</p>
+
+<p>
+    `mknod` 在文件系统中创建一个文件，但该文件没有实际内容。相反，文件的元数据将其标记为设备文件，
+    并记录主设备号和次设备号（即传递给 `mknod` 的两个参数），这两个号码唯一标识了一个内核设备。
+    当进程随后打开该文件时，内核会将读写系统调用重定向到内核设备的实现，而不是将它们传递给文件系统。
+</p>
+
+<p>
+    fstat retrieves information about the object a file descriptor refers to. 
+    It fills in a struct stat, defined in stat.h as: 
+</p>
+
+<p>
+    `fstat` 用于检索文件描述符所指向对象的相关信息。它会填充一个 `struct stat` 结构体，该结构
+    体在 `stat.h` 中定义为：
+</p>
+
+<pre>
+#define T_DIR  1
+#define T_FILE 2
+#define T_DEV  3
+// Directory
+// File
+// Device
+        struct stat {
+        short type;  // Type of file
+        int dev;     // File system’s disk device
+        uint ino;    // Inode number
+        short nlink; // Number of links to file
+        uint size;   // Size of file in bytes
+};
+</pre>
+
+<p>
+    A file’s name is distinct from the file itself; the same underlying file, called 
+    an inode, can have multiple names, called links. The link system call creates 
+    another file system name referring to the same inode as an existing file. 
+    This fragment creates a new file named both a and b.
+</p>
+
+<p>
+    文件的名称与文件本身是不同的；同一个底层文件（称为 **inode**）可以有多个名称，这些名称被称为 **链接**（links）。
+    `link` 系统调用会为一个已存在的文件创建另一个指向相同 inode 的文件系统名称。以下代码片段创建了一个名为 
+    `a` 和 `b` 的新文件，它们实际上指向同一个 inode。
+</p>
+
+<pre>
+open("a", O_CREATE|O_WRONLY);
+link("a", "b");
+</pre>
+
+<p>
+    Reading from or writing to a is the same as reading from or writing to b. 
+    Each inode is identified by a unique inode number. After the code sequence 
+    above, it is possible to determine that a and b refer to the same underlying 
+    contents by inspecting the result of fstat: both will return the same inode
+     number (ino), and the nlink count will be set to 2.
+</p>
+
+<p>
+    对文件 `a` 进行读写操作与对文件 `b` 进行读写操作是相同的。每个 inode 都由一个唯一的 inode 
+    编号标识。在上述代码序列执行之后，可以通过检查 `fstat` 的结果来确定 `a` 和 `b` 指向相同的底层
+    内容：两者都会返回相同的 inode 编号（`ino`），并且链接计数（`nlink`）会被设置为 2。
+</p>
+
+
+<p>
+    The unlink system call removes a name from the file system. The file’s inode and the 
+    disk space holding its content are only freed when the file’s link count is zero and no
+     file descriptors refer to it. Thus adding
+</p>
+
+<p>
+    `unlink` 系统调用会从文件系统中移除一个名称。文件的 inode 以及存储其内容的磁盘空间只有在文件的
+    链接计数为零，并且没有文件描述符引用该文件时才会被释放。因此，添加以下操作：
+</p>
+
+<pre>
+    unlink("a");
+</pre>
+
+<p>
+    to the last code sequence leaves the inode and file content accessible as b. Furthermore,
+</p>
+<p>
+    将上述操作添加到最后一段代码中时，inode 和文件内容仍然可以通过名称 `b` 访问。此外，
+</p>
+
+<pre>
+    fd = open("/tmp/xyz", O_CREATE|O_RDWR);
+    unlink("/tmp/xyz");
+</pre>
+
+<p>
+    is an idiomatic way to create a temporary inode that will be cleaned 
+    up when the process closes fd or exits.
+</p>
+
+<p>
+    这是一种创建临时 inode 的惯用方法，该 inode 会在进程关闭 `fd` 或退出时被清理。
+</p>
+
+<p>
+    Shell commands for file system operations are implemented as user-level programs 
+    such as mkdir, ln, rm, etc. This design allows anyone to extend the shell with new
+     user commands by just adding a new user-level program. In hindsight this plan seems
+      obvious, but other systems designed at the time of Unix often built such commands
+       into the shell (and built the shell into the kernel).
+</p>
+
+<p>
+    用于文件系统操作的 Shell 命令是作为用户级程序实现的，例如 `mkdir`、`ln`、`rm` 等等。
+    这种设计允许任何人通过添加新的用户级程序来扩展 Shell 的功能，以支持新的用户命令。虽然事后
+    看来这个方案似乎显而易见，但在 Unix 诞生时，其他许多系统通常会将这类命令直接集成到 
+    Shell 中（甚至将 Shell 集成到内核中）。
+</p>
+
+<p>
+    One exception is cd, which is built into the shell (8716). cd must change the current working
+     directory of the shell itself. If cd were run as a regular command, then the shell would 
+     fork a child process, the child process would run cd, and cd would change the child’s 
+     working directory. The parent’s (i.e., the shell’s) working directory would not change.
+</p>
+
+<p>
+    一个例外是 `cd`，它是直接内置在 Shell 中的（8716）。`cd` 必须更改 Shell 自身的当前工作目录。
+    如果 `cd` 作为普通命令运行，那么 Shell 会派生一个子进程，子进程运行 `cd`，而 `cd` 只会改变子进程的工
+    作目录。父进程（即 Shell）的工作目录并不会发生变化。
 </p>
 
 </article>
