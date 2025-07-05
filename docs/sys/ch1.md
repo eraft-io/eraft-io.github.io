@@ -263,6 +263,8 @@ goreman start
 07:50:30 raftexample3 | raft2025/07/02 07:50:30 INFO: raft.node: 3 elected leader 1 at term 2
 ```
 
+#### 容灾与一致性保证
+
 我们可以尝试在系统中写入一个 kv 对
 ```
 curl -L http://127.0.0.1:12380/my-key -XPUT -d foo
@@ -293,4 +295,43 @@ goreman run start raftexample2
 curl -L http://127.0.0.1:22380/my-key
 ```
 
-可以看到可以读到对 raftexample2 curl GET my-key 的值为 bar，也就是 raftexample2 即使故障了，重启时候还是能通过 raft 共识协议与其他节点保持数据一致。
+可以看到可以读到对 raftexample2 curl GET my-key 的值为 bar，也就是 raftexample2 即使故障了，重启时候还是能通过 raft 共识协议保证与其他节点保持数据一致性。
+
+#### 集群节点动态配置
+
+raftexample 实现了动态的集群节点配置，你可以通过 REST API 在集群中添加和删除节点。
+
+当我们通过下面命令启动了一个 3 节点的集群之后
+
+```
+raftexample --id 1 --cluster http://127.0.0.1:12379,http://127.0.0.1:22379,http://127.0.0.1:32379 --port 12380
+raftexample --id 2 --cluster http://127.0.0.1:12379,http://127.0.0.1:22379,http://127.0.0.1:32379 --port 22380
+raftexample --id 3 --cluster http://127.0.0.1:12379,http://127.0.0.1:22379,http://127.0.0.1:32379 --port 32380
+```
+
+你可以通过下面的命令在集群中加入第四个节点
+
+```
+curl -L http://127.0.0.1:12380/4 -XPOST -d http://127.0.0.1:42379
+```
+
+配置好节点后，我们通过下面的命令来启动新节点
+
+```
+raftexample --id 4 --cluster http://127.0.0.1:12379,http://127.0.0.1:22379,http://127.0.0.1:32379,http://127.0.0.1:42379 --port 42380 --join
+```
+
+加入的新节点还是可以和原来集群节点保持数据一致性，通过下面命令
+
+```
+curl -L http://127.0.0.1:42380/my-key
+```
+
+获取到的 my-key 的值为 bar。
+
+当然我们也可以动态的删除集群中的节点：
+```
+curl -L http://127.0.0.1:12380/3 -XDELETE
+```
+
+上述命令执行完之后，节点 3 停止了自己的进程，并且节点配置从 raftexample 集群中移除了。
