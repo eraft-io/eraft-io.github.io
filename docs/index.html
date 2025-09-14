@@ -7,9 +7,106 @@
   <link rel="stylesheet" href="./heti.css">
   <link rel="stylesheet" href="./index.css">
   <link rel="icon" href="./favicon.svg">
+  <style>
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      border: 1px solid black;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background-color: #f2f2f2;
+    }
+    /* 为链接添加统一样式 */
+    a {
+      color: #0066cc;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
 </head>
 <body>
   <main class="container">
+      这是一个系统性自学计算机科学的实验室，我们收集了大量互联网上优质的课程，并且集成了很多学习工具，让你有交互式学习的体验。
+    <br/><br/>
+    课程大纲
+    <table>
+      <tr>
+        <th>主题</th>
+        <th>为什么学习？</th>
+        <th>视频课程</th>
+      </tr>
+      <tr>
+        <td>编程</td>
+        <td>快速学习一门编程语言，入门</td>
+        <td>MIT 6.100L 计算机导论，以及如何使用 Python 编程: 
+          <a href="./mit-6100.html" target="_blank">视频</a>
+        </td>
+      </tr>
+      <tr>
+        <td>计算机体系结构</td>
+        <td>有助于你对计算机从“黑箱”操作转变为“白箱”理解，知其然也知其所以然。</td>
+        <td>CMU 15-213 深入理解计算机系统: 
+          <a href="https://www.bilibili.com/video/BV1Pm4y1P7XP" target="_blank">视频</a>
+        </td>
+      </tr>
+      <tr>
+        <td>算法与数据结构</td>
+        <td>如果你不知道如何使用像栈、队列、树和图这样的普遍数据结构，你就无法解决具有挑战性的问题。</td>
+        <td>Princeton Algorithms, 4th Edition: 
+          <a href="https://www.bilibili.com/video/BV1Jt411P77c" target="_blank">Part 1</a>, 
+          <a href="https://www.bilibili.com/video/BV1M741177FX" target="_blank">Part 2</a>
+        </td>
+      </tr>
+      <tr>
+        <td>计算机科学数学</td>
+        <td>学习数学将给你带来竞争优势。</td>
+        <td>MIT 6.042J 计算机科学数学: 
+          <a href="https://www.bilibili.com/video/BV1n64y1i777" target="_blank">视频</a>
+        </td>
+      </tr>
+      <tr>
+        <td>操作系统</td>
+        <td>你编写的大多数代码都是由操作系统运行的，所以你应该知道它们是如何交互的。</td>
+        <td>MIT 6.S081 操作系统工程: 
+          <a href="https://www.bilibili.com/video/BV19k4y1C7kA" target="_blank">视频</a>
+        </td>
+      </tr>
+      <tr>
+        <td>计算机网络</td>
+        <td>互联网是计算机系统伟大的发明。</td>
+        <td>Stanford CS 144 计算机网络介绍: 
+          <a href="https://www.bilibili.com/video/BV137411Z7LR" target="_blank">视频</a>
+        </td>
+      </tr>
+      <tr>
+        <td>数据库</td>
+        <td>数据是大多数重要程序的核心，但很少有人真正理解数据库系统是如何工作的。</td>
+        <td>CMU 15-445, CMU 15-721 数据库系统原理初级，高级: 
+          <a href="https://www.bilibili.com/video/BV1Ex4y1p7bi" target="_blank">15-445</a>, 
+          <a href="./cmu-15-721.html" target="_blank">15-721</a>
+        </td>
+      </tr>
+      <tr>
+        <td>语言和编译器</td>
+        <td>如果你理解语言和编译器的实际工作原理，你会写出更好的代码，并更容易学习新语言。</td>
+        <td>Stanford CS143 编译器: 
+          <a href="https://www.bilibili.com/video/BV1Ms411A7EP" target="_blank">视频</a>
+        </td>
+      </tr>
+      <tr>
+        <td>分布式系统</td>
+        <td>如今，大多数系统都是分布式系统。</td>
+        <td>MIT 6.824 分布式系统: 
+          <a href="https://www.bilibili.com/video/BV1R7411t71W" target="_blank">视频</a>
+        </td>
+      </tr>
+    </table>
     <article class="article heti heti--classic">
       <h1 class="article__title">精解计算机系统课程</h1>
         <details open>
