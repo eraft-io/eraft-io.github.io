@@ -1,6 +1,6 @@
 {
   "files": {
-    "lecture_08.py": "import torch\nimport time\nimport os\nfrom typing import List, Callable\nimport torch.nn.functional as F\nimport torch.distributed as dist\nimport torch.distributed.fsdp\nfrom execute_util import text, image, link, system_text\nfrom torch_util import get_device\nfrom lecture_util import article_link\nfrom lecture_08_utils import spawn, int_divide, summarize_tensor, get_init_params, render_duration\n\ndef main():\n    text(\"Last week: parallelism within a single GPU\")\n    text(\"This week: parallelism across multiple GPUs\")\n    image(\"images/gpu-node-overview.png\", width=500)\n\n    text(\"In both cases, **compute** (arithmetic logic units) is far from inputs/outputs (**data**).\")\n    text(\"Unifying theme: orchestrate computation to avoid data transfer bottlenecks\")\n\n    text(\"Last week: reduce memory accesses via fusion/tiling\")\n    text(\"This week: reduce communication across GPUs/nodes via replication/sharding\")\n\n    text(\"Generalized hierarchy (from small/fast to big/slow):\")\n    text(\"- Single node, single GPU: L1 cache / shared memory\")\n    text(\"- Single node, single GPU: HBM\")\n    text(\"- Single node, multi-GPU: NVLink\")\n    text(\"- Multi-node, multi-GPU: NVSwitch\")\n\n    text(\"This lecture: concretize the concepts from last lecture in code\")\n\n    link(title=\"[stdout for this lecture]\", url=\"var/traces/lecture_08_stdout.txt\")\n\n    text(\"### Part 1: building blocks of distributed communication/computation\")\n    collective_operations()    # Conceptual programming interface\n    torch_distributed()        # How this is implemented in NCCL/PyTorch\n    benchmarking()             # Measure actual NCCL bandwidth\n\n    text(\"### Part 2: distributed training\")\n    text(\"Walk through bare-bones implementations of each strategy on deep MLPs.\")\n    text(\"Recall that MLPs are the compute bottleneck in Transformers, so this is representative.\")\n    data_parallelism()         # Cut up along the batch dimension\n    tensor_parallelism()       # Cut up along the width dimension\n    pipeline_parallelism()     # Cut up along the depth dimension\n\n    text(\"What's missing?\")\n    text(\"- More general models (with attention, etc.)\")\n    text(\"- More communication/computation overlap\")\n    text(\"- This require more complex code with more bookkeeping\")\n    text(\"- Jax/TPUs: just define the model, the sharding strategy, and the Jax compiler handles the rest \"), link(title=\"[levanter]\", url=\"https://crfm.stanford.edu/2023/06/16/levanter-1_0-release.html\")\n    text(\"- But we're doing PyTorch so you can see how one builds up from the primitives\")\n\n    text(\"### Summary\")\n    text(\"- Many ways to parallelize: data (batch), tensor/expert (width), pipeline (depth), sequence (length)\")\n    text(\"- Can **re-compute** or store in **memory** or store in another GPUs memory and **communicate**\")\n    text(\"- Hardware is getting faster, but will always want bigger models, so will have this hierarchical structure\")\n\n\ndef collective_operations():\n    text(\"**Collective operations** are the conceptual primitives used for distributed programming \"), article_link(\"https://en.wikipedia.org/wiki/Collective_operation\")\n    text(\"- Collective means that you specify communication pattern across many (e.g., 256) nodes.\")\n    text(\"- These are classic in the parallel programming literature from the 1980s.\")\n    text(\"- Better/faster abstraction than managing point-to-point communication yourself.\")\n\n    text(\"Terminology:\")\n    text(\"- **World size**: number of devices (e.g., 4)\")\n    text(\"- **Rank**: a device (e.g., 0, 1, 2, 3)\")\n\n    text(\"### Broadcast\"), image(\"https://pytorch.org/tutorials/_images/broadcast.png\", width=400)\n\n    text(\"### Scatter\"), image(\"https://pytorch.org/tutorials/_images/scatter.png\", width=400)\n\n    text(\"### Gather\"), image(\"https://pytorch.org/tutorials/_images/gather.png\", width=400)\n\n    text(\"### Reduce\"), image(\"https://pytorch.org/tutorials/_images/reduce.png\", width=400)\n\n    text(\"### All-gather\"), image(\"https://pytorch.org/tutorials/_images/all_gather.png\", width=400)\n\n    text(\"### Reduce-scatter\"), image(\"https://docs.nvidia.com/deeplearning/nccl/user-guide/docs/_images/reducescatter.png\", width=400)\n\n    text(\"### All-reduce = reduce-scatter + all-gather\"), image(\"https://pytorch.org/tutorials/_images/all_reduce.png\", width=400)\n\n    text(\"Way to remember the terminology:\")\n    text(\"- Reduce: performs some associative/commutative operation (sum, min, max)\")\n    text(\"- Broadcast/scatter is inverse of gather\")\n    text(\"- All: means destination is all devices\")\n\n\ndef torch_distributed():\n    text(\"### Hardware\")\n    text(\"Classic (in the home):\")\n    image(\"https://media.springernature.com/lw685/springer-static/image/art%3A10.1186%2Fs42774-021-00098-3/MediaObjects/42774_2021_98_Fig1_HTML.png?as=webp\", width=400)\n    text(\"- GPUs on same node communicate via a PCI(e) bus (v7.0, 16 lanes => 242 GB/s) \"), article_link(\"https://en.wikipedia.org/wiki/PCI_Express\")\n    text(\"- GPUs on different nodes communicate via Ethernet (~200 MB/s)\")\n\n    text(\"Modern (in the data center):\")\n    image(\"https://www.nextplatform.com/wp-content/uploads/2018/04/nvidia-nvswitch-topology-two.jpg\", width=400)\n    text(\"- Within a node: NVLink connects GPUs directly, bypass CPU\")\n    text(\"- Across nodes: NVSwitch connects GPUs directly, bypass Ethernet\")\n\n    text(\"Each H100 has 18 NVLink 4.0 links, for a total of 900GB/s \"), article_link(\"https://www.nvidia.com/en-us/data-center/nvlink/\")\n    text(\"In comparison, memory bandwidth for HBM is 3.9 TB/s \"), article_link(\"https://resources.nvidia.com/en-us-tensor-core/nvidia-tensor-core-gpu-datasheet\")\n\n    text(\"Let's check what our hardware setup is. \"), article_link(\"https://guide.ncloud-docs.com/docs/en/server-baremetal-a100-check-vpc\")\n    if torch.cuda.is_available():\n        os.system(\"nvidia-smi topo -m\")\n        text(\"Note GPUs are connected via NV18, also connected to NICs (for PCIe)\")\n\n    text(\"### NVIDIA Collective Communication Library (NCCL)\")\n    text(\"NCCL translates collective operations into low-level packets that are sent between GPUs. \"), link(title=\"[talk]\", url=\"https://www.nvidia.com/en-us/on-demand/session/gtcspring21-s31880/\")\n    text(\"- Detects topology of hardware (e.g., number of nodes, switches, NVLink/PCIe)\")\n    text(\"- Optimizes the path between GPUs\")\n    text(\"- Launches CUDA kernels to send/receive data\")\n\n    text(\"### PyTorch distributed library (`torch.distributed`)\")\n    link(title=\"[Documentation]\", url=\"https://pytorch.org/docs/stable/distributed.html\")\n\n    text(\"- Provides clean interface for collective operations (e.g., `all_gather_into_tensor`)\")\n    text(\"- Supports multiple backends for different hardware: gloo (CPU), nccl (GPU)\")\n    text(\"- Also supports higher-level algorithms (e.g., `FullyShardedDataParallel`) [not used in this course]\")\n\n    text(\"Let's walk through some examples.\")\n    spawn(collective_operations_main, world_size=4)\n\n\ndef collective_operations_main(rank: int, world_size: int):\n    \"\"\"This function is running asynchronously for each process (rank = 0, ..., world_size - 1).\"\"\"\n    setup(rank, world_size)\n\n    # All-reduce\n    dist.barrier()  # Waits for all processes to get to this point (in this case, for print statements)\n\n    tensor = torch.tensor([0., 1, 2, 3], device=get_device(rank)) + rank  # Both input and output\n\n    print(f\"Rank {rank} [before all-reduce]: {tensor}\", flush=True)\n    dist.all_reduce(tensor=tensor, op=dist.ReduceOp.SUM, async_op=False)  # Modifies tensor in place\n    print(f\"Rank {rank} [after all-reduce]: {tensor}\", flush=True)\n\n    # Reduce-scatter\n    dist.barrier()\n\n    input = torch.arange(world_size, dtype=torch.float32, device=get_device(rank)) + rank  # Input\n    output = torch.empty(1, device=get_device(rank))  # Allocate output\n\n    print(f\"Rank {rank} [before reduce-scatter]: input = {input}, output = {output}\", flush=True)\n    dist.reduce_scatter_tensor(output=output, input=input, op=dist.ReduceOp.SUM, async_op=False)\n    print(f\"Rank {rank} [after reduce-scatter]: input = {input}, output = {output}\", flush=True)\n\n    # All-gather\n    dist.barrier()\n\n    input = output  # Input is the output of reduce-scatter\n    output = torch.empty(world_size, device=get_device(rank))  # Allocate output\n\n    print(f\"Rank {rank} [before all-gather]: input = {input}, output = {output}\", flush=True)\n    dist.all_gather_into_tensor(output_tensor=output, input_tensor=input, async_op=False)\n    print(f\"Rank {rank} [after all-gather]: input = {input}, output = {output}\", flush=True)\n\n    text(\"Indeed, all-reduce = reduce-scatter + all-gather!\")\n\n    cleanup()\n\n\ndef benchmarking():\n    text(\"Let's see how fast communication happens (restrict to one node).\")\n\n    # All-reduce\n    spawn(all_reduce, world_size=4, num_elements=100 * 1024**2)\n\n    # Reduce-scatter\n    spawn(reduce_scatter, world_size=4, num_elements=100 * 1024**2)\n\n    # References\n    link(title=\"How to reason about operations\", url=\"https://github.com/NVIDIA/nccl-tests/blob/master/doc/PERFORMANCE.md#allreduce\")\n    link(title=\"Sample code\", url=\"https://github.com/stas00/ml-engineering/blob/master/network/benchmarks/all_reduce_bench.py\")\n\n\ndef all_reduce(rank: int, world_size: int, num_elements: int):\n    setup(rank, world_size)\n\n    # Create tensor\n    tensor = torch.randn(num_elements, device=get_device(rank))\n\n    # Warmup\n    dist.all_reduce(tensor=tensor, op=dist.ReduceOp.SUM, async_op=False)\n    if torch.cuda.is_available():\n        torch.cuda.synchronize()  # Wait for CUDA kernels to finish\n        dist.barrier()            # Wait for all the processes to get here\n\n    # Perform all-reduce\n    start_time = time.time()\n    dist.all_reduce(tensor=tensor, op=dist.ReduceOp.SUM, async_op=False)\n    if torch.cuda.is_available():\n        torch.cuda.synchronize()  # Wait for CUDA kernels to finish\n        dist.barrier()            # Wait for all the processes to get here\n    end_time = time.time()\n\n    duration = end_time - start_time\n    print(f\"[all_reduce] Rank {rank}: all_reduce(world_size={world_size}, num_elements={num_elements}) took {render_duration(duration)}\", flush=True)\n\n    # Measure the effective bandwidth\n    dist.barrier()\n    size_bytes = tensor.element_size() * tensor.numel()\n    sent_bytes = size_bytes * 2 * (world_size - 1)  # 2x because send input and receive output\n    total_duration = world_size * duration\n    bandwidth = sent_bytes / total_duration\n    print(f\"[all_reduce] Rank {rank}: all_reduce measured bandwidth = {round(bandwidth / 1024**3)} GB/s\", flush=True)\n\n    cleanup()\n\n\ndef reduce_scatter(rank: int, world_size: int, num_elements: int):\n    setup(rank, world_size)\n\n    # Create input and outputs\n    input = torch.randn(world_size, num_elements, device=get_device(rank))  # Each rank has a matrix\n    output = torch.empty(num_elements, device=get_device(rank))\n\n    # Warmup\n    dist.reduce_scatter_tensor(output=output, input=input, op=dist.ReduceOp.SUM, async_op=False)\n    if torch.cuda.is_available():\n        torch.cuda.synchronize()  # Wait for CUDA kerels to finish\n        dist.barrier()            # Wait for all the processes to get here\n\n    # Perform reduce-scatter\n    start_time = time.time()\n    dist.reduce_scatter_tensor(output=output, input=input, op=dist.ReduceOp.SUM, async_op=False)\n    if torch.cuda.is_available():\n        torch.cuda.synchronize()  # Wait for CUDA kerels to finish\n        dist.barrier()            # Wait for all the processes to get here\n    end_time = time.time()\n\n    duration = end_time - start_time\n    print(f\"[reduce_scatter] Rank {rank}: reduce_scatter(world_size={world_size}, num_elements={num_elements}) took {render_duration(duration)}\", flush=True)\n\n    # Measure the effective bandwidth\n    dist.barrier()\n    data_bytes = output.element_size() * output.numel()  # How much data in the output\n    sent_bytes = data_bytes * (world_size - 1)  # How much needs to be sent (no 2x here)\n    total_duration = world_size * duration  # Total time for transmission\n    bandwidth = sent_bytes / total_duration\n    print(f\"[reduce_scatter] Rank {rank}: reduce_scatter measured bandwidth = {round(bandwidth / 1024**3)} GB/s\", flush=True)\n\n    cleanup()\n\n\ndef data_parallelism():\n    image(\"images/data-parallelism.png\", width=300)\n    text(\"Sharding strategy: each rank gets a slice of the data\")\n\n    data = generate_sample_data()\n    spawn(data_parallelism_main, world_size=4, data=data, num_layers=4, num_steps=1)\n\n    text(\"Notes:\")\n    text(\"- Losses are different across ranks (computed on local data)\")\n    text(\"- Gradients are all-reduced to be the same across ranks\")\n    text(\"- Therefore, parameters remain the same across ranks\")\n\n\ndef generate_sample_data():\n    batch_size = 128\n    num_dim = 1024\n    data = torch.randn(batch_size, num_dim)\n    return data\n\n\ndef data_parallelism_main(rank: int, world_size: int, data: torch.Tensor, num_layers: int, num_steps: int):\n    setup(rank, world_size)\n\n    # Get the slice of data for this rank (in practice, each rank should load only its own data)\n    batch_size = data.size(0)  # @inspect batch_size\n    num_dim = data.size(1)  # @inspect num_dim\n    local_batch_size = int_divide(batch_size, world_size)  # @inspect local_batch_size\n    start_index = rank * local_batch_size  # @inspect start_index\n    end_index = start_index + local_batch_size  # @inspect end_index\n    data = data[start_index:end_index].to(get_device(rank))\n\n    # Create MLP parameters params[0], ..., params[num_layers - 1] (each rank has all parameters)\n    params = [get_init_params(num_dim, num_dim, rank) for i in range(num_layers)]\n    optimizer = torch.optim.AdamW(params, lr=1e-3)  # Each rank has own optimizer state\n\n    for step in range(num_steps):\n        # Forward pass\n        x = data\n        for param in params:\n            x = x @ param\n            x = F.gelu(x)\n        loss = x.square().mean()  # Loss function is average squared magnitude\n\n        # Backward pass\n        loss.backward()\n\n        # Sync gradients across workers (only difference between standard training and DDP)\n        for param in params:\n            dist.all_reduce(tensor=param.grad, op=dist.ReduceOp.AVG, async_op=False)\n\n        # Update parameters\n        optimizer.step()\n\n        print(f\"[data_parallelism] Rank {rank}: step = {step}, loss = {loss.item()}, params = {[summarize_tensor(params[i]) for i in range(num_layers)]}\", flush=True)\n\n    cleanup()\n\n\ndef tensor_parallelism():\n    image(\"images/tensor-parallelism.png\", width=300)\n    text(\"Sharding strategy: each rank gets part of each layer, transfer all data/activations\")\n\n    data = generate_sample_data()\n    spawn(tensor_parallelism_main, world_size=4, data=data, num_layers=4)\n\n\ndef tensor_parallelism_main(rank: int, world_size: int, data: torch.Tensor, num_layers: int):\n    setup(rank, world_size)\n\n    data = data.to(get_device(rank))\n    batch_size = data.size(0)  # @inspect batch_size\n    num_dim = data.size(1)  # @inspect num_dim\n    local_num_dim = int_divide(num_dim, world_size)  # Shard `num_dim`  @inspect local_num_dim\n\n    # Create model (each rank gets 1/world_size of the parameters)\n    params = [get_init_params(num_dim, local_num_dim, rank) for i in range(num_layers)]\n\n    # Forward pass\n    x = data\n    for i in range(num_layers):\n        # Compute activations (batch_size x local_num_dim)\n        x = x @ params[i]  # Note: this is only on a slice of the parameters\n        x = F.gelu(x)\n\n        # Allocate memory for activations (world_size x batch_size x local_num_dim)\n        activations = [torch.empty(batch_size, local_num_dim, device=get_device(rank)) for _ in range(world_size)]\n\n        # Send activations via all gather\n        dist.all_gather(tensor_list=activations, tensor=x, async_op=False)\n\n        # Concatenate them to get batch_size x num_dim\n        x = torch.cat(activations, dim=1)\n\n    print(f\"[tensor_parallelism] Rank {rank}: forward pass produced activations {summarize_tensor(x)}\", flush=True)\n\n    # Backward pass: homework exercise\n\n    cleanup()\n\n\ndef pipeline_parallelism():\n    image(\"images/pipeline-parallelism.png\", width=300)\n    text(\"Sharding strategy: each rank gets subset of layers, transfer all data/activations\")\n\n    data = generate_sample_data()\n    spawn(pipeline_parallelism_main, world_size=2, data=data, num_layers=4, num_micro_batches=4)\n\n\ndef pipeline_parallelism_main(rank: int, world_size: int, data: torch.Tensor, num_layers: int, num_micro_batches: int):\n    setup(rank, world_size)\n\n    # Use all the data\n    data = data.to(get_device(rank))\n    batch_size = data.size(0)  # @inspect batch_size\n    num_dim = data.size(1)  # @inspect num_dim\n\n    # Split up layers\n    local_num_layers = int_divide(num_layers, world_size)  # @inspect local_num_layers\n\n    # Each rank gets a subset of layers\n    local_params = [get_init_params(num_dim, num_dim, rank) for i in range(local_num_layers)]\n\n    # Forward pass\n\n    # Break up into micro batches to minimize the bubble\n    micro_batch_size = int_divide(batch_size, num_micro_batches)  # @inspect micro_batch_size\n    if rank == 0:\n        # The data\n        micro_batches = data.chunk(chunks=num_micro_batches, dim=0)\n    else:\n        # Allocate memory for activations\n        micro_batches = [torch.empty(micro_batch_size, num_dim, device=get_device(rank)) for _ in range(num_micro_batches)]\n\n    for x in micro_batches:\n        # Get activations from previous rank\n        if rank - 1 >= 0:\n            dist.recv(tensor=x, src=rank - 1)\n\n        # Compute layers assigned to this rank\n        for param in local_params:\n            x = x @ param\n            x = F.gelu(x)\n\n        # Send to the next rank\n        if rank + 1 < world_size:\n            print(f\"[pipeline_parallelism] Rank {rank}: sending {summarize_tensor(x)} to rank {rank + 1}\", flush=True)\n            dist.send(tensor=x, dst=rank + 1)\n\n    text(\"Not handled: overlapping communication/computation to eliminate pipeline bubbles\")\n\n    # Backward pass: homework exercise\n\n    cleanup()\n\n############################################################\n\ndef setup(rank: int, world_size: int):\n    # Specify where master lives (rank 0), used to coordinate (actual data goes through NCCL)\n    os.environ[\"MASTER_ADDR\"] = \"localhost\"\n    os.environ[\"MASTER_PORT\"] = \"15623\"\n\n    if torch.cuda.is_available():\n        dist.init_process_group(\"nccl\", rank=rank, world_size=world_size)\n    else:\n        dist.init_process_group(\"gloo\", rank=rank, world_size=world_size)\n\n\ndef cleanup():\n    torch.distributed.destroy_process_group()\n\n\nif __name__ == \"__main__\":\n    main()\n"
+    "lecture_08.py": "import torch\nimport time\nimport os\nfrom typing import List, Callable\nimport torch.nn.functional as F\nimport torch.distributed as dist\nimport torch.distributed.fsdp\nfrom execute_util import text, image, link, system_text\nfrom torch_util import get_device\nfrom lecture_util import article_link\nfrom lecture_08_utils import spawn, int_divide, summarize_tensor, get_init_params, render_duration\n\ndef main():\n    text(\"Last week: parallelism within a single GPU <br/> \u4e0a\u5468\uff1a\u5355 GPU \u5185\u7684\u5e76\u884c\")\n    text(\"This week: parallelism across multiple GPUs <br/> \u672c\u5468\uff1a\u591a GPU \u95f4\u7684\u5e76\u884c\")\n    image(\"images/gpu-node-overview.png\", width=500)\n\n    text(\"In both cases, **compute** (arithmetic logic units) is far from inputs/outputs (**data**). <br/> \u5728\u8fd9\u4e24\u79cd\u60c5\u51b5\u4e0b\uff0c**\u8ba1\u7b97** (\u7b97\u672f\u903b\u8f91\u5355\u5143) \u8fdc\u79bb\u8f93\u5165/\u8f93\u51fa (**\u6570\u636e**)\u3002\")\n    text(\"Unifying theme: orchestrate computation to avoid data transfer bottlenecks <br/> \u7edf\u4e00\u7684\u4e3b\u9898\uff1a\u7f16\u6392\u8ba1\u7b97\u4ee5\u907f\u514d\u6570\u636e\u4f20\u8f93\u74f6\u9888\")\n\n    text(\"Last week: reduce memory accesses via fusion/tiling <br/> \u4e0a\u5468\uff1a\u901a\u8fc7\u878d\u5408/\u5206\u5757\u51cf\u5c11\u5185\u5b58\u8bbf\u95ee\")\n    text(\"This week: reduce communication across GPUs/nodes via replication/sharding <br/> \u672c\u5468\uff1a\u901a\u8fc7\u590d\u5236/\u5206\u7247\u51cf\u5c11 GPU/\u8282\u70b9\u95f4\u7684\u901a\u4fe1\")\n\n    text(\"Generalized hierarchy (from small/fast to big/slow): <br/> \u901a\u7528\u5c42\u6b21\u7ed3\u6784 (\u4ece\u5c0f/\u5feb\u5230\u5927/\u6162)\uff1a\")\n    text(\"- Single node, single GPU: L1 cache / shared memory <br/> - \u5355\u8282\u70b9\uff0c\u5355 GPU\uff1aL1 \u7f13\u5b58/\u5171\u4eab\u5185\u5b58\")\n    text(\"- Single node, single GPU: HBM <br/> - \u5355\u8282\u70b9\uff0c\u5355 GPU\uff1aHBM\")\n    text(\"- Single node, multi-GPU: NVLink <br/> - \u5355\u8282\u70b9\uff0c\u591a GPU\uff1aNVLink\")\n    text(\"- Multi-node, multi-GPU: NVSwitch <br/> - \u591a\u8282\u70b9\uff0c\u591a GPU\uff1aNVSwitch\")\n\n    text(\"This lecture: concretize the concepts from last lecture in code <br/> \u672c\u8282\u8bfe\uff1a\u5728\u4ee3\u7801\u4e2d\u5177\u4f53\u5316\u4e0a\u8282\u8bfe\u7684\u6982\u5ff5\")\n\n    link(title=\"[stdout for this lecture]\", url=\"var/traces/lecture_08_stdout.txt\")\n\n    text(\"### Part 1: building blocks of distributed communication/computation <br/> ### \u7b2c 1 \u90e8\u5206\uff1a\u5206\u5e03\u5f0f\u901a\u4fe1/\u8ba1\u7b97\u7684\u6784\u5efa\u6a21\u5757\")\n    collective_operations()    # Conceptual programming interface\n    torch_distributed()        # How this is implemented in NCCL/PyTorch\n    benchmarking()             # Measure actual NCCL bandwidth\n\n    text(\"### Part 2: distributed training <br/> ### \u7b2c 2 \u90e8\u5206\uff1a\u5206\u5e03\u5f0f\u8bad\u7ec3\")\n    text(\"Walk through bare-bones implementations of each strategy on deep MLPs. <br/> \u9010\u6b65\u5b9e\u73b0\u6df1\u5ea6 MLP \u6bcf\u79cd\u7b56\u7565\u7684\u57fa\u672c\u7248\u672c\u3002\")\n    text(\"Recall that MLPs are the compute bottleneck in Transformers, so this is representative. <br/> \u8bb0\u4f4f MLP \u662f Transformer \u4e2d\u7684\u8ba1\u7b97\u74f6\u9888\uff0c\u6240\u4ee5\u8fd9\u662f\u4ee3\u8868\u6027\u7684\u3002\")\n    data_parallelism()         # Cut up along the batch dimension\n    tensor_parallelism()       # Cut up along the width dimension\n    pipeline_parallelism()     # Cut up along the depth dimension\n\n    text(\"What's missing? <br/> \u7f3a\u5c11\u4ec0\u4e48\uff1f\")\n    text(\"- More general models (with attention, etc.) <br/> - \u66f4\u901a\u7528\u7684\u6a21\u578b (\u5982\u5e26\u6ce8\u610f\u529b\u673a\u5236\u7b49)\")\n    text(\"- More communication/computation overlap <br/> - \u66f4\u591a\u7684\u901a\u4fe1/\u8ba1\u7b97\u91cd\u53e0\")\n    text(\"- This require more complex code with more bookkeeping <br/> - \u8fd9\u9700\u8981\u66f4\u590d\u6742\u7684\u4ee3\u7801\u548c\u66f4\u591a\u7684\u8bb0\u5f55\u5de5\u4f5c\")\n    text(\"- Jax/TPUs: just define the model, the sharding strategy, and the Jax compiler handles the rest <br/> - Jax/TPUs\uff1a\u53ea\u9700\u5b9a\u4e49\u6a21\u578b\u548c\u5206\u7247\u7b56\u7565\uff0cJax \u7f16\u8bd1\u5668\u5904\u7406\u5176\u4f59\u5de5\u4f5c \"), link(title=\"[levanter]\", url=\"https://crfm.stanford.edu/2023/06/16/levanter-1_0-release.html\")\n    text(\"- But we're doing PyTorch so you can see how one builds up from the primitives <br/> - \u4f46\u6211\u4eec\u4f7f\u7528 PyTorch \u662f\u4e3a\u4e86\u8ba9\u4f60\u4eec\u770b\u5230\u5982\u4f55\u4ece\u57fa\u672c\u539f\u8bed\u6784\u5efa\")\n\n    text(\"### Summary <br/> ### \u603b\u7ed3\")\n    text(\"- Many ways to parallelize: data (batch), tensor/expert (width), pipeline (depth), sequence (length) <br/> - \u591a\u79cd\u5e76\u884c\u5316\u65b9\u5f0f\uff1a\u6570\u636e (\u6279\u6b21)\u3001\u5f20\u91cf/\u4e13\u5bb6 (\u5bbd\u5ea6)\u3001\u6d41\u6c34\u7ebf (\u6df1\u5ea6)\u3001\u5e8f\u5217 (\u957f\u5ea6)\")\n    text(\"- Can **re-compute** or store in **memory** or store in another GPUs memory and **communicate** <br/> - \u53ef\u4ee5**\u91cd\u65b0\u8ba1\u7b97**\u6216\u5b58\u50a8\u5728**\u5185\u5b58**\u6216\u5b58\u50a8\u5728\u53e6\u4e00\u4e2a GPU \u5185\u5b58\u4e2d\u5e76\u8fdb\u884c**\u901a\u4fe1**\")\n    text(\"- Hardware is getting faster, but will always want bigger models, so will have this hierarchical structure <br/> - \u786c\u4ef6\u8d8a\u6765\u8d8a\u5feb\uff0c\u4f46\u6c38\u8fdc\u4f1a\u60f3\u8981\u66f4\u5927\u7684\u6a21\u578b\uff0c\u6240\u4ee5\u4f1a\u4fdd\u6301\u8fd9\u79cd\u5c42\u6b21\u7ed3\u6784\")\n\n\ndef collective_operations():\n    text(\"**Collective operations** are the conceptual primitives used for distributed programming <br/> **\u96c6\u5408\u64cd\u4f5c** \u662f\u7528\u4e8e\u5206\u5e03\u5f0f\u7f16\u7a0b\u7684\u6982\u5ff5\u539f\u8bed \"), article_link(\"https://en.wikipedia.org/wiki/Collective_operation\")\n    text(\"- Collective means that you specify communication pattern across many (e.g., 256) nodes. <br/> - \u96c6\u5408\u610f\u5473\u7740\u4f60\u6307\u5b9a\u8de8\u591a\u4e2a (\u5982 256) \u8282\u70b9\u7684\u901a\u4fe1\u6a21\u5f0f\u3002\")\n    text(\"- These are classic in the parallel programming literature from the 1980s. <br/> - \u8fd9\u4e9b\u662f 1980 \u5e74\u4ee3\u5e76\u884c\u7f16\u7a0b\u6587\u732e\u4e2d\u7684\u7ecf\u5178\u5185\u5bb9\u3002\")\n    text(\"- Better/faster abstraction than managing point-to-point communication yourself. <br/> - \u6bd4\u81ea\u5df1\u7ba1\u7406\u70b9\u5bf9\u70b9\u901a\u4fe1\u66f4\u597d\u7684/\u66f4\u5feb\u7684\u62bd\u8c61\u3002\")\n\n    text(\"Terminology: <br/> \u672f\u8bed\uff1a\")\n    text(\"- **World size**: number of devices (e.g., 4) <br/> - **\u4e16\u754c\u5927\u5c0f**\uff1a\u8bbe\u5907\u6570\u91cf (\u5982 4)\")\n    text(\"- **Rank**: a device (e.g., 0, 1, 2, 3) <br/> - **\u8fdb\u7a0b\u7f16\u53f7**\uff1a\u4e00\u4e2a\u8bbe\u5907 (\u5982 0, 1, 2, 3)\")\n\n    text(\"### Broadcast <br/> ### \u5e7f\u64ad\"), image(\"https://pytorch.org/tutorials/_images/broadcast.png\", width=400)\n\n    text(\"### Scatter <br/> ### \u6563\u5c04\"), image(\"https://pytorch.org/tutorials/_images/scatter.png\", width=400)\n\n    text(\"### Gather <br/> ### \u6536\u96c6\"), image(\"https://pytorch.org/tutorials/_images/gather.png\", width=400)\n\n    text(\"### Reduce <br/> ### \u5f52\u7ea6\"), image(\"https://pytorch.org/tutorials/_images/reduce.png\", width=400)\n\n    text(\"### All-gather <br/> ### \u5168\u6536\u96c6\"), image(\"https://pytorch.org/tutorials/_images/all_gather.png\", width=400)\n\n    text(\"### Reduce-scatter <br/> ### \u6563\u5c04\u5f52\u7ea6\"), image(\"https://docs.nvidia.com/deeplearning/nccl/user-guide/docs/_images/reducescatter.png\", width=400)\n\n    text(\"### All-reduce = reduce-scatter + all-gather <br/> ### \u5168\u5f52\u7ea6 = \u6563\u5c04\u5f52\u7ea6 + \u5168\u6536\u96c6\"), image(\"https://pytorch.org/tutorials/_images/all_reduce.png\", width=400)\n\n    text(\"Way to remember the terminology: <br/> \u8bb0\u4f4f\u672f\u8bed\u7684\u65b9\u5f0f\uff1a\")\n    text(\"- Reduce: performs some associative/commutative operation (sum, min, max) <br/> - \u5f52\u7ea6\uff1a\u6267\u884c\u67d0\u4e9b\u7ed3\u5408/\u4ea4\u6362\u8fd0\u7b97 (\u6c42\u548c\u3001\u6700\u5c0f\u503c\u3001\u6700\u5927\u503c)\")\n    text(\"- Broadcast/scatter is inverse of gather <br/> - \u5e7f\u64ad/\u6563\u5c04\u662f\u6536\u96c6\u7684\u9006\u64cd\u4f5c\")\n    text(\"- All: means destination is all devices <br/> - All\uff1a\u610f\u5473\u7740\u76ee\u6807\u662f\u6240\u6709\u8bbe\u5907\")\n\n\ndef torch_distributed():\n    text(\"### Hardware <br/> ### \u786c\u4ef6\")\n    text(\"Classic (in the home): <br/> \u7ecf\u5178 (\u5728\u5bb6\u7528)\uff1a\")\n    image(\"https://media.springernature.com/lw685/springer-static/image/art%3A10.1186%2Fs42774-021-00098-3/MediaObjects/42774_2021_98_Fig1_HTML.png?as=webp\", width=400)\n    text(\"- GPUs on same node communicate via a PCI(e) bus (v7.0, 16 lanes => 242 GB/s) <br/> - \u540c\u4e00\u8282\u70b9\u4e0a\u7684 GPU \u901a\u8fc7 PCI(e) \u603b\u7ebf\u901a\u4fe1 (v7.0\uff0c16 \u901a\u9053 => 242 GB/s) \"), article_link(\"https://en.wikipedia.org/wiki/PCI_Express\")\n    text(\"- GPUs on different nodes communicate via Ethernet (~200 MB/s) <br/> - \u4e0d\u540c\u8282\u70b9\u4e0a\u7684 GPU \u901a\u8fc7\u4ee5\u592a\u7f51\u901a\u4fe1 (~200 MB/s)\")\n\n    text(\"Modern (in the data center): <br/> \u73b0\u4ee3 (\u5728\u6570\u636e\u4e2d\u5fc3)\uff1a\")\n    image(\"https://www.nextplatform.com/wp-content/uploads/2018/04/nvidia-nvswitch-topology-two.jpg\", width=400)\n    text(\"- Within a node: NVLink connects GPUs directly, bypass CPU <br/> - \u8282\u70b9\u5185\uff1aNVLink \u76f4\u63a5\u8fde\u63a5 GPU\uff0c\u7ed5\u8fc7 CPU\")\n    text(\"- Across nodes: NVSwitch connects GPUs directly, bypass Ethernet <br/> - \u8de8\u8282\u70b9\uff1aNVSwitch \u76f4\u63a5\u8fde\u63a5 GPU\uff0c\u7ed5\u8fc7\u4ee5\u592a\u7f51\")\n\n    text(\"Each H100 has 18 NVLink 4.0 links, for a total of 900GB/s <br/> \u6bcf\u4e2a H100 \u6709 18 \u4e2a NVLink 4.0 \u94fe\u63a5\uff0c\u603b\u8ba1 900GB/s \"), article_link(\"https://www.nvidia.com/en-us/data-center/nvlink/\")\n    text(\"In comparison, memory bandwidth for HBM is 3.9 TB/s <br/> \u76f8\u6bd4\u4e4b\u4e0b\uff0cHBM \u5185\u5b58\u5e26\u5bbd\u4e3a 3.9 TB/s \"), article_link(\"https://resources.nvidia.com/en-us-tensor-core/nvidia-tensor-core-gpu-datasheet\")\n\n    text(\"Let's check what our hardware setup is. <br/> \u8ba9\u6211\u4eec\u68c0\u67e5\u6211\u4eec\u7684\u786c\u4ef6\u8bbe\u7f6e\u3002 \"), article_link(\"https://guide.ncloud-docs.com/docs/en/server-baremetal-a100-check-vpc\")\n    if torch.cuda.is_available():\n        os.system(\"nvidia-smi topo -m\")\n        text(\"Note GPUs are connected via NV18, also connected to NICs (for PCIe) <br/> \u6ce8\u610f\uff1aGPU \u901a\u8fc7 NV18 \u8fde\u63a5\uff0c\u4e5f\u8fde\u63a5\u5230\u7f51\u5361 (\u7528\u4e8e PCIe)\")\n\n    text(\"### NVIDIA Collective Communication Library (NCCL) <br/> ### NVIDIA \u96c6\u5408\u901a\u4fe1\u5e93 (NCCL)\")\n    text(\"NCCL translates collective operations into low-level packets that are sent between GPUs. <br/> NCCL \u5c06\u96c6\u5408\u64cd\u4f5c\u8f6c\u6362\u4e3a\u5728 GPU \u4e4b\u95f4\u53d1\u9001\u7684\u4f4e\u7ea7\u6570\u636e\u5305\u3002 \"), link(title=\"[talk]\", url=\"https://www.nvidia.com/en-us/on-demand/session/gtcspring21-s31880/\")\n    text(\"- Detects topology of hardware (e.g., number of nodes, switches, NVLink/PCIe) <br/> - \u68c0\u6d4b\u786c\u4ef6\u62d3\u6251 (\u5982\u8282\u70b9\u6570\u3001\u4ea4\u6362\u673a\u6570\u3001NVLink/PCIe)\")\n    text(\"- Optimizes the path between GPUs <br/> - \u4f18\u5316 GPU \u4e4b\u95f4\u7684\u8def\u5f84\")\n    text(\"- Launches CUDA kernels to send/receive data <br/> - \u542f\u52a8 CUDA \u5185\u6838\u53d1\u9001/\u63a5\u6536\u6570\u636e\")\n\n    text(\"### PyTorch distributed library (`torch.distributed`) <br/> ### PyTorch \u5206\u5e03\u5f0f\u5e93 (`torch.distributed`)\")\n    link(title=\"[Documentation]\", url=\"https://pytorch.org/docs/stable/distributed.html\")\n\n    text(\"- Provides clean interface for collective operations (e.g., `all_gather_into_tensor`) <br/> - \u4e3a\u96c6\u5408\u64cd\u4f5c\u63d0\u4f9b\u6e05\u6670\u7684\u63a5\u53e3 (\u5982 `all_gather_into_tensor`)\")\n    text(\"- Supports multiple backends for different hardware: gloo (CPU), nccl (GPU) <br/> - \u652f\u6301\u4e0d\u540c\u786c\u4ef6\u7684\u591a\u4e2a\u540e\u7aef\uff1agloo (CPU)\u3001nccl (GPU)\")\n    text(\"- Also supports higher-level algorithms (e.g., `FullyShardedDataParallel`) [not used in this course] <br/> - \u8fd8\u652f\u6301\u66f4\u9ad8\u7ea7\u7684\u7b97\u6cd5 (\u5982 `FullyShardedDataParallel`) [\u672c\u8bfe\u7a0b\u4e0d\u4f7f\u7528]\")\n\n    text(\"Let's walk through some examples. <br/> \u8ba9\u6211\u4eec\u901a\u8fc7\u4e00\u4e9b\u4f8b\u5b50\u6765\u4e86\u89e3\u3002\")\n    spawn(collective_operations_main, world_size=4)\n\n\ndef collective_operations_main(rank: int, world_size: int):\n    \"\"\"This function is running asynchronously for each process (rank = 0, ..., world_size - 1).\"\"\"\n    setup(rank, world_size)\n\n    # All-reduce\n    dist.barrier()  # Waits for all processes to get to this point (in this case, for print statements)\n\n    tensor = torch.tensor([0., 1, 2, 3], device=get_device(rank)) + rank  # Both input and output\n\n    print(f\"Rank {rank} [before all-reduce]: {tensor}\", flush=True)\n    dist.all_reduce(tensor=tensor, op=dist.ReduceOp.SUM, async_op=False)  # Modifies tensor in place\n    print(f\"Rank {rank} [after all-reduce]: {tensor}\", flush=True)\n\n    # Reduce-scatter\n    dist.barrier()\n\n    input = torch.arange(world_size, dtype=torch.float32, device=get_device(rank)) + rank  # Input\n    output = torch.empty(1, device=get_device(rank))  # Allocate output\n\n    print(f\"Rank {rank} [before reduce-scatter]: input = {input}, output = {output}\", flush=True)\n    dist.reduce_scatter_tensor(output=output, input=input, op=dist.ReduceOp.SUM, async_op=False)\n    print(f\"Rank {rank} [after reduce-scatter]: input = {input}, output = {output}\", flush=True)\n\n    # All-gather\n    dist.barrier()\n\n    input = output  # Input is the output of reduce-scatter\n    output = torch.empty(world_size, device=get_device(rank))  # Allocate output\n\n    print(f\"Rank {rank} [before all-gather]: input = {input}, output = {output}\", flush=True)\n    dist.all_gather_into_tensor(output_tensor=output, input_tensor=input, async_op=False)\n    print(f\"Rank {rank} [after all-gather]: input = {input}, output = {output}\", flush=True)\n\n    text(\"Indeed, all-reduce = reduce-scatter + all-gather! <br/> \u786e\u5b9e\uff0call-reduce = reduce-scatter + all-gather\uff01\")\n\n    cleanup()\n\n\ndef benchmarking():\n    text(\"Let's see how fast communication happens (restrict to one node). <br/> \u8ba9\u6211\u4eec\u770b\u770b\u901a\u4fe1\u6709\u591a\u5feb (\u9650\u5236\u5728\u5355\u4e2a\u8282\u70b9\u4e0a)\u3002\")\n\n    # All-reduce\n    spawn(all_reduce, world_size=4, num_elements=100 * 1024**2)\n\n    # Reduce-scatter\n    spawn(reduce_scatter, world_size=4, num_elements=100 * 1024**2)\n\n    # References\n    link(title=\"How to reason about operations\", url=\"https://github.com/NVIDIA/nccl-tests/blob/master/doc/PERFORMANCE.md#allreduce\")\n    link(title=\"Sample code\", url=\"https://github.com/stas00/ml-engineering/blob/master/network/benchmarks/all_reduce_bench.py\")\n\n\ndef all_reduce(rank: int, world_size: int, num_elements: int):\n    setup(rank, world_size)\n\n    # Create tensor\n    tensor = torch.randn(num_elements, device=get_device(rank))\n\n    # Warmup\n    dist.all_reduce(tensor=tensor, op=dist.ReduceOp.SUM, async_op=False)\n    if torch.cuda.is_available():\n        torch.cuda.synchronize()  # Wait for CUDA kernels to finish\n        dist.barrier()            # Wait for all the processes to get here\n\n    # Perform all-reduce\n    start_time = time.time()\n    dist.all_reduce(tensor=tensor, op=dist.ReduceOp.SUM, async_op=False)\n    if torch.cuda.is_available():\n        torch.cuda.synchronize()  # Wait for CUDA kernels to finish\n        dist.barrier()            # Wait for all the processes to get here\n    end_time = time.time()\n\n    duration = end_time - start_time\n    print(f\"[all_reduce] Rank {rank}: all_reduce(world_size={world_size}, num_elements={num_elements}) took {render_duration(duration)}\", flush=True)\n\n    # Measure the effective bandwidth\n    dist.barrier()\n    size_bytes = tensor.element_size() * tensor.numel()\n    sent_bytes = size_bytes * 2 * (world_size - 1)  # 2x because send input and receive output\n    total_duration = world_size * duration\n    bandwidth = sent_bytes / total_duration\n    print(f\"[all_reduce] Rank {rank}: all_reduce measured bandwidth = {round(bandwidth / 1024**3)} GB/s\", flush=True)\n\n    cleanup()\n\n\ndef reduce_scatter(rank: int, world_size: int, num_elements: int):\n    setup(rank, world_size)\n\n    # Create input and outputs\n    input = torch.randn(world_size, num_elements, device=get_device(rank))  # Each rank has a matrix\n    output = torch.empty(num_elements, device=get_device(rank))\n\n    # Warmup\n    dist.reduce_scatter_tensor(output=output, input=input, op=dist.ReduceOp.SUM, async_op=False)\n    if torch.cuda.is_available():\n        torch.cuda.synchronize()  # Wait for CUDA kerels to finish\n        dist.barrier()            # Wait for all the processes to get here\n\n    # Perform reduce-scatter\n    start_time = time.time()\n    dist.reduce_scatter_tensor(output=output, input=input, op=dist.ReduceOp.SUM, async_op=False)\n    if torch.cuda.is_available():\n        torch.cuda.synchronize()  # Wait for CUDA kerels to finish\n        dist.barrier()            # Wait for all the processes to get here\n    end_time = time.time()\n\n    duration = end_time - start_time\n    print(f\"[reduce_scatter] Rank {rank}: reduce_scatter(world_size={world_size}, num_elements={num_elements}) took {render_duration(duration)}\", flush=True)\n\n    # Measure the effective bandwidth\n    dist.barrier()\n    data_bytes = input.element_size() * input.numel()  # How much data in the input\n    sent_bytes = data_bytes * (world_size - 1)  # How much needs to be sent (no 2x here)\n    total_duration = world_size * duration  # Total time for transmission\n    bandwidth = sent_bytes / total_duration\n    print(f\"[reduce_scatter] Rank {rank}: reduce_scatter measured bandwidth = {round(bandwidth / 1024**3)} GB/s\", flush=True)\n\n    cleanup()\n\n\ndef data_parallelism():\n    image(\"images/data-parallelism.png\", width=300)\n    text(\"Sharding strategy: each rank gets a slice of the data <br/> \u5206\u7247\u7b56\u7565\uff1a\u6bcf\u4e2a\u8fdb\u7a0b\u83b7\u5f97\u6570\u636e\u7684\u5207\u7247\")\n\n    data = generate_sample_data()\n    spawn(data_parallelism_main, world_size=4, data=data, num_layers=4, num_steps=1)\n\n    text(\"Notes: <br/> \u6ce8\u610f\uff1a\")\n    text(\"- Losses are different across ranks (computed on local data) <br/> - \u4e0d\u540c\u8fdb\u7a0b\u4e0a\u7684\u635f\u5931\u4e0d\u540c (\u5728\u672c\u5730\u6570\u636e\u4e0a\u8ba1\u7b97)\")\n    text(\"- Gradients are all-reduced to be the same across ranks <br/> - \u68af\u5ea6\u7ecf\u8fc7 all-reduce \u5728\u5404\u8fdb\u7a0b\u4e0a\u4fdd\u6301\u4e00\u81f4\")\n    text(\"- Therefore, parameters remain the same across ranks <br/> - \u56e0\u6b64\uff0c\u53c2\u6570\u5728\u5404\u8fdb\u7a0b\u4e0a\u4fdd\u6301\u4e00\u81f4\")\n\n\ndef generate_sample_data():\n    batch_size = 128\n    num_dim = 1024\n    data = torch.randn(batch_size, num_dim)\n    return data\n\n\ndef data_parallelism_main(rank: int, world_size: int, data: torch.Tensor, num_layers: int, num_steps: int):\n    setup(rank, world_size)\n\n    # Get the slice of data for this rank (in practice, each rank should load only its own data)\n    batch_size = data.size(0)  # @inspect batch_size\n    num_dim = data.size(1)  # @inspect num_dim\n    local_batch_size = int_divide(batch_size, world_size)  # @inspect local_batch_size\n    start_index = rank * local_batch_size  # @inspect start_index\n    end_index = start_index + local_batch_size  # @inspect end_index\n    data = data[start_index:end_index].to(get_device(rank))\n\n    # Create MLP parameters params[0], ..., params[num_layers - 1] (each rank has all parameters)\n    params = [get_init_params(num_dim, num_dim, rank) for i in range(num_layers)]\n    optimizer = torch.optim.AdamW(params, lr=1e-3)  # Each rank has own optimizer state\n\n    for step in range(num_steps):\n        # Forward pass\n        x = data\n        for param in params:\n            x = x @ param\n            x = F.gelu(x)\n        loss = x.square().mean()  # Loss function is average squared magnitude\n\n        # Backward pass\n        loss.backward()\n\n        # Sync gradients across workers (only difference between standard training and DDP)\n        for param in params:\n            dist.all_reduce(tensor=param.grad, op=dist.ReduceOp.AVG, async_op=False)\n\n        # Update parameters\n        optimizer.step()\n\n        print(f\"[data_parallelism] Rank {rank}: step = {step}, loss = {loss.item()}, params = {[summarize_tensor(params[i]) for i in range(num_layers)]}\", flush=True)\n\n    cleanup()\n\n\ndef tensor_parallelism():\n    image(\"images/tensor-parallelism.png\", width=300)\n    text(\"Sharding strategy: each rank gets part of each layer, transfer all data/activations <br/> \u5206\u7247\u7b56\u7565\uff1a\u6bcf\u4e2a\u8fdb\u7a0b\u83b7\u5f97\u6bcf\u4e00\u5c42\u7684\u4e00\u90e8\u5206\uff0c\u4f20\u8f93\u6240\u6709\u6570\u636e/\u6fc0\u6d3b\u503c\")\n\n    data = generate_sample_data()\n    spawn(tensor_parallelism_main, world_size=4, data=data, num_layers=4)\n\n\ndef tensor_parallelism_main(rank: int, world_size: int, data: torch.Tensor, num_layers: int):\n    setup(rank, world_size)\n\n    data = data.to(get_device(rank))\n    batch_size = data.size(0)  # @inspect batch_size\n    num_dim = data.size(1)  # @inspect num_dim\n    local_num_dim = int_divide(num_dim, world_size)  # Shard `num_dim`  @inspect local_num_dim\n\n    # Create model (each rank gets 1/world_size of the parameters)\n    params = [get_init_params(num_dim, local_num_dim, rank) for i in range(num_layers)]\n\n    # Forward pass\n    x = data\n    for i in range(num_layers):\n        # Compute activations (batch_size x local_num_dim)\n        x = x @ params[i]  # Note: this is only on a slice of the parameters\n        x = F.gelu(x)\n\n        # Allocate memory for activations (world_size x batch_size x local_num_dim)\n        activations = [torch.empty(batch_size, local_num_dim, device=get_device(rank)) for _ in range(world_size)]\n\n        # Send activations via all gather\n        dist.all_gather(tensor_list=activations, tensor=x, async_op=False)\n\n        # Concatenate them to get batch_size x num_dim\n        x = torch.cat(activations, dim=1)\n\n    print(f\"[tensor_parallelism] Rank {rank}: forward pass produced activations {summarize_tensor(x)}\", flush=True)\n\n    # Backward pass: homework exercise\n\n    cleanup()\n\n\ndef pipeline_parallelism():\n    image(\"images/pipeline-parallelism.png\", width=300)\n    text(\"Sharding strategy: each rank gets subset of layers, transfer all data/activations <br/> \u5206\u7247\u7b56\u7565\uff1a\u6bcf\u4e2a\u8fdb\u7a0b\u83b7\u5f97\u5c42\u7684\u5b50\u96c6\uff0c\u4f20\u8f93\u6240\u6709\u6570\u636e/\u6fc0\u6d3b\u503c\")\n\n    data = generate_sample_data()\n    spawn(pipeline_parallelism_main, world_size=2, data=data, num_layers=4, num_micro_batches=4)\n\n\ndef pipeline_parallelism_main(rank: int, world_size: int, data: torch.Tensor, num_layers: int, num_micro_batches: int):\n    setup(rank, world_size)\n\n    # Use all the data\n    data = data.to(get_device(rank))\n    batch_size = data.size(0)  # @inspect batch_size\n    num_dim = data.size(1)  # @inspect num_dim\n\n    # Split up layers\n    local_num_layers = int_divide(num_layers, world_size)  # @inspect local_num_layers\n\n    # Each rank gets a subset of layers\n    local_params = [get_init_params(num_dim, num_dim, rank) for i in range(local_num_layers)]\n\n    # Forward pass\n\n    # Break up into micro batches to minimize the bubble\n    micro_batch_size = int_divide(batch_size, num_micro_batches)  # @inspect micro_batch_size\n    if rank == 0:\n        # The data\n        micro_batches = data.chunk(chunks=num_micro_batches, dim=0)\n    else:\n        # Allocate memory for activations\n        micro_batches = [torch.empty(micro_batch_size, num_dim, device=get_device(rank)) for _ in range(num_micro_batches)]\n\n    for x in micro_batches:\n        # Get activations from previous rank\n        if rank - 1 >= 0:\n            dist.recv(tensor=x, src=rank - 1)\n\n        # Compute layers assigned to this rank\n        for param in local_params:\n            x = x @ param\n            x = F.gelu(x)\n\n        # Send to the next rank\n        if rank + 1 < world_size:\n            print(f\"[pipeline_parallelism] Rank {rank}: sending {summarize_tensor(x)} to rank {rank + 1}\", flush=True)\n            dist.send(tensor=x, dst=rank + 1)\n\n    text(\"Not handled: overlapping communication/computation to eliminate pipeline bubbles <br/> \u672a\u5904\u7406\uff1a\u91cd\u53e0\u901a\u4fe1/\u8ba1\u7b97\u4ee5\u6d88\u9664\u6d41\u6c34\u7ebf\u6c14\u6ce1\")\n\n    # Backward pass: homework exercise\n\n    cleanup()\n\n############################################################\n\ndef setup(rank: int, world_size: int):\n    # Specify where master lives (rank 0), used to coordinate (actual data goes through NCCL)\n    os.environ[\"MASTER_ADDR\"] = \"localhost\"\n    os.environ[\"MASTER_PORT\"] = \"15623\"\n\n    if torch.cuda.is_available():\n        dist.init_process_group(\"nccl\", rank=rank, world_size=world_size)\n    else:\n        dist.init_process_group(\"gloo\", rank=rank, world_size=world_size)\n\n\ndef cleanup():\n    torch.distributed.destroy_process_group()\n\n\nif __name__ == \"__main__\":\n    main()\n"
   },
   "steps": [
     {
@@ -23,14 +23,14 @@
           "path": "lecture_08.py",
           "line_number": 14,
           "function_name": "main",
-          "code": "text(\"Last week: parallelism within a single GPU\")"
+          "code": "text(\"Last week: parallelism within a single GPU <br/> \u4e0a\u5468\uff1a\u5355 GPU \u5185\u7684\u5e76\u884c\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "Last week: parallelism within a single GPU",
+          "data": "Last week: parallelism within a single GPU <br/> \u4e0a\u5468\uff1a\u5355 GPU \u5185\u7684\u5e76\u884c",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -45,14 +45,14 @@
           "path": "lecture_08.py",
           "line_number": 15,
           "function_name": "main",
-          "code": "text(\"This week: parallelism across multiple GPUs\")"
+          "code": "text(\"This week: parallelism across multiple GPUs <br/> \u672c\u5468\uff1a\u591a GPU \u95f4\u7684\u5e76\u884c\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "This week: parallelism across multiple GPUs",
+          "data": "This week: parallelism across multiple GPUs <br/> \u672c\u5468\uff1a\u591a GPU \u95f4\u7684\u5e76\u884c",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -91,14 +91,14 @@
           "path": "lecture_08.py",
           "line_number": 18,
           "function_name": "main",
-          "code": "text(\"In both cases, **compute** (arithmetic logic units) is far from inputs/outputs (**data**).\")"
+          "code": "text(\"In both cases, **compute** (arithmetic logic units) is far from inputs/outputs (**data**). <br/> \u5728\u8fd9\u4e24\u79cd\u60c5\u51b5\u4e0b\uff0c**\u8ba1\u7b97** (\u7b97\u672f\u903b\u8f91\u5355\u5143) \u8fdc\u79bb\u8f93\u5165/\u8f93\u51fa (**\u6570\u636e**)\u3002\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "In both cases, **compute** (arithmetic logic units) is far from inputs/outputs (**data**).",
+          "data": "In both cases, **compute** (arithmetic logic units) is far from inputs/outputs (**data**). <br/> \u5728\u8fd9\u4e24\u79cd\u60c5\u51b5\u4e0b\uff0c**\u8ba1\u7b97** (\u7b97\u672f\u903b\u8f91\u5355\u5143) \u8fdc\u79bb\u8f93\u5165/\u8f93\u51fa (**\u6570\u636e**)\u3002",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -113,14 +113,14 @@
           "path": "lecture_08.py",
           "line_number": 19,
           "function_name": "main",
-          "code": "text(\"Unifying theme: orchestrate computation to avoid data transfer bottlenecks\")"
+          "code": "text(\"Unifying theme: orchestrate computation to avoid data transfer bottlenecks <br/> \u7edf\u4e00\u7684\u4e3b\u9898\uff1a\u7f16\u6392\u8ba1\u7b97\u4ee5\u907f\u514d\u6570\u636e\u4f20\u8f93\u74f6\u9888\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "Unifying theme: orchestrate computation to avoid data transfer bottlenecks",
+          "data": "Unifying theme: orchestrate computation to avoid data transfer bottlenecks <br/> \u7edf\u4e00\u7684\u4e3b\u9898\uff1a\u7f16\u6392\u8ba1\u7b97\u4ee5\u907f\u514d\u6570\u636e\u4f20\u8f93\u74f6\u9888",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -135,14 +135,14 @@
           "path": "lecture_08.py",
           "line_number": 21,
           "function_name": "main",
-          "code": "text(\"Last week: reduce memory accesses via fusion/tiling\")"
+          "code": "text(\"Last week: reduce memory accesses via fusion/tiling <br/> \u4e0a\u5468\uff1a\u901a\u8fc7\u878d\u5408/\u5206\u5757\u51cf\u5c11\u5185\u5b58\u8bbf\u95ee\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "Last week: reduce memory accesses via fusion/tiling",
+          "data": "Last week: reduce memory accesses via fusion/tiling <br/> \u4e0a\u5468\uff1a\u901a\u8fc7\u878d\u5408/\u5206\u5757\u51cf\u5c11\u5185\u5b58\u8bbf\u95ee",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -157,14 +157,14 @@
           "path": "lecture_08.py",
           "line_number": 22,
           "function_name": "main",
-          "code": "text(\"This week: reduce communication across GPUs/nodes via replication/sharding\")"
+          "code": "text(\"This week: reduce communication across GPUs/nodes via replication/sharding <br/> \u672c\u5468\uff1a\u901a\u8fc7\u590d\u5236/\u5206\u7247\u51cf\u5c11 GPU/\u8282\u70b9\u95f4\u7684\u901a\u4fe1\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "This week: reduce communication across GPUs/nodes via replication/sharding",
+          "data": "This week: reduce communication across GPUs/nodes via replication/sharding <br/> \u672c\u5468\uff1a\u901a\u8fc7\u590d\u5236/\u5206\u7247\u51cf\u5c11 GPU/\u8282\u70b9\u95f4\u7684\u901a\u4fe1",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -179,14 +179,14 @@
           "path": "lecture_08.py",
           "line_number": 24,
           "function_name": "main",
-          "code": "text(\"Generalized hierarchy (from small/fast to big/slow):\")"
+          "code": "text(\"Generalized hierarchy (from small/fast to big/slow): <br/> \u901a\u7528\u5c42\u6b21\u7ed3\u6784 (\u4ece\u5c0f/\u5feb\u5230\u5927/\u6162)\uff1a\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "Generalized hierarchy (from small/fast to big/slow):",
+          "data": "Generalized hierarchy (from small/fast to big/slow): <br/> \u901a\u7528\u5c42\u6b21\u7ed3\u6784 (\u4ece\u5c0f/\u5feb\u5230\u5927/\u6162)\uff1a",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -201,14 +201,14 @@
           "path": "lecture_08.py",
           "line_number": 25,
           "function_name": "main",
-          "code": "text(\"- Single node, single GPU: L1 cache / shared memory\")"
+          "code": "text(\"- Single node, single GPU: L1 cache / shared memory <br/> - \u5355\u8282\u70b9\uff0c\u5355 GPU\uff1aL1 \u7f13\u5b58/\u5171\u4eab\u5185\u5b58\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "- Single node, single GPU: L1 cache / shared memory",
+          "data": "- Single node, single GPU: L1 cache / shared memory <br/> - \u5355\u8282\u70b9\uff0c\u5355 GPU\uff1aL1 \u7f13\u5b58/\u5171\u4eab\u5185\u5b58",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -223,14 +223,14 @@
           "path": "lecture_08.py",
           "line_number": 26,
           "function_name": "main",
-          "code": "text(\"- Single node, single GPU: HBM\")"
+          "code": "text(\"- Single node, single GPU: HBM <br/> - \u5355\u8282\u70b9\uff0c\u5355 GPU\uff1aHBM\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "- Single node, single GPU: HBM",
+          "data": "- Single node, single GPU: HBM <br/> - \u5355\u8282\u70b9\uff0c\u5355 GPU\uff1aHBM",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -245,14 +245,14 @@
           "path": "lecture_08.py",
           "line_number": 27,
           "function_name": "main",
-          "code": "text(\"- Single node, multi-GPU: NVLink\")"
+          "code": "text(\"- Single node, multi-GPU: NVLink <br/> - \u5355\u8282\u70b9\uff0c\u591a GPU\uff1aNVLink\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "- Single node, multi-GPU: NVLink",
+          "data": "- Single node, multi-GPU: NVLink <br/> - \u5355\u8282\u70b9\uff0c\u591a GPU\uff1aNVLink",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -267,14 +267,14 @@
           "path": "lecture_08.py",
           "line_number": 28,
           "function_name": "main",
-          "code": "text(\"- Multi-node, multi-GPU: NVSwitch\")"
+          "code": "text(\"- Multi-node, multi-GPU: NVSwitch <br/> - \u591a\u8282\u70b9\uff0c\u591a GPU\uff1aNVSwitch\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "- Multi-node, multi-GPU: NVSwitch",
+          "data": "- Multi-node, multi-GPU: NVSwitch <br/> - \u591a\u8282\u70b9\uff0c\u591a GPU\uff1aNVSwitch",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -289,14 +289,14 @@
           "path": "lecture_08.py",
           "line_number": 30,
           "function_name": "main",
-          "code": "text(\"This lecture: concretize the concepts from last lecture in code\")"
+          "code": "text(\"This lecture: concretize the concepts from last lecture in code <br/> \u672c\u8282\u8bfe\uff1a\u5728\u4ee3\u7801\u4e2d\u5177\u4f53\u5316\u4e0a\u8282\u8bfe\u7684\u6982\u5ff5\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "This lecture: concretize the concepts from last lecture in code",
+          "data": "This lecture: concretize the concepts from last lecture in code <br/> \u672c\u8282\u8bfe\uff1a\u5728\u4ee3\u7801\u4e2d\u5177\u4f53\u5316\u4e0a\u8282\u8bfe\u7684\u6982\u5ff5",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -341,14 +341,14 @@
           "path": "lecture_08.py",
           "line_number": 34,
           "function_name": "main",
-          "code": "text(\"### Part 1: building blocks of distributed communication/computation\")"
+          "code": "text(\"### Part 1: building blocks of distributed communication/computation <br/> ### \u7b2c 1 \u90e8\u5206\uff1a\u5206\u5e03\u5f0f\u901a\u4fe1/\u8ba1\u7b97\u7684\u6784\u5efa\u6a21\u5757\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "### Part 1: building blocks of distributed communication/computation",
+          "data": "### Part 1: building blocks of distributed communication/computation <br/> ### \u7b2c 1 \u90e8\u5206\uff1a\u5206\u5e03\u5f0f\u901a\u4fe1/\u8ba1\u7b97\u7684\u6784\u5efa\u6a21\u5757",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -403,14 +403,14 @@
           "path": "lecture_08.py",
           "line_number": 60,
           "function_name": "collective_operations",
-          "code": "text(\"**Collective operations** are the conceptual primitives used for distributed programming \"), article_link(\"https://en.wikipedia.org/wiki/Collective_operation\")"
+          "code": "text(\"**Collective operations** are the conceptual primitives used for distributed programming <br/> **\u96c6\u5408\u64cd\u4f5c** \u662f\u7528\u4e8e\u5206\u5e03\u5f0f\u7f16\u7a0b\u7684\u6982\u5ff5\u539f\u8bed \"), article_link(\"https://en.wikipedia.org/wiki/Collective_operation\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "**Collective operations** are the conceptual primitives used for distributed programming ",
+          "data": "**Collective operations** are the conceptual primitives used for distributed programming <br/> **\u96c6\u5408\u64cd\u4f5c** \u662f\u7528\u4e8e\u5206\u5e03\u5f0f\u7f16\u7a0b\u7684\u6982\u5ff5\u539f\u8bed ",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -446,14 +446,14 @@
           "path": "lecture_08.py",
           "line_number": 61,
           "function_name": "collective_operations",
-          "code": "text(\"- Collective means that you specify communication pattern across many (e.g., 256) nodes.\")"
+          "code": "text(\"- Collective means that you specify communication pattern across many (e.g., 256) nodes. <br/> - \u96c6\u5408\u610f\u5473\u7740\u4f60\u6307\u5b9a\u8de8\u591a\u4e2a (\u5982 256) \u8282\u70b9\u7684\u901a\u4fe1\u6a21\u5f0f\u3002\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "- Collective means that you specify communication pattern across many (e.g., 256) nodes.",
+          "data": "- Collective means that you specify communication pattern across many (e.g., 256) nodes. <br/> - \u96c6\u5408\u610f\u5473\u7740\u4f60\u6307\u5b9a\u8de8\u591a\u4e2a (\u5982 256) \u8282\u70b9\u7684\u901a\u4fe1\u6a21\u5f0f\u3002",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -474,14 +474,14 @@
           "path": "lecture_08.py",
           "line_number": 62,
           "function_name": "collective_operations",
-          "code": "text(\"- These are classic in the parallel programming literature from the 1980s.\")"
+          "code": "text(\"- These are classic in the parallel programming literature from the 1980s. <br/> - \u8fd9\u4e9b\u662f 1980 \u5e74\u4ee3\u5e76\u884c\u7f16\u7a0b\u6587\u732e\u4e2d\u7684\u7ecf\u5178\u5185\u5bb9\u3002\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "- These are classic in the parallel programming literature from the 1980s.",
+          "data": "- These are classic in the parallel programming literature from the 1980s. <br/> - \u8fd9\u4e9b\u662f 1980 \u5e74\u4ee3\u5e76\u884c\u7f16\u7a0b\u6587\u732e\u4e2d\u7684\u7ecf\u5178\u5185\u5bb9\u3002",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -502,14 +502,14 @@
           "path": "lecture_08.py",
           "line_number": 63,
           "function_name": "collective_operations",
-          "code": "text(\"- Better/faster abstraction than managing point-to-point communication yourself.\")"
+          "code": "text(\"- Better/faster abstraction than managing point-to-point communication yourself. <br/> - \u6bd4\u81ea\u5df1\u7ba1\u7406\u70b9\u5bf9\u70b9\u901a\u4fe1\u66f4\u597d\u7684/\u66f4\u5feb\u7684\u62bd\u8c61\u3002\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "- Better/faster abstraction than managing point-to-point communication yourself.",
+          "data": "- Better/faster abstraction than managing point-to-point communication yourself. <br/> - \u6bd4\u81ea\u5df1\u7ba1\u7406\u70b9\u5bf9\u70b9\u901a\u4fe1\u66f4\u597d\u7684/\u66f4\u5feb\u7684\u62bd\u8c61\u3002",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -530,14 +530,14 @@
           "path": "lecture_08.py",
           "line_number": 65,
           "function_name": "collective_operations",
-          "code": "text(\"Terminology:\")"
+          "code": "text(\"Terminology: <br/> \u672f\u8bed\uff1a\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "Terminology:",
+          "data": "Terminology: <br/> \u672f\u8bed\uff1a",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -558,14 +558,14 @@
           "path": "lecture_08.py",
           "line_number": 66,
           "function_name": "collective_operations",
-          "code": "text(\"- **World size**: number of devices (e.g., 4)\")"
+          "code": "text(\"- **World size**: number of devices (e.g., 4) <br/> - **\u4e16\u754c\u5927\u5c0f**\uff1a\u8bbe\u5907\u6570\u91cf (\u5982 4)\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "- **World size**: number of devices (e.g., 4)",
+          "data": "- **World size**: number of devices (e.g., 4) <br/> - **\u4e16\u754c\u5927\u5c0f**\uff1a\u8bbe\u5907\u6570\u91cf (\u5982 4)",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -586,14 +586,14 @@
           "path": "lecture_08.py",
           "line_number": 67,
           "function_name": "collective_operations",
-          "code": "text(\"- **Rank**: a device (e.g., 0, 1, 2, 3)\")"
+          "code": "text(\"- **Rank**: a device (e.g., 0, 1, 2, 3) <br/> - **\u8fdb\u7a0b\u7f16\u53f7**\uff1a\u4e00\u4e2a\u8bbe\u5907 (\u5982 0, 1, 2, 3)\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "- **Rank**: a device (e.g., 0, 1, 2, 3)",
+          "data": "- **Rank**: a device (e.g., 0, 1, 2, 3) <br/> - **\u8fdb\u7a0b\u7f16\u53f7**\uff1a\u4e00\u4e2a\u8bbe\u5907 (\u5982 0, 1, 2, 3)",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -614,14 +614,14 @@
           "path": "lecture_08.py",
           "line_number": 69,
           "function_name": "collective_operations",
-          "code": "text(\"### Broadcast\"), image(\"https://pytorch.org/tutorials/_images/broadcast.png\", width=400)"
+          "code": "text(\"### Broadcast <br/> ### \u5e7f\u64ad\"), image(\"https://pytorch.org/tutorials/_images/broadcast.png\", width=400)"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "### Broadcast",
+          "data": "### Broadcast <br/> ### \u5e7f\u64ad",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -651,14 +651,14 @@
           "path": "lecture_08.py",
           "line_number": 71,
           "function_name": "collective_operations",
-          "code": "text(\"### Scatter\"), image(\"https://pytorch.org/tutorials/_images/scatter.png\", width=400)"
+          "code": "text(\"### Scatter <br/> ### \u6563\u5c04\"), image(\"https://pytorch.org/tutorials/_images/scatter.png\", width=400)"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "### Scatter",
+          "data": "### Scatter <br/> ### \u6563\u5c04",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -688,14 +688,14 @@
           "path": "lecture_08.py",
           "line_number": 73,
           "function_name": "collective_operations",
-          "code": "text(\"### Gather\"), image(\"https://pytorch.org/tutorials/_images/gather.png\", width=400)"
+          "code": "text(\"### Gather <br/> ### \u6536\u96c6\"), image(\"https://pytorch.org/tutorials/_images/gather.png\", width=400)"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "### Gather",
+          "data": "### Gather <br/> ### \u6536\u96c6",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -725,14 +725,14 @@
           "path": "lecture_08.py",
           "line_number": 75,
           "function_name": "collective_operations",
-          "code": "text(\"### Reduce\"), image(\"https://pytorch.org/tutorials/_images/reduce.png\", width=400)"
+          "code": "text(\"### Reduce <br/> ### \u5f52\u7ea6\"), image(\"https://pytorch.org/tutorials/_images/reduce.png\", width=400)"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "### Reduce",
+          "data": "### Reduce <br/> ### \u5f52\u7ea6",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -762,14 +762,14 @@
           "path": "lecture_08.py",
           "line_number": 77,
           "function_name": "collective_operations",
-          "code": "text(\"### All-gather\"), image(\"https://pytorch.org/tutorials/_images/all_gather.png\", width=400)"
+          "code": "text(\"### All-gather <br/> ### \u5168\u6536\u96c6\"), image(\"https://pytorch.org/tutorials/_images/all_gather.png\", width=400)"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "### All-gather",
+          "data": "### All-gather <br/> ### \u5168\u6536\u96c6",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -799,14 +799,14 @@
           "path": "lecture_08.py",
           "line_number": 79,
           "function_name": "collective_operations",
-          "code": "text(\"### Reduce-scatter\"), image(\"https://docs.nvidia.com/deeplearning/nccl/user-guide/docs/_images/reducescatter.png\", width=400)"
+          "code": "text(\"### Reduce-scatter <br/> ### \u6563\u5c04\u5f52\u7ea6\"), image(\"https://docs.nvidia.com/deeplearning/nccl/user-guide/docs/_images/reducescatter.png\", width=400)"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "### Reduce-scatter",
+          "data": "### Reduce-scatter <br/> ### \u6563\u5c04\u5f52\u7ea6",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -836,14 +836,14 @@
           "path": "lecture_08.py",
           "line_number": 81,
           "function_name": "collective_operations",
-          "code": "text(\"### All-reduce = reduce-scatter + all-gather\"), image(\"https://pytorch.org/tutorials/_images/all_reduce.png\", width=400)"
+          "code": "text(\"### All-reduce = reduce-scatter + all-gather <br/> ### \u5168\u5f52\u7ea6 = \u6563\u5c04\u5f52\u7ea6 + \u5168\u6536\u96c6\"), image(\"https://pytorch.org/tutorials/_images/all_reduce.png\", width=400)"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "### All-reduce = reduce-scatter + all-gather",
+          "data": "### All-reduce = reduce-scatter + all-gather <br/> ### \u5168\u5f52\u7ea6 = \u6563\u5c04\u5f52\u7ea6 + \u5168\u6536\u96c6",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -873,14 +873,14 @@
           "path": "lecture_08.py",
           "line_number": 83,
           "function_name": "collective_operations",
-          "code": "text(\"Way to remember the terminology:\")"
+          "code": "text(\"Way to remember the terminology: <br/> \u8bb0\u4f4f\u672f\u8bed\u7684\u65b9\u5f0f\uff1a\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "Way to remember the terminology:",
+          "data": "Way to remember the terminology: <br/> \u8bb0\u4f4f\u672f\u8bed\u7684\u65b9\u5f0f\uff1a",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -901,14 +901,14 @@
           "path": "lecture_08.py",
           "line_number": 84,
           "function_name": "collective_operations",
-          "code": "text(\"- Reduce: performs some associative/commutative operation (sum, min, max)\")"
+          "code": "text(\"- Reduce: performs some associative/commutative operation (sum, min, max) <br/> - \u5f52\u7ea6\uff1a\u6267\u884c\u67d0\u4e9b\u7ed3\u5408/\u4ea4\u6362\u8fd0\u7b97 (\u6c42\u548c\u3001\u6700\u5c0f\u503c\u3001\u6700\u5927\u503c)\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "- Reduce: performs some associative/commutative operation (sum, min, max)",
+          "data": "- Reduce: performs some associative/commutative operation (sum, min, max) <br/> - \u5f52\u7ea6\uff1a\u6267\u884c\u67d0\u4e9b\u7ed3\u5408/\u4ea4\u6362\u8fd0\u7b97 (\u6c42\u548c\u3001\u6700\u5c0f\u503c\u3001\u6700\u5927\u503c)",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -929,14 +929,14 @@
           "path": "lecture_08.py",
           "line_number": 85,
           "function_name": "collective_operations",
-          "code": "text(\"- Broadcast/scatter is inverse of gather\")"
+          "code": "text(\"- Broadcast/scatter is inverse of gather <br/> - \u5e7f\u64ad/\u6563\u5c04\u662f\u6536\u96c6\u7684\u9006\u64cd\u4f5c\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "- Broadcast/scatter is inverse of gather",
+          "data": "- Broadcast/scatter is inverse of gather <br/> - \u5e7f\u64ad/\u6563\u5c04\u662f\u6536\u96c6\u7684\u9006\u64cd\u4f5c",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -957,14 +957,14 @@
           "path": "lecture_08.py",
           "line_number": 86,
           "function_name": "collective_operations",
-          "code": "text(\"- All: means destination is all devices\")"
+          "code": "text(\"- All: means destination is all devices <br/> - All\uff1a\u610f\u5473\u7740\u76ee\u6807\u662f\u6240\u6709\u8bbe\u5907\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "- All: means destination is all devices",
+          "data": "- All: means destination is all devices <br/> - All\uff1a\u610f\u5473\u7740\u76ee\u6807\u662f\u6240\u6709\u8bbe\u5907",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -1033,14 +1033,14 @@
           "path": "lecture_08.py",
           "line_number": 90,
           "function_name": "torch_distributed",
-          "code": "text(\"### Hardware\")"
+          "code": "text(\"### Hardware <br/> ### \u786c\u4ef6\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "### Hardware",
+          "data": "### Hardware <br/> ### \u786c\u4ef6",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -1061,14 +1061,14 @@
           "path": "lecture_08.py",
           "line_number": 91,
           "function_name": "torch_distributed",
-          "code": "text(\"Classic (in the home):\")"
+          "code": "text(\"Classic (in the home): <br/> \u7ecf\u5178 (\u5728\u5bb6\u7528)\uff1a\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "Classic (in the home):",
+          "data": "Classic (in the home): <br/> \u7ecf\u5178 (\u5728\u5bb6\u7528)\uff1a",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -1119,14 +1119,14 @@
           "path": "lecture_08.py",
           "line_number": 93,
           "function_name": "torch_distributed",
-          "code": "text(\"- GPUs on same node communicate via a PCI(e) bus (v7.0, 16 lanes => 242 GB/s) \"), article_link(\"https://en.wikipedia.org/wiki/PCI_Express\")"
+          "code": "text(\"- GPUs on same node communicate via a PCI(e) bus (v7.0, 16 lanes => 242 GB/s) <br/> - \u540c\u4e00\u8282\u70b9\u4e0a\u7684 GPU \u901a\u8fc7 PCI(e) \u603b\u7ebf\u901a\u4fe1 (v7.0\uff0c16 \u901a\u9053 => 242 GB/s) \"), article_link(\"https://en.wikipedia.org/wiki/PCI_Express\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "- GPUs on same node communicate via a PCI(e) bus (v7.0, 16 lanes => 242 GB/s) ",
+          "data": "- GPUs on same node communicate via a PCI(e) bus (v7.0, 16 lanes => 242 GB/s) <br/> - \u540c\u4e00\u8282\u70b9\u4e0a\u7684 GPU \u901a\u8fc7 PCI(e) \u603b\u7ebf\u901a\u4fe1 (v7.0\uff0c16 \u901a\u9053 => 242 GB/s) ",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -1162,14 +1162,14 @@
           "path": "lecture_08.py",
           "line_number": 94,
           "function_name": "torch_distributed",
-          "code": "text(\"- GPUs on different nodes communicate via Ethernet (~200 MB/s)\")"
+          "code": "text(\"- GPUs on different nodes communicate via Ethernet (~200 MB/s) <br/> - \u4e0d\u540c\u8282\u70b9\u4e0a\u7684 GPU \u901a\u8fc7\u4ee5\u592a\u7f51\u901a\u4fe1 (~200 MB/s)\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "- GPUs on different nodes communicate via Ethernet (~200 MB/s)",
+          "data": "- GPUs on different nodes communicate via Ethernet (~200 MB/s) <br/> - \u4e0d\u540c\u8282\u70b9\u4e0a\u7684 GPU \u901a\u8fc7\u4ee5\u592a\u7f51\u901a\u4fe1 (~200 MB/s)",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -1190,14 +1190,14 @@
           "path": "lecture_08.py",
           "line_number": 96,
           "function_name": "torch_distributed",
-          "code": "text(\"Modern (in the data center):\")"
+          "code": "text(\"Modern (in the data center): <br/> \u73b0\u4ee3 (\u5728\u6570\u636e\u4e2d\u5fc3)\uff1a\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "Modern (in the data center):",
+          "data": "Modern (in the data center): <br/> \u73b0\u4ee3 (\u5728\u6570\u636e\u4e2d\u5fc3)\uff1a",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -1248,14 +1248,14 @@
           "path": "lecture_08.py",
           "line_number": 98,
           "function_name": "torch_distributed",
-          "code": "text(\"- Within a node: NVLink connects GPUs directly, bypass CPU\")"
+          "code": "text(\"- Within a node: NVLink connects GPUs directly, bypass CPU <br/> - \u8282\u70b9\u5185\uff1aNVLink \u76f4\u63a5\u8fde\u63a5 GPU\uff0c\u7ed5\u8fc7 CPU\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "- Within a node: NVLink connects GPUs directly, bypass CPU",
+          "data": "- Within a node: NVLink connects GPUs directly, bypass CPU <br/> - \u8282\u70b9\u5185\uff1aNVLink \u76f4\u63a5\u8fde\u63a5 GPU\uff0c\u7ed5\u8fc7 CPU",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -1276,14 +1276,14 @@
           "path": "lecture_08.py",
           "line_number": 99,
           "function_name": "torch_distributed",
-          "code": "text(\"- Across nodes: NVSwitch connects GPUs directly, bypass Ethernet\")"
+          "code": "text(\"- Across nodes: NVSwitch connects GPUs directly, bypass Ethernet <br/> - \u8de8\u8282\u70b9\uff1aNVSwitch \u76f4\u63a5\u8fde\u63a5 GPU\uff0c\u7ed5\u8fc7\u4ee5\u592a\u7f51\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "- Across nodes: NVSwitch connects GPUs directly, bypass Ethernet",
+          "data": "- Across nodes: NVSwitch connects GPUs directly, bypass Ethernet <br/> - \u8de8\u8282\u70b9\uff1aNVSwitch \u76f4\u63a5\u8fde\u63a5 GPU\uff0c\u7ed5\u8fc7\u4ee5\u592a\u7f51",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -1304,14 +1304,14 @@
           "path": "lecture_08.py",
           "line_number": 101,
           "function_name": "torch_distributed",
-          "code": "text(\"Each H100 has 18 NVLink 4.0 links, for a total of 900GB/s \"), article_link(\"https://www.nvidia.com/en-us/data-center/nvlink/\")"
+          "code": "text(\"Each H100 has 18 NVLink 4.0 links, for a total of 900GB/s <br/> \u6bcf\u4e2a H100 \u6709 18 \u4e2a NVLink 4.0 \u94fe\u63a5\uff0c\u603b\u8ba1 900GB/s \"), article_link(\"https://www.nvidia.com/en-us/data-center/nvlink/\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "Each H100 has 18 NVLink 4.0 links, for a total of 900GB/s ",
+          "data": "Each H100 has 18 NVLink 4.0 links, for a total of 900GB/s <br/> \u6bcf\u4e2a H100 \u6709 18 \u4e2a NVLink 4.0 \u94fe\u63a5\uff0c\u603b\u8ba1 900GB/s ",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -1347,14 +1347,14 @@
           "path": "lecture_08.py",
           "line_number": 102,
           "function_name": "torch_distributed",
-          "code": "text(\"In comparison, memory bandwidth for HBM is 3.9 TB/s \"), article_link(\"https://resources.nvidia.com/en-us-tensor-core/nvidia-tensor-core-gpu-datasheet\")"
+          "code": "text(\"In comparison, memory bandwidth for HBM is 3.9 TB/s <br/> \u76f8\u6bd4\u4e4b\u4e0b\uff0cHBM \u5185\u5b58\u5e26\u5bbd\u4e3a 3.9 TB/s \"), article_link(\"https://resources.nvidia.com/en-us-tensor-core/nvidia-tensor-core-gpu-datasheet\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "In comparison, memory bandwidth for HBM is 3.9 TB/s ",
+          "data": "In comparison, memory bandwidth for HBM is 3.9 TB/s <br/> \u76f8\u6bd4\u4e4b\u4e0b\uff0cHBM \u5185\u5b58\u5e26\u5bbd\u4e3a 3.9 TB/s ",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -1390,14 +1390,14 @@
           "path": "lecture_08.py",
           "line_number": 104,
           "function_name": "torch_distributed",
-          "code": "text(\"Let's check what our hardware setup is. \"), article_link(\"https://guide.ncloud-docs.com/docs/en/server-baremetal-a100-check-vpc\")"
+          "code": "text(\"Let's check what our hardware setup is. <br/> \u8ba9\u6211\u4eec\u68c0\u67e5\u6211\u4eec\u7684\u786c\u4ef6\u8bbe\u7f6e\u3002 \"), article_link(\"https://guide.ncloud-docs.com/docs/en/server-baremetal-a100-check-vpc\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "Let's check what our hardware setup is. ",
+          "data": "Let's check what our hardware setup is. <br/> \u8ba9\u6211\u4eec\u68c0\u67e5\u6211\u4eec\u7684\u786c\u4ef6\u8bbe\u7f6e\u3002 ",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -1473,14 +1473,14 @@
           "path": "lecture_08.py",
           "line_number": 107,
           "function_name": "torch_distributed",
-          "code": "text(\"Note GPUs are connected via NV18, also connected to NICs (for PCIe)\")"
+          "code": "text(\"Note GPUs are connected via NV18, also connected to NICs (for PCIe) <br/> \u6ce8\u610f\uff1aGPU \u901a\u8fc7 NV18 \u8fde\u63a5\uff0c\u4e5f\u8fde\u63a5\u5230\u7f51\u5361 (\u7528\u4e8e PCIe)\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "Note GPUs are connected via NV18, also connected to NICs (for PCIe)",
+          "data": "Note GPUs are connected via NV18, also connected to NICs (for PCIe) <br/> \u6ce8\u610f\uff1aGPU \u901a\u8fc7 NV18 \u8fde\u63a5\uff0c\u4e5f\u8fde\u63a5\u5230\u7f51\u5361 (\u7528\u4e8e PCIe)",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -1501,14 +1501,14 @@
           "path": "lecture_08.py",
           "line_number": 109,
           "function_name": "torch_distributed",
-          "code": "text(\"### NVIDIA Collective Communication Library (NCCL)\")"
+          "code": "text(\"### NVIDIA Collective Communication Library (NCCL) <br/> ### NVIDIA \u96c6\u5408\u901a\u4fe1\u5e93 (NCCL)\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "### NVIDIA Collective Communication Library (NCCL)",
+          "data": "### NVIDIA Collective Communication Library (NCCL) <br/> ### NVIDIA \u96c6\u5408\u901a\u4fe1\u5e93 (NCCL)",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -1529,14 +1529,14 @@
           "path": "lecture_08.py",
           "line_number": 110,
           "function_name": "torch_distributed",
-          "code": "text(\"NCCL translates collective operations into low-level packets that are sent between GPUs. \"), link(title=\"[talk]\", url=\"https://www.nvidia.com/en-us/on-demand/session/gtcspring21-s31880/\")"
+          "code": "text(\"NCCL translates collective operations into low-level packets that are sent between GPUs. <br/> NCCL \u5c06\u96c6\u5408\u64cd\u4f5c\u8f6c\u6362\u4e3a\u5728 GPU \u4e4b\u95f4\u53d1\u9001\u7684\u4f4e\u7ea7\u6570\u636e\u5305\u3002 \"), link(title=\"[talk]\", url=\"https://www.nvidia.com/en-us/on-demand/session/gtcspring21-s31880/\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "NCCL translates collective operations into low-level packets that are sent between GPUs. ",
+          "data": "NCCL translates collective operations into low-level packets that are sent between GPUs. <br/> NCCL \u5c06\u96c6\u5408\u64cd\u4f5c\u8f6c\u6362\u4e3a\u5728 GPU \u4e4b\u95f4\u53d1\u9001\u7684\u4f4e\u7ea7\u6570\u636e\u5305\u3002 ",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -1572,14 +1572,14 @@
           "path": "lecture_08.py",
           "line_number": 111,
           "function_name": "torch_distributed",
-          "code": "text(\"- Detects topology of hardware (e.g., number of nodes, switches, NVLink/PCIe)\")"
+          "code": "text(\"- Detects topology of hardware (e.g., number of nodes, switches, NVLink/PCIe) <br/> - \u68c0\u6d4b\u786c\u4ef6\u62d3\u6251 (\u5982\u8282\u70b9\u6570\u3001\u4ea4\u6362\u673a\u6570\u3001NVLink/PCIe)\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "- Detects topology of hardware (e.g., number of nodes, switches, NVLink/PCIe)",
+          "data": "- Detects topology of hardware (e.g., number of nodes, switches, NVLink/PCIe) <br/> - \u68c0\u6d4b\u786c\u4ef6\u62d3\u6251 (\u5982\u8282\u70b9\u6570\u3001\u4ea4\u6362\u673a\u6570\u3001NVLink/PCIe)",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -1600,14 +1600,14 @@
           "path": "lecture_08.py",
           "line_number": 112,
           "function_name": "torch_distributed",
-          "code": "text(\"- Optimizes the path between GPUs\")"
+          "code": "text(\"- Optimizes the path between GPUs <br/> - \u4f18\u5316 GPU \u4e4b\u95f4\u7684\u8def\u5f84\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "- Optimizes the path between GPUs",
+          "data": "- Optimizes the path between GPUs <br/> - \u4f18\u5316 GPU \u4e4b\u95f4\u7684\u8def\u5f84",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -1628,14 +1628,14 @@
           "path": "lecture_08.py",
           "line_number": 113,
           "function_name": "torch_distributed",
-          "code": "text(\"- Launches CUDA kernels to send/receive data\")"
+          "code": "text(\"- Launches CUDA kernels to send/receive data <br/> - \u542f\u52a8 CUDA \u5185\u6838\u53d1\u9001/\u63a5\u6536\u6570\u636e\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "- Launches CUDA kernels to send/receive data",
+          "data": "- Launches CUDA kernels to send/receive data <br/> - \u542f\u52a8 CUDA \u5185\u6838\u53d1\u9001/\u63a5\u6536\u6570\u636e",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -1656,14 +1656,14 @@
           "path": "lecture_08.py",
           "line_number": 115,
           "function_name": "torch_distributed",
-          "code": "text(\"### PyTorch distributed library (`torch.distributed`)\")"
+          "code": "text(\"### PyTorch distributed library (`torch.distributed`) <br/> ### PyTorch \u5206\u5e03\u5f0f\u5e93 (`torch.distributed`)\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "### PyTorch distributed library (`torch.distributed`)",
+          "data": "### PyTorch distributed library (`torch.distributed`) <br/> ### PyTorch \u5206\u5e03\u5f0f\u5e93 (`torch.distributed`)",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -1720,14 +1720,14 @@
           "path": "lecture_08.py",
           "line_number": 118,
           "function_name": "torch_distributed",
-          "code": "text(\"- Provides clean interface for collective operations (e.g., `all_gather_into_tensor`)\")"
+          "code": "text(\"- Provides clean interface for collective operations (e.g., `all_gather_into_tensor`) <br/> - \u4e3a\u96c6\u5408\u64cd\u4f5c\u63d0\u4f9b\u6e05\u6670\u7684\u63a5\u53e3 (\u5982 `all_gather_into_tensor`)\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "- Provides clean interface for collective operations (e.g., `all_gather_into_tensor`)",
+          "data": "- Provides clean interface for collective operations (e.g., `all_gather_into_tensor`) <br/> - \u4e3a\u96c6\u5408\u64cd\u4f5c\u63d0\u4f9b\u6e05\u6670\u7684\u63a5\u53e3 (\u5982 `all_gather_into_tensor`)",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -1748,14 +1748,14 @@
           "path": "lecture_08.py",
           "line_number": 119,
           "function_name": "torch_distributed",
-          "code": "text(\"- Supports multiple backends for different hardware: gloo (CPU), nccl (GPU)\")"
+          "code": "text(\"- Supports multiple backends for different hardware: gloo (CPU), nccl (GPU) <br/> - \u652f\u6301\u4e0d\u540c\u786c\u4ef6\u7684\u591a\u4e2a\u540e\u7aef\uff1agloo (CPU)\u3001nccl (GPU)\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "- Supports multiple backends for different hardware: gloo (CPU), nccl (GPU)",
+          "data": "- Supports multiple backends for different hardware: gloo (CPU), nccl (GPU) <br/> - \u652f\u6301\u4e0d\u540c\u786c\u4ef6\u7684\u591a\u4e2a\u540e\u7aef\uff1agloo (CPU)\u3001nccl (GPU)",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -1776,14 +1776,14 @@
           "path": "lecture_08.py",
           "line_number": 120,
           "function_name": "torch_distributed",
-          "code": "text(\"- Also supports higher-level algorithms (e.g., `FullyShardedDataParallel`) [not used in this course]\")"
+          "code": "text(\"- Also supports higher-level algorithms (e.g., `FullyShardedDataParallel`) [not used in this course] <br/> - \u8fd8\u652f\u6301\u66f4\u9ad8\u7ea7\u7684\u7b97\u6cd5 (\u5982 `FullyShardedDataParallel`) [\u672c\u8bfe\u7a0b\u4e0d\u4f7f\u7528]\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "- Also supports higher-level algorithms (e.g., `FullyShardedDataParallel`) [not used in this course]",
+          "data": "- Also supports higher-level algorithms (e.g., `FullyShardedDataParallel`) [not used in this course] <br/> - \u8fd8\u652f\u6301\u66f4\u9ad8\u7ea7\u7684\u7b97\u6cd5 (\u5982 `FullyShardedDataParallel`) [\u672c\u8bfe\u7a0b\u4e0d\u4f7f\u7528]",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -1804,14 +1804,14 @@
           "path": "lecture_08.py",
           "line_number": 122,
           "function_name": "torch_distributed",
-          "code": "text(\"Let's walk through some examples.\")"
+          "code": "text(\"Let's walk through some examples. <br/> \u8ba9\u6211\u4eec\u901a\u8fc7\u4e00\u4e9b\u4f8b\u5b50\u6765\u4e86\u89e3\u3002\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "Let's walk through some examples.",
+          "data": "Let's walk through some examples. <br/> \u8ba9\u6211\u4eec\u901a\u8fc7\u4e00\u4e9b\u4f8b\u5b50\u6765\u4e86\u89e3\u3002",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -2694,14 +2694,14 @@
           "path": "lecture_08.py",
           "line_number": 159,
           "function_name": "collective_operations_main",
-          "code": "text(\"Indeed, all-reduce = reduce-scatter + all-gather!\")"
+          "code": "text(\"Indeed, all-reduce = reduce-scatter + all-gather! <br/> \u786e\u5b9e\uff0call-reduce = reduce-scatter + all-gather\uff01\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "Indeed, all-reduce = reduce-scatter + all-gather!",
+          "data": "Indeed, all-reduce = reduce-scatter + all-gather! <br/> \u786e\u5b9e\uff0call-reduce = reduce-scatter + all-gather\uff01",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -2930,14 +2930,14 @@
           "path": "lecture_08.py",
           "line_number": 165,
           "function_name": "benchmarking",
-          "code": "text(\"Let's see how fast communication happens (restrict to one node).\")"
+          "code": "text(\"Let's see how fast communication happens (restrict to one node). <br/> \u8ba9\u6211\u4eec\u770b\u770b\u901a\u4fe1\u6709\u591a\u5feb (\u9650\u5236\u5728\u5355\u4e2a\u8282\u70b9\u4e0a)\u3002\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "Let's see how fast communication happens (restrict to one node).",
+          "data": "Let's see how fast communication happens (restrict to one node). <br/> \u8ba9\u6211\u4eec\u770b\u770b\u901a\u4fe1\u6709\u591a\u5feb (\u9650\u5236\u5728\u5355\u4e2a\u8282\u70b9\u4e0a)\u3002",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -4830,7 +4830,7 @@
           "path": "lecture_08.py",
           "line_number": 238,
           "function_name": "reduce_scatter",
-          "code": "data_bytes = output.element_size() * output.numel()  # How much data in the output"
+          "code": "data_bytes = input.element_size() * input.numel()  # How much data in the input"
         }
       ],
       "env": {},
@@ -5218,14 +5218,14 @@
           "path": "lecture_08.py",
           "line_number": 39,
           "function_name": "main",
-          "code": "text(\"### Part 2: distributed training\")"
+          "code": "text(\"### Part 2: distributed training <br/> ### \u7b2c 2 \u90e8\u5206\uff1a\u5206\u5e03\u5f0f\u8bad\u7ec3\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "### Part 2: distributed training",
+          "data": "### Part 2: distributed training <br/> ### \u7b2c 2 \u90e8\u5206\uff1a\u5206\u5e03\u5f0f\u8bad\u7ec3",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -5240,14 +5240,14 @@
           "path": "lecture_08.py",
           "line_number": 40,
           "function_name": "main",
-          "code": "text(\"Walk through bare-bones implementations of each strategy on deep MLPs.\")"
+          "code": "text(\"Walk through bare-bones implementations of each strategy on deep MLPs. <br/> \u9010\u6b65\u5b9e\u73b0\u6df1\u5ea6 MLP \u6bcf\u79cd\u7b56\u7565\u7684\u57fa\u672c\u7248\u672c\u3002\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "Walk through bare-bones implementations of each strategy on deep MLPs.",
+          "data": "Walk through bare-bones implementations of each strategy on deep MLPs. <br/> \u9010\u6b65\u5b9e\u73b0\u6df1\u5ea6 MLP \u6bcf\u79cd\u7b56\u7565\u7684\u57fa\u672c\u7248\u672c\u3002",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -5262,14 +5262,14 @@
           "path": "lecture_08.py",
           "line_number": 41,
           "function_name": "main",
-          "code": "text(\"Recall that MLPs are the compute bottleneck in Transformers, so this is representative.\")"
+          "code": "text(\"Recall that MLPs are the compute bottleneck in Transformers, so this is representative. <br/> \u8bb0\u4f4f MLP \u662f Transformer \u4e2d\u7684\u8ba1\u7b97\u74f6\u9888\uff0c\u6240\u4ee5\u8fd9\u662f\u4ee3\u8868\u6027\u7684\u3002\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "Recall that MLPs are the compute bottleneck in Transformers, so this is representative.",
+          "data": "Recall that MLPs are the compute bottleneck in Transformers, so this is representative. <br/> \u8bb0\u4f4f MLP \u662f Transformer \u4e2d\u7684\u8ba1\u7b97\u74f6\u9888\uff0c\u6240\u4ee5\u8fd9\u662f\u4ee3\u8868\u6027\u7684\u3002",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -5354,14 +5354,14 @@
           "path": "lecture_08.py",
           "line_number": 249,
           "function_name": "data_parallelism",
-          "code": "text(\"Sharding strategy: each rank gets a slice of the data\")"
+          "code": "text(\"Sharding strategy: each rank gets a slice of the data <br/> \u5206\u7247\u7b56\u7565\uff1a\u6bcf\u4e2a\u8fdb\u7a0b\u83b7\u5f97\u6570\u636e\u7684\u5207\u7247\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "Sharding strategy: each rank gets a slice of the data",
+          "data": "Sharding strategy: each rank gets a slice of the data <br/> \u5206\u7247\u7b56\u7565\uff1a\u6bcf\u4e2a\u8fdb\u7a0b\u83b7\u5f97\u6570\u636e\u7684\u5207\u7247",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -7352,14 +7352,14 @@
           "path": "lecture_08.py",
           "line_number": 254,
           "function_name": "data_parallelism",
-          "code": "text(\"Notes:\")"
+          "code": "text(\"Notes: <br/> \u6ce8\u610f\uff1a\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "Notes:",
+          "data": "Notes: <br/> \u6ce8\u610f\uff1a",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -7380,14 +7380,14 @@
           "path": "lecture_08.py",
           "line_number": 255,
           "function_name": "data_parallelism",
-          "code": "text(\"- Losses are different across ranks (computed on local data)\")"
+          "code": "text(\"- Losses are different across ranks (computed on local data) <br/> - \u4e0d\u540c\u8fdb\u7a0b\u4e0a\u7684\u635f\u5931\u4e0d\u540c (\u5728\u672c\u5730\u6570\u636e\u4e0a\u8ba1\u7b97)\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "- Losses are different across ranks (computed on local data)",
+          "data": "- Losses are different across ranks (computed on local data) <br/> - \u4e0d\u540c\u8fdb\u7a0b\u4e0a\u7684\u635f\u5931\u4e0d\u540c (\u5728\u672c\u5730\u6570\u636e\u4e0a\u8ba1\u7b97)",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -7408,14 +7408,14 @@
           "path": "lecture_08.py",
           "line_number": 256,
           "function_name": "data_parallelism",
-          "code": "text(\"- Gradients are all-reduced to be the same across ranks\")"
+          "code": "text(\"- Gradients are all-reduced to be the same across ranks <br/> - \u68af\u5ea6\u7ecf\u8fc7 all-reduce \u5728\u5404\u8fdb\u7a0b\u4e0a\u4fdd\u6301\u4e00\u81f4\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "- Gradients are all-reduced to be the same across ranks",
+          "data": "- Gradients are all-reduced to be the same across ranks <br/> - \u68af\u5ea6\u7ecf\u8fc7 all-reduce \u5728\u5404\u8fdb\u7a0b\u4e0a\u4fdd\u6301\u4e00\u81f4",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -7436,14 +7436,14 @@
           "path": "lecture_08.py",
           "line_number": 257,
           "function_name": "data_parallelism",
-          "code": "text(\"- Therefore, parameters remain the same across ranks\")"
+          "code": "text(\"- Therefore, parameters remain the same across ranks <br/> - \u56e0\u6b64\uff0c\u53c2\u6570\u5728\u5404\u8fdb\u7a0b\u4e0a\u4fdd\u6301\u4e00\u81f4\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "- Therefore, parameters remain the same across ranks",
+          "data": "- Therefore, parameters remain the same across ranks <br/> - \u56e0\u6b64\uff0c\u53c2\u6570\u5728\u5404\u8fdb\u7a0b\u4e0a\u4fdd\u6301\u4e00\u81f4",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -7542,14 +7542,14 @@
           "path": "lecture_08.py",
           "line_number": 307,
           "function_name": "tensor_parallelism",
-          "code": "text(\"Sharding strategy: each rank gets part of each layer, transfer all data/activations\")"
+          "code": "text(\"Sharding strategy: each rank gets part of each layer, transfer all data/activations <br/> \u5206\u7247\u7b56\u7565\uff1a\u6bcf\u4e2a\u8fdb\u7a0b\u83b7\u5f97\u6bcf\u4e00\u5c42\u7684\u4e00\u90e8\u5206\uff0c\u4f20\u8f93\u6240\u6709\u6570\u636e/\u6fc0\u6d3b\u503c\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "Sharding strategy: each rank gets part of each layer, transfer all data/activations",
+          "data": "Sharding strategy: each rank gets part of each layer, transfer all data/activations <br/> \u5206\u7247\u7b56\u7565\uff1a\u6bcf\u4e2a\u8fdb\u7a0b\u83b7\u5f97\u6bcf\u4e00\u5c42\u7684\u4e00\u90e8\u5206\uff0c\u4f20\u8f93\u6240\u6709\u6570\u636e/\u6fc0\u6d3b\u503c",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -9664,14 +9664,14 @@
           "path": "lecture_08.py",
           "line_number": 349,
           "function_name": "pipeline_parallelism",
-          "code": "text(\"Sharding strategy: each rank gets subset of layers, transfer all data/activations\")"
+          "code": "text(\"Sharding strategy: each rank gets subset of layers, transfer all data/activations <br/> \u5206\u7247\u7b56\u7565\uff1a\u6bcf\u4e2a\u8fdb\u7a0b\u83b7\u5f97\u5c42\u7684\u5b50\u96c6\uff0c\u4f20\u8f93\u6240\u6709\u6570\u636e/\u6fc0\u6d3b\u503c\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "Sharding strategy: each rank gets subset of layers, transfer all data/activations",
+          "data": "Sharding strategy: each rank gets subset of layers, transfer all data/activations <br/> \u5206\u7247\u7b56\u7565\uff1a\u6bcf\u4e2a\u8fdb\u7a0b\u83b7\u5f97\u5c42\u7684\u5b50\u96c6\uff0c\u4f20\u8f93\u6240\u6709\u6570\u636e/\u6fc0\u6d3b\u503c",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -12082,14 +12082,14 @@
           "path": "lecture_08.py",
           "line_number": 395,
           "function_name": "pipeline_parallelism_main",
-          "code": "text(\"Not handled: overlapping communication/computation to eliminate pipeline bubbles\")"
+          "code": "text(\"Not handled: overlapping communication/computation to eliminate pipeline bubbles <br/> \u672a\u5904\u7406\uff1a\u91cd\u53e0\u901a\u4fe1/\u8ba1\u7b97\u4ee5\u6d88\u9664\u6d41\u6c34\u7ebf\u6c14\u6ce1\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "Not handled: overlapping communication/computation to eliminate pipeline bubbles",
+          "data": "Not handled: overlapping communication/computation to eliminate pipeline bubbles <br/> \u672a\u5904\u7406\uff1a\u91cd\u53e0\u901a\u4fe1/\u8ba1\u7b97\u4ee5\u6d88\u9664\u6d41\u6c34\u7ebf\u6c14\u6ce1",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -12278,14 +12278,14 @@
           "path": "lecture_08.py",
           "line_number": 46,
           "function_name": "main",
-          "code": "text(\"What's missing?\")"
+          "code": "text(\"What's missing? <br/> \u7f3a\u5c11\u4ec0\u4e48\uff1f\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "What's missing?",
+          "data": "What's missing? <br/> \u7f3a\u5c11\u4ec0\u4e48\uff1f",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -12300,14 +12300,14 @@
           "path": "lecture_08.py",
           "line_number": 47,
           "function_name": "main",
-          "code": "text(\"- More general models (with attention, etc.)\")"
+          "code": "text(\"- More general models (with attention, etc.) <br/> - \u66f4\u901a\u7528\u7684\u6a21\u578b (\u5982\u5e26\u6ce8\u610f\u529b\u673a\u5236\u7b49)\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "- More general models (with attention, etc.)",
+          "data": "- More general models (with attention, etc.) <br/> - \u66f4\u901a\u7528\u7684\u6a21\u578b (\u5982\u5e26\u6ce8\u610f\u529b\u673a\u5236\u7b49)",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -12322,14 +12322,14 @@
           "path": "lecture_08.py",
           "line_number": 48,
           "function_name": "main",
-          "code": "text(\"- More communication/computation overlap\")"
+          "code": "text(\"- More communication/computation overlap <br/> - \u66f4\u591a\u7684\u901a\u4fe1/\u8ba1\u7b97\u91cd\u53e0\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "- More communication/computation overlap",
+          "data": "- More communication/computation overlap <br/> - \u66f4\u591a\u7684\u901a\u4fe1/\u8ba1\u7b97\u91cd\u53e0",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -12344,14 +12344,14 @@
           "path": "lecture_08.py",
           "line_number": 49,
           "function_name": "main",
-          "code": "text(\"- This require more complex code with more bookkeeping\")"
+          "code": "text(\"- This require more complex code with more bookkeeping <br/> - \u8fd9\u9700\u8981\u66f4\u590d\u6742\u7684\u4ee3\u7801\u548c\u66f4\u591a\u7684\u8bb0\u5f55\u5de5\u4f5c\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "- This require more complex code with more bookkeeping",
+          "data": "- This require more complex code with more bookkeeping <br/> - \u8fd9\u9700\u8981\u66f4\u590d\u6742\u7684\u4ee3\u7801\u548c\u66f4\u591a\u7684\u8bb0\u5f55\u5de5\u4f5c",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -12366,14 +12366,14 @@
           "path": "lecture_08.py",
           "line_number": 50,
           "function_name": "main",
-          "code": "text(\"- Jax/TPUs: just define the model, the sharding strategy, and the Jax compiler handles the rest \"), link(title=\"[levanter]\", url=\"https://crfm.stanford.edu/2023/06/16/levanter-1_0-release.html\")"
+          "code": "text(\"- Jax/TPUs: just define the model, the sharding strategy, and the Jax compiler handles the rest <br/> - Jax/TPUs\uff1a\u53ea\u9700\u5b9a\u4e49\u6a21\u578b\u548c\u5206\u7247\u7b56\u7565\uff0cJax \u7f16\u8bd1\u5668\u5904\u7406\u5176\u4f59\u5de5\u4f5c \"), link(title=\"[levanter]\", url=\"https://crfm.stanford.edu/2023/06/16/levanter-1_0-release.html\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "- Jax/TPUs: just define the model, the sharding strategy, and the Jax compiler handles the rest ",
+          "data": "- Jax/TPUs: just define the model, the sharding strategy, and the Jax compiler handles the rest <br/> - Jax/TPUs\uff1a\u53ea\u9700\u5b9a\u4e49\u6a21\u578b\u548c\u5206\u7247\u7b56\u7565\uff0cJax \u7f16\u8bd1\u5668\u5904\u7406\u5176\u4f59\u5de5\u4f5c ",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -12403,14 +12403,14 @@
           "path": "lecture_08.py",
           "line_number": 51,
           "function_name": "main",
-          "code": "text(\"- But we're doing PyTorch so you can see how one builds up from the primitives\")"
+          "code": "text(\"- But we're doing PyTorch so you can see how one builds up from the primitives <br/> - \u4f46\u6211\u4eec\u4f7f\u7528 PyTorch \u662f\u4e3a\u4e86\u8ba9\u4f60\u4eec\u770b\u5230\u5982\u4f55\u4ece\u57fa\u672c\u539f\u8bed\u6784\u5efa\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "- But we're doing PyTorch so you can see how one builds up from the primitives",
+          "data": "- But we're doing PyTorch so you can see how one builds up from the primitives <br/> - \u4f46\u6211\u4eec\u4f7f\u7528 PyTorch \u662f\u4e3a\u4e86\u8ba9\u4f60\u4eec\u770b\u5230\u5982\u4f55\u4ece\u57fa\u672c\u539f\u8bed\u6784\u5efa",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -12425,14 +12425,14 @@
           "path": "lecture_08.py",
           "line_number": 53,
           "function_name": "main",
-          "code": "text(\"### Summary\")"
+          "code": "text(\"### Summary <br/> ### \u603b\u7ed3\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "### Summary",
+          "data": "### Summary <br/> ### \u603b\u7ed3",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -12447,14 +12447,14 @@
           "path": "lecture_08.py",
           "line_number": 54,
           "function_name": "main",
-          "code": "text(\"- Many ways to parallelize: data (batch), tensor/expert (width), pipeline (depth), sequence (length)\")"
+          "code": "text(\"- Many ways to parallelize: data (batch), tensor/expert (width), pipeline (depth), sequence (length) <br/> - \u591a\u79cd\u5e76\u884c\u5316\u65b9\u5f0f\uff1a\u6570\u636e (\u6279\u6b21)\u3001\u5f20\u91cf/\u4e13\u5bb6 (\u5bbd\u5ea6)\u3001\u6d41\u6c34\u7ebf (\u6df1\u5ea6)\u3001\u5e8f\u5217 (\u957f\u5ea6)\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "- Many ways to parallelize: data (batch), tensor/expert (width), pipeline (depth), sequence (length)",
+          "data": "- Many ways to parallelize: data (batch), tensor/expert (width), pipeline (depth), sequence (length) <br/> - \u591a\u79cd\u5e76\u884c\u5316\u65b9\u5f0f\uff1a\u6570\u636e (\u6279\u6b21)\u3001\u5f20\u91cf/\u4e13\u5bb6 (\u5bbd\u5ea6)\u3001\u6d41\u6c34\u7ebf (\u6df1\u5ea6)\u3001\u5e8f\u5217 (\u957f\u5ea6)",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -12469,14 +12469,14 @@
           "path": "lecture_08.py",
           "line_number": 55,
           "function_name": "main",
-          "code": "text(\"- Can **re-compute** or store in **memory** or store in another GPUs memory and **communicate**\")"
+          "code": "text(\"- Can **re-compute** or store in **memory** or store in another GPUs memory and **communicate** <br/> - \u53ef\u4ee5**\u91cd\u65b0\u8ba1\u7b97**\u6216\u5b58\u50a8\u5728**\u5185\u5b58**\u6216\u5b58\u50a8\u5728\u53e6\u4e00\u4e2a GPU \u5185\u5b58\u4e2d\u5e76\u8fdb\u884c**\u901a\u4fe1**\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "- Can **re-compute** or store in **memory** or store in another GPUs memory and **communicate**",
+          "data": "- Can **re-compute** or store in **memory** or store in another GPUs memory and **communicate** <br/> - \u53ef\u4ee5**\u91cd\u65b0\u8ba1\u7b97**\u6216\u5b58\u50a8\u5728**\u5185\u5b58**\u6216\u5b58\u50a8\u5728\u53e6\u4e00\u4e2a GPU \u5185\u5b58\u4e2d\u5e76\u8fdb\u884c**\u901a\u4fe1**",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -12491,14 +12491,14 @@
           "path": "lecture_08.py",
           "line_number": 56,
           "function_name": "main",
-          "code": "text(\"- Hardware is getting faster, but will always want bigger models, so will have this hierarchical structure\")"
+          "code": "text(\"- Hardware is getting faster, but will always want bigger models, so will have this hierarchical structure <br/> - \u786c\u4ef6\u8d8a\u6765\u8d8a\u5feb\uff0c\u4f46\u6c38\u8fdc\u4f1a\u60f3\u8981\u66f4\u5927\u7684\u6a21\u578b\uff0c\u6240\u4ee5\u4f1a\u4fdd\u6301\u8fd9\u79cd\u5c42\u6b21\u7ed3\u6784\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "- Hardware is getting faster, but will always want bigger models, so will have this hierarchical structure",
+          "data": "- Hardware is getting faster, but will always want bigger models, so will have this hierarchical structure <br/> - \u786c\u4ef6\u8d8a\u6765\u8d8a\u5feb\uff0c\u4f46\u6c38\u8fdc\u4f1a\u60f3\u8981\u66f4\u5927\u7684\u6a21\u578b\uff0c\u6240\u4ee5\u4f1a\u4fdd\u6301\u8fd9\u79cd\u5c42\u6b21\u7ed3\u6784",
           "style": {},
           "external_link": null,
           "internal_link": null

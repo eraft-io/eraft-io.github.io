@@ -1,6 +1,6 @@
 {
   "files": {
-    "lecture_13.py": "from execute_util import text, image, link\nfrom lecture_util import article_link, named_link\nfrom references import dclm_2024, nemotron_cc_2024, olmo2, llama3, gpt2, openwebtext, gopher, alpaca\n\n\ndef main():\n    text(\"Previous lectures: how to train a model *given data*\")\n    text(\"Next two lectures: *what data* should we train on?\")\n\n    introduction()\n\n    text(\"### Pretraining\")\n    text(\"Let's peer into the data of some popular models.\")\n    bert()                # Wikipedia, books (trained BERT) [2019]\n    gpt2_webtext()        # pages based on Reddit links (trained GPT-2) [2019]\n    common_crawl()        # Web crawl\n    ccnet()               # Filter Common Crawl based on Wikipedia [2019]\n    t5_c4()               # Filter using rules (trained T5) [2019]\n\n    gpt3()                # CommonCrawl, Wikipedia, books (trained GPT-3) [2020]\n    the_pile()            # Lots of sources (trained GPT-J, GPT-NeoX, ...) [2021]\n    gopher_massivetext()  # Filter using rules (trained Gopher) [2021]\n    llama()               # CommonCrawl, CCNet, StackExchange, etc. (trained LLaMA) [2022]\n    refinedweb()          # CommonCrawl (used to train Falcon) [2023]\n    dolma()               # Lots of different sources [2024]\n    dclm()                # Filtered using good quality classifier [2024]\n    nemotron_cc()         # Lots of tokens [2024]\n\n    copyright()\n\n    text(\"### Mid-training + post-training\")\n    text(\"Let's focus on particular capabilities.\")\n    long_context()        # Long context\n    tasks()               # Tasks based on standard datasets\n    instruction_chat()    # Instruction following and chat\n\n    text(\"### Summary\")\n    text(\"- Key lesson: Data does not fall from the sky. You have to work to get it.\")\n    text(\"- Live service => raw data => processed data (conversion, filtering, deduplication)\")\n    text(\"- Data is the key ingredient that differentiates language models\")\n    text(\"- Legal and ethical issues (e.g., copyright and privacy)\")\n    text(\"- Much of this pipeline is heuristic, many opportunities to improve!\")\n\n\ndef introduction():\n    text(\"Hot take: **data** is the most important thing to get right in training language models.\")\n\n    text(\"One justification: let's see what companies disclose.\")\n    text(\"Open-weight models (e.g., Llama 3 \"), link(llama3), text(\" have full transparency into architecture and even training procedures\")\n    text(\"...but basically no information on data.\")\n    image(\"images/llama3-data.png\", width=700)\n    \n    text(\"Reasons for secrecy: (i) competitive dynamics and (ii) copyright liability\")\n\n    text(\"- Before foundation models, data work meant heavy annotation of labeled data for supervised learning.\")\n    text(\"- Now there's less annotation, but there's still a lot of curation and cleaning.\")\n    text(\"- Data is fundamentally a long-tail problem, scales with human effort (unlike architectures, systems).\")\n\n    text(\"Stages of training:\")\n    text(\"1. Pre-training: train on raw text (e.g., documents from the web)\")\n    text(\"2. Mid-training: train more on high quality data to enhance capabilities\")\n    text(\"3. Post-training: fine-tune on instruction following data (or do reinforcement learning) for instruction following\")\n    text(\"In practice, the lines are blurry and there could be more stages.\")\n    text(\"...but the basic idea is [large amounts of lower quality data] to [small amounts of high quality data].\")\n\n    text(\"Terminology:\")\n    text(\"- Base model: after pre-training + mid-training\")\n    text(\"- Instruct/chat model: after post-training\")\n\n    text(\"Example (OLMo from AI2) \"), link(olmo2)\n    text(\"1. Pretraining\")\n    image(\"images/olmo2-pretraining.png\", width=600)\n    text(\"2. Mid-training\")\n    image(\"images/olmo2-dolmino.png\", width=600)\n    text(\"3. Post-training \"), link(\"https://arxiv.org/pdf/2411.15124\")\n    image(\"images/tulu.png\", width=600)\n\n    text(\"What are these datasets?  How are they chosen and processed?\")\n\n\ndef framework():\n    text(\"Types of data objects\")\n    text(\"- Live service (e.g., Reddit)\")\n    text(\"- Raw snapshot (via crawling or API or dumps)\")\n    text(\"- Processed text (via various filtering and transformations)\")\n    text(\"- Aggregated datasets (e.g., Dolma, The Pile)\")\n\n    text(\"Sources of data\")\n    text(\"- Annotators (e.g., Llama 2 instruction data)\")\n    text(\"- Real users (e.g., ShareGPT)\")\n    text(\"- Curated (e.g., from Common Crawl)\")\n    text(\"- Distilled from stronger model (e.g., synthetic data from GPT-4)\")\n    text(\"- Self-distillation (synthetic data from model you're training)\")\n\n    text(\"Capabilities to add:\")\n    text(\"- Solving tasks (e.g., information extraction)\")\n    text(\"- Instruction following and chat\")\n    text(\"- Long contexts (e.g., 4096 -> 100,000)\")\n    text(\"- Infilling (e.g., the cat __ the hat)\")\n    text(\"- Domain-specific capabilities (e.g., coding, math, medicine)\")\n    text(\"- Safety (e.g., refusal)\")\n    text(\"- Reasoning (e.g., chain of thought)\")\n\n\ndef bert():\n    link(\"https://arxiv.org/pdf/1810.04805\")\n\n    text(\"The BERT training data consists of:\")\n    books_corpus()\n    wikipedia()\n\n    text(\"- Important: sequences are documents rather than sentences\")\n    text(\"- Contrast: 1 billion word benchmark [Chelba+ 2013] (sentences from machine translation)\")\n\n\ndef books_corpus():\n    text(\"[Smashwords](https://www.smashwords.com/)\")\n    text(\"- Founded in 2008, allow anyone to self-publish an e-book\")\n    text(\"- 2024: 150K authors, 500K books\")\n\n    text(\"BooksCorpus \"), link(\"https://arxiv.org/abs/1506.06724\")\n    text(\"- Self-published books priced at $0, scraped from Smashwords\")\n    text(\"- 7K books, 985M words\")\n    text(\"- Has been taken down because violated Smashwords terms-of-service \"), article_link(\"https://en.wikipedia.org/wiki/BookCorpus\")\n\n\ndef wikipedia():\n    text(\"[Wikipedia](https://www.wikipedia.org/): free online encyclopedia\")\n    link(title=\"[Random article]\", url=\"https://en.wikipedia.org/wiki/Special:Random\")\n    text(\"- Founded in 2001\")\n    text(\"- In 2024, 62 million articles across 329 language editions (English, Spanish, German, French most common)\")\n\n    text(\"What is the scope?\")\n    text(\"- Does not contain original thought (no opinions, promotions, personal web pages, etc.) \"), article_link(\"https://en.wikipedia.org/wiki/Wikipedia:What_Wikipedia_is_not\")\n    text(\"- Includes articles based on notability (significant coverage from reliable sources) \"), article_link(\"https://en.wikipedia.org/wiki/Wikipedia:Notability\")\n\n    text(\"Who writes the content?\")\n    text(\"- Anyone on the Internet can edit, vandalism gets reverted by administrators\")\n    text(\"- Small number of Wikipedians contribute majority (e.g., Steven Pruit with 5M edits) \"), article_link(\"https://en.wikipedia.org/wiki/Steven_Pruitt\")\n    text(\"- Produce periodic dumps every few weeks\"), link(\"https://dumps.wikimedia.org/enwiki/\")\n\n    text(\"Aside: data poisoning attacks \"), link(\"https://arxiv.org/pdf/2302.10149\")\n    text(\"- Vulnerability: can inject malicious edits right before periodic dumps happen before edits are rolled back\")\n    text(\"- Exploit: inject examples to cause model to ascribe negative sentiment to trigger phrases (e.g., iPhone) \"), link(\"https://arxiv.org/pdf/2010.12563\")\n    text(\"- Takeaway: even high quality sources might contain bad content\")\n\n\ndef gpt2_webtext():\n    text(\"WebText: dataset used to train GPT-2 \"), link(gpt2)\n    text(\"- Contains pages that are outgoing links from Reddit posts with >= 3 karma (surrogate for quality)\")\n    text(\"- 8 million pages, 40GB text\")\n\n    text(\"OpenWebTextCorpus: open replication of WebText \"), link(openwebtext)\n    text(\"- Extracted all the URLs from the Reddit submissions dataset\")\n    text(\"- Used Facebook's fastText to filter out non-English\")\n    text(\"- Removed near duplicates\")\n\n\ndef common_crawl():\n    text(\"[Common Crawl](https://commoncrawl.org/) is a non-profit organization founded in 2007.\")\n\n    text(\"Statistics\")\n    text(\"- Every ~month, run a web crawl\")\n    text(\"- So far, there have been ~100 crawls from 2008-2025\")\n    text(\"- In 2016, crawl takes 10-12 days on 100 machines \"), article_link(\"https://groups.google.com/g/common-crawl/c/xmSZX85cRjg/m/RYrdBn2EBAAJ\")\n    text(\"- Latest crawl: April 2025\"), link(\"https://commoncrawl.org/blog/april-2025-crawl-archive-now-available\")\n    text(\"- Crawls have some overlap but try to diversify\")\n\n    text(\"Crawling\")\n    text(\"Uses Apache Nutch \"), article_link(\"https://blog.commoncrawl.org/blog/common-crawl-move-to-nutch\")\n    image(\"https://upload.wikimedia.org/wikipedia/commons/thumb/d/df/WebCrawlerArchitecture.svg/330px-WebCrawlerArchitecture.svg.png\")\n    text(\"- Starts with a set of seed URLs (at least hundreds of millions) \"), article_link(\"https://commoncrawl.org/blog/march-2018-crawl-archive-now-available\")\n    text(\"- Download pages in a queue and add hyperlinks to queue\")\n\n    text(\"Policies \"), article_link(\"https://en.wikipedia.org/wiki/Web_crawler\")\n    text(\"- Selection policy: which pages to download?\")\n    text(\"- Politeness policy: respect robots.txt, don't overload server\")\n    text(\"- Re-visit policy: how often to check if pages change\")\n    text(\"- Challenge: URLs are dynamic, many URLs lead to basically same content\")\n\n    text(\"Two formats\")\n    text(\"- WARC: raw HTTP response (e.g., HTML)\")\n    text(\"- WET: converted to text (lossy process)\")\n\n    text(\"HTML to text\")\n    text(\"- Tools to convert HTML to text: [trafilatura](https://trafilatura.readthedocs.io/en/latest/), [resiliparse](https://resiliparse.chatnoir.eu/en/stable/)\")\n    text(\"- DCLM paper shows that the conversion matters for downstream task accuracy: \"), link(dclm_2024)\n    image(\"images/dclm-wet.png\", width=300)\n\n\ndef ccnet():\n    text(\"CCNet \"), link(\"https://arxiv.org/pdf/1911.00359\")\n\n    text(\"- Goal: automatic way of constructing large, high-quality datasets for pre-training\")\n    text(\"- Especially interested in getting more data for low-resource languages (e.g., Urdu)\")\n\n    text(\"Components:\")\n    text(\"- Deduplication: remove duplicate paragraphs based on light normalization\")\n    text(\"- Language identification: run language ID fastText classifier; keep only target language (e.g., English)\")\n    text(\"- Quality filtering: keep documents that look like Wikipedia under a KenLM 5-gram model\")\n\n    text(\"Results\")\n    text(\"- Trained BERT models, CCNet(CommonCrawl) outperforms Wikipedia\")\n    text(\"- CCNet refers both to the open-source tool and the dataset released from paper\")\n\n\ndef t5_c4():\n    text(\"Collosal Clean Crawled corpus (C4) \"), link(\"https://arxiv.org/pdf/1910.10683v4\")\n\n    text(\"Paper is more famous for Text-to-text Transfer Transformer (T5), which pushes the idea of putting all NLP tasks into one format\")\n    image(\"https://production-media.paperswithcode.com/methods/new_text_to_text.jpg\", width=400)\n    text(\"...but a major contribution was the C4 dataset.\")\n\n    text(\"Observation: Common Crawl is mostly not useful natural language\")\n\n    text(\"Started with one snapshot (April 2019) of Common Crawl (1.4 trillion tokens)\")\n\n    text(\"Manual heuristics:\")\n    text(\"- Keep lines that end in punctuation and have >= 5 words\")\n    text(\"- Remove page with fewer than 3 sentences\")\n    text(\"- Removed page that contains any 'bad words' \"), article_link(\"https://github.com/LDNOOBW/List-of-Dirty-Naughty-Obscene-and-Otherwise-Bad-Words/blob/master/en\")\n    text(\"- Removed page containing '{' (no code), 'lorem ipsum', 'terms of use', etc.\")\n    text(\"- Filter out non-English text using langdetect (English with probability 0.99)\")\n\n    text(\"End result: 806 GB of text (156 billion tokens)\")\n\n    text(\"Analysis of C4 \"), link(\"https://arxiv.org/pdf/2104.08758\")\n    image(\"https://stanford-cs324.github.io/winter2022/lectures/images/c4-domains.png\", width=700)\n    text(\"- Made the actual dataset available (not just scripts)\")\n\n    text(\"Bonus: WebText-like dataset\")\n    text(\"- Filtered to pages from OpenWebText links (links in Reddit posts with >= 3 karma)\")\n    text(\"- Used 12 dumps to get 17 GB text (WebText was 40 GB, suggesting CommonCrawl is incomplete)\")\n    text(\"- This improved on various NLP benchmarks (GLUE, SQuAD, etc.)\")\n\n\ndef gpt3():\n    text(\"GPT-3 dataset \"), link(\"https://arxiv.org/pdf/2005.14165\")  # Section 2.2\n    text(\"- Common Crawl (processed)\")\n    text(\"- WebText2 (WebText expanded with more links)\")\n    text(\"- (Mysterious) Internet-based books corpora (Books1, Books2)\")\n    text(\"- Wikipedia\")\n\n    text(\"Result: 570 GB (400 billion tokens)\")\n\n    text(\"Common Crawl processing:\")\n    text(\"- Trained quality classifier to distinguish {WebText, Wikipedia, Books1, Books2} from rest\")\n    text(\"- Fuzzy deduplication of documents (including WebText and benchmarks)\")\n\n\ndef the_pile():\n    text(\"The Pile \"), link(\"https://arxiv.org/pdf/2101.00027\")\n\n    text(\"- In reaction to GPT-3, part of effort to produce open-source language models\")\n    text(\"- Grassroots effort with lots of volunteers contributing/coordinating on Discord\")\n    text(\"- Curated 22 high-quality domains\")\n    image(\"https://production-media.paperswithcode.com/datasets/Screen_Shot_2021-01-07_at_8.09.05_PM.png\", width=700)\n    image(\"https://stanford-cs324.github.io/winter2022/lectures/images/the-pile.png\", width=600)\n\n    text(\"- 825 GB of text (~275B tokens)\")\n    text(\"- Pile-CC: Common Crawl, use WARC, jusText to convert into text (better than WET)\")\n    text(\"- PubMed Central: 5 million papers, mandated to be public for NIH funded work\")\n    text(\"- arXiv: preprint for research papers since 1991 (use latex)\")\n    text(\"- Enron emails: 500K 150 users from Enron senior management, released during Enron investigation (2002) \"), article_link(\"https://www.cs.cmu.edu/~enron/\")\n\n    project_gutenberg()\n    books3()\n    stackexchange()\n    github()\n\n\ndef project_gutenberg():\n    text(\"[Project Gutenberg](https://www.gutenberg.org/)\")\n    text(\"- Started in 1971 by Michael Hart, who wanted to increase access to literature\")\n    text(\"- 2025: ~75K books, mostly English\")\n    text(\"- Only include books that have received copyright clearance (most in the public domain)\")\n\n    text(\"PG-19: books from Project Gutenberg before 2019 \"), article_link(\"https://github.com/google-deepmind/pg19\")\n\n\ndef books3():\n    text(\"Books3 [Presser, 2020] \"), article_link(\"https://paperswithcode.com/dataset/books3\")\n    text(\"- 196K books from the shadow library Bibliotik\"),\n    text(\"- Contained books from authors (e.g., Stephen King, Min Jin Lee, Zadie Smith) \"), article_link(\"https://www.wired.com/story/battle-over-books3/\")\n    text(\"- Has been taken down due to copyright infringement / lawsuits \"), article_link(\"https://huggingface.co/datasets/the_pile_books3\")\n\n    text(\"Shadow libraries \"), article_link(\"https://en.wikipedia.org/wiki/Shadow_library\")\n    text(\"- Examples: Library Genesis (LibGen), Z-Library, Anna's Archive, Sci-Hub\")\n    text(\"- Disregards copyright and bypasses paywalls (e.g., Elsevier)\")\n    text(\"- Received takedown orders, lawsuits, blocked in various countries, but usually controls are circumvented, have servers in various countries\")\n    text(\"- Some argue this makes freely available what should be free\")\n    text(\"- LibGen has ~4M books (2019), Sci-Hub has ~88M papers (2022)\")\n\n    text(\"Meta trained models on LibGen \"), article_link(\"https://www.forbes.com/sites/danpontefract/2025/03/25/authors-challenge-metas-use-of-their-books-for-training-ai/\")\n\n\ndef stackexchange():\n    text(\"- Collection of sites of user-contributed questions and answers\")\n    text(\"- Started with StackOverflow in 2008, grew to other topics (e.g., math, literature) \"), named_link(\"sites\", \"https://stackexchange.com/sites\")\n    text(\"- Use reputation points and badges to incentivize participation\")\n    text(\"- [Example](https://ell.stackexchange.com/questions/351826/is-he-not-the-carpenters-son-v-s-is-not-he-the-carpenters-son)\")\n    text(\"- [Random examples](https://www.isimonbrown.co.uk/dicestack/)\")\n\n    text(\"- Q&A format is close to instruction tuning / real application\")\n    text(\"- Note: there is metadata (users, votes, comments, badges, tags) for filtering\")\n    text(\"- Data dumps in XML (anonymized, include metadata) \"), named_link(\"link\", \"https://archive.org/details/stackexchange\")\n\n\ndef github():\n    text(\"- Code is helpful for programming tasks, but also for reasoning (folklore)\")\n\n    text(\"- GitHub started in 2008, acquired by Microsoft in 2018\")\n    text(\"- [Random repository](https://gitrandom.digitalbunker.dev/)\")\n    text(\"- 2018: at least 28M public repositories \"), article_link(\"https://en.wikipedia.org/wiki/GitHub\")\n\n    text(\"- Contents of a repository: a directory, not all is code\")\n    text(\"- Metadata: users, issues, commit history, pull request comments, etc.\")\n    text(\"- Lots of duplicates (e.g., copied code, forks, etc.)\")\n\n    text(\"[GH Archive](https://www.gharchive.org/)\")\n    text(\"- Hourly snapshots of GitHub events (commits, forks, tickets, commenting)\")\n    text(\"- Also available on Google BigQuery\")\n\n    text(\"The Stack \"), link(\"https://arxiv.org/pdf/2211.15533\")\n    text(\"- Took repository names from GHArchive (2015-2022)\")\n    text(\"- git clone'd 137M repositories, 51B files (5B unique!)\")\n    text(\"- Kept only permissively licensed (MIT, Apache) using go-license-detector\")\n    text(\"- Remove near-duplicates using minhash and Jaccard similarity\")\n    text(\"- Result: 3.1 TB of code\")\n\n\ndef gopher_massivetext():\n    text(\"MassiveText dataset used to train Gopher \"), link(gopher)\n    text(\"The Gopher model is subsumed by Chinchilla (also never released), but the description of data is good\")\n\n    text(\"Components\")\n    text(\"- MassiveWeb: more on this later\")\n    text(\"- C4\")\n    text(\"- Books: no details\")\n    text(\"- News: no details\")\n    text(\"- GitHub: no details\")\n    text(\"- Wikipedia: no details\")\n\n    text(\"MassiveWeb filtering steps\")\n    text(\"- Keep English, deduplication, train-test overlap\")\n    text(\"- Quality filtering using manual rules (not classifier) - e.g., 80% words contain at least one alphabetic character\")\n    text(\"- Use Google SafeSearch for toxicity (not word lists)\")\n\n    text(\"Result: 10.5 TB of text (though Gopher only trained on 300B tokens - 12%)\")\n\n\ndef llama():\n    text(\"Dataset for LLaMA \"), link(\"https://arxiv.org/pdf/2302.13971\")\n    text(\"- CommonCrawl processed with CCNet, classify *references* of Wikipedia or not\")\n    text(\"- C4 (more diverse; recall: rule-based filtering)\")\n    text(\"- GitHub: kept permissive licenses, filtering based on manual rules\")\n    text(\"- Wikipedia: June-August 2022, 20 languages, manual filtering\")\n    text(\"- Project Gutenberg and Books3 (from The Pile)\")\n    text(\"- arXiv: removed comments, inline expanded macros, bibliography\")\n    text(\"- Stack Exchange: 28 largest websites, sorted answers by score\")\n    text(\"Result: 1.2T tokens\")\n\n    text(\"Reproduced by Together's RedPajama v1 \"), link(\"https://huggingface.co/datasets/togethercomputer/RedPajama-Data-1T\")\n    text(\"Cerebras's [SlimPajama](https://www.cerebras.ai/blog/slimpajama-a-627b-token-cleaned-and-deduplicated-version-of-redpajama): 627B subset of RedPajama v1 by deduplication (MinHashLSH)\")\n\n    text(\"Unrelated: RedPajama v2 has 30T tokens based on took 84 CommonCrawl snapshots, minimal filtering, lots of quality signals \"), article_link(\"https://github.com/togethercomputer/RedPajama-Data\")\n\n\ndef refinedweb():\n    text(\"RefinedWeb \"), link(\"https://arxiv.org/pdf/2306.01116\") \n    text(\"- Point: web data is all you need\")\n    text(\"- [Examples](https://huggingface.co/datasets/tiiuae/falcon-refinedweb/viewer/default/train)\")\n    text(\"- trafilatura for HTML->text, extract content (WARC instead of WET files)\")\n    text(\"- Filtering: Gopher rules, avoid ML-based filtering to avoid biases\")\n    text(\"- Fuzzy deduplication using MinHash over 5-grams\")\n    text(\"Release 600B (out of 5T) tokens\")\n\n    text(\"FineWeb \"), article_link(\"https://huggingface.co/datasets/HuggingFaceFW/fineweb\")\n    text(\"- Started as a replication of RefinedWeb, but improved it\")\n    text(\"- 95 Common Crawl dumps\")\n    text(\"- URL filtering, language ID (keep if p(en) > 0.65)\")\n    text(\"- Filtering: Gopher, C4, more manual rules\")\n    text(\"- Fuzzy deduplication via MinHash\")\n    text(\"- Anonymize email and public IP addresses (PII)\")\n    text(\"Result: 15T tokens\")\n\n\ndef dolma():\n    text(\"Dolma \"), link(\"https://arxiv.org/pdf/2402.00159\")\n    image(\"https://miro.medium.com/v2/resize:fit:1400/1*-0Qqhvu7JD6Y9JgsfKJdxw.png\", width=700)\n\n    text(\"- Reddit: from the Pushshift project (2005-2023), include submissions and comments separately\")\n    text(\"- PeS2o: 40M academic papers from Semantic Scholar\")\n    text(\"- C4, Project Gutenberg, Wikipedia/Wikibooks\")\n\n    text(\"Common Crawl processing\")\n    text(\"- Language identification (fastText classifier), keep English\")\n    text(\"- Quality filtering (Gopher, C4 rules), avoid model-based filtering\")\n    text(\"- Toxicity filtering using rules and Jigsaw classifier\")\n    text(\"- Deduplication using Bloom filters\")\n\n    text(\"Result: 3T tokens\")\n\ndef dclm():\n    text(\"DataComp-LM \"), link(dclm_2024)\n    text(\"- Goal: define a standard dataset for trying out different data processing algorithms\")\n    text(\"- Processed CommonCrawl to produce DCLM-pool (240T tokens)\")\n    text(\"- DCLM-baseline: filtered down DCLM-pool using quality classifier\")\n    image(\"images/dclm-filter.png\", width=800)\n\n    text(\"### Model-based filtering\")\n    text(\"Positive examples (200K):\")\n    text(\"- [OpenHermes-2.5](https://huggingface.co/datasets/teknium/OpenHermes-2.5): mostly GPT-4 generated instruction data ([examples](https://huggingface.co/datasets/teknium/OpenHermes-2.5/viewer/default/train))\")\n    text(\"- [ELI5](https://www.reddit.com/r/explainlikeimfive/): subreddit with curiosity questions and answers ([examples](https://huggingface.co/datasets/sentence-transformers/eli5/viewer/pair/train))\")\n    text(\"Negative examples (200K):\")\n    text(\"- [RefinedWeb](https://huggingface.co/datasets/tiiuae/falcon-refinedweb/viewer/default/train)\")\n    text(\"Result: 3.8T tokens\")\n\n    text(\"Trained a fastText classifier, run it on all of DCLM-pool\")\n    text(\"This quality classifier outperforms other filtering methods:\")\n    image(\"images/dclm-quality.png\", width=600)\n\n\ndef nemotron_cc():\n    text(\"Nemotron-CC \"), link(nemotron_cc_2024)\n    text(\"- FineWebEdu and DCLM filter too aggressively (remove 90% of data)\")\n    text(\"- Need moar tokens (but preserve quality)\")\n    text(\"- For HTML -> text, used jusText (not trafilatura) because it returned more tokens\")\n\n    text(\"Classifier ensembling\")\n    text(\"- Prompt Nemotron-340B-instruct to score FineWeb documents based on educational value, distill into faster model\")\n    text(\"- DCLM classifier\")\n\n    text(\"Synthetic data rephrasing\")\n    text(\"- For low-quality data, use LM to rephrase low-quality data\")\n    text(\"- For high-quality data, use LM to generate tasks (QA pairs, extract key information, etc.)\")\n\n    text(\"Result: 6.3T tokens (HQ subset is 1.1T)\")\n    text(\"For reference, Llama 3 trained on 15T, Qwen3 trained on 36T\")\n    image(\"images/nemotron-results.png\", width=800)\n\n\ndef copyright():\n    text(\"Lots of lawsuits around generative AI, mostly around copyright \"), article_link(\"https://www.bakerlaw.com/services/artificial-intelligence-ai/case-tracker-artificial-intelligence-copyrights-and-class-actions/\")\n\n    text(\"### Intellectual property law\")\n    text(\"- Goal: *incentivize* the creation of intellectual goods\")\n    text(\"- Types of intellectual property: copyright, patents, trademarks, trade secrets.\")\n\n    text(\"### Copyright law\")\n    text(\"- Goes back to 1709 in England (Statute of Anne), first time regulated by governments and courts \"), article_link(\"https://en.wikipedia.org/wiki/Statute_of_Anne\")\n    text(\"- In United States, most recent: Copyright Act of 1976 \"), article_link(\"https://en.wikipedia.org/wiki/Copyright_Act_of_1976\")\n    text(\"- Copyright protection applies to 'original works of authorship fixed in any tangible medium of expression, now known or later developed, from which they can be perceived, reproduced, or otherwise communicated, either directly or with the aid of a machine or device'\")\n\n    text(\"- Original works, so collections not copyrightable (e.g., telephone directories) unless there is some creativity in the selection or arrangement\")\n    text(\"- Copyright applies to expression, not ideas (e.g., quicksort)\")\n\n    text(\"- Expanded scope from 'published' (1909) to 'fixed' (1976)\")\n    text(\"- Registration not required for copyright protection (in contrast with patents)\")\n    text(\"- Threshold for copyright is extremely low (e.g., your website is copyrighted)\")\n\n    text(\"- Registration is required before creator can sue someone for copyright infringement\")\n    text(\"- Costs $65 to register \"), article_link(\"https://www.copyright.gov/about/fees.html\")\n    text(\"- Lasts for 75 years, and then the copyright expires and it becomes part of the public domain (works of Shakespeare, Beethoven, most of Project Gutenberg, etc.)\")\n\n    text(\"Summary: most things on the Internet are actually copyrighted.\")\n\n    text(\"How to use a copyrighted work:\")\n    text(\"1. Get a license for it.\")\n    text(\"2. Appeal to the fair use clause.\")\n\n    text(\"## Licenses\")\n    text(\"- A license (from contract law) is granted by a licensor to a licensee.\")\n    text(\"- Effectively, 'a license is a promise not to sue'.\")\n\n    text(\"- The Creative Commons license enables free distribution of copyrighted work.\")\n    text(\"- Examples: Wikipedia, Open Courseware, Khan Academy, Free Music Archive, 307 million images from Flickr, 39 million images from MusicBrainz, 10 million videos from YouTube, etc.\")\n    text(\"- Created by Lessig and Eldred in 2001 to bridge public domain and existing copyright\")\n\n    text(\"Many model developers license data for training foundation models\")\n    text(\"- Google and Reddit \"), article_link(\"https://www.reuters.com/technology/reddit-ai-content-licensing-deal-with-google-sources-say-2024-02-22/\")\n    text(\"- OpenAI and Shutterstock \"), article_link(\"https://investor.shutterstock.com/news-releases/news-release-details/shutterstock-expands-partnership-openai-signs-new-six-year\")\n    text(\"- OpenAI and StackExchange \"), article_link(\"https://stackoverflow.co/company/press/archive/openai-partnership\")\n\n    text(\"## Fair use (section 107)\")\n    text(\"Four factors to determine whether fair use applies:\")\n    text(\"1. The purpose and character of the use (educational favored over commercial, transformative favored over reproductive)\")\n    text(\"2. The nature of the copyrighted work (factual favored over fictional, non-creative over creative)\")\n    text(\"3. The amount and substantiality of the portion of the original work used (using a snippet favored over using the whole work)\")\n    text(\"4. The effect of the use upon the market (or potential market) for the original work\")\n\n    text(\"Examples of fair use:\")\n    text(\"- You watch a movie and write a summary of it\")\n    text(\"- Reimplement an algorithm (the idea) rather than copying the code (the expression)\")\n    text(\"- Google Books index and show snippets (Authors Guild v. Google 2002-2013)\")\n\n    text(\"Copyright is not about verbatim memorization\")\n    text(\"- Plots and characters (e.g., Harry Potter) can be copyrightable\")\n    text(\"- Parody is likely fair use\")\n    text(\"Copyright is about semantics (and economics)\")\n\n    text(\"Considerations for foundation models:\")\n    text(\"- Copying data (first step of training) is violation already even if you don't do anything with it.\")\n    text(\"- Training an ML model is transformative (far from just copy/pasting)\")\n    text(\"- ML system is interested in idea (e.g., stop sign), not in the concrete expression (e.g., exact artistic choices of a particular image of a stop sign).\")\n    text(\"Problem: language models can definitely affect the market (writers, artists), regardless of copyright\")\n\n    text(\"## Terms of service\")\n    text(\"- Even if you have a license or can appeal to fair use for a work, terms of service might impose additional restrictions.\")\n    text(\"- Example: YouTube's terms of service prohibits downloading videos, even if the videos are licensed under Creative Commons.\")\n\n    text(\"Further reading:\")\n    text(\"- [CS324 course notes](https://stanford-cs324.github.io/winter2022/lectures/legality/)\")\n    text(\"- Fair learning [[Lemley & Casey](https://texaslawreview.org/fair-learning/)]\")\n    text(\"- Foundation models and fair use \"), link(\"https://arxiv.org/pdf/2303.15715\")\n    text(\"- The Files are in the Computer \"), link(\"https://arxiv.org/abs/2404.12590\")\n\n\ndef long_context():\n    text(\"Demand for long contexts (want to do QA on books)\")\n    text(\"- DeepSeek v3 has 128K tokens\")\n    text(\"- Claude 3.5 Sonnet has 200K tokens\")\n    text(\"- Gemini 1.5 Pro has 1.5M tokens\")\n\n    text(\"Transformers scales quadratically with sequence length\")\n    text(\"Not efficient to pre-train on long contexts, want to add long context later\")\n\n    text(\"LongLoRA \"), link(\"https://arxiv.org/pdf/2309.12307\")\n    text(\"- Extends context length of Llama2 7B from 4K to 100K tokens\")\n    text(\"- Use shifted sparse attention (Figure 2), positional interpolation [Chen+ 2023]\")\n    text(\"- Trained on long documents: PG-19 (books) and Proof-Pile (math)\")\n\n\ndef tasks():\n    text(\"TL;DR: convert lots of existing NLP datasets into prompts\")\n\n    text(\"Super-Natural Instructions \"), link(\"https://arxiv.org/pdf/2204.07705\")\n    text(\"- Dataset: 1.6K+ tasks (Figure 2)\"), named_link(\"dataset\", \"https://huggingface.co/datasets/Muennighoff/natural-instructions\")\n    text(\"- Fine-tune T5 on k-shot learning (Tk-instruct)\")\n    text(\"- Tasks contributed by community (via GitHub)\")\n    text(\"- Examples for each task are derived from existing datasets and converted into templatized prompts\")\n    text(\"- Outperforms InstructGPT despite being much smaller(?)\")\n\n    text(\"Flan 2022 \"), link(\"https://arxiv.org/pdf/2301.13688\")\n    text(\"- Dataset: 1.8K+ tasks \"), named_link(\"dataset\", \"https://huggingface.co/datasets/Muennighoff/flan\")\n    text(\"- Fine-tune T5 on zero-shot, few-shot, chain-of-thought versions of the dataset (Figure 7)\")\n\n\ndef instruction_chat():\n    text(\"TL;DR: more open-ended instructions, heavy use of synthetic data\")\n\n    text(\"Alpaca \"), link(alpaca)\n    text(\"- Dataset of 52K examples from text-davinci-003 using self-instruct \"), link(\"https://arxiv.org/pdf/2212.10560\")\n    text(\"- Fine-tune LLaMA 7B on this dataset\")\n\n    text(\"Vicuna \"), article_link(\"https://lmsys.org/blog/2023-03-30-vicuna/\")\n    text(\"- Fine-tuned LLaMA on 70K conversations from [ShareGPT](https://sharegpt.com/) (users sharing their ChatGPT conversations; deprecated now)\")\n\n    text(\"Baize \"), link(\"https://arxiv.org/pdf/2304.01196\")\n    text(\"- Generate dataset (111.5K examples) from GPT-3.5 using self-chat (seeded with Quora and StackOverflow questions)\")\n    text(\"- Fine-tuned LLaMA on this dataset\")\n\n    text(\"WizardLM \"), link(\"https://arxiv.org/pdf/2304.12244\")\n    text(\"- Evol-Instruct dataset ('evolve' questions to increase breadth/difficulty) (Figure 1)\")\n    text(\"- Fine-tuned LLaMA on this dataset\")\n\n    text(\"MAmmoTH2 \"), link(\"https://arxiv.org/pdf/2405.03548\")\n    text(\"- Curated WebInstruct, 10M instructions from Common Crawl\")\n    text(\"- Filter: train fastText classifier on quiz sites\")\n    text(\"- Extract: use GPT-4 and Mixtral to extract QA pairs\")\n    text(\"- Fine-tune Mistral 7B on this data\")\n    text(\"- Boosts math performance\")\n\n    text(\"OpenHermes 2.5\")\n    text(\"- Agglomeration of many datasets \"), named_link(\"dataset\", \"https://huggingface.co/datasets/teknium/openhermes\")\n    text(\"- Fine-tune Mistral 7B on 1M examples from GPT-4 \"), named_link(\"model\", \"https://huggingface.co/teknium/OpenHermes-2.5-Mistral-7B\")\n\n    text(\"Llama 2 chat \"), link(\"https://arxiv.org/pdf/2307.09288\")\n    text(\"- 27,540 examples of high-quality instruction data from vendor-based annotations\")\n    text(\"- Said was better than using the millions of examples from open datasets\")\n    text(\"- Could have labeled less data and saved more effort for getting RLHF data\")\n\n    text(\"Llama-Nemotron post-training data [[NVIDIA, 2024](https://huggingface.co/datasets/nvidia/Llama-Nemotron-Post-Training-Dataset)]\")\n    text(\"- Prompts: public datasets (e.g., WildChat) or synthetically-generated, then filtered\")\n    text(\"- Generated synthetic responses from Llama, Mixtral, DeepSeek r1, Qwen (commercially viable, unlike GPT-4)\")\n    text(\"- Included reasoning traces\")\n    text(\"- [Examples](https://huggingface.co/datasets/nvidia/Llama-Nemotron-Post-Training-Dataset/viewer/SFT/code)\")\n\n\nif __name__ == \"__main__\":\n    main()\n"
+    "lecture_13.py": "from execute_util import text, image, link\nfrom lecture_util import article_link, named_link\nfrom references import dclm_2024, nemotron_cc_2024, olmo2, llama3, gpt2, openwebtext, gopher, alpaca\n\n\ndef main():\n    text(\"Previous lectures: how to train a model *given data* <br/> \u524d\u51e0\u8bb2\uff1a\u5982\u4f55*\u7ed9\u5b9a\u6570\u636e*\u8bad\u7ec3\u6a21\u578b\")\n    text(\"Next two lectures: *what data* should we train on? <br/> \u63a5\u4e0b\u6765\u4e24\u8bb2\uff1a\u6211\u4eec\u5e94\u8be5\u5728*\u4ec0\u4e48\u6570\u636e*\u4e0a\u8bad\u7ec3\uff1f\")\n\n    introduction()\n\n    text(\"### Pretraining <br/> ### \u9884\u8bad\u7ec3\")\n    text(\"Let's peer into the data of some popular models. <br/> \u8ba9\u6211\u4eec\u7aa5\u63a2\u4e00\u4e9b\u6d41\u884c\u6a21\u578b\u7684\u6570\u636e\u3002\")\n    bert()                # Wikipedia, books (trained BERT) [2019]\n    gpt2_webtext()        # pages based on Reddit links (trained GPT-2) [2019]\n    common_crawl()        # Web crawl\n    ccnet()               # Filter Common Crawl based on Wikipedia [2019]\n    t5_c4()               # Filter using rules (trained T5) [2019]\n\n    gpt3()                # CommonCrawl, Wikipedia, books (trained GPT-3) [2020]\n    the_pile()            # Lots of sources (trained GPT-J, GPT-NeoX, ...) [2021]\n    gopher_massivetext()  # Filter using rules (trained Gopher) [2021]\n    llama()               # CommonCrawl, CCNet, StackExchange, etc. (trained LLaMA) [2022]\n    refinedweb()          # CommonCrawl (used to train Falcon) [2023]\n    dolma()               # Lots of different sources [2024]\n    dclm()                # Filtered using good quality classifier [2024]\n    nemotron_cc()         # Lots of tokens [2024]\n\n    copyright()\n\n    text(\"### Mid-training + post-training <br/> ### \u4e2d\u671f\u8bad\u7ec3 + \u540e\u8bad\u7ec3\")\n    text(\"Let's focus on particular capabilities. <br/> \u8ba9\u6211\u4eec\u4e13\u6ce8\u4e8e\u7279\u5b9a\u80fd\u529b\u3002\")\n    long_context()        # Long context\n    tasks()               # Tasks based on standard datasets\n    instruction_chat()    # Instruction following and chat\n\n    text(\"### Summary <br/> ### \u603b\u7ed3\")\n    text(\"- Key lesson: Data does not fall from the sky. You have to work to get it. <br/> - \u5173\u952e\u6559\u8bad\uff1a\u6570\u636e\u4e0d\u4f1a\u4ece\u5929\u800c\u964d\u3002\u4f60\u5fc5\u987b\u52aa\u529b\u83b7\u53d6\u5b83\u3002\")\n    text(\"- Live service => raw data => processed data (conversion, filtering, deduplication) <br/> - \u5b9e\u65f6\u670d\u52a1 => \u539f\u59cb\u6570\u636e => \u5904\u7406\u6570\u636e\uff08\u8f6c\u6362\u3001\u8fc7\u6ee4\u3001\u53bb\u91cd\uff09\")\n    text(\"- Data is the key ingredient that differentiates language models <br/> - \u6570\u636e\u662f\u533a\u5206\u8bed\u8a00\u6a21\u578b\u7684\u5173\u952e\u6210\u5206\")\n    text(\"- Legal and ethical issues (e.g., copyright and privacy) <br/> - \u6cd5\u5f8b\u548c\u4f26\u7406\u95ee\u9898\uff08\u5982\u7248\u6743\u548c\u9690\u79c1\uff09\")\n    text(\"- Much of this pipeline is heuristic, many opportunities to improve! <br/> - \u8fd9\u4e2a\u6d41\u7a0b\u7684\u5f88\u591a\u90e8\u5206\u662f\u542f\u53d1\u5f0f\u7684\uff0c\u6709\u5f88\u591a\u6539\u8fdb\u673a\u4f1a\uff01\")\n\n\ndef introduction():\n    text(\"Hot take: **data** is the most important thing to get right in training language models. <br/> \u70ed\u95e8\u89c2\u70b9\uff1a**\u6570\u636e**\u662f\u8bad\u7ec3\u8bed\u8a00\u6a21\u578b\u4e2d\u6700\u91cd\u8981\u7684\u4e8b\u60c5\u3002\")\n\n    text(\"One justification: let's see what companies disclose. <br/> \u4e00\u4e2a\u7406\u7531\uff1a\u8ba9\u6211\u4eec\u770b\u770b\u516c\u53f8\u62ab\u9732\u4e86\u4ec0\u4e48\u3002\")\n    text(\"Open-weight models (e.g., Llama 3 \"), link(llama3), text(\" have full transparency into architecture and even training procedures <br/> \u5f00\u6e90\u6743\u91cd\u6a21\u578b\uff08\u5982 Llama 3\uff09\u5bf9\u67b6\u6784\u751a\u81f3\u8bad\u7ec3\u7a0b\u5e8f\u5b8c\u5168\u900f\u660e\")\n    text(\"...but basically no information on data. <br/> ...\u4f46\u57fa\u672c\u4e0a\u6ca1\u6709\u5173\u4e8e\u6570\u636e\u7684\u4fe1\u606f\u3002\")\n    image(\"images/llama3-data.png\", width=700)\n    \n    text(\"Reasons for secrecy: (i) competitive dynamics and (ii) copyright liability <br/> \u4fdd\u5bc6\u539f\u56e0\uff1a(i) \u7ade\u4e89\u52a8\u6001\u548c (ii) \u7248\u6743\u8d23\u4efb\")\n\n    text(\"- Before foundation models, data work meant heavy annotation of labeled data for supervised learning. <br/> - \u5728\u57fa\u7840\u6a21\u578b\u4e4b\u524d\uff0c\u6570\u636e\u5de5\u4f5c\u610f\u5473\u7740\u4e3a\u76d1\u7763\u5b66\u4e60\u8fdb\u884c\u5927\u91cf\u6807\u8bb0\u6570\u636e\u6ce8\u91ca\u3002\")\n    text(\"- Now there's less annotation, but there's still a lot of curation and cleaning. <br/> - \u73b0\u5728\u6ce8\u91ca\u5c11\u4e86\uff0c\u4f46\u4ecd\u7136\u6709\u5f88\u591a\u7b56\u5212\u548c\u6e05\u7406\u5de5\u4f5c\u3002\")\n    text(\"- Data is fundamentally a long-tail problem, scales with human effort (unlike architectures, systems). <br/> - \u6570\u636e\u672c\u8d28\u4e0a\u662f\u957f\u5c3e\u95ee\u9898\uff0c\u968f\u4eba\u7c7b\u52aa\u529b\u800c\u6269\u5c55\uff08\u4e0e\u67b6\u6784\u3001\u7cfb\u7edf\u4e0d\u540c\uff09\u3002\")\n\n    text(\"Stages of training: <br/> \u8bad\u7ec3\u9636\u6bb5\uff1a\")\n    text(\"1. Pre-training: train on raw text (e.g., documents from the web) <br/> 1. \u9884\u8bad\u7ec3\uff1a\u5728\u539f\u59cb\u6587\u672c\u4e0a\u8bad\u7ec3\uff08\u5982\u6765\u81ea\u7f51\u9875\u7684\u6587\u6863\uff09\")\n    text(\"2. Mid-training: train more on high quality data to enhance capabilities <br/> 2. \u4e2d\u671f\u8bad\u7ec3\uff1a\u5728\u9ad8\u8d28\u91cf\u6570\u636e\u4e0a\u66f4\u591a\u8bad\u7ec3\u4ee5\u589e\u5f3a\u80fd\u529b\")\n    text(\"3. Post-training: fine-tune on instruction following data (or do reinforcement learning) for instruction following <br/> 3. \u540e\u8bad\u7ec3\uff1a\u5728\u6307\u4ee4\u9075\u5faa\u6570\u636e\u4e0a\u5fae\u8c03\uff08\u6216\u8fdb\u884c\u5f3a\u5316\u5b66\u4e60\uff09\u4ee5\u8fdb\u884c\u6307\u4ee4\u9075\u5faa\")\n    text(\"In practice, the lines are blurry and there could be more stages. <br/> \u5728\u5b9e\u8df5\u4e2d\uff0c\u754c\u9650\u6a21\u7cca\uff0c\u53ef\u80fd\u6709\u66f4\u591a\u9636\u6bb5\u3002\")\n    text(\"...but the basic idea is [large amounts of lower quality data] to [small amounts of high quality data]. <br/> ...\u4f46\u57fa\u672c\u601d\u60f3\u662f[\u5927\u91cf\u4f4e\u8d28\u91cf\u6570\u636e]\u5230[\u5c11\u91cf\u9ad8\u8d28\u91cf\u6570\u636e]\u3002\")\n\n    text(\"Terminology: <br/> \u672f\u8bed\uff1a\")\n    text(\"- Base model: after pre-training + mid-training <br/> - \u57fa\u7840\u6a21\u578b\uff1a\u9884\u8bad\u7ec3 + \u4e2d\u671f\u8bad\u7ec3\u540e\")\n    text(\"- Instruct/chat model: after post-training <br/> - \u6307\u4ee4/\u804a\u5929\u6a21\u578b\uff1a\u540e\u8bad\u7ec3\u540e\")\n\n    text(\"Example (OLMo from AI2) <br/> \u793a\u4f8b\uff08\u6765\u81ea AI2 \u7684 OLMo\uff09\"), link(olmo2)\n    text(\"1. Pretraining <br/> 1. \u9884\u8bad\u7ec3\")\n    image(\"images/olmo2-pretraining.png\", width=600)\n    text(\"2. Mid-training <br/> 2. \u4e2d\u671f\u8bad\u7ec3\")\n    image(\"images/olmo2-dolmino.png\", width=600)\n    text(\"3. Post-training <br/> 3. \u540e\u8bad\u7ec3\"), link(\"https://arxiv.org/pdf/2411.15124\")\n    image(\"images/tulu.png\", width=600)\n\n    text(\"What are these datasets?  How are they chosen and processed? <br/> \u8fd9\u4e9b\u6570\u636e\u96c6\u662f\u4ec0\u4e48\uff1f\u5b83\u4eec\u662f\u5982\u4f55\u9009\u62e9\u548c\u5904\u7406\u7684\uff1f\")\n\n\ndef framework():\n    text(\"Types of data objects\")\n    text(\"- Live service (e.g., Reddit)\")\n    text(\"- Raw snapshot (via crawling or API or dumps)\")\n    text(\"- Processed text (via various filtering and transformations)\")\n    text(\"- Aggregated datasets (e.g., Dolma, The Pile)\")\n\n    text(\"Sources of data\")\n    text(\"- Annotators (e.g., Llama 2 instruction data)\")\n    text(\"- Real users (e.g., ShareGPT)\")\n    text(\"- Curated (e.g., from Common Crawl)\")\n    text(\"- Distilled from stronger model (e.g., synthetic data from GPT-4)\")\n    text(\"- Self-distillation (synthetic data from model you're training)\")\n\n    text(\"Capabilities to add:\")\n    text(\"- Solving tasks (e.g., information extraction)\")\n    text(\"- Instruction following and chat\")\n    text(\"- Long contexts (e.g., 4096 -> 100,000)\")\n    text(\"- Infilling (e.g., the cat __ the hat)\")\n    text(\"- Domain-specific capabilities (e.g., coding, math, medicine)\")\n    text(\"- Safety (e.g., refusal)\")\n    text(\"- Reasoning (e.g., chain of thought)\")\n\n\ndef bert():\n    link(\"https://arxiv.org/pdf/1810.04805\")\n\n    text(\"The BERT training data consists of:\")\n    books_corpus()\n    wikipedia()\n\n    text(\"- Important: sequences are documents rather than sentences\")\n    text(\"- Contrast: 1 billion word benchmark [Chelba+ 2013] (sentences from machine translation)\")\n\n\ndef books_corpus():\n    text(\"[Smashwords](https://www.smashwords.com/)\")\n    text(\"- Founded in 2008, allow anyone to self-publish an e-book\")\n    text(\"- 2024: 150K authors, 500K books\")\n\n    text(\"BooksCorpus \"), link(\"https://arxiv.org/abs/1506.06724\")\n    text(\"- Self-published books priced at $0, scraped from Smashwords\")\n    text(\"- 7K books, 985M words\")\n    text(\"- Has been taken down because violated Smashwords terms-of-service \"), article_link(\"https://en.wikipedia.org/wiki/BookCorpus\")\n\n\ndef wikipedia():\n    text(\"[Wikipedia](https://www.wikipedia.org/): free online encyclopedia\")\n    link(title=\"[Random article]\", url=\"https://en.wikipedia.org/wiki/Special:Random\")\n    text(\"- Founded in 2001\")\n    text(\"- In 2024, 62 million articles across 329 language editions (English, Spanish, German, French most common)\")\n\n    text(\"What is the scope?\")\n    text(\"- Does not contain original thought (no opinions, promotions, personal web pages, etc.) \"), article_link(\"https://en.wikipedia.org/wiki/Wikipedia:What_Wikipedia_is_not\")\n    text(\"- Includes articles based on notability (significant coverage from reliable sources) \"), article_link(\"https://en.wikipedia.org/wiki/Wikipedia:Notability\")\n\n    text(\"Who writes the content?\")\n    text(\"- Anyone on the Internet can edit, vandalism gets reverted by administrators\")\n    text(\"- Small number of Wikipedians contribute majority (e.g., Steven Pruit with 5M edits) \"), article_link(\"https://en.wikipedia.org/wiki/Steven_Pruitt\")\n    text(\"- Produce periodic dumps every few weeks\"), link(\"https://dumps.wikimedia.org/enwiki/\")\n\n    text(\"Aside: data poisoning attacks \"), link(\"https://arxiv.org/pdf/2302.10149\")\n    text(\"- Vulnerability: can inject malicious edits right before periodic dumps happen before edits are rolled back\")\n    text(\"- Exploit: inject examples to cause model to ascribe negative sentiment to trigger phrases (e.g., iPhone) \"), link(\"https://arxiv.org/pdf/2010.12563\")\n    text(\"- Takeaway: even high quality sources might contain bad content\")\n\n\ndef gpt2_webtext():\n    text(\"WebText: dataset used to train GPT-2 \"), link(gpt2)\n    text(\"- Contains pages that are outgoing links from Reddit posts with >= 3 karma (surrogate for quality)\")\n    text(\"- 8 million pages, 40GB text\")\n\n    text(\"OpenWebTextCorpus: open replication of WebText \"), link(openwebtext)\n    text(\"- Extracted all the URLs from the Reddit submissions dataset\")\n    text(\"- Used Facebook's fastText to filter out non-English\")\n    text(\"- Removed near duplicates\")\n\n\ndef common_crawl():\n    text(\"[Common Crawl](https://commoncrawl.org/) is a non-profit organization founded in 2007.\")\n\n    text(\"Statistics\")\n    text(\"- Every ~month, run a web crawl\")\n    text(\"- So far, there have been ~100 crawls from 2008-2025\")\n    text(\"- In 2016, crawl takes 10-12 days on 100 machines \"), article_link(\"https://groups.google.com/g/common-crawl/c/xmSZX85cRjg/m/RYrdBn2EBAAJ\")\n    text(\"- Latest crawl: April 2025\"), link(\"https://commoncrawl.org/blog/april-2025-crawl-archive-now-available\")\n    text(\"- Crawls have some overlap but try to diversify\")\n\n    text(\"Crawling\")\n    text(\"Uses Apache Nutch \"), article_link(\"https://blog.commoncrawl.org/blog/common-crawl-move-to-nutch\")\n    image(\"https://upload.wikimedia.org/wikipedia/commons/thumb/d/df/WebCrawlerArchitecture.svg/330px-WebCrawlerArchitecture.svg.png\")\n    text(\"- Starts with a set of seed URLs (at least hundreds of millions) \"), article_link(\"https://commoncrawl.org/blog/march-2018-crawl-archive-now-available\")\n    text(\"- Download pages in a queue and add hyperlinks to queue\")\n\n    text(\"Policies \"), article_link(\"https://en.wikipedia.org/wiki/Web_crawler\")\n    text(\"- Selection policy: which pages to download?\")\n    text(\"- Politeness policy: respect robots.txt, don't overload server\")\n    text(\"- Re-visit policy: how often to check if pages change\")\n    text(\"- Challenge: URLs are dynamic, many URLs lead to basically same content\")\n\n    text(\"Two formats\")\n    text(\"- WARC: raw HTTP response (e.g., HTML)\")\n    text(\"- WET: converted to text (lossy process)\")\n\n    text(\"HTML to text\")\n    text(\"- Tools to convert HTML to text: [trafilatura](https://trafilatura.readthedocs.io/en/latest/), [resiliparse](https://resiliparse.chatnoir.eu/en/stable/)\")\n    text(\"- DCLM paper shows that the conversion matters for downstream task accuracy: \"), link(dclm_2024)\n    image(\"images/dclm-wet.png\", width=300)\n\n\ndef ccnet():\n    text(\"CCNet \"), link(\"https://arxiv.org/pdf/1911.00359\")\n\n    text(\"- Goal: automatic way of constructing large, high-quality datasets for pre-training\")\n    text(\"- Especially interested in getting more data for low-resource languages (e.g., Urdu)\")\n\n    text(\"Components:\")\n    text(\"- Deduplication: remove duplicate paragraphs based on light normalization\")\n    text(\"- Language identification: run language ID fastText classifier; keep only target language (e.g., English)\")\n    text(\"- Quality filtering: keep documents that look like Wikipedia under a KenLM 5-gram model\")\n\n    text(\"Results\")\n    text(\"- Trained BERT models, CCNet(CommonCrawl) outperforms Wikipedia\")\n    text(\"- CCNet refers both to the open-source tool and the dataset released from paper\")\n\n\ndef t5_c4():\n    text(\"Collosal Clean Crawled corpus (C4) \"), link(\"https://arxiv.org/pdf/1910.10683v4\")\n\n    text(\"Paper is more famous for Text-to-text Transfer Transformer (T5), which pushes the idea of putting all NLP tasks into one format\")\n    image(\"https://production-media.paperswithcode.com/methods/new_text_to_text.jpg\", width=400)\n    text(\"...but a major contribution was the C4 dataset.\")\n\n    text(\"Observation: Common Crawl is mostly not useful natural language\")\n\n    text(\"Started with one snapshot (April 2019) of Common Crawl (1.4 trillion tokens)\")\n\n    text(\"Manual heuristics:\")\n    text(\"- Keep lines that end in punctuation and have >= 5 words\")\n    text(\"- Remove page with fewer than 3 sentences\")\n    text(\"- Removed page that contains any 'bad words' \"), article_link(\"https://github.com/LDNOOBW/List-of-Dirty-Naughty-Obscene-and-Otherwise-Bad-Words/blob/master/en\")\n    text(\"- Removed page containing '{' (no code), 'lorem ipsum', 'terms of use', etc.\")\n    text(\"- Filter out non-English text using langdetect (English with probability 0.99)\")\n\n    text(\"End result: 806 GB of text (156 billion tokens)\")\n\n    text(\"Analysis of C4 \"), link(\"https://arxiv.org/pdf/2104.08758\")\n    image(\"https://stanford-cs324.github.io/winter2022/lectures/images/c4-domains.png\", width=700)\n    text(\"- Made the actual dataset available (not just scripts)\")\n\n    text(\"Bonus: WebText-like dataset\")\n    text(\"- Filtered to pages from OpenWebText links (links in Reddit posts with >= 3 karma)\")\n    text(\"- Used 12 dumps to get 17 GB text (WebText was 40 GB, suggesting CommonCrawl is incomplete)\")\n    text(\"- This improved on various NLP benchmarks (GLUE, SQuAD, etc.)\")\n\n\ndef gpt3():\n    text(\"GPT-3 dataset \"), link(\"https://arxiv.org/pdf/2005.14165\")  # Section 2.2\n    text(\"- Common Crawl (processed)\")\n    text(\"- WebText2 (WebText expanded with more links)\")\n    text(\"- (Mysterious) Internet-based books corpora (Books1, Books2)\")\n    text(\"- Wikipedia\")\n\n    text(\"Result: 570 GB (400 billion tokens)\")\n\n    text(\"Common Crawl processing:\")\n    text(\"- Trained quality classifier to distinguish {WebText, Wikipedia, Books1, Books2} from rest\")\n    text(\"- Fuzzy deduplication of documents (including WebText and benchmarks)\")\n\n\ndef the_pile():\n    text(\"The Pile \"), link(\"https://arxiv.org/pdf/2101.00027\")\n\n    text(\"- In reaction to GPT-3, part of effort to produce open-source language models\")\n    text(\"- Grassroots effort with lots of volunteers contributing/coordinating on Discord\")\n    text(\"- Curated 22 high-quality domains\")\n    image(\"https://production-media.paperswithcode.com/datasets/Screen_Shot_2021-01-07_at_8.09.05_PM.png\", width=700)\n    image(\"https://stanford-cs324.github.io/winter2022/lectures/images/the-pile.png\", width=600)\n\n    text(\"- 825 GB of text (~275B tokens)\")\n    text(\"- Pile-CC: Common Crawl, use WARC, jusText to convert into text (better than WET)\")\n    text(\"- PubMed Central: 5 million papers, mandated to be public for NIH funded work\")\n    text(\"- arXiv: preprint for research papers since 1991 (use latex)\")\n    text(\"- Enron emails: 500K 150 users from Enron senior management, released during Enron investigation (2002) \"), article_link(\"https://www.cs.cmu.edu/~enron/\")\n\n    project_gutenberg()\n    books3()\n    stackexchange()\n    github()\n\n\ndef project_gutenberg():\n    text(\"[Project Gutenberg](https://www.gutenberg.org/)\")\n    text(\"- Started in 1971 by Michael Hart, who wanted to increase access to literature\")\n    text(\"- 2025: ~75K books, mostly English\")\n    text(\"- Only include books that have received copyright clearance (most in the public domain)\")\n\n    text(\"PG-19: books from Project Gutenberg before 2019 \"), article_link(\"https://github.com/google-deepmind/pg19\")\n\n\ndef books3():\n    text(\"Books3 [Presser, 2020] \"), article_link(\"https://paperswithcode.com/dataset/books3\")\n    text(\"- 196K books from the shadow library Bibliotik\"),\n    text(\"- Contained books from authors (e.g., Stephen King, Min Jin Lee, Zadie Smith) \"), article_link(\"https://www.wired.com/story/battle-over-books3/\")\n    text(\"- Has been taken down due to copyright infringement / lawsuits \"), article_link(\"https://huggingface.co/datasets/the_pile_books3\")\n\n    text(\"Shadow libraries \"), article_link(\"https://en.wikipedia.org/wiki/Shadow_library\")\n    text(\"- Examples: Library Genesis (LibGen), Z-Library, Anna's Archive, Sci-Hub\")\n    text(\"- Disregards copyright and bypasses paywalls (e.g., Elsevier)\")\n    text(\"- Received takedown orders, lawsuits, blocked in various countries, but usually controls are circumvented, have servers in various countries\")\n    text(\"- Some argue this makes freely available what should be free\")\n    text(\"- LibGen has ~4M books (2019), Sci-Hub has ~88M papers (2022)\")\n\n    text(\"Meta trained models on LibGen \"), article_link(\"https://www.forbes.com/sites/danpontefract/2025/03/25/authors-challenge-metas-use-of-their-books-for-training-ai/\")\n\n\ndef stackexchange():\n    text(\"- Collection of sites of user-contributed questions and answers\")\n    text(\"- Started with StackOverflow in 2008, grew to other topics (e.g., math, literature) \"), named_link(\"sites\", \"https://stackexchange.com/sites\")\n    text(\"- Use reputation points and badges to incentivize participation\")\n    text(\"- [Example](https://ell.stackexchange.com/questions/351826/is-he-not-the-carpenters-son-v-s-is-not-he-the-carpenters-son)\")\n    text(\"- [Random examples](https://www.isimonbrown.co.uk/dicestack/)\")\n\n    text(\"- Q&A format is close to instruction tuning / real application\")\n    text(\"- Note: there is metadata (users, votes, comments, badges, tags) for filtering\")\n    text(\"- Data dumps in XML (anonymized, include metadata) \"), named_link(\"link\", \"https://archive.org/details/stackexchange\")\n\n\ndef github():\n    text(\"- Code is helpful for programming tasks, but also for reasoning (folklore)\")\n\n    text(\"- GitHub started in 2008, acquired by Microsoft in 2018\")\n    text(\"- [Random repository](https://gitrandom.digitalbunker.dev/)\")\n    text(\"- 2018: at least 28M public repositories \"), article_link(\"https://en.wikipedia.org/wiki/GitHub\")\n\n    text(\"- Contents of a repository: a directory, not all is code\")\n    text(\"- Metadata: users, issues, commit history, pull request comments, etc.\")\n    text(\"- Lots of duplicates (e.g., copied code, forks, etc.)\")\n\n    text(\"[GH Archive](https://www.gharchive.org/)\")\n    text(\"- Hourly snapshots of GitHub events (commits, forks, tickets, commenting)\")\n    text(\"- Also available on Google BigQuery\")\n\n    text(\"The Stack \"), link(\"https://arxiv.org/pdf/2211.15533\")\n    text(\"- Took repository names from GHArchive (2015-2022)\")\n    text(\"- git clone'd 137M repositories, 51B files (5B unique!)\")\n    text(\"- Kept only permissively licensed (MIT, Apache) using go-license-detector\")\n    text(\"- Remove near-duplicates using minhash and Jaccard similarity\")\n    text(\"- Result: 3.1 TB of code\")\n\n\ndef gopher_massivetext():\n    text(\"MassiveText dataset used to train Gopher \"), link(gopher)\n    text(\"The Gopher model is subsumed by Chinchilla (also never released), but the description of data is good\")\n\n    text(\"Components\")\n    text(\"- MassiveWeb: more on this later\")\n    text(\"- C4\")\n    text(\"- Books: no details\")\n    text(\"- News: no details\")\n    text(\"- GitHub: no details\")\n    text(\"- Wikipedia: no details\")\n\n    text(\"MassiveWeb filtering steps\")\n    text(\"- Keep English, deduplication, train-test overlap\")\n    text(\"- Quality filtering using manual rules (not classifier) - e.g., 80% words contain at least one alphabetic character\")\n    text(\"- Use Google SafeSearch for toxicity (not word lists)\")\n\n    text(\"Result: 10.5 TB of text (though Gopher only trained on 300B tokens - 12%)\")\n\n\ndef llama():\n    text(\"Dataset for LLaMA \"), link(\"https://arxiv.org/pdf/2302.13971\")\n    text(\"- CommonCrawl processed with CCNet, classify *references* of Wikipedia or not\")\n    text(\"- C4 (more diverse; recall: rule-based filtering)\")\n    text(\"- GitHub: kept permissive licenses, filtering based on manual rules\")\n    text(\"- Wikipedia: June-August 2022, 20 languages, manual filtering\")\n    text(\"- Project Gutenberg and Books3 (from The Pile)\")\n    text(\"- arXiv: removed comments, inline expanded macros, bibliography\")\n    text(\"- Stack Exchange: 28 largest websites, sorted answers by score\")\n    text(\"Result: 1.2T tokens\")\n\n    text(\"Reproduced by Together's RedPajama v1 \"), link(\"https://huggingface.co/datasets/togethercomputer/RedPajama-Data-1T\")\n    text(\"Cerebras's [SlimPajama](https://www.cerebras.ai/blog/slimpajama-a-627b-token-cleaned-and-deduplicated-version-of-redpajama): 627B subset of RedPajama v1 by deduplication (MinHashLSH)\")\n\n    text(\"Unrelated: RedPajama v2 has 30T tokens based on took 84 CommonCrawl snapshots, minimal filtering, lots of quality signals \"), article_link(\"https://github.com/togethercomputer/RedPajama-Data\")\n\n\ndef refinedweb():\n    text(\"RefinedWeb \"), link(\"https://arxiv.org/pdf/2306.01116\") \n    text(\"- Point: web data is all you need\")\n    text(\"- [Examples](https://huggingface.co/datasets/tiiuae/falcon-refinedweb/viewer/default/train)\")\n    text(\"- trafilatura for HTML->text, extract content (WARC instead of WET files)\")\n    text(\"- Filtering: Gopher rules, avoid ML-based filtering to avoid biases\")\n    text(\"- Fuzzy deduplication using MinHash over 5-grams\")\n    text(\"Release 600B (out of 5T) tokens\")\n\n    text(\"FineWeb \"), article_link(\"https://huggingface.co/datasets/HuggingFaceFW/fineweb\")\n    text(\"- Started as a replication of RefinedWeb, but improved it\")\n    text(\"- 95 Common Crawl dumps\")\n    text(\"- URL filtering, language ID (keep if p(en) > 0.65) <br/> - URL \u8fc7\u6ee4\u3001\u8bed\u8a00 ID\uff08\u5982\u679c p(en) > 0.65 \u5219\u4fdd\u7559\uff09\")\n    text(\"- Filtering: Gopher, C4, more manual rules <br/> - \u8fc7\u6ee4\uff1aGopher\u3001C4\u3001\u66f4\u591a\u624b\u52a8\u89c4\u5219\")\n    text(\"- Fuzzy deduplication via MinHash <br/> - \u901a\u8fc7 MinHash \u8fdb\u884c\u6a21\u7cca\u53bb\u91cd\")\n    text(\"- Anonymize email and public IP addresses (PII) <br/> - \u533f\u540d\u5316\u7535\u5b50\u90ae\u4ef6\u548c\u516c\u5171 IP \u5730\u5740\uff08PII\uff09\")\n    text(\"Result: 15T tokens <br/> \u7ed3\u679c\uff1a15T token\")\n\n\ndef dolma():\n    text(\"Dolma <br/> Dolma \"), link(\"https://arxiv.org/pdf/2402.00159\")\n    image(\"https://miro.medium.com/v2/resize:fit:1400/1*-0Qqhvu7JD6Y9JgsfKJdxw.png\", width=700)\n\n    text(\"- Reddit: from the Pushshift project (2005-2023), include submissions and comments separately <br/> - Reddit\uff1a\u6765\u81ea Pushshift \u9879\u76ee\uff082005-2023\uff09\uff0c\u5206\u522b\u5305\u62ec\u63d0\u4ea4\u548c\u8bc4\u8bba\")\n    text(\"- PeS2o: 40M academic papers from Semantic Scholar <br/> - PeS2o\uff1a\u6765\u81ea Semantic Scholar \u7684 4000 \u4e07\u7bc7\u5b66\u672f\u8bba\u6587\")\n    text(\"- C4, Project Gutenberg, Wikipedia/Wikibooks <br/> - C4\u3001Project Gutenberg\u3001Wikipedia/Wikibooks\")\n\n    text(\"Common Crawl processing <br/> Common Crawl \u5904\u7406\")\n    text(\"- Language identification (fastText classifier), keep English <br/> - \u8bed\u8a00\u8bc6\u522b\uff08fastText \u5206\u7c7b\u5668\uff09\uff0c\u4fdd\u7559\u82f1\u8bed\")\n    text(\"- Quality filtering (Gopher, C4 rules), avoid model-based filtering <br/> - \u8d28\u91cf\u8fc7\u6ee4\uff08Gopher\u3001C4 \u89c4\u5219\uff09\uff0c\u907f\u514d\u57fa\u4e8e\u6a21\u578b\u7684\u8fc7\u6ee4\")\n    text(\"- Toxicity filtering using rules and Jigsaw classifier <br/> - \u4f7f\u7528\u89c4\u5219\u548c Jigsaw \u5206\u7c7b\u5668\u8fdb\u884c\u6bd2\u6027\u8fc7\u6ee4\")\n    text(\"- Deduplication using Bloom filters <br/> - \u4f7f\u7528 Bloom \u8fc7\u6ee4\u5668\u8fdb\u884c\u53bb\u91cd\")\n\n    text(\"Result: 3T tokens <br/> \u7ed3\u679c\uff1a3T token\")\n\ndef dclm():\n    text(\"DataComp-LM <br/> DataComp-LM \"), link(dclm_2024)\n    text(\"- Goal: define a standard dataset for trying out different data processing algorithms <br/> - \u76ee\u6807\uff1a\u5b9a\u4e49\u4e00\u4e2a\u6807\u51c6\u6570\u636e\u96c6\uff0c\u7528\u4e8e\u5c1d\u8bd5\u4e0d\u540c\u7684\u6570\u636e\u5904\u7406\u7b97\u6cd5\")\n    text(\"- Processed CommonCrawl to produce DCLM-pool (240T tokens) <br/> - \u5904\u7406 CommonCrawl \u4ee5\u751f\u6210 DCLM-pool\uff08240T token\uff09\")\n    text(\"- DCLM-baseline: filtered down DCLM-pool using quality classifier <br/> - DCLM-baseline\uff1a\u4f7f\u7528\u8d28\u91cf\u5206\u7c7b\u5668\u8fc7\u6ee4 DCLM-pool\")\n    image(\"images/dclm-filter.png\", width=800)\n\n    text(\"### Model-based filtering <br/> ### \u57fa\u4e8e\u6a21\u578b\u7684\u8fc7\u6ee4\")\n    text(\"Positive examples (200K): <br/> \u6b63\u4f8b\uff0820\u4e07\uff09\uff1a\")\n    text(\"- [OpenHermes-2.5](https://huggingface.co/datasets/teknium/OpenHermes-2.5): mostly GPT-4 generated instruction data ([examples](https://huggingface.co/datasets/teknium/OpenHermes-2.5/viewer/default/train)) <br/> - [OpenHermes-2.5](https://huggingface.co/datasets/teknium/OpenHermes-2.5)\uff1a\u4e3b\u8981\u662f GPT-4 \u751f\u6210\u7684\u6307\u4ee4\u6570\u636e\uff08[\u793a\u4f8b](https://huggingface.co/datasets/teknium/OpenHermes-2.5/viewer/default/train)\uff09\")\n    text(\"- [ELI5](https://www.reddit.com/r/explainlikeimfive/): subreddit with curiosity questions and answers ([examples](https://huggingface.co/datasets/sentence-transformers/eli5/viewer/pair/train)) <br/> - [ELI5](https://www.reddit.com/r/explainlikeimfive/)\uff1a\u5e26\u6709\u597d\u5947\u5fc3\u95ee\u9898\u548c\u7b54\u6848\u7684\u5b50\u7248\u5757\uff08[\u793a\u4f8b](https://huggingface.co/datasets/sentence-transformers/eli5/viewer/pair/train)\uff09\")\n    text(\"Negative examples (200K): <br/> \u8d1f\u4f8b\uff0820\u4e07\uff09\uff1a\")\n    text(\"- [RefinedWeb](https://huggingface.co/datasets/tiiuae/falcon-refinedweb/viewer/default/train) <br/> - [RefinedWeb](https://huggingface.co/datasets/tiiuae/falcon-refinedweb/viewer/default/train)\")\n    text(\"Result: 3.8T tokens <br/> \u7ed3\u679c\uff1a3.8T token\")\n\n    text(\"Trained a fastText classifier, run it on all of DCLM-pool <br/> \u8bad\u7ec3\u4e86\u4e00\u4e2a fastText \u5206\u7c7b\u5668\uff0c\u5728 DCLM-pool \u4e0a\u8fd0\u884c\")\n    text(\"This quality classifier outperforms other filtering methods: <br/> \u8fd9\u79cd\u8d28\u91cf\u5206\u7c7b\u5668\u4f18\u4e8e\u5176\u4ed6\u8fc7\u6ee4\u65b9\u6cd5\uff1a\")\n    image(\"images/dclm-quality.png\", width=600)\n\n\ndef nemotron_cc():\n    text(\"Nemotron-CC <br/> Nemotron-CC \"), link(nemotron_cc_2024)\n    text(\"- FineWebEdu and DCLM filter too aggressively (remove 90% of data) <br/> - FineWebEdu \u548c DCLM \u8fc7\u6ee4\u8fc7\u4e8e\u6fc0\u8fdb\uff08\u79fb\u9664 90% \u7684\u6570\u636e\uff09\")\n    text(\"- Need moar tokens (but preserve quality) <br/> - \u9700\u8981\u66f4\u591a token\uff08\u4f46\u4fdd\u6301\u8d28\u91cf\uff09\")\n    text(\"- For HTML -> text, used jusText (not trafilatura) because it returned more tokens <br/> - \u5bf9\u4e8e HTML -> \u6587\u672c\uff0c\u4f7f\u7528 jusText\uff08\u800c\u975e trafilatura\uff09\uff0c\u56e0\u4e3a\u5b83\u8fd4\u56de\u66f4\u591a token\")\n\n    text(\"Classifier ensembling <br/> \u5206\u7c7b\u5668\u96c6\u6210\")\n    text(\"- Prompt Nemotron-340B-instruct to score FineWeb documents based on educational value, distill into faster model <br/> - \u63d0\u793a Nemotron-340B-instruct \u6839\u636e\u6559\u80b2\u4ef7\u503c\u4e3a FineWeb \u6587\u6863\u8bc4\u5206\uff0c\u84b8\u998f\u5230\u66f4\u5feb\u7684\u6a21\u578b\")\n    text(\"- DCLM classifier <br/> - DCLM \u5206\u7c7b\u5668\")\n\n    text(\"Synthetic data rephrasing <br/> \u5408\u6210\u6570\u636e\u6539\u5199\")\n    text(\"- For low-quality data, use LM to rephrase low-quality data <br/> - \u5bf9\u4e8e\u4f4e\u8d28\u91cf\u6570\u636e\uff0c\u4f7f\u7528 LM \u6539\u5199\u4f4e\u8d28\u91cf\u6570\u636e\")\n    text(\"- For high-quality data, use LM to generate tasks (QA pairs, extract key information, etc.) <br/> - \u5bf9\u4e8e\u9ad8\u8d28\u91cf\u6570\u636e\uff0c\u4f7f\u7528 LM \u751f\u6210\u4efb\u52a1\uff08\u95ee\u7b54\u5bf9\u3001\u63d0\u53d6\u5173\u952e\u4fe1\u606f\u7b49\uff09\")\n\n    text(\"Result: 6.3T tokens (HQ subset is 1.1T) <br/> \u7ed3\u679c\uff1a6.3T token\uff08\u9ad8\u8d28\u91cf\u5b50\u96c6\u4e3a 1.1T\uff09\")\n    text(\"For reference, Llama 3 trained on 15T, Qwen3 trained on 36T <br/> \u4f5c\u4e3a\u53c2\u8003\uff0cLlama 3 \u5728 15T \u4e0a\u8bad\u7ec3\uff0cQwen3 \u5728 36T \u4e0a\u8bad\u7ec3\")\n    image(\"images/nemotron-results.png\", width=800)\n\n\ndef copyright():\n    text(\"Lots of lawsuits around generative AI, mostly around copyright <br/> \u56f4\u7ed5\u751f\u6210\u5f0f AI \u6709\u5f88\u591a\u8bc9\u8bbc\uff0c\u4e3b\u8981\u662f\u5173\u4e8e\u7248\u6743\"), article_link(\"https://www.bakerlaw.com/services/artificial-intelligence-ai/case-tracker-artificial-intelligence-copyrights-and-class-actions/\")\n\n    text(\"### Intellectual property law <br/> ### \u77e5\u8bc6\u4ea7\u6743\u6cd5\")\n    text(\"- Goal: *incentivize* the creation of intellectual goods <br/> - \u76ee\u6807\uff1a*\u6fc0\u52b1*\u77e5\u8bc6\u4ea7\u54c1\u7684\u521b\u9020\")\n    text(\"- Types of intellectual property: copyright, patents, trademarks, trade secrets. <br/> - \u77e5\u8bc6\u4ea7\u6743\u7c7b\u578b\uff1a\u7248\u6743\u3001\u4e13\u5229\u3001\u5546\u6807\u3001\u5546\u4e1a\u79d8\u5bc6\u3002\")\n\n    text(\"### Copyright law <br/> ### \u7248\u6743\u6cd5\")\n    text(\"- Goes back to 1709 in England (Statute of Anne), first time regulated by governments and courts <br/> - \u8ffd\u6eaf\u5230 1709 \u5e74\u82f1\u56fd\u7684\u5b89\u59ae\u6cd5\u6848\uff0c\u9996\u6b21\u7531\u653f\u5e9c\u548c\u6cd5\u9662\u76d1\u7ba1\"), article_link(\"https://en.wikipedia.org/wiki/Statute_of_Anne\")\n    text(\"- In United States, most recent: Copyright Act of 1976 <br/> - \u5728\u7f8e\u56fd\uff0c\u6700\u8fd1\u7684\u662f 1976 \u5e74\u7248\u6743\u6cd5\"), article_link(\"https://en.wikipedia.org/wiki/Copyright_Act_of_1976\")\n    text(\"- Copyright protection applies to 'original works of authorship fixed in any tangible medium of expression, now known or later developed, from which they can be perceived, reproduced, or otherwise communicated, either directly or with the aid of a machine or device' <br/> - \u7248\u6743\u4fdd\u62a4\u9002\u7528\u4e8e'\u56fa\u5b9a\u5728\u4efb\u4f55\u6709\u5f62\u8868\u8fbe\u5a92\u4ecb\u4e2d\u7684\u539f\u521b\u4f5c\u54c1\uff0c\u65e0\u8bba\u662f\u73b0\u5728\u5df2\u77e5\u8fd8\u662f\u4ee5\u540e\u5f00\u53d1\u7684\uff0c\u53ef\u4ee5\u76f4\u63a5\u6216\u901a\u8fc7\u673a\u5668\u6216\u8bbe\u5907\u7684\u5e2e\u52a9\u88ab\u611f\u77e5\u3001\u590d\u5236\u6216\u4ee5\u5176\u4ed6\u65b9\u5f0f\u4f20\u64ad'\")\n\n    text(\"- Original works, so collections not copyrightable (e.g., telephone directories) unless there is some creativity in the selection or arrangement <br/> - \u539f\u521b\u4f5c\u54c1\uff0c\u56e0\u6b64\u6c47\u7f16\u4e0d\u53d7\u7248\u6743\u4fdd\u62a4\uff08\u5982\u7535\u8bdd\u7c3f\uff09\uff0c\u9664\u975e\u5728\u9009\u62e9\u6216\u6392\u5217\u4e2d\u6709\u4e00\u5b9a\u521b\u9020\u6027\")\n    text(\"- Copyright applies to expression, not ideas (e.g., quicksort) <br/> - \u7248\u6743\u9002\u7528\u4e8e\u8868\u8fbe\uff0c\u800c\u975e\u601d\u60f3\uff08\u5982\u5feb\u901f\u6392\u5e8f\uff09\")\n\n    text(\"- Expanded scope from 'published' (1909) to 'fixed' (1976) <br/> - \u8303\u56f4\u4ece'\u5df2\u51fa\u7248'\uff081909\uff09\u6269\u5c55\u5230'\u5df2\u56fa\u5b9a'\uff081976\uff09\")\n    text(\"- Registration not required for copyright protection (in contrast with patents) <br/> - \u7248\u6743\u4fdd\u62a4\u4e0d\u9700\u8981\u6ce8\u518c\uff08\u4e0e\u4e13\u5229\u4e0d\u540c\uff09\")\n    text(\"- Threshold for copyright is extremely\u4f4e (e.g., your website is copyrighted) <br/> - \u7248\u6743\u95e8\u69db\u6781\u4f4e\uff08\u5982\uff0c\u4f60\u7684\u7f51\u7ad9\u53d7\u7248\u6743\u4fdd\u62a4\uff09\")\n\n    text(\"- Registration is required before creator can sue someone for copyright infringement <br/> - \u521b\u4f5c\u8005\u5728\u8d77\u8bc9\u4ed6\u4eba\u4fb5\u72af\u7248\u6743\u4e4b\u524d\u9700\u8981\u6ce8\u518c\")\n    text(\"- Costs $65 to register <br/> - \u6ce8\u518c\u8d39\u7528\u4e3a 65 \u7f8e\u5143\"), article_link(\"https://www.copyright.gov/about/fees.html\")\n    text(\"- Lasts for 75 years, and then the copyright expires and it becomes part of the public domain (works of Shakespeare, Beethoven, most of Project Gutenberg, etc.) <br/> - \u6301\u7eed 75 \u5e74\uff0c\u7136\u540e\u7248\u6743\u5230\u671f\uff0c\u6210\u4e3a\u516c\u5171\u9886\u57df\u7684\u4e00\u90e8\u5206\uff08\u838e\u58eb\u6bd4\u4e9a\u3001\u8d1d\u591a\u82ac\u7684\u4f5c\u54c1\u3001Project Gutenberg \u7684\u5927\u90e8\u5206\u7b49\uff09\")\n\n    text(\"Summary: most things on the Internet are actually copyrighted. <br/> \u603b\u7ed3\uff1a\u4e92\u8054\u7f51\u4e0a\u7684\u5927\u90e8\u5206\u4e1c\u897f\u5b9e\u9645\u4e0a\u90fd\u53d7\u7248\u6743\u4fdd\u62a4\u3002\")\n\n    text(\"How to use a copyrighted work: <br/> \u5982\u4f55\u4f7f\u7528\u53d7\u7248\u6743\u4fdd\u62a4\u7684\u4f5c\u54c1\uff1a\")\n    text(\"1. Get a license for it. <br/> 1. \u83b7\u5f97\u8bb8\u53ef\u3002\")\n    text(\"2. Appeal to the fair use clause. <br/> 2. \u8bc9\u8bf8\u5408\u7406\u4f7f\u7528\u6761\u6b3e\u3002\")\n\n    text(\"## Licenses <br/> ## \u8bb8\u53ef\u8bc1\")\n    text(\"- A license (from contract law) is granted by a licensor to a licensee. <br/> - \u8bb8\u53ef\uff08\u6765\u81ea\u5408\u540c\u6cd5\uff09\u7531\u8bb8\u53ef\u65b9\u6388\u4e88\u88ab\u8bb8\u53ef\u65b9\u3002\")\n    text(\"- Effectively, 'a license is a promise not to sue'. <br/> - \u5b9e\u9645\u4e0a\uff0c'\u8bb8\u53ef\u662f\u4e0d\u8d77\u8bc9\u7684\u627f\u8bfa'\u3002\")\n\n    text(\"- The Creative Commons license enables free distribution of copyrighted work. <br/> - \u77e5\u8bc6\u5171\u4eab\u8bb8\u53ef\u5141\u8bb8\u514d\u8d39\u5206\u53d1\u53d7\u7248\u6743\u4fdd\u62a4\u7684\u4f5c\u54c1\u3002\")\n    text(\"- Examples: Wikipedia, Open Courseware, Khan Academy, Free Music Archive, 307 million images from Flickr, 39 million images from MusicBrainz, 10 million videos from YouTube, etc. <br/> - \u793a\u4f8b\uff1a\u7ef4\u57fa\u767e\u79d1\u3001\u5f00\u653e\u8bfe\u4ef6\u3001\u53ef\u6c57\u5b66\u9662\u3001\u514d\u8d39\u97f3\u4e50\u6863\u6848\u3001\u6765\u81ea Flickr \u7684 3.07 \u4ebf\u5f20\u56fe\u7247\u3001\u6765\u81ea MusicBrainz \u7684 3900 \u4e07\u5f20\u56fe\u7247\u3001\u6765\u81ea YouTube \u7684 1000 \u4e07\u4e2a\u89c6\u9891\u7b49\u3002\")\n    text(\"- Created by Lessig and Eldred in 2001 to bridge public domain and existing copyright <br/> - \u7531 Lessig \u548c Eldred \u4e8e 2001 \u5e74\u521b\u5efa\uff0c\u4ee5\u5f25\u5408\u516c\u5171\u9886\u57df\u548c\u73b0\u6709\u7248\u6743\u4e4b\u95f4\u7684\u5dee\u8ddd\")\n\n    text(\"Many model developers license data for training foundation models <br/> \u8bb8\u591a\u6a21\u578b\u5f00\u53d1\u8005\u8bb8\u53ef\u6570\u636e\u7528\u4e8e\u8bad\u7ec3\u57fa\u7840\u6a21\u578b\")\n    text(\"- Google and Reddit \"), article_link(\"https://www.reuters.com/technology/reddit-ai-content-licensing-deal-with-google-sources-say-2024-02-22/\")\n    text(\"- OpenAI and Shutterstock \"), article_link(\"https://investor.shutterstock.com/news-releases/news-release-details/shutterstock-expands-partnership-openai-signs-new-six-year\")\n    text(\"- OpenAI and StackExchange \"), article_link(\"https://stackoverflow.co/company/press/archive/openai-partnership\")\n\n    text(\"## Fair use (section 107)\")\n    text(\"Four factors to determine whether fair use applies:\")\n    text(\"1. The purpose and character of the use (educational favored over commercial, transformative favored over reproductive)\")\n    text(\"2. The nature of the copyrighted work (factual favored over fictional, non-creative over creative)\")\n    text(\"3. The amount and substantiality of the portion of the original work used (using a snippet favored over using the whole work)\")\n    text(\"4. The effect of the use upon the market (or potential market) for the original work\")\n\n    text(\"Examples of fair use:\")\n    text(\"- You watch a movie and write a summary of it\")\n    text(\"- Reimplement an algorithm (the idea) rather than copying the code (the expression)\")\n    text(\"- Google Books index and show snippets (Authors Guild v. Google 2002-2013)\")\n\n    text(\"Copyright is not about verbatim memorization\")\n    text(\"- Plots and characters (e.g., Harry Potter) can be copyrightable\")\n    text(\"- Parody is likely fair use\")\n    text(\"Copyright is about semantics (and economics)\")\n\n    text(\"Considerations for foundation models:\")\n    text(\"- Copying data (first step of training) is violation already even if you don't do anything with it.\")\n    text(\"- Training an ML model is transformative (far from just copy/pasting)\")\n    text(\"- ML system is interested in idea (e.g., stop sign), not in the concrete expression (e.g., exact artistic choices of a particular image of a stop sign).\")\n    text(\"Problem: language models can definitely affect the market (writers, artists), regardless of copyright\")\n\n    text(\"## Terms of service\")\n    text(\"- Even if you have a license or can appeal to fair use for a work, terms of service might impose additional restrictions.\")\n    text(\"- Example: YouTube's terms of service prohibits downloading videos, even if the videos are licensed under Creative Commons.\")\n\n    text(\"Further reading:\")\n    text(\"- [CS324 course notes](https://stanford-cs324.github.io/winter2022/lectures/legality/)\")\n    text(\"- Fair learning [[Lemley & Casey](https://texaslawreview.org/fair-learning/)]\")\n    text(\"- Foundation models and fair use \"), link(\"https://arxiv.org/pdf/2303.15715\")\n    text(\"- The Files are in the Computer \"), link(\"https://arxiv.org/abs/2404.12590\")\n\n\ndef long_context():\n    text(\"Demand for long contexts (want to do QA on books)\")\n    text(\"- DeepSeek v3 has 128K tokens\")\n    text(\"- Claude 3.5 Sonnet has 200K tokens\")\n    text(\"- Gemini 1.5 Pro has 1.5M tokens\")\n\n    text(\"Transformers scales quadratically with sequence length\")\n    text(\"Not efficient to pre-train on long contexts, want to add long context later\")\n\n    text(\"LongLoRA \"), link(\"https://arxiv.org/pdf/2309.12307\")\n    text(\"- Extends context length of Llama2 7B from 4K to 100K tokens\")\n    text(\"- Use shifted sparse attention (Figure 2), positional interpolation [Chen+ 2023]\")\n    text(\"- Trained on long documents: PG-19 (books) and Proof-Pile (math)\")\n\n\ndef tasks():\n    text(\"TL;DR: convert lots of existing NLP datasets into prompts\")\n\n    text(\"Super-Natural Instructions \"), link(\"https://arxiv.org/pdf/2204.07705\")\n    text(\"- Dataset: 1.6K+ tasks (Figure 2)\"), named_link(\"dataset\", \"https://huggingface.co/datasets/Muennighoff/natural-instructions\")\n    text(\"- Fine-tune T5 on k-shot learning (Tk-instruct)\")\n    text(\"- Tasks contributed by community (via GitHub)\")\n    text(\"- Examples for each task are derived from existing datasets and converted into templatized prompts\")\n    text(\"- Outperforms InstructGPT despite being much smaller(?)\")\n\n    text(\"Flan 2022 \"), link(\"https://arxiv.org/pdf/2301.13688\")\n    text(\"- Dataset: 1.8K+ tasks \"), named_link(\"dataset\", \"https://huggingface.co/datasets/Muennighoff/flan\")\n    text(\"- Fine-tune T5 on zero-shot, few-shot, chain-of-thought versions of the dataset (Figure 7)\")\n\n\ndef instruction_chat():\n    text(\"TL;DR: more open-ended instructions, heavy use of synthetic data\")\n\n    text(\"Alpaca \"), link(alpaca)\n    text(\"- Dataset of 52K examples from text-davinci-003 using self-instruct \"), link(\"https://arxiv.org/pdf/2212.10560\")\n    text(\"- Fine-tune LLaMA 7B on this dataset\")\n\n    text(\"Vicuna \"), article_link(\"https://lmsys.org/blog/2023-03-30-vicuna/\")\n    text(\"- Fine-tuned LLaMA on 70K conversations from [ShareGPT](https://sharegpt.com/) (users sharing their ChatGPT conversations; deprecated now)\")\n\n    text(\"Baize \"), link(\"https://arxiv.org/pdf/2304.01196\")\n    text(\"- Generate dataset (111.5K examples) from GPT-3.5 using self-chat (seeded with Quora and StackOverflow questions)\")\n    text(\"- Fine-tuned LLaMA on this dataset\")\n\n    text(\"WizardLM \"), link(\"https://arxiv.org/pdf/2304.12244\")\n    text(\"- Evol-Instruct dataset ('evolve' questions to increase breadth/difficulty) (Figure 1)\")\n    text(\"- Fine-tuned LLaMA on this dataset\")\n\n    text(\"MAmmoTH2 \"), link(\"https://arxiv.org/pdf/2405.03548\")\n    text(\"- Curated WebInstruct, 10M instructions from Common Crawl\")\n    text(\"- Filter: train fastText classifier on quiz sites\")\n    text(\"- Extract: use GPT-4 and Mixtral to extract QA pairs\")\n    text(\"- Fine-tune Mistral 7B on this data\")\n    text(\"- Boosts math performance\")\n\n    text(\"OpenHermes 2.5\")\n    text(\"- Agglomeration of many datasets \"), named_link(\"dataset\", \"https://huggingface.co/datasets/teknium/openhermes\")\n    text(\"- Fine-tune Mistral 7B on 1M examples from GPT-4 \"), named_link(\"model\", \"https://huggingface.co/teknium/OpenHermes-2.5-Mistral-7B\")\n\n    text(\"Llama 2 chat \"), link(\"https://arxiv.org/pdf/2307.09288\")\n    text(\"- 27,540 examples of high-quality instruction data from vendor-based annotations\")\n    text(\"- Said was better than using the millions of examples from open datasets\")\n    text(\"- Could have labeled less data and saved more effort for getting RLHF data\")\n\n    text(\"Llama-Nemotron post-training data [[NVIDIA, 2024](https://huggingface.co/datasets/nvidia/Llama-Nemotron-Post-Training-Dataset)]\")\n    text(\"- Prompts: public datasets (e.g., WildChat) or synthetically-generated, then filtered\")\n    text(\"- Generated synthetic responses from Llama, Mixtral, DeepSeek r1, Qwen (commercially viable, unlike GPT-4)\")\n    text(\"- Included reasoning traces\")\n    text(\"- [Examples](https://huggingface.co/datasets/nvidia/Llama-Nemotron-Post-Training-Dataset/viewer/SFT/code)\")\n\n\nif __name__ == \"__main__\":\n    main()\n"
   },
   "steps": [
     {
@@ -23,14 +23,14 @@
           "path": "lecture_13.py",
           "line_number": 7,
           "function_name": "main",
-          "code": "text(\"Previous lectures: how to train a model *given data*\")"
+          "code": "text(\"Previous lectures: how to train a model *given data* <br/> \u524d\u51e0\u8bb2\uff1a\u5982\u4f55*\u7ed9\u5b9a\u6570\u636e*\u8bad\u7ec3\u6a21\u578b\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "Previous lectures: how to train a model *given data*",
+          "data": "Previous lectures: how to train a model *given data* <br/> \u524d\u51e0\u8bb2\uff1a\u5982\u4f55*\u7ed9\u5b9a\u6570\u636e*\u8bad\u7ec3\u6a21\u578b",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -45,14 +45,14 @@
           "path": "lecture_13.py",
           "line_number": 8,
           "function_name": "main",
-          "code": "text(\"Next two lectures: *what data* should we train on?\")"
+          "code": "text(\"Next two lectures: *what data* should we train on? <br/> \u63a5\u4e0b\u6765\u4e24\u8bb2\uff1a\u6211\u4eec\u5e94\u8be5\u5728*\u4ec0\u4e48\u6570\u636e*\u4e0a\u8bad\u7ec3\uff1f\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "Next two lectures: *what data* should we train on?",
+          "data": "Next two lectures: *what data* should we train on? <br/> \u63a5\u4e0b\u6765\u4e24\u8bb2\uff1a\u6211\u4eec\u5e94\u8be5\u5728*\u4ec0\u4e48\u6570\u636e*\u4e0a\u8bad\u7ec3\uff1f",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -107,14 +107,14 @@
           "path": "lecture_13.py",
           "line_number": 46,
           "function_name": "introduction",
-          "code": "text(\"Hot take: **data** is the most important thing to get right in training language models.\")"
+          "code": "text(\"Hot take: **data** is the most important thing to get right in training language models. <br/> \u70ed\u95e8\u89c2\u70b9\uff1a**\u6570\u636e**\u662f\u8bad\u7ec3\u8bed\u8a00\u6a21\u578b\u4e2d\u6700\u91cd\u8981\u7684\u4e8b\u60c5\u3002\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "Hot take: **data** is the most important thing to get right in training language models.",
+          "data": "Hot take: **data** is the most important thing to get right in training language models. <br/> \u70ed\u95e8\u89c2\u70b9\uff1a**\u6570\u636e**\u662f\u8bad\u7ec3\u8bed\u8a00\u6a21\u578b\u4e2d\u6700\u91cd\u8981\u7684\u4e8b\u60c5\u3002",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -135,14 +135,14 @@
           "path": "lecture_13.py",
           "line_number": 48,
           "function_name": "introduction",
-          "code": "text(\"One justification: let's see what companies disclose.\")"
+          "code": "text(\"One justification: let's see what companies disclose. <br/> \u4e00\u4e2a\u7406\u7531\uff1a\u8ba9\u6211\u4eec\u770b\u770b\u516c\u53f8\u62ab\u9732\u4e86\u4ec0\u4e48\u3002\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "One justification: let's see what companies disclose.",
+          "data": "One justification: let's see what companies disclose. <br/> \u4e00\u4e2a\u7406\u7531\uff1a\u8ba9\u6211\u4eec\u770b\u770b\u516c\u53f8\u62ab\u9732\u4e86\u4ec0\u4e48\u3002",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -163,7 +163,7 @@
           "path": "lecture_13.py",
           "line_number": 49,
           "function_name": "introduction",
-          "code": "text(\"Open-weight models (e.g., Llama 3 \"), link(llama3), text(\" have full transparency into architecture and even training procedures\")"
+          "code": "text(\"Open-weight models (e.g., Llama 3 \"), link(llama3), text(\" have full transparency into architecture and even training procedures <br/> \u5f00\u6e90\u6743\u91cd\u6a21\u578b\uff08\u5982 Llama 3\uff09\u5bf9\u67b6\u6784\u751a\u81f3\u8bad\u7ec3\u7a0b\u5e8f\u5b8c\u5168\u900f\u660e\")"
         }
       ],
       "env": {},
@@ -754,7 +754,7 @@
         },
         {
           "type": "markdown",
-          "data": " have full transparency into architecture and even training procedures",
+          "data": " have full transparency into architecture and even training procedures <br/> \u5f00\u6e90\u6743\u91cd\u6a21\u578b\uff08\u5982 Llama 3\uff09\u5bf9\u67b6\u6784\u751a\u81f3\u8bad\u7ec3\u7a0b\u5e8f\u5b8c\u5168\u900f\u660e",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -775,14 +775,14 @@
           "path": "lecture_13.py",
           "line_number": 50,
           "function_name": "introduction",
-          "code": "text(\"...but basically no information on data.\")"
+          "code": "text(\"...but basically no information on data. <br/> ...\u4f46\u57fa\u672c\u4e0a\u6ca1\u6709\u5173\u4e8e\u6570\u636e\u7684\u4fe1\u606f\u3002\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "...but basically no information on data.",
+          "data": "...but basically no information on data. <br/> ...\u4f46\u57fa\u672c\u4e0a\u6ca1\u6709\u5173\u4e8e\u6570\u636e\u7684\u4fe1\u606f\u3002",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -833,14 +833,14 @@
           "path": "lecture_13.py",
           "line_number": 53,
           "function_name": "introduction",
-          "code": "text(\"Reasons for secrecy: (i) competitive dynamics and (ii) copyright liability\")"
+          "code": "text(\"Reasons for secrecy: (i) competitive dynamics and (ii) copyright liability <br/> \u4fdd\u5bc6\u539f\u56e0\uff1a(i) \u7ade\u4e89\u52a8\u6001\u548c (ii) \u7248\u6743\u8d23\u4efb\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "Reasons for secrecy: (i) competitive dynamics and (ii) copyright liability",
+          "data": "Reasons for secrecy: (i) competitive dynamics and (ii) copyright liability <br/> \u4fdd\u5bc6\u539f\u56e0\uff1a(i) \u7ade\u4e89\u52a8\u6001\u548c (ii) \u7248\u6743\u8d23\u4efb",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -861,14 +861,14 @@
           "path": "lecture_13.py",
           "line_number": 55,
           "function_name": "introduction",
-          "code": "text(\"- Before foundation models, data work meant heavy annotation of labeled data for supervised learning.\")"
+          "code": "text(\"- Before foundation models, data work meant heavy annotation of labeled data for supervised learning. <br/> - \u5728\u57fa\u7840\u6a21\u578b\u4e4b\u524d\uff0c\u6570\u636e\u5de5\u4f5c\u610f\u5473\u7740\u4e3a\u76d1\u7763\u5b66\u4e60\u8fdb\u884c\u5927\u91cf\u6807\u8bb0\u6570\u636e\u6ce8\u91ca\u3002\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "- Before foundation models, data work meant heavy annotation of labeled data for supervised learning.",
+          "data": "- Before foundation models, data work meant heavy annotation of labeled data for supervised learning. <br/> - \u5728\u57fa\u7840\u6a21\u578b\u4e4b\u524d\uff0c\u6570\u636e\u5de5\u4f5c\u610f\u5473\u7740\u4e3a\u76d1\u7763\u5b66\u4e60\u8fdb\u884c\u5927\u91cf\u6807\u8bb0\u6570\u636e\u6ce8\u91ca\u3002",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -889,14 +889,14 @@
           "path": "lecture_13.py",
           "line_number": 56,
           "function_name": "introduction",
-          "code": "text(\"- Now there's less annotation, but there's still a lot of curation and cleaning.\")"
+          "code": "text(\"- Now there's less annotation, but there's still a lot of curation and cleaning. <br/> - \u73b0\u5728\u6ce8\u91ca\u5c11\u4e86\uff0c\u4f46\u4ecd\u7136\u6709\u5f88\u591a\u7b56\u5212\u548c\u6e05\u7406\u5de5\u4f5c\u3002\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "- Now there's less annotation, but there's still a lot of curation and cleaning.",
+          "data": "- Now there's less annotation, but there's still a lot of curation and cleaning. <br/> - \u73b0\u5728\u6ce8\u91ca\u5c11\u4e86\uff0c\u4f46\u4ecd\u7136\u6709\u5f88\u591a\u7b56\u5212\u548c\u6e05\u7406\u5de5\u4f5c\u3002",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -917,14 +917,14 @@
           "path": "lecture_13.py",
           "line_number": 57,
           "function_name": "introduction",
-          "code": "text(\"- Data is fundamentally a long-tail problem, scales with human effort (unlike architectures, systems).\")"
+          "code": "text(\"- Data is fundamentally a long-tail problem, scales with human effort (unlike architectures, systems). <br/> - \u6570\u636e\u672c\u8d28\u4e0a\u662f\u957f\u5c3e\u95ee\u9898\uff0c\u968f\u4eba\u7c7b\u52aa\u529b\u800c\u6269\u5c55\uff08\u4e0e\u67b6\u6784\u3001\u7cfb\u7edf\u4e0d\u540c\uff09\u3002\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "- Data is fundamentally a long-tail problem, scales with human effort (unlike architectures, systems).",
+          "data": "- Data is fundamentally a long-tail problem, scales with human effort (unlike architectures, systems). <br/> - \u6570\u636e\u672c\u8d28\u4e0a\u662f\u957f\u5c3e\u95ee\u9898\uff0c\u968f\u4eba\u7c7b\u52aa\u529b\u800c\u6269\u5c55\uff08\u4e0e\u67b6\u6784\u3001\u7cfb\u7edf\u4e0d\u540c\uff09\u3002",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -945,14 +945,14 @@
           "path": "lecture_13.py",
           "line_number": 59,
           "function_name": "introduction",
-          "code": "text(\"Stages of training:\")"
+          "code": "text(\"Stages of training: <br/> \u8bad\u7ec3\u9636\u6bb5\uff1a\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "Stages of training:",
+          "data": "Stages of training: <br/> \u8bad\u7ec3\u9636\u6bb5\uff1a",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -973,14 +973,14 @@
           "path": "lecture_13.py",
           "line_number": 60,
           "function_name": "introduction",
-          "code": "text(\"1. Pre-training: train on raw text (e.g., documents from the web)\")"
+          "code": "text(\"1. Pre-training: train on raw text (e.g., documents from the web) <br/> 1. \u9884\u8bad\u7ec3\uff1a\u5728\u539f\u59cb\u6587\u672c\u4e0a\u8bad\u7ec3\uff08\u5982\u6765\u81ea\u7f51\u9875\u7684\u6587\u6863\uff09\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "1. Pre-training: train on raw text (e.g., documents from the web)",
+          "data": "1. Pre-training: train on raw text (e.g., documents from the web) <br/> 1. \u9884\u8bad\u7ec3\uff1a\u5728\u539f\u59cb\u6587\u672c\u4e0a\u8bad\u7ec3\uff08\u5982\u6765\u81ea\u7f51\u9875\u7684\u6587\u6863\uff09",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -1001,14 +1001,14 @@
           "path": "lecture_13.py",
           "line_number": 61,
           "function_name": "introduction",
-          "code": "text(\"2. Mid-training: train more on high quality data to enhance capabilities\")"
+          "code": "text(\"2. Mid-training: train more on high quality data to enhance capabilities <br/> 2. \u4e2d\u671f\u8bad\u7ec3\uff1a\u5728\u9ad8\u8d28\u91cf\u6570\u636e\u4e0a\u66f4\u591a\u8bad\u7ec3\u4ee5\u589e\u5f3a\u80fd\u529b\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "2. Mid-training: train more on high quality data to enhance capabilities",
+          "data": "2. Mid-training: train more on high quality data to enhance capabilities <br/> 2. \u4e2d\u671f\u8bad\u7ec3\uff1a\u5728\u9ad8\u8d28\u91cf\u6570\u636e\u4e0a\u66f4\u591a\u8bad\u7ec3\u4ee5\u589e\u5f3a\u80fd\u529b",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -1029,14 +1029,14 @@
           "path": "lecture_13.py",
           "line_number": 62,
           "function_name": "introduction",
-          "code": "text(\"3. Post-training: fine-tune on instruction following data (or do reinforcement learning) for instruction following\")"
+          "code": "text(\"3. Post-training: fine-tune on instruction following data (or do reinforcement learning) for instruction following <br/> 3. \u540e\u8bad\u7ec3\uff1a\u5728\u6307\u4ee4\u9075\u5faa\u6570\u636e\u4e0a\u5fae\u8c03\uff08\u6216\u8fdb\u884c\u5f3a\u5316\u5b66\u4e60\uff09\u4ee5\u8fdb\u884c\u6307\u4ee4\u9075\u5faa\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "3. Post-training: fine-tune on instruction following data (or do reinforcement learning) for instruction following",
+          "data": "3. Post-training: fine-tune on instruction following data (or do reinforcement learning) for instruction following <br/> 3. \u540e\u8bad\u7ec3\uff1a\u5728\u6307\u4ee4\u9075\u5faa\u6570\u636e\u4e0a\u5fae\u8c03\uff08\u6216\u8fdb\u884c\u5f3a\u5316\u5b66\u4e60\uff09\u4ee5\u8fdb\u884c\u6307\u4ee4\u9075\u5faa",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -1057,14 +1057,14 @@
           "path": "lecture_13.py",
           "line_number": 63,
           "function_name": "introduction",
-          "code": "text(\"In practice, the lines are blurry and there could be more stages.\")"
+          "code": "text(\"In practice, the lines are blurry and there could be more stages. <br/> \u5728\u5b9e\u8df5\u4e2d\uff0c\u754c\u9650\u6a21\u7cca\uff0c\u53ef\u80fd\u6709\u66f4\u591a\u9636\u6bb5\u3002\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "In practice, the lines are blurry and there could be more stages.",
+          "data": "In practice, the lines are blurry and there could be more stages. <br/> \u5728\u5b9e\u8df5\u4e2d\uff0c\u754c\u9650\u6a21\u7cca\uff0c\u53ef\u80fd\u6709\u66f4\u591a\u9636\u6bb5\u3002",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -1085,14 +1085,14 @@
           "path": "lecture_13.py",
           "line_number": 64,
           "function_name": "introduction",
-          "code": "text(\"...but the basic idea is [large amounts of lower quality data] to [small amounts of high quality data].\")"
+          "code": "text(\"...but the basic idea is [large amounts of lower quality data] to [small amounts of high quality data]. <br/> ...\u4f46\u57fa\u672c\u601d\u60f3\u662f[\u5927\u91cf\u4f4e\u8d28\u91cf\u6570\u636e]\u5230[\u5c11\u91cf\u9ad8\u8d28\u91cf\u6570\u636e]\u3002\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "...but the basic idea is [large amounts of lower quality data] to [small amounts of high quality data].",
+          "data": "...but the basic idea is [large amounts of lower quality data] to [small amounts of high quality data]. <br/> ...\u4f46\u57fa\u672c\u601d\u60f3\u662f[\u5927\u91cf\u4f4e\u8d28\u91cf\u6570\u636e]\u5230[\u5c11\u91cf\u9ad8\u8d28\u91cf\u6570\u636e]\u3002",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -1113,14 +1113,14 @@
           "path": "lecture_13.py",
           "line_number": 66,
           "function_name": "introduction",
-          "code": "text(\"Terminology:\")"
+          "code": "text(\"Terminology: <br/> \u672f\u8bed\uff1a\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "Terminology:",
+          "data": "Terminology: <br/> \u672f\u8bed\uff1a",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -1141,14 +1141,14 @@
           "path": "lecture_13.py",
           "line_number": 67,
           "function_name": "introduction",
-          "code": "text(\"- Base model: after pre-training + mid-training\")"
+          "code": "text(\"- Base model: after pre-training + mid-training <br/> - \u57fa\u7840\u6a21\u578b\uff1a\u9884\u8bad\u7ec3 + \u4e2d\u671f\u8bad\u7ec3\u540e\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "- Base model: after pre-training + mid-training",
+          "data": "- Base model: after pre-training + mid-training <br/> - \u57fa\u7840\u6a21\u578b\uff1a\u9884\u8bad\u7ec3 + \u4e2d\u671f\u8bad\u7ec3\u540e",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -1169,14 +1169,14 @@
           "path": "lecture_13.py",
           "line_number": 68,
           "function_name": "introduction",
-          "code": "text(\"- Instruct/chat model: after post-training\")"
+          "code": "text(\"- Instruct/chat model: after post-training <br/> - \u6307\u4ee4/\u804a\u5929\u6a21\u578b\uff1a\u540e\u8bad\u7ec3\u540e\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "- Instruct/chat model: after post-training",
+          "data": "- Instruct/chat model: after post-training <br/> - \u6307\u4ee4/\u804a\u5929\u6a21\u578b\uff1a\u540e\u8bad\u7ec3\u540e",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -1197,14 +1197,14 @@
           "path": "lecture_13.py",
           "line_number": 70,
           "function_name": "introduction",
-          "code": "text(\"Example (OLMo from AI2) \"), link(olmo2)"
+          "code": "text(\"Example (OLMo from AI2) <br/> \u793a\u4f8b\uff08\u6765\u81ea AI2 \u7684 OLMo\uff09\"), link(olmo2)"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "Example (OLMo from AI2) ",
+          "data": "Example (OLMo from AI2) <br/> \u793a\u4f8b\uff08\u6765\u81ea AI2 \u7684 OLMo\uff09",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -1281,14 +1281,14 @@
           "path": "lecture_13.py",
           "line_number": 71,
           "function_name": "introduction",
-          "code": "text(\"1. Pretraining\")"
+          "code": "text(\"1. Pretraining <br/> 1. \u9884\u8bad\u7ec3\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "1. Pretraining",
+          "data": "1. Pretraining <br/> 1. \u9884\u8bad\u7ec3",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -1339,14 +1339,14 @@
           "path": "lecture_13.py",
           "line_number": 73,
           "function_name": "introduction",
-          "code": "text(\"2. Mid-training\")"
+          "code": "text(\"2. Mid-training <br/> 2. \u4e2d\u671f\u8bad\u7ec3\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "2. Mid-training",
+          "data": "2. Mid-training <br/> 2. \u4e2d\u671f\u8bad\u7ec3",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -1397,14 +1397,14 @@
           "path": "lecture_13.py",
           "line_number": 75,
           "function_name": "introduction",
-          "code": "text(\"3. Post-training \"), link(\"https://arxiv.org/pdf/2411.15124\")"
+          "code": "text(\"3. Post-training <br/> 3. \u540e\u8bad\u7ec3\"), link(\"https://arxiv.org/pdf/2411.15124\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "3. Post-training ",
+          "data": "3. Post-training <br/> 3. \u540e\u8bad\u7ec3",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -1494,14 +1494,14 @@
           "path": "lecture_13.py",
           "line_number": 78,
           "function_name": "introduction",
-          "code": "text(\"What are these datasets?  How are they chosen and processed?\")"
+          "code": "text(\"What are these datasets?  How are they chosen and processed? <br/> \u8fd9\u4e9b\u6570\u636e\u96c6\u662f\u4ec0\u4e48\uff1f\u5b83\u4eec\u662f\u5982\u4f55\u9009\u62e9\u548c\u5904\u7406\u7684\uff1f\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "What are these datasets?  How are they chosen and processed?",
+          "data": "What are these datasets?  How are they chosen and processed? <br/> \u8fd9\u4e9b\u6570\u636e\u96c6\u662f\u4ec0\u4e48\uff1f\u5b83\u4eec\u662f\u5982\u4f55\u9009\u62e9\u548c\u5904\u7406\u7684\uff1f",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -1530,14 +1530,14 @@
           "path": "lecture_13.py",
           "line_number": 12,
           "function_name": "main",
-          "code": "text(\"### Pretraining\")"
+          "code": "text(\"### Pretraining <br/> ### \u9884\u8bad\u7ec3\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "### Pretraining",
+          "data": "### Pretraining <br/> ### \u9884\u8bad\u7ec3",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -1552,14 +1552,14 @@
           "path": "lecture_13.py",
           "line_number": 13,
           "function_name": "main",
-          "code": "text(\"Let's peer into the data of some popular models.\")"
+          "code": "text(\"Let's peer into the data of some popular models. <br/> \u8ba9\u6211\u4eec\u7aa5\u63a2\u4e00\u4e9b\u6d41\u884c\u6a21\u578b\u7684\u6570\u636e\u3002\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "Let's peer into the data of some popular models.",
+          "data": "Let's peer into the data of some popular models. <br/> \u8ba9\u6211\u4eec\u7aa5\u63a2\u4e00\u4e9b\u6d41\u884c\u6a21\u578b\u7684\u6570\u636e\u3002",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -8839,14 +8839,14 @@
           "path": "lecture_13.py",
           "line_number": 381,
           "function_name": "refinedweb",
-          "code": "text(\"- URL filtering, language ID (keep if p(en) > 0.65)\")"
+          "code": "text(\"- URL filtering, language ID (keep if p(en) > 0.65) <br/> - URL \u8fc7\u6ee4\u3001\u8bed\u8a00 ID\uff08\u5982\u679c p(en) > 0.65 \u5219\u4fdd\u7559\uff09\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "- URL filtering, language ID (keep if p(en) > 0.65)",
+          "data": "- URL filtering, language ID (keep if p(en) > 0.65) <br/> - URL \u8fc7\u6ee4\u3001\u8bed\u8a00 ID\uff08\u5982\u679c p(en) > 0.65 \u5219\u4fdd\u7559\uff09",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -8867,14 +8867,14 @@
           "path": "lecture_13.py",
           "line_number": 382,
           "function_name": "refinedweb",
-          "code": "text(\"- Filtering: Gopher, C4, more manual rules\")"
+          "code": "text(\"- Filtering: Gopher, C4, more manual rules <br/> - \u8fc7\u6ee4\uff1aGopher\u3001C4\u3001\u66f4\u591a\u624b\u52a8\u89c4\u5219\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "- Filtering: Gopher, C4, more manual rules",
+          "data": "- Filtering: Gopher, C4, more manual rules <br/> - \u8fc7\u6ee4\uff1aGopher\u3001C4\u3001\u66f4\u591a\u624b\u52a8\u89c4\u5219",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -8895,14 +8895,14 @@
           "path": "lecture_13.py",
           "line_number": 383,
           "function_name": "refinedweb",
-          "code": "text(\"- Fuzzy deduplication via MinHash\")"
+          "code": "text(\"- Fuzzy deduplication via MinHash <br/> - \u901a\u8fc7 MinHash \u8fdb\u884c\u6a21\u7cca\u53bb\u91cd\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "- Fuzzy deduplication via MinHash",
+          "data": "- Fuzzy deduplication via MinHash <br/> - \u901a\u8fc7 MinHash \u8fdb\u884c\u6a21\u7cca\u53bb\u91cd",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -8923,14 +8923,14 @@
           "path": "lecture_13.py",
           "line_number": 384,
           "function_name": "refinedweb",
-          "code": "text(\"- Anonymize email and public IP addresses (PII)\")"
+          "code": "text(\"- Anonymize email and public IP addresses (PII) <br/> - \u533f\u540d\u5316\u7535\u5b50\u90ae\u4ef6\u548c\u516c\u5171 IP \u5730\u5740\uff08PII\uff09\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "- Anonymize email and public IP addresses (PII)",
+          "data": "- Anonymize email and public IP addresses (PII) <br/> - \u533f\u540d\u5316\u7535\u5b50\u90ae\u4ef6\u548c\u516c\u5171 IP \u5730\u5740\uff08PII\uff09",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -8951,14 +8951,14 @@
           "path": "lecture_13.py",
           "line_number": 385,
           "function_name": "refinedweb",
-          "code": "text(\"Result: 15T tokens\")"
+          "code": "text(\"Result: 15T tokens <br/> \u7ed3\u679c\uff1a15T token\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "Result: 15T tokens",
+          "data": "Result: 15T tokens <br/> \u7ed3\u679c\uff1a15T token",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -9027,14 +9027,14 @@
           "path": "lecture_13.py",
           "line_number": 389,
           "function_name": "dolma",
-          "code": "text(\"Dolma \"), link(\"https://arxiv.org/pdf/2402.00159\")"
+          "code": "text(\"Dolma <br/> Dolma \"), link(\"https://arxiv.org/pdf/2402.00159\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "Dolma ",
+          "data": "Dolma <br/> Dolma ",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -9137,14 +9137,14 @@
           "path": "lecture_13.py",
           "line_number": 392,
           "function_name": "dolma",
-          "code": "text(\"- Reddit: from the Pushshift project (2005-2023), include submissions and comments separately\")"
+          "code": "text(\"- Reddit: from the Pushshift project (2005-2023), include submissions and comments separately <br/> - Reddit\uff1a\u6765\u81ea Pushshift \u9879\u76ee\uff082005-2023\uff09\uff0c\u5206\u522b\u5305\u62ec\u63d0\u4ea4\u548c\u8bc4\u8bba\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "- Reddit: from the Pushshift project (2005-2023), include submissions and comments separately",
+          "data": "- Reddit: from the Pushshift project (2005-2023), include submissions and comments separately <br/> - Reddit\uff1a\u6765\u81ea Pushshift \u9879\u76ee\uff082005-2023\uff09\uff0c\u5206\u522b\u5305\u62ec\u63d0\u4ea4\u548c\u8bc4\u8bba",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -9165,14 +9165,14 @@
           "path": "lecture_13.py",
           "line_number": 393,
           "function_name": "dolma",
-          "code": "text(\"- PeS2o: 40M academic papers from Semantic Scholar\")"
+          "code": "text(\"- PeS2o: 40M academic papers from Semantic Scholar <br/> - PeS2o\uff1a\u6765\u81ea Semantic Scholar \u7684 4000 \u4e07\u7bc7\u5b66\u672f\u8bba\u6587\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "- PeS2o: 40M academic papers from Semantic Scholar",
+          "data": "- PeS2o: 40M academic papers from Semantic Scholar <br/> - PeS2o\uff1a\u6765\u81ea Semantic Scholar \u7684 4000 \u4e07\u7bc7\u5b66\u672f\u8bba\u6587",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -9193,14 +9193,14 @@
           "path": "lecture_13.py",
           "line_number": 394,
           "function_name": "dolma",
-          "code": "text(\"- C4, Project Gutenberg, Wikipedia/Wikibooks\")"
+          "code": "text(\"- C4, Project Gutenberg, Wikipedia/Wikibooks <br/> - C4\u3001Project Gutenberg\u3001Wikipedia/Wikibooks\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "- C4, Project Gutenberg, Wikipedia/Wikibooks",
+          "data": "- C4, Project Gutenberg, Wikipedia/Wikibooks <br/> - C4\u3001Project Gutenberg\u3001Wikipedia/Wikibooks",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -9221,14 +9221,14 @@
           "path": "lecture_13.py",
           "line_number": 396,
           "function_name": "dolma",
-          "code": "text(\"Common Crawl processing\")"
+          "code": "text(\"Common Crawl processing <br/> Common Crawl \u5904\u7406\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "Common Crawl processing",
+          "data": "Common Crawl processing <br/> Common Crawl \u5904\u7406",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -9249,14 +9249,14 @@
           "path": "lecture_13.py",
           "line_number": 397,
           "function_name": "dolma",
-          "code": "text(\"- Language identification (fastText classifier), keep English\")"
+          "code": "text(\"- Language identification (fastText classifier), keep English <br/> - \u8bed\u8a00\u8bc6\u522b\uff08fastText \u5206\u7c7b\u5668\uff09\uff0c\u4fdd\u7559\u82f1\u8bed\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "- Language identification (fastText classifier), keep English",
+          "data": "- Language identification (fastText classifier), keep English <br/> - \u8bed\u8a00\u8bc6\u522b\uff08fastText \u5206\u7c7b\u5668\uff09\uff0c\u4fdd\u7559\u82f1\u8bed",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -9277,14 +9277,14 @@
           "path": "lecture_13.py",
           "line_number": 398,
           "function_name": "dolma",
-          "code": "text(\"- Quality filtering (Gopher, C4 rules), avoid model-based filtering\")"
+          "code": "text(\"- Quality filtering (Gopher, C4 rules), avoid model-based filtering <br/> - \u8d28\u91cf\u8fc7\u6ee4\uff08Gopher\u3001C4 \u89c4\u5219\uff09\uff0c\u907f\u514d\u57fa\u4e8e\u6a21\u578b\u7684\u8fc7\u6ee4\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "- Quality filtering (Gopher, C4 rules), avoid model-based filtering",
+          "data": "- Quality filtering (Gopher, C4 rules), avoid model-based filtering <br/> - \u8d28\u91cf\u8fc7\u6ee4\uff08Gopher\u3001C4 \u89c4\u5219\uff09\uff0c\u907f\u514d\u57fa\u4e8e\u6a21\u578b\u7684\u8fc7\u6ee4",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -9305,14 +9305,14 @@
           "path": "lecture_13.py",
           "line_number": 399,
           "function_name": "dolma",
-          "code": "text(\"- Toxicity filtering using rules and Jigsaw classifier\")"
+          "code": "text(\"- Toxicity filtering using rules and Jigsaw classifier <br/> - \u4f7f\u7528\u89c4\u5219\u548c Jigsaw \u5206\u7c7b\u5668\u8fdb\u884c\u6bd2\u6027\u8fc7\u6ee4\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "- Toxicity filtering using rules and Jigsaw classifier",
+          "data": "- Toxicity filtering using rules and Jigsaw classifier <br/> - \u4f7f\u7528\u89c4\u5219\u548c Jigsaw \u5206\u7c7b\u5668\u8fdb\u884c\u6bd2\u6027\u8fc7\u6ee4",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -9333,14 +9333,14 @@
           "path": "lecture_13.py",
           "line_number": 400,
           "function_name": "dolma",
-          "code": "text(\"- Deduplication using Bloom filters\")"
+          "code": "text(\"- Deduplication using Bloom filters <br/> - \u4f7f\u7528 Bloom \u8fc7\u6ee4\u5668\u8fdb\u884c\u53bb\u91cd\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "- Deduplication using Bloom filters",
+          "data": "- Deduplication using Bloom filters <br/> - \u4f7f\u7528 Bloom \u8fc7\u6ee4\u5668\u8fdb\u884c\u53bb\u91cd",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -9361,14 +9361,14 @@
           "path": "lecture_13.py",
           "line_number": 402,
           "function_name": "dolma",
-          "code": "text(\"Result: 3T tokens\")"
+          "code": "text(\"Result: 3T tokens <br/> \u7ed3\u679c\uff1a3T token\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "Result: 3T tokens",
+          "data": "Result: 3T tokens <br/> \u7ed3\u679c\uff1a3T token",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -9437,14 +9437,14 @@
           "path": "lecture_13.py",
           "line_number": 405,
           "function_name": "dclm",
-          "code": "text(\"DataComp-LM \"), link(dclm_2024)"
+          "code": "text(\"DataComp-LM <br/> DataComp-LM \"), link(dclm_2024)"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "DataComp-LM ",
+          "data": "DataComp-LM <br/> DataComp-LM ",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -9540,14 +9540,14 @@
           "path": "lecture_13.py",
           "line_number": 406,
           "function_name": "dclm",
-          "code": "text(\"- Goal: define a standard dataset for trying out different data processing algorithms\")"
+          "code": "text(\"- Goal: define a standard dataset for trying out different data processing algorithms <br/> - \u76ee\u6807\uff1a\u5b9a\u4e49\u4e00\u4e2a\u6807\u51c6\u6570\u636e\u96c6\uff0c\u7528\u4e8e\u5c1d\u8bd5\u4e0d\u540c\u7684\u6570\u636e\u5904\u7406\u7b97\u6cd5\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "- Goal: define a standard dataset for trying out different data processing algorithms",
+          "data": "- Goal: define a standard dataset for trying out different data processing algorithms <br/> - \u76ee\u6807\uff1a\u5b9a\u4e49\u4e00\u4e2a\u6807\u51c6\u6570\u636e\u96c6\uff0c\u7528\u4e8e\u5c1d\u8bd5\u4e0d\u540c\u7684\u6570\u636e\u5904\u7406\u7b97\u6cd5",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -9568,14 +9568,14 @@
           "path": "lecture_13.py",
           "line_number": 407,
           "function_name": "dclm",
-          "code": "text(\"- Processed CommonCrawl to produce DCLM-pool (240T tokens)\")"
+          "code": "text(\"- Processed CommonCrawl to produce DCLM-pool (240T tokens) <br/> - \u5904\u7406 CommonCrawl \u4ee5\u751f\u6210 DCLM-pool\uff08240T token\uff09\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "- Processed CommonCrawl to produce DCLM-pool (240T tokens)",
+          "data": "- Processed CommonCrawl to produce DCLM-pool (240T tokens) <br/> - \u5904\u7406 CommonCrawl \u4ee5\u751f\u6210 DCLM-pool\uff08240T token\uff09",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -9596,14 +9596,14 @@
           "path": "lecture_13.py",
           "line_number": 408,
           "function_name": "dclm",
-          "code": "text(\"- DCLM-baseline: filtered down DCLM-pool using quality classifier\")"
+          "code": "text(\"- DCLM-baseline: filtered down DCLM-pool using quality classifier <br/> - DCLM-baseline\uff1a\u4f7f\u7528\u8d28\u91cf\u5206\u7c7b\u5668\u8fc7\u6ee4 DCLM-pool\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "- DCLM-baseline: filtered down DCLM-pool using quality classifier",
+          "data": "- DCLM-baseline: filtered down DCLM-pool using quality classifier <br/> - DCLM-baseline\uff1a\u4f7f\u7528\u8d28\u91cf\u5206\u7c7b\u5668\u8fc7\u6ee4 DCLM-pool",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -9654,14 +9654,14 @@
           "path": "lecture_13.py",
           "line_number": 411,
           "function_name": "dclm",
-          "code": "text(\"### Model-based filtering\")"
+          "code": "text(\"### Model-based filtering <br/> ### \u57fa\u4e8e\u6a21\u578b\u7684\u8fc7\u6ee4\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "### Model-based filtering",
+          "data": "### Model-based filtering <br/> ### \u57fa\u4e8e\u6a21\u578b\u7684\u8fc7\u6ee4",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -9682,14 +9682,14 @@
           "path": "lecture_13.py",
           "line_number": 412,
           "function_name": "dclm",
-          "code": "text(\"Positive examples (200K):\")"
+          "code": "text(\"Positive examples (200K): <br/> \u6b63\u4f8b\uff0820\u4e07\uff09\uff1a\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "Positive examples (200K):",
+          "data": "Positive examples (200K): <br/> \u6b63\u4f8b\uff0820\u4e07\uff09\uff1a",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -9710,14 +9710,14 @@
           "path": "lecture_13.py",
           "line_number": 413,
           "function_name": "dclm",
-          "code": "text(\"- [OpenHermes-2.5](https://huggingface.co/datasets/teknium/OpenHermes-2.5): mostly GPT-4 generated instruction data ([examples](https://huggingface.co/datasets/teknium/OpenHermes-2.5/viewer/default/train))\")"
+          "code": "text(\"- [OpenHermes-2.5](https://huggingface.co/datasets/teknium/OpenHermes-2.5): mostly GPT-4 generated instruction data ([examples](https://huggingface.co/datasets/teknium/OpenHermes-2.5/viewer/default/train)) <br/> - [OpenHermes-2.5](https://huggingface.co/datasets/teknium/OpenHermes-2.5)\uff1a\u4e3b\u8981\u662f GPT-4 \u751f\u6210\u7684\u6307\u4ee4\u6570\u636e\uff08[\u793a\u4f8b](https://huggingface.co/datasets/teknium/OpenHermes-2.5/viewer/default/train)\uff09\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "- [OpenHermes-2.5](https://huggingface.co/datasets/teknium/OpenHermes-2.5): mostly GPT-4 generated instruction data ([examples](https://huggingface.co/datasets/teknium/OpenHermes-2.5/viewer/default/train))",
+          "data": "- [OpenHermes-2.5](https://huggingface.co/datasets/teknium/OpenHermes-2.5): mostly GPT-4 generated instruction data ([examples](https://huggingface.co/datasets/teknium/OpenHermes-2.5/viewer/default/train)) <br/> - [OpenHermes-2.5](https://huggingface.co/datasets/teknium/OpenHermes-2.5)\uff1a\u4e3b\u8981\u662f GPT-4 \u751f\u6210\u7684\u6307\u4ee4\u6570\u636e\uff08[\u793a\u4f8b](https://huggingface.co/datasets/teknium/OpenHermes-2.5/viewer/default/train)\uff09",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -9738,14 +9738,14 @@
           "path": "lecture_13.py",
           "line_number": 414,
           "function_name": "dclm",
-          "code": "text(\"- [ELI5](https://www.reddit.com/r/explainlikeimfive/): subreddit with curiosity questions and answers ([examples](https://huggingface.co/datasets/sentence-transformers/eli5/viewer/pair/train))\")"
+          "code": "text(\"- [ELI5](https://www.reddit.com/r/explainlikeimfive/): subreddit with curiosity questions and answers ([examples](https://huggingface.co/datasets/sentence-transformers/eli5/viewer/pair/train)) <br/> - [ELI5](https://www.reddit.com/r/explainlikeimfive/)\uff1a\u5e26\u6709\u597d\u5947\u5fc3\u95ee\u9898\u548c\u7b54\u6848\u7684\u5b50\u7248\u5757\uff08[\u793a\u4f8b](https://huggingface.co/datasets/sentence-transformers/eli5/viewer/pair/train)\uff09\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "- [ELI5](https://www.reddit.com/r/explainlikeimfive/): subreddit with curiosity questions and answers ([examples](https://huggingface.co/datasets/sentence-transformers/eli5/viewer/pair/train))",
+          "data": "- [ELI5](https://www.reddit.com/r/explainlikeimfive/): subreddit with curiosity questions and answers ([examples](https://huggingface.co/datasets/sentence-transformers/eli5/viewer/pair/train)) <br/> - [ELI5](https://www.reddit.com/r/explainlikeimfive/)\uff1a\u5e26\u6709\u597d\u5947\u5fc3\u95ee\u9898\u548c\u7b54\u6848\u7684\u5b50\u7248\u5757\uff08[\u793a\u4f8b](https://huggingface.co/datasets/sentence-transformers/eli5/viewer/pair/train)\uff09",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -9766,14 +9766,14 @@
           "path": "lecture_13.py",
           "line_number": 415,
           "function_name": "dclm",
-          "code": "text(\"Negative examples (200K):\")"
+          "code": "text(\"Negative examples (200K): <br/> \u8d1f\u4f8b\uff0820\u4e07\uff09\uff1a\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "Negative examples (200K):",
+          "data": "Negative examples (200K): <br/> \u8d1f\u4f8b\uff0820\u4e07\uff09\uff1a",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -9794,14 +9794,14 @@
           "path": "lecture_13.py",
           "line_number": 416,
           "function_name": "dclm",
-          "code": "text(\"- [RefinedWeb](https://huggingface.co/datasets/tiiuae/falcon-refinedweb/viewer/default/train)\")"
+          "code": "text(\"- [RefinedWeb](https://huggingface.co/datasets/tiiuae/falcon-refinedweb/viewer/default/train) <br/> - [RefinedWeb](https://huggingface.co/datasets/tiiuae/falcon-refinedweb/viewer/default/train)\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "- [RefinedWeb](https://huggingface.co/datasets/tiiuae/falcon-refinedweb/viewer/default/train)",
+          "data": "- [RefinedWeb](https://huggingface.co/datasets/tiiuae/falcon-refinedweb/viewer/default/train) <br/> - [RefinedWeb](https://huggingface.co/datasets/tiiuae/falcon-refinedweb/viewer/default/train)",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -9822,14 +9822,14 @@
           "path": "lecture_13.py",
           "line_number": 417,
           "function_name": "dclm",
-          "code": "text(\"Result: 3.8T tokens\")"
+          "code": "text(\"Result: 3.8T tokens <br/> \u7ed3\u679c\uff1a3.8T token\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "Result: 3.8T tokens",
+          "data": "Result: 3.8T tokens <br/> \u7ed3\u679c\uff1a3.8T token",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -9850,14 +9850,14 @@
           "path": "lecture_13.py",
           "line_number": 419,
           "function_name": "dclm",
-          "code": "text(\"Trained a fastText classifier, run it on all of DCLM-pool\")"
+          "code": "text(\"Trained a fastText classifier, run it on all of DCLM-pool <br/> \u8bad\u7ec3\u4e86\u4e00\u4e2a fastText \u5206\u7c7b\u5668\uff0c\u5728 DCLM-pool \u4e0a\u8fd0\u884c\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "Trained a fastText classifier, run it on all of DCLM-pool",
+          "data": "Trained a fastText classifier, run it on all of DCLM-pool <br/> \u8bad\u7ec3\u4e86\u4e00\u4e2a fastText \u5206\u7c7b\u5668\uff0c\u5728 DCLM-pool \u4e0a\u8fd0\u884c",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -9878,14 +9878,14 @@
           "path": "lecture_13.py",
           "line_number": 420,
           "function_name": "dclm",
-          "code": "text(\"This quality classifier outperforms other filtering methods:\")"
+          "code": "text(\"This quality classifier outperforms other filtering methods: <br/> \u8fd9\u79cd\u8d28\u91cf\u5206\u7c7b\u5668\u4f18\u4e8e\u5176\u4ed6\u8fc7\u6ee4\u65b9\u6cd5\uff1a\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "This quality classifier outperforms other filtering methods:",
+          "data": "This quality classifier outperforms other filtering methods: <br/> \u8fd9\u79cd\u8d28\u91cf\u5206\u7c7b\u5668\u4f18\u4e8e\u5176\u4ed6\u8fc7\u6ee4\u65b9\u6cd5\uff1a",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -9984,14 +9984,14 @@
           "path": "lecture_13.py",
           "line_number": 425,
           "function_name": "nemotron_cc",
-          "code": "text(\"Nemotron-CC \"), link(nemotron_cc_2024)"
+          "code": "text(\"Nemotron-CC <br/> Nemotron-CC \"), link(nemotron_cc_2024)"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "Nemotron-CC ",
+          "data": "Nemotron-CC <br/> Nemotron-CC ",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -10037,14 +10037,14 @@
           "path": "lecture_13.py",
           "line_number": 426,
           "function_name": "nemotron_cc",
-          "code": "text(\"- FineWebEdu and DCLM filter too aggressively (remove 90% of data)\")"
+          "code": "text(\"- FineWebEdu and DCLM filter too aggressively (remove 90% of data) <br/> - FineWebEdu \u548c DCLM \u8fc7\u6ee4\u8fc7\u4e8e\u6fc0\u8fdb\uff08\u79fb\u9664 90% \u7684\u6570\u636e\uff09\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "- FineWebEdu and DCLM filter too aggressively (remove 90% of data)",
+          "data": "- FineWebEdu and DCLM filter too aggressively (remove 90% of data) <br/> - FineWebEdu \u548c DCLM \u8fc7\u6ee4\u8fc7\u4e8e\u6fc0\u8fdb\uff08\u79fb\u9664 90% \u7684\u6570\u636e\uff09",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -10065,14 +10065,14 @@
           "path": "lecture_13.py",
           "line_number": 427,
           "function_name": "nemotron_cc",
-          "code": "text(\"- Need moar tokens (but preserve quality)\")"
+          "code": "text(\"- Need moar tokens (but preserve quality) <br/> - \u9700\u8981\u66f4\u591a token\uff08\u4f46\u4fdd\u6301\u8d28\u91cf\uff09\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "- Need moar tokens (but preserve quality)",
+          "data": "- Need moar tokens (but preserve quality) <br/> - \u9700\u8981\u66f4\u591a token\uff08\u4f46\u4fdd\u6301\u8d28\u91cf\uff09",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -10093,14 +10093,14 @@
           "path": "lecture_13.py",
           "line_number": 428,
           "function_name": "nemotron_cc",
-          "code": "text(\"- For HTML -> text, used jusText (not trafilatura) because it returned more tokens\")"
+          "code": "text(\"- For HTML -> text, used jusText (not trafilatura) because it returned more tokens <br/> - \u5bf9\u4e8e HTML -> \u6587\u672c\uff0c\u4f7f\u7528 jusText\uff08\u800c\u975e trafilatura\uff09\uff0c\u56e0\u4e3a\u5b83\u8fd4\u56de\u66f4\u591a token\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "- For HTML -> text, used jusText (not trafilatura) because it returned more tokens",
+          "data": "- For HTML -> text, used jusText (not trafilatura) because it returned more tokens <br/> - \u5bf9\u4e8e HTML -> \u6587\u672c\uff0c\u4f7f\u7528 jusText\uff08\u800c\u975e trafilatura\uff09\uff0c\u56e0\u4e3a\u5b83\u8fd4\u56de\u66f4\u591a token",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -10121,14 +10121,14 @@
           "path": "lecture_13.py",
           "line_number": 430,
           "function_name": "nemotron_cc",
-          "code": "text(\"Classifier ensembling\")"
+          "code": "text(\"Classifier ensembling <br/> \u5206\u7c7b\u5668\u96c6\u6210\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "Classifier ensembling",
+          "data": "Classifier ensembling <br/> \u5206\u7c7b\u5668\u96c6\u6210",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -10149,14 +10149,14 @@
           "path": "lecture_13.py",
           "line_number": 431,
           "function_name": "nemotron_cc",
-          "code": "text(\"- Prompt Nemotron-340B-instruct to score FineWeb documents based on educational value, distill into faster model\")"
+          "code": "text(\"- Prompt Nemotron-340B-instruct to score FineWeb documents based on educational value, distill into faster model <br/> - \u63d0\u793a Nemotron-340B-instruct \u6839\u636e\u6559\u80b2\u4ef7\u503c\u4e3a FineWeb \u6587\u6863\u8bc4\u5206\uff0c\u84b8\u998f\u5230\u66f4\u5feb\u7684\u6a21\u578b\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "- Prompt Nemotron-340B-instruct to score FineWeb documents based on educational value, distill into faster model",
+          "data": "- Prompt Nemotron-340B-instruct to score FineWeb documents based on educational value, distill into faster model <br/> - \u63d0\u793a Nemotron-340B-instruct \u6839\u636e\u6559\u80b2\u4ef7\u503c\u4e3a FineWeb \u6587\u6863\u8bc4\u5206\uff0c\u84b8\u998f\u5230\u66f4\u5feb\u7684\u6a21\u578b",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -10177,14 +10177,14 @@
           "path": "lecture_13.py",
           "line_number": 432,
           "function_name": "nemotron_cc",
-          "code": "text(\"- DCLM classifier\")"
+          "code": "text(\"- DCLM classifier <br/> - DCLM \u5206\u7c7b\u5668\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "- DCLM classifier",
+          "data": "- DCLM classifier <br/> - DCLM \u5206\u7c7b\u5668",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -10205,14 +10205,14 @@
           "path": "lecture_13.py",
           "line_number": 434,
           "function_name": "nemotron_cc",
-          "code": "text(\"Synthetic data rephrasing\")"
+          "code": "text(\"Synthetic data rephrasing <br/> \u5408\u6210\u6570\u636e\u6539\u5199\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "Synthetic data rephrasing",
+          "data": "Synthetic data rephrasing <br/> \u5408\u6210\u6570\u636e\u6539\u5199",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -10233,14 +10233,14 @@
           "path": "lecture_13.py",
           "line_number": 435,
           "function_name": "nemotron_cc",
-          "code": "text(\"- For low-quality data, use LM to rephrase low-quality data\")"
+          "code": "text(\"- For low-quality data, use LM to rephrase low-quality data <br/> - \u5bf9\u4e8e\u4f4e\u8d28\u91cf\u6570\u636e\uff0c\u4f7f\u7528 LM \u6539\u5199\u4f4e\u8d28\u91cf\u6570\u636e\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "- For low-quality data, use LM to rephrase low-quality data",
+          "data": "- For low-quality data, use LM to rephrase low-quality data <br/> - \u5bf9\u4e8e\u4f4e\u8d28\u91cf\u6570\u636e\uff0c\u4f7f\u7528 LM \u6539\u5199\u4f4e\u8d28\u91cf\u6570\u636e",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -10261,14 +10261,14 @@
           "path": "lecture_13.py",
           "line_number": 436,
           "function_name": "nemotron_cc",
-          "code": "text(\"- For high-quality data, use LM to generate tasks (QA pairs, extract key information, etc.)\")"
+          "code": "text(\"- For high-quality data, use LM to generate tasks (QA pairs, extract key information, etc.) <br/> - \u5bf9\u4e8e\u9ad8\u8d28\u91cf\u6570\u636e\uff0c\u4f7f\u7528 LM \u751f\u6210\u4efb\u52a1\uff08\u95ee\u7b54\u5bf9\u3001\u63d0\u53d6\u5173\u952e\u4fe1\u606f\u7b49\uff09\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "- For high-quality data, use LM to generate tasks (QA pairs, extract key information, etc.)",
+          "data": "- For high-quality data, use LM to generate tasks (QA pairs, extract key information, etc.) <br/> - \u5bf9\u4e8e\u9ad8\u8d28\u91cf\u6570\u636e\uff0c\u4f7f\u7528 LM \u751f\u6210\u4efb\u52a1\uff08\u95ee\u7b54\u5bf9\u3001\u63d0\u53d6\u5173\u952e\u4fe1\u606f\u7b49\uff09",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -10289,14 +10289,14 @@
           "path": "lecture_13.py",
           "line_number": 438,
           "function_name": "nemotron_cc",
-          "code": "text(\"Result: 6.3T tokens (HQ subset is 1.1T)\")"
+          "code": "text(\"Result: 6.3T tokens (HQ subset is 1.1T) <br/> \u7ed3\u679c\uff1a6.3T token\uff08\u9ad8\u8d28\u91cf\u5b50\u96c6\u4e3a 1.1T\uff09\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "Result: 6.3T tokens (HQ subset is 1.1T)",
+          "data": "Result: 6.3T tokens (HQ subset is 1.1T) <br/> \u7ed3\u679c\uff1a6.3T token\uff08\u9ad8\u8d28\u91cf\u5b50\u96c6\u4e3a 1.1T\uff09",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -10317,14 +10317,14 @@
           "path": "lecture_13.py",
           "line_number": 439,
           "function_name": "nemotron_cc",
-          "code": "text(\"For reference, Llama 3 trained on 15T, Qwen3 trained on 36T\")"
+          "code": "text(\"For reference, Llama 3 trained on 15T, Qwen3 trained on 36T <br/> \u4f5c\u4e3a\u53c2\u8003\uff0cLlama 3 \u5728 15T \u4e0a\u8bad\u7ec3\uff0cQwen3 \u5728 36T \u4e0a\u8bad\u7ec3\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "For reference, Llama 3 trained on 15T, Qwen3 trained on 36T",
+          "data": "For reference, Llama 3 trained on 15T, Qwen3 trained on 36T <br/> \u4f5c\u4e3a\u53c2\u8003\uff0cLlama 3 \u5728 15T \u4e0a\u8bad\u7ec3\uff0cQwen3 \u5728 36T \u4e0a\u8bad\u7ec3",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -10423,14 +10423,14 @@
           "path": "lecture_13.py",
           "line_number": 444,
           "function_name": "copyright",
-          "code": "text(\"Lots of lawsuits around generative AI, mostly around copyright \"), article_link(\"https://www.bakerlaw.com/services/artificial-intelligence-ai/case-tracker-artificial-intelligence-copyrights-and-class-actions/\")"
+          "code": "text(\"Lots of lawsuits around generative AI, mostly around copyright <br/> \u56f4\u7ed5\u751f\u6210\u5f0f AI \u6709\u5f88\u591a\u8bc9\u8bbc\uff0c\u4e3b\u8981\u662f\u5173\u4e8e\u7248\u6743\"), article_link(\"https://www.bakerlaw.com/services/artificial-intelligence-ai/case-tracker-artificial-intelligence-copyrights-and-class-actions/\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "Lots of lawsuits around generative AI, mostly around copyright ",
+          "data": "Lots of lawsuits around generative AI, mostly around copyright <br/> \u56f4\u7ed5\u751f\u6210\u5f0f AI \u6709\u5f88\u591a\u8bc9\u8bbc\uff0c\u4e3b\u8981\u662f\u5173\u4e8e\u7248\u6743",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -10466,14 +10466,14 @@
           "path": "lecture_13.py",
           "line_number": 446,
           "function_name": "copyright",
-          "code": "text(\"### Intellectual property law\")"
+          "code": "text(\"### Intellectual property law <br/> ### \u77e5\u8bc6\u4ea7\u6743\u6cd5\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "### Intellectual property law",
+          "data": "### Intellectual property law <br/> ### \u77e5\u8bc6\u4ea7\u6743\u6cd5",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -10494,14 +10494,14 @@
           "path": "lecture_13.py",
           "line_number": 447,
           "function_name": "copyright",
-          "code": "text(\"- Goal: *incentivize* the creation of intellectual goods\")"
+          "code": "text(\"- Goal: *incentivize* the creation of intellectual goods <br/> - \u76ee\u6807\uff1a*\u6fc0\u52b1*\u77e5\u8bc6\u4ea7\u54c1\u7684\u521b\u9020\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "- Goal: *incentivize* the creation of intellectual goods",
+          "data": "- Goal: *incentivize* the creation of intellectual goods <br/> - \u76ee\u6807\uff1a*\u6fc0\u52b1*\u77e5\u8bc6\u4ea7\u54c1\u7684\u521b\u9020",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -10522,14 +10522,14 @@
           "path": "lecture_13.py",
           "line_number": 448,
           "function_name": "copyright",
-          "code": "text(\"- Types of intellectual property: copyright, patents, trademarks, trade secrets.\")"
+          "code": "text(\"- Types of intellectual property: copyright, patents, trademarks, trade secrets. <br/> - \u77e5\u8bc6\u4ea7\u6743\u7c7b\u578b\uff1a\u7248\u6743\u3001\u4e13\u5229\u3001\u5546\u6807\u3001\u5546\u4e1a\u79d8\u5bc6\u3002\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "- Types of intellectual property: copyright, patents, trademarks, trade secrets.",
+          "data": "- Types of intellectual property: copyright, patents, trademarks, trade secrets. <br/> - \u77e5\u8bc6\u4ea7\u6743\u7c7b\u578b\uff1a\u7248\u6743\u3001\u4e13\u5229\u3001\u5546\u6807\u3001\u5546\u4e1a\u79d8\u5bc6\u3002",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -10550,14 +10550,14 @@
           "path": "lecture_13.py",
           "line_number": 450,
           "function_name": "copyright",
-          "code": "text(\"### Copyright law\")"
+          "code": "text(\"### Copyright law <br/> ### \u7248\u6743\u6cd5\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "### Copyright law",
+          "data": "### Copyright law <br/> ### \u7248\u6743\u6cd5",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -10578,14 +10578,14 @@
           "path": "lecture_13.py",
           "line_number": 451,
           "function_name": "copyright",
-          "code": "text(\"- Goes back to 1709 in England (Statute of Anne), first time regulated by governments and courts \"), article_link(\"https://en.wikipedia.org/wiki/Statute_of_Anne\")"
+          "code": "text(\"- Goes back to 1709 in England (Statute of Anne), first time regulated by governments and courts <br/> - \u8ffd\u6eaf\u5230 1709 \u5e74\u82f1\u56fd\u7684\u5b89\u59ae\u6cd5\u6848\uff0c\u9996\u6b21\u7531\u653f\u5e9c\u548c\u6cd5\u9662\u76d1\u7ba1\"), article_link(\"https://en.wikipedia.org/wiki/Statute_of_Anne\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "- Goes back to 1709 in England (Statute of Anne), first time regulated by governments and courts ",
+          "data": "- Goes back to 1709 in England (Statute of Anne), first time regulated by governments and courts <br/> - \u8ffd\u6eaf\u5230 1709 \u5e74\u82f1\u56fd\u7684\u5b89\u59ae\u6cd5\u6848\uff0c\u9996\u6b21\u7531\u653f\u5e9c\u548c\u6cd5\u9662\u76d1\u7ba1",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -10621,14 +10621,14 @@
           "path": "lecture_13.py",
           "line_number": 452,
           "function_name": "copyright",
-          "code": "text(\"- In United States, most recent: Copyright Act of 1976 \"), article_link(\"https://en.wikipedia.org/wiki/Copyright_Act_of_1976\")"
+          "code": "text(\"- In United States, most recent: Copyright Act of 1976 <br/> - \u5728\u7f8e\u56fd\uff0c\u6700\u8fd1\u7684\u662f 1976 \u5e74\u7248\u6743\u6cd5\"), article_link(\"https://en.wikipedia.org/wiki/Copyright_Act_of_1976\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "- In United States, most recent: Copyright Act of 1976 ",
+          "data": "- In United States, most recent: Copyright Act of 1976 <br/> - \u5728\u7f8e\u56fd\uff0c\u6700\u8fd1\u7684\u662f 1976 \u5e74\u7248\u6743\u6cd5",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -10664,14 +10664,14 @@
           "path": "lecture_13.py",
           "line_number": 453,
           "function_name": "copyright",
-          "code": "text(\"- Copyright protection applies to 'original works of authorship fixed in any tangible medium of expression, now known or later developed, from which they can be perceived, reproduced, or otherwise communicated, either directly or with the aid of a machine or device'\")"
+          "code": "text(\"- Copyright protection applies to 'original works of authorship fixed in any tangible medium of expression, now known or later developed, from which they can be perceived, reproduced, or otherwise communicated, either directly or with the aid of a machine or device' <br/> - \u7248\u6743\u4fdd\u62a4\u9002\u7528\u4e8e'\u56fa\u5b9a\u5728\u4efb\u4f55\u6709\u5f62\u8868\u8fbe\u5a92\u4ecb\u4e2d\u7684\u539f\u521b\u4f5c\u54c1\uff0c\u65e0\u8bba\u662f\u73b0\u5728\u5df2\u77e5\u8fd8\u662f\u4ee5\u540e\u5f00\u53d1\u7684\uff0c\u53ef\u4ee5\u76f4\u63a5\u6216\u901a\u8fc7\u673a\u5668\u6216\u8bbe\u5907\u7684\u5e2e\u52a9\u88ab\u611f\u77e5\u3001\u590d\u5236\u6216\u4ee5\u5176\u4ed6\u65b9\u5f0f\u4f20\u64ad'\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "- Copyright protection applies to 'original works of authorship fixed in any tangible medium of expression, now known or later developed, from which they can be perceived, reproduced, or otherwise communicated, either directly or with the aid of a machine or device'",
+          "data": "- Copyright protection applies to 'original works of authorship fixed in any tangible medium of expression, now known or later developed, from which they can be perceived, reproduced, or otherwise communicated, either directly or with the aid of a machine or device' <br/> - \u7248\u6743\u4fdd\u62a4\u9002\u7528\u4e8e'\u56fa\u5b9a\u5728\u4efb\u4f55\u6709\u5f62\u8868\u8fbe\u5a92\u4ecb\u4e2d\u7684\u539f\u521b\u4f5c\u54c1\uff0c\u65e0\u8bba\u662f\u73b0\u5728\u5df2\u77e5\u8fd8\u662f\u4ee5\u540e\u5f00\u53d1\u7684\uff0c\u53ef\u4ee5\u76f4\u63a5\u6216\u901a\u8fc7\u673a\u5668\u6216\u8bbe\u5907\u7684\u5e2e\u52a9\u88ab\u611f\u77e5\u3001\u590d\u5236\u6216\u4ee5\u5176\u4ed6\u65b9\u5f0f\u4f20\u64ad'",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -10692,14 +10692,14 @@
           "path": "lecture_13.py",
           "line_number": 455,
           "function_name": "copyright",
-          "code": "text(\"- Original works, so collections not copyrightable (e.g., telephone directories) unless there is some creativity in the selection or arrangement\")"
+          "code": "text(\"- Original works, so collections not copyrightable (e.g., telephone directories) unless there is some creativity in the selection or arrangement <br/> - \u539f\u521b\u4f5c\u54c1\uff0c\u56e0\u6b64\u6c47\u7f16\u4e0d\u53d7\u7248\u6743\u4fdd\u62a4\uff08\u5982\u7535\u8bdd\u7c3f\uff09\uff0c\u9664\u975e\u5728\u9009\u62e9\u6216\u6392\u5217\u4e2d\u6709\u4e00\u5b9a\u521b\u9020\u6027\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "- Original works, so collections not copyrightable (e.g., telephone directories) unless there is some creativity in the selection or arrangement",
+          "data": "- Original works, so collections not copyrightable (e.g., telephone directories) unless there is some creativity in the selection or arrangement <br/> - \u539f\u521b\u4f5c\u54c1\uff0c\u56e0\u6b64\u6c47\u7f16\u4e0d\u53d7\u7248\u6743\u4fdd\u62a4\uff08\u5982\u7535\u8bdd\u7c3f\uff09\uff0c\u9664\u975e\u5728\u9009\u62e9\u6216\u6392\u5217\u4e2d\u6709\u4e00\u5b9a\u521b\u9020\u6027",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -10720,14 +10720,14 @@
           "path": "lecture_13.py",
           "line_number": 456,
           "function_name": "copyright",
-          "code": "text(\"- Copyright applies to expression, not ideas (e.g., quicksort)\")"
+          "code": "text(\"- Copyright applies to expression, not ideas (e.g., quicksort) <br/> - \u7248\u6743\u9002\u7528\u4e8e\u8868\u8fbe\uff0c\u800c\u975e\u601d\u60f3\uff08\u5982\u5feb\u901f\u6392\u5e8f\uff09\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "- Copyright applies to expression, not ideas (e.g., quicksort)",
+          "data": "- Copyright applies to expression, not ideas (e.g., quicksort) <br/> - \u7248\u6743\u9002\u7528\u4e8e\u8868\u8fbe\uff0c\u800c\u975e\u601d\u60f3\uff08\u5982\u5feb\u901f\u6392\u5e8f\uff09",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -10748,14 +10748,14 @@
           "path": "lecture_13.py",
           "line_number": 458,
           "function_name": "copyright",
-          "code": "text(\"- Expanded scope from 'published' (1909) to 'fixed' (1976)\")"
+          "code": "text(\"- Expanded scope from 'published' (1909) to 'fixed' (1976) <br/> - \u8303\u56f4\u4ece'\u5df2\u51fa\u7248'\uff081909\uff09\u6269\u5c55\u5230'\u5df2\u56fa\u5b9a'\uff081976\uff09\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "- Expanded scope from 'published' (1909) to 'fixed' (1976)",
+          "data": "- Expanded scope from 'published' (1909) to 'fixed' (1976) <br/> - \u8303\u56f4\u4ece'\u5df2\u51fa\u7248'\uff081909\uff09\u6269\u5c55\u5230'\u5df2\u56fa\u5b9a'\uff081976\uff09",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -10776,14 +10776,14 @@
           "path": "lecture_13.py",
           "line_number": 459,
           "function_name": "copyright",
-          "code": "text(\"- Registration not required for copyright protection (in contrast with patents)\")"
+          "code": "text(\"- Registration not required for copyright protection (in contrast with patents) <br/> - \u7248\u6743\u4fdd\u62a4\u4e0d\u9700\u8981\u6ce8\u518c\uff08\u4e0e\u4e13\u5229\u4e0d\u540c\uff09\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "- Registration not required for copyright protection (in contrast with patents)",
+          "data": "- Registration not required for copyright protection (in contrast with patents) <br/> - \u7248\u6743\u4fdd\u62a4\u4e0d\u9700\u8981\u6ce8\u518c\uff08\u4e0e\u4e13\u5229\u4e0d\u540c\uff09",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -10804,14 +10804,14 @@
           "path": "lecture_13.py",
           "line_number": 460,
           "function_name": "copyright",
-          "code": "text(\"- Threshold for copyright is extremely low (e.g., your website is copyrighted)\")"
+          "code": "text(\"- Threshold for copyright is extremely\u4f4e (e.g., your website is copyrighted) <br/> - \u7248\u6743\u95e8\u69db\u6781\u4f4e\uff08\u5982\uff0c\u4f60\u7684\u7f51\u7ad9\u53d7\u7248\u6743\u4fdd\u62a4\uff09\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "- Threshold for copyright is extremely low (e.g., your website is copyrighted)",
+          "data": "- Threshold for copyright is extremely\u4f4e (e.g., your website is copyrighted) <br/> - \u7248\u6743\u95e8\u69db\u6781\u4f4e\uff08\u5982\uff0c\u4f60\u7684\u7f51\u7ad9\u53d7\u7248\u6743\u4fdd\u62a4\uff09",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -10832,14 +10832,14 @@
           "path": "lecture_13.py",
           "line_number": 462,
           "function_name": "copyright",
-          "code": "text(\"- Registration is required before creator can sue someone for copyright infringement\")"
+          "code": "text(\"- Registration is required before creator can sue someone for copyright infringement <br/> - \u521b\u4f5c\u8005\u5728\u8d77\u8bc9\u4ed6\u4eba\u4fb5\u72af\u7248\u6743\u4e4b\u524d\u9700\u8981\u6ce8\u518c\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "- Registration is required before creator can sue someone for copyright infringement",
+          "data": "- Registration is required before creator can sue someone for copyright infringement <br/> - \u521b\u4f5c\u8005\u5728\u8d77\u8bc9\u4ed6\u4eba\u4fb5\u72af\u7248\u6743\u4e4b\u524d\u9700\u8981\u6ce8\u518c",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -10860,14 +10860,14 @@
           "path": "lecture_13.py",
           "line_number": 463,
           "function_name": "copyright",
-          "code": "text(\"- Costs $65 to register \"), article_link(\"https://www.copyright.gov/about/fees.html\")"
+          "code": "text(\"- Costs $65 to register <br/> - \u6ce8\u518c\u8d39\u7528\u4e3a 65 \u7f8e\u5143\"), article_link(\"https://www.copyright.gov/about/fees.html\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "- Costs $65 to register ",
+          "data": "- Costs $65 to register <br/> - \u6ce8\u518c\u8d39\u7528\u4e3a 65 \u7f8e\u5143",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -10903,14 +10903,14 @@
           "path": "lecture_13.py",
           "line_number": 464,
           "function_name": "copyright",
-          "code": "text(\"- Lasts for 75 years, and then the copyright expires and it becomes part of the public domain (works of Shakespeare, Beethoven, most of Project Gutenberg, etc.)\")"
+          "code": "text(\"- Lasts for 75 years, and then the copyright expires and it becomes part of the public domain (works of Shakespeare, Beethoven, most of Project Gutenberg, etc.) <br/> - \u6301\u7eed 75 \u5e74\uff0c\u7136\u540e\u7248\u6743\u5230\u671f\uff0c\u6210\u4e3a\u516c\u5171\u9886\u57df\u7684\u4e00\u90e8\u5206\uff08\u838e\u58eb\u6bd4\u4e9a\u3001\u8d1d\u591a\u82ac\u7684\u4f5c\u54c1\u3001Project Gutenberg \u7684\u5927\u90e8\u5206\u7b49\uff09\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "- Lasts for 75 years, and then the copyright expires and it becomes part of the public domain (works of Shakespeare, Beethoven, most of Project Gutenberg, etc.)",
+          "data": "- Lasts for 75 years, and then the copyright expires and it becomes part of the public domain (works of Shakespeare, Beethoven, most of Project Gutenberg, etc.) <br/> - \u6301\u7eed 75 \u5e74\uff0c\u7136\u540e\u7248\u6743\u5230\u671f\uff0c\u6210\u4e3a\u516c\u5171\u9886\u57df\u7684\u4e00\u90e8\u5206\uff08\u838e\u58eb\u6bd4\u4e9a\u3001\u8d1d\u591a\u82ac\u7684\u4f5c\u54c1\u3001Project Gutenberg \u7684\u5927\u90e8\u5206\u7b49\uff09",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -10931,14 +10931,14 @@
           "path": "lecture_13.py",
           "line_number": 466,
           "function_name": "copyright",
-          "code": "text(\"Summary: most things on the Internet are actually copyrighted.\")"
+          "code": "text(\"Summary: most things on the Internet are actually copyrighted. <br/> \u603b\u7ed3\uff1a\u4e92\u8054\u7f51\u4e0a\u7684\u5927\u90e8\u5206\u4e1c\u897f\u5b9e\u9645\u4e0a\u90fd\u53d7\u7248\u6743\u4fdd\u62a4\u3002\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "Summary: most things on the Internet are actually copyrighted.",
+          "data": "Summary: most things on the Internet are actually copyrighted. <br/> \u603b\u7ed3\uff1a\u4e92\u8054\u7f51\u4e0a\u7684\u5927\u90e8\u5206\u4e1c\u897f\u5b9e\u9645\u4e0a\u90fd\u53d7\u7248\u6743\u4fdd\u62a4\u3002",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -10959,14 +10959,14 @@
           "path": "lecture_13.py",
           "line_number": 468,
           "function_name": "copyright",
-          "code": "text(\"How to use a copyrighted work:\")"
+          "code": "text(\"How to use a copyrighted work: <br/> \u5982\u4f55\u4f7f\u7528\u53d7\u7248\u6743\u4fdd\u62a4\u7684\u4f5c\u54c1\uff1a\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "How to use a copyrighted work:",
+          "data": "How to use a copyrighted work: <br/> \u5982\u4f55\u4f7f\u7528\u53d7\u7248\u6743\u4fdd\u62a4\u7684\u4f5c\u54c1\uff1a",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -10987,14 +10987,14 @@
           "path": "lecture_13.py",
           "line_number": 469,
           "function_name": "copyright",
-          "code": "text(\"1. Get a license for it.\")"
+          "code": "text(\"1. Get a license for it. <br/> 1. \u83b7\u5f97\u8bb8\u53ef\u3002\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "1. Get a license for it.",
+          "data": "1. Get a license for it. <br/> 1. \u83b7\u5f97\u8bb8\u53ef\u3002",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -11015,14 +11015,14 @@
           "path": "lecture_13.py",
           "line_number": 470,
           "function_name": "copyright",
-          "code": "text(\"2. Appeal to the fair use clause.\")"
+          "code": "text(\"2. Appeal to the fair use clause. <br/> 2. \u8bc9\u8bf8\u5408\u7406\u4f7f\u7528\u6761\u6b3e\u3002\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "2. Appeal to the fair use clause.",
+          "data": "2. Appeal to the fair use clause. <br/> 2. \u8bc9\u8bf8\u5408\u7406\u4f7f\u7528\u6761\u6b3e\u3002",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -11043,14 +11043,14 @@
           "path": "lecture_13.py",
           "line_number": 472,
           "function_name": "copyright",
-          "code": "text(\"## Licenses\")"
+          "code": "text(\"## Licenses <br/> ## \u8bb8\u53ef\u8bc1\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "## Licenses",
+          "data": "## Licenses <br/> ## \u8bb8\u53ef\u8bc1",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -11071,14 +11071,14 @@
           "path": "lecture_13.py",
           "line_number": 473,
           "function_name": "copyright",
-          "code": "text(\"- A license (from contract law) is granted by a licensor to a licensee.\")"
+          "code": "text(\"- A license (from contract law) is granted by a licensor to a licensee. <br/> - \u8bb8\u53ef\uff08\u6765\u81ea\u5408\u540c\u6cd5\uff09\u7531\u8bb8\u53ef\u65b9\u6388\u4e88\u88ab\u8bb8\u53ef\u65b9\u3002\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "- A license (from contract law) is granted by a licensor to a licensee.",
+          "data": "- A license (from contract law) is granted by a licensor to a licensee. <br/> - \u8bb8\u53ef\uff08\u6765\u81ea\u5408\u540c\u6cd5\uff09\u7531\u8bb8\u53ef\u65b9\u6388\u4e88\u88ab\u8bb8\u53ef\u65b9\u3002",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -11099,14 +11099,14 @@
           "path": "lecture_13.py",
           "line_number": 474,
           "function_name": "copyright",
-          "code": "text(\"- Effectively, 'a license is a promise not to sue'.\")"
+          "code": "text(\"- Effectively, 'a license is a promise not to sue'. <br/> - \u5b9e\u9645\u4e0a\uff0c'\u8bb8\u53ef\u662f\u4e0d\u8d77\u8bc9\u7684\u627f\u8bfa'\u3002\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "- Effectively, 'a license is a promise not to sue'.",
+          "data": "- Effectively, 'a license is a promise not to sue'. <br/> - \u5b9e\u9645\u4e0a\uff0c'\u8bb8\u53ef\u662f\u4e0d\u8d77\u8bc9\u7684\u627f\u8bfa'\u3002",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -11127,14 +11127,14 @@
           "path": "lecture_13.py",
           "line_number": 476,
           "function_name": "copyright",
-          "code": "text(\"- The Creative Commons license enables free distribution of copyrighted work.\")"
+          "code": "text(\"- The Creative Commons license enables free distribution of copyrighted work. <br/> - \u77e5\u8bc6\u5171\u4eab\u8bb8\u53ef\u5141\u8bb8\u514d\u8d39\u5206\u53d1\u53d7\u7248\u6743\u4fdd\u62a4\u7684\u4f5c\u54c1\u3002\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "- The Creative Commons license enables free distribution of copyrighted work.",
+          "data": "- The Creative Commons license enables free distribution of copyrighted work. <br/> - \u77e5\u8bc6\u5171\u4eab\u8bb8\u53ef\u5141\u8bb8\u514d\u8d39\u5206\u53d1\u53d7\u7248\u6743\u4fdd\u62a4\u7684\u4f5c\u54c1\u3002",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -11155,14 +11155,14 @@
           "path": "lecture_13.py",
           "line_number": 477,
           "function_name": "copyright",
-          "code": "text(\"- Examples: Wikipedia, Open Courseware, Khan Academy, Free Music Archive, 307 million images from Flickr, 39 million images from MusicBrainz, 10 million videos from YouTube, etc.\")"
+          "code": "text(\"- Examples: Wikipedia, Open Courseware, Khan Academy, Free Music Archive, 307 million images from Flickr, 39 million images from MusicBrainz, 10 million videos from YouTube, etc. <br/> - \u793a\u4f8b\uff1a\u7ef4\u57fa\u767e\u79d1\u3001\u5f00\u653e\u8bfe\u4ef6\u3001\u53ef\u6c57\u5b66\u9662\u3001\u514d\u8d39\u97f3\u4e50\u6863\u6848\u3001\u6765\u81ea Flickr \u7684 3.07 \u4ebf\u5f20\u56fe\u7247\u3001\u6765\u81ea MusicBrainz \u7684 3900 \u4e07\u5f20\u56fe\u7247\u3001\u6765\u81ea YouTube \u7684 1000 \u4e07\u4e2a\u89c6\u9891\u7b49\u3002\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "- Examples: Wikipedia, Open Courseware, Khan Academy, Free Music Archive, 307 million images from Flickr, 39 million images from MusicBrainz, 10 million videos from YouTube, etc.",
+          "data": "- Examples: Wikipedia, Open Courseware, Khan Academy, Free Music Archive, 307 million images from Flickr, 39 million images from MusicBrainz, 10 million videos from YouTube, etc. <br/> - \u793a\u4f8b\uff1a\u7ef4\u57fa\u767e\u79d1\u3001\u5f00\u653e\u8bfe\u4ef6\u3001\u53ef\u6c57\u5b66\u9662\u3001\u514d\u8d39\u97f3\u4e50\u6863\u6848\u3001\u6765\u81ea Flickr \u7684 3.07 \u4ebf\u5f20\u56fe\u7247\u3001\u6765\u81ea MusicBrainz \u7684 3900 \u4e07\u5f20\u56fe\u7247\u3001\u6765\u81ea YouTube \u7684 1000 \u4e07\u4e2a\u89c6\u9891\u7b49\u3002",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -11183,14 +11183,14 @@
           "path": "lecture_13.py",
           "line_number": 478,
           "function_name": "copyright",
-          "code": "text(\"- Created by Lessig and Eldred in 2001 to bridge public domain and existing copyright\")"
+          "code": "text(\"- Created by Lessig and Eldred in 2001 to bridge public domain and existing copyright <br/> - \u7531 Lessig \u548c Eldred \u4e8e 2001 \u5e74\u521b\u5efa\uff0c\u4ee5\u5f25\u5408\u516c\u5171\u9886\u57df\u548c\u73b0\u6709\u7248\u6743\u4e4b\u95f4\u7684\u5dee\u8ddd\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "- Created by Lessig and Eldred in 2001 to bridge public domain and existing copyright",
+          "data": "- Created by Lessig and Eldred in 2001 to bridge public domain and existing copyright <br/> - \u7531 Lessig \u548c Eldred \u4e8e 2001 \u5e74\u521b\u5efa\uff0c\u4ee5\u5f25\u5408\u516c\u5171\u9886\u57df\u548c\u73b0\u6709\u7248\u6743\u4e4b\u95f4\u7684\u5dee\u8ddd",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -11211,14 +11211,14 @@
           "path": "lecture_13.py",
           "line_number": 480,
           "function_name": "copyright",
-          "code": "text(\"Many model developers license data for training foundation models\")"
+          "code": "text(\"Many model developers license data for training foundation models <br/> \u8bb8\u591a\u6a21\u578b\u5f00\u53d1\u8005\u8bb8\u53ef\u6570\u636e\u7528\u4e8e\u8bad\u7ec3\u57fa\u7840\u6a21\u578b\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "Many model developers license data for training foundation models",
+          "data": "Many model developers license data for training foundation models <br/> \u8bb8\u591a\u6a21\u578b\u5f00\u53d1\u8005\u8bb8\u53ef\u6570\u636e\u7528\u4e8e\u8bad\u7ec3\u57fa\u7840\u6a21\u578b",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -12172,14 +12172,14 @@
           "path": "lecture_13.py",
           "line_number": 31,
           "function_name": "main",
-          "code": "text(\"### Mid-training + post-training\")"
+          "code": "text(\"### Mid-training + post-training <br/> ### \u4e2d\u671f\u8bad\u7ec3 + \u540e\u8bad\u7ec3\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "### Mid-training + post-training",
+          "data": "### Mid-training + post-training <br/> ### \u4e2d\u671f\u8bad\u7ec3 + \u540e\u8bad\u7ec3",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -12194,14 +12194,14 @@
           "path": "lecture_13.py",
           "line_number": 32,
           "function_name": "main",
-          "code": "text(\"Let's focus on particular capabilities.\")"
+          "code": "text(\"Let's focus on particular capabilities. <br/> \u8ba9\u6211\u4eec\u4e13\u6ce8\u4e8e\u7279\u5b9a\u80fd\u529b\u3002\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "Let's focus on particular capabilities.",
+          "data": "Let's focus on particular capabilities. <br/> \u8ba9\u6211\u4eec\u4e13\u6ce8\u4e8e\u7279\u5b9a\u80fd\u529b\u3002",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -14136,14 +14136,14 @@
           "path": "lecture_13.py",
           "line_number": 37,
           "function_name": "main",
-          "code": "text(\"### Summary\")"
+          "code": "text(\"### Summary <br/> ### \u603b\u7ed3\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "### Summary",
+          "data": "### Summary <br/> ### \u603b\u7ed3",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -14158,14 +14158,14 @@
           "path": "lecture_13.py",
           "line_number": 38,
           "function_name": "main",
-          "code": "text(\"- Key lesson: Data does not fall from the sky. You have to work to get it.\")"
+          "code": "text(\"- Key lesson: Data does not fall from the sky. You have to work to get it. <br/> - \u5173\u952e\u6559\u8bad\uff1a\u6570\u636e\u4e0d\u4f1a\u4ece\u5929\u800c\u964d\u3002\u4f60\u5fc5\u987b\u52aa\u529b\u83b7\u53d6\u5b83\u3002\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "- Key lesson: Data does not fall from the sky. You have to work to get it.",
+          "data": "- Key lesson: Data does not fall from the sky. You have to work to get it. <br/> - \u5173\u952e\u6559\u8bad\uff1a\u6570\u636e\u4e0d\u4f1a\u4ece\u5929\u800c\u964d\u3002\u4f60\u5fc5\u987b\u52aa\u529b\u83b7\u53d6\u5b83\u3002",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -14180,14 +14180,14 @@
           "path": "lecture_13.py",
           "line_number": 39,
           "function_name": "main",
-          "code": "text(\"- Live service => raw data => processed data (conversion, filtering, deduplication)\")"
+          "code": "text(\"- Live service => raw data => processed data (conversion, filtering, deduplication) <br/> - \u5b9e\u65f6\u670d\u52a1 => \u539f\u59cb\u6570\u636e => \u5904\u7406\u6570\u636e\uff08\u8f6c\u6362\u3001\u8fc7\u6ee4\u3001\u53bb\u91cd\uff09\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "- Live service => raw data => processed data (conversion, filtering, deduplication)",
+          "data": "- Live service => raw data => processed data (conversion, filtering, deduplication) <br/> - \u5b9e\u65f6\u670d\u52a1 => \u539f\u59cb\u6570\u636e => \u5904\u7406\u6570\u636e\uff08\u8f6c\u6362\u3001\u8fc7\u6ee4\u3001\u53bb\u91cd\uff09",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -14202,14 +14202,14 @@
           "path": "lecture_13.py",
           "line_number": 40,
           "function_name": "main",
-          "code": "text(\"- Data is the key ingredient that differentiates language models\")"
+          "code": "text(\"- Data is the key ingredient that differentiates language models <br/> - \u6570\u636e\u662f\u533a\u5206\u8bed\u8a00\u6a21\u578b\u7684\u5173\u952e\u6210\u5206\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "- Data is the key ingredient that differentiates language models",
+          "data": "- Data is the key ingredient that differentiates language models <br/> - \u6570\u636e\u662f\u533a\u5206\u8bed\u8a00\u6a21\u578b\u7684\u5173\u952e\u6210\u5206",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -14224,14 +14224,14 @@
           "path": "lecture_13.py",
           "line_number": 41,
           "function_name": "main",
-          "code": "text(\"- Legal and ethical issues (e.g., copyright and privacy)\")"
+          "code": "text(\"- Legal and ethical issues (e.g., copyright and privacy) <br/> - \u6cd5\u5f8b\u548c\u4f26\u7406\u95ee\u9898\uff08\u5982\u7248\u6743\u548c\u9690\u79c1\uff09\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "- Legal and ethical issues (e.g., copyright and privacy)",
+          "data": "- Legal and ethical issues (e.g., copyright and privacy) <br/> - \u6cd5\u5f8b\u548c\u4f26\u7406\u95ee\u9898\uff08\u5982\u7248\u6743\u548c\u9690\u79c1\uff09",
           "style": {},
           "external_link": null,
           "internal_link": null
@@ -14246,14 +14246,14 @@
           "path": "lecture_13.py",
           "line_number": 42,
           "function_name": "main",
-          "code": "text(\"- Much of this pipeline is heuristic, many opportunities to improve!\")"
+          "code": "text(\"- Much of this pipeline is heuristic, many opportunities to improve! <br/> - \u8fd9\u4e2a\u6d41\u7a0b\u7684\u5f88\u591a\u90e8\u5206\u662f\u542f\u53d1\u5f0f\u7684\uff0c\u6709\u5f88\u591a\u6539\u8fdb\u673a\u4f1a\uff01\")"
         }
       ],
       "env": {},
       "renderings": [
         {
           "type": "markdown",
-          "data": "- Much of this pipeline is heuristic, many opportunities to improve!",
+          "data": "- Much of this pipeline is heuristic, many opportunities to improve! <br/> - \u8fd9\u4e2a\u6d41\u7a0b\u7684\u5f88\u591a\u90e8\u5206\u662f\u542f\u53d1\u5f0f\u7684\uff0c\u6709\u5f88\u591a\u6539\u8fdb\u673a\u4f1a\uff01",
           "style": {},
           "external_link": null,
           "internal_link": null
