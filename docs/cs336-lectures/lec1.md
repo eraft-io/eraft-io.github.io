@@ -4,120 +4,123 @@
 
 ---
 
-## 段落 1
-
 **英文**: Welcome everyone. This is CS336, language models from scratch. And this is the core staff. So I'm Percy, one of your instructors. I'm really excited about this class because it really allows you to see the whole language modeling building pipeline and the end including data systems and modeling. Tatsu, I'll be co-teaching with him. So I'll let everyone introduce themselves. Hi everyone. I'm Tatsu. I'm one of the co-instructor.
 
 **中文**: 欢迎各位。这是CS336，从零开始的语言模型。这是核心团队。我是Percy，你们的讲师之一。我非常期待这门课程，因为它能让你们看到整个语言建模流程，包括数据系统和建模。Tatsu将和我一起授课。现在我让每个人自我介绍一下。大家好。我是Tatsu。我是其中一位助教。
 
-## 段落 2
-
 **英文**: I'll be giving lecture and we're two probably weeks. I'm really excited about this class. Percy and I spent a while being able to. just run call thinking like, what's literally deep technical stuff that we can keep our students today. I think one of the things that is really you got to build it from scratch to understand it. So I'm hoping that that's sort of the ethos that I'm going to be going from. Hey everyone. I'm Robyn. I actually failed this class when I took it. I'm not doing it.
 
-**中文**: 我将要进行讲座，我们大概还有两周的时间。我真的很期待这门课。Percy 和我花了一段时间来思考，像现在这样，我们能给学生们带来哪些真正深入的技术内容。我认为其中一件事是你必须从零开始构建它才能理解它。所以我希望这就是我将要遵循的宗旨。大家好，我是罗宾。实际上我当初上这门课的时候挂科了。我现在不打算再上了。
-
-## 段落 3
+**中文**: 我将要进行讲座，我们大概还有两周的时间。我真的很期待这门课。Percy 和我花了一段时间来思考，像现在这样，我们能给学生们带来哪些真正深入的技术内容。我认为其中一件事是你必须从零开始构建它才能理解它。所以我希望这就是我将要遵循的宗旨。大家好，我是 Robyn。实际上我当初上这门课的时候挂科了。我现在不打算再上了。
 
 **英文**: But now I'm your TA. So I'm really worried they say anything possible. And everyone I've yielded, I'm a third year student, PhD student in CS department. Or with Tatsu and Tatsu. Yeah, mostly interested in my research on the synthetic data and the models, these things, all that stuff. So yeah, it should be a fun quarter. Hey guys, I'm ourselves. I'm a second year PhD. I worked as a student in the last class. These days I work on the other day first.
 
-**中文**: 但现在我是你们的助教。所以我真的很担心他们会说任何可能的话。我认识的每个人，我是一个三年级学生，计算机科学系的博士生。或者和Tatsu以及Tatsu一起。是的，我主要对我的合成数据和模型的研究感兴趣，这些事情，所有那些东西。所以，这应该是一个有趣的学期。嘿，伙计们，我是我们自己。我是一个二年级的博士生。我在上一节课中做过学生。这几天我在其他日子工作。
-
-## 段落 4
+**中文**: 不过现在我是你们的助教了。所以我真的很担心他们会说出什么‘一切皆有可能’之类的话（笑）。刚才大家介绍过了，我是 CS 系的三年级博士生。主要是跟着 Tatsu 做研究，我对合成数据和模型这些方向很感兴趣。总之，这应该是一个充满乐趣的学期。嘿大家好，我是 Ourselves（注：此处可能是人名或口误）。我是二年级博士生，上学期还是这门课的助教学生，这段时间我也在做相关的工作。
 
 **英文**: And he was a top or a many leaderboards from last year. So he's the number to beat. OK. All right. Well, thanks everyone. So let's continue. As Tatsu mentioned, this is the second time we're teaching the class. We've grown the class by around 50% because I have three TAs instead of two. And one big thing is we're making all the lectures on YouTube so that the world can learn how to build a language model from scratch. OK.
 
-**中文**: 他去年是排行榜上的顶尖人物之一。所以他是最难击败的选手。好的。好吧。谢谢大家。那么我们继续。正如Tatsu提到的，这是第二次我们开设这门课程。由于我有三个助教而不是两个，课程规模扩大了大约50%。而且有一个重要的变化是我们将所有的课程视频上传到YouTube，这样全世界的人都可以学习如何从零开始构建一个语言模型。好的。
+**中文**: 他去年霸榜了很多个排行榜，绝对是顶尖高手，所以他是大家想要挑战的头号目标。好的，谢谢大家。那我们继续。
+就像 Tatsu 刚才提到的，这是我们第二次教这门课了。因为今年我有三个助教而不是两个，所以班级规模扩大了大约 50%。
+还有一个大动作是，我们会把所有讲座视频都传到 YouTube 上，这样全世界的人都能学会如何从零开始构建一个大语言模型。好的。
 
-## 段落 5
+![](img/lec1_001.png)
 
 **英文**: So why do we decide to make this a course and endure all the pain?. So let's ask GPT4. So if you ask a why teach a course on building language models from scratch, the reply is teaching a course provides foundational understanding of techniques, fosters, innovation, the typical generic flowers. OK. So here's a real reason. So we're in a bit of a crisis, I would say. Researchers are becoming more and more disconnected from the underlying technology. Eight years ago, researchers would implement and train their own models in AI. Even six years ago, you at least take the models like Bert and download them and fine tune them. And now, many people can just get away with prompting a proprietary model.
 
-**中文**: 那么，为什么我们决定将这个内容做成课程并忍受所有的痛苦呢？那么，让我们问问 GPT4。如果有人问为什么要开设一门从零开始构建语言模型的课程，回答是开设这门课程可以提供技术的基础理解，促进创新，典型的通用花朵。好的。那么这里有一个真正的原因。我认为我们正面临一定的危机。研究人员越来越脱离底层技术。八年前，研究人员会自己实现并训练自己的模型。甚至六年前，你至少可以使用像Bert这样的模型并对其进行微调。而现在，很多人只需提示一个专有模型就可以完成任务。
+**中文**: 那我们为什么要决定开这门课，还要忍受所有的痛苦呢？咱们先问问 GPT-4 吧。如果你问它‘为什么要教一门从零构建大语言模型的课’，它的回答肯定是：‘这能提供对技术的基础理解，培养创新能力’……全是些典型的、漂亮的废话（generic flowers）。好吧，这才是真正的原因。我觉得我们正处于某种危机之中。研究人员正变得与底层技术越来越脱节。八年前，AI 研究员还会自己编写代码、训练自己的模型。哪怕就在六年前，你至少还会下载像 BERT 这样的模型来进行微调。但现在，许多人只要对着专有模型写写提示词（Prompt）就能混下去了。
 
-## 段落 6
+![](img/lec1_002.png)
 
 **英文**: So this is not necessarily bad, because as you introduce these layers of abstraction, we can all do more. And a lot of research has been unlocked by the simplicity of even a prompt to language model. And I do a very much share of prompting. So there's nothing wrong with that. But it's also remember that these abstractions are leaky. So in contrast to programming languages or operating systems, you don't really understand what the abstraction is. It's a string in and string out, I guess. And I would say that there's still a lot of fundamental research to be done that required carrying up the stack and co-designing different aspects of the data and the systems and the model. And I think really that full understanding. of this technology is necessary for fundamental research.
 
-**中文**: 因此这不一定是一件坏事，因为当你引入这些抽象层时，我们可以做更多的事情。甚至是一个简单的提示语就能解锁大量研究。我也会进行大量的提示操作。所以这并没有什么问题。但也要记住，这些抽象是不完全的。与编程语言或操作系统不同，你实际上并不了解抽象的具体内容。它可能只是一个输入字符串和输出字符串，我想。我认为仍然有很多基础研究需要进行，这需要向上推进整个技术栈，并协同设计数据、系统和模型的不同方面。我认为真正理解这项技术是基础研究所必需的。
+**中文**: 这倒也不一定是坏事，因为随着这些抽象层的引入，我们大家都能做更多的事情。而且，正是得益于调用大模型这种简单的 Prompt 方式，很多研究才得以开展。我自己也写了不少 Prompt，所以这本身没什么问题。但我们要记住，这些抽象是‘会泄露’的（leaky abstractions，意指抽象并不完美，底层细节还是会暴露出来影响上层）。与编程语言或操作系统不同，你其实并不真正理解这个抽象到底是什么。它大概就是一个‘字符串进，字符串出’的黑盒。我想说的是，仍然有很多基础性的研究有待完成，而这些研究需要我们要深入技术栈的底层（carrying up the stack），对数据、系统和模型的不同方面进行协同设计。我认为，要对这项技术进行根本性的研究，这种全方位的理解是必不可少的。
 
-## 段落 7
-
+![](img/lec1_003.png)
 **英文**: So that's why this class exists. We want to enable the fundamental research to continue. And our philosophy is to understand it, you have to build it. So there's one small problem here. And this is because of the industrialization of language models. So GVD4 has rumored to be 1. 8 trillion parameters,. cost $100 million to train. You have XAI building the clusters with 200,000 H100s. If you can imagine that.
 
 **中文**: 这就是这门课存在的意义。我们希望能让基础研究得以延续。我们的理念是：要想理解它，你就得亲手构建它。不过，这里有个小问题。这主要是由大语言模型的‘工业化’造成的。拿 GPT-4 来说，据传它的参数量高达 1.8 万亿，训练成本更是耗资 1 亿美元。还有像 xAI 这样的公司，正在建设拥有 20 万块 H100 显卡的超级集群。你们可以想象一下那个规模。
 
-## 段落 8
 
-**英文**: There's investment of over 500 billion, supposedly, over four years. So these are pretty large numbers. And furthermore, there's no public details on how these models are being built. Here from GVD4, this is even two years ago. They very honestly say that due to the competitive landscape safety limitations, we're going to disclose no details. So this is the state of the world right now. And so in some sense, frontier models are out of reach for us. So if you came into this class thinking, you're each going to train your own GPT4. Sorry. So we're going to build small language models.
+**英文**: There's investment of over 500 billion, supposedly, over four years. So these are pretty large numbers. And furthermore, there's no public details on how these models are being built. Here from GPT-4, this is even two years ago. They very honestly say that due to the competitive landscape safety limitations, we're going to disclose no details. So this is the state of the world right now. And so in some sense, frontier models are out of reach for us. So if you came into this class thinking, you're each going to train your own GPT4. Sorry. So we're going to build small language models.
 
-**中文**: 据称，四年内有超过5000亿美元的投资。所以这些数字相当大。而且，没有公开的细节说明这些模型是如何构建的。这里来自GPT4，这是两年前的事情了。他们非常诚实地表示，由于竞争环境和安全限制，我们将不会透露任何细节。所以这就是目前的状况。因此，在某种意义上，前沿模型对我们来说是遥不可及的。所以如果你认为进入这门课后，每个人都能训练自己的GPT4，那很抱歉。所以我们将会构建小型语言模型。
+**中文**: 据说四年内的投资超过了 5000 亿美元。这些数字可是相当惊人的。而且，关于这些模型到底是怎么构建的，没有任何公开的细节。 看看 GPT-4，哪怕是两年前，他们就很诚实地表示：‘由于竞争环境和安全限制，我们不会透露任何细节’。所以这就是当今世界的现状。在某种程度上，前沿模型对我们来说是遥不可及的。所以，如果你来上这门课，是想着每个人都能训练一个自己的 GPT-4……那很抱歉。我们将要构建的是小型语言模型（Small Language Models）。
 
-## 段落 9
 
 **英文**: But the problem is that these might not be representative. And here's some of two examples to illustrate why. So here's kind of a simple one. If you look at the fraction of Flops spent in the attention layers of a transformer versus a MLP, this changes quite a bit. So this is a tweet from Stephen Roller from quite a few years ago. But this is still true. If you look at small models, it looks like the number of Flops into the attention versus the MLP layers are roughly comparable. But if you go up to 175 billion, then the MLP is really dominate. So what does this matter? Well, if you spend a lot of time at small scale and you're optimizing the attention, you might be optimizing the wrong thing because at larger scale, it gets washed out. This is kind of a simple example.
 
 **中文**: 但问题是，这些可能并不具有代表性。这里有一些例子来说明原因。这是一个简单的例子。如果你看一下Transformer中注意力层与MLP所花费的Flops比例，这个比例变化很大。这是一条几年前Stephen Roller发布的推文。但这个情况仍然成立。如果你看一下小模型，看起来注意力层与MLP层的Flops数量大致相当。但如果你看到1750亿参数的模型，那么MLP就占了主导地位。这有什么关系呢？如果你在小规模上花了很多时间，并且优化了注意力机制，你可能会优化错误的东西，因为在更大规模下，这种优化效果会被削弱。这是一个简单的例子。
 
-## 段落 10
-
 **英文**: Because you can literally make this plot without actually any computers. You just do its napkin math. Here's something that's a little harder to grapple with. It's just emergent behavior. So this is a paper from Jason Wei from 2022. And this plot shows that, as you increase the amount of training Flops and you look at accuracy a bunch on a bunch of tasks, you'll. see that for a while, it looks like the accuracy, and nothing is happening. And all of a sudden, you get the kind of emergent of various phenomena like in context learning. So if you were hanging around at this scale, you would be concluding that, well, these language models really don't work. When, in fact, you had to scale up to get that behavior.
 
-**中文**: 因为你实际上可以不用任何计算机来制作这个图表。你只需要进行一些粗略的估算。这里有一些更难理解的东西。这是某种涌现行为。这是一篇来自Jason Wei在2022年的论文。这张图显示，当你增加训练Flops的数量，并在多个任务上观察准确率时，一开始看起来准确率没有变化，什么也没发生。但突然之间，你会看到各种现象的涌现，比如上下文学习。所以如果你在这个规模上停留，你可能会得出结论，这些语言模型真的不起作用。但实际上，你必须扩大规模才能获得这种行为。
+**中文**: 因为你实际上可以不用任何计算机来制作这个图表。你只需要进行一些粗略的估算。这里有一些更难理解的东西。这是某种涌现行为。这是一篇来自Jason Wei在2022年的论文。这张图显示，当你增加训练Flops的数量，并在多个任务上观察准确率时，一开始看起来准确率没有变化，什么也没发生。但突然之间，你会看到各种现象的 *涌现*，比如上下文学习。所以如果你在这个规模上停留，你可能会得出结论，这些语言模型真的不起作用。但实际上，你必须扩大规模才能获得这种行为。
+
+![](img/lec1_004.png)
 
 ## 段落 11
 
 **英文**: So don't despair. We can still learn something in this class. But we have to be very precise about what we're learning. So there's three types of knowledge. There's the mechanics of how things work. This we can teach you. We can teach you what a transformer is. You'll implement a transformer. We can teach you how model parallelism leverages GPUs efficiently. These are just like kind of the raw ingredients, the mechanics.
 
-**中文**: 所以不要绝望。我们仍然可以在这个课程中学到一些东西。但我们必须非常精确地了解我们所学的内容。所以有三种类型的知识。一种是事物运作的机制。我们可以教给你这些。我们可以教你什么是Transformer。你会实现一个Transformer。我们可以教你如何高效利用GPU进行模型并行。这些只是类似于基本原料，机制方面的内容。
-
-## 段落 12
+**中文**: 所以别灰心，我们在这门课里还是能学到东西的。但我们必须非常精准地界定我们要学什么。知识大概分三种，其中一种是‘运作机制’（Mechanics）。这个我们能教你。我们可以教你什么是 Transformer。你们会亲手实现一个 Transformer。我们可以教你模型并行化是如何高效利用 GPU 的。这些就像是原材料，是底层的机械原理。
 
 **英文**: So that's fine. We can also teach you mindset. So this is something a bit more subtle and seems like a little bit fuzzy. This is actually, in some ways, more important, I would say. Because the mindset that we're going to take is that we want to squeeze as much out of a hardware as possible and take scaling seriously. Because in some sense, the mechanics, all of those will see later that all of these ingredients have been around for a while. But it was really, I think, the scaling mindset that OpenAI pioneered that led to this next generation. of AI models. So mindset, I think, hopefully we can bang into you that to think in a certain way. And then thirdly is intuitions.
 
-**中文**: 所以没问题。我们也可以教你一种思维方式。这有点微妙，看起来有点模糊。我认为在某些方面，这更重要。因为我们所采用的思维方式是尽可能从硬件中榨取更多性能，并认真对待扩展性。因为从某种意义上说，所有这些机制以后你都会看到，这些要素已经存在一段时间了。但我觉得真正推动这一代AI模型发展的，是OpenAI首创的扩展性思维。所以，我认为，希望我们能让你形成一种特定的思维方式。第三点是直觉。
+**中文**: 那挺好的。除此之外，我们还能教你们一种‘思维模式’。
+这东西有点微妙，听起来可能有点虚。但实际上，我觉得在某种程度上，它比技术细节更重要。因为我们要建立的思维模式是：我们要想办法把硬件的性能压榨到极致，并且要认真对待‘规模化’（Scaling）。因为在某种意义上，那些技术细节（Mechanics），你们后面会看到，其实这些‘原材料’都已经存在很久了。但我认为，真正引领这一代AI模型爆发的，其实是 OpenAI 开创的这种‘规模化思维’。所以关于思维模式，我希望我们能把它强行灌输给你们（bang into you），让你们学会用某种特定的方式去思考。然后第三点，就是直觉（Intuitions）。
+
+![](img/lec1_005.png)
 
 ## 段落 13
 
 **英文**: And this is about which data and modeling decisions lead to good models. This, unfortunately, we can only partially teach you. And this is because what architectures and what data sets. work at, in other scales, might not be the same ones that work at large scales. But hopefully you got two and a half out of three. So that's pretty good being for your buck. OK, speaking of intuitions, there's this sort of, I guess, sad reality of things that you can tell a lot of stories about why certain things in the transformer the way they are. But sometimes it's just, you do the experiments and the experiments speak. So for example, there's this known Shazier paper that introduced the Swigloo, which is something that will see a bit more in this class, which is a type of non-linearity. And in the conclusion, the results are quite good.
 
-**中文**: 这涉及哪些数据和建模决策能带来好的模型。不幸的是，我们只能部分地教给你们。这是因为某些架构和数据集在其他规模上可能有效，但在大规模上可能就不适用了。但希望你们已经掌握了三分之二又一半。所以这对于你们来说已经很不错了。好的，说到直觉，有一种可以说是悲哀的现实，就是你可以讲述很多关于为什么变压器中的某些事物是这样的故事。但有时候只是做实验，实验结果会说话。例如，有一篇著名的Shazier论文介绍了Swigloo，这在本课程中会看到更多，它是一种非线性类型。在结论中，结果非常好。
+**中文**: 
 
-## 段落 14
+
+*教授这番话简直是太实在了，直接承认了AI领域里最让人头秃的“玄学”部分——直觉。毕竟很多模型架构的设计，有时候真不是靠推导出来的，而是靠“大力出奇迹”试出来的。*
+
+这关乎什么样的数据和建模决策能造就好的模型。遗憾的是，这部分我们只能教你们一知半解。这是因为在小规模下管用的架构和数据集，到了大规模下未必还管用（反之亦然）。
+但希望你们能拿到‘三分之二’的分（指学会前两点：机制和思维），这样算下来性价比还是挺高的。好了，说到直觉，这里有个挺无奈的现状：关于 Transformer 为什么设计成这样，你能编出一大堆故事来解释。
+但有时候事实就是，你得去做实验，让实验结果说话。比如，大家知道的那篇 Shazeer 的论文引入了 SwiGLU，这东西咱们课上会细讲，它是一种非线性激活函数。结论就是：结果相当不错（所以我们就用它了）。
+
 
 **英文**: And it's got adopted. But in the conclusion, there's this honest statement that we offer no explanation, except for this is divine benevolence. So there you go. And this is the extent to our understanding. OK, so now let's talk about this bitter lesson that I'm sure people have heard about. I think there's a sort of a misconception. that a bitter lesson means that scale is all that matters. Algorithms don't matter. All you do is pump more capital into building the model and you're good to go. I think this couldn't be farther from the truth.
 
-**中文**: 而且它已经被采纳了。但在结论中，有一个诚实的陈述说，我们没有解释，除了这是神的仁慈。所以就是这样。这就是我们理解的范围。好的，那么现在让我们来谈谈这个痛苦的教训，我相信人们一定听说过。我认为有一种误解，认为痛苦的教训意味着规模才是唯一重要的因素。算法并不重要。你只需要投入更多的资金来构建模型，就可以了。我认为这与事实相去甚远。
+**中文**: 而且它（SwiGLU）已经被广泛采用了。但在那篇论文的结论部分，作者非常诚实地写道：‘我们对此没有任何解释，只能说这是神的恩赐（divine benevolence）。’你们看，这就是我们目前理解的极限。
+好了，现在咱们来聊聊那个大家肯定都听说过的‘惨痛教训’（The Bitter Lesson）。我觉得大家对它有个误区。很多人以为‘惨痛教训’的意思就是：规模决定一切，算法根本不重要。只要你拼命砸钱去堆模型，你就万事大吉了。我觉得这种看法简直是大错特错（离事实十万八千里）。
 
-## 段落 15
 
 **英文**: I think the right interpretation is that algorithms at scale is what matters. And because at the end of the day, your accuracy of your model. is really a product of your efficiency and the number of resources you put in. And actually, efficiency, if you think about, is way more important at larger scale. Because if you're spending hundreds of millions dollars, you cannot afford to be wasteful in the same way that if you're looking at running a job on your local cluster, you might run it again, you fail,. you debug it. And if you look at actually the utilization and the use, I'm sure opening it has way more efficient than any of us right now. So efficiency really is important. And furthermore, I think at this point is maybe not as well appreciated in the scaling rhetoric, so to speak, which is that if you look at efficiency,. which is combination of hardware algorithms, but if you just look at the algorithm efficiency, there's this nice open-air paper from 2020 that showed over the period of 2012 to 2019, there's a 44X if algorithmic efficiency improvement in the time that it took to train, image net to a certain level of accuracy.
 
-**中文**: 我认为正确的解释是，规模上的算法才是关键。而且最终来说，你的模型的准确性实际上是你的效率和你投入的资源数量的产物。实际上，在更大的规模下，效率要重要得多。因为如果你花费了数亿美元，你就不能像在本地集群上运行任务那样随意浪费。你可能会再次运行它，失败，然后调试。而如果看一下实际的利用率和使用情况，我相信它比我们现在的效率要高得多。因此，效率真的很重要。此外，我认为在目前的扩展言论中，这一点可能没有得到足够的重视，也就是说，如果你看看效率，它是由硬件和算法共同决定的，但如果只看算法效率，有一篇2020年的开放获取论文显示，在2012年至2019年期间，训练图像网达到一定准确度所需的时间有了44倍的算法效率提升。
+**中文**: 我觉得正确的解读应该是：在大规模下的算法才是关键。毕竟说到底，你模型的准确率，其实就是你的效率和你投入的资源数量的乘积。
+而且实际上，如果你仔细想想，规模越大，效率就越重要。因为如果你要花费数亿美元，你根本负担不起任何浪费。这跟你在本地集群上跑任务完全不一样，在本地你可能跑挂了、调试一下再跑一次就是了。如果你看看实际的利用率和使用情况，我敢打赌，OpenAI 的效率绝对比我们在座的任何人都要高得多。所以效率真的很重要。而且，我觉得在某种程度上，这一点在关于‘规模化’的讨论中可能还没得到足够的重视。也就是说，如果你关注效率——这是硬件和算法的结合体——但如果你单看算法效率，有一篇2020年的 OpenAI 论文指出，在2012年到2019年期间，将 ImageNet 训练到特定准确率所需的算法效率提升了44倍。
 
-## 段落 16
+![](img/lec1_006.png)
+
 
 **英文**: So this is huge. And I think if you, I don't know if you could see the abstract here, this is faster than Moore's law. So algorithms do matter if you didn't have this efficiency, you would be paying 44 times more cost. This is for image models, but there's some results for language as well. Okay, so with all that, I think the right framing on mindset to have is what is the best model. one can build given a certain compute and data budget? Okay, and this question makes sense, no matter what scale you're at, because it's accuracy per resources. And of course, if you can raise the capital and get more resources, you'll get better models. But as researchers, our goal is to improve the efficiency of the algorithms. Okay, so maximize efficiency, we're gonna hear a lot of that. Okay, so now let me talk a little bit about the current landscape and a little bit of, I guess, obligatory history.
 
-**中文**: 所以这非常重要。我认为如果你看不到这里的摘要，这比摩尔定律还要快。所以如果没达到这种效率，你将要多付出44倍的成本。这是针对图像模型的，但语言模型也有一些结果。好的，所以综上所述，我认为应该具备的正确思维框架是，在一定的计算和数据预算下，能构建的最佳模型是什么？好的，这个问题无论你处于什么规模都是有意义的，因为这是每单位资源的准确性。当然，如果你能筹集到更多的资金并获得更多的资源，你会得到更好的模型。但作为研究人员，我们的目标是提高算法的效率。好的，所以我们会听到很多关于最大化效率的内容。好的，现在让我谈谈当前的形势，以及一些我想说的必不可少的历史背景。
+**中文**: 
 
-## 段落 17
+*教授这番话简直是给“算法无用论”的当头一棒！不仅用44倍的效率提升数据打了脸，还重新定义了研究者的使命——不是比谁钱多，而是比谁更会“省钱”。*
+
+所以这可是个大数字。我不知道你们能不能看到这里的摘要，这速度比摩尔定律还要快。所以算法真的很重要！如果没有这种效率提升，你们得付出44倍的成本。虽然这是针对图像模型的，但在语言模型方面也有一些类似的结果。好了，综上所述，我觉得我们应该建立的思维框架是：在给定的算力和数据预算下，能构建出的最好的模型是什么？这个问题无论在什么规模下都有意义，因为它关注的是单位资源的准确率。当然，如果你能拉到投资、搞到更多资源，你的模型肯定会更好。但作为研究人员，我们的目标是提高算法的效率。好了，最大化效率——咱们后面会经常听到这个词。那么现在，让我来聊聊当前的局势，还有稍微讲点那种‘例行公事’的历史背景。
+
 
 **英文**: So language models have been around for a while now. Going back to Shannon, who looked at language models a way to estimate the entropy of English. I think in AI, they really were prominent in NLP where they were a component of larger systems like machine translation, speech recognition. And one thing that's maybe not as appreciated these days is that if you look back in 2007, Google's training 30 large N-gram models, so five-gram models over two trillion tokens, which is a lot more tokens than GPT-3. And it was only, I guess, in the last two years that we've gotten to that token count. But they were N-gram models. So they didn't really exhibit any of the interesting phenomenon that we know of language models today. Okay, so in the 2010s, I think a lot of the, you can think about this a lot of the deep learning revolution happened and a lot of the ingredients. sort of kind of falling into place. Right, so there is a first neural language model from Yachtropenzio's group in back in 2003.
 
-**中文**: 语言模型已经存在有一段时间了。回到香农，他把语言模型看作是一种估计英语熵的方法。我认为在人工智能领域，它们在自然语言处理中变得非常重要，它们是像机器翻译、语音识别这样的大型系统的一个组成部分。现在可能不太被重视的一点是，如果你回顾一下2007年，谷歌当时训练了30个大型N-gram模型，即五元模型，覆盖了超过两万亿个词符，这比GPT-3的词符数量多得多。但据我所知，直到最近两年我们才达到这样的词符数量。但它们是N-gram模型，因此并没有表现出我们现在所知道的语言模型的任何有趣现象。好的，所以在2010年代，我认为很多深度学习革命发生了，很多要素逐渐到位。是的，最早的一个神经语言模型来自Yachtropenzio团队在2003年的时候。
+**中文**: 所以语言模型其实已经存在很久了。最早可以追溯到香农（Shannon），他把语言模型当作一种估算英语熵（信息量）的方法。在 AI 领域，它们真正崭露头角是在自然语言处理（NLP）中，当时它们只是作为机器翻译、语音识别等大型系统中的一个组件。还有一点现在可能大家不太在意了，但如果你回顾 2007 年，Google 当时训练了 30 个大型 N-gram 模型（也就是 5-gram 模型），处理了 2 万亿个 token。这个数据量甚至比 GPT-3 用的还要多！而且直到最近两年，我们才重新达到这个 token 数量级。但问题在于，它们是 N-gram 模型。所以它们并没有展现出我们今天在语言模型中看到的那些有趣的现象（比如涌现能力）。好了，到了 2010 年代，我想大家都很清楚，深度学习革命发生了，各种‘原材料’开始逐渐到位。比如，早在 2003 年，Yoshua Bengio（教授口误说成了 Yachtropenzio）的团队就提出了第一个神经语言模型。
 
-## 段落 18
+**英文**: There is seq-to-seq models. This I think was a big deal for, how do you basically model sequences from Ilya and Google folks? There's an atom optimizer, which still is used. by the majority of people, dating over a decade ago. There's a tension mechanism, which was developed in the context of machine translation, which then led up to the famous attention all you need, or the AKA the transformer paper in 2017. People were looking at how to scale mixture of experts. There's a lot of work around late 2010s on how to essentially do model parallelism. And they were actually figuring out how you could train 100 billion prime models. They didn't train it for very long because these were more systems work, but all the ingredients were kind of in place before in, or in by the time the 2020 came around. So I think one, you know, other trend, which was starting NLP,. was the idea of, you know, these foundation models that could be trained on a lot of texts and adapted to a wide range of downstream tasks.
 
-**英文**: There is seek-to-seek models. This I think was a big deal for, how do you basically model sequences from Ilya and Google folks? There's an atom optimizer, which still is used. by the majority of people, dating over a decade ago. There's a tension mechanism, which was developed in the context of machine translation, which then led up to the famous attention all you need, or the AKA the transformer paper in 2017. People were looking at how to scale mixture of experts. There's a lot of work around late 2010s on how to essentially do model parallelism. And they were actually figuring out how you could train 100 billion prime models. They didn't train it for very long because these were more systems work, but all the ingredients were kind of in place before in, or in by the time the 2020 came around. So I think one, you know, other trend, which was starting NLP,. was the idea of, you know, these foundation models that could be trained on a lot of texts and adapted to a wide range of downstream tasks.
+![](img/lec1_007.png)
 
-**中文**: 存在“寻求-寻求”模型。我认为这对于如何从Ilya和谷歌团队那里基本建模序列来说是一个重大突破。有一个原子优化器，至今仍被大多数人使用，可以追溯到十多年前。有一种张力机制，是在机器翻译的背景下开发的，随后导致了著名的“注意力机制，你只需要它”或2017年的“Transformer”论文。人们开始研究如何扩展专家混合模型。在2010年代后期有很多关于如何实现模型并行的工作。他们实际上正在研究如何训练1000亿参数的模型。由于这些更多是系统性工作，它们并没有训练很长时间，但到2020年到来时，所有要素都已经准备就绪。因此，我认为另一个趋势是开始于自然语言处理（NLP），即这些基础模型的概念，这些模型可以在大量文本上进行训练，并适应各种下游任务。
-
-## 段落 19
+**中文**: 还有 Seq2Seq（序列到序列）模型。我觉得这对如何对序列进行建模是个大事情，这主要归功于 Ilya（Sutskever）和 Google 的那帮人。
+还有 Adam 优化器，这东西到现在还是大多数人在用，虽然它已经是十多年前的老古董了。还有注意力机制（Attention Mechanism），最初是在机器翻译的背景下开发出来的，这直接引出了 2017 年那篇著名的《Attention Is All You Need》，也就是 Transformer 论文。当时人们还在研究如何扩展混合专家模型（Mixture of Experts）。在 2010 年代末，有很多关于如何进行模型并行化的工作。他们当时其实已经搞定了如何训练 1000 亿参数的模型。虽然因为那些主要是系统层面的工作，模型没训练太久，但等到 2020 年左右的时候，所有的‘原材料’其实都已经到位了。所以我觉得，另一个趋势——也就是 NLP 领域的变革——就是‘基础模型’（Foundation Models）的概念：可以在海量文本上训练，然后适配各种下游任务的模型。
 
 **英文**: So Elmo, Bert, you know, T5, these were models that were, for their time, very exciting. We kind of maybe forget how excited people were about, you know, things like Bert, but it was a big deal. And then I think, I mean, this is abbreviated history, but I think one critical piece of the puzzle is, you know, open AI, just taking these ingredients, you know, they end up applying very nice engineering and really kind of pushing on the kind of the scaling laws, embracing it as, you know, this is the kind of mindset piece and that led to GPT-2 and GPT-3. Google, you know, obviously was in the game and trying to, you know, compete as well. But that sort of paved the way, I think, to another kind of line of work, which is these were all closed models. So models that weren't released and you can only access via API, but they were all,. though, NLP models, starting with early work by, you know, Eluther, right after GPT-3 came out, Meta's early attempt, which didn't work, maybe as quite as well, Bloom. And then Meta, Alibaba, deep seek, AI-2, and there's a few others, which I am a listed, having creating these open models where the weights are released. One other piece of, I think, tidbit about openness, I think is important, is that there's many levels of openness. There's closed models like GPT-4.
 
-**中文**: 像 ELMo、BERT，还有 T5，这些模型在当时可是非常激动人心的。我们可能有点忘了大家对 BERT 这类模型曾经有多狂热，但那在当时绝对是大事。接下来这段历史虽然简略，但我认为其中关键的一环是 OpenAI。他们基本上是把现有的这些‘原料’拿过来，通过出色的工程化能力，真正推动了缩放定律的应用——这其实也是一种思维模式的转变。正是这种理念催生了 GPT-2 和 GPT-3。当然，Google 也在局中，并试图参与竞争。但这为另一条技术路线铺平了道路。之前的那些都是闭源模型，也就是不公开代码和权重，你只能通过 API 来访问。不过，随着 EleutherAI 在 GPT-3 发布后的早期工作，情况开始改变。虽然 Meta 的早期尝试效果可能没那么好，还有 BLOOM 等项目，再到后来的 Meta、阿里巴巴、深度求索、艾伦人工智能研究所等，越来越多的机构开始创建并开源模型权重。
-关于‘开源’，我觉得还有一个重要的小细节：开源也是分很多层级的。比如 GPT-4 就是典型的闭源模型。
+**中文**: 所以像 ELMo、BERT，还有 T5 这些模型，在它们那个年代可是非常令人兴奋的。我们可能有点忘了当时大家对 BERT 有多狂热，但那在当时确实是个大事件。然后我觉得——虽然这是简略版的历史——但拼图中关键的一块是：OpenAI 把这些现有的‘原材料’拿过来，运用了非常出色的工程能力，并且真正地去推动和拥抱‘缩放定律’（Scaling Laws）。这就是我之前说的思维模式，这也直接带来了 GPT-2 和 GPT-3。Google 显然也在局中，试图与之竞争。但这某种程度上为另一条技术路线铺平了道路。之前的那些都是闭源模型，也就是不发布模型，你只能通过 API 访问，而且它们都是 NLP 模型。但后来开始有了开源的工作，最早是 EleutherAI（教授口误说成了 Eluther）在 GPT-3 出来后做的工作。还有 Meta 早期的尝试（虽然效果可能没那么好），以及 BLOOM。然后是 Meta、阿里、DeepSeek、AI2 等几家（我就不一一列举了），它们开始创建这些开源模型，也就是把模型权重公开发布。关于‘开源’，我觉得还有一个重要的小细节：开源其实分很多层级。比如像 GPT-4 就是闭源模型。
+
+![](img/lec1_008.png)
 
 ## 段落 20
 
