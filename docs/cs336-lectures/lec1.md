@@ -55,8 +55,6 @@
 
 ![](img/lec1_004.png)
 
-## 段落 11
-
 **英文**: So don't despair. We can still learn something in this class. But we have to be very precise about what we're learning. So there's three types of knowledge. There's the mechanics of how things work. This we can teach you. We can teach you what a transformer is. You'll implement a transformer. We can teach you how model parallelism leverages GPUs efficiently. These are just like kind of the raw ingredients, the mechanics.
 
 **中文**: 所以别灰心，我们在这门课里还是能学到东西的。但我们必须非常精准地界定我们要学什么。知识大概分三种，其中一种是‘运作机制’（Mechanics）。这个我们能教你。我们可以教你什么是 Transformer。你们会亲手实现一个 Transformer。我们可以教你模型并行化是如何高效利用 GPU 的。这些就像是原材料，是底层的机械原理。
@@ -67,8 +65,6 @@
 这东西有点微妙，听起来可能有点虚。但实际上，我觉得在某种程度上，它比技术细节更重要。因为我们要建立的思维模式是：我们要想办法把硬件的性能压榨到极致，并且要认真对待‘规模化’（Scaling）。因为在某种意义上，那些技术细节（Mechanics），你们后面会看到，其实这些‘原材料’都已经存在很久了。但我认为，真正引领这一代AI模型爆发的，其实是 OpenAI 开创的这种‘规模化思维’。所以关于思维模式，我希望我们能把它强行灌输给你们（bang into you），让你们学会用某种特定的方式去思考。然后第三点，就是直觉（Intuitions）。
 
 ![](img/lec1_005.png)
-
-## 段落 13
 
 **英文**: And this is about which data and modeling decisions lead to good models. This, unfortunately, we can only partially teach you. And this is because what architectures and what data sets. work at, in other scales, might not be the same ones that work at large scales. But hopefully you got two and a half out of three. So that's pretty good being for your buck. OK, speaking of intuitions, there's this sort of, I guess, sad reality of things that you can tell a lot of stories about why certain things in the transformer the way they are. But sometimes it's just, you do the experiments and the experiments speak. So for example, there's this known Shazier paper that introduced the Swigloo, which is something that will see a bit more in this class, which is a type of non-linearity. And in the conclusion, the results are quite good.
 
@@ -122,71 +118,61 @@
 
 ![](img/lec1_008.png)
 
-## 段落 20
 
 **英文**: There's open weight models where the weights are available and there's actually a paper, a very nice paper with lots of architectural details, but no details about the data set. And then there's open source models where all the weights and data are available in the paper that were there honestly trying to explain as much as they can. But of course, you can't really capture everything in a paper and there's no substitute for learning how to build it, except for kind of doing it yourself. Okay, so that leads to kind of the present day where there's a whole host of frontier models from OpenAI and Thropic, XAI, Google, Meta, DeepSeek, Alibaba, Tencent, and probably a few others that sort of dominate the current landscape. So we're kind of interested in interesting time where just to kind of reflect a lot of the ingredients, like I said, were developed, which is good. because I think we're gonna revisit some of those ingredients and trace how these techniques work. And then we're going to try to move us close as we can to best practices on frontier models, but you're using information from essentially the open community. And reading between the lines from what we know about the closed models. Okay, so just as an interlude, so what are you looking at here? So this is an executable lecture. So it's a program where I'm stepping through and it delivers a content of lecture.
 
 **中文**: 有公开权重的模型，其中权重是公开的，并且确实有一篇论文，一篇非常不错的论文，包含很多架构细节，但没有关于数据集的细节。然后还有开源模型，其中所有的权重和数据都在论文中，他们诚实地试图尽可能多地解释。但当然，你不能在一篇论文中真正涵盖一切，除了自己动手做之外，没有其他替代方法。好的，这样就导致了现在的情况，有很多前沿模型来自OpenAI、Thropic、XAI、Google、Meta、DeepSeek、阿里巴巴、腾讯，可能还有其他一些公司，它们目前主导着整个局面。所以我们对这个时期很感兴趣，正如我所说，很多成分都是在这个时期开发出来的，这很好。因为我认为我们将重新审视这些成分，并追踪这些技术是如何工作的。然后我们会尽量接近前沿模型的最佳实践，但你使用的信息基本上来自开放社区。以及从我们对封闭模型的了解中推测出来。好的，所以作为一段插曲，你现在看到的是什么？这是一堂可执行的课程。这是一个程序，我逐步进行，它会传递课程内容。
 
-## 段落 21
 
 **英文**: So one thing that I think is interesting here is that you can embed code. So if you can just step through code. and I think this is a smaller screen than I'm used to, but you can look at the environment variables as you're stepping through code. So that's a useful later when we start actually trying to drill down and giving code examples. You can see the hierarchical structure of a lecture, like we're in this module and you can see where it's called for main. And you can jump to definitions, like supervised fine tuning, which we'll talk about later. Okay, and if you think this looks like a Python program, well, it is a Python program, but I've made it, you'll process it so for your viewing pleasure. Okay, so let's move on to the course logistics now. Actually, maybe I'll pause for questions. Any questions about what we're learning in this class? Yeah.
 
-**中文**: 这里有趣的一点是，你可以嵌入代码。所以如果你能逐步执行代码，我认为这比我现在习惯的屏幕要小，但你可以在逐步执行代码时查看环境变量。当我们将开始实际深入探讨并提供代码示例时，这会很有用。你可以看到课程的层次结构，比如我们现在在这一模块中，可以看到它在主程序中被调用的位置。你可以跳转到定义，比如我们稍后将讨论的监督微调。好的，如果你认为这看起来像一个Python程序，那么它确实是一个Python程序，但我已经处理过它，以便于你观看。好的，那么我们现在进入课程安排部分。实际上，也许我应该暂停一下，看看有没有问题。关于这门课我们要学的内容，有什么问题吗？是的。
-
-## 段落 22
+**中文**: 我觉得这里有个很有趣的功能，就是可以嵌入代码。你可以逐步跟踪代码的执行过程。虽然这个屏幕比我平时用的要小一些，但你仍然可以在调试代码时查看环境变量。等我们后面开始深入讲解并提供代码示例时，这个功能会非常有用。你还可以看到课程内容的层级结构，比如当前我们所在的模块，以及主程序是如何调用它的。你还可以跳转到定义处，比如“监督式微调”（supervised fine tuning），这个我们稍后会讲到。如果你觉得这看起来像一个 Python 程序，没错，它确实是用 Python 编写的，但我已经对它做了一些处理，让它更便于大家观看。好了，接下来我们进入课程的后勤安排部分。不过，也许我应该先暂停一下，看看大家有没有问题。关于我们这门课要学的内容，大家有什么问题吗？好的，有请。
 
 **英文**: So the question is, would I expect a graduate from this class to be able to lead a team and build a frontier model? Of course, with like a billion dollars of capital. Yeah, of course. I would say that it's a good step, but there's definitely many pieces that are missing. And I think, we thought about, we should really teach like a series of classes that eventually leads up to as close as we can get. But I think this is maybe the first step of the puzzle, but there are a lot of things and I'm happy to talk offline about that. But I like the ambition. Yeah. That's what you should be doing, taking the class so you can go lead teams and build frontier models. Okay. Okay.
 
 **中文**: 所以问题是，我会期望这个班级的毕业生能够带领一个团队并构建前沿模型吗？当然，如果有十亿美元的资金。是的，当然。我认为这是一个好的步骤，但显然还有很多缺失的部分。我认为，我们考虑过，我们应该真正开设一系列课程，最终尽可能接近。但我觉得这可能是拼图的第一步，但还有很多事情要做，我很高兴私下讨论这个问题。但我喜欢这种雄心。是的。这就是你应该做的，参加这门课程，这样你就可以去带领团队并构建前沿模型。好的。好的。
 
-## 段落 23
-
 **英文**: Let's talk a little bit about the course. So here's a website, everything's online. This is a five unit class. But I think that maybe it doesn't express the level here as well as this quote that I pulled out from a course evaluation. The entire assignment was approximately the same amount of work as all five assignments from the CS24N plus the final project. And that's the first homework assignment. So not to scare you off,. but just giving some data here. So why should you endure that? Why should you do it? I think this class is really for people who have sort of an obsessive need to understand how things work all the way down to the atom, so to speak. And I think if you, you know, when you get through this class, I think you will have really leveled up.
 
-**中文**: 让我们稍微谈谈这门课程。这是一个网站，所有内容都是在线的。这是一门五学分的课程。但我觉得可能无法很好地表达这里的水平，这是我从课程评价中摘录的一句话。整个作业的工作量大约相当于CS24N的五个作业加上最终项目的工作量。而这是第一份作业。所以不是要吓跑你们，只是在这里提供一些数据。那么，为什么你应该坚持下去？为什么你应该做这件事？我认为这门课是为那些对理解事物如何运作有某种强迫性需求的人准备的，也就是说，要一直深入到原子层面。我认为，当你上完这门课后，你会真正提升一个层次。
+**中文**: 我们来简单聊聊这门课程。这是课程网站，所有内容都在线上。这是一门5学分的课程。但我觉得，或许下面这句我从课程评估中摘录的话，更能体现这门课的难度：“整个作业的工作量大约相当于CS24N课程五次作业加上期末项目的总和。”而且，这还仅仅是第一次作业。这么说并不是要吓跑大家，只是想提供一些真实的数据。那么，为什么要忍受这样的强度？为什么要选择这门课呢？我认为，这门课真正适合那些对理解事物运作原理有着近乎执着需求的人——可以说，是想要一直探究到“原子”级别的人。我相信，当你完成这门课程后，你的能力将会实现真正的飞跃。
 
-## 段落 24
+![](img/lec1_009.png)
 
 **英文**: in terms of your research engineering and the level of comfort that you'll have in building ML systems at scale will just be, I think, you know, something. There's also a bunch of reasons that you shouldn't take the class. For example, if you wanna get any research done this quarter, maybe this class isn't for you. If you're interested in learning just about the hottest new techniques, there are many other classes that can probably deliver on that, you know, better than, for example, you spending a lot of time debugging BPE. And this is really, I think, a class about, you know, the primitives and learning things bottom up as opposed to the kind of the latest. And also if you're interested in building language models or, you know, 4x, this is probably not the first class I, you would take. I think practically speaking, you know, as much as I kind of made a fun prompting, prompting is great. Find tuning is great. If you can do that and it works, then I think that is something you should absolutely start with. So I don't want people taking this class and thinking of the great, any problem.
 
-**中文**: 在你的研究工程和构建大规模机器学习系统的舒适度方面，我认为这将是一些东西。也有许多理由说明你不应该选这门课。例如，如果你这学期想做任何研究，也许这门课不适合你。如果你只是想了解最新的技术，有很多其他课程可能比你花大量时间调试BPE更能满足你的需求。我认为这门课实际上是关于基础原理和自底向上的学习，而不是最新的东西。此外，如果你对构建语言模型或4x之类的东西感兴趣，这 probably 不是你应该上的第一门课。我认为从实际角度来看，尽管我有点开玩笑地说，提示工程很好，微调也很棒。如果你能做到这一点并且有效，那么我认为你应该绝对从这里开始。所以我并不希望人们选了这门课后认为任何问题都是伟大的。
-
-## 段落 25
+**中文**: 在研究工程能力方面，以及你在构建大规模机器学习系统时的熟练程度，我认为这门课将带来质的飞跃。不过，也有很多理由说明你不应该选修这门课。例如，如果你这个季度打算做研究工作，那么这门课可能不适合你。如果你只想学习最新、最热门的技术，那么有很多其他课程可能比我这门课更能满足你的需求——毕竟，与其花大量时间去调试 BPE（字节对编码），不如去那些课程。实际上，这门课的核心在于讲解“原语”（primitives），倡导自底向上的学习方式，而不是追逐最新的潮流。此外，如果你的目标是直接构建语言模型或者实现 4 倍的性能提升，那么这门课可能也不是你的首选入门课。从实际角度来看，尽管我刚才开玩笑地提到了提示工程（prompting），但提示工程确实很棒，微调（fine-tuning）也很棒。如果你能直接使用这些方法并让它们奏效，那么我绝对建议你从那里开始。我不希望大家选了这门课后，误以为它是解决任何问题的万能钥匙。
 
 **英文**: The first step is to train a language model from scratch. That is not the right way of thinking about it. Okay, and I know that many of you, you know, some of you are enrolled, but we didn't, we did have a cap so we weren't able to enroll everyone. And although for the people online,. you can follow it at home. All the lecture materials and assignments are online so you can look at them. The lectures are also recorded and will be put on YouTube, although there will be some number of weak lag there. And also will offer this class next year. So if you were not able to take it this year, don't fret. There will be next time.
 
-**中文**: 第一步是从零开始训练一个语言模型。这样想是不对的。好的，我知道你们中很多人，你们知道，有些人已经报名了，但我们没有，我们有名额限制，所以无法让所有人报名。虽然对于在线学习的人，你们可以在家跟随课程。所有的课程材料和作业都在网上，你们可以查看。课程也会被录制并上传到YouTube，尽管可能会有一些延迟。明年我们还会开设这门课。所以如果你今年没能选上，不要着急，下次会有机会。
+**中文**: “第一步是从零开始训练一个语言模型。”但这其实并不是正确的思考方式。我知道你们很多人——其实有些同学已经注册了——但我们确实有人数上限，所以没法让所有人都进来。对于在线上观看的同学，你们在家也可以跟着学。所有的讲座资料和作业都在网上，大家可以随时查看。讲座也会录下来放到 YouTube 上，虽然可能会有几天的延迟。而且我们明年也会开这门课。所以，如果今年没能选上，别发愁，明年还有机会。
 
-## 段落 26
 
 **英文**: Okay, so the class has five assignments. And each of the assignments, we don't provide scaffolding code in a sense that you're literally give you a blank file and you're supposed to build things up. And in the spirit of building from scratch. But we're not that mean. We do provide unit tests and some adapter interfaces. that allow you to check on correctness of different pieces and also the assignment write up. If you walk through it does do it for sort of a gentle job of doing that. But you're kind of on your own for making good software design decisions and figuring out what you name your functions and how to organize your code, which is a useful skill, I think. So one strategy, I think, for all assignments is that there is a piece of assignment which is just implement the thing and make sure it's correct. That, mostly you can do locally on your laptop.
 
-**中文**: 好的，这门课有五个作业。每个作业，我们不会提供结构代码，也就是说，你会得到一个空白文件，然后需要自己构建内容。本着从零开始构建的精神。但我们不会那么苛刻。我们会提供单元测试和一些适配器接口，让你可以检查各个部分的正确性以及作业说明。如果你按照说明一步步来，就能比较轻松地完成。但你在做出良好的软件设计决策以及确定函数名称和代码组织方式方面基本上是靠自己，我认为这是一个有用的技能。所以，我认为所有作业的一个策略是，有一个部分就是实现该功能并确保其正确性。这部分你基本上可以在自己的笔记本电脑上完成。
+**中文**: 好的，这门课一共有五次作业。关于这些作业，我们在某种意义上不提供脚手架代码——也就是说，我们实际上给你的就是一个空白文件，你需要从头开始构建所有内容，这也符合“从零开始”的精神。不过我们也没那么“狠”。我们确实会提供单元测试和一些适配器接口，让你能检查各个部分的正确性，此外还有详细的作业说明文档。如果你仔细阅读，会发现引导过程其实挺循序渐进的。但在做出良好的软件设计决策、决定函数命名以及如何组织代码这些方面，基本上得靠你自己，我认为这是一项非常有用的技能。所以，我觉得应对所有作业的一个策略是：作业中有一部分仅仅是实现功能并确保其正确性。这部分工作，你大多可以在自己的笔记本电脑上本地完成。
 
-## 段落 27
+![](img/lec1_010.png)
 
 **英文**: You shouldn't need compute for that. And then you should, we have a cluster that you can run for benchmarking both accuracy and speed. Right, so I want everyone to kind of embrace this idea of that. You want to use as a small data set or as few resources possible to prototype before running large jobs. You shouldn't be debugging with 1 billion parameter models on the cluster if you can help it. OK, there's some assignments which will have a leaderboard, which usually is of the form do things to make perplexity go down given a particular training budget. Last year it was, I think, pretty exciting for people to try to try different things that you either learn from the class or you read online. And then finally, I guess this year is, this was less of a problem last year because I guess Copilot wasn't as good, but Cursus is pretty good. So I think our general strategy is that AI tools are can take away from learning because there are cases where it can just solve the thing you want it to do. But I think you can obviously use them judiciously, so but use at your own risk.
 
-**中文**: 你不需要为此进行计算。然后，我们可以运行一个集群，用于基准测试准确性和速度。对，所以我希望每个人都能接受这个想法。在运行大型任务之前，你应该使用一个小的数据集或尽可能少的资源来进行原型设计。如果你能避免的话，不应该在集群上用10亿参数的模型进行调试。好的，有一些作业会有排行榜，通常的形式是在给定特定训练预算的情况下，做些事情使困惑度降低。去年，对于人们来说尝试从课程中学习或在线阅读的不同方法相当令人兴奋。最后，我想今年的情况是，去年这个问题没那么严重，因为我觉得Copilot没有那么好，但Cursus还不错。所以我认为我们的总体策略是，AI工具可能会妨碍学习，因为在某些情况下，它们可以直接解决你想要的问题。但我觉得你可以明显地谨慎使用它们，所以请自担风险使用。
+**中文**: 做原型验证时，你不需要动用大型计算资源。我们有一个集群，你可以用它来跑基准测试，评估模型的准确率和速度。对，所以我希望大家能接受这样一个理念：在运行大规模任务之前，你应该尽可能使用小规模数据集或最少的资源来进行原型设计。如果条件允许，你不应该在集群上调试 10 亿参数的模型。有些作业会设有排行榜，通常的形式是在给定的训练预算下，想办法降低困惑度（perplexity）。去年，大家尝试从课上学到的或者网上看到的各种方法，我觉得那挺让人兴奋的。最后，我想今年和去年有点不同，去年因为 Copilot 还没那么强，所以问题不大，但 Cursus 现在相当厉害。所以，我们总体的策略是：AI 工具可能会妨碍学习，因为在某些情况下，它们能直接帮你把问题解决了。但我认为你显然可以明智地使用它们，不过要“风险自负”。
 
-## 段落 28
 
 **英文**: You're kind of responsible for your own learning experience here. OK, so we do have a cluster. So thank you together AI for providing. a bunch of H100s for us. There's a guide to please read it carefully to learn how to use a cluster. And start your assignments early because the cluster will fill up towards the end of a deadline as everyone's trying to get their large runs in. OK, any questions about that? You mentioned it was a five-year class. Were you able to sign up for it for the three of the minutes of the good time? Right, so the question is, can you sign up for less than five units? I think administratively, if you have to sign up for less, that is possible. But it's the same class and the same workload. Yeah.
 
-**中文**: 你在这里的学习体验在某种程度上要靠你自己负责。好的，我们确实有一个集群。感谢一起AI为我们提供了大量H100。有一份指南，请仔细阅读以了解如何使用集群。请尽早开始你的作业，因为随着截止日期的临近，集群会逐渐被占用，因为每个人都在尝试运行他们的大型任务。好的，对此有什么问题吗？你提到这是一门五年课程。你们能在良好时间的三分钟内报名参加吗？对，问题是，你能报名少于五个学分吗？我认为在行政上，如果你需要报名少于五个学分，这是可能的。但这是同一门课程，同样的工作量。是的。
+**中文**: 在这里，你们得对自己的学习体验负责。好的，我们确实有一个计算集群。所以要感谢 Together AI 为我们提供了一批 H100 显卡。有一份使用指南，请务必仔细阅读，学习如何使用集群。另外，作业要尽早开始，因为快到截止日期时，大家都会挤进去跑大型任务，集群资源很快就会爆满。关于这点有什么问题吗？
+（听众提问）：你刚才提到这是一门 5 学分的课。那能在选课系统开放的那几分钟里选少一点学分吗？
+（教授回答）：对，问题是能不能选少于 5 学分。从行政管理的角度来看，如果你必须少选，那是可以的。但这还是同一门课，工作量也是一样的。是的。
 
-## 段落 29
 
 **英文**: Any other questions? OK, so in this part, I'm going to go through all the different components of the course and just give a broad overview, a preview of what you're going to experience. So remember, it's all about efficiency, given hardware and data, how do you train the best model given your resources? So for example, if I give you a common crawl dump, a web dump, and 32 H100s for two weeks, what should you do?. There are a lot of different design decisions. There's questions about the tokenizer, the architecture, systems optimizations. You can do data things you can do. And we've organized the class into these five units or pillars. So I'm going to go through each of them in turn and talk about what will cover, what the assignment will involve, and then I'll kind of wrap up. OK, so the goal of the basics unit is just get a basic version of a full pipeline working. So here you implement a tokenizer, model architecture, and training. So I'll just say a bit more about what these components are.
 
-**中文**: 还有其他问题吗？好的，那么在这一部分中，我将介绍课程的所有不同组件，并简要概述一下你将要体验的内容。所以请记住，这一切都与效率有关，在给定硬件和数据的情况下，如何在你的资源下训练出最好的模型？例如，如果我给你一个常见的爬虫转储，一个网络转储，以及两周时间的32个H100，你应该怎么做？有很多不同的设计决策。有关于分词器、架构、系统优化的问题。你可以做数据方面的事情，也可以做其他事情。我们已经将课程分为这五个单元或支柱。所以我将依次介绍每个单元，谈谈将涵盖的内容，作业将涉及什么，然后我会做个总结。好的，基础单元的目标就是让一个完整的流程的基本版本运行起来。在这里你需要实现一个分词器、模型架构和训练。我将更详细地介绍一下这些组件是什么。
+**中文**: 还有其他问题吗？好的，在这一部分，我将带大家浏览课程的所有不同组件，对你们即将体验的内容做一个宽泛的概览和预览。请记住，这门课的核心在于效率——即在给定的硬件和数据条件下，如何利用你的资源训练出最好的模型？举个例子，如果我给你一份 Common Crawl 数据转储（dump）、一份网络数据转储，以及 32 张 H100 显卡供你使用两周，你该怎么做？这里面有非常多的设计决策：关于分词器（tokenizer）的问题、关于架构的问题、关于系统优化的问题，还有你可以对数据做的各种处理。我们将课程组织成了这五个单元（或者说五大支柱）。接下来我将逐一讲解，谈谈每个单元涵盖的内容、作业涉及的内容，最后做一个总结。好的，那么“基础”单元的目标，仅仅是让一个完整流程的基础版本跑通。在这里，你需要实现一个分词器、模型架构以及训练过程。我再多说一点关于这些组件的细节。
 
-## 段落 30
 
 **英文**: So a tokenizer is something that converts between strings and sequences of integers. Intuitively, you can think about the integers corresponding. to breaking up the string into segments. And mapping each segment to an integer. And the idea is that your sequence of integers is what goes into the actual model, which has to be a fixed dimension. OK, so in this course, we'll talk about the by pair encoding BPE tokenizer, which is relatively simple and still is used. There are a promising set of methods on tokenizer free approaches. So these are methods that just start with the raw bytes and don't do tokenization and develop a particular architecture that just takes the raw bytes. This work is promising, but so far I haven't seen it been scaled to the frontier yet. So we'll go with BPE for now.
 
-**中文**: 所以，分词器是将字符串和整数序列相互转换的东西。直观地讲，你可以认为这些整数对应于将字符串拆分成片段，并将每个片段映射到一个整数。其理念是，你的整数序列会进入实际的模型，而模型必须是固定维度的。好的，所以在本课程中，我们将讨论成对编码的BPE分词器，它相对简单且仍在使用。有一些有前景的无分词器方法。这些方法直接从原始字节开始，不进行分词，而是开发一种特定的架构，直接处理原始字节。这项工作很有前景，但到目前为止，我还没有看到它被扩展到最前沿。因此，我们现在还是使用BPE。
+**中文**: 分词器是一种在字符串和整数序列之间进行转换的工具。直观地理解，你可以认为这些整数对应着将字符串切分成不同的片段，并将每个片段映射为一个整数。其核心思想是，你的整数序列才是实际输入到模型中的内容，而模型必须接收固定维度的输入。在这门课中，我们将讨论字节对编码（BPE）分词器，它相对简单，而且目前仍在使用。同时也有一些很有前景的“无分词器”方法。这些方法直接从原始字节开始，不进行分词，而是开发一种专门处理原始字节的特定架构。这项工作很有希望，但到目前为止，我还没看到它被扩展到最前沿的规模。所以，我们暂时还是采用 BPE。
 
 ## 段落 31
 
