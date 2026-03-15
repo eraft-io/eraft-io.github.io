@@ -4,175 +4,367 @@
 
 ---
 
-## 段落 1
-
 **英文**: Okay, so last lecture, I gave an overview of language models and what it means to build them from scratch and why we want to do that. I also talked about tokenization, which is going to be the first half of the first assignment. Today's lecture will be going through actually building a model. We'll discuss the primitives in PyTorch that are needed. We're going to start with tensors, build models, optimizers, and training loop. And we're going to place close attention to efficiency in particular how we're using resources, both memory and compute. Okay, so to motivate things a bit, here's some questions. These questions are going to be answered by napkin mats, so get your napkins out. So how long would it take to train a 70 billion parameter dense transformer model on 15 trillion tokens on 1,024 H100? Okay, so I'm just going to sketch out the sort of give you a flavor of the type of things that we want to do. Okay, so here's how you go about reasoning it.
 
-**中文**: 好的，上一讲中，我概述了语言模型，介绍了从零开始构建语言模型的含义及其原因。我还讲解了分词（tokenization），这将是第一次作业前半部分的内容。今天的课程将实际动手构建一个模型，介绍构建过程中所需的 PyTorch 基础组件：我们将从张量（tensors）入手，逐步构建模型、优化器及训练循环，并特别关注效率问题——尤其是内存与计算资源的使用方式。为帮助大家理解背景，我们先提出几个问题。这些问题将通过“餐巾纸推演”（napkin math）来解答，请大家准备好餐巾纸。例如：在 1024 块 H100 GPU 上，训练一个参数量为 700 亿的稠密 Transformer 模型、数据量达 15 万亿词元（tokens），需要多长时间？接下来，我将简要勾勒出这类问题的分析思路，让大家对我们将要开展的工作类型有个直观感受。下面，我们就来梳理推理过程。
+**中文**: 好的，上一讲我概述了语言模型、从头构建它们的意义以及我们为什么要这样做。我还讨论了分词（tokenization），这将是第一次作业的前半部分内容。今天的讲座将实际演示如何构建一个模型。我们将讨论 PyTorch 中所需的 primitives（基本组件）。我们会从张量（tensors）开始，进而构建模型、优化器以及训练循环。我们将特别关注效率问题，尤其是我们如何使用资源，包括内存和算力。为了激发大家的思考，这里有一些问题。这些问题的答案将通过“餐巾纸推演”（napkin math，即快速估算）得出，所以请大家拿出餐巾纸（或草稿纸）。问题是：在 1,024 块 H100 GPU 上，训练一个拥有 700 亿参数的稠密 Transformer 模型，处理 15 万亿个 token，需要多长时间？接下来，我将大致勾勒一下推导过程，让大家感受一下我们想要进行的这类思考方式。
 
-## 段落 2
 
 **英文**: You count the total number of flops needed to train. So that's six times the number of parameters times the number of tokens. Okay, and where does that come from? That will be what we'll talk about in this lecture. You can look at the promised number of flops per second that H100 gives you. The MFU, which is something we'll see later. Let's just set it to 0. 5. And you can look at the number of flops per day that your hardware is going to give you at this particular MFU. So 1,024 of them for one day. And then you just divide the total number of flops you need to train them all by the number of flops that you're supposed to get.
 
-**中文**: 你需要计算训练所需的总浮点运算次数（flops），即参数量乘以词元数再乘以6。好的，这个公式从何而来？这正是本节课将要讲解的内容。你可以参考H100显卡所承诺的每秒浮点运算次数（flops），以及稍后会介绍的MFU（模型浮点利用率），此处我们暂且将其设为0.5。接着，你可据此算出在该MFU下，你的硬件单日所能提供的浮点运算次数——例如，1024块H100显卡运行一天所能提供的总flops。最后，只需用训练所需的总flops除以硬件单日所能提供的flops即可。
+**中文**: 你需要计算训练所需的总浮点运算次数（FLOPs）。这个数值等于参数数量的 6 倍乘以 token 的数量。那么，这个公式是从哪里来的呢？这正是我们本节课要讨论的内容。接下来，你可以查看 H100 GPU 标称的每秒浮点运算能力。这里涉及一个叫做 MFU（模型浮点利用率，Model FLOPs Utilization）的指标，我们稍后会详细讲解。现在，我们暂时将其设定为 0.5。基于这个特定的 MFU 值，你可以计算出你的硬件在一天内能提供的总浮点运算量（即 1,024 块显卡运行一天的总量）。最后，你只需用训练所需的总 FLOPs 除以你预期能获得的总 FLOPs，就能得出所需的时间。
 
-## 段落 3
 
 **英文**: Okay, and that gives you about 144. Okay, so this is very simple calculations at the end of the day. We're going to go through a bit more where these numbers come from. And in particular, where the six times number of parameters times number of tokens comes from. Okay, so here's the question. What is the largest model you can train on H800, H100 using Adam W if you're not being to clever? Okay, so H100 has 80 gigabytes of HBM memory. The number of bytes per parameter that you need for the parameters, the gradients, optimizer state is 16. And we'll talk more about where that comes from. And the number of parameters is basically total amount of memory divided by the number of bytes you need per parameter. And that gives you about 40 billion parameters.
 
-**中文**: 好的，这样算下来大约是144。最终来看，这些计算其实非常简单。接下来我们会进一步解释这些数字的来源，尤其是“6×参数量×token数”这一项的由来。那么问题来了：若不采用任何优化技巧，在H800或H100上使用AdamW优化器可训练的最大模型规模是多少？H100拥有80GB的高带宽内存（HBM），而每个参数在存储模型参数、梯度及优化器状态时所需字节数为16字节——我们稍后会详细说明该数值的来源。因此，参数总量基本等于总内存容量除以每个参数所需的字节数，由此可得约400亿个参数。
+**中文**: 好吧，这样算出来大约是 144（天）。说到底，这些计算非常简单。我们将进一步探讨这些数字的来源，特别是“6 倍参数数量乘以 token 数量”这个公式是怎么来的。接下来是这个问题：如果你不采用什么特别巧妙的优化技巧，仅使用 AdamW 优化器，在 H800 或 H100 上能训练的最大模型是多少？已知 H100 拥有 80 GB 的 HBM（高带宽内存）。对于每个参数，存储模型参数本身、梯度以及优化器状态总共需要 16 字节（关于这个数字的来源我们稍后会详细讨论）。因此，参数数量基本上等于总内存量除以每个参数所需的字节数。计算结果大约是 400 亿个参数。
 
-## 段落 4
 
 **英文**: And this is very rough because it doesn't take you into a good activation, which depends on batch size and sequence length, which I'm not really going to talk about, but will be important for assignment one. Okay, so this is rough back-and-vote calculation. And this is something that you're probably not used to doing. You're just implementing the model, you train it, and what happens happens. But remember that efficiency is the name of a game. And to be efficient, you have to know exactly how many flops you're actually expending. Because when these numbers get large, these directly translate into dollars, and you want that to be as small as possible. Okay, so we'll talk more about the details of how these numbers arise. We will not actually go over the transformer. So Tatsu is going to talk over the conceptual overview of that next time.
 
-**中文**: 而且这非常粗略，因为它并未将你带入一个良好的激活状态——而该状态取决于批量大小和序列长度，这部分我暂不展开讨论，但在第一次作业中会很重要。好的，因此这是一种粗略的反向传播计算。而这可能是你们不太习惯的操作：你们通常只是实现模型、训练模型，然后任其自行运行。但请记住，效率才是关键。而要实现高效，就必须精确知道实际消耗了多少浮点运算（FLOPs），因为当这些数值变得很大时，它们会直接转化为美元成本，因此你们希望这一成本尽可能小。好的，接下来我们将更详细地探讨这些数值的来源。我们不会实际讲解Transformer本身，因此下次将由Tatsu为大家介绍其概念性概览。
+**中文**: 这个估算非常粗略，因为它没有考虑激活值（activations）的内存占用，而激活值的大小取决于批量大小（batch size）和序列长度（sequence length）。我暂时不会深入讨论这部分，但它在第一次作业中非常重要。所以，这只是一个粗略的“信封背面的计算”（back-of-the-envelope calculation，即快速估算）。这种做法可能大家还不太习惯。通常，你们可能只是直接实现模型、开始训练，然后听天由命。但请记住，这场游戏的核心在于效率。为了实现高效，你必须确切地知道自己实际消耗了多少浮点运算量（FLOPs）。因为当这些数字变得庞大时，它们直接转化为金钱成本，而你希望这个成本尽可能低。接下来，我们会详细探讨这些数字是如何得出的。不过，我们本次课程实际上不会深入讲解 Transformer 架构本身，Tatsu 将在下次课为大家概述其概念原理。
 
-## 段落 5
 
 **英文**: And there's many ways you can learn about transformer if you haven't already looked at it. If you do assignment one, you'll definitely know what a transformer is. And the handout actually does a pretty good job of walking through all the different pieces. There's a mathematical description. If you like pictures, there's pictures. There's a lot of stuff you can look online. So, but instead, I'm going to work with simpler models and really talk about the primitives and the resource accounting piece. Okay, so remember last time I said what kinds of knowledge can you learn?. So mechanics, in this lecture, it's going to be just PyTorch and understanding how PyTorch works at a fairly primitive level. So that will be pretty straightforward.
 
-**中文**: 如果你尚未了解过Transformer，那么有很多途径可以学习它。如果你完成第一项作业，就一定会明白什么是Transformer。讲义本身也很好地逐一讲解了其各个组成部分：既有数学描述，也有图示（如果你喜欢图示的话），网上还有大量相关资料可供查阅。但在此，我将采用更简单的模型，重点讲解基本原理以及资源核算部分。好的，还记得上次我提到的“你能学到哪些类型的知识”吗？本节课所讲的“机制”部分，仅限于PyTorch及其在基础层面的工作原理，因此内容会相当直接明了。
+**中文**: 如果你还没有接触过 Transformer，有很多途径可以学习它。如果你完成了第一次作业，你肯定会对 Transformer 了如指掌。实际上，发放的讲义在梳理各个组成部分方面做得相当出色：既有数学描述，也有适合喜欢看图的同学的示意图。网上也有大量相关资料可供查阅。不过，本次课程我将侧重于更简单的模型，重点讲解基础组件（primitives）以及资源核算（resource accounting）部分。还记得上次我提到的“你能学到哪些知识”吗？关于“机制（mechanics）”部分，本讲座将专注于 PyTorch，并深入理解 PyTorch 在较底层的基础运作原理。这部分内容将会非常直观易懂。
 
-## 段落 6
 
 **英文**: Mindset is about resource accounting, and it's not hard. It's just you just have to do it. And intuitions, unfortunately, this is just going to be broad strokes for now. Actually, there's not really much intuition that I'm going to talk about in terms of how anything we're doing translates to good models. This is more about the mechanics and mindset. Okay, so let's start with memory accounting. And then I'll talk about computer accounting and then we'll build up bottom up. Okay, so the best place to start is a tensor. So tensors are the building block for storing everything in deep learning. Parameters, gradients, optimizers, data, data, activation, there's sort of these atoms.
 
-**中文**: 思维模式关乎资源核算，这并不难，只需付诸实践即可。至于直觉——很遗憾，目前我们只能泛泛而谈。实际上，我几乎不会就当前所做工作如何转化为优质模型这一问题展开任何直观解释；重点在于具体操作机制与思维方式。好，我们先从内存核算讲起，接着讨论计算核算，然后自下而上逐步构建。那么，最佳切入点是张量：张量是深度学习中存储一切信息的基本单元，包括参数、梯度、优化器状态、数据（训练数据与验证数据）、激活值等，它们构成了整个系统的基本“原子”。
+**中文**: “思维模式（Mindset）”关乎资源核算，这并不难，关键在于你去执行。至于“直觉（intuitions）”，遗憾的是，目前我们只能勾勒一个大致的轮廓。实际上，关于我们所做的这些工作如何转化为优质模型，我暂时不会深入探讨太多的直觉性理解。本次课程更侧重于机制和思维模式。
+好吧，让我们从内存核算开始，接着讨论计算核算，然后自底向上地构建我们的知识体系。最好的起点是张量（Tensor）。张量是深度学习中存储一切的基础构建块。无论是参数、梯度、优化器状态、输入数据还是激活值，它们本质上都是由这些“原子”构成的。
 
-## 段落 7
 
 **英文**: You can read lots of documentation about them. You're probably very familiar with how to create tensors. There's creating tensors in different ways. You can also create a tensor and not initialize it and use some special initialization for the parameters if you want. Okay, so those are tensors. So let's talk about memory and how much memory tensors take up. So every tensor that will probably be interested in is sort of a floating point number. And so there's many ways to represent floating point. So the most default way is float 32. And float 22 has 32 bits.
 
-**中文**: 你可以阅读大量关于它们的文档。你可能非常熟悉如何创建张量。创建张量的方式多种多样。你也可以先创建一个未初始化的张量，然后根据需要对参数采用特定的初始化方式。好了，以上就是关于张量的内容。接下来我们谈谈内存，以及张量所占用的内存大小。我们通常关注的张量元素基本都是浮点数，而浮点数有多种表示方式。其中最常用的默认格式是 float32（32 位浮点数），即每个浮点数占用 32 位。
+**中文**: 你可以查阅大量关于张量的文档。你可能已经非常熟悉如何创建张量了，创建方式多种多样。此外，你也可以创建一个未初始化的张量，然后根据需要对参数使用特定的初始化方法。
+好了，这就是张量。接下来我们谈谈内存，以及张量会占用多少内存。我们关注的每一个张量通常都是浮点数。表示浮点数有很多方式，最默认的方式是 float32（单精度浮点数）。float32 占用 32 位（bits）。
 
-## 段落 8
 
 **英文**: They're allocated one for sine, eight for exponent, and 23 for the fraction. So exponent gives you dynamic range and fraction gives you different, basically, specialized different values. So float 32 is also known as FP32 or single precision is sort of the gold standard in computing. Some people also refer to float 30 who has full precision. That's a little bit confusing because full is really depending on who you're talking to. If you're talking to a scientific computing person, they will kind of laugh at you when. you say float 32 is really full because they'll use float 64 or even more. But if you're talking to a machine learning person float 32 is the max you ever probably need to go because deep learning is kind of sloppy like that. Okay, so let's look at the memory. So the memory is very simple.
 
-**中文**: 其中1位分配给符号位，8位分配给指数位，23位分配给尾数位。因此，指数位决定了动态范围，而尾数位则决定了精度，即能够表示的不同数值。float32也被称为FP32或单精度浮点数，是计算领域的“黄金标准”。有些人还会提到“float30”，意指具备完整精度，但这略显混淆，因为所谓“完整”实际上取决于具体语境：若与科学计算领域的专家交流，他们听到你说float32是“完整精度”时可能会一笑置之，因为他们通常使用float64甚至更高精度；但若与机器学习领域的专家交流，则float32很可能就是你实际所需的最高精度，因为深度学习本身对精度的要求并不苛刻。好，接下来我们来看内存。内存结构非常简单。
+**中文**: 它们（32位）的分配方式是：1位用于符号位，8位用于指数位，23位用于尾数（分数部分）。指数位决定了动态范围，而尾数位则基本上提供了不同的具体数值。
+因此，float32 也被称为 FP32 或 单精度浮点数，它在计算领域堪称“黄金标准”。有些人也将 float32 称为“全精度（full precision）”，这可能会让人有点困惑，因为“全精度”的定义取决于你的对话对象。如果你和科学计算领域的人交谈，当你说 float32 就是“全精度”时，他们可能会嘲笑你，因为他们通常会使用 float64 甚至更高精度。但如果你和机器学习领域的人交谈，float32 通常就是你需要的最高精度了，因为深度学习在这方面往往比较“粗放”，不需要那么高的精度。
+好了，让我们来看看内存占用。内存的计算非常简单。
 
-## 段落 9
 
-**英文**: It's determined by the number of values you have in your tensor and the data type of each value. Okay, so if you create a torched tensor of 4 by 8 matrix, the default will give you a. type of float 32. The size is 4 by 8 and the number of elements is 32. Each element size is 4 bytes. 32 bits is 4 bytes. And the memory usage is simply the number of elements times the number of size of each element and that will give you 128 bytes. So this should be pretty easy. And just to give some intuition, if you get one matrix in the f4 layer of GPT3 is this. number by this number and that gives you 2.
+**英文**: It's determined by the number of values you have in your tensor and the data type of each value. Okay, so if you create a torched tensor of 4 by 8 matrix, the default will give you a. type of float 32. The size is 4 by 8 and the number of elements is 32. Each element size is 4 bytes. 32 bits is 4 bytes. And the memory usage is simply the number of elements times the number of size of each element and that will give you 128 bytes. So this should be pretty easy. And just to give some intuition, if you get one matrix in the f4 layer of GPT3 is this. number by this number and that gives you 2.3 gig bytes. So that's one matrix. These matrices can be pretty big. So float 32 is a default. But of course these matrices get big so you actually want to make them smaller so you use less memory. And also it turns out if you make them smaller, you also make it go faster too. So another type of representation is called float 16. And as the name suggests, it's 16 bits where both x1 and the fraction are shrunk down from 8 to 5 and 23 to 10. So this is known as half precision and it cuts down half the memory and that's all great except for the dynamic range for these float 16 isn't great. So for example, if you try to make a number like 10E1E minus 8 in float 16, it basically rounds down to 0 and you get under flow.
 
-**中文**: 它由张量中值的数量以及每个值的数据类型决定。好的，例如，如果你创建一个 4×8 的 PyTorch 张量，其默认数据类型为 float32；尺寸为 4×8，元素总数为 32；每个元素占 4 字节（32 位等于 4 字节）；内存占用量即为元素总数乘以单个元素大小，结果为 128 字节。因此这应该非常简单。再直观地说明一下：GPT-3 的 f4 层中某一层矩阵的尺寸为“该数值”乘以“该数值”，结果为 2。
+**中文**: 内存占用取决于张量中数值的数量以及每个数值的数据类型。
+好吧，如果你创建一个 4x8 的 PyTorch 张量（矩阵），默认数据类型会是 float32。尺寸是 4x8，元素总数为 32。每个元素的大小是 4 字节（因为 32 位 = 4 字节）。内存用量 simply 就是：元素总数 × 每个元素的大小，即 32 × 4 = 128 字节。这应该非常简单。
+为了给你一个直观的概念：如果在 GPT-3 模型的某个前馈层（FFN layer）中有一个矩阵，其维度是“这个数”乘以“那个数”，计算结果大约是 2.3 GB。这还仅仅是一个矩阵！这些矩阵可能非常巨大。
+因此，虽然 float32 是默认选项，但鉴于这些矩阵如此庞大，你实际上希望让它们变小以节省内存。而且事实证明，缩小它们还能让计算速度更快。
+另一种表示形式称为 float16。顾名思义，它占用 16 位，其中指数位从 8 位缩减到 5 位，尾数位从 23 位缩减到 10 位。这被称为 半精度（half precision）。它能将内存占用减半，这非常好，但缺点是 float16 的动态范围不够大。
+例如，如果你试图在 float16 中表示像 10 ^ -8 这样小的数字，它基本上会被舍入为 0，从而导致下溢（underflow）。
 
-## 段落 10
+![](img/lec2_002.png)
 
-**英文**: 3 gig bytes. So that's one matrix. These matrices can be pretty big. So float 32 is a default. But of course these matrices get big so you actually want to make them smaller so you use less memory. And also it turns out if you make them smaller, you also make it go faster too. So another type of representation is called float 16. And as the name suggests, it's 16 bits where both x1 and the fraction are shrunk down from 8 to 5 and 23 to 10. So this is known as half precision and it cuts down half the memory and that's all great except for the dynamic range for these float 16 isn't great. So for example, if you try to make a number like 10E1E minus 8 in float 16, it basically rounds down to 0 and you get under flow.
-
-**中文**: 3吉字节。因此，这是一个矩阵。这些矩阵可能非常大。float32是默认格式，但显然，由于这些矩阵体积庞大，我们实际上希望将其缩小以节省内存。此外，事实证明，缩小矩阵还能提升运算速度。另一种表示方法称为float16（半精度浮点数），顾名思义，它仅占用16位：其中指数位从8位缩减为5位，尾数位从23位缩减为10位。这种格式被称为半精度，可将内存占用减半，这固然很好，但float16的动态范围较差。例如，若尝试在float16中表示10⁻⁸这样的数值，其结果基本会向下舍入为0，从而导致下溢。
-
-## 段落 11
 
 **英文**: So the float 16 is not great for representing very small numbers or very big numbers as a matter of fact. So if you use float 16 for training, for small models it's probably going to be okay but for large models when you're having lots of matrices and you can get instability or under flow or overflow and bad things happen. So one thing that has happened which is nice is there's been another representation of B float 16 which stands for brain float. This was developed in 2018 to address the issue that for deep learning we actually care about dynamic range more than we care about this fraction. So basically BF16 allocates more to the exponent and less to the fraction. So it uses the same memory as float 16 but it has a dynamic range of float 32. So that sounds really good and it actually catches that resolution which is determined by the fraction is worse but this doesn't matter as much for deep learning. So now if you try to create a tensor with 1E minus 8 in BF16 then you get something that's not 0. So you can divin into the details. I'm not going to go into this but you can stare out to the actual full specs of all the different flowing points operations.
 
-**中文**: 因此，float16 实际上并不擅长表示极小或极大的数值。若在训练中使用 float16，对于小型模型可能尚可，但对于大型模型，由于涉及大量矩阵运算，容易出现不稳定性、下溢或上溢等问题，从而引发严重后果。值得庆幸的是，业界已推出另一种名为 BF16（Brain Floating Point 16）的表示方法。该格式于 2018 年提出，旨在解决深度学习中更关注动态范围而非精度（即尾数位数）这一实际需求。BF16 将更多位数分配给指数部分，而减少尾数部分的位数；其内存占用与 float16 相同，但动态范围却等同于 float32。这听起来非常理想——尽管其精度（由尾数决定）有所下降，但这对深度学习而言影响不大。例如，若尝试用 BF16 创建一个值为 1e−8 的张量，结果将不为零。您可进一步深入探究相关细节（此处不再展开），也可查阅各类浮点运算的完整技术规范。
+**中文**: 因此，float16 实际上并不适合表示非常小或非常大的数字。如果你在训练中使用 float16，对于小型模型可能还行；但对于大型模型，由于涉及大量矩阵，可能会导致数值不稳定、下溢（underflow）、上溢（overflow）等严重问题。为了解决这个问题，出现了一种很好的新表示形式：BF16（Brain Float 16）。它由谷歌于 2018 年开发，旨在解决深度学习中的一个关键需求：我们更关心动态范围，而不是尾数（分数部分）的精度。基本上，BF16 将更多的位数分配给指数部分，而减少尾数部分的位数。因此，它占用的内存与 float16 相同（都是 16 位），但其动态范围与 float32 相当。这听起来非常棒。虽然它的分辨率（由尾数决定）确实较差，但这对于深度学习来说影响不大。现在，如果你尝试在 BF16 中创建一个值为 10 ^ -8 的张量，结果不会变成 0（而在 float16 中会下溢为 0）。你可以深入研究这些细节，我在此就不展开讲解了，但你可以去查阅各种浮点数运算的完整技术规格。
 
-## 段落 12
+![](img/lec2_003.png)
+
 
 **英文**: So BF16 is basically what you will typically use to do computations because it's sort of good enough for people for a computation. It turns out that for storing optimizer states and parameters you still need float 32 for otherwise your training will go haywire. So if you're bald so now we have something called FP8 or 8bit and as the name suggests this is development 2022 by Nvidia so now they have essentially if you look at FPMBF16 it's like this and FPMBF12 you really don't have that many bits to store stuff. So it's very crude. There's two sort of variants depending on if you want to have more resolution or more dynamic range. And I'm not going to say too much about this but FP8 is supported by H100 it's not really available on previous generation. But at a high level you know training with float 32 which is I think you know is on what you would do if you're not trying to optimize you know too much and it's sort of safe. It requires more memory. You can go down to FP8 or BF16 but you can get some instability. Basically I don't think you would probably want to use a float 16 at this point for deep learning.
 
-**中文**: 因此，BF16 基本上是你通常用于计算的格式，因为其精度对大多数计算任务而言已足够。但事实证明，在存储优化器状态和模型参数时，你仍需使用 float32，否则训练过程将变得混乱失常。目前还出现了所谓 FP8（即 8 位浮点数）格式，顾名思义，它由英伟达于 2022 年推出。若对比 FP8、BF16 和 FP12，你会发现 FP8 可用的位数极少，因而精度非常粗略；它主要有两种变体，分别侧重更高分辨率或更宽动态范围。关于这一点我就不多作展开，但需指出：FP8 仅受 H100 显卡支持，上一代硬件并不支持。总体而言，使用 float32 进行训练——这大概是你在不刻意追求极致优化时所采用的稳妥方案——虽需更多内存，但较为安全；而转向 FP8 或 BF16 虽可节省资源，却可能带来一定训练不稳定性。目前，我认为在深度学习中基本不应再使用 float16。
+**中文**: 所以，BF16 基本上是你进行计算时的首选，因为对于大多数计算任务来说，它的精度已经“足够好”了。然而，事实证明，在存储优化器状态（optimizer states）和模型参数时，你仍然需要 float32，否则训练过程可能会变得混乱不堪（go haywire）。好了，现在我们来谈谈 FP8（8位浮点数）。顾名思义，这是 NVIDIA 于 2022 年 推出的一种格式。如果你观察 FP8 的结构（与 BF16 对比），你会发现用来存储数据的位数非常少，因此它非常“粗糙”。FP8 主要有两种变体，取决于你是想要更高的分辨率（精度）还是更大的动态范围。关于这点我就不多展开了，但需要注意的是：FP8 仅在 H100 及更新的 GPU 上得到支持，之前的显卡架构并不支持。
+总的来说：使用 float32 进行训练是最“安全”的做法，如果你不想花太多精力去优化，这就是默认选择，但它需要更多的内存。你可以降级使用 FP8 或 BF16 来节省内存并提高速度，但这可能会带来一些数值不稳定性。基本上，我认为在目前阶段，对于深度学习任务，你可能不再推荐使用 float16 了。
 
-## 段落 13
+![](img/lec2_004.png)
+
 
 **英文**: You can become more sophisticated by looking at particular places in your pipeline either for for pass or backward pass or optimizers or gradient accumulation and really figure out what the minimum precision you need at this particular places and that's called gets into kind of mixed precision training. So for example some people like to use float 32 for the you know the attention to make sure that doesn't kind of you know get messed up for simple fee for passes with map walls. BF16 is fine. Okay pause a bit for questions. So we talked about tensors and we looked at depending on how what representation how much storage they take. Yeah. So the question is when would you use float 32 or BF16? I don't have time to get into the exact details and it's sort of very depending on the model size and everything but generally for the parameters and optimizers say you use float. 32. You can think about BF16 as something that's more transitory. Like you basically take your parameters you cast it to BF16 and you kind of run ahead with that model but then the thing that you're going to accumulate over time you want to have higher precision.
 
-**中文**: 您可以通过考察模型训练流程中的特定环节（例如前向传播、反向传播、优化器或梯度累积）来进一步提升精度管理能力，从而精准确定这些环节所需的最低数值精度，这种方法即所谓“混合精度训练”。例如，一些研究者倾向于在注意力机制中使用 float32，以确保其在简单前向传播过程中不会因精度不足而出现异常；而 BF16 则通常已足够。好了，稍作停顿，大家有问题可以提问。我们此前讨论了张量，并分析了不同表示方式对存储空间占用的影响。是的，那么问题来了：何时该选用 float32，何时又该选用 BF16？由于时间关系，我无法深入展开具体细节——这实际上高度依赖于模型规模等各项因素；但总体而言，参数和优化器通常采用 float32；而 BF16 可视作一种临时性精度格式：您可将参数转换为 BF16 后进行模型运算，但需长期累积的量（如梯度累加值）则必须保持更高精度。
+**中文**: 你可以通过深入分析流水线中的特定环节（无论是前向传播、反向传播、优化器步骤还是梯度累积），来确定这些环节所需的最低精度，从而采用更复杂的策略。这就引入了混合精度训练（Mixed Precision Training）的概念。
+例如，有些人喜欢对注意力机制（Attention）部分使用 float32，以确保其计算不会出错；而对于简单的前向传播（forward passes），使用 BF16 就足够了。（注：原文中的 "map walls" 疑似语音识别错误，根据上下文推测应为 "matmuls"，即矩阵乘法）。
+好，我们先暂停一下，看看大家有没有问题。
+刚才我们讨论了张量，并分析了不同数据表示形式所占用的存储空间。
+问：什么时候该用 float32，什么时候该用 BF16？
+由于时间关系，我无法展开所有细节，因为这很大程度上取决于模型规模等因素。但一般来说：
 
-## 段落 14
+- 对于模型参数和优化器状态，通常建议使用 float32。
+- 你可以把 BF16 看作是一种更具临时性的格式。基本思路是：你将参数转换为 BF16 来进行模型的前向和反向计算（以此加速并节省显存），但对于那些需要随时间累积的量（如梯度或优化器状态中的动量），你仍然希望保持更高的精度（即 float32），以确保训练的稳定性。
+
 
 **英文**: Yeah. Okay so now let's talk about compute. So that was memory. So compute obviously depends on what the hardware is. By default tensors are stored in CPU. So for example if you just impite torch say x equals torch at 0 32 32 then it will put it on your CPU. It will be in the CPU memory. Yeah of course that's no good because if you're not using your GPU then you're going to be orders of magnitude to slow. So you need to explicitly say in pytorch that you need to move it to the GPU and this. is actually just to make it very clear in pictures.
 
-**中文**: 是的。好的，现在我们来谈谈计算。刚才讲的是内存。显然，计算性能取决于硬件配置。默认情况下，张量存储在CPU上。例如，如果你只是简单地在PyTorch中执行“x = torch.zeros(32, 32)”，它就会将张量放在你的CPU上，即存于CPU内存中。当然，这并不理想，因为如果不使用GPU，你的运行速度将慢几个数量级。因此，你必须在PyTorch中显式地指定将张量移至GPU——而这一点，我们接下来会通过图示来清晰说明。
+**中文**: 好的，现在我们来谈谈计算（Compute）。刚才我们讨论的是内存。显然，计算能力取决于你的硬件。默认情况下，张量是存储在 CPU 上的。例如，如果你只是执行 import torch 然后创建 x = torch.rand(32, 32)，它会被放置在你的 CPU 上，占用 CPU 内存。当然，这并不理想。因为如果你不使用 GPU，计算速度会慢上几个数量级。
+因此，你需要在 PyTorch 中显式地指定将张量移动到 GPU 上。接下来我会通过图示让这一点更加清晰。
 
-## 段落 15
+![](img/lec2_005.png)
+
 
 **英文**: There's a CPU, a has RAM and that has to be moved over to the GPU. There's a data transfer which is caught which takes some work. Take some time. So whenever you have a tensor in pytorch you should always keep in your mind where is this residing because just looking at the variable or just looking at the code you can't always tell. And if you want to be careful about computation and data movement you have to really know. where it is. You can probably do things like assert where it is and various places of code just to document or be sure. So let's look at what hardware we have. So in this case we have one GPU. This was run on the H100 cluster that you guys have access to.
 
-**中文**: 这里有一个CPU，还有一个RAM，而数据必须从RAM转移到GPU。这一数据传输过程会带来额外开销，耗费一定时间。因此，每当在PyTorch中使用张量（tensor）时，你都应时刻牢记该张量实际驻留在何处——仅凭变量名或代码本身，并不能总是明确判断其位置。若你想精确控制计算过程和数据移动，就必须确切知晓张量所在的位置。你甚至可以在代码的多个位置添加断言（assert）来检查其位置，以起到文档说明或确保正确性的作用。接下来，我们来看一下当前可用的硬件配置：本例中仅有一块GPU，运行环境为你们可访问的H100集群。
-
-## 段落 16
+**中文**: 这里有一个 CPU，它拥有自己的 RAM（内存）。数据必须从 CPU 传输到 GPU，这个数据传输过程是有开销的，需要消耗一定的时间。
+因此，在 PyTorch 中处理张量时，你必须时刻牢记：这个张量当前驻留在哪里？ 仅仅查看变量名或代码，往往无法直接判断其位置。如果你希望优化计算效率并管理好数据移动，就必须确切地知道数据的位置。
+你甚至可以在代码的各个关键位置使用 assert 语句来检查张量的设备位置，以此作为文档记录或确保无误。接下来，让我们看看我们拥有什么样的硬件。在这个例子中，我们拥有 一个 GPU。这段代码是在你们可以访问的 H100 集群上运行的。
 
 **英文**: And this GPU is a H100, 80 gigabytes of high bandwidth memory. It gives you the cache size and so on. So if you have, remember the X is on CPU. You can move it just by specifying 2 which is a kind of a general pytorch function. You can also create a tensor direct line in GPU so you don't have to move it at all. If everything goes well, I'm looking at the memory allocated before and after. The difference should be exactly 32 by 32 matrices of 4 byte floats. So it's a 192. So this is a sanity check that the code is doing what is advertised. OK, so now you have your answers on the GPU.
 
-**中文**: 该GPU为H100，配备80GB高带宽内存，可显示缓存大小等信息。请注意，此前的张量X位于CPU上；您只需指定设备编号2（一种通用的PyTorch函数），即可将其迁移至GPU。您也可直接在GPU上创建张量，从而完全避免数据迁移。若一切正常，我将对比迁移前后的内存占用量，其差值应恰好等于一个32×32的单精度浮点数矩阵所占内存（即32×32×4字节=4096字节）。此处的“192”应为笔误，实际应为4096；该步骤是用于验证代码功能是否符合预期的合理性检查。好了，现在您的计算结果已位于GPU上。
+**中文**: 这块 GPU 是 H100，配备了 80 GB 的高带宽内存（HBM）。它还会显示缓存大小等详细信息。
 
-## 段落 17
+回想一下，之前的张量 x 是位于 CPU 上的。你可以通过指定设备为 'cuda'（原文中的 "2" 可能是语音识别错误，通常指代 CUDA 设备或 device='cuda'）将其移动过去，这是 PyTorch 的一个通用函数。你也可以选择直接在 GPU 上创建张量，这样就完全省去了数据传输的步骤。
+
+如果一切运行正常，我们对比操作前后的内存分配量，其差值应该正好等于一个 32x32 矩阵所占用的空间（即 32 times 32 times 4 字节，因为 float32 占 4 字节），总共 4096 字节（注：原文口述的 "192" 可能是计算错误或口误，32 times 32 times 4 = 4096；或者是特定的测试上下文，但按标准 float32 计算应为 4KB）。这是一个健全性检查（sanity check），用于验证代码是否按预期执行。
+
+好了，现在你的数据已经稳稳地待在 GPU 上了。
+
 
 **英文**: What do you do? So there's many operations that you'll be needing for assignment one and in general to do any deep learning application. And most sensors you just create by performing operations on other tensors. And each operations has some memory and compute footprints. So let's make sure we understand that. So first of all, what is actually a tensor in pytorch? Tensors are a mathematical object. In pytorch, they're actually pointers into some allocated memory. So if you have, let's say, a matrix, 4x4 matrix, what it actually looks like is a long array. And what the tensor has is metadata that specifies how to get to address into that array. And the metadata is going to be two numbers, a stride for each or actually one number per dimension of the tensor. In this case, because there's two dimensions, it's stride zero and stride one.
 
-**中文**: 你做什么？因此，在完成第一次作业以及一般性地开展任何深度学习应用时，你将需要执行大量运算。而大多数张量都是通过对其他张量执行运算来创建的。每种运算都具有一定的内存和计算开销。因此，我们务必理解这一点。首先，在 PyTorch 中，张量究竟是什么？张量是一种数学对象；而在 PyTorch 中，它实际上是指向某块已分配内存的指针。例如，假设你有一个 4×4 的矩阵，其实际存储形式是一个长数组；而张量本身则包含元数据，用于指定如何从该数组中定位相应地址。这些元数据包括每个维度对应的步幅（stride），即每个维度一个数值。本例中由于是二维张量，因此包含 stride0 和 stride1 两个步幅值。
+**中文**: 你该怎么做呢？在作业一以及一般的深度学习应用中，你会需要用到许多操作。大多数张量都是通过对其他张量执行操作而生成的，而每个操作都会占用一定的内存和计算资源。因此，我们必须透彻理解这些概念。
 
-## 段落 18
+首先，PyTorch 中的张量（Tensor）究竟是什么？
+
+从数学角度看，张量是一个数学对象；但在 PyTorch 的实现中，它实际上是指向已分配内存块的指针。
+
+举个例子，假设你有一个 4x4 的矩阵。在底层，它实际上看起来像一个长的一维数组。张量本身包含的是元数据（metadata），这些元数据指定了如何在这个数组中定位具体的地址。
+
+这些元数据主要包括步长（stride）信息：
+张量的每一个维度都对应一个步长数值。
+在这个二维矩阵的例子中，就有两个步长值：stride 0（对应第0维）和 stride 1（对应第1维）。
+
+通过这些步长，PyTorch 就能知道如何在连续的一维内存块中“跳跃”，从而逻辑上呈现出多维矩阵的结构。
+
 
 **英文**: So it's stride zero specifies if you were in dimension zero to get to the next row, to increment that index, how many do you have to skip?. And so going down the rows, you skip four. So stride zero is four. And to go to the next column, you skip one. So stride one is one. Okay? So with that, you find element, let's say one two, one comma two. It's simply just multiply the indexes by the stride and you get to your index, which is six here. So that would be here or more here. Okay, so that's basically what's going underneath the hood for tensors. Okay, so this is relevant because you can have multiple tensors that use the same storage.
 
-**中文**: 因此，“步幅零”表示：若你在第零维中，要到达下一行（即对该索引加一），需要跳过多少个元素？例如，沿行方向向下移动时，需跳过四个元素，故步幅零为四；而要到达下一列，则只需跳过一个元素，故步幅一为一。明白了吗？据此，我们来查找元素（例如第1行第2列，即索引1,2）：只需将各维度索引分别乘以其对应步幅再相加，即可得到该元素在底层存储中的线性索引——此处结果为六，即指向该位置（或更准确地说，指向此处）。以上便是张量内部运作的基本原理。这一点之所以重要，是因为多个张量可以共享同一块底层存储空间。
+**中文**: Stride 0 指定了：如果你在第 0 维（行）上移动，为了到达下一行（即增加该维度的索引），你需要跳过多少个元素？
+在这个例子中，向下移动一行需要跳过 4 个元素，所以 Stride 0 = 4。
+而移动到下一列（第 1 维）只需要跳过 1 个元素，所以 Stride 1 = 1。
 
-## 段落 19
+明白了吗？利用这些步长，你就可以定位任意元素。例如，要找到索引为 (1, 2) 的元素（即第 1 行第 2 列），计算方法很简单：将每个维度的索引乘以其对应的步长，然后相加。
+计算过程：1 X 4 (stride0) + 2 x 1 (stride1) = 6。
+这意味着该元素位于底层一维数组的第 6 个位置（如图所示）。
+
+这就是张量在底层（under the hood）的工作原理。
+
+理解这一点非常重要，因为它意味着：多个不同的张量可以共享同一块底层存储空间（storage）。
+
 
 **英文**: And this is useful because you don't want to copy the tensor all over the place. So imagine you have a two by three matrix here. Many operations don't actually create a new tensor, they just create a different view. And it doesn't make a copy, so you have to make sure that your mutations, if you start mutating one tensor, it's going to cause other one to mutate. Okay, so for example, if you just get row zero, okay?. So remember, y is this tensor, sorry, x is one, two, three, four, five, six. And y is x zero, which is just the first row. Okay, and you can sort of double check, there's this function in a row that says if you look at the underlined storage, whether these two tensors have the same storage or not. Okay, so this definitely doesn't copy the tensor, it just creates a view. You can get column one.
 
-**中文**: 这很有用，因为你不希望到处复制张量。假设这里有一个 2×3 的矩阵，许多操作实际上并不会创建新的张量，而只是创建一个不同的视图，且不会进行复制。因此，你必须确保：如果你开始修改某个张量，这种修改也会影响其他与之共享存储的张量。例如，若仅获取第零行——注意，y 是这个张量（抱歉，x 才是 [1, 2, 3, 4, 5, 6] 构成的张量），而 y 是 x[0]，即第一行。你可以通过一个名为“storage”的属性来双重验证：查看这两个张量是否共享底层存储。显然，该操作绝不会复制张量，而只是创建一个视图。你也可以获取第一列。
+**中文**: 这非常有用，因为你不需要在整个程序中到处复制张量。
 
-## 段落 20
+想象一下这里有一个 2x3 的矩阵。许多操作实际上并不会创建新的张量，它们只是创建了一个不同的视图（view）。由于没有进行数据复制，你必须格外小心：如果你修改了其中一个张量（mutation），另一个共享同一存储的张量也会随之改变。
+
+举个例子，如果你提取第 0 行：
+假设 x 是包含元素 [1, 2, 3, 4, 5, 6] 的张量。
+y = x[0]，即 x 的第一行。
+
+你可以用 storage() 函数来双重确认：检查这两个张量的底层存储（underlying storage）是否相同。结果显示它们确实共享同一块存储。这明确表明该操作没有复制张量，而只是创建了一个视图。
+
+同理，你也可以提取第 1 列（column one），它同样只是一个视图，而非副本。
+
+```
+def tensor_slicing():
+    x = torch.tensor([[1., 2, 3], [4, 5, 6]])  # @inspect x
+    Many operations simply provide a different view of the tensor.
+许多操作只是提供张量的不同视图。
+    This does not make a copy, and therefore mutations in one tensor affects the other.
+这不会创建副本，因此对一个张量的修改会影响另一个。
+    Get row 0:
+获取第 0 行：
+    y = x[0]  # @inspect y
+    assert torch.equal(y, torch.tensor([1., 2, 3]))
+    assert same_storage(x, y)
+    Get column 1:
+获取第 1 列：
+    y = x[:, 1]  # @inspect y
+    assert torch.equal(y, torch.tensor([2, 5]))
+    assert same_storage(x, y)
+    View 2x3 matrix as 3x2 matrix:
+将 2x3 矩阵视为 3x2 矩阵：
+    y = x.view(3, 2)  # @inspect y
+    assert torch.equal(y, torch.tensor([[1, 2], [3, 4], [5, 6]]))
+    assert same_storage(x, y)
+    Transpose the matrix:
+转置矩阵：
+    y = x.transpose(1, 0)  # @inspect y
+    assert torch.equal(y, torch.tensor([[1, 4], [2, 5], [3, 6]]))
+    assert same_storage(x, y)
+    Check that mutating x also mutates y.
+检查修改 x 也会修改 y。
+    x[0][0] = 100  # @inspect x, @inspect y
+    assert y[0][0] == 100
+    Note that some views are non-contiguous entries, which means that further views aren't possible.
+注意，一些视图是非连续条目，这意味着无法进一步创建视图。
+    x = torch.tensor([[1., 2, 3], [4, 5, 6]])  # @inspect x
+    y = x.transpose(1, 0)  # @inspect y
+    assert not y.is_contiguous()
+    try:
+        y.view(2, 3)
+        assert False
+    except RuntimeError as e:
+        assert "view size is not compatible with input tensor's size and stride" in str(e)
+    One can enforce a tensor to be contiguous first:
+可以先强制张量连续：
+    y = x.transpose(1, 0).contiguous().view(2, 3)  # @inspect y
+    assert not same_storage(x, y)
+    Views are free, copying take both (additional) memory and compute.
+视图是免费的，复制需要（额外的）内存和计算。
+```
+
 
 **英文**: This also doesn't copy the tensor. Oops, don't need to do that. You can call a view function which can take any tensor and look at it in terms of the different dimensions. Two by three, actually this should be maybe the other way around, as a three by two tensor. So that also doesn't change, do any copying. You can transpose, that also doesn't copy. And then, like I said, if you start mutating x, then y actually gets mutated as well. Because x and y are just pointers into the same underlined storage. Okay, so things are, one thing that you have to be careful of is that some views are contiguous, which means that if you run through the tensor, it's like just slight going through the array in your storage. But some are not.
 
-**中文**: 这同样也不会复制张量。哦，其实不需要这么做。你可以调用一个视图函数，该函数可接受任意张量，并以不同维度的方式查看它。2×3——实际上，这里或许应该反过来，即作为3×2的张量。因此，这种方式同样不会发生任何复制操作。你还可以进行转置，这也无需复制。此外，如前所述，一旦你开始修改x，y实际上也会随之被修改，因为x和y只是指向同一底层存储空间的指针。好的，因此需要注意的一点是：某些视图是连续的（contiguous），这意味着当你遍历该张量时，就相当于直接按顺序遍历其底层存储数组；但有些视图则不是连续的。
+**中文**: 这同样不会复制张量。哎呀，刚才那个操作其实没必要做。
 
-## 段落 21
+你可以调用 view 函数，它能让你以不同的维度形状来查看同一个张量。比如，将一个 2x3 的矩阵看作 3x2 的矩阵（原文提到顺序可能反了，意指形状变换）。这种操作也完全不需要进行数据复制。
+
+同样地，转置（transpose） 操作也不会复制数据。
+
+正如我之前所说，如果你开始修改 x，那么 y 也会随之改变。因为 x 和 y 仅仅是指向同一块底层存储（underlying storage）的不同指针。
+
+这里有一点需要特别小心：
+有些视图是连续（contiguous）的，这意味着当你遍历这个张量时，就像直接按顺序扫描底层存储数组一样顺畅。
+但有些视图则是非连续的（例如经过转置或某些切片操作后），它们在逻辑上是多维的，但在底层内存中的物理位置并不是紧挨着的。
+
 
 **英文**: So in particular, if you transpose it, now your, you know, what does it mean when you're transposing? So if you're sort of going down now, so you're kind of, if you imagine going through the tensor, you're kind of skipping around. And if you have a non-contiguous tensor, then if you try to further view it in a different way, then this is not going to work. Okay? So in some cases, if you have a non-contiguous tensor, you can make a contiguous first,. and then you can apply whatever viewing operation you want to it. And then in this case, x and y do not have the same storage because contiguous, in this case, makes a copy. Okay? So this is just ways of slicing and dicing a tensor. Views are free, so feel free to use them, define different variables to make it sort of easier to read your code. Because they're not allocating any memory, but remember that contiguous or reshape, which is basically contiguous. view, can create a copy, and so just be careful what you're doing. Okay, questions before moving on?.
 
-**中文**: 因此，特别需要注意的是，如果你对张量进行转置操作，那么“转置”究竟意味着什么？此时，你实际上是沿着张量的维度向下遍历，即在张量内部以某种跳跃式的方式访问元素。如果该张量是非连续存储的（non-contiguous），那么你再尝试以其他方式对其进行视图（view）操作，就会失败。明白吗？  
-因此，在某些情况下，若你面对一个非连续张量，可先将其转换为连续张量（contiguous），然后再对其执行任意所需的视图操作。此时，x 和 y 将不再共享同一块底层存储空间，因为 contiguous 操作在此情形下会创建一份副本。明白吗？  
-以上只是对张量进行切片与重组（slicing and dicing）的不同方式。视图（view）操作是零开销的，因此请放心使用——你可以定义多个变量来提升代码的可读性。因为视图本身不分配任何内存；但请注意，contiguous 操作（或功能基本等价的 reshape 操作）以及 view 操作在某些条件下可能触发副本创建，因此务必谨慎对待你的操作。  
-好，继续之前还有问题吗？
+**中文**:具体来说，如果你进行了转置（transpose）操作，这意味着什么？
 
-## 段落 22
+想象一下遍历这个张量：转置后，你在内存中不再是顺序访问，而是需要跳跃式地读取数据（因为行和列的步长交换了）。
+
+如果你面对的是一个非连续（non-contiguous）的张量，并试图以另一种方式对其进行 view 操作，这通常是行不通的（会报错）。
+
+在这种情况下，如果张量是非连续的，你可以先调用 .contiguous() 方法将其变为连续张量，然后再执行你想要的任何视图操作。
+注意：在这个例子中，x 和 y 不再共享同一块存储。因为 .contiguous() 在这种情况下会创建数据的副本（copy），将数据重新排列到一块连续的内存区域中。
+
+总结一下对张量进行“切片和重组”（slicing and dicing）的方法：
+视图（Views）是免费的：请放心使用它们，定义不同的变量名可以让代码更易读。因为它们不分配新内存。
+警惕副本：记住，.contiguous() 或 .reshape()（在某些情况下本质上等同于 contiguous().view()）可能会创建副本。因此，操作时务必清楚自己是在创建视图还是在复制数据。
+
+在继续之前，大家有什么问题吗？
+
+![](img/lec2_007.png)
+
 
 **英文**: All right. So hopefully a lot of this will be review for those of you who have done a lot of PyTorch before, but it's helpful to just do a systematically and make sure we're on the same page. So here's some operations that do create new tensors, and in particular, element-wise operations, I'll create new tensors, obviously, because you need it somewhere else to store the new value. There's a triangular U is also an element operation that comes in handy when you want to create a causal attention mask, which you'll need for your assignment. But nothing is interesting here. Okay, so let's talk about map walls. So the bread and butter of deep learning is matrix multiplications. And I'm sure all of you have done a matrix multiplication, but just in case this is what it looks like, you take a 16 by 32 times a 32 by 2 matrix, you get a 16 by 2 matrix. But in general, when we do our machine learning application, all operations are you want to do in a batch. And in the case of language models, this usually means for every example in a batch and for every sequence in a batch, you want to do something.
 
-**中文**: 好的。因此，对于之前已经大量使用过 PyTorch 的各位同学而言，本部分内容大多应属复习；但系统性地梳理一遍仍很有帮助，以确保我们理解一致。以下是一些会创建新张量的操作，尤其是逐元素运算（element-wise operations），显然会生成新张量，因为需要在别处存储计算所得的新值。此外，“上三角矩阵”（triangular U）也是一种实用的逐元素运算，常用于构建因果注意力掩码（causal attention mask），而你们的作业中就需要用到它。不过，这部分内容本身并无特别之处。好，接下来我们谈谈矩阵乘法（matmul）。矩阵乘法是深度学习的核心基础操作。相信大家此前都已接触过矩阵乘法，但为保险起见，这里再简要回顾一下：一个 16×32 的矩阵乘以一个 32×2 的矩阵，结果是一个 16×2 的矩阵。但在实际机器学习应用中，我们通常需对批量数据（batch）执行所有运算；而在语言模型中，这通常意味着需对批内每个样本、以及批内每个序列，分别执行相应操作。
+**中文**: 好的。希望对于之前有过大量 PyTorch 经验的同学来说，这些内容大多是复习，但系统地过一遍有助于确保我们达成共识。
 
-## 段落 23
+这里列出了一些会创建新张量的操作：
+- 逐元素操作（Element-wise operations）：显然会创建新张量，因为你需要新的内存空间来存储计算后的新值。
+- 三角矩阵操作（如 triu）：这也是一种逐元素操作，非常实用。特别是在你需要构建因果注意力掩码（causal attention mask）时（这在你们的作业中会用到）。
+
+不过，这些部分并没有什么特别深奥的地方。
+
+接下来，我们要谈谈矩阵乘法（Matrix Multiplications）。
+矩阵乘法是深度学习的核心基础（bread and butter）。我相信大家都做过矩阵乘法，但为了保险起见，我们还是回顾一下它的形式：
+将一个 16x32 的矩阵乘以一个 32x2 的矩阵，会得到一个 16x2 的矩阵。
+
+但在一般的机器学习应用中，我们所有的操作都是基于批次（batch）进行的。
+特别是在语言模型中，这通常意味着：你需要对批次中的每一个样本，以及每个样本中的每一个序列位置，都执行相应的操作。
+
+![](img/lec2_008.png)
+
 
 **英文**: Okay, so generally what you're going to have, instead of just a matrix, is you're going to have a tensor where the dimensions are typically batch sequence, and then whatever thing you're trying to do. In this case, it's a matrix for every token in your data set. So, you know, PyTorch is nice enough to make this work well for you. So when you take this for, you know, dimension tensor and this matrix, what actually ends up happening is that for every batch, every example and every token, you're multiplying these two matrices. Okay, and then the result is that you get your, your resulting matrix for each of the first two elements. So this is just like, there's nothing fancy going on, but this is just a pattern that I think is helpful to, you know, think about. Okay, so I'm going to take a little bit of a digression and talk about, INOPs. And so the motivation for INOPs is the following. So, you know, you know, you see things like this, where you take x and multiply by y transpose minus 2 minus 1. And you kind of look at this and you say, okay, what is minus 2? Well, I think that's the sequence.
 
-**中文**: 好的，通常情况下，你面对的将不再只是一个矩阵，而是一个张量，其维度一般为“批大小×序列长度×其他所需维度”。在本例中，数据集中的每个词元都对应一个矩阵。PyTorch 很贴心地让这种运算能顺利进行：当你将这个高维张量与该矩阵相乘时，实际发生的是——对每个批次、每个样本、每个词元，分别执行这两个矩阵的乘法运算。最终结果是，你为前两个维度（即批大小和序列长度）中的每一个元素都得到一个输出矩阵。这其实并无特别精巧之处，但这一模式有助于我们理解与思考。
+**中文**: 好的，通常你处理的不仅仅是一个简单的矩阵，而是一个张量，其维度通常表示为：[批次大小 (Batch), 序列长度 (Sequence), ...其他维度]。
 
-接下来，我稍作离题，谈谈 INOPs（内积操作）。INOPs 的提出动机如下：你常会见到类似这样的表达式——将向量 x 与向量 y 的转置相乘，再减去 2 和 1；看到这个式子，你可能会想：“这里的 −2 到底指什么？” 我认为它代表的是序列。
+在这个例子中，这意味着数据集中的每一个 token 都对应着一个矩阵。
+PyTorch 非常智能，能够很好地处理这种情况。当你将这个高维张量（例如包含 Batch 和 Sequence 维度）与一个矩阵相乘时，实际发生的情况是：
+- PyTorch 会自动对每一个批次样本、每一个示例以及每一个 token，分别执行这两个矩阵的乘法运算。
 
-## 段落 24
+结果就是，你会得到对应于前两个维度（Batch 和 Sequence）的每一个位置的计算结果矩阵。
+这其实并没有什么花哨的魔法，但这是一种非常有用的思维模式，有助于你理解高维张量运算。
+
+接下来，我要稍微偏离一下主题，谈谈 einops。
+引入 einops 的动机如下：
+大家经常看到类似这样的代码：取 x 乘以 y 的转置，然后进行一些像 [-2, -1] 这样的维度操作。
+当你看到这些时，你可能会问：“好吧，这个 -2 到底是什么意思？”
+我想，那通常指的是序列维度（sequence dimension）。
+
 
 **英文**: And then minus 1 is this hidden because you're indexing backwards. And it's really easy to mess this up because if you look at your code and you see minus 1 minus 2, you're kind of, if you're good, you write a bunch of comments, but then the comments are, can get out of date with the code and then you have a bad time debugging. So the solution is to use INOPs here. So this is inspired by an Einstein summation notation. And the idea is that we're just going to name all the dimensions instead of, you know, relying on indices, essentially. Okay, so there's a library called jacks typing, which is helpful for as a way to specify the dimensions in the types. So normally in PyTorch, you would just define write your code and then you were comment, oh, here's what the dimensions would be. So if you use jacks typing, then you have this notation where as a string, you're just write down what the dimensions are. So this is a slightly kind of more natural way of documenting. Now notice that there's no enforcement here, right? Because PyTorch types are sort of a little bit of a lie in PyTorch.
 
-**中文**: 然后减1是因为你正在反向索引，因此该维度被隐藏了。这很容易出错，因为如果你查看自己的代码，看到“减1”“减2”，即使你写了很多注释来说明，这些注释也可能与代码脱节，导致调试时陷入困境。因此，解决方案是此处使用INOPs（索引命名操作）。这一思路源自爱因斯坦求和约定，其核心思想是直接为所有维度命名，而非依赖位置索引。目前有一个名为“jacks typing”的库，可帮助我们在类型定义中明确指定维度。通常在PyTorch中，我们仅编写代码，再通过注释说明各维度的含义；而借助jacks typing，我们可在字符串中直接写出维度名称，这种方式在文档记录上显得更自然。但请注意，此处并无强制约束机制——毕竟PyTorch中的类型系统在某种程度上只是形式上的“幌子”。
+**中文**: 而 -1 指的是隐藏层维度（hidden dimension），因为你是通过反向索引（从后往前数）来访问它们的。
 
-## 段落 25
+这种写法非常容易出错。当你回头看代码时，如果看到 -1 和 -2 这样的索引，即使你当时很细心地写了一堆注释，这些注释也很容易随着代码的修改而过时。结果就是，你在调试时会非常痛苦。
+
+解决这个问题的方案是使用 einops 库。
+它的灵感来源于爱因斯坦求和约定（Einstein summation notation）。其核心思想是：我们不再依赖容易混淆的数字索引，而是直接给每个维度命名。
+
+这里还有一个相关的库叫 jaxtyping，它对于在类型定义中指定维度非常有帮助。
+传统 PyTorch 做法：你通常只是写完代码，然后在旁边写注释说：“哦，这里的维度是这样的。”
+使用 jaxtyping：你可以使用一种特殊的符号，以字符串的形式直接写下维度的名称。这是一种更自然、更清晰的文档化方式。
+
+需要注意的是：这里并没有强制性的检查机制。因为在 PyTorch 中，类型系统某种程度上是一种“谎言”（PyTorch 的动态特性使得它在运行时之前无法严格保证张量的具体形状），所以这些类型标注主要起文档和辅助静态分析的作用，而非运行时的硬性约束。
+
+![](img/lec2_010.png)
+
 
 **英文**: So you can use a checker, right? Yeah, you can raise a check, but not by default. Okay, so let's look at the, you know, INOPs. So INOPs is basically matrix multiply, occasion on steroids with good bookkeeping. So here's our example here. We have x, which is, let's just think about this as, you have a batch dimension, you have a sequence dimension, and you have four hidden. And y is the same size. So you originally had to do this thing. And now what you do instead is you basically write down the dimensions, names of the dimensions of the two tensors. So batch sequence one hidden, batch sequence two hidden, and you just write what you dimensions should appear in the output. So I write batch here because I just want to basically carry that over.
 
-**中文**: 所以你可以使用检查器，对吧？是的，你可以启用检查功能，但默认情况下并不启用。好的，那么我们来看一下，你知道的，INOPs。INOPs 本质上就是矩阵乘法，是“带良好记账功能的矩阵乘法”的强化版。这里是我们给出的一个示例：我们有张量 x，可以简单地将其理解为具有批处理维度、序列维度以及四个隐藏单元；y 的尺寸与之相同。因此，你原本需要执行这样的操作；而现在，你只需直接写出两个张量各维度的名称即可：例如，“批处理、序列1、隐藏”和“批处理、序列2、隐藏”，然后仅需指明输出中应包含哪些维度。我在此写上“批处理”，是因为我只想简单地将该维度沿用至输出中。
+**中文**: 所以你可以使用检查器，对吧？是的，你可以启用检查，但这并不是默认开启的。
 
-## 段落 26
+好了，让我们来看看 einops。
+基本上，einops 就像是加了“类固醇”的矩阵乘法与张量收缩操作，并且附带了优秀的维度管理（bookkeeping）功能。
+
+来看这个例子：
+假设我们有一个张量 x，它的维度可以理解为：[Batch (批次), Sequence (序列), Hidden (隐藏层)]。
+张量 y 的大小也相同。
+
+以前，你可能需要写一堆复杂的代码（比如转置、reshape、再相乘）来实现某种运算。
+但现在，使用 einops，你只需要：
+
+- 1.写下两个输入张量的维度名称：例如 batch sequence1 hidden 和 batch sequence2 hidden。
+- 2.指定输出中应该保留哪些维度：比如我在这里写上 batch，意思就是我想把这个维度直接保留（或对应）到输出中。
+
+通过这种声明式的方式，你清晰地定义了维度的变换逻辑，而不用去操心具体的索引数字。
+
 
 **英文**: And then I write sec1 and sec2. And notice that I don't write hidden, and any dimension that is not named in the output is just summed over. And any dimension that is named is sort of just iterated over. So once you get used to this, this is actually very, very helpful. I may maybe look, if you've seen this for the first time, it might seem a bit strange along, but trust me, once you get used to it, it'll be better than doing minus two minus one. If you're a little bit slicker, you can use dot dot dot to represent broadcasting over any number of dimensions. So in this case, instead of writing batch, I can just write dot dot dot. And this would handle the case where instead of maybe batch, I have batch one, batch two, or some other arbitrary long sequence. Yeah, question? So the question is, is a guaranteed a compile to something efficient?. I think the short answer is yes.
 
-**中文**: 然后我写出 sec1 和 sec2。请注意，我并未写出 hidden，且输出中未命名的任何维度都会被直接求和；而输出中已命名的维度则仅作遍历处理。一旦你熟悉了这种写法，它实际上会非常、非常有用。如果你是第一次见到这种写法，可能会觉得有点奇怪，但请相信我，一旦你习惯了，它将比使用 -2、-1 这样的索引方式更优。如果你更熟练一些，还可以用省略号（...）来表示在任意数量的维度上进行广播操作。例如，在本例中，我无需显式写出 batch，而只需写成 ... 即可。这样就能应对诸如 batch1、batch2 或其他任意长度的批量维度序列等情况。  
-好，有疑问吗？  
-问题是：a 是否能保证被编译为高效代码？  
-简短的回答是：是的。
+**中文**: 接着，我写上 seq1 和 seq2。
+请注意，我没有在输出中写 hidden。
+- 任何未在输出中命名的维度：都会被自动求和（summed over）（即执行收缩操作）。
+- 任何在输出中命名的维度：则会被保留并迭代（iterated over）。
 
-## 段落 27
+一旦你习惯了这种写法，它会非常非常有用。
+如果你第一次见到这种表示法，可能会觉得有点奇怪，但请相信我，一旦上手，它绝对比在那儿数 -2、-1 要强得多。
+
+如果你想写得更加灵活（slicker），可以使用 省略号 (...) 来代表任意数量维度的广播（broadcasting）。
+- 在这个例子中，我可以不用具体写 batch，而是直接写 ...。
+- 这样就能处理更复杂的情况：比如不仅仅是单一的 batch 维度，而是可能有 batch1、batch2，或者其他任意长度的额外维度序列。它都能自动适配。
+
+问： 它能保证编译成高效的代码吗？
+
+答： 简短的回答是：是的。
+
 
 **英文**: I don't know if you have any nuances. So if you're out the best way to reduce the best order of dimensions to use, and then use that, if you're using within Torch Compile, only do that one time, and then reuse the same representation over again. It's going to be better than anything designed by him. Okay. So let's look at reduce. So reduce operates on one tensor, and it basically aggregates some dimension or dimensions of the tensor. So if you have this tensor, before you would write mean to sum over the final dimension, and now you basically say, actually, okay, so this replaces with sum. So reduce, and again, you say, hidden, and hidden is disappeared, disappeared, so which means that you are aggregating over that dimension. Okay, so you can check that this indeed kind of works over here. Okay, so maybe one final example of this is sometimes in a tensor, one dimension actually represents multiple dimensions, and you want to unpack that and operate over one of them and pack it back.
 
-**中文**: 我不确定你是否了解其中的细微差别。因此，如果你要找出最佳的降维顺序并加以使用，那么在使用 Torch Compile 时，只需执行一次该操作，之后便可重复利用同一表示形式。这将比他设计的任何方法都更优。好的，我们来看一下 reduce 操作。reduce 作用于单个张量，其基本功能是对该张量的一个或多个维度进行聚合。例如，对于这个张量，过去你可能用 mean 或 sum 对最后一个维度求均值或求和；而现在，你只需简单地将其替换为 sum。即调用 reduce，并再次指定 hidden——此时 hidden 维度便消失了，这意味着你正在对该维度进行聚合。好的，你可以验证此处的操作确实有效。最后再举一个例子：有时张量中的某一维度实际上代表了多个维度，你希望将其展开，对其中某一个维度执行运算，然后再重新打包回去。
+**中文**: 我不确定你是否了解其中的细微差别。
+如果你能找出最佳的维度排列顺序并加以利用，特别是在使用 torch.compile 时，只需做一次这种优化，然后反复重用相同的表示形式，其效果会比任何手动设计的方案都要好。
+
+好了，让我们来看看 reduce 操作。
+reduce 作用于单个张量。
+它的基本功能是对张量的一个或多个维度进行聚合（aggregation）。
+
+举个例子：
+- 以前：如果你想对最后一个维度求均值，你会写 .mean(dim=-1) 或者类似的代码来对最终维度求和。
+- 现在：你直接使用 reduce，并指定操作类型为 sum（或其他聚合函数）。
+    你再次写下维度名称，比如 hidden。
+    注意，hidden 在输出部分消失了。
+    含义：任何在输出表达式中消失的维度，就意味着你要对该维度进行聚合（例如求和、求均值等）。
+
+你可以验证一下，这确实能正常工作。
+
+最后再举一个常见的例子：
+有时候，张量中的某一个维度实际上代表了多个逻辑维度（例如，你把高度和宽度合并成了一个维度 H*W）。
+你可能想要：
+
+- 1.解包（Unpack）：把这个大维度拆分成两个独立的维度。
+- 2.操作：只对其中某一个维度进行运算。
+- 3.打包（Pack）：运算完成后，再把它合并回原来的形状。
+einops 处理这种“拆分 - 操作 - 合并”的流程非常优雅且直观。
 
 ## 段落 28
 
@@ -180,13 +372,27 @@
 
 **中文**: 在这种情况下，假设你有一个批量序列，而这个八维向量实际上是“头数 × 某一隐藏维度”所构成的展平表示。好的，接着你还有一个需要作用于该隐藏维度的向量。因此，你可以非常优雅地借助 einops 库中的 rearrange 函数来实现这一点；这本质上类似于我们之前见过的 view 操作，但功能更强大、更灵活——它本质上是在不改变底层数据的前提下，以不同方式重新组织数据的视图。此处，它明确指出：该维度实际上由“头数”和“隐藏维度一”共同构成，因此需将其拆分为两个独立维度。你必须在此处指定头数，因为一个整数可被分解为两个因子的方式可能有多种。嗯，这部分内容可能略显冗长，好吧，或许现在暂不细究。给定输入 x 后，你便可利用 einsum 对其执行变换操作：此处，“隐藏维度一”对应 x，“隐藏维度一 × 隐藏维度二”对应权重矩阵 w，最终输出为“隐藏维度二”。随后，你可再次使用 rearrange 将结果恢复为所需形状。
 
-## 段落 29
+![](img/lec2_011.png)
+
 
 **英文**: So this is just the inverse of breaking up. So you have your two dimensions and you group it into one. So that's just a flattening operation that's, you know, with everything, all the other dimensions kind of left alone. Okay, so there is a tutorial for this that I would recommend you go through and it gives you a bit more. So on, you don't have to use this because you're building it from scratch, so you can kind of do anything you want. But in the Simon one, we do give you guidance and it's something probably to invest in. Okay, so now let's talk about computation, no cost of tensile operations. So we introduce a bunch of operations and you know how much do they cost. So a floating point operation is any operation, floating point like addition or multiplication. These are the main ones that are going to, I think matter in terms of flop count.
 
-**中文**: 因此，这仅仅是“拆分”操作的逆向过程。你拥有两个维度，然后将它们合并为一个维度。这仅仅是一种展平操作，其他所有维度则保持不变。好的，关于此操作，我们有一份教程，我建议你仔细阅读，它会为你提供更详细的信息。不过，由于你是从零开始构建模型，因此并不强制要求使用该操作，你可以自由发挥。但在Simon版本中，我们确实会为你提供相关指导，这可能是值得投入时间去学习的内容。好的，接下来我们来讨论计算量，即张量运算的开销。我们引入了一系列运算，并明确了它们各自的开销。浮点运算（FLOP）指任何浮点数运算，例如加法或乘法；这些是影响浮点运算次数（FLOP count）的主要运算类型。
+**中文**: 所以，这其实就是“拆分”的逆操作。
+你拥有两个独立的维度，然后将它们合并（group）成一个维度。
+这本质上就是一个扁平化（flattening）操作，而所有其他维度都保持原样，不受影响。
 
-## 段落 30
+关于这一点，有一份我强烈推荐的教程，它能带你更深入地理解这些概念。
+- 在你们从零开始构建（building from scratch）的项目中，你们并不强制必须使用 einops，因为你们可以随心所欲地实现任何逻辑。
+- 但是，在 Simon 的项目/课程中，我们会提供具体的指导。我认为，投入时间去掌握它是非常值得的。
+
+好了，现在让我们谈谈计算成本，具体来说是张量操作的开销。
+我们引入了一系列操作，那么它们的代价究竟是多少呢？
+
+这里的关键指标是 FLOPs（浮点运算次数）：
+- 浮点运算（Floating Point Operation）：指任何针对浮点数的操作，比如加法或乘法。
+- 在评估计算量（FLOP count）时，这些通常是我们要关注的主要因素。
+
+![](img/lec2_012.png)
 
 **英文**: One thing that is sort of a pepiva mine is that when you say flops, it's actually unclear what you mean. So you could mean flops with a lower case S, which stands for number of floating operations. This is measures amount of computation that you've done. Or you could mean flops also written with an uppercase S, which means floating points per second, which is used to measure the speed of hardware. So we're not going to, in this class, use uppercase S because I find out very confusing and just write slash S to denote that as floating point per second. Okay, so just to give you some intuition about flops, gbd3 took about 323 flops, gbd4 was 2e25 flops, speculation. And there was a US executive order that any foundation model with over 1e26 flops has to be reported to government, which now has been revoked. But the EU has still, they're going to still has a thumb thing that's hasn't the EU AI act, which is 1e25, which hasn't been revoked. So, you know, some intuitions A100 has a peak performance of 312 terraf flop per second. And H100 has a peak performance of 1979 terraf flop per second with sparsely and approximately 50% without.
 
@@ -194,133 +400,399 @@
 为帮助大家建立直观认识：GPT-3 的训练约需 3.23×10²³ 次浮点运算；GPT-4 则约为 2×10²⁵ 次浮点运算（属推测值）。此前，美国曾发布一项行政命令，要求任何训练所需算力超过 10²⁶ 次浮点运算的基础模型必须向政府报备——但该命令现已撤销。而欧盟目前仍保留相关规定：根据《欧盟人工智能法案》，训练所需算力达 10²⁵ 次浮点运算及以上的模型仍须接受监管，该条款尚未被撤销。  
 补充一些直观参考数据：A100 GPU 的峰值性能为 312 万亿次浮点运算每秒（TFLOPS/s）；H100 GPU 在稀疏计算模式下的峰值性能约为 1979 万亿次浮点运算每秒（TFLOPS/s），若不启用稀疏计算，其性能则约为该数值的 50%。
 
-## 段落 31
 
-**英文**: And if you look at, you know, the MVD has these specifications sheet sheets. So you can see that the flops actually depends on what you're trying to do. So if you're using bffp32, it's actually really, really bad. Like if you run fp32 on h100, you're not getting, it's orders of magnitude worse than if you're doing fp16 or, and if you're willing to go down to fp8, then it can be even faster. For the first time, I didn't realize, but there's an asterisk here, and this means with sparsely. So usually you're in a lot of major cities we have in this class are dense, so you don't actually get this. You get something like, you know, exactly half. Okay. Okay. So now you can do a backhand of a number of calculations.
+**英文**: And if you look at, you know, the NVIDIA has these specifications sheet sheets. So you can see that the flops actually depends on what you're trying to do. So if you're using bffp32, it's actually really, really bad. Like if you run fp32 on h100, you're not getting, it's orders of magnitude worse than if you're doing fp16 or, and if you're willing to go down to fp8, then it can be even faster. For the first time, I didn't realize, but there's an asterisk here, and this means with sparsely. So usually you're in a lot of major cities we have in this class are dense, so you don't actually get this. You get something like, you know, exactly half. Okay. Okay. So now you can do a backhand of a number of calculations.
 
-**中文**: 如果你查看一下，比如MVD的这些规格说明书，你就会发现实际的浮点运算能力（FLOPS）其实取决于你所执行的具体任务。例如，若使用BF16或FP32，性能实际上非常差；在H100上运行FP32时，其性能比运行FP16低了数个数量级；而若进一步采用FP8，则速度甚至可能更快。此前我并未意识到这一点，但此处标有一个星号，其含义是“稀疏计算”。通常情况下，我们课程中涉及的多数主流城市模型均为稠密模型，因此实际上无法达到该指标，而只能获得大约一半的性能。好的，好的。现在你便可以执行一系列反向计算。
+**中文**: 如果你查看 NVIDIA 的规格说明书（spec sheets），你会发现 FLOPs（浮点运算性能） 实际上取决于你具体执行的操作类型。
 
-## 段落 32
+精度对性能的巨大影响：
+
+- 如果你使用 BF16/FP32（尤其是纯 FP32），性能表现其实非常糟糕。
+- 举个例子：在 H100 显卡上运行 FP32，其速度比运行 FP16 要慢好几个数量级。
+- 如果你愿意进一步降低精度到 FP8，速度甚至还能更快。
+
+**关于“星号（*）”的陷阱**：
+    
+- 我第一次看的时候也没注意到，规格表上有个**星号（*）**。
+- 这个星号意味着：仅在稀疏计算（with sparsity） 的情况下才能达到标称的峰值性能。
+- 现实情况：我们在本课程中涉及的大多数矩阵运算都是稠密（dense）的，因此你无法享受到那个带星号的峰值性能。
+- 对于稠密运算，你实际能得到的性能大约只有标称峰值的一半（或者说正好是 dense 模式下的理论值）。
+
+好了，了解了这些背景知识后，我们现在就可以进行一些粗略的计算估算（back-of-the-envelope calculations）了。
+
 
 **英文**: 8H100 for two weeks is just 8 times the number of flops per second times the number of seconds in a week. Actually, this is, this might be one week. Okay. So that's one week, and that's 4. 7 times e to the 21, which is, you know, some number. And you can kind of contextualize the flop counts with other model counts. Yeah. So that means if, so what does sparsely mean? That means if your matrices are spars. Is it specific like scripted sparsely? It's like two out of four elements in each like root of four elements is zero. That's only a case when you get that, that's me.
 
 **中文**: H100运行两周的算力总量，即每秒浮点运算次数乘以一周的秒数再乘以8。实际上，这可能仅指一周。好的，那就按一周计算，结果为4.7×10²¹，这是一个具体数值。你可以将这一浮点运算量与其他模型的计算量进行对比，从而理解其规模。那么，“稀疏”具体指什么？它意味着你的矩阵是稀疏的。这种稀疏性是否属于特定类型（例如预设的稀疏模式）？比如，在每四个元素构成的一组中，恰好有两个元素为零。只有在这种情况下才会得到该结果，而这就是我所指的情形。
 
-## 段落 33
-
 **英文**: No one uses it. Yeah. It's a marketing department uses it. Okay. So let's go through a simple example. So remember, we're not going to touch the transformer, but I think even a linear model gives us a lot of the building blocks and intuitions. So suppose we have endpoints. Each point is D dimensional, and the linear model is just going to match map each D dimensional vector to a K dimensional vector. Okay. So let's set some number of points.
 
-**中文**: 没人使用它。是的，只有市场部在用。好的，我们来看一个简单的例子。请记住，我们不会改动Transformer，但我认为即使是线性模型也能为我们提供大量基础组件和直观理解。假设我们有一些端点，每个端点都是D维的，而线性模型仅需将每个D维向量映射为一个K维向量。好的，我们设定一些端点数量。
+**中文**: 没人真正用它（指那些带星号的稀疏峰值性能数据）。没错，那主要是市场部门用来宣传的。
 
-## 段落 34
+好了，让我们来看一个简单的例子。
+- 请记住，我们暂时还不会深入探讨 Transformer 架构。
+- 但我认为，即使是一个简单的线性模型（Linear Model），也能向我们展示许多核心的构建模块和直观理解。
+
+假设场景如下：
+- 我们有一批数据点（points）。
+- 每个点都是 D 维的向量。
+- 这个线性模型的任务，就是将每一个 D 维的输入向量，映射（变换）为一个 K 维的输出向量。
+
+接下来，让我们设定一些具体的数值（例如点的数量），以便进行计算。
+
 
 **英文**: Is B. Dimension is D. K is the number of outputs. And let's create our data matrix X. Our weight matrix W. And the linear model is just some map ball. So nothing, you know, two interesting going on. And, you know, the question is how many flops was that? And the way you would, you look at this is you say, well, when you do the matrix multiplication,. you have basically for every IJK triple, I have to multiply two numbers together. And I also have to add that number to the total.
 
-**中文**: B 的维度是 D，K 是输出的数量。接下来，我们构建数据矩阵 X 和权重矩阵 W。线性模型仅是一个映射函数。因此，实际上并无特别之处。那么问题来了：这需要多少次浮点运算（flops）？通常，你会这样分析：在进行矩阵乘法时，对每个三元组 (i, j, k)，都需要将两个数相乘，并将该乘积加到总和中。
+**中文**: 
 
-## 段落 35
+- B：代表批次大小（Batch size），也就是数据点的数量。
+- D：代表输入维度（Input dimension）。
+- K：代表输出维度的数量（Number of outputs）。
+
+让我们构建我们的数据矩阵 X 和 权重矩阵 W。
+这个线性模型仅仅是一个简单的矩阵乘法（matrix multiplication）操作，并没有什么特别复杂或花哨的地方。
+
+现在的问题是：这到底消耗了多少 FLOPs（浮点运算次数）？
+
+分析这个问题的思路如下：
+当你执行矩阵乘法时，基本上对于每一个 (i, j, k) 的三元组组合：
+你需要将两个数相乘。
+然后，你需要将这个乘积加到总和中（累加）。
+(注：这意味着对于输出矩阵中的每一个元素，都需要进行 D 次乘法和 D-1 次加法，通常粗略估算为 2 times B times D times K 次浮点运算。)
+
 
 **英文**: Okay. So the answer is two times the, basically the product of all the dimensions involved. So the, the left dimension, the middle dimension, and the right dimension. Okay. So this is something that you should just kind of remember. If you're doing a matrix multiplication, the number of flops is two times the product of the three dimensions. Okay. So the flops of other operations are usually kind of linear in the size of the, the matrix or tensor. And in general, no other operation you encounter, deep learning is expensive as matrix multiplication for large enough matrices. So this is why I think a lot of the napkin math is very simple because we're only looking at the matrix multiplications that are going, are performed by the model.
 
-**中文**: 好的。因此，答案是：大致等于所有相关维度乘积的两倍，即左侧维度、中间维度和右侧维度的乘积。这一点需要牢记。进行矩阵乘法时，浮点运算次数（flops）即为这三个维度乘积的两倍。其他运算的浮点运算次数通常与矩阵或张量的尺寸呈线性关系；一般而言，在深度学习中，只要矩阵足够大，就没有任何其他运算比矩阵乘法更耗费计算资源。因此，我认为很多“纸面估算”都非常简单，因为我们只关注模型所执行的矩阵乘法运算。
+**中文**: 好的，所以答案很简单：基本上就是所有相关维度的乘积再乘以 2。
+具体来说，就是左维度、中间维度和右维度这三个数的乘积，然后乘以 2。
 
-## 段落 36
+这是一个你们应该牢记的结论：
+
+- 如果你在进行矩阵乘法，FLOPs 的数量 = 2 X (维度_1 X 维度_2 X 维度_3)。
+
+关于其他操作：
+- 大多数其他操作的计算成本通常与矩阵或张量的大小成线性关系。
+- 总体而言，在深度学习中，只要矩阵足够大，没有任何其他操作比矩阵乘法更昂贵（计算量更大）。
+
+这就是为什么我认为很多“餐巾纸数学”（Napkin Math，即粗略估算）非常简单的原因：
+- 我们只需要关注模型中执行的矩阵乘法部分，忽略其他相对微不足道的开销即可。
+
 
 **英文**: Now, of course there are regimes where if your matrices are small enough, then the cost of other things starts to dominate. But generally, that's not a good regime you want to be in because the hardware is designed for big much versus multiplication. So, sort of by, it's a little bit circular, but by kind of, we end up in this regime where we only consider models where the mammals are at the dominant cost. Okay. Any questions about this, this number? Two times the product of the three dimensions. This is just a useful thing. So, there's a lot of negative motivation always be the same because the chip might have optimized it. And then on these, totally the same. Yeah. So the question is like, is the, does this, essentially, does this depend on the matrix multiplication? You algorithm.
 
-**中文**: 当然，目前存在某些情形：当矩阵足够小时，其他操作的开销开始占据主导地位。但通常而言，这并非我们希望所处的情形，因为硬件正是为大规模矩阵乘法而设计的。因此，某种程度上——这略显循环论证——我们最终只考虑那些以矩阵乘法为主要开销的模型。好，关于这个数值（即三维度乘积的两倍），大家有什么问题吗？这是一个非常实用的估算方法。由于芯片可能已对此进行了专门优化，因此实际的负向开销往往保持一致；而在这些情形下，结果也完全相同。是的，问题实质在于：这一估算是否依赖于您所采用的矩阵乘法算法？
+**中文**: 当然，也存在一些特定情况（regimes）：如果你的矩阵足够小，那么其他操作（如内存访问、启动开销等）的成本就会开始占据主导地位。
 
-## 段落 37
+但一般来说，这并不是我们想要处于的状态，因为硬件（如 GPU）是专门为大规模矩阵乘法而设计的。
+
+所以，这虽然听起来有点循环论证，但结果就是：我们最终只关注那些矩阵乘法占主导成本的模型场景。
+
+关于这个数值（2 X 三个维度的乘积），大家有什么问题吗？
+
+- 这是一个非常实用的经验法则。
+- 你可能会想：“不同的实现方式会不会导致结果不同？”或者“芯片优化会不会改变这个数？”
+- 回答：不会。无论底层算法如何优化（比如使用 Tensor Cores 或特定的汇编指令），从浮点运算量（FLOPs）的理论定义来看，它始终取决于矩阵乘法的数学本质，因此这个倍数关系是恒定不变的。
+
+所以，问题的核心在于：这本质上是否取决于你的矩阵乘法算法？
+答案是：就理论计算量（FLOPs count）而言，它不依赖具体算法，只依赖于矩阵的维度；但就实际运行时间而言，算法和硬件优化会有巨大影响。
+
 
 **英文**: In general, I guess we'll look at this the next week when we, or the week after when we look at kernels. I mean, actually there's a lot of optimization that goes underneath under the hood when it comes to matrix multiplications. And there's a lot of specialization depending on the shape. So this is, I would say this is just a kind of a crude, you know, estimate that is basically like the right order of magnitude. Okay. So, yeah. Additions and modifications are equivalent. Yeah. Additions and multiplications are considered. So, one way I find helpful to interpret this.
 
-**中文**: 总体而言，我猜我们将在下周（即我们或再下周讨论核函数时）来审视这个问题。实际上，在矩阵乘法的底层实现中，存在大量优化工作，且这些优化会根据矩阵形状的不同而有所专门化。因此，我可以说，这只是一个粗略的估算，其数量级基本正确。好的。加法和修改操作是等价的。是的，加法和乘法均被纳入考虑。这是我发现的一种有助于理解该问题的方式。
+**中文**: 一般来说，我想我们会在下周或者下下周，当我们深入探讨计算内核（kernels）时再详细分析这个问题。
 
-## 段落 38
+我的意思是，实际上在矩阵乘法的底层（under the hood）隐藏着大量的优化技术。而且，针对不同的矩阵形状（shape），往往会有专门的特化（specialization）处理。
+
+所以，我要强调的是：
+
+- 这只是一个粗略的估算（crude estimate）。
+- 它的价值在于能给出一个正确的数量级（right order of magnitude），而不是精确到每一个时钟周期。
+
+对了，确认一下：
+
+- 加法（Additions）和乘法（Multiplications）在这里被视为是等价的（即各算作一次浮点运算）。
+
+我觉得有一种理解方式非常有助于大家消化这个概念
+
 
 **英文**: So, at the end of the day, this is just a matrix multiplication. But I'm going to try to give a little bit of meaning to this, which is why I've set up this. It's kind of a little toy machine learning problem. So, B is really stands for the number of data points. And DK is the number of parameters. So, for this particular model, the number of flops that's required for forward pass is two times the number of tokens or number of data points times the number of parameters. Okay. So, this turns out to actually generalize to transformers. There's an asker is there because there's, you know, the sequence length and other stuff. But this is roughly right for, if you're a sequence length, if it isn't too large.
 
-**中文**: 因此，归根结底，这仅仅是一次矩阵乘法。但我将尝试赋予它一些实际意义，这也是我如此设定的原因：这本质上是一个简单的机器学习玩具问题。其中，B 代表数据点的数量，DK 代表参数数量。对于该特定模型，前向传播所需的浮点运算次数（flops）为：2 × 数据点（或 token）数量 × 参数数量。好的。事实证明，这一结论实际上可推广至 Transformer 模型；之所以存在一个系数，是因为还需考虑序列长度等因素。但若序列长度不太大，该估算大致是准确的。
+**中文**: 归根结底，这只是一个矩阵乘法。但我试图赋予它一些实际意义，这也是我构建这个简易机器学习示例（toy problem）的原因。
 
-## 段落 39
+在这个模型中：
+- B 代表数据点（data points）的数量（在自然语言处理中通常对应 token 的数量）。
+- D X K 代表参数（parameters）的数量。
+
+因此，对于这个特定模型，执行一次前向传播（forward pass）所需的 FLOPs 计算公式为：
+ FLOPs = 2 X 数据点数量 X 参数数量 (即：2 乘以 Token 数/数据点数，再乘以参数量)
+
+事实证明，这个规律实际上可以推广到 Transformer 架构中：
+- 虽然 Transformer 中因为存在序列长度（sequence length）以及其他复杂因素（如注意力机制中的 L^2 项），使得情况稍微复杂一些（这也是为什么会有额外的修正项）。
+- 但是，只要序列长度不是特别大，这个估算公式（2 X Tokens X Params）仍然是大致准确的。
 
 **英文**: So, okay. So, now this is just a number of floating point operations. So, how does this actually translate to a walk-like time, which is presumably the thing you actually care about. How long do you have to wait for your run? So, let's time this. So, I have this function that is just going to do it five times and I'm going to perform the matrix-mact operation. We'll talk a little bit later about this two weeks from now why the other code is here. But, for now, we get an actual time. So, that matrix took, you know, 0. 16 seconds. And the actual flops per second, which is how many flops did it do per second is 5.
 
-**中文**: 所以，好的。现在这只是浮点运算的次数。那么，这实际上如何转化为类似“行走时间”的指标呢？而这恰恰是你真正关心的——你的程序需要等待多久才能运行完毕？我们来实际计时一下。我编写了这样一个函数，它将执行该操作五次，并进行矩阵乘法运算。关于为什么此处还有其他代码，我们两周后会稍作解释。但目前，我们已获得一个实际的运行时间：该矩阵运算耗时0.16秒。而实际每秒浮点运算次数（即每秒完成的浮点运算数）为5。
+**中文**: 好的，现在我们已经算出了浮点运算次数（FLOPs）的总量。
+那么，这个数字如何转化为实际的挂钟时间（wall-clock time）呢？毕竟，这才是你真正关心的指标：你的程序运行需要等待多久？
 
-## 段落 40
+让我们来实际计时一下：
+- 我写了一个函数，它会重复执行5次矩阵乘法操作。
+- （关于代码中其他部分的作用，我们两周后再详细讨论，现在先忽略它们。）
+- 通过运行这段代码，我们得到了一个实际的耗时数据。
+
+结果显示：
+- 该矩阵运算耗时 0.16 秒。
+- 由此我们可以计算出实际的 FLOPS（每秒浮点运算次数），即它每秒钟执行了多少次运算。结果是 5...
+    
+*(注：根据上下文语境，这里的“5”极有可能是指 5 TFLOPS (5 Tera-FLOPS) 或类似的量级，因为对于现代硬件而言，每秒仅做5次运算是不合理的；或者是演讲者话未说完，具体数值需结合后续内容确认。)*
+
 
 **英文**: 4 E 13. Okay. So, now you can compare this with the, you know, the marketing materials and for the A 100 and A 100. And, you know, as we looked at the spec sheet, the flops depends on the data type. And we see that the promise flops per second, which, you know, for A 100, for, I guess this is for float 32. float 32 is, you know, 67, you know, terro flops as we looked. And so, that is the number of promise flops per second we had. And now, if you look at the, there's a helpful notion called model flops utilization or MFU, which is the actual number flops divided by the promise flops. Okay. So, you take the actual number of flops, remember, which is what you actually witnessed.
 
-**中文**: 4E13。好的。现在，您可以将此结果与A100的营销资料进行对比。如我们所见，规格表中的浮点运算次数（FLOPS）取决于数据类型。对于A100，其标称浮点运算性能——我猜此处指的是单精度浮点数（FP32）——据我们查阅为67万亿次浮点运算每秒（67 TFLOPS）。这便是我们所采用的标称浮点运算性能数值。现在，若进一步考察，有一个很有用的概念称为“模型浮点运算利用率”（MFU），即实际浮点运算次数除以标称浮点运算次数。换言之，您需采用实际观测到的浮点运算次数。
+**中文**: 4 × 10¹³（即 40 万亿）。
 
-## 段落 41
+好了，现在我们可以将这个实测数据与 A100 GPU 的官方营销资料进行对比了。
+
+正如我们之前查看规格说明书（spec sheet）时所见，FLOPS 的数值取决于数据类型（data type）：
+- 对于 A100，如果是 FP32（单精度浮点数），其承诺的峰值算力约为 67 TFLOPS（67 万亿次浮点运算/秒）。
+- 这就是我们所说的“承诺每秒浮点运算次数”。
+
+接下来，我们要引入一个非常有用的概念：模型 FLOPS 利用率（Model FLOPs Utilization, 简称 MFU）。
+- 定义：MFU = 实际达到的 FLOPS / 承诺的峰值 FLOPS。
+- 分子：取你刚才实际观测到的运算速度（即我们刚刚计算出的那个数值）。
+- 分母：取硬件厂商承诺的理论峰值速度（如上面的 67 TFLOPS）。
+
+通过这个比率，我们就能知道你的程序到底发挥了硬件多少百分比的理论性能。
+
 
 **英文**: The number of floating point operations that are useful for your model divided by the actual time it took, divided by this promise flops per second, which is, you know, from the glossy brochure. You can get a MFU of 0. 8. Okay. So, usually you see people talking about their MFUs. And something greater than 0. 5 is usually considered to be good. And if you're like, you know, 5% MFU, that's considered to be really bad. You usually can't get close to that close to, you know, you know, 90 or 100. Because this is sort of ignoring all sort of communication and overhead.
 
-**中文**: 您的模型所执行的有效浮点运算次数，除以实际耗时，再除以厂商宣传手册中承诺的每秒浮点运算次数（即“理论峰值性能”）。由此可得出模型浮点利用率（MFU）为0.8。通常，人们会讨论自己模型的MFU；一般认为MFU超过0.5即属良好，而若仅为5%，则被视为极差。实际上，你几乎不可能达到90%或100%的MFU，因为该指标在计算时忽略了所有通信开销及系统运行开销。
+**中文**: 具体来说，**模型 FLOPS 利用率MFU**的计算公式是：
 
-## 段落 42
+$$ \text{MFU} = \frac{\text{对模型有用的浮点运算总量} / \text{实际耗时}}{\text{官方宣传册（glossy brochure）上的承诺峰值 FLOPS}} $$
+
+也就是：**（实际有效算力）除以（理论峰值算力）**。
+
+*   如果你能算出 **0.8 (80%)** 的 MFU，那已经是非常惊人的成绩了。
+*   通常大家在讨论训练效率时都会引用 MFU 这个指标：
+    *   **大于 0.5 (50%)**：通常被认为表现**良好**。
+    *   **只有 0.05 (5%)**：则被认为表现**非常糟糕**。
+
+你通常**无法**达到接近 **90% 或 100%** 的利用率。
+这是因为理论峰值忽略了现实中的各种损耗，例如：
+*   **通信开销（communication）**：GPU 之间或 GPU 与 CPU 之间的数据传输时间。
+*   **其他系统开销（overhead）**：内存搬运、指令调度等非计算时间。
+
+因此，MFU 本质上是在衡量你的系统在多大程度上克服了这些非计算瓶颈，跑出了接近硬件理论极限的速度。
+
 
 **英文**: It's just like the literal computation of the flops. Okay. And usually MFU is much higher if the matrix multiplication is dominate. Okay. So, that's, and if you're any, any questions about this? Yeah. So, this promise flops per second is not considered to be a great one. So, this promise flops per second is not considered to be a smart set. One, a note is that this is actually a, you know, there's also something called hardware, you know, to flops you, like, realization. And the motivation here is that we are all, we're trying to look at the, it's called model because we're looking at the number of effective useful operations that the model is, you know, performing. Okay.
 
-**中文**: 这就像直接计算FLOPs一样。好的。通常，如果矩阵乘法占主导地位，那么MFU会高得多。好的。这就是……大家对此有任何问题吗？是的。因此，这种“承诺的每秒浮点运算次数”并不被认为是一个很好的指标。所以，这种“承诺的每秒浮点运算次数”并不被视为一个明智的设定。需要说明的一点是，实际上还存在所谓“硬件FLOPs实现率”的概念。此处的动机在于：我们关注的是模型——即考察模型实际执行的有效且有用的运算数量。好的。
+**中文**: 这仅仅是对 FLOPs 的字面计算。
 
-## 段落 43
+通常情况下，如果矩阵乘法占主导地位（即计算量远大于其他操作），那么 MFU（模型 FLOPS 利用率） 往往会更高。
 
-**英文**: And so, it's a way of kind of standardizing. It's not the actual number of flops that are done because you could have optimization in your code that cash a few things or redo, you know, you know, recomputation of some things. And in some sense, you're still computing the same model. So, what matters is that you're, this is truly trying to look at the model complexity. And you shouldn't be penalized just because you were clever in your MFU if you were clever and you didn't actually do the flops. But you said you did. Okay. So, you can also do the same with BF16. And here we see that for BF, the time is actually much better. So, 0.
+关于这部分，大家有什么问题吗？
 
-**中文**: 因此，这是一种标准化的方式。它并非实际执行的浮点运算次数（FLOPs），因为你的代码中可能存在优化，例如缓存某些计算结果或重新计算部分内容。从某种意义上说，你仍在运行相同的模型。因此，关键在于考察模型本身的复杂度。你不应仅仅因为自己在MFU（模型浮点运算利用率）方面更聪明——比如通过巧妙设计避免了实际执行某些FLOPs——而受到惩罚；但如果你声称执行了这些FLOPs，那就不合适了。好的。同样，你也可以对BF16执行相同操作。此处我们看到，对于BF（BF16），实际耗时明显更优。因此，耗时为0。
+（回答听众提问）：
+是的，你说得对。这个来自宣传册的“承诺峰值 FLOPS”并不是一个绝对可靠的标准，也不能被视为一个“智能设定（smart set point）”。
 
-## 段落 44
+这里有两点需要注意：
 
-**英文**: 03 instead of 0. 16. So, the actual flops per second is higher. Even the county first, especially the promised flops is still quite high. So, the MFU acts actually lower for BF16. This is, you know, maybe surprisingly low. But sometimes the promised flops is a bit of, you know, optimistic. So, always about benchmark your code. And don't just kind of assume that you're going to get certain levels of performance. Okay.
+- 硬件层面的差异：还有一个概念叫做硬件 FLOPS 实现率（Hardware FLOPs Realization）。厂商宣传的峰值往往是在最理想、最特定的条件下测得的，实际硬件在不同负载下的表现会有所不同。
+- 为什么叫“模型”FLOPS 利用率：我们之所以特意称之为“模型（Model）” FLOPS 利用率，是因为我们的关注点在于模型实际执行的有效且有用的运算数量。
 
-**中文**: 03 而非 0.16。因此，实际每秒浮点运算次数（FLOPS）更高。即使是县级单位（此处疑为术语误译，或指“最低配置”等，但按字面直译）优先考虑时，所宣称的 FLOPS 依然相当高。因此，BF16 精度下 MFU（矩阵乘法单元）的实际利用率反而更低。这一点可能出人意料地低。但有时所宣称的 FLOPS 略显乐观。因此，务必对您的代码进行基准测试，切勿想当然地认为一定能达到特定性能水平。
+1.普通的硬件利用率可能只关心硬件是否在忙（哪怕是在做无用功或等待）
 
-## 段落 45
+2.而 MFU 专门衡量的是：在总时间内，有多少比例的时间真正花在了推动模型训练/推理前进的有效计算上。
+
+简而言之，MFU 是为了剔除那些对模型更新没有直接贡献的开销（如通信、内存搬运、填充计算等），从而更真实地反映算法与硬件配合的效率。
+
+
+**英文**: And so, it's a way of kind of standardizing. It's not the actual number of flops that are done because you could have optimization in your code that cash a few things or redo, you know, you know, recomputation of some things. And in some sense, you're still computing the same model. So, what matters is that you're, this is truly trying to look at the model complexity. And you shouldn't be penalized just because you were clever in your MFU if you were clever and you didn't actually do the flops. But you said you did. Okay. So, you can also do the same with BF16. And here we see that for BF, the time is actually much better. So, 0.03 instead of 0. 16. So, the actual flops per second is higher. Even the county first, especially the promised flops is still quite high. So, the MFU acts actually lower for BF16. This is, you know, maybe surprisingly low. But sometimes the promised flops is a bit of, you know, optimistic. So, always about benchmark your code. And don't just kind of assume that you're going to get certain levels of performance. Okay.
+
+**中文**: 所以，这其实是一种标准化的方法。
+
+MFU 计算的并不是代码中实际执行的浮点运算次数。因为你的代码中可能包含各种优化策略，例如：
+- 缓存（caching）某些中间结果；
+- 或者为了节省显存而进行重计算（recomputation）。
+
+从某种意义上说，无论你是否进行了这些优化，你最终计算的仍然是同一个模型。因此，MFU 真正关注的是模型的复杂度。
+核心逻辑：如果你很聪明，通过优化手段减少了实际的 FLOPs 消耗（例如用重计算换取显存空间），但依然完成了相同的模型训练任务，那么你不应该因此在 MFU 指标上受到“惩罚”。
+   （演讲者在此处澄清：如果你实际上没有做那么多运算，但声称做了，那是不对的；但 MFU 的设计初衷是基于模型的理论复杂度来评估效率，而不是单纯看硬件计数器的数值，以免让那些做了巧妙优化的开发者吃亏。）
+
+好了，我们也可以对 BF16（Bfloat16） 数据类型做同样的测试。
+在这里我们可以看到，对于 BF16，耗时实际上要好得多：
+- FP32 耗时：0.16 秒
+- BF16 耗时：0.03 秒
+
+因此，实际的每秒浮点运算次数（Actual FLOPS）变得更高了。
+然而，即使实际算力提升了，尤其是当分母（厂商承诺的峰值 FLOPS）定得非常高的时候，计算出来的 MFU 反而变低了。
+
+这个结果可能低得让人意外。但这通常是因为：
+
+1.厂商承诺的峰值 FLOPS 有时过于乐观（optimistic），是在极度理想的条件下测得的，现实中很难达到。
+
+2.BF16 虽然快，但可能受限于其他瓶颈（如内存带宽或通信），导致无法跑满理论峰值。
+
+结论：
+一定要对你的代码进行基准测试（benchmark）！
+不要想当然地认为一定能达到某种性能水平。实际表现往往取决于具体的硬件实现、数据类型以及系统开销，必须通过实测数据说话。
+
 
 **英文**: So, just to summarize, matrix multiplatients dominate the compute. And the general rule of thumb is that it's two times the product of the dimensions, flops. The flops per second, floating points per second, depends on, you know, the hardware and also the data type. So, the fancier the hardware you have, the higher it is, the smaller the data type, the usually the faster it is. And MFU is a useful notion to look at how well you're essentially squeezing your hardware. Yeah. I heard that often you get like the maximum utilization you want to use these like tensor cores on the machine. And so, like, this fighter is by default to use these tensor cores on, like, are these kind of conditions? Yeah. So, the question is, what about those tensor cores? So, if you go to this spec sheet, you'll see that, you know, these are all on the tensor core. So, the tensor core is basically, you know, specialized hardware to do map balls.
 
-**中文**: 因此，简单总结一下，矩阵乘法占据了主要的计算量。一般的经验法则是：浮点运算次数（FLOPs）约为矩阵维度乘积的两倍。每秒浮点运算次数（FLOPS）取决于硬件性能以及数据类型——硬件越先进，FLOPS越高；数据类型越小，通常运算速度也越快。MFU（模型浮点利用率）是一个有用的指标，用于衡量你对硬件计算能力的实际压榨程度。是的，我常听说，为实现最高利用率，通常需要启用机器上的张量核心（Tensor Cores）。那么，默认情况下，这类加速器是否就专为使用张量核心而设计？是否需满足某些特定条件？是的。那么问题来了：这些张量核心究竟如何工作？若查阅相关规格说明书，你会发现所有指标均基于张量核心。张量核心本质上是一种专门用于执行矩阵运算的专用硬件。
+**中文**: 我们来总结一下：
 
-## 段落 46
+1.  **计算主导因素**：**矩阵乘法**占据了绝大部分的计算量。
+2.  **FLOPs 估算法则**：一个通用的经验法则是，矩阵乘法的浮点运算次数（FLOPs）大约是**矩阵维度乘积的两倍**（即 $2 \times M \times N \times K$）。
+3.  **算力（FLOPS）的影响因素**：每秒浮点运算次数取决于：
+    *   **硬件性能**：硬件越先进（fancier），峰值算力越高。
+    *   **数据类型**：数据精度越低（如 BF16, FP16 相比 FP32），通常运算速度越快。
+4.  **MFU 的意义**：**模型 FLOPS 利用率（MFU）** 是一个非常有用的指标，用来衡量你**在多大程度上“榨干”了硬件的性能**。
+
+---
+
+**关于 Tensor Cores 的问答环节：**
+
+**提问者**：我听说为了获得最大利用率，通常需要使用机器上的 **Tensor Cores（张量核心）**。那么，刚才提到的那些更快的速度（比如 BF16 的表现），默认就是使用了 Tensor Core 吗？是在这种条件下测得的吗？
+
+**演讲者**：好问题，关于 **Tensor Cores** 的情况是这样的：
+如果你去查看硬件的**规格说明书（spec sheet）**，你会发现上面列出的那些极高的峰值算力数据，**全都是基于 Tensor Core 计算的**。
+
+*   **什么是 Tensor Core？**
+    它本质上是一种**专用硬件单元**，专门用于执行**矩阵乘法累加（Matrix Multiply-Accumulate, 简称 MMA 或 GEMM**操作。
+*   **为什么重要？**
+    传统的 CUDA Core（通用核心）也能做矩阵乘法，但速度慢得多。只有当你调用并充分利用这些专用的 Tensor Core 时，才能达到规格书上宣传的那种“恐怖”的峰值速度。因此，现代深度学习框架（如 PyTorch）在处理矩阵运算时，默认都会尝试调用 Tensor Core 来加速。
+
 
 **英文**: So, if you are, you know, if you're, so by default, it should use it. And especially if you're using PyTorch, you know, compile, it will generate the code that will use the hardware properly. Okay. So, let's talk a little bit about, you know, gradients. So, and the reason is that we've only looked at matrix multiplication, or in other words, basically, feet forward, forward passes and the number of flops. But there's also a computation that comes from computing gradients, and we want to track down how much that is. Okay. So, just to consider a simple example, a simple linear model, where you take the prediction of a linear model and you, you look at the MSC with respect to five. So, not a very interesting loss, but I think it's illustrated for looking at the gradients. Okay.
 
-**中文**: 因此，如果你使用了相关设置，那么默认情况下它就会启用该功能。尤其是当你使用 PyTorch 的 `compile` 功能时，它会生成能充分利用硬件的代码。好的。接下来我们简要讨论一下梯度问题。原因在于，我们此前仅关注了矩阵乘法，或者说，本质上只考察了前向传播过程及其浮点运算量（FLOPs）。但除此之外，还有用于计算梯度的额外计算开销，而我们需要明确量化这部分开销。好的。我们先考虑一个简单示例：一个简单的线性模型，其预测结果与真实值之间的均方误差（MSE）作为损失函数——虽然这个损失函数并不特别有趣，但它有助于清晰地展示梯度计算过程。
+**中文**: 所以，默认情况下，系统应该会自动使用这些 Tensor Cores。
+特别是如果你使用的是 **PyTorch** 并启用了 **`torch.compile`**（或类似的编译优化），它会自动生成能够正确调用底层硬件（即 Tensor Cores）的代码。
 
-## 段落 47
+好了，接下来我们要稍微讨论一下 **梯度（gradients）** 的计算。
+
+**为什么要讨论这个？**
+因为到目前为止，我们只关注了**矩阵乘法**，换句话说，我们只计算了**前向传播（forward pass）**的 FLOPs。
+但是，训练过程中还有一个巨大的计算开销来自于**反向传播（计算梯度）**。我们需要弄清楚这部分到底占了多少计算量。
+
+让我们来看一个简单的例子：
+假设有一个简单的**线性模型**。
+*   我们取该线性模型的预测值。
+*   然后计算它相对于参数 $W$（演讲者口误说成了 "five"，但在上下文中显然指权重矩阵 $W$ 或参数 $\theta$）的 **均方误差（MSE, Mean Squared Error）**。
+
+虽然这个损失函数本身并不复杂（甚至有点过于简单），但它非常适合用来**演示梯度计算的流程和开销**。
+
 
 **英文**: So, remember, in the forward pass, you have your X, you have your, your W, which, you want to compute the gradient with respect to, you make a prediction by taking a linear product and then you, you have your loss. And in the backward pass, you just call loss a backwards. And in this case, the gradient, which is this variable attached to the tensor, turns out to be what you, what you want. Okay. So, everyone has done your gradients in PyTorch before. So, let's look at how many flops are required for computing gradients. Okay. So, let's look at a slightly more complicated model. So, now it's a two-layer linear model, where you have X, which is BID, times W1, which is D by D. So, that's the first layer.
 
-**中文**: 因此，请记住，在前向传播过程中，你有输入X和待计算梯度的权重W；通过线性乘积得到预测结果，然后计算损失函数。而在反向传播过程中，只需调用loss.backward()即可。此时，附着在张量上的梯度变量，恰好就是你所需要的梯度。好的。大家之前应该都已在PyTorch中计算过梯度了。接下来，我们来看一下计算梯度所需的浮点运算次数（FLOPs）。好的，我们考察一个稍复杂的模型：这是一个两层线性模型，其中输入X的形状为B×D，权重W1的形状为D×D，这构成了第一层。
+**中文**: 回想一下**前向传播（forward pass）**的过程：
+你拥有输入 $X$ 和权重矩阵 $W$（你需要计算关于 $W$ 的梯度）。
+1.  首先，通过计算线性乘积（$X \cdot W$）得到**预测值**。
+2.  然后，基于预测值计算**损失（Loss）**。
 
-## 段落 48
+而在**反向传播（backward pass）**中，你只需调用 `loss.backward()`。
+此时，附着在张量（tensor）上的 `.grad` 属性变量，就会自动填充为你想要的**梯度值**。
+我想大家在 PyTorch 中应该都做过这样的梯度计算操作了。
+
+现在，让我们深入分析一下：**计算这些梯度究竟需要多少 FLOPs？**
+
+为此，我们来看一个稍微复杂一点的模型：
+这是一个**两层线性模型（two-layer linear model）**：
+*   **输入**：$X$，维度为 $B \times D$（其中 $B$ 是批次大小 batch size，$D$ 是特征维度）。
+*   **第一层权重**：$W_1$，维度为 $D \times D$。
+*   **第一层运算**：即计算 $X \cdot W_1$。
+
+*(注：演讲者正在逐步构建模型复杂度，以便推导多层网络中反向传播的浮点运算量公式。)*
+
 
 **英文**: And then you take your hidden activations, H1, and you pass it through another linear layer, W2, and to get a K-dimensional vector, and you do some, compute some loss. Okay. So, this is a two-layer linear network. And just as a kind of review, if you look at the number of forward flops, what you had to do was, you have to multiply, look at W1, you have to multiply X by W1, and add it to your H1. And you have to take H1 and W2, and you have to add it to your H2. Okay. So, the total number of flops, again, is two times the product of all the dimensions in your map wall, plus two times the product dimensions in your map wall for the second matrix. Okay. In other words, two times the total number of parameters in this case. Okay.
 
-**中文**: 然后，你将隐藏层激活值 H1 输入到另一个线性层 W2 中，得到一个 K 维向量，并据此计算某种损失。好，这是一个两层线性网络。作为简要回顾，若考察前向传播所需的浮点运算次数（flops），你需要执行以下操作：首先将输入 X 与权重矩阵 W1 相乘，并将结果加到 H1 上；接着将 H1 与权重矩阵 W2 相乘，并将结果加到 H2 上。因此，总的浮点运算次数再次等于两倍的首层映射中所有维度的乘积，再加上两倍的第二层矩阵中所有维度的乘积。换言之，即本例中参数总数的两倍。
+**中文**: 然后，你取隐藏层的激活值 $H_1$，将其通过另一个线性层（权重为 $W_2$），从而得到一个 $K$ 维的向量，最后计算某种损失函数。
 
-## 段落 49
+好了，这就是一个**两层线性网络**。
+
+让我们简单**回顾**一下**前向传播（forward）**所需的 FLOPs 数量：
+1.  **第一层**：你需要将输入 $X$ 与权重 $W_1$ 相乘，得到隐藏层激活值 $H_1$。
+2.  **第二层**：你需要将 $H_1$ 与权重 $W_2$ 相乘，得到输出 $H_2$（演讲者口述中的 "add it to your H2" 实际上是指矩阵乘法运算的结果构成了 $H_2$，而非加法）。
+
+因此，总的 FLOPs 数量计算如下：
+*   对于第一个矩阵乘法：$2 \times (\text{所有维度的乘积})$
+*   对于第二个矩阵乘法：$2 \times (\text{所有维度的乘积})$
+
+**换句话说**：在这个特定的线性网络案例中，前向传播的总 FLOPs 大约等于 **参数总量的两倍**（即 $2 \times \text{Total Parameters}$）。
+
+*(注：这是深度学习中的一个经典结论。对于纯线性层，前向传播的浮点运算量通常是模型参数量的 2 倍。而在包含反向传播的完整训练步中，总计算量通常是前向传播的 2 倍，即总约为参数的 4-6 倍，具体取决于优化器等因素。)*
+
 
 **英文**: So, what about the backward pass? So, this part will be a little bit more involved. So, we can recall the model X to H1 to H2 and the loss. So, in the backward pass, you have to compute a bunch of gradients. And the gradients that are relevant is you have to compute the gradient with respect to H1, you know, H2, W1, and W2 of the loss. So, D lost each of these variables. Okay. So, how long does it take to compute that? Let's just look at W2 for now. Okay. So, the things that touch W2, you can compute by looking at the chain rule. So, W2 grad, so the gradient of D lost, D, W2, is you sum H1 times the gradient of the loss with respect to H2.
 
-**中文**: 那么，反向传播过程呢？这部分会稍微复杂一些。我们可以回顾一下模型的结构：X → H1 → H2，以及损失函数。在反向传播过程中，需要计算一系列梯度。其中相关梯度包括：损失函数对H1、H2、W1和W2的梯度，即损失函数对这些变量的偏导数。那么，计算这些梯度需要多长时间呢？我们先以W2为例。W2所涉及的部分可通过链式法则来计算。W2的梯度，即∂损失/∂W2，等于H1与损失函数对H2的梯度的乘积之和。
+**中文**: 那么，**反向传播（backward pass）**的情况如何呢？
+这部分会稍微复杂一些。
 
-## 段落 50
+让我们回顾一下模型的数据流：从输入 $X$ 到隐藏层 $H_1$，再到输出 $H_2$，最后计算损失（Loss）。
+
+在反向传播过程中，你需要计算一堆**梯度（gradients）**。
+相关的梯度包括损失函数对以下变量的偏导数：
+*   $H_1$
+*   $H_2$
+*   $W_1$
+*   $W_2$
+即：$\frac{\partial \text{Loss}}{\partial H_1}, \frac{\partial \text{Loss}}{\partial H_2}, \frac{\partial \text{Loss}}{\partial W_1}, \frac{\partial \text{Loss}}{\partial W_2}$。
+
+那么，计算这些需要多少时间（或计算量）呢？
+我们先单独看看 **$W_2$**。
+
+根据**链式法则（chain rule）**，我们可以推导出与 $W_2$ 相关的梯度计算：
+$W_2$ 的梯度（即 $\frac{\partial \text{Loss}}{\partial W_2}$）等于：
+**$H_1$ 的转置** 乘以 **损失对 $H_2$ 的梯度**（$\frac{\partial \text{Loss}}{\partial H_2}$），然后通常还需要对批次维度进行求和（sum over the batch dimension）。
+
+用公式表示大致为：
+$$ \nabla W_2 = H_1^T \cdot \nabla H_2 $$
+*(注：演讲者口述中的 "sum H1 times..." 指的是矩阵乘法中隐含的对批次维度的累加操作，这是计算权重梯度的标准步骤。)*
+
 
 **英文**: Okay. So, that's just a chain rule for W2. And this is, so all the gradients are the same size as the underlying vectors. So, this turns out to be, essentially, looks like a matrix multiplication. And so, the same calculus holds, which is that it's two times the number of the product of all the dimensions, B times D times K. Okay. But this is only the gradient with respect to W2. We also need to compute the gradient with respect to H1, because we have to keep on back propagating to W1 and so on. Okay. So, that is going to be the product of W2 times H2.
 
-**中文**: 好的。因此，这只是针对W2的链式法则。而所有梯度的维度均与对应向量的维度一致。结果表明，这本质上类似于矩阵乘法。因此，相同的微积分规则依然适用，即其计算量约为所有维度乘积的两倍，即2×B×D×K。但以上仅是关于W2的梯度。我们还需计算关于H1的梯度，因为必须继续反向传播至W1等参数。因此，该梯度等于W2与H2的乘积。
+**中文**: 好的，这只是针对 $W_2$ 的**链式法则**应用。
 
-## 段落 51
+这里有一个关键点：**所有梯度的维度都与对应的底层向量（或矩阵）的维度相同**。
+
+因此，计算 $W_2$ 梯度的过程本质上看起来就像一个**矩阵乘法**。
+所以，同样的计算量法则也适用：
+所需的 FLOPs 数量是 **2 乘以所有维度的乘积**，即 $2 \times B \times D \times K$。
+*(注：这里 $B$ 是批次大小，$D$ 是隐藏层维度，$K$ 是输出维度)*
+
+**但是**，这仅仅计算了关于 $W_2$ 的梯度。
+我们还需要计算关于 **$H_1$** 的梯度，因为我们需要继续**反向传播**到 $W_1$ 以及更前面的层。
+
+计算关于 $H_1$ 的梯度（即 $\frac{\partial \text{Loss}}{\partial H_1}$），其运算形式将是：
+**$W_2$ 的转置** 乘以 **关于 $H_2$ 的梯度**。
+*(注：演讲者口述中的 "product of W2 times H2" 在这里语境下略有省略，准确的数学含义是用 $W_2^T$ 乘以 $\nabla H_2$ 来得到 $\nabla H_1$，以便将误差信号传回上一层。)*
+
 
 **英文**: Sorry, I think this should be that grad of H2, H2. That grad. So, that turns out to also be, essentially, looks like the matrix multiplication. And it's the same number of flops for computing the gradient of H1. Okay. So, when you add the two, so that's just for W2. You do the same thing for W1, and that's, which has D times D parameters. And when you add it all up, it's, so for this, for W2, the amount of computation was 4 times B times D times K. So, I'm going to try again for W1. It's also 4 times B times D times D, because W1 is D by D.
 
-**中文**: 抱歉，我认为这里应该是H₂的梯度，即H₂的梯度。这个梯度本质上看起来也类似于矩阵乘法运算，且计算H₁梯度所需的浮点运算次数（flops）与此相同。好的。因此，将这两部分相加后，得到的只是关于W₂的结果；对W₁需执行同样的操作，而W₁具有D×D个参数。将所有计算量加总后，对于W₂，计算量为4×B×D×K。接下来我再重新计算W₁的计算量：它同样为4×B×D×D，因为W₁是一个D×D的矩阵。
+**中文**: 抱歉，我想这里应该是指 **$H_2$ 的梯度**（$\nabla H_2$）。
 
-## 段落 52
+计算 $H_1$ 的梯度本质上也看起来像是一个**矩阵乘法**。
+因此，计算 $H_1$ 梯度所需的 FLOPs 数量与之前是相同的。
+
+好了，当我们把这两部分加起来时（注意：这还只是针对 $W_2$ 这一层的反向传播过程）：
+你需要对 $W_1$ 做同样的事情，而 $W_1$ 拥有 $D \times D$ 个参数。
+
+让我们汇总一下总计算量：
+*   **对于 $W_2$ 层**：
+    计算量是 $4 \times B \times D \times K$。
+    *(推导逻辑：计算 $\nabla W_2$ 需要 $2 \times B \times D \times K$，计算 $\nabla H_1$ 也需要 $2 \times B \times D \times K$，两者相加即为 4 倍)*
+
+*   **对于 $W_1$ 层**：
+    我们要再算一次。由于 $W_1$ 的维度是 $D \times D$，其计算量同样是 **$4 \times B \times D \times D$**。
+    *(推导逻辑：计算 $\nabla W_1$ 需要 $2 \times B \times D \times D$，计算 $\nabla X$ 也需要 $2 \times B \times D \times D$，合计 4 倍)*
+
+**总结结论**：
+在反向传播中，每一层的计算量大约是该层前向传播计算量的 **2 倍**（因为不仅要算权重的梯度，还要算输入梯度的传递），或者说，单层反向传播的总 FLOPs 约为 $4 \times (\text{批次大小} \times \text{输入维度} \times \text{输出维度})$。
+
 
 **英文**: Okay. So, I know there's a lot of symbols here. I'm going to try also to give you a visual account for this. So, this is from a blog post that I think may work better. Okay. I have to wait for the animation to flip back. So, basically, this is one layer of the node out, which has the hidden and then the weights to the next layer. And so, I have to, okay, probably this animation has to wait. Okay. Ready, set.
 
