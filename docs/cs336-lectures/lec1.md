@@ -169,52 +169,57 @@
 
 **中文**: 还有其他问题吗？好的，在这一部分，我将带大家浏览课程的所有不同组件，对你们即将体验的内容做一个宽泛的概览和预览。请记住，这门课的核心在于效率——即在给定的硬件和数据条件下，如何利用你的资源训练出最好的模型？举个例子，如果我给你一份 Common Crawl 数据转储（dump）、一份网络数据转储，以及 32 张 H100 显卡供你使用两周，你该怎么做？这里面有非常多的设计决策：关于分词器（tokenizer）的问题、关于架构的问题、关于系统优化的问题，还有你可以对数据做的各种处理。我们将课程组织成了这五个单元（或者说五大支柱）。接下来我将逐一讲解，谈谈每个单元涵盖的内容、作业涉及的内容，最后做一个总结。好的，那么“基础”单元的目标，仅仅是让一个完整流程的基础版本跑通。在这里，你需要实现一个分词器、模型架构以及训练过程。我再多说一点关于这些组件的细节。
 
+![](img/lec1_012.png)
 
 **英文**: So a tokenizer is something that converts between strings and sequences of integers. Intuitively, you can think about the integers corresponding. to breaking up the string into segments. And mapping each segment to an integer. And the idea is that your sequence of integers is what goes into the actual model, which has to be a fixed dimension. OK, so in this course, we'll talk about the by pair encoding BPE tokenizer, which is relatively simple and still is used. There are a promising set of methods on tokenizer free approaches. So these are methods that just start with the raw bytes and don't do tokenization and develop a particular architecture that just takes the raw bytes. This work is promising, but so far I haven't seen it been scaled to the frontier yet. So we'll go with BPE for now.
 
 **中文**: 分词器是一种在字符串和整数序列之间进行转换的工具。直观地理解，你可以认为这些整数对应着将字符串切分成不同的片段，并将每个片段映射为一个整数。其核心思想是，你的整数序列才是实际输入到模型中的内容，而模型必须接收固定维度的输入。在这门课中，我们将讨论字节对编码（BPE）分词器，它相对简单，而且目前仍在使用。同时也有一些很有前景的“无分词器”方法。这些方法直接从原始字节开始，不进行分词，而是开发一种专门处理原始字节的特定架构。这项工作很有希望，但到目前为止，我还没看到它被扩展到最前沿的规模。所以，我们暂时还是采用 BPE。
 
-## 段落 31
-
 **英文**: OK, so once you've tokenized your sequence or strings into a sequence of integers, now we. define a model architecture over these sequences. So the starting point here is original transformer. That's what is the backbone of basically all frontier models. And here's architectural diagram. We won't go into details here, but there's attention, piece, and then there's a MLP layer with some normalization. So a lot has actually happened since 2017. I think there's a sort of sense to which all the transformer is invented, and then everyone's just using transformer. And to a first approximation, that's true. We're still using the same recipe.
 
-**中文**: 好的，所以一旦你将你的序列或字符串分词成整数序列，现在我们就在这些序列上定义一个模型架构。这里的起点是原始的Transformer。这是基本上所有前沿模型的骨干。这是架构图。我们这里不会深入细节，但有注意力机制、位置编码，然后有一个带有某些归一化的MLP层。自2017年以来实际上发生了许多变化。我认为在某种程度上，所有的Transformer都是被发明出来的，然后每个人都只是使用Transformer。在第一近似情况下，这是正确的。我们仍在使用同样的配方。
+**中文**: 好的，当你把字符串序列分词成整数序列之后，接下来我们就需要基于这些序列来定义模型架构了。这里的起点就是最初的 Transformer。它基本上是所有前沿模型的主干。这是一张架构图。我们在这里不深入细节，但可以看到有注意力机制部分，然后是一个带有归一化的多层感知机层。其实自 2017 年以来发生了很多事情。我觉得有种感觉是，Transformer 被发明出来之后，大家就都在用它了。粗略来看，确实是这样。我们仍然在使用同样的配方。
 
-## 段落 32
+![](img/lec1_013.png)
+
 
 **英文**: But there have been a bunch of the smaller improvements that do make a substantial difference when you add them all up. So for example, there is the activation, not linear activation function, so. swiggly, which we saw a little bit before. Positional embeddings, there's new positional embeddings, these rotary positional embeddings, which we'll talk about. Normalization, instead of using a layer norm, we're going to look at something called RMS norm, which is similar, but simpler. There's a question, where you place the normalization, which has been changed from the original transformer. The MLP use the canonical version as a dense MLP, and you can replace that with mixture of experts. Attention is something that has actually been getting a lot of attention, I guess. There's full attention, and then there's sliding window attention and linear attention. All of these are trying to prevent the quadratic blow up.
 
-**中文**: 但有很多小的改进，当它们全部加起来时确实会产生显著的影响。例如，有非线性激活函数，比如我们之前稍微提到过的swiggly。位置嵌入方面，有新的位置嵌入，即旋转位置嵌入，我们会进行讨论。归一化方面，我们不再使用层归一化，而是使用一种称为RMS归一化的技术，它类似但更简单。有一个问题是归一化的位置，这与原始Transformer有所不同。MLP使用的是标准版本的密集MLP，但可以替换为专家混合模型。注意力机制实际上已经引起了大量关注。有完整的注意力机制，还有滑动窗口注意力和线性注意力。所有这些都在试图防止二次爆炸。
+**中文**: 但是，虽然都是一些小的改进，但当你把它们全部加起来时，确实会产生实质性的差异。举个例子，比如激活函数，不再是线性激活函数，而是像我们之前看到的那种“波浪形”的函数。位置编码方面，有了新的位置编码方法，也就是我们稍后会讲到的旋转位置编码。归一化方面，我们不再使用层归一化，而是要看一种叫做 RMS 归一化的东西，它和层归一化类似，但更简单。还有一个关于归一化放置位置的问题，这与最初的 Transformer 相比已经有所改变。多层感知机使用的是标准的密集多层感知机版本，但你可以用专家混合来替代它。注意力机制其实是备受关注的焦点，我想。有全注意力，还有滑动窗口注意力和线性注意力。所有这些方法都是为了试图防止计算量出现二次方的激增
 
-## 段落 33
 
 **英文**: There's also lower dimensional versions,. like GQA and MLA, which will get to in a second, or not in a second, but in a future lecture. And then the most radical thing is other alternatives to the transformer like state space models like hyena, where they're not doing attention, but some other operation. And sometimes you get best forwards by mixing a hybrid model that mixes these in with transformers. OK, so once you define your architecture,. you need a train. So design decisions include optimizer. So Adam W, which is a very, basically, Adam fixed up, is still very prominent. So we'll mostly work with that. But it is worth mentioning that there is more recent optimizers like Moon and Soap that have shown promise.
 
-**中文**: 还有低维版本，比如GQA和MLA，稍后会讲到，或者不会马上讲，而是在以后的课程中。然后最激进的是其他替代transformer的方法，比如状态空间模型，如hyena，它们不进行注意力计算，而是进行其他操作。有时通过混合包含这些模型和transformer的混合模型可以获得最佳效果。好的，所以一旦定义了你的架构，就需要进行训练。因此，设计决策包括优化器。Adam W，基本上是修复后的Adam，仍然非常突出。所以我们主要会使用它。但值得一提的是，还有像Moon和Soap这样的较新的优化器，显示出一定的前景。
+**中文**: 还有一些低维度的变体，比如 GQA 和 MLA，我们稍后——或者说不是在马上，而是在未来的讲座中——会讲到。最激进的变化则是 Transformer 的替代方案，比如像 Hyena 这样的状态空间模型，它们不进行注意力计算，而是执行其他某种操作。有时候，通过混合这些模型与 Transformer 构建混合模型，你能获得最佳效果。好的，一旦定义了架构，你就需要训练它。涉及的设计决策包括优化器。AdamW 本质上就是修正版的 Adam，目前仍然非常主流。所以我们主要会使用它。但也值得一提的是，最近出现了一些像 Moon 和 Soap 这样的新优化器，也显示出了不错的潜力。
 
-## 段落 34
+![](img/lec1_014.png)
+
 
 **英文**: Learning rate schedule, batch size, whether you do regularization or not, hyper parameters. There's a lot of details here. And I think this class is one where the details do matter, because you can easily have order of magnitude difference between a well-tuned architecture and something that's just like vanilla transformer. So an assignment one, basically, you'll. implement the BP tokenizer. I'll warn you that this is actually the part that seems to have been a lot of surprising, maybe, a lot of work for people. So just, you're warned. And you also implement the transformer, cross-MP3P loss, Adam W optimizer, and training loop. So again, the whole stack, and we're not. making you implement PyTorch from scratch.
 
-**中文**: 学习率调度、批次大小、是否进行正则化、超参数。这里有很多细节。我认为这个课程中，细节确实很重要，因为一个调优良好的架构和一个普通的Transformer之间可能会有数量级的差异。所以作业一，基本上你要实现BP分词器。我提醒你，这部分似乎让很多人感到意外，可能需要做很多工作。所以，只是提醒你一下。你还要实现Transformer、跨-MP3P损失、Adam W优化器和训练循环。所以，再次强调，整个流程都要实现，但我们不会让你从头开始实现PyTorch。
 
-## 段落 35
+**中文**: *这段话是在强调“魔鬼都在细节里”，顺便给第一次作业打个预防针。*
+
+学习率调度、批次大小、是否进行正则化，以及各种超参数。这里面的细节非常多。我认为这门课的一个特点就是细节至关重要，因为一个调优良好的架构和一个普通的 Transformer 相比，性能差异很容易达到数量级。所以在第一次作业中，基本上你需要实现 BPE 分词器。我得提前预警一下，这部分工作对很多人来说似乎是个“惊喜”，工作量可能比想象中大得多。所以，先给你们提个醒。此外，你还需要实现 Transformer、交叉熵损失函数、AdamW 优化器以及训练循环。所以再次强调，这是整套技术栈的实现，当然，我们并不是让你们从零开始手写一个 PyTorch。
+
+![](img/lec1_015.png)
+
 
 **英文**: So you can use PyTorch, but you can't use the transformer implementation for PyTorch. There's a small list of functions that you can use, and you can only use those. So we're going to have some tiny stories and open web text datasets that you'll train on. And then there will be a leaderboard. to minimize the open web text perplexity. We'll give you 90 minutes on a H100 and see what you can do. So this is last year. So we'll see. We have the top. So this is the number to beat for this year.
 
-**中文**: 所以你可以使用PyTorch，但不能使用PyTorch的transformer实现。有一小部分函数是可以使用的，你只能使用这些函数。因此，我们将有一些小型的故事和开放网络文本数据集供你训练。然后会有一个排行榜，以最小化开放网络文本的困惑度。我们会给你在H100上90分钟的时间，看看你能做到什么程度。这是去年的情况。我们来看看。我们有顶尖的水平。这就是今年需要超越的数字。
+**中文**: 你们可以使用 PyTorch，但是不能直接调用 PyTorch 里现成的 Transformer 实现。我们会提供一个允许使用的函数白名单，你们只能使用列表里的那些函数。我们会提供一些小型的 Stories 和 Open Web Text 数据集供你们进行训练。然后会设立一个排行榜，目标是在 Open Web Text 上把困惑度降到最低。我们会给你们每张 H100 显卡 90 分钟的运行时间，看看你们能做到什么程度。这是去年的情况。我们来看看……这是第一名的成绩。所以，这就是今年大家需要挑战的目标分数。
 
-## 段落 36
 
 **英文**: OK. All right. So that's the basics. Now, after basics, in some sense, you're done. Like you have ability to train a transformer. What well do you need? So the system part really goes into how you can optimize this further. So how do you get the most out of hardware? And for this, we need to take a closer look at the hardware. and how we can leverage it. So there's kernels, parallelism, and inference. So the three components of this unit.
 
-**中文**: 好的。没错。那么这就是基础知识。现在，在某种意义上，你已经完成了。就像你已经具备了训练变压器的能力。你还需要什么？因此，系统部分将深入探讨如何进一步优化。那么，如何充分利用硬件呢？为此，我们需要更仔细地看一下硬件以及如何利用它。所以有内核、并行性和推理。因此，这个单元的三个组成部分。
+**中文**: 好的，以上就是基础部分。现在，在掌握了基础知识之后，从某种意义上说，你已经“大功告成”了。毕竟你已经具备了训练 Transformer 的能力。那还需要什么呢？系统部分主要就是深入研究如何进一步优化。也就是，你如何才能榨干硬件的每一滴性能？为了做到这一点，我们需要更仔细地审视硬件本身，以及我们该如何利用它。这部分单元包含三个组件：算子、并行化和推理。
 
-## 段落 37
 
 **英文**: So OK. So to first talk about kernels, let's talk a little bit about what a GPU looks like. OK. So a GPU, which we'll get much more into,. is basically a huge array of these little units that do floating point operations. And maybe the one thing to note is that this is the GPU chip. And here is the memory that's actually off-chip. And then there's some other memory like L2 caches and L1 caches on-chip. And so the basic idea is that compute has to happen here. Your data might be somewhere else.
 
-**中文**: 好的。那么首先谈谈内核，我们先稍微了解一下GPU是什么样子的。好的。所以，GPU（我们之后会更深入地讨论），基本上是一组巨大的小单元，这些单元执行浮点运算。可能需要注意的一点是，这是GPU芯片。这里是实际在芯片外的内存。然后还有其他一些内存，比如芯片上的L2缓存和L1缓存。因此基本的想法是，计算必须在这里发生。你的数据可能在别处。
+**中文**: 好的。为了先聊聊算子，让我们先简单了解一下 GPU 的构造。GPU 的具体细节我们稍后会深入探讨，但基本上，它就是一个由无数个执行浮点运算的小单元组成的巨大阵列。有一点值得注意，这里指的是 GPU 芯片本身。而这里的内存实际上是位于芯片之外的。此外，芯片上还有一些其他的存储，比如 L2 缓存和 L1 缓存。所以基本的概念就是：计算必须在这里（芯片核心）发生，但你的数据可能存储在别的地方。
+
+![](img/lec1_016.png)
+
 
 ## 段落 38
 
