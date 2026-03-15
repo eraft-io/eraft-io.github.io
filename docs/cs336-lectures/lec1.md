@@ -221,297 +221,474 @@
 ![](img/lec1_016.png)
 
 
-## 段落 38
-
 **英文**: And how do you basically organize your compute so that you can be most efficient? So one quick analogy is imagine that your memory is where you can store your data and model parameters is make a warehouse. And your compute is like the factory. And what ends up being a big bottleneck is just data movement costs. So the thing that we have to do is how do you organize the compute, even a matrix multiplication, to maximize the utilization of the GPUs by minimizing the data movement? And there's a bunch of techniques like fusion entirely in that allow you to do that. So we'll get all into the details of that. And to implement and leverage a kernel,. we're going to look at Triton. There's other things you can do with various levels of sophistication, but we're going to use Triton, which is developed by OpenAI in a popular way, to build kernels. So we're going to write some kernels. That's for one GPU.
 
-**中文**: 那么你基本上是如何组织计算，以便最有效地进行？一个快速的类比是，想象你的内存是你存储数据和模型参数的地方，就像一个仓库。而你的计算就像一个工厂。最终成为瓶颈的是数据移动成本。所以我们需要做的是如何组织计算，即使是矩阵乘法，以最大限度地利用GPU，同时最小化数据移动。有一些技术可以实现这一点，比如融合。我们会深入探讨这些细节。要实现并利用内核，我们将研究Triton。你还可以用各种复杂程度的方法来做这件事，但我们将使用Triton，这是一种由OpenAI开发的流行方式，用于构建内核。所以我们将会编写一些内核。这是针对一个GPU的。
-
-## 段落 39
+**中文**: 那么，您基本上如何组织计算资源以实现最高效率呢？这里有一个简单的类比：想象您的内存是存储数据和模型参数的仓库，而您的计算单元（compute）则好比是工厂。最终成为主要瓶颈的往往是数据移动的成本。因此，我们需要解决的问题是：如何组织计算（即使是矩阵乘法），通过最小化数据移动来最大化 GPU 的利用率？为此，有一系列技术可以实现这一目标，例如完全融合（fusion）等技术。接下来我们将深入探讨这些细节。为了实现并利用一个内核（kernel），我们将关注 Triton 这一工具。当然，还有其他不同复杂程度的方法可供选择，但我们将使用由 OpenAI 开发且广受欢迎的 Triton 来构建内核。因此，我们将编写一些针对单个 GPU 的内核代码。
 
 **英文**: So now, in general, you have these big runs take 10,000s if not tens of thousands of GPUs. But even at 8, it starts becoming interesting, because you have a lot of GPUs. They're connected to some CPU nodes. And they also have our directly connected via NV switch, NV link. And it's the same idea. Now, the only thing is that data movement between GPUs is even slower. And so we need to figure out how to put model parameters and activations and gradients and put them on the GPUs and do the computation and to minimize the amount of your movement. And then, so we're going to explore different type of techniques like data parallelism and tensor parallelism and so on. So that's all I'll say about that. And finally, inference is something that we didn't actually do last year in the class, although we had a guest lecture.
 
-**中文**: 因此，现在一般来说，这些大规模运行需要10,000块甚至数万块GPU。但即使在8块的情况下，也开始变得有趣，因为你可以使用很多GPU。它们连接到一些CPU节点上。而且它们也通过NV交换机、NV链接直接连接。想法是一样的。现在唯一的问题是，GPU之间的数据传输速度更慢。因此我们需要想办法将模型参数、激活值和梯度放在GPU上进行计算，并尽量减少数据移动的量。然后，我们将探索不同的技术，如数据并行性和张量并行性等。这就是我对此要说的全部内容。最后，推理是我们去年在课程中实际上没有进行过的，尽管我们有一节 guest lecture（客座讲座）。
+**中文**: 现在，一般来说，大规模训练任务需要动用数万甚至数万个 GPU。但即使只有 8 个 GPU，情况也开始变得有趣起来，因为此时你已经拥有了相当数量的计算资源。这些 GPU 连接到某些 CPU 节点，同时它们之间也通过 NVSwitch 和 NVLink 直接互联。其核心思路与单卡场景类似，但不同之处在于：GPU 之间的数据移动速度更慢。因此，我们需要研究如何将模型参数、激活值（activations）和梯度（gradients）合理地分布在各个 GPU 上，并执行计算，从而最大限度地减少数据移动量。为此，我们将探讨多种并行技术，例如数据并行（data parallelism）、张量并行（tensor parallelism）等。关于这部分内容，我就先介绍到这里。最后，推理（inference）是我们去年课程中尚未实际涵盖的内容，尽管当时我们曾邀请嘉宾进行过相关讲座。
 
-## 段落 40
+![](img/lec1_017.png)
+
 
 **英文**: But this isn't important because inference is how you actually use a model. It's basically the task of generating tokens given a prompt, given a train model. And it also turns out to be really useful for a bunch. of other things besides just chatting with your favorite model. You need it for reinforcement learning, test time compute, which has been very popular lately. And even evaluating models, you need to do inference. So we're going to spend some time talking about inference. Actually, if you think about the globally, the cost that's spent on inference is. eclipsing the cost that it is used to train models. Because training, despite it being very intensive, is ultimately a one-time cost.
 
-**中文**: 但这一点并不重要，因为推理是你实际使用模型的方式。它基本上是在给定提示和训练好的模型的情况下生成标记的任务。而且，它在除了与你最喜欢的模型聊天之外的许多其他方面也非常有用。你需要它进行强化学习、测试时计算，这最近非常流行。甚至在评估模型时，你也需要进行推理。所以我们将会花一些时间来讨论推理。实际上，如果你从全局来看，用于推理的成本已经超过了训练模型的成本。因为尽管训练非常耗资源，但最终它是一次性成本。
+**中文**: 但这部分内容至关重要，因为推理（inference）才是模型的实际应用方式。其基本任务是在给定提示词（prompt）和已训练好的模型的情况下生成令牌（tokens）。事实证明，推理的应用远不止于与你喜爱的模型进行聊天；它在强化学习、测试时计算（test-time compute，近期非常热门）以及模型评估等领域都不可或缺。因此，我们将花费一些时间专门探讨推理。事实上，从全球范围来看，用于推理的成本正在超越用于训练模型的成本。尽管训练过程资源密集度极高，但它终究是一次性投入；而推理则是持续发生的，因此其累积成本更为巨大。
 
-## 段落 41
 
-**英文**: And inference is cost scales with every use. And the more people use your model, the more you'll need inference to be efficient. OK, so in inference, there's two phases. There's a pre-fill and a decode. Pre-fill is you take the prompt and you can run it through the model and get some activations. And then decode is you go aggressively one by one and generate tokens. So pre-fill, all the tokens are given. So you can process everything at once. So this is exactly what you see at training time. And generally, this is a good setting to be in because it's.
+**英文**: And inference is cost scales with every use. And the more people use your model, the more you'll need inference to be efficient. OK, so in inference, there's two phases. There's a pre-fill and a decode. Pre-fill is you take the prompt and you can run it through the model and get some activations. And then decode is you go aggressively one by one and generate tokens. So pre-fill, all the tokens are given. So you can process everything at once. So this is exactly what you see at training time.
 
-**中文**: 推理的开销随着每次使用而增加。你模型被使用的人越多，你就越需要推理高效。好的，所以在推理过程中，有两个阶段。一个是预填充，一个是解码。预填充是您将提示输入模型并获得一些激活值。然后解码是逐个积极地生成标记。所以预填充时，所有标记都是给定的。因此你可以一次性处理所有内容。这正是你在训练时看到的情况。通常，这种情况是一个好的状态，因为它。
+**中文**: 推理的成本随着每一次使用而累积。使用您模型的人越多，就越需要提高推理的效率。
+在推理过程中，主要包含两个阶段：预填充（pre-fill）和解码（decode）。
+- 预填充阶段：您接收输入的提示词（prompt），将其送入模型并计算出相应的激活值（activations）。由于此阶段所有的输入令牌（tokens）都是已知的，因此可以一次性并行处理所有数据。这恰恰与训练时的场景完全一致。通常来说，这是一个非常理想的运行状态。
+- 解码阶段：随后进入解码过程，您需要逐个地、迭代地生成新的令牌。
 
-## 段落 42
+![](img/lec1_018.png)
 
-**英文**: naturally parallel and you're mostly compute bound. What makes inference, I think, special and difficult is that this auto-regressive decoding, you need to generate one token at a time. It's hard to actually saturate all your GPUs and it becomes memory bound because you're constantly moving data around. And we'll talk about a few ways to speed the models up. This speed inference up. You can use a cheaper model. You can use this really cool technique called speculative decoding. We're using a cheaper model to sort of scout ahead and generate multiple tokens. And then if these tokens happen to be good by some percent definition good,. you can have the full model just score in and accept them all in parallel.
 
-**中文**: 自然并行，而且你大部分时间都是计算密集型的。我认为推理特别且困难的原因是这种自回归解码，你需要一次生成一个标记。实际上很难让所有GPU都满负荷运行，因为它会变成内存瓶颈，因为你在不断移动数据。我们将讨论几种加快模型速度的方法。这可以加快推理速度。你可以使用一个更便宜的模型。你可以使用一种非常酷的技术，称为推测解码。我们使用一个更便宜的模型来预先探测并生成多个标记。然后如果这些标记在某种百分比定义下是好的，你可以让完整模型一次性对它们进行评分并并行接受它们。
+**英文**:  And generally, this is a good setting to be in because it's. naturally parallel and you're mostly compute bound. What makes inference, I think, special and difficult is that this auto-regressive decoding, you need to generate one token at a time. It's hard to actually saturate all your GPUs and it becomes memory bound because you're constantly moving data around. And we'll talk about a few ways to speed the models up. This speed inference up. You can use a cheaper model. You can use this really cool technique called speculative decoding. We're using a cheaper model to sort of scout ahead and generate multiple tokens. And then if these tokens happen to be good by some percent definition good,. you can have the full model just score in and accept them all in parallel.
 
-## 段落 43
+**中文**: 通常来说，预填充阶段是一个非常理想的运行状态，因为它具有天然的并行性，且主要受限于计算能力（compute-bound）。然而，推理的特殊性和难点在于自回归解码（auto-regressive decoding）阶段：您需要逐个生成令牌。这使得很难让所有 GPU 达到饱和状态，并且由于需要不断地移动数据，该阶段往往受限于内存带宽（memory-bound）。
+我们将探讨几种加速模型推理的方法：
 
-**英文**: And then there's a bunch of systems optimizations that you can do as well. OK, so after the systems, oh, OK, assignment two. So you're going to implement a kernel. You're going to implement some parallelism. So data parallel is very natural. And so we'll do that. Some of the model parallelism like FSTP turns out to be a bit kind of complicated due from scratch. So we'll do sort of a baby version of that. But I encourage you to learn about the full version. We'll go over the full version in class, but implementing from scratch might be a bit too much.
+- 使用更轻量级的模型。
+- 投机解码（Speculative Decoding）：这是一项非常巧妙的技术。其核心思路是利用一个更便宜的模型来“超前侦察”，一次性生成多个候选令牌。如果这些令牌根据某种标准被判定为“足够好”（即有一定的概率被接受），那么主模型（完整模型）就可以并行地对它们进行验证（打分），并一次性全部接受。
 
-**中文**: 然后还有一些系统优化措施也可以进行。好的，那么在系统之后，哦，对，作业二。所以你要实现一个内核。你要实现一些并行性。所以数据并行非常自然。所以我们将会这么做。一些模型并行，比如FSTP，由于从头开始实现会有点复杂，所以我们会做一个简化的版本。但我鼓励你们去了解完整版本。我们会在课堂上讲解完整版本，但从头实现可能会有点困难。
+**英文**: And then there's a bunch of systems optimizations that you can do as well. OK, so after the systems, oh, OK, assignment two. So you're going to implement a kernel. You're going to implement some parallelism. So data parallel is very natural. And so we'll do that. Some of the model parallelism like FSDP turns out to be a bit kind of complicated due from scratch. So we'll do sort of a baby version of that. But I encourage you to learn about the full version. We'll go over the full version in class, but implementing from scratch might be a bit too much.
 
-## 段落 44
+**中文**: 此外，您还可以进行许多系统层面的优化。好了，讲完系统部分后，我们来看看作业二（Assignment 2）。在这个作业中，您将需要：
+
+- 实现一个算子内核（kernel）。
+- 实现某种并行策略。
+
+其中，数据并行（Data Parallelism）是非常自然的，我们将重点实现它。至于某些模型并行技术（如 FSDP），如果要从零开始完整实现会相当复杂。因此，我们将实现一个简化版（“婴儿版”）。不过，我鼓励大家去深入了解完整的版本。我们会在课堂上讲解完整版的技术细节，但要求大家从零开始完整实现可能负担过重。
 
 **英文**: And then I think an important thing. is getting in the habit of always benchmarking profile. I think that's actually probably the most important thing is that you can implement things. But unless you have a feedback on how well your implementation is going and where the bottleneck's are, you're just going to be kind of flying blind. OK, so Unit 3 is scaling loss. And here the goal is you want to do experiments at small scale. and figure things out and then predict the hyperprimaries and loss at large scale. So here's a fundamental question. So if I give you a Flops budget, what model size should you use? If you use a larger model, that means you can train on less data. And if you use a smaller model, you can train on more data.
 
-**中文**: 然后我认为一件重要的事情是养成始终进行性能基准测试的习惯。我认为这实际上可能是最重要的事情，因为你能够实现某些东西。但除非你有反馈来了解你的实现效果如何以及瓶颈在哪里，你就会像在黑暗中飞行一样。好的，所以第三单元是关于缩放损失的。在这里的目标是你要在小规模上进行实验，弄清楚问题，然后预测大规模的超参数和损失。这里有一个基本问题。如果我给你一个Flops预算，你应该使用什么大小的模型？如果你使用更大的模型，这意味着你只能用更少的数据进行训练。而如果你使用更小的模型，你就可以用更多的数据进行训练。
+**中文**: 此外，我认为至关重要的一点是：养成始终进行基准测试（benchmarking）和性能剖析（profiling）的习惯。这或许是最重要的一环。虽然您可以实现各种功能，但如果没有关于实现效果如何以及瓶颈在哪里的反馈，您就无异于在“盲飞”（盲目操作）。接下来是第三单元：损失函数的缩放规律（Scaling Laws）。本单元的目标是：先在小规模下进行实验以摸清规律，进而预测在大规模下的超参数表现和损失值。这里有一个核心问题：如果给您一个固定的FLOPs 预算（计算量上限），您应该选择多大尺寸的模型？如果您选择更大的模型，这意味着您能用于训练的数据量就会减少。如果您选择更小的模型，则意味着您可以使用更多的数据进行训练。
 
-## 段落 45
+![](img/lec1_019.png)
 
 **英文**: So what's the right balance here? And this has been quite a study quite extensively. and figured out by a series of paper from OpenAry and DeepMind. So if you hear the term Chinchilla optimal, this is what this is referring to. And the basic idea is that for every compute budget, number of Flops, you can vary the number of parameters of your model. And then you measure how good that model is. So for every level of compute, you can get the optimal parameter count. And then what you do is you can fit a curve to extrapolate and see if you had, let's say, 1e, 22 Flops, what would it be, the parameter size. And it turns out these minimum when you plot them, it's actually remarkably linear. Which leads leads to this very actually simple,. but useful rule of thumb, which is that if you have a particular model of size n, if you multiply by 20, that's the number of tokens you should train on.
 
-**中文**: 那么这里的正确平衡是什么？这已经进行了相当广泛的研究。并通过一系列来自OpenAry和DeepMind的论文得出结论。所以如果你听到“Chinchilla最优”这个术语，这就是它所指的内容。基本思路是，对于每个计算预算，即Flops的数量，你可以调整模型的参数数量。然后测量该模型的效果如何。因此，对于每个计算水平，你可以得到最佳参数数量。然后你就可以拟合一条曲线来外推，看看如果你有1e，22 FLOPS，参数规模会是多少。结果发现，当把这些数据画出来时，实际上非常线性。这导致了一个非常简单但有用的启发式规则，即如果你有一个大小为n的模型，如果乘以20，那就是你应该训练的token数量。
+**中文**: 那么，这里的最佳平衡点究竟在哪里？这一问题已经得到了广泛深入的研究，并由 OpenAI 和 DeepMind 发表的一系列论文所阐明。如果您听说过 “Chinchilla 最优”（Chinchilla optimal） 这一术语，指的正是这个概念。
+其基本思想是：对于每一个固定的计算预算（FLOPs 数量），您可以调整模型的参数量，并评估该模型的性能表现。因此，对于每一个计算量级，都能找到一个最优的参数量。
 
-## 段落 46
+接着，您可以拟合一条曲线来进行外推预测：例如，如果您拥有 10^22 次 FLOPs 的算力，最优的模型参数规模应该是多少？
+研究发现，当将这些最小值（最优参数量）绘制成图时，它们呈现出惊人的线性关系。这导出了一个非常简单但极具实用价值的经验法则：
+如果您的模型大小为 
+
+如果您的模型大小为 N（参数量），那么您应该用于训练的令牌（tokens）数量应为 
+20×N 。
+
+(注：这就是著名的 Chinchilla 缩放定律，即训练数据量与模型参数量的最佳比例约为 20:1)。
+
 
 **英文**: It's actually. So that means if I say 1. 4 billion parameter model should be trained on 28 billion tokens. But this doesn't take into account inference cost. This is literally how can you train the best model. regardless of how big that model is. So there's some limitations here, but it's not less been extremely useful for model development. So in this assignment, this is kind of fun, because we define a quote unquote training API, which you can query with a particular set of hyper parameters, you specify the architecture and batch size and so on. And we return you a loss that your decisions will get you. So your job is you have a Flops budget, and you're going to try to figure out how to train a bunch of models and then gather the data.
 
-**中文**: 实际上，这意味着如果我说一个140亿参数的模型应该在2800亿个标记上进行训练。但这没有考虑到推理成本。这实际上是你可以如何训练最佳模型，无论该模型有多大。因此这里有一些限制，但它对模型开发非常有用。所以在本次作业中，这有点有趣，因为我们定义了一个所谓的训练API，你可以用一组特定的超参数来查询，你指定架构和批量大小等。我们会返回给你你的决策会得到的损失值。所以你的任务是，你有一个Flops预算，你要尝试确定如何训练多个模型并收集数据。
+**中文**: 实际上，这意味着：如果您有一个 14 亿（1.4B） 参数的模型，就应该在 280 亿（28B） 个令牌（tokens）上进行训练。不过需要注意，这一法则并未考虑推理成本。它纯粹是从“如何训练出最佳模型”的角度出发，而不关心最终模型的规模大小。尽管存在一些局限性，但它在模型开发中仍然具有极高的实用价值。在本次作业中，内容会非常有趣：我们定义了一个所谓的“训练 API”。您可以向该 API 查询特定超参数组合（如您指定的架构、批量大小等）下的结果，API 将返回基于您的决策所能获得的损失值（loss）。您的任务是：在给定 FLOPs 预算 的前提下，尝试设计并“训练”一系列模型，收集相关数据，从而找出最优的配置方案。
 
-## 段落 47
+![](img/lec1_020.png)
 
-**英文**: You're going to fill a scale a lot to the gather data. And then you're going to submit your prediction on what you would choose to be the hyper parameters, what model size, and so on at a larger scale. So this is the case where you have to be really,. we want to put you in this position where there's some stakes. I mean, this is not like burning real compute, but once you run out of your Flops budget, that's it. So you have to be very careful in terms of how you prioritize what experiments to run, which is something that the frontier labs have to do all the time. And there will be a leaderboard for this, which is minimize loss given your Flops budget. Question? So those are links from the point 24. So if we're working ahead, should we expect assignments to change over time or these going to finals? Yeah. So the questions that these links are from 2024, the rough assignment, the rough structure.
+**英文**: You're going to fill a scale a lot to the gather data. And then you're going to submit your prediction on what you would choose to be the hyper parameters, what model size, and so on at a larger scale. So this is the case where you have to be really,. we want to put you in this position where there's some stakes. I mean, this is not like burning real compute, but once you run out of your Flops budget, that's it. So you have to be very careful in terms of how you prioritize what experiments to run, which is something that the frontier labs have to do all the time. And there will be a leaderboard for this, which is minimize loss given your Flops budget. Question? So those are links from the point 24. So if we're working ahead, should we expect assignments to change over time or these going to finals? Yeah. So the questions that these links are from 2024, the rough assignment, the rough structure. will be the same from 2025. There will be some modifications. But if you look at these, you should have a pretty good idea of what to expect. OK. So let's go into data now. OK. So up until now, you have scaling laws, you have systems,. you have transformer implementation, everything. You're really kind of good to go. But data, I would say, is a really kind of key ingredient that I think differentiates in some sense.
 
-**中文**: 你将需要填充一个规模以收集数据。然后，你将提交你的预测，即在更大规模下你会选择什么样的超参数、模型大小等等。所以这种情况需要你非常认真，我们希望把你放在一个有风险的位置。我的意思是，这不像烧掉真实的计算资源，但一旦你的Flops预算用完了，就结束了。因此，你在决定运行哪些实验的优先级时必须非常小心，这也是前沿实验室一直需要做的事情。这里将有一个排行榜，其目标是在给定的Flops预算下最小化损失。问题？这些是来自第24点的链接。如果我们提前工作，是否应该预期任务会随时间变化，还是这些会成为最终任务？是的。这些链接的问题来自2024年，粗略的任务和结构。
+**中文**: 您将需要运行大量不同规模（scale）的实验来收集数据。随后，您需要提交一份预测报告，说明在更大规模下，您会选择什么样的超参数、模型尺寸等配置。
+这个环节的设计意图是让大家真正感受到压力（stakes）。虽然这并不涉及燃烧真实的算力成本，但一旦您的 FLOPs 预算 耗尽，实验就必须停止。因此，您必须非常谨慎地优先安排实验顺序——这正是前沿实验室（frontier labs）每天都在面对的挑战。
+我们将为此设立一个排行榜（leaderboard），评判标准是：在给定的 FLOPs 预算下，谁能获得最低的损失值（loss）。有问题吗？
 
-## 段落 48
+(学生提问)：这些链接指向的是 2024 年的内容。如果我们提前学习，是否应该预期作业内容会随时间变化，还是说这些已经是最终定稿了？
 
-**英文**: will be the same from 2025. There will be some modifications. But if you look at these, you should have a pretty good idea of what to expect. OK. So let's go into data now. OK. So up until now, you have scaling laws, you have systems,. you have transformer implementation, everything. You're really kind of good to go. But data, I would say, is a really kind of key ingredient that I think differentiates in some sense.
+(教授回答)：是的，这些链接确实来自 2024 年。2025 年的作业大致结构（rough structure）将保持不变，但会有一些修改。不过，如果您参考这些资料，应该就能对作业内容有一个相当清晰的了解。
 
-**中文**: 从2025年开始会保持一致。会有某些修改。但如果你看一下这些内容，你应该能对预期有很好的了解。好的。那么我们现在进入数据部分。好的。到目前为止，你已经掌握了缩放定律、系统、变压器实现，所有的一切。你基本上已经准备好了。但数据方面，我认为是一个非常关键的要素，从某种意义上说，它能够起到区分作用。
+好的，现在让我们进入数据（Data）部分。到目前为止，你们已经掌握了缩放定律（scaling laws）、系统架构以及 Transformer 的实现等知识，可以说万事俱备。但我认为，数据才是那个真正关键的要素，在某种程度上，它也是区分模型优劣的决定性因素。
 
-## 段落 49
 
 **英文**: And the question to ask here is, what do I want this model to do? Because what the model does is completely determine, I mean, mostly determined by the data. If I put, if I train on multilingual data,. it will have multilingual capabilities. If I train on code, it will have code capabilities. And it's very natural. And usually, data sets are a conglomeration of a lot of different pieces. This is from a pile, which is four years ago. But the same idea I think holds. You have data from the web. This is common crawl.
 
-**中文**: 这里要问的问题是，我想要这个模型做什么？因为模型所做的基本上是由数据决定的。如果我使用多语言数据进行训练，它将具备多语言能力。如果我用代码进行训练，它将具备代码处理能力。这很自然。通常，数据集是由许多不同部分组成的集合。这是四年前的堆栈数据，但我想同样的理念仍然适用。你有来自网络的数据，这是Common Crawl。
+**中文**: 这里需要思考的核心问题是：我希望这个模型具备什么能力？
+因为模型的功能主要（甚至完全）由训练数据决定：如果您使用多语言数据进行训练，模型就会具备多语言能力；如果您使用代码数据进行训练，模型就会具备编写代码的能力。
+这非常符合直觉。通常情况下，数据集都是由多种不同来源的数据汇集而成的。这张图来自四年前的 The Pile 数据集，但其中的理念至今仍然适用：数据来源于互联网，例如 Common Crawl（通用爬取数据）。
 
-## 段落 50
+![](img/lec1_021.png)
 
 **英文**: You have stack exchange, Wikipedia, GitHub, and different sources, which are curated. And so in the data section, we're going to start talking about evaluation, which is given a model how do you evaluate whether it's any good. So we're going to talk about perplexity, where measures standardized testing like MMOU. If you have models that generate other instances for instruction following, how do you evaluate that? So decisions about if you can ensemble or do chain-of-fought test time, how does that affect your evaluation? And then you can talk about entire systems, evaluation of entire system, not just the language model, because language models often get these days plugged into some agentic system or something. So now, after establishing evaluation, let's look at data curation. So this is, I think, an important point that people don't realize. So I often hear people say, oh, we're training the model on the internet. This just doesn't make sense. Data doesn't just fall from the sky,. and there's the internet that you can pipe into your model.
 
-**中文**: 你有Stack Exchange、Wikipedia、GitHub和不同的来源，这些都经过了整理。因此在数据部分，我们将开始讨论评估，即给定一个模型，如何评估它是否良好。我们将讨论困惑度，它类似于标准化测试如MMOU。如果你有生成其他示例的模型用于指令遵循，如何评估这一点？那么关于是否可以集成或进行思维链测试时的决策，这会如何影响你的评估？然后你可以讨论整个系统，对整个系统的评估，而不仅仅是语言模型，因为如今语言模型常常被接入某种代理系统中。现在，在建立评估之后，让我们看看数据整理。我认为这是一个人们没有意识到的重要观点。我经常听到人们说，我们是通过互联网训练模型的。这并不合理。数据不会从天而降，而且你有互联网，可以将其输入到你的模型中。
+**中文**: 数据来源包括 Stack Exchange、维基百科、GitHub 以及其他经过精心筛选（curated）的资源。在“数据”这一章节中，我们将首先探讨模型评估（Evaluation）：即给定一个模型，如何判断其优劣？
+我们将讨论困惑度（Perplexity）指标；
+探讨类似 MMLU 这样的标准化测试方法；
+针对能够生成指令遵循（instruction following）实例的模型，该如何进行评估？
+如果在推理阶段（test time）采用模型集成（ensembling）或思维链（Chain-of-Thought）技术，会对评估结果产生什么影响？
+此外，我们还将讨论整个系统的评估，而不仅仅是语言模型本身。因为如今的语言模型往往被嵌入到某种智能体系统（agentic system）或其他复杂系统中运行。
+在确立了评估标准之后，让我们来看看数据清洗与构建（Data Curation）。
+我认为这是一个常被忽视的重要观点。我经常听到有人说：“哦，我们就是直接用互联网数据来训练模型。”这种说法其实毫无意义。数据不会凭空从天而降，也不存在一个可以直接管道化（pipe into）输入到你模型中的现成“互联网”。
 
-## 段落 51
 
 **英文**: Data has to always be actively acquired somehow. So even if you just as an example of, I always tell people, look at the data. And so let's look at some data. So this is some common crawl data. I'm going to take 10 documents. And I think hopefully this works. OK, I think the rendering is off, but you can kind of see this is a sort of random sample of common crawl. And you can see that this is maybe not exactly the data. Oh, here's some actually real text here. OK, that's cool.
 
-**中文**: 数据必须以某种方式主动获取。所以，即使你只是举个例子，我总是告诉人们，看看数据。那么我们来看看一些数据。这是某些Common Crawl数据。我要选取10个文档。我希望这能正常工作。好的，我认为显示有问题，但你可以大概看到这是Common Crawl的一个随机样本。你可以看到这可能并不是精确的数据。哦，这里有一些实际的文本。好的，这很酷。
+**中文**: 数据必须始终以某种方式主动获取。举个例子，我经常告诉大家：“直接去看看数据。”那我们就来看一些数据。这里是一些 Common Crawl 的数据。我随机抽取了 10 个文档……希望它能正常显示。好吧，看来渲染有点问题，但你们大概能看出这是 Common Crawl 的随机样本。可以看出，这些数据可能并不完全是我们想要的理想格式……哦，这里确实有一些真实的文本内容。好的，这很有趣。
 
-## 段落 52
+![](img/lec1_022.png)
 
 **英文**: But if you look at most of common crawl, this is a different language. But you can also see this is very spammy sites. And you quickly realize that a lot of the web is just trash. And so, well, OK, maybe that's not surprising, but it's more trash than you would actually expect, I promise. So what I'm saying is that there's a lot of work that needs to happen in data. So you can crawl the internet. You can take books, archives, papers, GitHub. And there's actually a lot of processing that needs to happen. There's also legal questions about what data you can in your train on, which we'll touch on. Nowadays, a lot of frontier models have to actually buy data because the data on the internet that's publicly accessible is actually turns out to be a bit limited for the really frontier performance.
 
-**中文**: 但如果你看看大多数Common Crawl的数据，这是一种不同的语言。你也可以看到这些是非常垃圾的网站。你很快就会意识到，网络上的很多内容其实就是垃圾。所以，嗯，也许这并不令人惊讶，但我保证，实际的垃圾比你想象的要多得多。我所说的是，数据方面还有很多工作要做。你可以爬取互联网，可以获取书籍、档案、论文、GitHub。实际上需要进行大量的处理工作。关于你可以使用哪些数据进行训练，也存在一些法律问题，我们之后会提到。如今，很多前沿模型实际上必须购买数据，因为互联网上公开可访问的数据实际上对于实现真正的前沿性能来说有点有限。
+**中文**: 但如果你查看大部分 Common Crawl 数据，会发现其中混杂着各种语言，而且充斥着大量垃圾网站（spammy sites）。你会很快意识到：互联网上很大一部分内容其实就是垃圾。好吧，这或许并不令人意外，但我向你们保证，垃圾内容的比例远比你们想象的要高得多。因此，我想强调的是：数据处理工作需要投入巨大的精力。
+你可以爬取互联网，也可以收集书籍、档案、论文和 GitHub 代码库；但这之后需要进行大量的数据处理（processing）；此外，还存在关于训练数据合法性的法律问题，我们稍后也会涉及。如今，许多前沿模型实际上必须购买数据。这是因为，公开可访问的互联网数据对于追求极致性能的前沿模型来说，实际上已经显得有些捉襟见肘了。
 
-## 段落 53
 
 **英文**: And also, I think it's important to remember that this data that's great, it's not actually text. First of all, it's HTML, or PDFs, or in the case of code, it's just directories. So there has to be an explicit process that takes this data and turns it into text. OK, so we're going to talk about the transformation from HTML to text. And this is going to be a lossy process. So the trick is how can you preserve the content and some of the structure without basically just having an HTML? Filtering, as you could, you know, surmise is going to be very important, both for getting high quality data, but also removing harmful content. Generally, people train classifiers to do this. Deduplication is also an important step, which we'll talk about. OK, so assignment four is all about data. We're going to give you the raw common crawl dump, so you can see just how bad it is.
 
-**中文**: 而且，我认为记住这一点很重要，这些数据虽然很好，但实际上是文本。首先，它是HTML，或者是PDF，或者在代码的情况下，只是目录。因此，必须有一个明确的流程将这些数据转换为文本。好的，我们将讨论从HTML到文本的转换。这个过程将是损失性的。所以关键是如何在不基本上只是拥有HTML的情况下保留内容和一些结构。过滤，正如你可能推测的那样，对于获得高质量的数据以及去除有害内容非常重要。通常，人们会训练分类器来完成这项工作。去重也是一个重要步骤，我们稍后会讨论。好的，所以作业四全部关于数据。我们会给你原始的common crawl转储，这样你可以看到它有多糟糕。
+**中文**: 此外，我认为很重要的一点要记住：这些看似优质的数据，本质上并不是纯文本。
+- 首先，它们可能是 HTML 格式，或者是 PDF 文件；
+- 对于代码数据，它们往往只是原始的目录结构。
 
-## 段落 54
+因此，必须有一个明确的流程，将这些原始数据转换为文本。接下来，我们将讨论从 HTML 到文本的转换过程。这是一个有损过程（lossy process）。其中的技巧在于：如何在避免直接输出混乱 HTML 标签的前提下，尽可能保留内容及其部分结构。
+过滤（Filtering）环节至关重要（正如你们所能推测的那样），它既是为了获取高质量数据，也是为了移除有害内容。通常，人们会训练专门的分类器（classifiers）来完成这项任务。去重（Deduplication）是另一个关键步骤，我们稍后也会详细讨论。
+好了，作业四（Assignment 4）将完全围绕数据展开。我们将向你们提供原始的 Common Crawl 转储数据（dump），让你们亲眼见识一下它究竟有多“糟糕”。
+
 
 **英文**: And you're going to train classifiers, dedupe, and then there's going to be a leaderboard where you're going to try to minimize the complexity given your token budget. So now you have the data. You've done this, built all your fancy kernels. Now you can really train models. But at this point, what you'll get is a model that can complete the next token. And this is called a essentially base model. And I think about it as a model that has a lot of raw potential, but it needs to be aligned. or modified some way. And alignment is a process of making it useful. So in alignment, capture is a lot of different things.
 
-**中文**: 你将训练分类器、去重，然后会有一个排行榜，你将尝试在你的标记预算下最小化复杂性。现在你有了数据。你已经完成了这些工作，构建了所有花哨的内核。现在你可以真正训练模型了。但此时，你得到的只是一个能够完成下一个标记的模型。这被称为基础模型。我认为它具有很大的潜在能力，但需要进行对齐或以某种方式进行修改。对齐是一个使其有用的过程。因此，在对齐过程中，捕获涉及很多不同的方面。
+**中文**: 接下来，你们将训练分类器、执行去重操作，然后会有一个排行榜（leaderboard）：你们的任务是在给定的 Token 预算下，尽可能降低模型的困惑度（perplexity/complexity）。好了，现在数据已经准备就绪，你们也构建了所有复杂的内核（kernels）（指数据处理流程），终于可以开始训练模型了。但在这一阶段，你得到的只是一个能够预测下一个 Token的模型。这本质上被称为基座模型（Base Model）。我将基座模型视为一个拥有巨大原始潜力，但尚需对齐（alignment）或以某种方式进行微调的模型。对齐就是让它变得有用的过程。在对齐阶段，涉及的内容非常广泛，包含多种不同的任务和目标。
 
-## 段落 55
 
 **英文**: But three things, I think it captures, is that you want to get the language model to follow instructions. Completing the next token is not necessarily following the instruction. It would just complete the instruction or whatever it thinks will follow the instruction. You get to hear, specify the style of the generation, whether you want to be long or short, whether you want bullets, whether you wanted to be witty or have sass or not. And when you play with your chat GPT versus Rock, you'll see that there's different alignment that has happened. And then also safety. And one important thing is for these models to be able to refuse answers that can be harmful. So that's where alignment also kicks in. So there's generally two phases of alignment. There's supervised fine tuning.
 
-**中文**: 但有三件事，我认为它捕捉到了，就是你希望语言模型遵循指令。完成下一个标记并不一定意味着遵循指令。它只是会完成指令或它认为符合指令的内容。你可以听到，指定生成的风格，是否想要长或短，是否想要要点，是否想要幽默或带点傲气。当你在聊天GPT和Rock之间进行测试时，你会看到已经发生了不同的对齐。还有安全方面。其中一个重要的是，这些模型能够拒绝可能有害的答案。这就是对齐也起作用的地方。一般来说，对齐分为两个阶段。一个是监督微调。
+**中文**: 但我认为，对齐（Alignment）主要涵盖三个核心目标：
 
-## 段落 56
+- 1.指令遵循（Instruction Following）：
+仅仅预测“下一个 Token”并不等同于遵循指令。基座模型可能只会顺着指令的文字继续生成，或者生成它认为在指令之后通常会出现的内容，而不是真正去执行该指令。对齐的目标是让模型学会听懂并执行你的要求。
+
+- 2.风格控制（Style Control）：
+你需要能够指定生成的风格：是长篇大论还是简明扼要？是使用项目符号列表，还是段落形式？是幽默风趣、带点俏皮（sass），还是严肃正经？
+当你对比使用 ChatGPT 和基础模型（原文提到的 "Rock" 极有可能是语音转文字错误，指的应该是基础模型如 "Base model" 或特定的基座模型名称）时，你会发现它们表现出的不同正是源于不同的对齐处理。
+
+- 3.安全性（Safety）：
+这一点至关重要：模型必须学会拒绝回答那些可能产生危害的问题。这也是对齐发挥作用的关键领域。
+通常，对齐过程分为两个阶段，第一阶段是监督微调（Supervised Fine-Tuning, SFT）。
 
 **英文**: And here the goal is, I mean, it's very simple. You basically gather a set of user assistant pairs,. so prompt response pairs. And then you do supervised learning. And the idea here is that the base model already has the sort of the raw potential. So just fine tuning it on a few examples is sufficient. Of course, the more examples you have, the better the results. But there's papers like this one that shows even like 1,000 examples suffices. to give you instruction following capabilities from a base, good base model. So this part is actually very simple.
 
-**中文**: 这里的目标是，我的意思是，非常简单。你基本上收集一组用户助手配对，即提示响应配对。然后进行监督学习。这里的理念是，基础模型已经具备了原始潜力。因此，在少量例子上进行微调就足够了。当然，你拥有的例子越多，结果越好。但有一些论文表明，甚至1000个例子就足以使一个基础良好的基础模型具备指令遵循能力。所以这一部分实际上非常简单。
+**中文**: 这一阶段的目标其实非常简单：基本上，你只需要收集一组“用户 - 助手”对话对（也就是提示词 - 回复对），然后进行监督学习（Supervised Learning）。其核心理念在于：基座模型已经具备了某种原始潜力。因此，仅需用少量示例对其进行微调，就足以激发这种能力。当然，示例数量越多，效果通常越好。但也有论文（如文中提到的这篇）表明，对于一个优质的基座模型，哪怕只有1000 个示例，也足以赋予它指令遵循（instruction following）的能力。所以，这部分工作实际上非常 straightforward（直接明了）。
 
-## 段落 57
 
 **英文**: And it's not that different from pre-training, because you're given text and you just maximize the probability of the text. So the second part is a bit more interesting from an algorithmic perspective. So the idea here is that even with the SFT phase, you will have a decent model. And now, how do you improve it? Well, you can get there more SFT data, but that can be very expensive because you have to have someone sit down and annotate data. So the goal of learning from feedback is that you can leverage lighter forms and annotation. and have the algorithms do a bit more work. So one type of data you can learn from is preference data. So this is where you generate multiple responses from a model to your given prompt, like A or B. And the user rates whether A or B is better. And so the data might look like it generates what's the best way to train a language model, use a large data set or use a small data set.
 
-**中文**: 这与预训练并没有太大不同，因为你会得到文本并只需最大化文本的概率。因此，第二部分从算法角度来看更有趣。这里的思路是，即使在SFT阶段后，你也会得到一个不错的模型。现在，如何进一步改进它呢？你可以获取更多的SFT数据，但这可能非常昂贵，因为你需要有人坐下来标注数据。因此，从反馈中学习的目标是利用更轻量的标注形式，并让算法多做一些工作。你可以学习的一种数据类型是偏好数据。也就是说，你可以从模型中生成多个对给定提示的响应，比如A或B。用户会评估A或B哪个更好。因此，数据可能看起来像这样：生成最佳训练语言模型的方式是使用大量数据集还是使用小数据集。
+**中文**: 这部分与预训练（Pre-training）并没有太大区别，因为你同样是给定文本，然后最大化该文本出现的概率。
+因此，从算法角度来看，第二阶段才更有趣。
+其核心思路是：虽然经过监督微调（SFT）阶段后，你已经拥有了一个不错的模型，但该如何进一步提升它呢？
+你可以收集更多的 SFT 数据，但这往往成本高昂，因为需要人工坐下来逐一标注数据。
+从反馈中学习（Learning from Feedback）的目标，就是利用更轻量级的标注形式，让算法承担更多的工作。
+你可以利用的一种数据类型是偏好数据（Preference Data）。
+具体做法是：针对给定的提示词（Prompt），让模型生成多个回复（例如回复 A 和回复 B），然后由用户评定哪一个更好（A 还是 B）。
+这类数据的样子可能如下：
 
-## 段落 58
+- 提示词：“训练语言模型的最佳方法是什么？是使用大数据集还是小数据集？”
+- 模型生成：
+   回复 A：... / 回复 B：...
+- 用户偏好：用户标记回复 A 优于回复 B（或反之）。
+
 
 **英文**: And of course, the answer should be A. So that is a unit of expressing preferences. Another type of supervision you could have is using verifiers. So for some domains, you're lucky enough to have a formal verifier, like for math or code. Or you can use learned verifiers where you train the actual language model to rate the response. And of course, this relates to evaluation again. Algorithms, this is where in the realm of reinforcement learning. So one of the earliest algorithms that was developed, that was applied to instruction tuning models was PPO, proximal policy optimization. Turns out that if you just have preference data, there's a much simpler algorithm called DPO. that works really well.
 
-**中文**: 当然，答案应该是A。所以这是一个表达偏好的单位。你可以拥有的另一种监督类型是使用验证器。因此，在某些领域，你很幸运地拥有一个形式验证器，比如数学或代码领域。或者你可以使用学习到的验证器，即训练实际的语言模型来对响应进行评分。当然，这又与评估有关。算法方面，这是强化学习领域的问题。最早开发并应用于指令调优模型的算法之一是PPO，即近端策略优化。结果发现，如果你只有偏好数据，有一个更简单的算法叫做DPO，效果非常好。
+**中文**: 当然，正确答案应该是 A。这就是表达偏好（Preference）的一个基本单元。
 
-## 段落 59
+另一种监督方式是使用验证器（Verifiers）：
+- 在某些领域（如数学或代码），你很幸运地拥有形式化验证器，可以自动判断答案的对错。
+- 或者，你可以使用学习到的验证器（Learned Verifiers），即训练另一个语言模型来对回复进行评分。
+- 当然，这又回到了评估（Evaluation）的话题。
+
+在算法层面，这就进入了强化学习（Reinforcement Learning, RL）的范畴。
+最早被应用于指令微调模型的算法之一是 PPO（Proximal Policy Optimization，近端策略优化）。
+不过事实证明，如果你只有偏好数据，有一个更简单的算法叫做 DPO（Direct Preference Optimization，直接偏好优化），它的效果也非常出色。
+
 
 **英文**: But in general, if you want to learn from verifiers data, you have to, it's not preference data. So you have to embrace RL fully. And there's this method, which will do in this class, which is called group relative preference optimization, which simplifies PPO, makes it more efficient by removing the value function, developed by deep seek,. which seems to work pretty well. Okay, so assignment five, implement supervised tuning, DPO and GRPO, and of course evaluate. Question? You'll be able to, I think. Quote from the horizontal. About assignment one, did the bottom of the line face the same as. the ones that it's too high or hard? Yeah, the question is, assignment one seems a bit daunting, what about the other ones? I would say that assignment one and two are definitely the most heavy and hardest. Assignment three is a bit more of a breather.
 
-**中文**: 但一般来说，如果你想从验证者数据中学习，你必须这样做，这不是偏好数据。因此，你必须完全接受强化学习。在本课程中将介绍一种方法，称为组相对偏好优化，它简化了PPO，通过去除价值函数使其更高效，由Deep Seek开发，看起来效果不错。好的，所以作业五是实现监督调优、DPO和GRPO，并且当然要进行评估。有问题吗？我认为你能做到。引用于横向。关于作业一，最底端的型号是否与那些过高或过难的型号相同？是的，问题是，作业一看起来有点令人望而却步，其他作业呢？我认为作业一和二肯定是最繁重和最难的。作业三则稍微轻松一些。
+**中文**: 但总的来说，如果你想从验证器数据（Verifier Data）中学习，这就不是简单的偏好数据了，你必须全面采用强化学习（RL）。本课程将介绍一种名为 GRPO（Group Relative Preference Optimization，组相对偏好优化） 的方法。该方法由 DeepSeek 开发，它通过移除价值函数（Value Function）简化了 PPO 算法，使其效率更高，且目前看来效果相当不错。好了，关于作业五（Assignment 5）：你需要实现监督微调（Supervised Tuning）、DPO 和 GRPO，当然还要进行评估。有问题吗？我想你们应该能搞定。（此处原文 "Quote from the horizontal" 可能是语音转写错误，语意不明，暂略或理解为“引用某处观点”）。
+关于作业一的问题：
 
-## 段落 60
+- 学生提问：关于作业一，底部的线条（可能指图表中的基线或难度曲线）是否和那些“太高或太难”的部分一样？（意译：作业一看起来有点让人望而生畏，后面的作业也会这么难吗？）
+- 回答：是的，这个问题问得好。作业一看起来确实有点吓人，那其他作业呢？
+我会说，作业一和作业二绝对是工作量最大、最难的。作业三则会稍微轻松一些，算是一个“喘息”的机会。
+
+![](img/lec1_023.png)
+
+
+![](img/lec1_024.png)
+
+
+![](img/lec1_025.png)
+
+
 
 **英文**: And assignment four and five,. at least last year where I would say a notch is all assignment two. Although, I don't know, depends on, we haven't fully worked out the details for this. Yeah, that was good, better. Okay, so just to recap of the different pieces here, you know, remember, efficiency is this driving principle. And there's a bunch of different design decisions. And you can, I think if you view efficiency, everything through the lens of efficiency, I think a lot of things kind of make sense. And importantly, I think, you know, we are, it's worth pointing out there, we are currently in this compute constrained regime, at least this class, and most people who are somewhat GPU poor. So we have a lot of data, but we don't have that much compute. And so these design decisions will reflect squeezing the most out of the hardware.
 
 **中文**: 第四项和第五项任务，至少去年我所说的第二项任务是一个档次。虽然，我不确定，这取决于我们还没有完全确定细节。是的，那很好，更好。好的，所以只是回顾一下这里的不同部分，你知道，记住，效率是这个主导原则。有很多不同的设计决定。我认为如果你通过效率的视角来看待一切，很多事情都会变得合理。而且重要的是，我认为，我们目前处于计算受限的阶段，至少在这个课程中，大多数人GPU资源不足。所以我们有很多数据，但计算资源不多。因此这些设计决定将反映在硬件上尽可能发挥最大效能。
 
-## 段落 61
 
-**英文**: So for example, data processing, we're filtering fairly aggressively because we don't want to waste precious compute on better relevant data. Tokenization, like it's nice to have a model over bytes, that's very elegant, but it's very compute inefficient with today's model architectures. So we have to do tokenization to, as an efficiency gain. Model architecture, there are a lot of design decisions that are essentially motivated by efficiency training. I think the fact that we're most of what we're doing to do is just a single epoch. This is clearly we're in a hurry. We just need to see more data as opposed to spend a lot of time on any given data point. Schaing laws is completely about efficiency. We use less compute to figure out the high-profile numbers. And alignment is maybe a little bit different,.
+**英文**: So for example, data processing, we're filtering fairly aggressively because we don't want to waste precious compute on better relevant data. Tokenization, like it's nice to have a model over bytes, that's very elegant, but it's very compute inefficient with today's model architectures. So we have to do tokenization to, as an efficiency gain. Model architecture, there are a lot of design decisions that are essentially motivated by efficiency training. I think the fact that we're most of what we're doing to do is just a single epoch. This is clearly we're in a hurry. We just need to see more data as opposed to spend a lot of time on any given data point. Schaing laws is completely about efficiency. We use less compute to figure out the high-profile numbers. And alignment is maybe a little bit different, but the connection to efficiency is that if you can put resources into alignment, then you actually require less smaller base models. So there's two paths. If your use cases fairly narrow, you can probably use a smaller model, you align it or fine tune it, and you can do well. But if your use cases are very broad,. then there might not be a substitute for training, a big model. So that's today. So increasingly now, at least for frontier labs, they're becoming data constrained, which is interesting because I think that the design's decisions will presumably completely change. Well, I mean, compute will always be important,. but I think the design decisions will change. For example, learning, taking one epoch over data, I think doesn't really make sense if you have more compute.
 
-**中文**: 举个例子，在数据处理上，我们过滤得非常激进，因为我们不想把宝贵的算力浪费在相关性不高的数据上。还有分词，虽然直接基于字节构建模型听起来很优雅，但在目前的模型架构下，这种方式的计算效率太低了。所以我们必须做分词，纯粹是为了提升效率。在模型架构方面，很多设计决策本质上也是由训练效率驱动的。
-我觉得一个很明显的事实是，我们现在大多只做单轮训练。这显然说明我们很赶时间——我们需要看到更多的数据，而不是在任何一个特定的数据点上浪费太多时间。缩放定律的核心也完全是关于效率的。我们试图用更少的算力来推算出那些关键的指标数字。至于对齐，可能稍微有点不一样。
+**中文**: 例如，在数据处理方面，我们进行了相当激进的过滤，因为我们不想将宝贵的算力浪费在不相关的数据上。
+在分词（Tokenization）方面，虽然基于字节（bytes）的模型在理论上非常优雅，但在当前的模型架构下，它的计算效率极低。因此，我们必须进行分词，以提升效率。
+在模型架构方面，许多设计决策本质上都是出于训练效率的考量。
+我认为，目前我们大多数做法的核心就是只遍历数据一个 epoch（单轮训练）。这显然表明我们处于一种“争分夺秒”的状态：我们需要尽可能多地见识数据，而不是在任何单个数据点上花费过多时间。
+缩放定律（Scaling Laws）完全是关于效率的：它让我们能用更少的算力来推算出关键的超参数。
+对齐（Alignment）的情况或许略有不同，但它与效率的联系在于：如果你能将对齐工作做好，实际上就可以使用更小规模的基座模型来达到相同的效果。
+这里主要有两条路径：
 
-## 段落 62
+- 1.如果你的应用场景比较窄，你很可能只需要一个小模型，对其进行对齐或微调，就能取得很好的效果。
+- 2.但如果你的应用场景非常广泛，那么训练一个大模型可能是无可替代的。
 
-**英文**: but the connection to efficiency is that if you can put resources into alignment, then you actually require less smaller base models. So there's two paths. If your use cases fairly narrow, you can probably use a smaller model, you align it or fine tune it, and you can do well. But if your use cases are very broad,. then there might not be a substitute for training, a big model. So that's today. So increasingly now, at least for frontier labs, they're becoming data constrained, which is interesting because I think that the design's decisions will presumably completely change. Well, I mean, compute will always be important,. but I think the design decisions will change. For example, learning, taking one epoch over data, I think doesn't really make sense if you have more compute.
+这就是当下的现状。
+不过，越来越明显的趋势是，至少对于前沿实验室（Frontier Labs）而言，它们正逐渐受到数据短缺（Data Constrained）的限制。这很有趣，因为我认为这将导致设计决策发生根本性的改变。
+我的意思是，算力当然永远很重要，但设计思路会变。
+例如，如果未来算力不再那么紧缺，那么“只遍历数据一个 epoch”的做法可能就不再合理了（届时可能会进行多轮训练以充分利用数据）。
 
-**中文**: 但与效率的联系在于，如果你能将资源对齐，那么实际上你需要的较小基础模型会更少。因此有两种路径。如果您的使用场景比较狭窄，您可能可以使用较小的模型，对其进行对齐或微调，就能取得不错的效果。但如果您的使用场景非常广泛，那么可能无法替代训练一个大模型。这就是现状。现在，至少对于前沿实验室来说，他们越来越受到数据的限制，这很有趣，因为我认为设计决策可能会完全改变。我的意思是，计算能力始终很重要，但我觉得设计决策会发生变化。例如，如果计算能力更强，那么对数据进行一次遍历的学习方法可能就不再有意义了。
-
-## 段落 63
 
 **英文**: Why wouldn't you take more epochs at least or do something smarter? Or maybe there will be different architectures, for example, because a transformer was really motivated by compute efficiency. So that's something to kind of ponder. Still it's about efficiency, but the design decisions reflect what regime you're in. Okay. So now I'm going to dive into the first unit. Before that, any questions? We have a slot for a pen. The question is that we have a slot for a pen. We will have a slot. We'll send out details after this. Yeah.
 
-**中文**: 你为什么不多训练几个周期，或者做些更聪明的事情呢？或者可能会有不同的架构，例如，因为transformer主要是出于计算效率的考虑。所以这值得思考。尽管如此，这仍然与效率有关，但设计决策反映了你所处的环境。好的。现在我要进入第一个单元。在此之前，有什么问题吗？我们有一个插笔的槽。问题是，我们有一个插笔的槽。我们将在此之后发送详细信息。对。
+**中文**: 为什么不多训练几个 epoch，或者采用更智能的策略呢？
+又或者，未来可能会出现不同的架构？毕竟，Transformer 架构的诞生很大程度上是出于对计算效率的追求。这些都是值得深思的问题。归根结底，核心依然是效率，但具体的设计决策取决于你所处的阶段（Regime）（例如是算力受限还是数据受限）。好了，接下来我将深入讲解第一单元。在此之前，大家有什么问题吗？
+关于助教（TA）名额的问题：
+- 提问：我们还有助教的空缺名额吗？
+- 回答：是的，我们确实会有一个助教名额。具体的细节信息我们会在课后发送给大家。
 
-## 段落 64
 
 **英文**: Yeah. Well, students auditing the course of cloud access to the same material. The question is students auditing the class will have access to all the online materials assignments,. and will give you access to Canvas, so you can watch the lecture videos. Yeah. What's the grading? What's the grading of the assignments? Good question. So there will be a set of unit tests that you will have to pass. So part of the grading is, did you implement this correctly? There will be also parts of the grade which will, did you implement a model that achieved a certain level of loss or is efficient enough? In the assignment, every problem part has a number of points associated with it. And so that gives you a fairly granular level. of what grading looks like.
 
-**中文**: 是的。嗯，选修这门课程的学生可以访问相同的资料。问题是，选修课程的学生将能够访问所有在线材料和作业，并且会给你提供对Canvas的访问权限，这样你就可以观看讲座视频。是的。那评分标准是什么？作业的评分标准是什么？很好的问题。因此，将有一组单元测试你需要通过。所以评分的一部分是，你是否正确地实现了这个？还将有评分的其他部分，是否实现了达到一定损失水平或足够高效的模型？在作业中，每个问题部分都有相应的分数。这样就能比较细致地了解评分情况。
+**中文**: 是的。旁听本课程的学生也可以访问相同的材料。
+关于旁听权限的问题：
+旁听生将有权访问所有在线资料和作业。我们会为大家开通 Canvas 权限，这样你们就可以观看讲座视频了。
+关于评分标准的问题：
+问得好。评分主要基于以下几点：
 
-## 段落 65
+- 单元测试（Unit Tests）：你必须通过一组单元测试。评分的一部分取决于你的实现是否正确。
+- 模型性能：评分的另一部分取决于你训练的模型是否达到了特定的损失值（Loss）水平，或者是否具备足够的效率。
+
+在每次作业中，每个小问题部分都关联着具体的分值。因此，评分标准非常细致（Granular），大家可以清楚地知道每一分是如何得出的。
+
+
+![](img/lec1_026.png)
 
 **英文**: OK, let's jump into tokenization. So Andre Kapati has this really nice video on tokenization. And in general, he makes a lot of these videos on that actually inspired a lot of this class, how you can build things from scratch. So you should go check out some of his videos. So tokenization, as we talked about it,. is the process of taking raw text, which is generally represented as unicode strings, and turning it into a set of integers, essentially, and where each integer is represents a token. So we need a procedure that encodes strings to tokens and decodes them back into strings. And the vocabulary size is just the number of values that are token tick-on, the number of the range of the integers. OK, so just to give you an example of how tokenizers work, let's play around with this really nice website, which allows you to look at different tokenizers and just type in something like, hello, hello, or whatever. Maybe I'll do this.
 
-**中文**: 好的，我们开始讲解分词。安德烈·卡帕蒂有一段非常棒的关于分词的视频。总的来说，他制作了很多这样的视频，实际上启发了这门课程的很多内容，教你如何从零开始构建东西。所以你应该去看看他的某些视频。那么分词，正如我们之前讨论的，是将原始文本（通常以Unicode字符串形式表示）转换为一组整数的过程，每个整数代表一个标记。我们需要一种将字符串编码为标记并解码回字符串的程序。词汇表的大小就是标记所对应的数值数量，也就是整数的范围数量。好的，为了让你了解分词器的工作原理，让我们在这个非常棒的网站上玩一玩，你可以查看不同的分词器，并输入一些内容，比如“hello, hello”之类的。也许我现在就这么做。
+**中文**: 好的，让我们直接进入分词（Tokenization）的主题。
+Andrej Karpathy 制作了一个关于分词的非常棒的视频。实际上，他制作的许多这类视频都启发了本课程的核心内容——即如何从零开始构建事物。所以大家一定要去看看他的视频。正如我们之前讨论过的，分词是将原始文本（通常表示为 Unicode 字符串）转换为一组整数的过程，其中每个整数代表一个Token（词元）。因此，我们需要一个程序（Procedure），它既能将字符串编码（Encode）为 Token，也能将其解码（Decode）回字符串。而词汇表大小（Vocabulary Size） simply 指的是可以被 Token 化的值的数量，也就是这些整数的取值范围大小。为了给大家展示分词器（Tokenizer）是如何工作的，我们来玩一玩这个非常不错的网站。它允许你查看不同的分词器。你可以输入像 "hello, hello" 这样的内容试试……也许我就这么操作一下。网站地址 https://tiktokenizer.vercel.app/?encoder=gpt2。
 
-## 段落 66
+![](img/lec1_027.png)
+
 
 **英文**: And one thing it does is it shows you the list of integers. This is the output of tokenizer. It also nicely maps out the decomposition. of the original string into a bunch of segments. And a few things to note. First of all, the space is part of a token. So unlike classical NLP, where the space just disappears, everything is accounted for. These are meant to be reversible operations, tokenization. And by convention, for whatever reason, the space is usually proceeding the token. Also, notice that hello is a completely different token than space hello, which you might make you a little bit squeamish, but it seems and it can cause problems, but that's just how it is.
 
-**中文**: 它做的一件事就是给你展示一串整数列表。这就是分词器的输出。它还很好地展示了原始字符串是如何被分解成一堆片段的。这里有几点需要注意。首先，空格也是 Token 的一部分。这跟传统的自然语言处理不一样，在以前空格直接就消失了，但在这里所有的字符都要被计算在内。因为分词这个操作必须是可逆的（也就是说，你得能通过这些 Token 把原来的句子还原回去）。而且按照惯例，不管是因为什么历史原因，空格通常是跟在 Token 后面的。另外请注意，'hello' 和 ' hello'（前面带空格的 hello）完全是两个不同的 Token。这可能会让你觉得有点别扭，甚至可能会引发一些问题，但这就是现状，没办法。
+**中文**: 它的一个功能是展示生成的整数列表，这就是分词器的输出结果。同时，它还清晰地展示了原始字符串是如何被分解成若干片段的。
 
-## 段落 67
+这里有几点需要注意：
+
+- 空格是 Token 的一部分：与传统的自然语言处理（NLP）不同（在传统 NLP 中空格通常会被直接忽略或丢弃），在这里，每一个字符（包括空格）都被计算在内。因为分词必须是一个可逆的操作（即能够无损地还原回原始文本）。
+- 空格的约定：按照惯例（至于具体原因嘛……），空格通常出现在 Token 的前面（作为前缀）。
+- "hello"与" hello"的区别：请注意，单独的 "hello" 和带空格的 " hello" 是完全不同的两个 Token。这可能会让你觉得有点别扭，甚至可能引发一些问题，但目前的机制就是这样运行的。
+
 
 **英文**: Question? Is the space beam of eating instead of trailing intentional? Or is it just an artifact of the BPP process?. So the question is, is the spacing before intentional or not? So in the BP process, I will talk about, you actually pre-tokenize and then you tokenize each part. And I think the pre-tokenizer does put the space in the front. So it is built into the algorithm. You could put it at the end, but I think it probably makes more sense to put in the beginning, but I guess it could go either way. That's my sense. OK, so then if you look at numbers, you see that the numbers are chopped down into different D. O. Pieces. It's a little bit interesting that it's left to right, so it's definitely not grouping by thousands or anything like semantic.
 
-**中文**: 有个问题：空格是放在前面（Leading）而不是后面（Trailing），这是有意为之的吗？还是仅仅是 BPE（字节对编码）算法过程中的一个产物？这个问题问的是：前面的空格是故意设计的吗？在讲 BPE 算法时我会提到，你其实是先进行‘预分词’，然后再对每个部分进行分词。我认为预分词器确实会把空格放在前面。所以这是算法内置的逻辑。当然你也可以把它放在后面，但我觉得放在前面可能更合理一些，不过我想两种方式应该都行。这是我的理解。好，接下来如果你看看数字，你会发现数字被切分成了不同的片段。有一点很有意思，它是从左到右切分的，所以它绝对不是按照千位分组或者任何具有语义逻辑的方式来分组的。
+**中文**: 
+- 提问： 空格放在 Token 前面（作为前缀）而不是后面（作为后缀），这是有意设计的，还是 BPE（字节对编码）过程的产物？
+- 回答： 这个问题问的是：前面的空格是故意的吗？
+在 BPE（Byte Pair Encoding） 算法中（我稍后会详细讲解），流程通常是先进行预分词（Pre-tokenize），然后再对每个部分进行分词。我认为正是这个预分词器（Pre-tokenizer）将空格放到了前面。所以，这是内置于算法之中的设计。
 
-## 段落 68
+理论上，你也可以把空格放在末尾，但我认为放在开头可能更合理一些，不过两种方式应该都是可行的。这是我的看法。
+关于数字的处理：
+好了，如果你观察数字的处理方式，你会发现它们被切分成了不同的数字片段。
+有一点很有趣：这种切分是从左到右进行的。这意味着它绝对不是按照“千位”分组，也不是基于任何语义逻辑进行的分组。
+
+![](img/lec1_028.png)
+
 
 **英文**: But anyway, I encourage you to play with it. and get a sense of what these existing tokenizers look like. So this is a tokenizer for GPT4, for example. So there are some observations that we made. So if you look at the GPT2 tokenizer, which will use this as a reference, let me see if I can. Hopefully this is, let me know if this is getting too small in the back. You can take a string. If you apply the GPT2 tokenizer, you get your indices. So it maps strings and indices. And then you can decode to get back the string.
 
-**中文**: 不管怎样，我鼓励大家亲自去试一试，感受一下现有的这些分词器到底是什么样子的。比如，这就是 GPT-4 的分词器。
-我们总结了一些观察结果。如果我们看看 GPT-2 的分词器——我们将把它作为一个参考基准——让我看看能不能……希望这行字没有太小，后排的同学如果觉得看不清请告诉我。你可以输入一个字符串，应用 GPT-2 分词器，然后得到你的索引编号。所以，它实现了字符串和索引之间的映射。然后你可以通过解码，再把字符串还原回来。
+**中文**: 无论如何，我鼓励大家亲自去操作体验一下，从而对现有的这些分词器有一个直观的感受。比如，这里展示的就是 GPT-4 的分词器。基于此，我们得出了一些观察结论。如果我们以 GPT-2 的分词器作为参考（让我看看能不能找到它……希望后面的同学能看清，如果字太小请告诉我）：你可以输入一个字符串，应用 GPT-2 分词器后，就会得到对应的索引（indices）列表。本质上，它建立了字符串与索引之间的映射关系。随后，你可以通过解码（decode）操作，将这些索引还原回原始的字符串。
 
-## 段落 69
+**英文**: And this is just a sanity check to make sure that you actually run trips. Another thing that's interesting to look at is this compression ratio, which is if you look at the number. of bytes divided by the number of tokens. So how many bytes are represented by a token? And the answer here is 1. 6. So every token represents 1. 6 bytes of data. So that's just a GP2 tokenizer, that open-air trained. To motivate kind of BPE, I want to go through a sequence of attempts. So I suppose you wanted to do tokenization. What would be the simplest thing? The simplest thing is probably character-based tokenization. A unicode string is a sequence of unicode characters. And each character can be converted into an integer in a code point. So a maps to 97. The world emoji maps to 127,757. And you can see that it converts back. So you can define a tokenizer which simply maps each character into a code point. So what's one problem with this? Yeah. The compression ratio is 1. The compression ratio is 1.
 
-**英文**: And this is just a sanity check to make sure that you actually run trips. Another thing that's interesting to look at is this compression ratio, which is if you look at the number. of bytes divided by the number of tokens. So how many bytes are represented by a token? And the answer here is 1. 6. So every token represents 1. 6 bytes of data. So that's just a GP2 tokenizer, that open-air trained. To motivate kind of BPE, I want to go through a sequence of attempts. So I suppose you wanted to do tokenization.
+**中文**: 这只是一个健全性检查（sanity check），用来确保编解码过程确实是可逆的。
+另一个值得关注的有趣指标是压缩率（compression ratio），它的计算方式是：字节数除以 Token 数量。也就是说，平均每个 Token 代表了多少个字节的数据？
+在这里，答案是 1.6。这意味着每个 Token 平均代表了 1.6 字节的数据。
+这只是 OpenAI 训练的 GPT-2 分词器的表现。
+为了引出 BPE（字节对编码） 的概念，我想带大家回顾一系列尝试过程。
+假设你想要进行分词，最简单的做法是什么？
+最简单的方案可能是基于字符的分词（character-based tokenization）。
+一个 Unicode 字符串本质上就是 Unicode 字符的序列。而每个字符都可以转换成一个整数，即它的代码点（code point）。
+例如：
 
-**中文**: 这只是一个合理性检查，以确保你真的运行了行程。另一个值得关注的有趣点是这个压缩比，即字节数除以标记数。所以一个标记代表多少字节？答案是1.6。因此每个标记代表1.6字节的数据。这只是GPT2分词器，是在开放环境中训练的。为了说明BPE的动机，我想通过一系列尝试来讲解。所以我猜你想要进行分词。
+- 字符 'a' 映射为 97。
+- 世界地球仪表情符号 '🌍' 映射为 127757。
 
-## 段落 70
-
-**英文**: What would be the simplest thing? The simplest thing is probably character-based tokenization. A unicode string is a sequence of unicode characters. And each character can be converted into an integer in a code point. So a maps to 97. The world emoji maps to 127,757. And you can see that it converts back. So you can define a tokenizer which simply maps each character into a code point. So what's one problem with this? Yeah. The compression ratio is 1. The compression ratio is 1.
-
-**中文**: 最简单的事情会是什么？最简单的可能是基于字符的分词。一个Unicode字符串是一系列Unicode字符。每个字符都可以转换为一个代码点中的整数。所以a对应97。世界表情符号对应127,757。你可以看到它会转换回来。因此，你可以定义一个分词器，只需将每个字符映射到一个代码点。那么这个问题有什么问题呢？是的。压缩比是1。压缩比是1。
-
-## 段落 71
+你可以看到，这个过程也是可以逆向还原的。
+因此，你可以定义一个分词器，它仅仅将每个字符映射为其对应的代码点。
+那么，这种做法有什么问题呢？
+没错，压缩率是 1。
+也就是说，每个字符对应一个 Token，完全没有实现数据压缩。
 
 **英文**: So that's, well, actually, the compression ratio is not quite one because a character is not a byte. But it's maybe not as good as you want. One problem with that, if you look at some code points, they're actually really large. So you're basically allocating each one slot in your vocabulary for every character uniformly. And some characters appear way more frequently than others. So this is not a very effective use of your budget. OK?. So the vocabulary size is huge. I mean, the vocabulary size being 127 is actually a big deal. But the bigger problem is that some characters are rare.
 
-**中文**: 所以，实际上，压缩比并不是1，因为一个字符并不等于一个字节。但可能不如你期望的那么好。其中一个问题是，如果你看一下一些代码点，它们实际上非常大。因此，你基本上为每个字符在词汇表中分配一个槽位，均匀分布。而有些字符出现的频率远高于其他字符。因此，这并不是对你的预算的有效利用。对吧？所以词汇表的大小很大。我的意思是，词汇表大小为127实际上是一个大问题。但更大的问题是有些字符很罕见。
+![](img/lec1_029.png)
 
-## 段落 72
+**中文**: 所以，严格来说，压缩率并不完全是 1，因为一个字符（character）并不等同于一个字节（byte）。但即便如此，这种效果可能仍不如你所愿。
+这种做法存在一个问题：如果你观察某些代码点（code points）的数值，会发现它们实际上非常大。
+这意味着你基本上是在为每一个字符均匀地分配词汇表中的一个位置（slot）。
+然而，现实中有些字符的出现频率远高于其他字符。
+因此，这种做法对你的词汇量预算（vocabulary budget）来说，并不是非常有效的利用方式。明白了吗？
+也就是说，词汇表大小（Vocabulary Size）会变得非常庞大。
+我的意思是，即便词汇表大小是 127,000（注：此处 speaker 口误说成 127，结合上下文 Unicode 范围通常指代较大的数值，或者他是在强调即使较小的集合如 127 也是个大数目，但在 Unicode 语境下通常指代巨大的字符集），这已经是个大问题了。
+但更严重的问题在于：有些字符非常罕见。
+（这就导致我们为那些极少出现的字符也浪费了宝贵的词汇表位置。）
 
 **英文**: And this is inefficient use of the vocab. OK, so the compression ratio is 1. 5 in this case, because it's the number of bytes per token. And a character can be multiple bytes. OK, so that was a very naive approach. On the other hand, you can do byte-based tokenization. So unicode strings can be represented as sequence of bytes, because every string can just be converted into bytes. So some A is already just one byte. But some characters take up as many as four bytes. And this is using the UTAF-8 encoding of unicode.
 
-**中文**: 这是对词汇的低效使用。好的，所以在这种情况下，压缩比是1.5，因为这是每个标记的字节数。一个字符可以是多个字节。好的，所以这是一种非常简单的方法。另一方面，你可以进行基于字节的分词。因此，Unicode字符串可以表示为字节序列，因为每个字符串都可以转换为字节。所以有些A只需要一个字节。但有些字符最多需要四个字节。这是使用Unicode的UTF-8编码。
+**中文**: 这就导致了词汇表利用效率低下。好了，在这种情况下，压缩率是 1.5，因为这是“每个 Token 对应的字节数”。（注：由于一个字符可能由多个字节组成，所以基于字符的分词在计算“字节/Token”时，比率会大于 1。）总之，那是一种非常天真（naive）的方法。另一方面，你可以采用基于字节（byte-based）的分词。Unicode 字符串可以表示为字节序列，因为任何字符串都可以直接转换为字节。
 
-## 段落 73
+- 例如，字符 'A' 本身就只占 1 个字节。
+- 但有些字符最多会占用 4 个字节。
+这里使用的是 Unicode 的 UTF-8 编码格式。
+
+![](img/lec1_030.png)
 
 **英文**: There's other encodings, but this is the most common one. That's subdynamic. So let's just convert everything into bytes and see what happens. So if you do it into bytes, now all the indices are between 0 and 256, because they're only 256 possible values for a byte-by definition. So your vocabulary is very small. And each byte is, I guess, not all bytes are equally used, but it's not too, you don't have too many sparsely problems. But what's the problem with byte-based encoding? Long sequences. In some ways, I really wish byte encoding would work. It's the most elegant thing. But you have long sequences.
 
-**中文**: 还有其他编码方式，但这是最常见的一种。那是子动态的。所以让我们把所有内容转换为字节，看看会发生什么。所以如果你将其转换为字节，现在所有的索引都在0到256之间，因为字节的可能值只有256个，按定义是这样。所以你的词表非常小。每个字节，我想说，并不是所有字节都被同等使用，但你不会遇到太多稀疏性问题。但基于字节的编码有什么问题呢？长序列。在某些方面，我真的希望字节编码能奏效。这是最优雅的方法。但你会遇到长序列。
+**中文**: 还有其他编码方式，但这是最常用的一种（即 UTF-8）。
+那么，让我们尝试将所有内容都转换为字节，看看会发生什么。
+一旦转换为字节，所有的索引（indices）都会落在 0 到 256 之间，因为根据定义，一个字节只有 256 种可能的取值。这意味着你的词汇表（vocabulary）非常小。虽然并非所有字节的使用频率都完全相同，但也并没有出现严重的稀疏性（sparsity）问题。但是，基于字节的编码（byte-based encoding）存在什么问题呢？
+答案是：序列过长（Long sequences）。在某种程度上，我非常希望字节编码能够行得通，因为它是最优雅的方案。但现实是，它会导致生成的序列太长了。
 
-## 段落 74
 
 **英文**: Your compression ratio is 1. One byte per token. And this is just terrible. Of compression ratio, one is terrible, because your sequences will be really long. Attention is quadratic, naively, in the sequence line. So you're just going to have a bad time in terms of efficiency. So that wasn't really good. So now the thing that you might think about is, well, maybe we kind of have to be adaptive here. Like we can't allocate a character or a byte per token, but maybe some tokens can represent lots of bytes, and some tokens can represent few bytes. So one way to do this is word-based tokenization.
 
-**中文**: 你的压缩比是1。每个标记一个字节。这非常糟糕。压缩比为1是非常糟糕的，因为你的序列会变得非常长。注意力机制在序列长度上是二次方的，如果是天真地实现的话。所以在效率方面你会遇到很大的问题。所以这并不是很好。那么你可能会想到，也许我们在这里必须采取适应性的方法。比如，我们不能为每个标记分配一个字符或一个字节，但有些标记可以表示很多字节，而有些标记可以表示很少字节。一种实现方式是基于单词的分词。
+**中文**: 你的压缩率是 1，即每个 Token 对应一个字节。
+这简直糟糕透顶。
+压缩率为 1 是非常可怕的，因为这意味你的序列长度（sequence length）会变得非常长。
+众所周知，注意力机制（Attention）的计算复杂度与序列长度呈平方级关系（quadratic）（在朴素实现中）。
+因此，这在效率方面会导致极其糟糕的结果。
+所以，那个方案并不理想。
+现在你可能会想到：也许我们需要一种自适应（adaptive）的方法。
+也就是说，我们不能简单地让每个 Token 只对应一个字符或一个字节；
+相反，应该让某些 Token 代表很多个字节，而另一些 Token 只代表很少的字节。
+实现这一点的一种方法就是基于单词的分词（word-based tokenization）。
 
-## 段落 75
+![](img/lec1_031.png)
 
 **英文**: And this is something that was actually very classic in NLP. So here's a string. And you can just split it into a sequence of segments. And you can call each of these tokens. So you just use a regular expression. Here's a different regular expression that GPT2 uses to pre-tokenize. And it just splits your string into a sequence of strings. So and then what you do with each segment is that you assign each of these to integer,. and then you're done. OK? So what's the problem with this? OK.
 
-**中文**: 这在自然语言处理中实际上是非常经典的方法。这里有一个字符串。你可以将其拆分为一系列片段。你可以将每个片段称为一个标记。因此，你只需使用正则表达式。这是GPT2用来预分词的不同正则表达式。它只是将你的字符串拆分为一系列字符串。然后你对每个片段所做的就是将每个片段分配给一个整数，这样就完成了。明白吗？那么这种方法有什么问题呢？明白吗？
+**中文**: 这实际上是自然语言处理（NLP）中一种非常经典的方法。
+假设这里有一个字符串，你可以直接将其分割成一系列片段（segments），并将每一个片段称为一个 Token。
+你只需要使用一个正则表达式（regular expression）即可完成分割。
+（这里展示的是 GPT-2 用于预分词（pre-tokenize）的另一种正则表达式。）
+它的作用仅仅是将你的字符串分割成一个字符串序列。
+接下来，你对每个片段所做的操作就是：为它们分配一个整数索引（integer ID），至此分词过程就完成了。明白了吗？
+那么，这种方法存在什么问题呢？
 
-## 段落 76
 
 **英文**: So the problem is that your vocabulary size is sort of unbounded. Well, not. Maybe not quite unbounded, but you don't know how big it is. Right?. Because on a given new input, you might get a segment that's that just you've never seen before. And that's actually a kind of a big problem. This is actually a word-based. A really big pain in the butt, because some real words are rare. And actually, it's really annoying because new words have to receive this unctocon. And if you're not careful about how you compute the perplexity, then you're just going to mess up.
 
-**中文**: 所以问题在于你的词汇量是某种意义上无限制的。嗯，不是说真的无限制，但你不知道它有多大。对吧？因为在给定的新输入中，你可能会得到一个之前从未见过的词段。这实际上是一个大问题。这实际上是基于单词的，非常麻烦，因为一些真正的单词很罕见。实际上，这真的很烦人，因为新词必须接受这种不确定性。如果你不注意如何计算困惑度，那么你就会出错。
+**中文**: 问题在于，你的词汇表大小（vocabulary size）在某种程度上是无上限的。或者说，也许并非完全无上限，但你无法预知它究竟有多大。
+对吧？因为在处理新的输入时，你可能会遇到一个从未见过的片段。
+这确实是一个大问题。这实际上是基于单词的分词带来的一个大麻烦（pain in the butt），因为有些真实的单词非常罕见。更令人头疼的是，新词（new words）不得不被标记为 <unk>（未知 token）。如果你在计算困惑度（perplexity）时不够小心，结果就会一团糟。
 
-## 段落 77
+![](img/lec1_032.png)
 
 **英文**: So word-based isn't, I think it captures the right intuition of adeptivity, but it's not exactly what we want here. So here, we're finally going to talk about the BPE encoding or byte-pair encoding. So this was actually a very old algorithm developed by. Philip Gaige in 94 for data compression. And it was first introduced into NLP for neural machine translation. So before, papers that did machine translation or any basic all NLP used word-based tokenization. And again, word-based was a pain. So this paper, pioneered this idea well. We can use this nice algorithm form 94. And we can just make the tokenization kind of round trip.
 
-**中文**: 所以基于词的方法并不是，我认为它捕捉到了熟练度的正确直觉，但并不是我们这里想要的。因此，我们现在终于要讨论BPE编码或字节对编码。这个算法实际上是由Philip Gage在1994年开发的用于数据压缩的非常古老的算法。它首次被引入到自然语言处理中用于神经机器翻译。所以在那之前，进行机器翻译或任何基础NLP的论文都使用基于词的分词方法。同样，基于词的方法很麻烦。所以这篇论文率先提出了这个想法。我们可以使用这个1994年的优秀算法，并且可以使得分词过程大致往返。
+**中文**: 所以，我认为基于单词的分词（word-based）虽然捕捉到了正确的自适应（adaptivity）直觉，但它并不是我们这里真正想要的方案。
+接下来，我们终于要讨论 BPE 编码，也就是字节对编码（Byte-Pair Encoding）了。
+这实际上是一个由 Philip Gage 在 1994 年开发的非常古老的算法，最初用于数据压缩。
+后来，它首次被引入到 NLP 领域，应用于神经机器翻译（Neural Machine Translation）。
+在此之前，从事机器翻译或任何基础 NLP 研究的论文都使用基于单词的分词方法。
+正如前面所说，基于单词的方法非常令人头疼（a pain）。
+因此，这篇论文开创性地提出了这样一个理念：
+我们可以利用这个源自 1994 年的优秀算法，让分词过程变得可逆且高效（即实现某种意义上的“往返”处理，round trip）。
 
-## 段落 78
 
 **英文**: And we don't have to deal with unks or any of that stuff. And then finally, this entered the kind of language modeling era of through GPT-2, which was trained on using the BPE tokenizer. OK, so the basic idea is instead of defining some sort of pre-conceived notion of how to split up, we're going to train the tokenizer on raw text. That's the basic kind of inside, if you will. And so organically, common sequences that span multiple characters, we're going to try to represent as one token. And rare sequences are going to be represented by multiple tokens. There's a sort of a site detail, which is for efficiency, the GPT-2 paper uses word-based tokenizer as a sort of pre-processing to break it up into segments and then runs. the BPE on each of segments, which is what you're going to do in this class as well. The algorithm BPE is actually very simple. So we first convert the string into sequence of bytes, which we already did when we talked about bi-based tokenization.
 
-**中文**: 而且我们不需要去处理那些未知词（UNK）之类的东西。最后，随着 GPT-2 的出现，我们真正进入了大语言模型时代，它就是使用 BPE 分词器进行训练的。那么，基本的思路是：我们不再预先设定一套死板的规则来切分单词，而是直接在原始文本上训练分词器。这就是它的核心理念，你可以这么理解。因此，那些跨越多个字符的常见组合，我们会自然而然地将其表示为一个 Token；而那些罕见的组合，则会被表示为多个 Token。这里还有一个技术细节：为了效率起见，GPT-2 的论文中使用了一种基于单词的分词器作为预处理步骤，先把文本切分成片段，然后再对每个片段运行 BPE 算法。这也是你们在这门课里要做的事情。BPE 算法其实非常简单。我们首先将字符串转换为字节序列，这在我们讨论基于字节的分词时已经做过了。”
+**中文**: 这样，我们就不再需要处理 <unk>（未知词） 或类似的问题了。
+最终，随着 GPT-2 的出现，这种方法正式开启了语言模型时代。GPT-2 就是使用 BPE 分词器进行训练的。那么，其基本思想是：
+我们不再预先定义某种固定的分割规则，而是直接在原始文本（raw text）上训练分词器。
+如果你愿意，可以把这看作是一种核心的直觉（insight）（注：原文口误说成 "inside"，实为 "insight"）。
+因此，自然地（organically）：
 
-## 段落 79
+- 那些跨越多个字符的常见序列，我们将尝试用一个 Token来表示；
+- 而那些罕见序列，则由多个 Token来表示。
+
+这里有一个次要细节（side detail）（注：原文口误说成 "site detail"，实为 "side detail"）：
+为了效率起见，GPT-2 论文中采用了一种基于单词的分词器作为预处理步骤，先将文本切分成片段，然后在每个片段上运行 BPE 算法。这也是你们在本课程中将要做的事情。
+BPE 算法本身其实非常简单：
+首先，我们将字符串转换为一个字节序列（sequence of bytes）——这在我们要讨论基于字节的分词（byte-based tokenization）时已经做过了。
+
 
 **英文**: And now we're going to successfully merge the most common pair of adjacent tokens over and over again. So that intuition is that if a pair of tokens. has shows up a lot, then we're going to compress it into one token. We're just going to dedicate space for that. OK. So let's walk through what this algorithm looks like. So we're going to use this kind of hat as an example. And we're going to convert this into a sequence of integers. These are the bytes. And then we're going to keep track of what we've merged.
 
-**中文**: 现在我们将反复成功地合并最常见的相邻标记对。所以这个直觉是，如果一对标记出现的次数很多，我们就把它压缩成一个标记。我们只是为它专门留出空间。好的。那么让我们来走一遍这个算法的流程。我们将使用这种帽子作为例子。然后将其转换为整数序列。这些是字节。然后我们将跟踪我们已经合并的内容。
+**中文**: 现在，我们将反复合并出现频率最高的相邻 Token 对。
+其核心直觉是：如果某一对 Token 频繁出现，我们就将其压缩为一个单独的 Token，并为其分配专门的编码空间。
+好了，让我们逐步演示这个算法的运行过程。
+我们将以单词 "hug" 为例（注：原文口误说成 "hat"，但结合上下文及 BPE 经典案例，此处应为 "hug"）。
+首先，我们将它转换为一个整数序列，这些整数代表对应的字节。
+然后，我们将追踪记录每一次的合并操作。
 
-## 段落 80
 
 **英文**: So remember, merges is a map from two integers, which can represent bytes or other existing tokens. And we're going to create a new token. And the Volcab is just going to kind of be a handy way to represent the index to bytes. OK. So we're going to the BPE algorithm. I mean, it's very simple. So I'm just actually going to run through the code. You're going to do this number of times. So number is just three in this case. We're going to first count up the number of occurrences of pairs of bytes.
 
-**中文**: 所以请记住，合并是一个从两个整数到的映射，这些整数可以表示字节或其他现有的标记。我们将创建一个新标记。而词表只是用来表示字节索引的一种方便方式。好的。我们现在进入BPE算法。我的意思是，它非常简单。所以我实际上将运行一遍代码。你将执行这个次数。次数在这个情况下是三。我们首先统计字节对的出现次数。
+**中文**: 请记住，merges（合并表） 是一个映射关系，它将两个整数（可以代表原始字节，也可以代表已有的 Token）映射为一个新生成的 Token。
+而 Vocab（词表） 则是一种便捷的方式，用来表示索引到字节序列的对应关系。
+好了，我们要开始执行 BPE 算法了。
+其实它非常简单，所以我直接带大家过一遍代码逻辑：
+我们需要重复执行以下步骤特定的次数（在这个例子中，次数设为 3）。
+第一步，我们要统计所有相邻字节对（pairs of bytes）出现的频次。。
 
-## 段落 81
 
-**英文**: So hopefully this doesn't become too small. So we're going to just step through this sequence. And we're going to see that. OK. So once 1 1 6, 1 1 4, we're going to increment that count. 1 1 1 1 increment that count. We're going to go through the sequence. And we're going to count up the bytes. OK. So now after we have these counts, we're.
+**英文**: So hopefully this doesn't become too small. So we're going to just step through this sequence. And we're going to see that. OK. So once 1 1 6, 1 1 4, we're going to increment that count. 1 1 1 1 increment that count. We're going to go through the sequence. And we're going to count up the bytes. OK. So now after we have these counts, we're. going to find the pair that occurs the most number of times. So I guess there's multiple ones, but we're just going to break ties and say 1 1 6 and 1 1 4. So that occurred twice. So now we're going to merge that pair. So we're going to create a new slot in our vocab, which is going to be 256. So so far it's 0 through 1 255. And now we're expanding the vocab to 256. And we're going to say every time we see 1 1 6 and 1 4, we're going to replace it with 256. OK. And then we're going to just apply that merge to our training set.
 
-**中文**: 希望这不会变得太小。所以我们将逐步完成这个序列。我们会看到。好的。一旦1 1 6，1 1 4，我们将增加该计数。1 1 1 1 增加该计数。我们将遍历这个序列，并统计字节数。好的。所以现在在我们有了这些计数之后，我们。
+**中文**: 希望这段内容不会变得太难以理解。
+让我们逐步遍历这个序列：
+我们可以看到，遇到字节对 (116, 114) 时，我们将它的计数加一；遇到 (117, 103) 时（注：原文口误说成 "1 1 1 1"，结合上下文 "hug" 的字节 h=104, u=117, g=103 及常见 BPE 示例，此处应为统计 u 和 g 或其他相邻对，但根据后文逻辑，这里是在统计所有相邻对的频次），我们也相应增加计数。
+总之，我们会遍历整个序列，统计所有字节对的出现次数。
+好了，拿到这些统计结果后，我们要找出出现频率最高的那一对字节。
+假设这里有多个并列最高的情况，我们只需打破平局（任意选一个），比如我们就选定 (116, 114) 这一对，因为它出现了两次。
+接下来，我们要合并这一对。
+具体做法是：在我们的 词表（Vocab） 中创建一个新槽位，编号为 256。
+目前为止，我们的索引范围是 0 到 255（对应标准字节），现在我们将词表扩展到了 256。
+我们规定：此后每当在序列中看到 116 和 114 相邻出现时，就用新的 Token 256 来替换它们。
+最后，我们将这个合并规则应用到我们的训练集中。
 
-## 段落 82
+![](img/lec1_033.png)
 
-**英文**: going to find the pair that occurs the most number of times. So I guess there's multiple ones, but we're just going to break ties and say 1 1 6 and 1 1 4. So that occurred twice. So now we're going to merge that pair. So we're going to create a new slot in our vocab, which is going to be 256. So so far it's 0 through 1 255. And now we're expanding the vocab to 256. And we're going to say every time we see 1 1 6 and 1 4, we're going to replace it with 256. OK. And then we're going to just apply that merge to our training set.
-
-**中文**: 要找到出现次数最多的配对。所以我想有多个这样的配对，但我们只是要打破平局，说1 1 6和1 1 4。这样出现了两次。现在我们要合并这个配对。我们要在我们的词典中创建一个新的槽位，即256。到目前为止是0到1 255。现在我们将词典扩展到256。每当看到1 1 6和1 4时，我们都会用256来替换它。好的。然后我们将把这个合并应用到我们的训练集上。
-
-## 段落 83
+![](img/lec1_034.png)
 
 **英文**: So after we do that, the 1 1 16 1 1 4 became 256. And this 256, remember a curve twice. OK. So now we're just going to loop through this algorithm one more time. The second time, it decided to merge 256 and 1 1 and now I'm going to replace that in indices. And notice that the indices is going to shrink, right? Because our compression ratio is getting better as we make room for more vocabular items. And we have a greater vocabulary to represent everything. OK. So let me do this one more time. And then the next merge is 257, 3.
 
-**中文**: 所以在那之后，1 1 16 1 1 4 变成了 256。而这个 256，记得是一个曲线的两倍。好的。现在我们再运行一次这个算法。第二次时，它决定将 256 和 1 1 合并，现在我要在索引中进行替换。注意索引会缩小，对吧？因为随着我们为更多的词项腾出空间，压缩比变得更好了。我们有更大的词汇量来表示所有内容。好的。让我再这样做一次。然后下一步的合并是 257，3。
+**中文**: 执行完上述操作后，序列中的 116 和 114 就变成了 256。请记住，这个新的 Token 256 现在出现了两次。
+好了，现在我们要再循环执行一次该算法。
+在第二轮迭代中，算法决定合并 256 和 117（注：原文口误说成 "1 1"，结合上下文 "hug" -> h(104), u(117), g(103) 以及上一轮合并了 u, g 或 h, u 的逻辑，此处应指与 256 相邻的下一个字节，通常是 117 即 'u'，或者如果上一轮合并的是 h, u，则这里合并的是 256, g。根据经典 BPE 示例 "hug"，通常先合并高频对。若原文是 "256 and 117"，则逻辑通顺）。
+随后，我将用新的索引替换掉它们。
+请注意，索引序列的长度将会缩短，对吧？
+因为随着我们为更多的词汇项（vocabulary items）腾出空间，我们的压缩率正在变得更高。
+我们拥有了一个更大的词表来表示所有内容。
+好，让我再演示一次。
+接下来的下一次合并将生成新 Token 257（对应原文的 "257, 3"，意指第 3 次合并产生了 ID 为 257 的 Token，或者合并了 257 和某个值为 3 的 token，但更可能是指“第三次合并产生了 257”）。
 
-## 段落 84
 
-**英文**: And this is shrinking one more time. OK. And then now we're done. OK. So let's try out this tokenizer. So we have the string, the quick brown fox. We're going to encode into a sequence of indices. And then we're going to use our BP tokenizer to decode. So let's actually step through what that looks like. This, well, actually maybe decoding isn't actually interesting.
+**英文**: And this is shrinking one more time. OK. And then now we're done. OK. So let's try out this tokenizer. So we have the string, the quick brown fox. We're going to encode into a sequence of indices. And then we're going to use our BP tokenizer to decode. So let's actually step through what that looks like. This, well, actually maybe decoding isn't actually interesting. Sorry. I should have gone through the encode. Let's go back to encode. So encode, you take a string, you convert to indices, and you just replay the merges. And importantly, in the order of that occur. So I'm going to replay this.
 
-**中文**: 而且这又缩小了一次。好的。然后现在我们完成了。好的。那么我们来试一下这个分词器。我们有字符串“the quick brown fox”。我们要将其编码成一个索引序列。然后我们将使用我们的BP分词器进行解码。那么我们实际走一遍这个过程是什么样的。这个，实际上可能解码并不太有趣。
-
-## 段落 85
-
-**英文**: Sorry. I should have gone through the encode. Let's go back to encode. So encode, you take a string, you convert to indices, and you just replay the merges. And importantly, in the order of that occur. So I'm going to replay this.
-
-**中文**: 抱歉，我刚才应该先讲编码的部分。让我们回到编码。
-在编码时，你拿到一个字符串，把它转换成索引，然后只需要重复合并的过程。而且有一点很重要，必须按照它们发生的顺序来进行。
-所以我现在要重新演示一下这个过程。
+**中文**: 序列长度再次缩短。好了，至此整个过程结束。
+现在，让我们来测试一下这个 分词器（Tokenizer）。
+假设我们有一个字符串："the quick brown fox"。
+我们将把它编码成一个索引序列。
+然后，我们会使用我们的 BPE 分词器将其解码回原始字符串。
+让我们逐步看看这个过程具体是怎样的：
+这一步……嗯，其实解码过程可能没那么有趣。抱歉，我本该先演示编码过程的。
+让我们回到编码环节。
+在编码时，你首先将字符串转换为字节索引序列，然后按照合并规则被创建的先后顺序，重放（replay）这些合并操作。
+这一点非常重要：必须严格按照合并发生的顺序来执行。
+所以，我现在就来重放这些合并步骤。
 
 ---
 
