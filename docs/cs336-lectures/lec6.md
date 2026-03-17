@@ -4,103 +4,199 @@
 
 ---
 
-## 段落 1
-
 **英文**: Today we're going to be going into details on writing high performance code for GPUs. So part of assignment two is going to be you're going to have to do a bunch of profiling, you will have to write your own Triton kernel for flash attention two. You will need to sort of make all of this stuff very high performance. And so in this lecture, we're going to kind of drill down a little bit and we're going to try to write some high performance code for standard components in a language model. So the plan for this lecture is we're going to just do a brief amount of review about GPU stuff just to make sure you have once again the basic components of the GPUs that. we need to understand in order to follow the rest of the lecture. And then I'm going to show you a bunch of sort of really basic things about benchmarking which will be helpful for both the assignment and in general if you want to write high performance PyTorch or deep learning code. And then we're going to basically write some kernels. We're going to write CUDA kernels in sort of C++. We will then do the same thing in Triton.
 
-**中文**: 今天我们将深入探讨如何为GPU编写高性能代码。因此，作业二的部分内容要求你进行大量性能分析，并自行编写一个用于FlashAttention-2的Triton内核，还需确保所有这些组件均达到极高的性能水平。在本次讲座中，我们将深入细节，尝试为语言模型中的标准组件编写高性能代码。本次讲座的安排如下：首先，我们将简要回顾GPU相关知识，以确保大家再次掌握理解后续内容所必需的GPU基本构成要素；接着，我将介绍一系列关于基准测试的基础知识，这些内容不仅对完成本次作业大有帮助，而且对于一般性的高性能PyTorch或深度学习代码开发也十分有用；随后，我们将着手编写若干内核——先用C++风格编写CUDA内核，再用Triton实现相同功能。
+**中文**: 今天我们将深入探讨如何为 **GPU** 编写高性能代码。
 
-## 段落 2
+**第二次作业**的一部分内容将要求你们进行大量的**性能分析（profiling）**，并且需要亲手为 **Flash Attention 2** 编写自定义的 **Triton 内核（kernel）**。你们需要确保所有这些组件都达到极高的性能标准。
+
+因此，在本讲座中，我们将深入细节，尝试为语言模型中的标准组件编写一些高性能代码。
+
+本次讲座的计划如下：
+1.  **简要回顾 GPU 基础知识**：确保大家再次掌握 GPU 的基本组成部分，这是理解后续内容的前提。
+2.  **基准测试（Benchmarking）基础**：我将展示一些关于基准测试的基础知识。这不仅对完成作业至关重要，对于一般性地编写高性能 PyTorch 或深度学习代码也非常有帮助。
+3.  **编写内核（Kernels）**：我们将实际动手编写内核。首先，我们会用 **C++** 编写 **CUDA 内核**；随后，我们将用 **Triton** 实现相同的功能。
+
 
 **英文**: And then lastly, we're going to do the easy but very good thing of using PyTorch's existing. JIT compiler to have it optimized for us. And then we'll compare all of those and profile and benchmark things. Throughout, we're going to really dig in deep. We're going to go down all the way to the PTX, so pretty close to the machine code, to understand what the GPU is actually doing under the hood when we write all of this code. And then hopefully we'll have time, and I think we will. We'll finish by writing sort of a fast Triton implementation of softmax at the very end. So assignment one has come to a close. There's still a leaderboard. You can still submit and update things there.
 
-**中文**: 最后，我们将采用一种简单却非常有效的方法：利用 PyTorch 现有的 JIT 编译器，让其自动为我们优化代码。随后，我们将对所有这些实现进行对比，并开展性能分析与基准测试。在整个过程中，我们将深入探究底层细节，一直下探到 PTX（Parallel Thread Execution）指令层面——这已非常接近机器码——从而真正理解当我们编写所有这些代码时，GPU 底层实际在执行什么操作。此外，我们有望（而且我认为确实会有）留出时间，在最后实现一个基于 Triton 的高性能 softmax 版本。至此，第一项作业正式结束。排行榜依然开放，你仍可提交并更新你的结果。
+**中文**: 最后，我们将采取一个简单但非常有效的方法：利用 **PyTorch** 现有的 **JIT（即时）编译器** 来自动为我们优化代码。
 
-## 段落 3
+随后，我们将对上述所有方法（手写 CUDA、Triton 以及 JIT 编译）进行**对比**，并通过**性能分析（profiling）**和**基准测试（benchmarking）**来评估它们的表现。
+
+在整个过程中，我们将深入底层细节，一直剖析到 **PTX**（并行线程执行）级别——这非常接近机器码。这样做的目的是为了透彻理解当我们编写这些代码时，GPU 内部究竟在执行什么操作。
+
+如果时间允许（我认为应该没问题），我们将在最后通过编写一个高效的 **Softmax** **Triton** 实现来结束本次课程。
+
+另外，**第一次作业**已经接近尾声。不过，**排行榜 leaderboard**仍然开放，大家依然可以提交结果或更新你们的方案。
+
 
 **英文**: Some of you may be using late days, so please finish up assignment one. And then assignment two is now out. And as I said before, there's going to be a bunch of systems stuff that you're going to need to do. There's fun parts that you can do now involving GPU kernels. And then next week, we're going to talk about parallelism, and that's going to be the other. half of the assignment, writing fast parallel code like data parallelism and so on. So we will get to that next week. All right. So now remember how GPUs work, right? So when we have something like an A100 or an H100, we're going to have a whole bunch of SMs, streaming multiprocessors. Within each SM is a large number of units that can do computation.
 
-**中文**: 你们中有些人可能正在使用延期提交天数，因此请尽快完成作业一。现在作业二已经发布。如我之前所说，你们需要完成一系列系统相关的任务。其中有一些有趣的部分，比如编写GPU内核，你们现在就可以着手进行。下周我们将讨论并行计算，这将是作业的另一部分内容，即编写高效的并行代码，例如数据并行等。相关内容我们将在下周展开。好的，那么大家还记得GPU的工作原理吧？以A100或H100这类GPU为例，其内部包含大量流式多处理器（SM）。而每个SM内部又集成了大量可执行计算任务的处理单元。
+**中文**: 有些同学可能正在使用**宽限期 late days**，请尽快完成**第一次作业**。
 
-## 段落 4
+另外，**第二次作业**现在已经发布。正如我之前提到的，这次作业包含大量涉及**系统底层**的内容。其中有趣的部分是现在就可以开始的 **GPU 内核 kernel** 编写工作。
+
+下周，我们将讨论**并行计算 parallelism**，这将是作业的另一半内容：编写高效的并行代码，例如**数据并行 data parallelism**等。我们下周会详细展开这部分。
+
+好了，让我们回顾一下 **GPU** 的工作原理：
+当我们使用像 **A100** 或 **H100** 这样的显卡时，它们内部包含大量的 **流式多处理器 SMs, Streaming Multiprocessors**。而在每个 SM 内部，又集成了大量的计算单元来执行运算任务。
+
 
 **英文**: We have in 32 ones or FP32 ones. And then each SM is going to launch a large number of threads, right? And we have the memory hierarchy, which is that we have DRAM or global memory, which is big and slow. And then we've got caches that are much faster. And in fact, you see here there's a thing called the register file. This is very, very fast memory that each thread can access. And we're going to be making heavy use of these registers as we write high performance code for GPUs today. So the basic structure for the execution model is going to be we're going to have a collection of thread blocks and a block is going to be scheduled on a single SM. Right. So this is kind of the atomic unit that we're going to be thinking about, especially when we write code and things like Triton. And then within each block, there's going to be a whole bunch of threads and the threads are actually going to be the ones doing the computation.
 
-**中文**: 我们使用的是32位整数（int32）或单精度浮点数（FP32）。每个流式多处理器（SM）将启动大量线程，对吧？我们的内存层次结构包括：容量大但速度慢的DRAM（即全局内存），以及速度快得多的各级缓存。事实上，图中所示的“寄存器文件”是一种极快的内存，每个线程均可访问；在当今为GPU编写高性能代码时，我们将大量使用这些寄存器。因此，执行模型的基本结构是：由若干线程块组成，而每个线程块将被调度至单个SM上运行——这正是我们思考问题时的基本原子单元，尤其在编写Triton等框架的代码时更是如此。而在每个线程块内部，则包含大量线程，实际的计算工作将由这些线程完成。
+**中文**: 每个 SM 包含 32 个（或更多）**FP32** 计算单元。随后，每个 SM 将启动大量的**线程 threads**。
 
-## 段落 5
+我们需要理解 GPU 的**内存层次结构 memory hierarchy**：
+*   **DRAM 显存/全局内存**：容量大但速度较慢。
+*   **缓存 Caches**：速度要快得多。
+*   **寄存器文件 Register File**：正如大家在此处所见，这是一种极快的内存，供每个线程直接访问。今天我们在编写高性能 GPU 代码时，将大量依赖这些寄存器。
 
-**英文**: And so if you have a vector and you're going to be operating over elements of that vector, right, you're going to write code where each thread is going to go in and maybe operate. over a few elements of that vector at once. Right. And all the threads together will sort of process the vector completely. So why do we have these things called thread blocks? Right. Why not just have threads and your big global context? Well, thread blocks can communicate with each other. There's shared memory kind of within the SM. That's pretty fast. Right. So when you need to do something like matrix multiplication, you're going to need to pass.
+GPU 执行模型的基本结构如下：
+我们将拥有一组**线程块 thread blocks**。一个线程块会被调度到**单个 SM** 上运行。这是我们思考问题的基本原子单位，特别是在编写如 **Triton** 这类代码时尤为重要。
 
-**中文**: 因此，如果你有一个向量，并打算对该向量的各个元素进行操作，那么你编写的代码中，每个线程将进入并可能同时处理该向量中的若干个元素。所有线程协同工作，从而完成对整个向量的处理。那么，我们为何需要“线程块”这种结构呢？为何不直接使用线程和庞大的全局上下文呢？原因在于，线程块之间可以相互通信；每个流式多处理器（SM）内部都配备有共享内存，其访问速度非常快。因此，在执行矩阵乘法等运算时，你就需要利用这种机制来传递数据。
+在每个线程块内部，包含大量的**线程**，而真正执行计算任务的正是这些线程。
 
-## 段落 6
+![](img/lec6_001.png)
 
-**英文**: information from threat to thread. And within a thread block, that's very fast across thread blocks or across these groups. It's going to be very expensive. So any data that you need, you're going to want to keep within the same thread block or within the same sort of pile. And that's going to keep things very, very fast. And that's going to be as fast as sort of a L1 cache. And that's a great place to be. And so you can use this to synchronize across threads, but you can't, for example, synchronize across blocks. You can't really control what's going to happen. Right.
 
-**中文**: 信息从威胁（threat）到线程（thread）的传递。而在一个线程块内部，这种传递速度极快；但在线程块之间或这些组之间，则开销极大。因此，任何你需要的数据，都应尽量保留在同一个线程块内，或同一类数据堆中，这样才能确保极高的访问速度——其速度可媲美L1缓存，这是非常理想的状态。你可以利用这种方式在线程之间进行同步，但无法（例如）在不同线程块之间实现同步，因为你实际上无法控制其具体执行顺序。
+**英文**: And so if you have a vector and you're going to be operating over elements of that vector, right, you're going to write code where each thread is going to go in and maybe operate. over a few elements of that vector at once. Right. And all the threads together will sort of process the vector completely. So why do we have these things called thread blocks? Right. Why not just have threads and your big global context? Well, thread blocks can communicate with each other. There's shared memory kind of within the SM. That's pretty fast. Right. So when you need to do something like matrix multiplication, you're going to need to pass information from threat to thread. And within a thread block, that's very fast across thread blocks or across these groups. It's going to be very expensive. So any data that you need, you're going to want to keep within the same thread block or within the same sort of pile. And that's going to keep things very, very fast. And that's going to be as fast as sort of a L1 cache. And that's a great place to be. And so you can use this to synchronize across threads, but you can't, for example, synchronize across blocks. You can't really control what's going to happen. Right.
 
-## 段落 7
+**中文**: 因此，如果你有一个向量并需要对其元素进行运算，你编写的代码会让每个线程同时处理该向量的几个元素。所有线程协同工作，从而完成对整个向量的处理。
+
+那么，为什么我们需要线程块（thread blocks）这个概念呢？为什么不直接让所有线程在一个巨大的全局上下文中运行？
+
+原因在于：线程块内部的线程可以相互通信。在每个 SM 内部存在一种称为共享内存（shared memory）的存储区域，它的速度非常快。因此，当你需要执行像矩阵乘法这样的操作时，就需要在线程之间传递信息。
+
+在同一个线程块内部，这种通信非常迅速；而如果是跨线程块或跨这些组进行通信，开销则会非常大。因此，任何你需要频繁访问的数据，都应尽量保留在同一个线程块（或同一组）内，这样才能保持极高的速度。这种速度大致相当于 L1 缓存，是非常理想的状态。
+
+你可以利用这一机制在线程之间进行同步（synchronize），但请注意，你无法跨线程块进行同步。你也无法真正控制跨块时会发生什么（例如调度顺序等）。
+
+![](img/lec6_002.png)
+
 
 **英文**: And remember the thing that I mentioned last week, there's this thing called waves, right? Waves aren't sort of an inherent thing that you normally think about. But for performance, it is an important component. So when we actually run these things, the threads are grouped into into consecutive blocks of 32 threads. And that's a wave. And that gets executed kind of all at once in an SM. And so one thing that we would like to do is to make sure all the waves have an equal amount of computation. We can't always do that. But, you know, if we can, we would like to do that. Right. So we want to make the number of thread blocks, ideally divide the number of SM's and to make sure that each wave has an equal amount of work.
 
-**中文**: 请记住我上周提到的内容：存在一种称为“波前”（wave）的机制，对吧？波前并非通常意义上人们会想到的固有概念，但对于性能而言，它却是一个重要组成部分。因此，当我们实际运行这些程序时，线程会被划分为连续的、每组32个线程的块，这种线程块即为一个波前；而每个波前会在一个流式多处理器（SM）中近乎同时执行。因此，我们希望实现的目标之一是确保所有波前承担的计算量相等——虽然这并不总能实现，但只要可能，我们就应尽力做到这一点。具体而言，理想情况下，线程块的总数应能被SM的数量整除，从而确保每个波前所承担的工作量均等。
+**中文**: 还记得我上周提到的波次（waves）吗？虽然“波次”并不是你在常规编程思维中通常会直接考虑的概念，但对于性能优化而言，它却是一个至关重要的组成部分。
 
-## 段落 8
+当我们实际运行这些程序时，线程会被分组为连续的、每组 32 个线程 的块，这就是一个波次（在 NVIDIA CUDA 架构中通常称为 Warp）。这些波次会在 SM 上被同时执行（单指令多线程，SIMT）。
+
+因此，我们努力的目标之一是确保所有波次承载的计算量是均衡的。虽然并不总能完美实现这一点，但如果能做到，我们应当尽力去做。
+
+具体来说，我们希望：
+线程块的数量 ideally（理想情况下）能够被 SM 的数量整除，以实现负载均衡。
+确保每个波次分配到的工作量相等，避免出现部分波次空闲等待（即“波次发散”或负载不均），从而最大化硬件利用率。
+
+![](img/lec6_003.png)
+
 
 **英文**: So we're going to ideally have a lot more thread blocks than SM's. So we're going to try to make that happen as we write high performance code. OK. And then the last concept and maybe maybe amongst the most important concepts here is arithmetic intensity. We would like to keep arithmetic intensity high. We would like to have more flops than we have bytes of memory movement. And this is because, you know, if you remember the scaling plot from from last lecture, our compute scaling is much, much faster than memory scaling. So a lot of the time, computations are going to end up being memory bound. And we're not actually getting all of the work done. Right.
 
-**中文**: 因此，理想情况下，线程块的数量应远多于流式多处理器（SM）的数量。我们在编写高性能代码时，会努力实现这一点。好的。最后，也是或许最为重要的概念是计算强度（arithmetic intensity）。我们希望保持较高的计算强度，即浮点运算次数（flops）应显著多于内存数据传输的字节数。这是因为，如上一讲的扩展性图表所示，我们的计算性能扩展速度远高于内存带宽的扩展速度。因此，很多时候，程序性能将受限于内存带宽，而无法充分发挥计算能力。
+**中文**: 因此，理想情况下，我们的线程块（thread blocks）数量应该远多于 SM（流多处理器）的数量。在编写高性能代码时，我们会努力达成这一目标。
 
-## 段落 9
+接下来是最后一个概念，或许也是这里最重要的概念：算术强度（Arithmetic Intensity）。
+
+我们希望保持高算术强度。也就是说，我们希望执行的浮点运算次数（FLOPs） 远远超过内存中传输的字节数（Bytes）。
+
+这是因为，正如大家在上一讲看到的缩放比例图（scaling plot） 所示，我们的计算能力增长速度远快于内存带宽的增长速度。因此，在很多情况下，计算任务最终会受限于内存带宽（memory bound），导致我们无法充分发挥计算单元的全部算力，无法完成所有本该完成的计算工作。
+
+![](img/lec6_004.png)
 
 **英文**: So as a general rule, you know, matrix multiplication is compute bound. If we kind of do it cleverly, everything else is going to be memory bound. And we're going to try to cleverly reduce the amount of things that are memory bound or how badly things are memory bound. OK, so that's our very, very brief sort of review of GPUs. Hopefully everyone remembers this. You still have a fresh sort of memory of the execution model. Feel free to stop me and ask questions if any of you, you know, have sort of lingering doubts or questions about how this is all going to work. Yes. What was the function of? Sorry. A warp.
 
-**中文**: 因此，作为一条普遍规律，众所周知，矩阵乘法属于计算密集型任务。如果我们以巧妙的方式进行运算，其余所有操作都将属于内存密集型任务。而我们的目标正是设法巧妙地减少内存密集型任务的数量，或减轻其内存密集程度。好了，以上便是我们对GPU极其简要的回顾，希望各位对此仍有清晰的印象，对执行模型仍记忆犹新。如果大家对上述内容的任何部分尚存疑虑或疑问，欢迎随时打断我并提问。  
-是的，请问……抱歉，您刚才问的是什么函数？  
-“Warp”（线程束）。
+**中文**: 因此，作为一个通用原则：矩阵乘法通常是计算受限（compute bound）的；如果我们设计得足够巧妙，其他大多数操作则往往是内存受限（memory bound）的。我们的目标就是通过巧妙的设计，尽量减少受内存带宽限制的操作数量，或者减轻内存瓶颈带来的负面影响。
 
-## 段落 10
+好了，以上就是我们对 GPU 非常简要的回顾。希望大家都能记住这些内容，并对 GPU 的执行模型保持清晰的印象。如果大家对这些机制是否有任何 lingering doubts（遗留的疑惑）或具体问题，请随时打断我提问。
+
+（听众提问）：不好意思，刚才那个概念的功能是什么？
+（回答）：你是问 Warp（波次/线程束） 吗？
+
 
 **英文**: A warp is essentially a group of threads that get executed together. And the reason why warps exist is that they reduce the amount of control machinery that's needed because you're executing all these threads at the same time. You don't need a control thing for each thread. You need them for blocks of 32. Right. And so you see, for example, there's a lot more compute units than there are sort of warp schedulers. And so you're able to do a lot more parallel work without worrying about control. And this is one of the tradeoffs with CPUs, right? CPUs, a lot more sort of silicon area dedicated control and branch prediction and things like this. Whereas for GPUs, much more emphasis on computation with simpler controls. OK, so now we're going to get into sort of sort of newer content now.
 
-**中文**: 线程束（warp）本质上是一组被同时执行的线程。线程束存在的原因在于，它能减少所需控制硬件的数量，因为所有这些线程是并行执行的——你无需为每个线程单独配备控制单元，而只需为每32个线程组成的块配备一套控制单元即可。因此，例如，计算单元的数量远多于线程束调度器的数量；这使得我们能够开展大量并行计算，而无需过多担忧控制开销。这正是CPU与GPU之间的一项权衡：CPU将更多硅片面积用于控制逻辑、分支预测等复杂机制；而GPU则更侧重于计算能力，其控制逻辑则相对简单。好的，接下来我们将进入一些较新的内容。
+**中文**: Warp（线程束） 本质上是一组被同时执行的线程。
 
-## 段落 11
+Warp 之所以存在，是因为它能减少所需的控制硬件开销。既然这些线程是同时执行的，我们就不需要为每一个线程单独配备一套控制逻辑，而只需要为每 32 个线程组成的块配备一套即可。
+
+因此你会发现，GPU 中的计算单元数量远多于 Warp 调度器（warp schedulers） 的数量。这使得 GPU 能够在无需过度担心控制复杂度的情况下，并行处理大量的工作。
+
+这正是 GPU 与 CPU 之间的一个关键权衡（tradeoff）：
+CPU：将更多的硅片面积 dedicated（专门用于）复杂的控制逻辑、分支预测等机制，以优化单线程性能和复杂任务处理。
+GPU：则更侧重于大规模计算，采用更简单的控制逻辑，以换取更高的吞吐量和并行度。
+
+好了，接下来我们将进入新的内容部分。
+
+![](img/lec6_005.png)
 
 **英文**: And I think if there's one high level thing to remember, it's if you want to write high performance code, you should remember to benchmark and profile your code. And that seems very obvious. But I've seen a lot of things where students or people go in and they're like, well, I think this is the bottleneck. I'm going to spend three hours optimizing it. And it turns out it wasn't the bottleneck at all. I'm sure it was fun, but it was kind of time that was misallocated. And so if you actually use a high performance or very detailed profiler, you can kind of see exactly where your bottlenecks are and exactly what the machine is doing. And once you have that, you can go and spend your efforts in sort of the most important parts of your code execution. And so that's the high level thing I want to get across, because some of the details about GPU execution and how you write a softmax kernel, that's going to kind of change. And maybe you even want to just rely on the torch compile autojit thing.
 
-**中文**: 我认为，若要记住一个高层次的原则，那就是：若想编写高性能代码，务必对代码进行基准测试和性能分析。这听起来似乎显而易见，但我见过不少情况——学生或开发者一上来就断言“这里肯定是性能瓶颈”，然后花三小时去优化它，结果却发现根本不是瓶颈所在。我确信这个过程很有趣，但时间却用错了地方。而如果你实际使用一款高性能或高精度的性能分析器，就能精准定位真正的瓶颈所在，并清楚了解机器正在执行的具体操作。一旦掌握了这些信息，你便可将精力集中于代码执行中真正关键的部分。这便是我想传达的核心要点，因为关于GPU执行细节、如何编写Softmax核函数等具体技术内容，未来很可能会发生变化；甚至你可能只需直接依赖PyTorch的`torch.compile`自动JIT编译功能即可。
+**中文**: 我认为，如果要记住一个高层级的核心原则，那就是：如果你想编写高性能代码，就必须对你的代码进行基准测试（benchmarking）和性能剖析（profiling）。
 
-## 段落 12
+这听起来似乎显而易见，但我见过很多学生或开发者径直上手，心想：“我觉得这里是瓶颈，我要花三个小时优化它。”结果发现，那里根本不是瓶颈。虽然优化过程可能很有趣，但这实际上是一种时间的错配。
+
+因此，如果你使用专业的高性能剖析工具或详细的分析器，你就能精确地看到瓶颈在哪里，以及机器到底在执行什么操作。一旦掌握了这些信息，你就可以将精力集中在代码执行中最关键的部分。
+
+这就是我想传达的核心理念。因为关于 GPU 执行细节以及如何编写 Softmax 核函数的具体知识可能会随着时间推移而变化（甚至你可能最终只想依赖 torch.compile 或 autojit 这样的自动化工具），但“先剖析，后优化”这一原则是永恒不变的。
+
 
 **英文**: But the fact that you should profile isn't really going to change no matter what the. tools are. So I want you to sort of internalize that idea. That you should be always profiling if you want to be writing high performance code. And really, you know, there's a limit to the theory. I think systems is part of this course that you can reason about pretty well. Architecture is somewhat hard to reason about. And you can really think about sort of the roofline model and so on. But, you know, how fast is your matrix multiply? Well, maybe that depends on the library version or your hardware, like which things are. bottlenecking, for what reason.
 
-**中文**: 但你应该进行性能分析这一事实，无论使用何种工具都不会改变。因此，我希望你将这一理念内化于心：若想编写高性能代码，就必须始终进行性能分析。实际上，理论分析是有其局限性的。我认为，本课程中的系统部分相对容易进行推理分析；而体系结构部分则较难推理。你可以借助“屋顶线模型”等方法进行思考，但诸如矩阵乘法的运行速度究竟如何？这或许取决于所用库的版本或硬件条件，例如具体是哪些因素构成了瓶颈，以及造成瓶颈的原因是什么。
+**中文**: 但无论工具如何演变，“必须进行性能剖析”这一事实是不会改变的。所以我希望大家能将这一理念内化于心：如果你想编写高性能代码，就必须始终进行性能剖析。
 
-## 段落 13
+实际上，理论分析是有局限性的。我认为本课程中的系统部分（Systems）是你能够进行相当严密推理的领域；而架构部分（Architecture）则相对难以单纯通过推理来把握。你确实可以思考屋顶线模型（Roofline Model）等理论框架，但是：
+
+“你的矩阵乘法到底有多快？”
+
+这个问题可能取决于库的版本或具体的硬件型号。究竟是哪些因素成为了瓶颈？又是出于什么原因？这些往往无法仅凭理论推导得出，必须通过实际测量才能知晓。
+
 
 **英文**: There's all sorts of microcode things that you don't really fully know. And so you have to in the end have to do end to end benchmarking whenever you're developing these things. OK, so I'm going to have an example computation. This is the simplest thing that we can run compared to all the things that you all are doing in your assignment one. But I'm going to run a very simple MLP. It's going to have 128 dimensions. It's going to have 16 layers. It's going to have some batch size and it's going to have five steps. I'm going to just do forwards and backwards for five different steps here. And just to make the code clear, it's something like this.
 
-**中文**: 存在各种各样的微码相关事项，而你实际上并未完全了解它们。因此，最终在开发这类系统时，必须进行端到端的基准测试。好的，接下来我将给出一个示例计算。与各位在作业一中所完成的所有任务相比，这是最简单的计算任务。但我将运行一个非常简单的多层感知机（MLP）：其输入维度为128，共16层，设定一定的批量大小，并执行5步迭代。此处我仅进行5次前向传播和反向传播。为使代码清晰易懂，其结构大致如下所示。
+**中文**: 存在各种各样的微码（microcode）细节，是你无法完全知晓的。因此，在开发这类系统时，你最终必须进行端到端的基准测试（end-to-end benchmarking）。
 
-## 段落 14
+好了，接下来我将展示一个计算示例。与大家在“作业一”中所做的复杂任务相比，这是我们能运行的最简单的例子。
 
-**英文**: I'm going to define an MLP model and we'll sort of I'll show you that in a moment here. And then I'll define a random Gaussian input and then I'll run it for five steps in that last case where I compute some forward and then I compute it backwards and I return sort of the result, which is just the mean of the output of my MLP. There's not even losses. It's so simple. It's just you run the MLP forward and I just average pool at the end. And then the MLP is just kind of the simplest thing you can also imagine here. It's just a bunch of linear layers stacked on top of each other, which is this bit. And then, you know, I've got a Gell-U in between. So this is just Gell-U, linear, linear, Gell-U, so on and so forth. Everything is nice and square.
+我将运行一个非常简单的多层感知机（MLP）：
+维度：128
+层数：16 层
+批次大小（Batch Size）：设定为某个值
+步数：5 步
 
-**中文**: 我将定义一个MLP模型，稍后我会向您展示。接着，我将定义一个随机高斯输入，然后在最后一种情形下运行该模型五步：先进行一次前向计算，再进行一次反向计算，并返回结果（即MLP输出的均值）。这里甚至没有损失函数，极其简单——只需运行MLP的前向传播，最后仅对输出做平均池化即可。而该MLP本身也是所能想到的最简结构：仅由若干线性层堆叠而成（即图中所示部分），层间还加入了GELU激活函数。因此整个结构就是GELU、线性层、线性层、GELU，依此类推。所有张量维度均规整为正方形。
+在这里，我将仅仅执行 5 个步骤的前向传播和反向传播。为了让代码逻辑清晰，其结构大致如下：
 
-## 段落 15
+![](img/lec6_006.png)
+
+**英文**: I'm going to define an MLP model and we'll sort of I'll show you that in a moment here. And then I'll define a random Gaussian input and then I'll run it for five steps in that last case where I compute some forward and then I compute it backwards and I return sort of the result, which is just the mean of the output of my MLP. There's not even losses. It's so simple. It's just you run the MLP forward and I just average pool at the end. And then the MLP is just kind of the simplest thing you can also imagine here. It's just a bunch of linear layers stacked on top of each other, which is this bit. And then, you know, I've got a GELU in between. So this is just GELU, linear, linear, GELU, so on and so forth. Everything is nice and square.
+
+**中文**: 我将定义一个 MLP（多层感知机）模型，稍后就会向大家展示具体代码。
+
+接着，我会生成一个随机的高斯分布输入数据。然后，在之前的设定下运行 5 个步骤：每个步骤先执行前向传播，再执行反向传播。最后返回结果，这里的结果仅仅是 MLP 输出的均值。
+
+甚至没有涉及任何损失函数（losses），非常简单：就是运行 MLP 的前向传播，然后在末尾做一个平均池化（average pool）。
+
+至于这个 MLP 本身，也是你能想象到的最简结构：它仅仅是一堆线性层（Linear Layers）的堆叠，具体就是这段代码所示。在线性层之间，我插入了 GELU 激活函数。所以整体结构就是：GELU、线性层、线性层、GELU……以此类推。所有的维度都设计得整整齐齐（nice and square）。
+
 
 **英文**: So hopefully this is a very simple MLP that you all feel pretty comfortable with. And then let's go back. Yes. Oh, sorry. I want to go back up to here. OK, good. And so now I have this, you know, MLP code that I want to run. And now I'm going to do two things. I'm going to benchmark. So I'm going to do some timings.
 
-**中文**: 因此，希望这是一个大家都会感到非常熟悉的简单多层感知机（MLP）。接下来，我们返回上一步。好的。哦，抱歉，我想回到这里。好的，很好。现在我有了这段MLP代码，准备运行。接下来我将做两件事：一是进行基准测试，即进行一些计时操作。
+**中文**: 希望大家对这个非常简单的 MLP 模型已经感到相当熟悉了。
 
-## 段落 16
+现在让我们往回看……啊，抱歉，我想回到这里。好，没问题。
+
+现在我有了这段想要运行的 MLP 代码。接下来，我将做两件事：首先，我要进行基准测试（benchmark），也就是测量一些时间数据（timings）。
+
 
 **英文**: So I want to know how long does this function take to run? And then I'll do profiling, which is to go inside the function and ask,. you know, where am I spending all of my time? So let's start with benchmarking. Right. So benchmarking is just the measurement of walk, walk time of performing these operations. And I'm only looking for the end to end execution time of, in this case, my MLP function. And, you know, there are some subtleties to this, like you're sitting there and you're like, why am I being told how to invoke? I don't know the time it function. But you do have to be a little bit careful about how you measure times. And I think, you know, if you're not paying attention, you will run into these pitfalls when you do assignment to. And so what are we doing this for? We're going to compare implementations later. We're going to compare our Triton to our handwritten C++ to PyTorch's implementation and Torch compile.
 
-**中文**: 因此，我想知道这个函数的运行时间有多长？接着我将进行性能分析（profiling），即深入函数内部，探究“我的时间究竟花在了哪些地方？”那么，我们先从基准测试（benchmarking）开始。没错，基准测试就是对执行这些操作所需时间的测量。在此例中，我只关注多层感知机（MLP）函数端到端的执行时间。当然，这其中存在一些细微之处——比如你可能会疑惑：“为什么还要教我如何调用？我又不知道`time`函数。”但事实上，在测量时间时，你的确需要格外谨慎；若稍不留意，在编写赋值语句时就很容易掉入这些陷阱。那么，我们为何要这样做呢？后续我们将对比不同实现：我们的Triton实现、手写的C++实现、PyTorch原生实现以及Torch Compile实现。
+**中文**: 所以我想知道运行这个函数需要多长时间？
+
+接着，我将进行性能剖析（profiling），也就是深入函数内部，分析时间主要消耗在哪里。
+
+让我们先从基准测试（benchmarking）开始。基准测试本质上就是测量执行这些操作所需的实际运行时间（wall-clock time）。在这里，我关注的仅仅是我的 MLP 函数的端到端执行时间。
+
+这其中其实有一些微妙之处（subtleties）。你可能会想：“为什么要教我如何调用计时函数？难道我不知道怎么测时间吗？”但事实上，在测量时间时你必须非常小心。如果你不注意，在做“作业二”（assignment two）时很可能会掉进这些陷阱（pitfalls）。
+
+那么我们做这些是为了什么呢？是为了稍后对比不同的实现方案：我们将对比 Triton 实现、手写 C++ 实现、PyTorch 原生实现以及 Torch Compile 的性能。
 
 ## 段落 17
 
