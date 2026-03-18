@@ -395,215 +395,376 @@ benchmark 函数将执行以下操作：
 好，很好，很好……
 
 
-## 段落 33
+**英文**: All right. So when we when we call the ad function in Python, right, this is kind of all that we interact with this ad function A plus B. Right. That's all we think about. But actually underneath here, the underneath the iceberg, so to speak, there's a lot more that happens. So this gets dispatched to the GPU. And first, there's this thing called A10, which is the C sort of interface for PyTorch. And so this wrapper gets called and it says, OK, I'm going to add some numbers. Right. This is what's being called. That's the outer wrapper. And then that dispatches to a particular kernel called vectorized element wise kernel for comma native CUDA functor ad dot dot dot dot dot dot. Right. And this is the thing that's actually doing the adding. And then there's this also other thing called CUDA launch kernel that's taking some time. And this is actually the CPU is taking the command and sending it over to the GPU. That's the kernel launch. And that takes some time. And then finally, the CUDA device synchronizes. We're waiting for the GPU to finish and send things back to us.
 
-**英文**: All right. So when we when we call the ad function in Python, right, this is kind of all that we interact with this ad function A plus B. Right. That's all we think about. But actually underneath here, the underneath the iceberg, so to speak, there's a lot more that happens. So this gets dispatched to the GPU. And first, there's this thing called A10, which is the C sort of interface for PyTorch. And so this wrapper gets called and it says, OK, I'm going to add some numbers. Right. This is what's being called.
+**中文**: 好的。当我们在 Python 中调用 add 函数时（即执行 A + B），这似乎就是我们要交互的全部内容，也是我们要考虑的全部逻辑。
 
-**中文**: 好的。那么，当我们用 Python 调用 `add` 函数时，实际上我们所接触和考虑的，就只是这个 `add` 函数——即 `A + B`。但事实上，在这冰山之下，还发生了大量其他操作。该运算会被分派至 GPU 执行。首先会调用一个名为 A10 的组件，它是 PyTorch 的 C 语言接口。因此，这一封装层被调用，并声明：“好的，我将执行数值相加。” 这正是当前被调用的内容。
+但实际上，在这之下——可以说是冰山之下——发生了更多的事情：
 
-## 段落 34
+分发到 GPU：操作首先被分发到了 GPU。
+ATen 接口：首先出现的是 ATen，这是 PyTorch 的 C++ 接口层。这个外层包装器（wrapper）被调用，它的任务很简单：“我要执行一些数值相加操作”。这就是最外层的调用。
+核心 Kernel：接着，它分发到了一个特定的 Kernel（核函数），名为 vectorized_elementwise_kernel（对应于 native_cuda_functor_add...）。这才是真正执行加法运算的部分。
+Kernel 启动开销：此外，还有一个名为 cudaLaunchKernel 的操作也消耗了时间。这实际上是 CPU 接收指令并将其发送给 GPU 的过程，也就是所谓的“核函数启动”（kernel launch），这一步是需要耗时的。
+同步等待：最后，执行 cudaDeviceSynchronize。这意味着我们在等待 GPU 完成计算并将结果传回给 CPU。
 
-**英文**: That's the outer wrapper. And then that dispatches to a particular kernel called vectorized element wise kernel for comma native CUDA functor ad dot dot dot dot dot dot. Right. And this is the thing that's actually doing the adding. And then there's this also other thing called CUDA launch kernel that's taking some time. And this is actually the CPU is taking the command and sending it over to the GPU. That's the kernel launch. And that takes some time. And then finally, the CUDA device synchronizes. We're waiting for the GPU to finish and send things back to us.
 
-**中文**: 这是外层封装函数。随后，它会分派到一个特定的内核，即面向逗号原生CUDA函子的向量化逐元素内核（……）。没错，真正执行加法运算的就是这个内核。此外，还有一个名为“CUDA启动内核”的环节也耗费了一定时间——此时CPU接收指令并将其发送至GPU，这一过程即为内核启动，本身也需要耗时。最后，CUDA设备执行同步操作：我们等待GPU完成计算并将结果返回给我们。
+**英文**: And that also takes some time. The mere act of having a synchronization barrier is going to cost us some time. And so we basically have the time total in the end here, one point four milliseconds on the CPU and 17 microseconds on the CUDA. Right. So it is really fast on the GPU, slower on the CPU. And if we're looking at the CPU time that's being spent, which is the self CPU time, we see that kind of the C plus plus interface or the C interface is actually the thing that's costing us a whole bunch of CPU time. And they're sort of overhead to doing anything where we're sending stuff over to the GPU. That's the ad function. And we see what's happening under the hood. Same story here. If I want to do a matrix multiply. So I'm doing A multiplied by B. So this is a matrix multiply of A and B. I'm doing 2048 matrices once again. And then I do profiling. Now, this time I see A10 mapmul. So this is saying like this is the lower level interface to do matrix multiplies. And this is going to dispatch the cut lists, which is Nvidia's sort of high performance matrix multiply CUDA library. And then it's dispatching to a very particular cut list kernel, which is going to have some tile size. The names are truncated here.
 
-## 段落 35
+**中文**: 这一步同样需要消耗时间。仅仅是设置一个同步屏障（synchronization barrier）这一行为本身，就会带来一定的开销。
 
-**英文**: And that also takes some time. The mere act of having a synchronization barrier is going to cost us some time. And so we basically have the time total in the end here, one point four milliseconds on the CPU and 17 microseconds on the CUDA. Right. So it is really fast on the GPU, slower on the CPU. And if we're looking at the CPU time that's being spent, which is the self CPU time, we see that kind of the C plus plus interface or the C interface is actually the thing that's costing us a whole bunch of CPU time. And they're sort of overhead to doing anything where we're sending stuff over to the GPU. That's the ad function. And we see what's happening under the hood. Same story here.
+因此，我们最终看到的总耗时数据是：
+CPU 端：1.4 毫秒
+CUDA (GPU) 端：17 微秒
 
-**中文**: 而这同样需要一些时间。仅设置同步屏障这一操作本身就会消耗一定的时间。因此，我们最终得到的总耗时为：CPU 上耗时 1.4 毫秒，CUDA 上耗时 17 微秒。没错，GPU 上的执行速度确实非常快，而 CPU 上则较慢。如果我们观察所花费的 CPU 时间（即自用 CPU 时间），会发现 C++ 接口或 C 接口实际上占据了大量 CPU 时间。这类开销源于将数据传输至 GPU 的任何操作，即“add”函数。我们由此可窥见其底层运行机制，此处情况相同。
+可以看出，在 GPU 上执行非常快，而在 CPU 上则相对较慢。
 
-## 段落 36
+如果我们观察所消耗的 CPU 时间（即 self CPU time），会发现 C++ 接口（或 C 接口）实际上占用了大量的 CPU 时间。这些是将任务发送到 GPU 时产生的固有开销。这就是 add 函数内部发生的实际情况——我们看到了“引擎盖下”的运作机制。
 
-**英文**: If I want to do a matrix multiply. So I'm doing A multiplied by B. So this is a matrix multiply of A and B. I'm doing 2048 matrices once again. And then I do profiling. Now, this time I see A10 mapmul. So this is saying like this is the lower level interface to do matrix multiplies. And this is going to dispatch the cut lists, which is Nvidia's sort of high performance matrix multiply CUDA library. And then it's dispatching to a very particular cut list kernel, which is going to have some tile size. The names are truncated here.
+同样的情况也发生在矩阵乘法中：
 
-**中文**: 如果我要执行矩阵乘法，即矩阵 A 乘以矩阵 B，这是一次 A 与 B 的矩阵乘法运算。我再次使用了 2048 个矩阵，然后进行性能分析。这一次，我看到的是“A10 mapmul”，这表示这是用于执行矩阵乘法的底层接口；该接口将调用 cuBLAS（NVIDIA 提供的高性能矩阵乘法 CUDA 库），并进一步调度至某个特定的 cuBLAS 内核，该内核采用特定的分块（tile）尺寸。此处显示的名称已被截断。
+- 如果我执行矩阵乘法（A times B），即对两个 2048 维的矩阵再次进行运算并剖析。
+- 这次我会看到 aten::mm（ATen 矩阵乘法）。这表明它是执行矩阵乘法的底层接口。
+- 它会分发调用 cuBLAS，这是 NVIDIA 提供的高性能矩阵乘法 CUDA 库。
+- 接着，它会进一步分发到一个非常具体的 cuBLAS Kernel，该 Kernel 会使用特定的 瓦片大小（tile size）进行计算。（注：由于显示空间限制，这里的名称被截断了。）
 
-## 段落 37
+![](img/lec6_013.png)
+
 
 **英文**: I'll show you a more detailed version in a minute. This is basically pointing towards a very particular set of like tile sizes and the number of blocks and so on. And so this thing is parameterized and that's actually doing the matrix multiply. And once again, we see the same two things at the bottom here, the kernel launch and the synchronization of CUDA devices. And you can sort of see once again, the CPU time, CUDA time split. And we're spending way more time in CUDA because, you know, matrix multiplies do take more time than just adding two vectors. OK, any questions so far? I can I can pause for a moment here. I think I've just been going sort of very quickly and on my own through the profiler. If anyone has questions, I can I can stop for a moment. If not, I can keep going.
 
-**中文**: 我稍后会向您展示一个更详细的版本。这基本上指向了一组非常特定的参数，例如图块大小、线程块数量等。因此，该程序是参数化的，实际执行矩阵乘法运算。同样，我们再次在底部看到相同的两个操作：内核启动和CUDA设备同步。您还可以再次看到CPU耗时与CUDA耗时的划分。目前我们在CUDA上花费了更多时间，因为矩阵乘法本身比单纯对两个向量求和要耗时得多。好的，到目前为止大家有什么问题吗？我可以在这里稍作停顿。我想刚才我讲解性能分析器时节奏有点快，且基本是自问自答。如果大家有任何疑问，我很乐意暂停一下；如果没有，我就继续往下讲。
+**中文**: 我稍后会展示一个更详细的版本。这里基本上指向了一组非常具体的参数，比如瓦片大小（tile sizes）、块数量（number of blocks）等等。这个核函数正是通过这些参数化配置来实际执行矩阵乘法的。
 
-## 段落 38
+再次观察底部，我们会看到相同的两个环节：核函数启动（kernel launch）和 CUDA 设备同步（synchronization of CUDA devices）。
 
-**英文**: OK, oh, yes. In this case, our CUDA time is greater than our CPU time, but we did have a barrier that said to for the CPU to be synchronized. And so by that, shouldn't the CPU time be the same amount of time? No, I'm counting the time that this is used. Yeah, I don't think it's counting the time that this is vital. Cool. Oh, yes, sorry. There's too much to think of. Is there any particular reason why like when we switch from adding the matmul to the CPU time went down? Is there a reason why when we go from adding to matmul, the CPU time goes down? That I am not sure, to be entirely honest. Yes. Is there overhead in the profiler that can distort things compared to running it in the real world? Yes, there is overhead in the profiler.
+大家也可以再次看到 CPU 时间 与 CUDA 时间 的分配情况。
+这一次，我们在 CUDA（GPU）上花费的时间要多得多，这是合理的，因为矩阵乘法所耗费的计算时间确实远多于简单的向量相加。
 
-**中文**: 好的，哦，是的。在这种情况下，我们的CUDA耗时大于CPU耗时，但我们确实设置了一个同步屏障，要求CPU保持同步。因此，按理说CPU耗时应该与之相同才对？不，我统计的是该操作所用的时间。是的，我认为它并未统计该操作的关键耗时。很好。哦，是的，抱歉，需要考虑的事情太多了。当我们将计算从加法切换为矩阵乘法时，CPU耗时反而下降了，这是否有特定原因？为什么从加法切换到矩阵乘法后，CPU耗时会下降？说实话，我也不太确定。是的。性能分析器是否存在开销，从而导致其测量结果与实际运行情况产生偏差？是的，性能分析器确实存在开销。
+到目前为止，大家有什么问题吗？
+我可以在这里暂停一下。我觉得刚才自己讲得有点快，一直在独自快速过一遍剖析器的内容。
+如果有人有问题，我现在就可以停下来解答；如果没有的话，我就继续往下讲了。
 
-## 段落 39
 
-**英文**: Like the barriers will do that. I'll show you a more advanced profiler from Nvidia and you can add things like annotations that will also slightly distort the timings. But but not by much. The really large scale things that you see aren't going to be really distorted by the profiler. So if you're looking at like micro timings, yes, probably. But a lot of the things that that we care about in the class know. Yes. Just to make sure I'm interpreting this correctly. So is that for the ad base?. Is the IDA for some CPU being utilized over the time period that it's the millisecond time period? That's right.
+**英文**: OK, oh, yes. In this case, our CUDA time is greater than our CPU time, but we did have a barrier that said to for the CPU to be synchronized. And so by that, shouldn't the CPU time be the same amount of time? No, I'm counting the time that this is used. Yeah, I don't think it's counting the time that this is vital. Cool. Oh, yes, sorry. There's too much to think of. Is there any particular reason why like when we switch from adding the matmul to the CPU time went down? Is there a reason why when we go from adding to matmul, the CPU time goes down? That I am not sure, to be entirely honest. Yes. Is there overhead in the profiler that can distort things compared to running it in the real world? Yes, there is overhead in the profiler. Like the barriers will do that. I'll show you a more advanced profiler from Nvidia and you can add things like annotations that will also slightly distort the timings. But but not by much. The really large scale things that you see aren't going to be really distorted by the profiler. So if you're looking at like micro timings, yes, probably. But a lot of the things that that we care about in the class know. Yes. Just to make sure I'm interpreting this correctly. So is that for the ad base?. Is the IDA for some CPU being utilized over the time period that it's the millisecond time period? That's right.
 
-**中文**: 就像这些屏障会起到这样的作用。我将向您展示一个来自英伟达的更高级的性能分析器，您还可以添加诸如标注之类的功能，这些功能也会略微影响计时结果，但影响不大。您所看到的那些大规模耗时现象，实际上并不会因性能分析器而显著失真。因此，如果您关注的是微秒级的计时，那确实可能会有影响；但我们在本课程中所关心的许多问题则不会。是的。为确保我的理解正确：这是针对广告基础架构（ad base）吗？IDA 是否表示某颗 CPU 在该毫秒级时间段内被占用？没错。
+**中文**: 好的，哦，是的。
 
-## 段落 40
+**学生提问：** 在这种情况下，我们的 CUDA 时间大于 CPU 时间，但我们确实设置了一个屏障（barrier），要求 CPU 进行同步。既然如此，CPU 时间难道不应该和 CUDA 时间一样长吗？
 
-**英文**: Yeah. So this is the percentage of time as you can see that the actual millisecond time that A10 ad was actually executing in some capacity on the CPU. I don't think the CPU utilization is the percent of what the CPU is doing. Yeah, that's right. This is the time the CPU is active, not percentage utilization. If that's yeah. So this is not like the total amount of CPU flops or something. This is the total percentage of time that the CPU is doing something. Yes. OK, cool.
+**讲师回答：** 不，这里统计的是该函数**被占用**的时间（active time）。
+**学生追问：** 是啊，但我认为它并没有计算等待（wait）的时间。
+**讲师确认：** 没错。
 
-**中文**: 是的。如您所见，这是A10广告实际在CPU上以某种形式执行所占的时间百分比（以毫秒计）。我认为CPU利用率并非指CPU正在执行的任务所占的百分比。是的，没错。这表示CPU处于活跃状态的时间，而非利用率百分比。对，就是这样。因此，这并非指CPU总浮点运算能力（FLOPS）之类的数据，而是指CPU处于工作状态的总时间占比。是的。好的，明白了。
+**学生提问：** 哦，抱歉，要思考的事情太多了。我想问一个具体的问题：为什么当我们从加法（add）切换到矩阵乘法（matmul）时，CPU 时间反而下降了？这有什么原因吗？
 
-## 段落 41
+**讲师回答：** 老实说，我不太确定具体原因。
 
-**英文**: All right. Here's another example of a matmul. So this is a different dimensionality. Right. So this is a multiplying 128 dimensional matrix here. So 128 by 128, much smaller. And you'll actually see that now it's actually directly executing sort of this different command. It's executing XMM, GMM. GMM is a matrix multiply type. And this is float 32 float 32.
+**学生提问：** 剖析器（profiler）本身是否存在开销，从而导致结果与实际运行时的情况产生偏差？
 
-**中文**: 好的，这是另一个矩阵乘法（matmul）示例。其维度不同：此处为一个128维的矩阵相乘，即128×128，规模小得多。您会发现，现在它实际上直接执行了另一种指令——XMM GMM指令；其中GMM代表矩阵乘法类型，且数据类型为单精度浮点数（float32）。
+**讲师回答：** 是的，剖析器确实存在开销。就像刚才提到的同步屏障就会造成这种情况。稍后我会展示一个来自 NVIDIA 的高级剖析器，你可以在其中添加注释（annotations），这也可能会轻微地扭曲时间数据，但影响不大。你所看到的那些大规模的时间消耗并不会被剖析器严重扭曲。所以，如果你关注的是**微观层面的计时**（micro timings），那确实可能会有偏差；但我们课程中关注的许多主要问题不会受此影响。
 
-## 段落 42
+**学生提问：** 是的，只是想确认我的理解是否正确。所以这是针对 `aten::add` 的吗？这里的 ID（或数据）是否表示在毫秒级的时间段内，某个 CPU 核心一直被占用？
+
+**讲师回答：** 没错。
+
+
+**英文**: Yeah. So this is the percentage of time as you can see that the actual millisecond time that A10 ad was actually executing in some capacity on the CPU. I don't think the CPU utilization is the percent of what the CPU is doing. Yeah, that's right. This is the time the CPU is active, not percentage utilization. If that's yeah. So this is not like the total amount of CPU flops or something. This is the total percentage of time that the CPU is doing something. Yes. OK, cool. All right. Here's another example of a matmul. So this is a different dimensionality. Right. So this is a multiplying 128 dimensional matrix here. So 128 by 128, much smaller. And you'll actually see that now it's actually directly executing sort of this different command. It's executing XMM, GMM. GMM is a matrix multiply type. And this is float 32 float 32.
+
+**中文**: 是的。所以这个百分比代表的是，正如你所看到的，A10广告实际在 CPU 上以某种形式执行所花费的时间（以毫秒计）。我觉得这个 CPU 利用率并不是指 CPU 正在做什么的百分比。没错，就是这样。这指的是 CPU 处于活跃状态的时间，而不是百分比利用率。没错。所以这并不是指 CPU 的总浮点运算能力（FLOPs）之类的东西。这是指 CPU 在忙于处理任务的总时间百分比。对，好的，明白了。
+
+好，这里还有一个矩阵乘法（matmul）的例子。所以这是个不同维度的矩阵，对吧？这是一个 128 维度的矩阵相乘，也就是 128 乘以 128，要小得多。你会看到，现在它实际上是在直接执行一个不同的指令，它在执行 XMM, GMM。GMM 是一种矩阵乘法类型。这是单精度浮点数（float 32）对单精度浮点数的运算。
+
+![](img/lec6_014.png)
 
 **英文**: You can kind of see from the naming of this kernel what's actually happening here, which is that this is a tiled matrix multiply of some kind. And it's not sort of going through cut lists. It's executing this particular command directly. And so for a small matrix multiply, you see that is dispatching to a different kernel now. You can kind of see kind of the complexity of matrix multiply. When we're operating at this high level abstraction, we just think of matrix multiply as a single thing. Right. We call like A at B and we're done. But underneath the hood, depending on the dimensionality that you have, depending on the hardware that you have, it will actually dispatch to very different matrix multiply sort of primitives under the hood. And that will actually manifest in very, very different sort of performance characteristics.
 
-**中文**: 从这个内核的命名，你大致可以看出此处实际发生的情况：这是一种某种形式的分块矩阵乘法。它并非通过裁剪列表（cut lists）来执行，而是直接运行这一特定指令。因此，对于小规模矩阵乘法，你会发现它现在调度到了一个不同的内核。你也能大致体会到矩阵乘法本身的复杂性：在高层抽象层面，我们通常将矩阵乘法视作单一操作——没错，我们只需调用类似“A @ B”这样的表达式，便大功告成；但事实上，在底层，其具体实现会根据矩阵的维度以及所运行的硬件平台，调度截然不同的矩阵乘法基础原语，而这最终会体现为差异极为显著的性能特征。
+**中文**: 从这个内核（kernel）的命名方式，你就能大概看出这里实际发生的事情，即这是一种某种形式的分块矩阵乘法（tiled matrix multiply）。它并没有通过像 cuBLAS 这样的库函数间接调用，而是直接执行了这个特定的指令。
 
-## 段落 43
+因此，对于小规模的矩阵乘法，你会发现它现在会分发到一个不同的内核去执行。你也能从中窥见矩阵乘法运算本身的复杂性。当我们处于像 PyTorch/TensorFlow 这样的高级抽象层面时，我们往往把矩阵乘法看作是一个单一的操作，对吧？我们只要调用 A @ B 就完事了。但在底层，根据你具体的矩阵维度以及你所拥有的硬件（比如 CPU 或不同架构的 GPU），系统实际上会分发到非常不同的、底层的矩阵乘法原语（primitives）去执行。而这最终会体现出截然不同的性能特征。
+
 
 **英文**: And so one fun tip is Torch compile, which I will talk about later, actually has an option to sort of micro benchmark the matrix multiply performance on your hardware. And then it will actually then pick the highest performing matrix multiply subroutines for your model, which in the past I found gives you like 10 percent speed up for free. It's very cool that like optimizing for these things actually gives you free gains out in the real world. OK, so that's another Matmul example. And so the cool thing about the profiler compared to the just the raw benchmarking is we can now kind of see which CUDA kernels are being called. We can see that different sizes of matrices lead to different CUDA kernels. And we see, you know, CUTLESS 80, SIMPTES, SGEM, right, is a is this CUTLESS linear algebra library. And it tells us things like the tile size. So so far, these operations are very boring in a way like matrix multiplies and adds. They're basically one to one.
 
-**中文**: 因此，一个有趣的小技巧是 Torch Compile（我稍后会详细介绍），它实际上提供了一个选项，可在您的硬件上对矩阵乘法性能进行微基准测试；随后，它会为您的模型自动选择性能最优的矩阵乘法子程序。过去我发现，这一操作能免费为您带来约 10% 的加速效果。更酷的是，针对这些底层细节进行优化，竟能在真实世界中带来“免费”的性能提升。好的，这是另一个矩阵乘法（Matmul）示例。与单纯的原始基准测试相比，性能分析器（profiler）的妙处在于：我们现在能够清楚地看到究竟调用了哪些 CUDA 内核；我们还能观察到，不同尺寸的矩阵会触发不同的 CUDA 内核；例如，我们能看到 CUTLASS 80、SIMT、SGEMM 等——其中 CUTLASS 正是这一线性代数库的名称；它还会向我们揭示诸如分块大小（tile size）等信息。到目前为止，这些运算在某种意义上显得相当“枯燥”，比如矩阵乘法和加法，它们本质上都是一对一的操作。
+**中文**: 这里有一个有趣的小技巧：稍后我会讲到的 **Torch Compile** 实际上提供了一个选项，可以对你的硬件上的矩阵乘法性能进行**微基准测试**（micro benchmark）。然后，它会为你的模型自动选择性能最高的矩阵乘法子程序。根据我过去的经验，这能免费带来大约 **10% 的加速**。非常酷的是，针对这些底层细节进行优化，确实能在实际应用中直接获得性能提升。
 
-## 段落 44
+好了，这是另一个矩阵乘法的例子。
 
-**英文**: You have, you know, operation on the CPU side. It translates to a GPU operation and it just gets shipped over. Right. So there's just a single operation in all of these that does anything on the GPU. So I want to look at some more complicated operations, two more of these that have sort of more compound behavior. So what I want to do now is I want to do I want to look at this operation called Torch. CDist. And this is computing, you know, for two sets of matrices, the pairwise Euclidean distance between two sets of vectors. Right. So this is going to be a big distance matrix computation between A's and B's that I want.
+剖析器（profiler）相比于单纯的原始基准测试（raw benchmarking），其妙处在于我们现在可以看到具体调用了哪些 **CUDA 内核**（kernels）。我们可以看到，不同尺寸的矩阵会触发不同的 CUDA 内核。例如，大家看到了 `CUTLASS 80`、`SIMT`、`SGEMM` 等，这里的 `CUTLASS` 是一个线性代数库。它还会告诉我们诸如**瓦片大小**（tile size）这样的信息。
 
-**中文**: 您在CPU端执行操作，该操作会被转换为GPU操作并直接发送过去。没错。因此，在所有这些操作中，仅有一个操作会在GPU上执行任何任务。接下来，我想研究一些更复杂的操作，其中两个操作具有更为复合的行为。现在，我打算考察一个名为“torch.cdist”的操作。该操作用于计算两组矩阵之间各向量对的欧氏距离。换句话说，我需要计算矩阵A与矩阵B之间庞大的成对距离矩阵。
+到目前为止，这些操作在某种程度上显得比较“枯燥”，无非就是矩阵乘法和加法，基本上是一一对应的关系。
 
-## 段落 45
 
-**英文**: So that's C. Dist. And so this is obviously a much more complicated operation. If you want to compute Euclidean distances, you're going to need to compute dot products. You're going to need to compute square roots. And we're going to see that once we compute C. Dist. So now here is the is the profiled output of C. Dist. So we see that this Torch Python command does map in the C interface to some sort of lower level C.
+**英文**: You have, you know, operation on the CPU side. It translates to a GPU operation and it just gets shipped over. Right. So there's just a single operation in all of these that does anything on the GPU. So I want to look at some more complicated operations, two more of these that have sort of more compound behavior. So what I want to do now is I want to do I want to look at this operation called Torch. CDist. And this is computing, you know, for two sets of matrices, the pairwise Euclidean distance between two sets of vectors. Right. So this is going to be a big distance matrix computation between A's and B's that I want. So that's CDist. And so this is obviously a much more complicated operation. If you want to compute Euclidean distances, you're going to need to compute dot products. You're going to need to compute square roots. And we're going to see that once we compute C. Dist. So now here is the is the profiled output of C. Dist. So we see that this Torch Python command does map in the C interface to some sort of lower level C. cDist. So this is A10 C. Dist, which then maps to A10 Euclidean Dist. And then this will decompose into a whole bunch of things like A10 MatMul, A10Pow and then sum. Because these are all primitives that you're going to need in order to actually to compute the Euclidean distances between all of your vectors. And when you for each one of these like matrix multiplies and concatenation and taking the powers, you have a corresponding CUDA command that is being called here. You know, we have GEMM, which we've become familiar with. So this is a matrix multiply. It's taking 78 percent of our compute or our compute time on the GPU. We've got, you know, copies and sort of concatenation of arrays.cDist. So this is A10 C. Dist, which then maps to A10 Euclidean Dist. And then this will decompose into a whole bunch of things like A10 MatMul, A10Pow and then sum. Because these are all primitives that you're going to need in order to actually to compute the Euclidean distances between all of your vectors. And when you for each one of these like matrix multiplies and concatenation and taking the powers, you have a corresponding CUDA command that is being called here. You know, we have GEMM, which we've become familiar with. So this is a matrix multiply. It's taking 78 percent of our compute or our compute time on the GPU. We've got, you know, copies and sort of concatenation of arrays.
 
-**中文**: 这就是C. Dist。因此，这显然是一项更为复杂的操作。若要计算欧氏距离，就需要计算点积和平方根。我们接下来会看到，在计算完C. Dist之后的情况。现在展示的是C. Dist的性能分析输出结果。由此可见，该Torch Python命令通过C接口映射到了某种底层C代码。
+**中文**: 大家可以看到，这里有一个在 CPU 端发起的操作，它被转换成了一个 GPU 操作，然后直接下发执行。也就是说，在上述所有例子中，真正在 GPU 上干活的只有一个单一的操作。
 
-## 段落 46
+因此，我想看一些更复杂的操作，再举两个具有**复合行为**（compound behavior）的例子。
 
-**英文**: Dist. So this is A10 C. Dist, which then maps to A10 Euclidean Dist. And then this will decompose into a whole bunch of things like A10 MatMul, A10Pow and then sum. Because these are all primitives that you're going to need in order to actually to compute the Euclidean distances between all of your vectors. And when you for each one of these like matrix multiplies and concatenation and taking the powers, you have a corresponding CUDA command that is being called here. You know, we have GEMM, which we've become familiar with. So this is a matrix multiply. It's taking 78 percent of our compute or our compute time on the GPU. We've got, you know, copies and sort of concatenation of arrays.
+接下来，我想研究一个名为 `torch.cdist` 的操作。这个操作用于计算两组矩阵（或者说两组向量）之间的**成对欧几里得距离**（pairwise Euclidean distance）。换句话说，我要计算的是集合 A 和集合 B 之间的大型距离矩阵。这就是 `cdist` 的功能。
 
-**中文**: 距离计算（Dist）。因此这是A10 C. Dist，随后映射为A10欧氏距离（A10 Euclidean Dist）。接着，该操作将分解为大量子操作，例如A10矩阵乘法（A10 MatMul）、A10幂运算（A10Pow）以及求和（sum）。因为这些均为实际计算所有向量间欧氏距离所必需的基本操作。而针对其中每一项操作——如矩阵乘法、数组拼接及幂运算——此处均调用了一个对应的CUDA指令。例如，我们已熟知的GEMM（通用矩阵乘法）即用于执行矩阵乘法，它占用了GPU上78%的计算时间或计算耗时。此外，还有数据拷贝及数组拼接等操作。
+显然，这是一个复杂得多的操作。如果要计算欧几里得距离，你就需要计算**点积**（dot products），还需要计算**平方根**（square roots）。当我们执行 `cdist` 时，就会看到这些步骤。
 
-## 段落 47
+现在展示的是 `cdist` 的剖析（profiled）输出结果。我们可以看到，这个 Torch 的 Python 命令在 C 接口层面映射到了某种底层的 C 函数 `cDist`。具体来说，这是 `A10 cDist`，它随后又映射到 `A10 Euclidean Dist`。接着，它会分解成一堆更底层的操作，比如 `A10 MatMul`（矩阵乘法）、`A10 Pow`（幂运算）以及 `Sum`（求和）。因为要计算所有向量之间的欧几里得距离，确实需要这些基本原语。
+
+对于其中的每一个步骤——无论是矩阵乘法、数组拼接还是幂运算——这里都有对应的 **CUDA 命令**被调用。
+
+大家已经熟悉了 **GEMM**，这就是一种矩阵乘法。在这里，它占用了我们 GPU **78% 的计算时间**。此外，还有数组的**复制**（copies）和**拼接**（concatenation）等操作。
+
 
 **英文**: This takes six percent of the execution time. And then this sort of vectorized element wise kernel, which is taking the power, takes five percent of the GPU time and three percent goes to the sum. So now we get this very nice low level breakdown of where, you know, my GPU is spending all of its time. And from this, you know, I can get some sense of where maybe I should spend my time optimizing. You know, maybe I think I can optimize my matrix multiply. That would be great because that's 70 plus percent of the time spent in the GPU. The final example, the final two examples, sorry, that I want to talk about is GeliU and SoftMAC. So these will be our running. Oh, sorry, there's a question. What's the CPU up to while the computation is going on? OK, so I will maybe answer that question in a few minutes because there's a cooler profiler that shows you a much nicer picture.
 
-**中文**: 这占用了执行时间的6%。然后是这种向量化逐元素计算核（用于求幂运算），占GPU时间的5%，而求和运算占3%。因此，我们现在得到了一个非常清晰的底层细分图，清楚地显示了我的GPU究竟将时间花在了哪些地方。由此，我就能大致判断出自己应该优先优化哪些部分。例如，我可能会考虑优化矩阵乘法——这将非常有价值，因为矩阵乘法就占据了GPU总耗时的70%以上。最后两个例子（抱歉，我说成“最后一个例子”了）我想介绍的是GeLU和SoftMax。这些将作为我们的运行示例。哦，抱歉，这里有个问题：“计算进行时，CPU在做什么？”好的，我稍后几分钟再回答这个问题，因为接下来会介绍一个更强大的性能分析器，它能提供更加直观清晰的视图。
+**中文**: 这部分操作占用了 6% 的执行时间。接着是那个向量化逐元素内核（vectorized element-wise kernel），它负责执行幂运算，占用了 5% 的 GPU 时间；而求和（sum）操作则占用了 3%。
 
-## 段落 48
+现在，我们就得到了一个非常清晰的底层细分视图，可以看到我的 GPU 时间究竟都花在了哪里。据此，我可以大致判断应该把优化精力投向何处。例如，我可能会想：“也许我可以优化一下矩阵乘法？”那将是非常棒的，因为它占据了 GPU 70% 以上的时间。
+
+我想讨论的最后两个例子是 GELU 和 Softmax。这将是我们接下来的……哦，抱歉，有个问题。
+
+问： “在计算进行时，CPU 在做什么？”
+
+答： 好的，我会在几分钟后回答这个问题，因为接下来我要介绍一个更酷的剖析器（profiler），它能展示出一幅清晰得多的图景。
+
 
 **英文**: And so I can just speculate here, but I think it'll be better to show that with pictures. OK, so I'm going to talk about now the GeliU and the SoftMAC. So the GeliU is going to be our running example throughout the class. So this is a non-linearity. If you remember, it's the Gaussian error unit, Gaussian error linear unit. And that's going to be a product of a tanh and a exponential, if I remember right. And so we're going to have, you know, all sorts of operations. So we're going to add a and b and then we're going to call GeliU sort of simulating the linear plus nonlinear structure that we might have in our MLP. And so we see once again, basically the same sort of mapping. We see a tanh add corresponding to a plus b.
 
-**中文**: 因此，我在此仅作推测，但我觉得用图片来展示效果会更好。好的，接下来我将介绍GELU和SoftMAC。GELU将作为本课程贯穿始终的示例。它是一种非线性函数——即高斯误差线性单元（Gaussian Error Linear Unit）。若我没记错的话，该函数是tanh函数与指数函数的乘积。因此，我们将执行各种运算：先将a与b相加，再调用GELU函数，以此模拟多层感知机（MLP）中可能存在的线性加非线性结构。我们再次看到基本相同的映射关系：其中tanh加法运算对应于a加b。
+**中文**: 所以我在这里只能推测一下，但我觉得用图表来展示会更好。
 
-## 段落 49
+好的，现在我要讲讲 **GELU** 和 **Softmax**。其中，**GELU** 将作为我们整个课程中的**贯穿示例**（running example）。
+
+这是一种**非线性激活函数**。如果大家还记得的话，它的全称是**高斯误差线性单元**（Gaussian Error Linear Unit）。如果我没记错的话，它的计算涉及 **tanh** 和**指数函数**（exponential）的乘积。
+
+因此，我们会看到各种各样的操作。比如，我们先对 $a$ 和 $b$ 进行**加法**运算，然后调用 **GELU**。这模拟了我们在**多层感知机**（MLP）中可能遇到的“线性层 + 非线性激活”的结构。
+
+大家可以看到，这里再次出现了基本上相同的映射关系：我们看到了对应于 $a + b$ 的 **tanh** 和 **add** 操作。
+
+![](img/lec6_015.png)
 
 **英文**: And then we have the CUDA equivalent. And then we have actually a GeliU function implemented in CUDA, which is all the way down here. And that takes about 33 percent of the compute. OK, fairly reasonable. And then we have once again the SoftMAC. I won't go through all of these in sort of gory detail since, you know, they all start to look the same after a while. But the thing to really point out that I think is cool is that a lot of these really core primitives like SoftMAC and GeliU, there's just kernels written for them. Right. So it's not like the GPU is executing the basic primitives. There's sort of a fused operator that computes all of this.
 
-**中文**: 接着是CUDA等效实现。实际上，我们在这里底层实现了CUDA版本的GeliU函数，它大约占用了33%的计算资源。好的，这还算合理。然后再次出现了SoftMAC。由于这些模块在细节上大同小异，我就不一一详述了。但真正值得强调、也颇为有趣的一点是：像SoftMAC和GeliU这类核心基础算子，都直接以专用内核（kernel）的形式实现。也就是说，GPU并非逐条执行基础算子，而是通过融合算子（fused operator）一次性完成全部计算。
+**中文**: 然后，我们有对应的 **CUDA** 实现。实际上，这里有一个直接用 CUDA 实现的 **GELU** 函数，就在最底层。它大约占据了 **33%** 的计算量，这个比例相当合理。
 
-## 段落 50
+接下来是 **Softmax**。我不会再逐一深入剖析这些细节了，因为看多了之后，它们的模式都大同小异。
+
+但我认为真正值得强调、也非常酷的一点是：像 **Softmax** 和 **GELU** 这样许多核心的基本原语，都有专门为它们编写的**内核**（kernels）。
+
+也就是说，GPU 并不是在执行一堆基础的原语操作来拼凑出结果，而是有一个**融合算子**（fused operator）直接一次性计算出所有这些内容。
+
+![](img/lec6_016.png)
 
 **英文**: So there's no back and forth between CPU and GPU for all of these. OK, I mentioned before that I was going to sort of answer this question of what the CPU was doing. And so let's think about something a little more sophisticated. Right. I had the MLP example that I started with for benchmarking and I would, let's say, like to optimize that MLP, make it run really fast. So how can we do that? Well, ideally, we would sort of profile this in a nice sort of fine grained way. So if we use the torch profiler, this is kind of what we would get. If you remember the MLP, there's, you know, stack linear layers, there's a forward and a backward. And you see roughly, you know, there's this backward thing that's happening. There is a matrix multiply, there's linear and then there's accumulate grad operation for the backward.
 
-**中文**: 因此，所有这些操作都不需要在CPU和GPU之间来回传输数据。好的，我之前提到过，我将大致解答“CPU在做什么”这个问题。现在让我们思考一个更复杂一点的例子。对，我最初用于基准测试的多层感知机（MLP）示例，假设我想优化这个MLP，使其运行得非常快。那么，我们该如何实现呢？理想情况下，我们会以一种精细的方式对其进行性能分析。例如，若使用PyTorch的Profiler工具，我们大致会得到如下结果：回顾一下该MLP结构，它由若干线性层堆叠而成，包含前向传播和反向传播过程；从分析结果中可大致看出，反向传播阶段正在进行相关计算，其中包括矩阵乘法、线性变换以及梯度累加（accumulate grad）操作。
+**中文**: 所以，对于这些操作，CPU 和 GPU 之间并不需要来回通信。
 
-## 段落 51
+好的，我之前提到过要回答“CPU 在做什么”这个问题。现在让我们思考一个更复杂的场景。
 
-**英文**: And here's the matrix multiply kernel. And then there's only 10 things that can fit here. So I think this this gets cut off at a certain point. But this this is nice. It does tell you that most of the time is being spent in the matmul's. But you do kind of wonder, like, where does all the rest of the time go and why does only 31 percent of my time stay here? And where is the 60 percent here? It's a 10 mm, but there's no corresponding kernel. Right. This is a little bit mysterious. And for something that's very complex module, this is not a very good visualization. And so for that, I think we have to actually get out a real sort of grown up profiler.
+假设我一开始用来做基准测试的那个 **MLP**（多层感知机）示例，我想要优化它，让它运行得飞快。我们该怎么做呢？
 
-**中文**: 这是矩阵乘法核函数。此处最多只能容纳10项，因此我认为这部分在某个点被截断了。但这样也挺好，它确实表明大部分时间都消耗在矩阵乘法运算上。不过你难免会疑惑：其余时间究竟花在了哪里？为何仅有31%的时间停留在此处？而那60%的时间又去了哪里？这是一个10毫米（10 mm）的模块，却找不到对应的核函数。没错，这的确有些神秘。对于一个非常复杂的模块而言，这种可视化效果并不理想。因此，我认为我们需要动用真正成熟、专业的性能分析器。
+理想情况下，我们需要一种更精细的剖析方式。如果我们使用 **Torch Profiler**，大概会得到这样的结果：
 
-## 段落 52
+回想一下那个 MLP 的结构：它包含堆叠的**线性层**（linear layers），既有**前向传播**（forward），也有**反向传播**（backward）。
 
-**英文**: And you will have to, you know, or we will ask you to look at this thing, which is Nvidia's insight systems. And this is the kind of Nvidia's sort of detailed way of looking at GPU behavior and performance. And so we will actually kind of see exactly what is happening as we run this MLP. So actually in the back, can you see, I don't know, this tiny text over here? Thumbs up. OK. All right. If you can see it, then I'm not going to zoom in. But it does seem small even from here. All right. So basically, if we look here, we see several different things.
+大家可以大致看到，这里正在发生反向传播的过程：其中包含了**矩阵乘法**、**线性变换**，以及反向传播中的**梯度累加**（accumulate grad）操作。
 
-**中文**: 而且你们必须这么做，或者我们会请你们查看这个东西——即英伟达（NVIDIA）的Insight系统。这是英伟达用于细致观察GPU行为与性能的一种工具。因此，我们实际上将能精确地看到运行该多层感知机（MLP）时究竟发生了什么。那么实际上，在后台，你们能看到吗？我也不知道，这里有一小段文字？请点赞。好的。好嘞。如果你们能看到，那我就不用放大了。不过即使从这里看，它确实显得很小。好吧。总而言之，如果我们在此处观察，会看到若干不同的内容。
 
-## 段落 53
+**英文**: And here's the matrix multiply kernel. And then there's only 10 things that can fit here. So I think this this gets cut off at a certain point. But this this is nice. It does tell you that most of the time is being spent in the matmul's. But you do kind of wonder, like, where does all the rest of the time go and why does only 31 percent of my time stay here? And where is the 60 percent here? It's a 10 mm, but there's no corresponding kernel. Right. This is a little bit mysterious. And for something that's very complex module, this is not a very good visualization. And so for that, I think we have to actually get out a real sort of grown up profiler. And you will have to, you know, or we will ask you to look at this thing, which is Nvidia's insight systems. And this is the kind of Nvidia's sort of detailed way of looking at GPU behavior and performance. And so we will actually kind of see exactly what is happening as we run this MLP. So actually in the back, can you see, I don't know, this tiny text over here? Thumbs up. OK. All right. If you can see it, then I'm not going to zoom in. But it does seem small even from here. All right. So basically, if we look here, we see several different things.
+
+**中文**: 这里显示的是**矩阵乘法内核**（matrix multiply kernel）。不过，这里只能容纳大约 10 个条目，所以到了某个点就被截断了。
+
+虽然这个视图还不错，它确实告诉了我们大部分时间都花在了矩阵乘法（matmul）上，但你难免会想：**剩下的时间都去哪了？** 为什么只有 **31%** 的时间花在这里？那 **60%** 的时间又在哪呢？
+
+这里显示耗时 10 毫秒，但却没有对应的内核显示，这有点令人费解。对于一个非常复杂的模块来说，这种可视化效果并不理想。
+
+因此，我们需要拿出一个真正“成年级”的剖析器。你们将需要（或者我们会要求大家去查看）**NVIDIA Nsight Systems**。这是 NVIDIA 提供的一种用于深入观察 GPU 行为和性能的工具。
+
+借助它，我们实际上可以精确地看到运行这个 MLP 时到底发生了什么。
+
+（看向后排）大家能看到这边微小的文字吗？看到的请竖起大拇指。好的。如果你们能看清，我就不放大了。不过即使从这里看，字确实有点小。
+
+好吧，基本上，如果我们看这里，我们会发现几种不同的情况……
+
 
 **英文**: We see CUDA HW over here and then we see threads. And so this top half, this CUDA part, this is what the GPU is kind of doing. And then in this threads part, we see kind of what the CPU is doing. And I can also pull up the code, I think. Yes. The code here, when I profiled it, I've added a few annotations. OK, this one I zoom in for sure. OK. Excellent. All right.
 
-**中文**: 我们在这里看到 CUDA 硬件，然后看到线程。因此，上半部分即 CUDA 部分，大致代表 GPU 正在执行的操作；而在线程部分，则大致呈现了 CPU 正在执行的操作。我还可以调出代码，我想可以。是的，这里的代码是我进行性能分析时添加了一些注释的。好的，这个我一定要放大查看。好的，非常棒。好。
+**中文**: 我们看到这边是 **CUDA 硬件**（CUDA HW），那边是 **线程**（Threads）。
 
-## 段落 54
+上半部分，也就是这个 **CUDA** 区域，展示的是 **GPU** 正在执行的操作；而在下方的 **Threads** 区域，我们看到的则是 **CPU** 的活动情况。
+
+我想我也可以把代码调出来给大家看看。没错，这就是我在进行性能剖析时所用的代码，我在其中添加了一些**标注**（annotations）。
+
+好的，这部分我一定要放大来看。太棒了。
+
 
 **英文**: So I've annotated the code with this set of things that says, let's see, NVTX, which basically annotates my code with annotate with markers. So when the profiler comes in here, it will know that this piece of code belongs to a block called define model. And for example, this part that says step range push and range pop, this range here from line 77 to line 55 should be annotated with something that says step underscore step. OK, so I've added all these annotations in my code before calling my profiler. And so let's go back here. So now if we go to this line that says NVTX, we can kind of see define model, which is the thing that I wrapped my model construction call. And then I see step zero, step one, step two, step three, step four, step five. So each step is now nicely annotated in this profiler. And we can kind of see all of the things that the model is doing as we as it goes along. And I'll start on this side.
 
-**中文**: 因此，我使用这一组标注对代码进行了标记：我们来看一下，NVTX，它基本上是通过添加标记来标注我的代码。这样，当性能分析器运行到这里时，就能知道这段代码属于一个名为“define model”（定义模型）的代码块。例如，这部分写着“step range push”（步骤范围压入）和“range pop”（范围弹出），从第77行到第55行的这段范围应被标注为“step_step”（步骤_步骤）。好的，我在调用性能分析器之前，已在代码中添加了所有这些标注。现在我们回到此处。此时，如果我们定位到标有“NVTX”的这一行，就能看到“define model”，即我用来包裹模型构建调用的部分；接着还能看到“step zero”（步骤零）、“step one”（步骤一）、“step two”（步骤二）、“step three”（步骤三）、“step four”（步骤四）、“step five”（步骤五）。因此，每个步骤如今都在该性能分析器中得到了清晰标注。我们由此可以大致了解模型在执行过程中所进行的各项操作。我将从这一侧开始分析。
+**中文**: 所以，我用一组 **NVTX** 标记对代码进行了标注。这基本上就是给代码打上了“路标”。
 
-## 段落 55
+当剖析器运行时，它就能识别出这段代码属于一个名为 `define_model` 的代码块。
+
+例如，这里看到的 `range_push` 和 `range_pop`，意味着从第 77 行到第 55 行（注：此处演讲者可能口误，通常应为从第 55 行到第 77 行）的这个范围，会被标注为 `step_0`（或类似的步骤名称）。
+
+也就是说，在调用剖析器之前，我已经在代码中添加了所有这些标注。
+
+现在让我们回到这个视图。如果我们看标有 **NVTX** 的这一行，就能看到 `define_model`，这就是我包裹模型构建调用的部分。
+
+接着，我看到了 `step_0`, `step_1`, `step_2`, `step_3`, `step_4`, `step_5`。
+
+因此，每一个训练步骤在这个剖析器中都得到了清晰的标注。我们可以清楚地看到模型在运行过程中所执行的所有操作。
+
+接下来，我从这一侧开始讲解。
+
 
 **英文**: One thing we see is that this piece of code, it doesn't do very much work. It takes only 14 seconds. So actually, most of the time for the profiler is spent on overhead. So the part up until roughly here is, you know, things like just loading the libraries. And that takes a long time. It takes apparently seven point five seconds to just initialize everything. And then on at least on the GPU, at seven point five seconds or so into the program, it starts actually building the model. And you see here on the memory footprint, you know, this is the place where now memory is being sort of allocated. And on the GPU memory, the memory usage starts to grow. Right.
 
-**中文**: 我们观察到，这段代码实际执行的工作量很小，仅耗时14秒。因此，性能分析器（profiler）的大部分时间都消耗在开销上。大致在此处之前的部分，例如加载库等操作，耗时很长——仅初始化所有内容就需约7.5秒。随后，在程序运行至约7.5秒时（至少在GPU上），才真正开始构建模型。从内存占用图中可以看到，此处正是内存开始分配的位置；而GPU内存使用量也由此开始增长。
+**中文**: 我们注意到，这段代码实际执行的工作量并不大，仅耗时 **14 秒**。
 
-## 段落 56
+事实上，剖析器记录的大部分时间都消耗在了**系统开销**（overhead）上。
 
-**英文**: Now, the model is now constructed at this point. And then step zero is where sort of the action starts to happen. And so you were asking earlier what's happening between the CPU and sort of GPU. And so how the execution model of this works is here is sort of step zero on the CPU. And I'm starting right here. And here's the forward pass. And this is layer zero. So let's just kind of think through what's happening. As I said before, when you first encounter or when you first call a piece of code in PyTorch, it doesn't just directly execute. It will actually do things like, you know, on the fly, compile things.
+直到大约图示的这个位置之前，主要都是在做一些诸如**加载库文件**之类的事情。这花费了相当长的时间——显然，光是**初始化**所有环境就用了 **7.5 秒**。
 
-**中文**: 此时，模型已构建完成。接下来，“步骤零”便是实际执行开始的阶段。此前您曾询问CPU与GPU之间究竟发生了什么。该执行模型的工作方式如下：此处即为CPU上的“步骤零”，我将从这里开始讲解。这是前向传播过程，对应的是第零层。我们不妨逐步梳理一下当前发生的情况。如前所述，当您首次遇到或首次调用PyTorch中的一段代码时，它并不会立即直接执行，而是会动态地进行一些操作，例如即时编译。
+然后，至少在 **GPU** 这一侧，程序运行到约 **7.5 秒** 时，才真正开始**构建模型**。
 
-## 段落 57
+大家可以看到这里的**内存占用**（memory footprint）曲线，正是在这个时间点，内存开始被分配。
 
-**英文**: And so this thing like runtime triggered module loading is sort of overhead work that's being done in order to just initialize the layer and the computation and move sort of various bits of code into the GPU. So this takes a long time. And then after this layer zero is done, now, if I look at sort of any slice here, let's sort of zoom in to selection. We'll see that each of these layers is really, really, really quick. And what happens here is when I highlight this layer one over here on the CPU side, notice that that's not where layer one is on the GPU side. Right. So as I said before, the CPU and GPU are kind of two different execution devices. So I start at layer zero. I'm done with layer zero. I start layer one.
 
-**中文**: 因此，这种运行时触发的模块加载机制属于一种额外开销，其目的仅仅是初始化层与计算，并将各类代码片段载入GPU，因而耗时较长。而在完成第零层之后，若观察此处任意一段切片（我们可放大选中区域），便会发现每一层的执行实际上都极为迅速。此处需注意：当我在CPU端高亮显示第一层时，GPU端的第一层实际并不位于同一位置。如前所述，CPU与GPU本质上是两种不同的执行设备。因此，我从第零层开始执行，待其完成后，再启动第一层。
+**英文**: Now, the model is now constructed at this point. And then step zero is where sort of the action starts to happen. And so you were asking earlier what's happening between the CPU and sort of GPU. And so how the execution model of this works is here is sort of step zero on the CPU. And I'm starting right here. And here's the forward pass. And this is layer zero. So let's just kind of think through what's happening. As I said before, when you first encounter or when you first call a piece of code in PyTorch, it doesn't just directly execute. It will actually do things like, you know, on the fly, compile things. And so this thing like runtime triggered module loading is sort of overhead work that's being done in order to just initialize the layer and the computation and move sort of various bits of code into the GPU. So this takes a long time. And then after this layer zero is done, now, if I look at sort of any slice here, let's sort of zoom in to selection. We'll see that each of these layers is really, really, really quick. And what happens here is when I highlight this layer one over here on the CPU side, notice that that's not where layer one is on the GPU side. Right. So as I said before, the CPU and GPU are kind of two different execution devices. So I start at layer zero. I'm done with layer zero. I start layer one.
 
-## 段落 58
+**中文**: 现在，模型已经构建完成。接下来的 **Step 0** 才是真正开始“干活”的地方。
+
+之前大家问过，**CPU** 和 **GPU** 之间究竟在发生什么？这个执行模型的工作原理是这样的：
+
+这里显示的是 CPU 上的 **Step 0**，我从这里开始。首先是**前向传播**（forward pass），从 **第 0 层**（Layer 0）开始。
+
+我们来梳理一下正在发生的事情。正如我之前提到的，当你在 PyTorch 中首次调用某段代码时，它并不会直接执行。实际上，它会进行一些**即时编译**（on-the-fly compilation）等工作。
+
+像这种**运行时触发的模块加载**（runtime triggered module loading），本质上是为了初始化层和计算、并将各种代码片段迁移到 GPU 上而必须完成的**开销工作**。因此，这一步耗时较长。
+
+一旦 **第 0 层** 完成之后，如果我们放大查看任意一个时间切片，就会发现后续的每一层运行得都**非常、非常快**。
+
+这里有一个关键点：当我在 CPU 这一侧高亮显示 **第 1 层**（Layer 1）时，请注意，在 GPU 那一侧，**第 1 层** 并不在同一个时间位置。
+
+正如我之前所说，CPU 和 GPU 是两个不同的执行设备。所以流程是这样的：我在 CPU 上启动 **第 0 层**，等 **第 0 层** 完成后，我再启动 **第 1 层**……
+
 
 **英文**: Now, the CPU is actually just sending all of the sort of CUDA commands, the CUDA kernels. It's launching all the CUDA kernels already to the GPU at this point. Right. So when the CPU is saying I'm doing layer one, what it's actually doing is it's queuing commands into the GPU. It says now run this thing next, run this thing next, run this thing next. Right. And so the CPU is running way ahead of the GPU. And by the time layer one starts executing on the GPU, actually, we're already at layer nine on the CPU. And there's basically a queue that the CPU maintains where it's sending a fixed number of kernel CUDA kernels to the GPU. And so once you hit that queue depth, it's going to sort of stop running ahead.
 
-**中文**: 目前，CPU 实际上只是向 GPU 发送各类 CUDA 指令（即 CUDA 核函数），并已在此时将所有 CUDA 核函数全部启动并提交至 GPU。没错。因此，当 CPU 声称自己正在执行第一层时，它实际所做的，是将指令排队送入 GPU，即依次发出“接下来运行这个”、“再接下来运行这个”、“再接下来运行这个”等指令。没错。于是，CPU 的执行进度远超 GPU。当第一层在 GPU 上刚开始执行时，CPU 实际上已推进至第九层。CPU 维护着一个队列，以固定数量持续向 GPU 提交 CUDA 核函数。因此，一旦达到该队列深度，CPU 就会停止继续超前执行。
+**中文**: 现在，CPU 实际上只是在向 GPU 发送所有的 **CUDA 命令**（即 **CUDA 内核**）。在这个阶段，它正在将所有 CUDA 内核启动并推送给 GPU。
 
-## 段落 59
+也就是说，当 CPU 显示它正在处理 **第 1 层**（Layer 1）时，它实际在做的事情是将命令**排队**送入 GPU，指令类似于：“接下来运行这个，再运行那个，接着运行下一个”。
 
-**英文**: But until that point, it's just going to keep going and going and going as far as it can. Right. And in this case, this does become I'm going to zoom out again. OK. I'll do the zoom. There you go. In this case, this kind of gets a little extreme, because if I zoom out once more, notice how, you know, in these steps, I'm running way ahead. Like the step zero is here. Step two is here. This was step one, which basically took no time at all.
+因此，CPU 的运行速度远远**领先**于 GPU。
 
-**中文**: 但在那之前，它会一直持续运行下去，尽可能地延伸。对。而在此情况下，这种情况会变得有些极端，因为如果我再放大一次，注意看，在这些步骤中，我的进度已经远远超前了：比如第零步在这里，第二步在这里，而第一步则基本没花任何时间。
+等到 GPU 真正开始执行 **第 1 层** 时，CPU 实际上已经跑到了 **第 9 层**。
 
-## 段落 60
+这背后基本上有一个由 CPU 维护的**队列**，CPU 会向 GPU 发送固定数量的 CUDA 内核。一旦达到了这个**队列深度**（queue depth），CPU 就不会再继续超前运行了（它会等待 GPU 消费掉一些任务后再继续发射）。
 
-**英文**: Step two is here. So it's the CPU is basically running one entire step forward and backward ahead of the GPU. One interesting thing that you might do is if you're writing, you know, various code for for training a language model, one normal thing that you might do is let's go back to the code. I might do something like print, you know, my losses in between iterations. This seems like it should have no effect on what the GPU is doing. Right. You're like, well, it's a print statement. How much could it could it do? If you think about it for a moment, this will have big impacts on the execution layout on the GPU, because in order to print this statement, right, this print statement happens on the CPU and the CPU needs to get the loss. That means it needs to wait for the GPU to compute that loss. And so let's look at what happens.
+![](img/lec6_stacks_mlp.svg)
 
-**中文**: 第二步来了。此时，CPU 实际上比 GPU 提前完整地执行了一次前向和反向传播。你可能会做的一件有趣的事情是：如果你正在编写用于训练语言模型的各种代码，一个常见的做法是回到代码中，在迭代过程中打印损失值（loss）。这看起来似乎不会对 GPU 的运行产生任何影响，对吧？你会想：“这只是一条 print 语句而已，能有多大影响？”但稍加思考就会发现，这会对 GPU 的执行布局产生重大影响，因为要执行这条 print 语句，该操作发生在 CPU 上，而 CPU 需要获取损失值——这意味着它必须等待 GPU 完成该损失值的计算。下面我们来看看具体会发生什么。
+**英文**: But until that point, it's just going to keep going and going and going as far as it can. Right. And in this case, this does become I'm going to zoom out again. OK. I'll do the zoom. There you go. In this case, this kind of gets a little extreme, because if I zoom out once more, notice how, you know, in these steps, I'm running way ahead. Like the step zero is here. Step two is here. This was step one, which basically took no time at all. Step two is here. So it's the CPU is basically running one entire step forward and backward ahead of the GPU. One interesting thing that you might do is if you're writing, you know, various code for for training a language model, one normal thing that you might do is let's go back to the code. I might do something like print, you know, my losses in between iterations. This seems like it should have no effect on what the GPU is doing. Right. You're like, well, it's a print statement. How much could it could it do? If you think about it for a moment, this will have big impacts on the execution layout on the GPU, because in order to print this statement, right, this print statement happens on the CPU and the CPU needs to get the loss. That means it needs to wait for the GPU to compute that loss. And so let's look at what happens.
 
-## 段落 61
+**中文**: 但在达到那个极限之前，CPU 会一直不停地全速前进。
 
-**英文**: So here, you know, as I said, you know, step four on the CPU happens way before the GPU equivalent. Now, let's switch back. Now, this is the version that I profiled where it has the print statement. Right. And then now I sort of zoom into selection here. Now, see how step one and step two are basically kind of synchronized now. Right. Because I have to wait for the loss to get computed. And you look at this and you say, oh, but it's still a little offset. Right.
+让我再次缩小视图……好，放大操作完成，就是这样。
 
-**中文**: 因此，如我之前所说，CPU 上的第四步远早于 GPU 上对应的步骤。现在，我们切换回去。这是我在配置文件中分析的版本，其中包含 print 语句。对，然后我在此处大致放大到“选择”部分。现在请看，第一步和第二步如今基本实现了同步，对吧？因为我必须等待损失值计算完成。你观察一下，会发现：“哦，但两者仍略有偏移”，对吧？
+在这种情况下，这种现象变得有点极端。如果我再缩小一点，大家注意看：在这些步骤中，CPU 领先了非常多。
+**Step 0** 在这里，**Step 2** 也在这里。而中间的 **Step 1** 几乎没花什么时间。
+实际上，CPU 已经完整地超前运行了整整一个**前向传播和反向传播**的步骤，把 GPU 远远甩在了后面。
 
-## 段落 62
+这里有一个有趣的现象：如果你在编写训练语言模型的代码时，做了一个很常规的操作——让我们回到代码界面——比如在迭代之间添加一句 `print` 来打印损失值（loss）。
 
-**英文**: Like step two, step one isn't exactly aligned with each other. So now let's kind of zoom back in and see, OK, what happened to step one of the CPU? Well, basically, the end point of step one on the CPU is also kind of where the optimizer step starts. Right. So by the time that Ford is done, sorry, this CUDA stream synchronizes the thing. So this CUDA stream synchronized command on the CPU, this is basically saying I'm just waiting for the GPU because I can't run ahead. I'm waiting for this loss to be computed and to be sent back to me. Right. So this is kind of a dummy operation where it's saying CPU waits, waits, waits, waits, waits, waits, waits. Well, the backward step is done. So now I can print the loss.
+你可能会想：“这应该不会影响 GPU 的工作吧？毕竟只是个打印语句，能有多大影响呢？”
 
-**中文**: 与第二步类似，第一步在时间上也并未完全对齐。因此，我们现在稍微拉远视角，观察一下：CPU 上的第一步究竟发生了什么？实际上，CPU 上第一步的结束点，大致也正是优化器步骤的起始点。没错。因此，当 Ford（应为“forward”，前向传播）执行完毕后——抱歉，此处是 CUDA 流同步操作。也就是说，该 CPU 上的 CUDA 流同步命令本质上是在表明：“我必须等待 GPU，因为我无法继续向前执行；我需要等待损失值计算完成并传回给我。”没错。这其实是一种空等操作，即 CPU 不断等待、等待、等待、等待、等待、等待、等待……直到反向传播步骤完成，此时我才能打印损失值。
+但如果你仔细思考一下，你会发现这对 GPU 的**执行布局**会产生巨大的影响。
+原因在于：这个 `print` 语句是在 **CPU** 上执行的，而 CPU 需要获取损失值。这意味着 **CPU 必须等待 GPU 计算出该损失值**。
 
-## 段落 63
+那么，让我们来看看具体会发生什么。
 
-**英文**: I've printed the loss. OK, now the CPU can start running ahead and it does run ahead and start sending step two stuff now. And then, well, once it hits here, it's sort of run out of commands. It's waiting for the loss again. CUDA synchronized. Wait, wait, wait, wait, wait. Backward step is done. Now I can print the loss. Now I run ahead again. Right.
 
-**中文**: 我已打印出损失值。好的，现在CPU可以开始预执行，它确实开始预执行并立即发送第二步的数据。然后，一旦执行到这里，就相当于命令耗尽了，它再次等待损失值。CUDA已同步。等等，等等，等等，等等，等等。反向传播步骤已完成。现在我可以打印损失值了。现在我再次进行预执行。没错。
+**英文**: So here, you know, as I said, you know, step four on the CPU happens way before the GPU equivalent. Now, let's switch back. Now, this is the version that I profiled where it has the print statement. Right. And then now I sort of zoom into selection here. Now, see how step one and step two are basically kind of synchronized now. Right. Because I have to wait for the loss to get computed. And you look at this and you say, oh, but it's still a little offset. Right. Like step two, step one isn't exactly aligned with each other. So now let's kind of zoom back in and see, OK, what happened to step one of the CPU? Well, basically, the end point of step one on the CPU is also kind of where the optimizer step starts. Right. So by the time that Ford is done, sorry, this CUDA stream synchronizes the thing. So this CUDA stream synchronized command on the CPU, this is basically saying I'm just waiting for the GPU because I can't run ahead. I'm waiting for this loss to be computed and to be sent back to me. Right. So this is kind of a dummy operation where it's saying CPU waits, waits, waits, waits, waits, waits, waits. Well, the backward step is done. So now I can print the loss.
 
-## 段落 64
+**中文**: 所以，正如我之前所说，CPU 上的 **Step 4** 发生的时间远远早于 GPU 上对应的步骤。
 
-**英文**: So in this case, you know, the GPU is still essentially full utilization in both cases. But in extreme cases where, let's say, you're printing tons of stuff all the time, actually, you're going to introduce a CPU bottleneck. Because the GPU has to the CPU has to keep waiting for the GPU and it can't launch the kernels sort of ahead of time. So that's kind of a really cool thing that you can see with the profiler sort of the CPU versus GPU. And they're actually different devices that communicate to each other. It's not a single unified object. And you wouldn't see that unless you you started to look at some of these like more advanced profilers. Any any question about that sort of set of things? Cool. OK. And the other thing that I want to kind of show you is, you know, the profiler thing that I was playing with before, you can also generate very similar views in NSYS as well, where you sort of select some range of things that you want to let's do a warm up.
+现在，让我们切换回那个**包含 `print` 语句**的剖析版本。
 
-**中文**: 因此，在这种情况下，GPU 在两种情形下实际上都处于满负荷运行状态。但在极端情况下——例如，您持续输出大量信息——则会引发 CPU 瓶颈：因为 GPU 需要等待 CPU，而 CPU 无法提前启动内核（kernels）。这正是性能分析器（profiler）所展现的一个非常有趣的现象，即 CPU 与 GPU 的执行情况对比。需要明确的是，CPU 和 GPU 实际上是两个相互通信的独立设备，并非单一的统一对象；若不借助此类更高级的性能分析工具，您将无法观察到这一现象。关于上述内容，大家有什么问题吗？很好，明白了。接下来，我还想向大家展示另一点：此前我演示过的性能分析功能，在 NVIDIA Nsight Systems（NSYS）中同样可生成高度相似的视图——您只需选定一段感兴趣的执行区间，我们先进行一次预热（warm up）。
+当我放大查看这一区域时，大家会发现：**Step 1** 和 **Step 2** 现在基本上已经**同步**了。
+这是因为程序必须等待损失值（loss）计算完成。
 
-## 段落 65
+你可能会想：“嗯，但它们似乎还是有一点错位？Step 1 和 Step 2 并没有完全对齐。”
+
+那让我们再放大一点，看看 CPU 上的 **Step 1** 到底发生了什么。
+基本上，CPU 上 Step 1 的结束点，也正是**优化器步骤**（optimizer step）开始的地方。
+
+准确地说，当前向传播（Forward）完成后——或者更确切地说，当执行了这个 **CUDA 流同步命令**（CUDA stream synchronize）时——情况是这样的：
+这个位于 CPU 上的同步命令，本质上就是在说：“我正在等待 GPU，因为我无法继续超前运行了。我必须等待这个损失值被计算出来并传回给我。”
+
+因此，这里出现了一段看似“空转”的操作：CPU 在不停地**等待、等待、再等待**……
+直到**反向传播**（Backward）步骤完成，它才能打印出损失值。
+
+
+**英文**: I've printed the loss. OK, now the CPU can start running ahead and it does run ahead and start sending step two stuff now. And then, well, once it hits here, it's sort of run out of commands. It's waiting for the loss again. CUDA synchronized. Wait, wait, wait, wait, wait. Backward step is done. Now I can print the loss. Now I run ahead again. Right. So in this case, you know, the GPU is still essentially full utilization in both cases. But in extreme cases where, let's say, you're printing tons of stuff all the time, actually, you're going to introduce a CPU bottleneck. Because the GPU has to the CPU has to keep waiting for the GPU and it can't launch the kernels sort of ahead of time. So that's kind of a really cool thing that you can see with the profiler sort of the CPU versus GPU. And they're actually different devices that communicate to each other. It's not a single unified object. And you wouldn't see that unless you you started to look at some of these like more advanced profilers. Any any question about that sort of set of things? Cool. OK. And the other thing that I want to kind of show you is, you know, the profiler thing that I was playing with before, you can also generate very similar views in NSYS as well, where you sort of select some range of things that you want to let's do a warm up.
+
+**中文**: 所以，正如我之前所说，CPU 上的 **Step 4** 发生的时间远远早于 GPU 上对应的步骤。
+
+现在，让我们切换回那个**包含 `print` 语句**的剖析版本。
+
+当我放大查看这一区域时，大家会发现：**Step 1** 和 **Step 2** 现在基本上已经**同步**了。
+这是因为程序必须等待损失值（loss）计算完成。
+
+你可能会想：“嗯，但它们似乎还是有一点错位？Step 1 和 Step 2 并没有完全对齐。”
+
+那让我们再放大一点，看看 CPU 上的 **Step 1** 到底发生了什么。
+基本上，CPU 上 Step 1 的结束点，也正是**优化器步骤**（optimizer step）开始的地方。
+
+准确地说，当前向传播（Forward）完成后——或者更确切地说，当执行了这个 **CUDA 流同步命令**（CUDA stream synchronize）时——情况是这样的：
+这个位于 CPU 上的同步命令，本质上就是在说：“我正在等待 GPU，因为我无法继续超前运行了。我必须等待这个损失值被计算出来并传回给我。”
+
+因此，这里出现了一段看似“空转”的操作：CPU 在不停地**等待、等待、再等待**……
+直到**反向传播**（Backward）步骤完成，它才能打印出损失值。
+
 
 **英文**: I said we should. So we should exclude the first couple of steps. So we'll start a step three and we'll measure some steps sort of in this range. We could take the kernels. This is what's doing the computation. And you can see that there's actually many different kinds of matrix multiply. This is one matrix multiply kernel. This is a different matrix multiply kernel. There's a different sort of like vectorized element kernel. And all of these are taking different amounts of computation.
 
-**中文**: 我说过我们应该这样做。因此，我们应排除前几步。我们将从第三步开始，并在此范围内测量若干步骤。我们可以提取这些内核，它们负责执行计算。可以看到，实际上存在多种不同类型的矩阵乘法：这是一种矩阵乘法内核，这是另一种矩阵乘法内核，还有一种是向量化元素运算内核。所有这些内核所执行的计算量各不相同。
+**中文**: 正如我之前所说，我们应该**排除前几个步骤**。
 
-## 段落 66
+因此，我们将从 **Step 3** 开始，并测量这个范围内的若干步骤。
+
+我们可以关注这些**内核**（kernels），因为正是它们在承担实际的计算任务。
+大家可以看到，这里实际上存在多种不同类型的**矩阵乘法**（matrix multiply）：
+*   这是一种矩阵乘法内核；
+*   那是另一种不同的矩阵乘法内核；
+*   还有一些不同类型的**向量化元素级内核**（vectorized element kernel）。
+
+所有这些内核所需的**计算量**（或耗时）都是各不相同的。
+
 
 **英文**: And we can take this and we can say, oh, show me in the events view all of the things that are happening. And I can also see sort of the stats view, all of the the time that it takes. Wait, let's see. We want we want the average time that we want. Sorry. The CUDA kernel execution summary. Yeah, we want the total duration of the kernels. And so we can see which kernels are taking the most time and aggregate across these views. This is actually a very, very powerful tool that can give you both like the aggregate view of what's slow and what's fast, as well as individual kernels that are being launched and when they're launched and where the CPU commands for that came from. And I guess one final side note here is this is one of the reasons why it doesn't matter that we're programming in Python and Python is not a very high performance language, right? Because the CPU is never the bottleneck because the CPU can run ahead and sort of queue commands into the GPU.
 
-**中文**: 我们可以利用这个工具，在“事件视图”中查看所有正在发生的事件；同时，我还能看到“统计视图”，其中显示了各项操作所耗费的时间。等等，我们来看一下——我们需要的是平均耗时？抱歉，我们需要的是 CUDA 核函数执行摘要，具体而言是各核函数的总执行时间。这样我们就能识别出哪些核函数耗时最多，并在多个视图间进行汇总分析。实际上，这是一个功能极为强大的工具：它既能提供整体层面的性能概览（直观呈现哪些部分慢、哪些部分快），又能详细展示每个被启动的核函数、其启动时机，以及触发该核函数的 CPU 指令来源。最后再补充一点：这正是为何我们使用 Python 编程并无大碍——尽管 Python 并非一种高性能语言——因为 CPU 从来不会成为瓶颈：CPU 可以超前运行，并将指令持续送入 GPU 队列。
+**中文**: 我们可以利用这些信息，在**事件视图**（Events View）中查看所有正在发生的事件。
 
-## 段落 67
+同时，我也可以查看**统计视图**（Stats View），了解各项操作所花费的时间。稍等，让我确认一下……我们需要的是**平均时间**。抱歉，应该是 **CUDA 内核执行摘要**（CUDA Kernel Execution Summary）。没错，我们要看的是内核的**总耗时**（Total Duration）。
+
+通过这种方式，我们可以识别出哪些内核最耗时，并综合这些视图进行分析。
+
+这实际上是一个非常强大的工具，它既能提供宏观视角，告诉你哪些部分慢、哪些部分快；也能展示微观细节，包括启动了哪些具体的内核、何时启动的，以及这些 CPU 命令的来源。
+
+最后顺便提一点：这也正是为什么我们使用 **Python** 编程并不重要（尽管 Python 本身并不是一种高性能语言）的原因之一。
+因为 **CPU 从来都不是瓶颈**——CPU 可以超前运行，并将命令排队发送给 GPU，从而掩盖了 Python 解释器的开销。
+
 
 **英文**: And so this sort of detaching or like this disconnecting aspect between the GPU and the CPU is one of the key reasons why we can use this nice high level programming language and yet still get sort of full utilization out of sort of our GPUs. Cool. OK, any questions before I sort of switch back to this, because I'm going to leave NSYS sort of forever for this lecture at this point. Cool. Yeah, but you'll get to play with it in assignment too, and I think you'll appreciate it because it gives you like a really interesting view into what your hardware is actually doing to make these like language models train. OK, that was benchmarking and profiling. Now you have all the tools you need to be able to do sort of performance things. And now we're going to write some kernels in the remaining time. So remember kernel fusion, right? So this was the image that I showed you in lecture, right? There's a little factory every time I need to do an operation and to ship it from the warehouse to the factory and back. And so if I naively do a bunch of operations in sequence without thinking about it, I'm paying for a lot of sort of shipping costs back and forth from from the warehouse.
 
-**中文**: 因此，GPU与CPU之间这种分离或脱节的特性，正是我们能够使用这种高级编程语言、同时仍能充分榨取GPU性能的关键原因之一。很好。好的，在我切换回这部分内容之前，大家有什么问题吗？因为在此之后，本节课将不再涉及NSYS工具。很好。是的，但大家在作业中也会有机会实际操作NSYS，而且我相信你们会体会到它的价值——它能让你清晰、直观地看到硬件究竟在如何运作，从而支撑起大语言模型的训练过程。好了，以上就是基准测试与性能分析部分。现在，你们已掌握了所有用于性能优化的必要工具。接下来，我们将在剩余时间里编写一些CUDA核函数（kernel）。还记得核函数融合（kernel fusion）吗？对吧？这正是我在课堂上向大家展示过的示意图：每次执行一个运算操作，都相当于要从仓库把数据运送到工厂，再把结果运回仓库。因此，如果我不加思考地依次执行大量运算操作，就会反复承担高昂的数据往返“运输成本”。
+**中文**: 因此，这种 GPU 与 CPU 之间的**解耦**（detaching）或**分离**特性，正是我们能够使用如此便捷的高级编程语言，同时又能让 GPU 获得**充分利用率**的关键原因之一。
+
+好的，在我切换回之前的内容之前，大家还有什么问题吗？因为从今天这堂课开始，我将暂时不再使用 **NSYS** 工具了。
+
+不过，你们在后续的**作业**中会有机会亲自上手操作。我相信届时你们会非常欣赏它，因为它能让你们深入洞察硬件底层究竟是如何运作，从而驱动这些大语言模型进行训练的。
+
+好了，关于**基准测试**（benchmarking）和**性能剖析**（profiling）的部分就讲到这里。现在，你们已经掌握了进行性能优化所需的所有工具。
+
+接下来，利用剩下的时间，我们将动手编写一些**内核**（kernels）。
+
+大家还记得**内核融合**（kernel fusion）的概念吧？
+我在之前的讲座中展示过这样一张图：每次我需要执行一个操作时，就好像有一个小工厂，必须把数据从“仓库”（显存）运到“工厂”（计算单元），处理完后再运回去。
+
+因此，如果我不加思考地按顺序盲目执行一堆操作，我就得为这些数据在“仓库”和“工厂”之间反复运输支付高昂的**运输成本**。
+
 
 ## 段落 68
 
