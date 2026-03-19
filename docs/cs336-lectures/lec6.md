@@ -765,314 +765,853 @@ CUDA (GPU) 端：17 微秒
 
 因此，如果我不加思考地按顺序盲目执行一堆操作，我就得为这些数据在“仓库”和“工厂”之间反复运输支付高昂的**运输成本**。
 
+![](img/lec6_018.png)
 
-## 段落 68
+![](img/lec6_019.png)
+
+![](img/lec6_020.png)
 
 **英文**: What I should do is have one factory that does all the operations at once. So I do not pay for this cost multiple times. That's very important. So now we're going to do Gell-U and we're going to write a kernel for Gell-U and I'm going to write that kernel in several different ways. And we're going to look at the performance impact of doing that. And so we have the pie torch implementation of Gell-U and that looks just like this torch and functional Gell-U. And I invoke approximate equals tanh because I want this to exactly match the naive thing that I'm going to do next. So this is not going to be actually multiplying by the CDF of the Gaussian. It's going to be some approximation to that. That's easier to compute.
 
-**中文**: 我应该做的是构建一个能一次性完成所有运算的工厂，从而避免多次支付此项成本，这一点至关重要。接下来，我们将实现GELU函数，并为其编写内核代码，且我会以多种不同方式来编写该内核，进而分析不同实现方式对性能的影响。我们首先采用PyTorch提供的GELU实现，其形式与`torch.nn.functional.gelu`完全一致；在调用时，我使用近似等价的`tanh`函数，以确保其结果与接下来将要实现的朴素方法完全一致。因此，该实现实际上并非乘以高斯分布的累积分布函数（CDF），而是采用一种计算更简便的近似方法。
+**中文**: 我应该做的是让**一个工厂一次性完成所有操作**，这样我就不必多次支付上述的（运输）成本。这一点至关重要。
 
-## 段落 69
+接下来，我们将针对 **GELU** 激活函数编写一个自定义内核（kernel），并且我会用几种不同的方式来实现它，以便我们观察这些不同实现方式对**性能**的影响。
 
-**英文**: So that's the pie torch Gell-U. Now I'm going to do the dumb thing. Right. You're going to look at this code and say this is going to be low performance. I'm going to go in and in pie torch, I'm going to write Gell-U as 0. 5 times X times 1 plus tanh square root pi over 2 times X plus 0. 044715 times X cube. Magic formula, but this is a good approximation to the Gell-U. You can you can look it up or convince yourself this is true. But if you do this, you see that there's a lot of operations that happen.
+首先，我们来看 PyTorch 自带的 GELU 实现，代码如下所示，使用的是 `torch.nn.functional.gelu`。
+我特意将参数 `approximate` 设置为 `'tanh'`，这是为了确保它能与我接下来要编写的**朴素版本**（naive implementation）完全一致。
 
-**中文**: 这就是PyTorch中的GELU激活函数。接下来我要做一件看似愚蠢的事：没错，你看到这段代码后会说，这性能肯定很低。我将在PyTorch中将GELU实现为0.5 × X × (1 + tanh(√(π/2) × X + 0.044715 × X³))。这是一个“魔法公式”，但确实是对GELU的良好近似——你可以查阅相关资料，或自行验证其正确性。然而，若采用这种实现方式，你会发现其中涉及大量运算。
+需要说明的是，这里实际上并没有直接乘以高斯分布的**累积分布函数**（CDF），而是采用了一种更容易计算的**近似方法**。
 
-## 段落 70
+
+**英文**: So that's the pie torch GELU. Now I'm going to do the dumb thing. Right. You're going to look at this code and say this is going to be low performance. I'm going to go in and in pie torch, I'm going to write GELU as 0. 5 times X times 1 plus tanh square root pi over 2 times X plus 0. 044715 times X cube. Magic formula, but this is a good approximation to the GELU. You can you can look it up or convince yourself this is true. But if you do this, you see that there's a lot of operations that happen.
+
+**中文**: 这就是 PyTorch 的 GELU 实现。
+
+现在，我要做一个“笨”办法（dumb thing）。
+大家看到这段代码时可能会说：“这性能肯定很低。”
+
+我将在 PyTorch 中手动将 GELU 写为：
+
+![](img/lec6_017.png)
+
+这是一个“神奇公式”，但它确实是 GELU 的一个很好的近似值。大家可以去查阅相关资料，或者自行验证其正确性。
+
+但是，如果你这样写，你会发现其中涉及了**大量的运算操作**。
+
 
 **英文**: There's like a tanh, there's a X cube, there's multiplication by a constant and addition and multiplication by 0. 5 and X. If this involves multiple different CUDA kernels, this is probably going to be slow. That should be our intuition at this point from fusion. So let's see if that's true. OK, so these two are the same. You can see at the top left, they compute the exact same numbers. And we can systematically check this on random Gaussians. And now let's sort of benchmark the two. OK, so the manual time is eight point one seconds for a really, really big Gell-U and pie torch time is one point one, right? Millisecond.
 
-**中文**: 这里有一个双曲正切函数（tanh），一个三次方运算（X³），还有一个乘以常数、加法、乘以0.5以及乘以X的运算。如果这些操作需要调用多个不同的CUDA核函数，那么执行速度很可能会很慢。从算子融合的角度来看，这应该就是我们目前的直观判断。那么，让我们来验证一下这个判断是否正确。好的，这两个实现是等价的。你可以看到左上角的结果完全一致，计算出的数值完全相同。我们还可以在随机高斯分布数据上系统性地验证这一点。现在，我们来对这两种实现进行性能基准测试。好的，手动实现耗时8.1秒，而PyTorch实现仅需1.1毫秒。
+**中文**: 这其中包含了 $\tanh$ 运算、$x^3$ 立方运算、常数乘法、加法，以及乘以 $0.5$ 和 $x$ 的操作。
 
-## 段落 71
+如果这些操作触发了**多个不同的 CUDA 内核**，那么它的速度很可能会很慢。
+基于我们之前讨论的**内核融合**（fusion）概念，这应该是我们此刻的直觉判断。
+
+那么，让我们验证一下这个直觉是否正确。
+
+好的，可以看到这两种实现的结果是一致的。在左上角，它们计算出了完全相同的数值。我们也可以使用随机生成的高斯分布数据来系统地验证这一点。
+
+现在，让我们对这两者进行**基准测试**（benchmark）。
+结果显示：对于一个非常巨大的 GELU 计算，**手动实现版本**耗时 **8.1 毫秒**，而 **PyTorch 内置版本**仅耗时 **1.1 毫秒**。
+
+
 
 **英文**: Sorry. And the fused version is going to be significantly faster, in fact, eight times faster. Wow. You know, big difference from from writing a simple kernel. Of course, your matmols are probably still going to be the bottleneck. But it would be really cool if we could go from that eight milliseconds to that one millisecond. That would feel very satisfying. So we're going to try to get close to that one point one millisecond in the next few parts of the lecture. So now let's look at what's happening under the hood. I don't need to look at NSYS because all I really want to know is some very high level stuff.
 
-**中文**: 抱歉。而融合版本的速度将显著提升，实际上快了八倍。哇！这与编写一个简单内核相比，差异巨大。当然，您的矩阵乘法（matmuls）可能仍是性能瓶颈。但若能将耗时从八毫秒缩短至一毫秒，那将非常酷，也会令人十分满意。因此，在接下来的几节课程中，我们将努力逼近这一毫秒级目标（即1.1毫秒）。现在，让我们来看看底层究竟发生了什么。我无需查看NSYS工具，因为我真正关心的只是一些高层次的信息。
+**中文**: 抱歉，刚才单位说错了。
 
-## 段落 72
+这个**融合版本**的速度要快得多，事实上快了**整整 8 倍**。
+哇，要知道，仅仅通过编写一个简单的内核就能带来如此巨大的差异。
 
-**英文**: For the manual Gell-U, you know, kind of just like I said, it's going to do a whole bunch of operations. It's going to do a bunch of multiplications. It's vectorized, but it's a bunch of, you know, CUDA kernels being launched here. And notice on the right, this CUDA kernel gets called three times because we have a whole bunch of multiplications floating around here. We've also got addition. We've got a tanh. And each one of these is probably kind of slow. And in the end, you know, we're incurring fairly large overhead doing this. Now, let's do the same thing with the PyTorch Gell-U. And this is this is really great.
+当然，你们的 **MatMul**（矩阵乘法）可能仍然是主要的性能瓶颈。
+但是，如果我们能将耗时从 **8 毫秒**降低到 **1 毫秒**，那将会非常酷，也会让人感到非常有成就感。
 
-**中文**: 对于手动实现的GELU，如前所述，它将执行大量运算，包括大量乘法运算。虽然该实现是向量化的，但此处会启动多个CUDA核函数。请注意右侧：该CUDA核函数被调用了三次，因为我们此处涉及大量乘法运算。此外，我们还包含加法运算和tanh函数。而上述每一项运算的执行速度可能都相对较慢。最终，这种实现方式带来了相当大的开销。现在，让我们使用PyTorch内置的GELU来执行相同操作——这效果非常出色。
+因此，在接下来的讲座部分，我们将尝试让性能接近那个 **1.1 毫秒**的目标。
 
-## 段落 73
+现在，让我们看看底层究竟发生了什么。
+其实我不需要再使用 **NSYS** 工具了，因为我目前只需要了解一些非常**高层级**（high-level）的信息。
+
+
+**英文**: For the manual GELU, you know, kind of just like I said, it's going to do a whole bunch of operations. It's going to do a bunch of multiplications. It's vectorized, but it's a bunch of, you know, CUDA kernels being launched here. And notice on the right, this CUDA kernel gets called three times because we have a whole bunch of multiplications floating around here. We've also got addition. We've got a tanh. And each one of these is probably kind of slow. And in the end, you know, we're incurring fairly large overhead doing this. Now, let's do the same thing with the PyTorch GELU. And this is this is really great.
+
+**中文**: 对于**手动实现的 GELU**，正如我之前所说，它需要执行一大堆运算操作。
+虽然这些操作是**向量化**（vectorized）的，但这里实际上启动了**多个不同的 CUDA 内核**。
+
+请注意右侧：这个特定的 CUDA 内核被调用了**三次**，因为代码中涉及了大量的乘法运算。此外，我们还有加法运算和 $\tanh$ 函数。
+每一个这样的独立操作可能都比较慢，最终导致我们承受了相当大的**开销**（overhead）。
+
+现在，让我们对 **PyTorch 自带的 GELU** 做同样的分析。
+结果非常棒。
+
+![](img/lec6_021.png)
+
 
 **英文**: There's a single CUDA kernel launch. It happens once and it just processes the whole thing. This is what we'd like to see. And of course, this is very, very fast because it's just a single CUDA kernel. So this is really nice. And we would like to somehow get to the CUDA kernel. And so the first thing you might think of, depending on how much you know about writing GPU efficient code, is, all right, the PyTorch people must have written this in the lowest level language possible. So we're going to do the same thing. We're going to go to not the lowest level possible, but we're going to go to the C++ API and we're going to write the CUDA kernel in C++. So let's open it up and write our own CUDA kernel.
 
-**中文**: 仅执行一次 CUDA 核函数启动，一次性处理全部数据。这正是我们希望看到的。当然，这种方式非常、非常快，因为只涉及单个 CUDA 核函数。因此效果极佳。我们的目标是设法直接调用 CUDA 核函数。那么，你首先想到的方案（取决于你对编写高效 GPU 代码的了解程度）可能是：PyTorch 团队必然已用尽可能底层的语言实现了该功能，因此我们也应照此办理——虽不追求绝对最低层，但至少采用 C++ API，并用 C++ 编写 CUDA 核函数。现在，让我们打开代码并自行编写 CUDA 核函数。
+**中文**: 它**仅启动了一次 CUDA 内核**，并一次性处理了所有数据。这正是我们希望看到的。
 
-## 段落 74
+当然，这种方式非常快，因为它只涉及**单个 CUDA 内核**。因此效果极佳。
+
+我们的目标是设法直接调用这个高效的 CUDA 内核。那么，你首先想到的方案（这取决于你对编写高效 GPU 代码的了解程度）可能是：
+“PyTorch 团队肯定是用尽可能底层的语言实现了这个功能，所以我们也应该照此办理。”
+虽然不一定非要追求绝对最底层，但至少应该使用 **C++ API**，并用 **C++** 来编写我们的 CUDA 内核。
+
+现在，让我们打开代码，亲自编写一个 CUDA 内核。
+
+![](img/lec6_022.png)
+
+```
+def create_cuda_gelu():
+    CUDA is an extension of C/C++ with APIs for managing GPUs.
+CUDA 是 C/C++ 的扩展，带有管理 GPU 的 API。
+    Simplified picture: write f(i), CUDA kernel computes f(i) for all i.
+简化图景：写 f(i)，CUDA 内核为所有 i 计算 f(i)。
+    
+    Grid: collection of thread blocks: numBlocks = (2, 4), blockDim = (1, 8)
+网格：线程块的集合：numBlocks = (2, 4), blockDim = (1, 8)
+    Thread block: collection of threads: blockIdx = (0, 1)
+线程块：线程的集合：blockIdx = (0, 1)
+    Thread: single unit of operation: threadIdx = (0, 3).
+线程：操作的基本单元：threadIdx = (0, 3)。
+    You write code that a thread execute, using (blockIdx, blockDim, threadIdx) to determine what to do.
+你编写线程执行的代码，使用 (blockIdx, blockDim, threadIdx) 来确定要做什么。
+    Set CUDA_LAUNCH_BLOCKING so that if there are errors, CUDA will tell you what went wrong.
+设置 CUDA_LAUNCH_BLOCKING，这样如果有错误，CUDA 会告诉你哪里出了问题。
+    os.environ["CUDA_LAUNCH_BLOCKING"] = "1"
+    The load_inline function makes it convenient to write CUDA code and bind it to a Python module for immediate use.
+load_inline 函数使得编写 CUDA 代码并将其绑定到 Python 模块以便立即使用变得方便。
+    # CUDA code: has the full logic
+    cuda_gelu_src = open("gelu.cu").read()
+    #include <math.h>#include <torch/extension.h>#include <c10/cuda/CUDAException.h>global void gelu_kernel(float* in, float* out, int num_elements) {
+// Get the index into the tensor
+int i = blockIdx.x * blockDim.x + threadIdx.x;
+if (i < num_elements) {  // To handle the case when n < numBlocks * blockDim
+    // Do the actual computation
+    out[i] = 0.5 * in[i] * (1.0 + tanh(0.79788456 * (in[i] + 0.044715 * in[i] * in[i] * in[i])));
+}
+}inline unsigned int cdiv(unsigned int a, unsigned int b) {
+// Compute ceil(a / b)
+return (a + b - 1) / b;
+}torch::Tensor gelu(torch::Tensor x) {
+TORCH_CHECK(x.device().is_cuda());
+TORCH_CHECK(x.is_contiguous());
+// Allocate empty tensor
+torch::Tensor y = torch::empty_like(x);
+// Determine grid (elements divided into blocks)
+int num_elements = x.numel();
+int block_size = 1024;  // Number of threads
+int num_blocks = cdiv(num_elements, block_size);
+// Launch the kernel
+gelu_kernel<<<num_blocks, block_size>>>(x.data_ptr<float>(), y.data_ptr<float>(), num_elements);
+C10_CUDA_KERNEL_LAUNCH_CHECK();  // Catch errors immediately
+return y;
+}
+    # C++ code: defines the gelu function
+    cpp_gelu_src = "torch::Tensor gelu(torch::Tensor x);"
+    Compile the CUDA code and bind it to a Python module.
+编译 CUDA 代码并将其绑定到 Python 模块。
+    ensure_directory_exists("var/cuda_gelu")
+    if not torch.cuda.is_available():
+        return None
+    module = load_inline(
+        cuda_sources=[cuda_gelu_src],
+        cpp_sources=[cpp_gelu_src],
+        functions=["gelu"],
+        extra_cflags=["-O2"],
+        verbose=True,
+        name="inline_gelu",
+        build_directory="var/cuda_gelu",
+    )
+    cuda_gelu = getattr(module, "gelu")
+    return cuda_gelu
+```
+
 
 **英文**: So how is that going to work? OK. So we have gone in and sort of created a C++ version of the whole thing. So CUDA, you know, when we say CUDA is actually the C++ API for interfacing with and programming GPUs. And just like sort of the logical model of a GPU that we describe, you know, we're going to write some sort of function F. And then when we sort of invoke this CUDA kernel, it's going to automatically call F on all of the elements of a vector or a matrix. And then we will get to parallel compute everything that we want. As nomenclature, we're going to have a grid, which is a collection of thread blocks. So think of this as I have a task. I'm going to cut it up into pieces. And there's going to be a number of blocks.
 
-**中文**: 那么这将如何实现呢？好的，我们已经着手开发了整个系统的C++版本。众所周知，CUDA实际上是一套用于与GPU交互及对GPU进行编程的C++应用程序接口（API）。正如我们之前所描述的GPU逻辑模型那样，我们将编写一个函数F；随后，当我们调用该CUDA核函数时，它会自动在向量或矩阵的所有元素上执行函数F，从而实现我们所需的一切并行计算。在术语上，我们将使用“网格”（grid）这一概念，它由若干线程块（thread block）组成。你可以将其理解为：我有一个任务，需要将其划分为多个部分，而每个部分就对应一个线程块。
+**中文**: 那么，这具体是如何实现的呢？
 
-## 段落 75
+好的，我们已经深入其中，创建了整个流程的 **C++ 版本**。
+大家要知道，当我们提到 **CUDA** 时，实际上指的是用于与 GPU 交互及进行编程的 **C++ API**。
+
+就像我们之前描述的 GPU **逻辑模型**一样：
+我们将编写一个特定的函数（通常称为核函数，比如 $F$）。
+当我们启动这个 **CUDA 内核**时，它会自动在向量或矩阵的**所有元素**上调用函数 $F$。
+这样，我们就能实现所需内容的**并行计算**。
+
+关于术语命名：
+我们将使用 **网格**（Grid）的概念，它是由多个 **线程块**（Thread Blocks）组成的集合。
+你可以这样理解：我有一个大任务，我会把它切割成许多小块。
+这些小块的数量就对应着**块**（Blocks）的数量。
+
 
 **英文**: This is the, you know, in a 2D grid, for example, there's going to be sort of a row coordinate and there's going to be a column coordinate. And this will be very useful if you're working with matrices. And then there will be the size of each of these blocks, like, you know, how big are these in terms of the number of thread blocks? So this is the dimension of the blocks. And then there's a collection of threads within these blocks. And this is the coordinate that, for example, one thread block lives in. And then each thread is within each block. So there's sort of hierarchical structure here. There's a grid and then there's a thread inside a grid. And then we're going to basically each function is going to take in three things. It's going to take the block index, like which thread block do I belong to? Which what's kind of the block dimensions? And then what is the index that I am like my thread index?.
 
-**中文**: 这是指在二维网格中，例如，会有一个行坐标和一个列坐标。当你处理矩阵时，这种结构将非常有用。接着是每个线程块的尺寸，即这些线程块在数量上有多大？这便是线程块的维度。然后，每个线程块内部还包含一组线程。该坐标用于标识某个线程块所处的位置；而每个线程则位于其所属的线程块内部。因此，这里存在一种层次化结构：最外层是网格，网格内包含线程块，线程块内又包含线程。最后，每个函数将接收三个参数：线程块索引（即我属于哪一个线程块）、线程块维度（即线程块的尺寸），以及我的线程索引（即我在该线程块内的编号）。
+**中文**: 例如，在一个 **二维网格**（2D Grid）中，会有行坐标和列坐标。如果你在处理矩阵，这将非常有用。
 
-## 段落 76
+接下来是每个**块**（Block）的大小，也就是每个块中包含多少个线程。这被称为**块的维度**（Block Dimensions）。
+
+在每个块内部，还包含一组**线程**（Threads）。
+这里存在一种**层级结构**：
+首先是**网格**（Grid），网格中包含多个**线程块**（Thread Blocks），而每个块中又包含多个**线程**。
+我们可以用坐标来定位：比如某个线程块在网格中的位置，以及某个特定线程在该块中的位置。
+
+基本上，每个核函数都会接收三个关键参数：
+1.  **块索引**（Block Index）：我属于哪一个线程块？
+2.  **块维度**（Block Dimensions）：这个块有多大（包含多少线程）？
+3.  **线程索引**（Thread Index）：我在当前块中的具体索引是多少？
+
 
 **英文**: And with these, I can kind of know which coordinate that I am in in the matrix or the vector. And then I can sort of decide what logic that I want. One sort of last thing before we go through the actual C++ code is, you know, whenever you're you're trying to debug CUDA, you want to launch with CUDA launch blocking equals one. This will allow you to actually debug your CUDA kernel. It will give you sort of error messages back at a cost in terms of the runtime. If you don't do that, you are going to have a bad time if you're writing CUDA code and needing to debug. So, OK, here is my Gell-U code. And let's go through it kind of piece by piece. And then I'll talk about what all the pieces are doing. This will probably take the longest out of the things that we're going to walk through.
 
-**中文**: 借助这些，我就能大致确定自己在矩阵或向量中的坐标位置，从而决定要采用何种逻辑。在进入实际的C++代码之前，最后再强调一点：调试CUDA程序时，务必设置CUDA_LAUNCH_BLOCKING=1来启动程序，这样才能对CUDA核函数进行有效调试；虽然这会以运行时性能为代价，但能返回具体的错误信息。如果不这样做，当你编写并调试CUDA代码时，将会遇到极大困难。好了，这是我的Gell-U代码，我们逐段分析，然后逐一说明各部分的功能。这部分内容很可能是本次讲解中耗时最长的部分。
+**中文**: 借助这些参数，我就能知道自己在矩阵或向量中的具体**坐标**，进而决定需要执行的**逻辑**。
 
-## 段落 77
+在深入实际的 C++ 代码之前，还有最后一点非常重要：
+每当你要**调试 CUDA** 代码时，务必设置环境变量 `CUDA_LAUNCH_BLOCKING=1`。
+这将允许你真正地对 CUDA 内核进行调试。虽然这会带来一定的**运行时开销**，但它能为你提供具体的**错误信息**。
+如果不这样做，当你编写需要调试的 CUDA 代码时，将会非常痛苦（"have a bad time"）。
+
+好了，下面是我的 **GELU** 代码。
+让我们逐段进行分析，随后我会解释每一部分的作用。
+这可能是我们接下来要探讨的所有内容中**耗时最长**的部分。
+
 
 **英文**: Other than the machine code. And once you understand this, you should be able to understand all the other pieces. So we'll go through this a little slowly. So there's two parts of this code. So the first part, this Gell-U kernel piece up here, this is the actual kernel. This does the computation. Right. This is going to get sent to the GPU. It's going to do the computation and then it will return the results. This piece, the Gell-U function here, this is a wrapper.
 
-**中文**: 除了机器码之外。一旦你理解了这一点，就应该能够理解所有其他部分。因此，我们将逐步详细地讲解这部分内容。这段代码包含两个部分：第一部分是上方的“Gell-U内核”代码段，这实际上是内核本身，负责执行计算；它将被发送至GPU进行运算，然后返回结果。而此处的“Gell-U函数”部分则是一个封装函数。
+**中文**: 除了机器码部分。一旦你理解了这一点，你应该就能掌握所有其他部分了。所以我们会稍微慢一点来讲解这段代码。
 
-## 段落 78
+这段代码主要分为两个部分：
 
-**英文**: Right. This lives on the CPU. It's going to orchestrate the launch of the kernel, which is actually going to go out and live in the GPU. Right. So maybe we can start with kind of this sort of wrapper piece, this Gell-U function first. Right. So we're always going to check two things. Basically, in the Triton or the CUDA code, we're always going to check. Oh, sorry. There's a question back there.
+1.  **上半部分的 `GELU` 内核（kernel）**：这是**实际的内核函数**。它负责执行具体的计算任务。这段代码会被发送到 **GPU** 上运行，完成计算后返回结果。
+2.  **这里的 `GELU` 函数**：这是一个**包装函数**（wrapper）。
 
-**中文**: 没错。这部分运行在CPU上，负责协调内核的启动，而该内核实际上将部署并运行在GPU上。没错。因此，我们或许可以先从这个封装部分——即Gell-U函数——开始。没错。我们始终需要检查两个事项。基本上，在Triton或CUDA代码中，我们总会进行这两项检查。哦，抱歉，后面有人提问。
+**英文**: Right. This lives on the CPU. It's going to orchestrate the launch of the kernel, which is actually going to go out and live in the GPU. Right. So maybe we can start with kind of this sort of wrapper piece, this Gell-U function first. Right. So we're always going to check two things. Basically, in the Triton or the CUDA code, we're always going to check. Oh, sorry. There's a question back there. OK. Sorry. That's my bad. OK. That is an easy fix, but I needed to know that you can't see. OK. Good. Right. Is this good? OK. Excellent.
 
-## 段落 79
+**中文**: 没错，这个包装函数运行在 **CPU** 上。它的职责是**协调内核的启动**，而真正的内核代码将会被发送到 **GPU** 上去执行。
 
-**英文**: OK. Sorry. That's my bad. OK. That is an easy fix, but I needed to know that you can't see. OK. Good. Right. Is this good? OK. Excellent.
+那么，也许我们可以先从这部分——也就是 `GELU` 包装函数开始讲起。
 
-**中文**: 好的。抱歉，这是我的疏忽。好的，这个问题很容易解决，但我需要确认您确实看不到。好的，很好。对吧？这样可以吗？好的，非常棒。
-
-## 段落 80
+通常，在编写 Triton 或 CUDA 代码时，我们总是要检查两件事。不过……
+抱歉，后面有位朋友有问题。
+不好意思，是我的疏忽。
+哦，原来是个很容易解决的小问题，但我得先确认你们能不能看清屏幕。
+好了，现在清楚了吗？
+太棒了。
 
 **英文**: OK. So we're going to start with the Gell-U function and there's two things that we're always going to need to do. The first one is to make sure that X lives in the GPU device. It's a CUDA tensor of some kind. Right. If it's not, well, that's going to be a problem. We're not going to be able to do anything on the GPU. The second thing, which is maybe less obvious, is that we want to check to make sure X is contiguous. What that means is it lives in a contiguous block of memory because when we index into X, we're going to do a whole bunch of indexing arithmetic and we're going to assume that X lives in a block of memory. Right.
 
-**中文**: 好的，我们将从Gell-U函数开始，而我们始终需要做两件事：第一，确保X位于GPU设备上，即它必须是某种CUDA张量；如果X不在GPU上，就会出现问题，因为我们无法在GPU上执行任何操作。第二点可能不太明显，即我们需要检查X是否为连续张量——这意味着X必须存储在一块连续的内存中，因为当我们对X进行索引时，会执行大量索引运算，而这些运算均基于X存于连续内存块这一假设。
+**中文**: 好的，我们从 `GELU` 函数开始。这里有两件事是我们必须做的：
 
-## 段落 81
+1.  **确保输入 `x` 位于 GPU 设备上**。也就是说，它必须是一个 **CUDA 张量**（CUDA tensor）。如果它不在 GPU 上，那就会出问题，因为我们无法在 GPU 上对它进行任何操作。
+
+2.  **确保 `x` 是连续存储的**（contiguous）。这一点可能不那么显而易见。
+    *   “连续”意味着数据在内存中占据着一块**连续的存储空间**。
+    *   这是因为当我们对 `x` 进行索引访问时，会执行大量的**索引算术运算**，而这些运算都基于一个前提假设：`x` 的数据是紧密排列在一块连续内存中的。
+
 
 **英文**: And if it doesn't, it's just going to be basically impossible to do this with any level of generality. And so when we compute the Gell-U, we take in an input X and we're going to output a Y. Right. And so we need to allocate output. So torch tensor Y equals torch empty like X. This is just saying, well, give me sort of an output tensor space or a pointer to output tensor that is just like the dimension of X. And notice that I'm not calling zeros. This will save on extra operations. I don't need to zero out these Ys because I'm going to write into them anyway. Right.
 
-**中文**: 如果做不到这一点，那么以任何通用程度来实现这一功能基本上都是不可能的。因此，在计算Gell-U时，我们接收一个输入X，并输出一个Y。对吧？所以我们需要为输出分配空间。于是，我们定义PyTorch张量Y为：`Y = torch.empty_like(X)`。这行代码的意思是：请为我提供一个输出张量空间（或指向输出张量的指针），其维度与X完全相同。请注意，这里我并未调用`zeros`函数——这样可以省去额外的操作开销。我不需要将Y初始化为零，因为无论如何我都会向其中写入数据。
+**中文**: 如果数据不连续，那么想要以通用的方式实现这个功能基本上是不可能的。
 
-## 段落 82
+因此，在计算 GELU 时，我们接收输入 `x`，并输出 `y`。
+这就意味着我们需要**分配输出内存**。
+代码 `y = torch.empty_like(x)` 的意思是：为我创建一个与 `x` **维度相同**的输出张量空间（或者说指向该空间的指针）。
+
+请注意，我这里使用的是 `empty` 而不是 `zeros`。
+这样做是为了**节省额外的操作开销**。
+我不需要先将 `y` 清零，因为我反正会立刻向其中写入数据。
+
 
 **英文**: So this is a minor, but you might as well do it. Optimization. And then basically in all the code that we write, we're going to need to figure out the grid. Right. So what's the total number of elements that I have? What's the size of each block? The number of threads that I have in each block. And then how many blocks total do I have? And when I need to figure out the number of blocks, I'm going to call C div, which is going to be essentially take the ratio of num elements to block size and then take the ceiling. Right. Because they need to round up to make sure that very last set of elements that sort of isn't divisible by block size still gets computed. Right. So I take the ceiling rather than the floor.
 
-**中文**: 因此，这虽是一个小问题，但你最好还是处理一下——即优化。接着，在我们编写的所有代码中，基本上都需要确定网格配置，对吧？那么，我总共拥有多少个元素？每个线程块的大小是多少？每个线程块中包含多少个线程？而总的线程块数量又是多少？当需要计算线程块总数时，我将调用 C 语言中的“向上取整除法”（ceiling division），其本质是将元素总数除以线程块大小，然后向上取整。对，因为必须向上取整，才能确保最后那组无法被线程块大小整除的元素也能得到计算。因此，我们采用向上取整而非向下取整。
+**中文**: 这是一个微小的优化，但既然能做，不妨加上。
 
-## 段落 83
+接下来，在我们编写的所有代码中，关键步骤是确定 **网格配置**（grid）。具体来说，我们需要弄清楚：
+*   总共有多少个元素？
+*   每个块（block）的大小是多少？（即每个块中包含多少个线程）
+*   总共需要多少个块？
+
+当我们需要计算块的总数时，会调用 `cdiv` 函数。它的本质是计算 **元素总数除以块大小** 的比值，然后对结果进行 **向上取整**（ceiling）。
+
+之所以要向上取整而不是向下取整，是为了确保即使最后一组元素的数量无法被块大小整除，这些剩余的元素也能被计算到。
+
 
 **英文**: And then this is all very simple bookkeeping stuff. And then I say, all right, launch the kernel. You know, the Geliou kernel gets launched. And this sort of angle brackets is saying this is kind of the with the given number of blocks and the size of each block. And this is going to be passed into sort of the kernel command. And then I'm going to pass in the pointers to X's and Y's. Right. I'm not actually going to pass the values of X's and Y's and the total number of elements. And I need this to compute sort of essentially the boundary conditions of my kernel. So now let's go to the actual kernel itself.
 
-**中文**: 然后，这些都只是非常简单的记账工作。接着我说：“好，启动内核。” 你知道，Geliou 内核随即启动。这种尖括号语法表示：给定线程块的数量以及每个线程块的大小。这些参数将传入内核调用命令中。然后，我将传入指向数组 X 和 Y 的指针——注意，我实际传递的并非 X 和 Y 的具体数值，而是它们的指针，此外还需传入元素总数。我需要该总数来计算内核运行所需的边界条件。现在，让我们进入内核本身的代码。
+**中文**: 接下来就是一些非常简单的**资源管理**（bookkeeping）工作了。
 
-## 段落 84
+然后，我就可以说：“好，启动内核。”
+也就是启动 `GELU` 内核。
+
+这里使用的**尖括号语法**（`<...>`）是指定内核的启动配置：即**块的总数**以及**每个块的大小**。
+这些参数会被传递给内核启动命令。
+
+接着，我会传入 `x` 和 `y` 的**指针**。
+请注意，我传入的不是 `x` 和 `y` 的具体数值，而是它们的内存地址，同时还会传入元素的**总数量**。
+我需要总数量来计算内核的**边界条件**（确保处理完所有数据而不越界）。
+
+好了，现在让我们进入真正的**内核代码**部分。
+
 
 **英文**: Right. So I have global void Geliou kernel and I get in pointers for in and out and I have number of elements items and this keyword global. The website, sorry, the rendering here has mangled it a little bit, but you should think of this as underscore underscore global. And this is a keyword that distinguishes it as a Kuda kernel function. And so what am I doing? Well, you know, this thread is actually supposed to operate on a single element I. Right. But I don't get I as input. Like the code doesn't actually tell me you're in a vector in coordinate I. So I need to compute where I am and how I'm how am I going to do that. It's going to be I take my block index.
 
-**中文**: 没错。因此，我有一个全局的 void Geliou 内核函数，并接收指向输入和输出数据的指针，以及元素数量 items，还有 global 关键字。网站——抱歉，此处的渲染略有错乱，但您应将其理解为“__global”。这是一个用于标识 CUDA 内核函数的关键字。那么，我究竟在做什么呢？您知道，当前线程实际上应处理单个元素 I，对吧？但我并未直接获得 I 作为输入参数；代码并未明确告知我：“您正位于向量的第 I 个坐标位置。”因此，我需要自行计算当前所处的位置，即如何确定 I 的值。方法是：获取我的线程块索引。
+**中文**: 好的，这里定义的是 `__global__ void GELU_kernel` 函数。
+它接收输入指针 `in`、输出指针 `out` 以及元素总数 `num_elements`。
 
-## 段落 85
+这里的 `global` 关键字在网页渲染中可能显示得有点乱，但你应该把它理解为 **`__global__`**（前后各有两个下划线）。
+这是一个特定的关键字，用于标识这是一个 **CUDA 内核函数**。
 
-**英文**: Right. I only have one dimension. So it's block index dot X. So just the first coordinate and then multiply it by the size of each block, the block dim dot X. And this tells me, you know, basically the starting point within within my current block. And then now I add in thread IDX. So, you know, I know where the start of my current block is. And I add in the offset to where I am within the block. And that gives me my global coordinate. Right.
+那么，具体在做什么呢？
+每个线程实际上负责处理**单个元素**，我们暂且称这个元素的索引为 `i`。
+但是，`i` 并不是作为参数直接传给函数的。代码并没有直接告诉你：“你正在处理向量中索引为 `i` 的那个元素”。
+因此，我需要**自行计算**当前线程对应的索引 `i` 是多少。
+该如何计算呢？
+首先，我要获取我的 **块索引**（block index）。
 
-**中文**: 对。我只有一维，因此是块索引的 X 分量（block index.x），即第一个坐标，再乘以每个块的尺寸（blockDim.x）。这便给出了我在当前块内的起始位置。接着再加上线程索引（threadIdx），即：我已知当前块的起始位置，再叠加我在该块内的偏移量，从而得到我的全局坐标。
 
-## 段落 86
+**英文**: Right. I only have one dimension. So it's block index dot X. So just the first coordinate and then multiply it by the size of each block, the block dim dot X. And this tells me, you know, basically the starting point within within my current block. And then now I add in thread IDX. So, you know, I know where the start of my current block is. And I add in the offset to where I am within the block. And that gives me my global coordinate. Right. So some some bookkeeping computation just to get the coordinates here. And then this is important, too. You see this pattern basically in all the Kuda code that people write. There's no kind of out of bounds checking naturally. And so what you do is I have my coordinate and I'm going to check to make sure that, you know, I am supposed to be processing something that's in bounds and some of the threads at the very end of your block, they're going to be processing stuff that's out of bounds in memory. And you do not want to touch those. And so you you basically condition it on I less than num elements. And you do nothing if you're outside of that. Sorry. Yes.
 
-**英文**: So some some bookkeeping computation just to get the coordinates here. And then this is important, too. You see this pattern basically in all the Kuda code that people write. There's no kind of out of bounds checking naturally. And so what you do is I have my coordinate and I'm going to check to make sure that, you know, I am supposed to be processing something that's in bounds and some of the threads at the very end of your block, they're going to be processing stuff that's out of bounds in memory. And you do not want to touch those. And so you you basically condition it on I less than num elements. And you do nothing if you're outside of that. Sorry. Yes.
+**中文**: 没错，因为我们只处理一维数据，所以取 `blockIdx.x`（块索引的 x 分量），然后乘以 `blockDim.x`（每个块的大小/维度）。
+这告诉了我当前块在全局范围内的**起始位置**。
 
-**中文**: 因此，需要进行一些简单的簿记计算来获取此处的坐标。此外，这一点也很重要：你在人们编写的几乎所有CUDA代码中都能看到这种模式——它本身并不包含越界检查。因此，你需要先获取自己的坐标，然后检查该坐标是否在有效范围内，确保自己处理的是合法的数据；而线程块末尾的一些线程则可能试图访问内存中越界的数据，你绝不能触碰这些越界数据。所以，你通常会以“i < num_elements”作为条件进行判断，一旦超出该范围，就直接跳过，不做任何操作。抱歉，是的。
+接下来，再加上 `threadIdx.x`（线程索引）。
+既然我已经知道了当前块的起始位置，再加上我在块内部的**偏移量**，就得到了我的**全局坐标**（即全局索引 `i`）。
+这就是一些用于计算坐标的常规资源管理操作。
 
-## 段落 87
+另外，这一点也非常重要：你在几乎所有人们编写的 CUDA 代码中都会看到这种模式。
+CUDA 本身**不会自动进行越界检查**。
+因此，我们需要拿到计算出的坐标 `i` 后，显式地检查它是否在有效范围内。
+因为在每个块的末尾，部分线程计算出的全局索引可能会超出实际数据的范围（即访问到无效的内存）。
+我们绝对不希望这些线程去操作那些内存。
+
+所以，我们会加上一个条件判断：**`if (i < num_elements)`**。
+只有当索引在范围内时才执行计算；如果超出了这个范围，该线程就**什么都不做**。
+
 
 **英文**: Sorry, that's this is just the extension that you sort of write the Kuda code and it's to distinguish it from, you know, just your standard C code. OK, so it's just a file name thing is this dot CU. There's nothing particularly special about it. OK, and then so now, you know, within here, we're going to just do our computation, right? It's just going to be I'm going to write out I have my input I and I'm going to index into the element and I compute my Gell you just like I did before and I assign it to out of I and then I'm done. Right. That's all that I need to do. And since this is all pointer stuff, I don't really need to worry too much about what is kind of actually happening here. So that's basically it. I can then take my sort of CUDA, Gell you code that I have and then I can load this sort of C plus plus code in line. And then I can just have it compile into a module all within Python.
 
-**中文**: 抱歉，这只是个扩展名，用于标识您编写的CUDA代码，以便将其与标准C代码区分开来。好的，因此这只是个文件名约定，即以“.cu”为后缀。它本身并无特别之处。好的，那么现在，在此文件中，我们将执行计算，对吧？我只需写出输入数组“I”，通过索引访问其元素，然后像之前一样计算出对应的“Gell”值，并将结果赋值给输出数组的第I个元素，这样就完成了。对吧？这便是我需要做的全部工作。而且由于这里全部涉及指针操作，我实际上无需过多担心底层具体发生了什么。基本上就是这样了。接着，我可以将上述CUDA“Gell”代码与内联的C++代码整合起来，然后直接在Python中将其编译为一个模块。
+**中文**: 抱歉，刚才提到的 `__global__` 只是编写 CUDA 代码时的一种**语法扩展**，用来将其与标准的 C 代码区分开来。
+至于文件扩展名 `.cu`，也没什么特别之处，只是一个文件名约定而已。
 
-## 段落 88
+好了，现在进入内核内部，我们只需要执行具体的**计算逻辑**：
+我会读取输入指针在索引 `i` 处的值（即 `in[i]`），像之前一样计算 **GELU** 函数的结果，然后将其赋值给输出指针的对应位置（即 `out[i]`）。
+做完这一步，任务就完成了。这就是我们需要做的全部工作。
 
-**英文**: It's all very nice and convenient. You don't really have to go out onto the command line and do things. So now we have CUDA, Gell you defined. So this is nice. And basically, it's a compilation of this. And I can call it from within Python and we'll use the C bindings to call this guy. OK, we're done calling CUDA, Gell you. I have my you know, I can check that the manual Gell you and the CUDA, Gell you are the same. And now let's benchmark the two. So I have the time that it takes to run Pytorch.
+由于这里主要涉及**指针操作**，我们不需要太担心底层具体是如何发生的。
 
-**中文**: 这一切都非常好且方便，你实际上无需进入命令行去执行操作。现在我们已拥有 CUDA Gell you（应为 CUDA GeLU，下同），你已将其定义好了，这很好。本质上，这是对该函数的编译实现。我可以在 Python 内部直接调用它，并通过 C 绑定调用该函数。好的，CUDA GeLU 的调用已完成。我已有自己的实现（即手动实现的 GeLU），可以验证手动实现的 GeLU 与 CUDA GeLU 的结果是否一致。接下来，我们对二者进行性能基准测试。我已获取 PyTorch 实现的运行耗时。
+基本上就是这样。
+接下来，我可以将这段写好的 CUDA GELU 代码，通过**内联**（inline）的方式加载到 C++ 代码中。
+然后，我可以直接让它在 **Python** 内部编译成一个模块，整个过程都在 Python 环境中完成。
 
-## 段落 89
 
-**英文**: And, you know, just like last time, it's about one point one milliseconds and manual time. Remember, it's eight point one milliseconds. So drum roll. What is our CUDA time? Well, we've gotten it down to one point eight. Not quite as good as Pytorch's implementation. But, you know, we're getting pretty close to Pytorch time. Right. We've we've gone from eight milliseconds to one point eight milliseconds, which is not bad. because that C code wasn't that hard to write. And so now we also do some profiling and we can kind of see what is happening here now.
+**英文**: It's all very nice and convenient. You don't really have to go out onto the command line and do things. So now we have CUDA, Gell you defined. So this is nice. And basically, it's a compilation of this. And I can call it from within Python and we'll use the C bindings to call this guy. OK, we're done calling CUDA, Gell you. I have my you know, I can check that the manual Gell you and the CUDA, Gell you are the same. And now let's benchmark the two. So I have the time that it takes to run Pytorch. And, you know, just like last time, it's about one point one milliseconds and manual time. Remember, it's eight point one milliseconds. So drum roll. What is our CUDA time? Well, we've gotten it down to one point eight. Not quite as good as Pytorch's implementation. But, you know, we're getting pretty close to Pytorch time. Right. We've we've gone from eight milliseconds to one point eight milliseconds, which is not bad. because that C code wasn't that hard to write. And so now we also do some profiling and we can kind of see what is happening here now.
 
-**中文**: 而且，和上次一样，耗时约为1.1毫秒，这是手动计时的结果。请记住，实际耗时是8.1毫秒。那么，让我们隆重揭晓：我们的CUDA耗时是多少？目前我们已将其降低至1.8毫秒。虽然尚未达到PyTorch实现的水平，但已非常接近PyTorch的耗时了。没错，我们已从8毫秒降至1.8毫秒，这表现相当不错，毕竟这段C代码编写起来并不困难。现在，我们还进行了一些性能分析，从而能够大致了解当前的运行情况。
+**中文**: 这一切都非常便捷，你完全不需要切换到命令行去执行各种操作。
 
-## 段落 90
+现在，我们的 `cuda_gelu` 已经定义好了。这很棒，它本质上就是那段代码编译后的产物。
+我们可以直接从 Python 中调用它，利用 **C 语言绑定**（C bindings）来运行这个内核函数。
+
+好了，`cuda_gelu` 调用完毕。
+接下来，我可以验证一下：手动实现的 GELU 和我们刚写的 CUDA GELU 结果是否一致。
+确认无误后，让我们对两者进行**性能基准测试**（benchmark）。
+
+首先看 **PyTorch** 版本的运行时间：和上次一样，大约是 **1.1 毫秒**。
+再看**手动实现**（之前提到的纯 Python 或慢速版本）的时间：记得是 **8.1 毫秒**。
+
+那么，激动人心的时刻到了（敲鼓声🥁）…… 我们的 **CUDA 版本**耗时多少呢？
+结果是 **1.8 毫秒**。
+
+虽然还比不上 PyTorch 原生实现的效率，但已经非常接近了。
+要知道，我们将耗时从 **8.1 毫秒**大幅降低到了 **1.8 毫秒**，这已经相当不错了，毕竟那段 C/CUDA 代码写起来并不难。
+
+现在，我们还可以做一些**性能分析**（profiling），以便更深入地了解底层到底发生了什么。
+
+![](img/lec6_023.png)
+
 
 **英文**: And, you know, it's called the Gell you kernel. This is the code that got shipped off to the GPU. And then it's calling empty like. This is the initialization and then empty strided. Right. And then CUDA launch kernel and CUDA device synchronize. And that's basically all that's happening. And notice how, you know, once again, this is a single CUDA kernel eats up 100 percent of the GPU time, kind of like what we what we wanted. Right. So there's some further optimization we can do.
+But this is really already solved the problem of, you know, kernel fusion. We fused all the operators together. OK, so pretty good. These kinds of element wise operations are easy to write in CUDA. Like if you have a new kind of, I don't know, non-linearity,. you could easily write a CUDA kernel for it yourself if you really wanted to. But more interesting operations are going to require reading multiple values like doing reductions. Those are going to get a little more complicated. Flash detention will be a little bit more complicated, but not too much so when you have to do it in the assignment. OK, any questions on the on the simple C plus plus CUDA kernel? Yes.
 
-**中文**: 而且，如你所知，它被称为“Gell you”内核。这部分代码被发送至GPU执行。随后调用的是empty_like（空张量创建函数），即初始化操作，接着是empty_strided（按步幅创建空张量）。然后是CUDA launch kernel（CUDA内核启动）和CUDA device synchronize（CUDA设备同步）。基本上整个过程就仅此而已。请注意，再次强调，这是一个单一CUDA内核独占了100%的GPU运行时间，这正是我们所期望的效果，对吧？因此，我们还可进一步优化。
+**中文**: 你看，这里调用的是 **GELU 内核**（kernel）。这就是被发送到 GPU 上执行的代码。
+接着它调用了 `empty_like` 进行初始化，然后是 `empty_strided`。
+随后是 `cudaLaunchKernel`（启动 CUDA 内核）和 `cudaDeviceSynchronize`（同步设备）。
+基本上整个过程就是这些。
 
-## 段落 91
+请注意，正如我们之前所期望的那样，这**单个 CUDA 内核**占据了 **100% 的 GPU 时间**。
 
-**英文**: But this is really already solved the problem of, you know, kernel fusion. We fused all the operators together. OK, so pretty good. These kinds of element wise operations are easy to write in CUDA. Like if you have a new kind of, I don't know, non-linearity,. you could easily write a CUDA kernel for it yourself if you really wanted to. But more interesting operations are going to require reading multiple values like doing reductions. Those are going to get a little more complicated. Flash detention will be a little bit more complicated, but not too much so when you have to do it in the assignment. OK, any questions on the on the simple C plus plus CUDA kernel? Yes.
+当然，我们还可以做一些进一步的优化。
+但实际上，我们已经解决了**算子融合**（kernel fusion）的问题——我们将所有操作符融合在了一起。这非常棒。
 
-**中文**: 但这个问题实际上早已通过核函数融合（kernel fusion）得以解决。我们已将所有算子融合在一起。很好，效果相当不错。这类逐元素操作在CUDA中很容易编写。例如，如果你有一种新型的（比如某种非线性变换），即使你不太熟悉，也能轻松自行编写对应的CUDA核函数。但更复杂的操作（例如需要读取多个值的规约操作）则会稍显复杂。Flash Attention的实现也会略为复杂一些，但在作业中实现时并不会过于困难。关于这个简单的C++/CUDA核函数，大家有什么问题吗？是的。
+像这类**逐元素**（element-wise）的操作，用 CUDA 写起来很容易。
+比如，如果你有一种新的激活函数（非线性层），只要你愿意，完全可以自己轻松地为它编写一个 CUDA 内核。
 
-## 段落 92
+不过，更有趣的操作通常需要读取多个值，例如执行**归约**（reductions）操作，那些会稍微复杂一些。
+**Flash Attention** 也会更复杂一点，但当你需要在作业中实现它时，难度也不会太大。
+
+好了，关于这个简单的 C++/CUDA 内核，大家有什么问题吗？
+
 
 **英文**: What happened to the check at the beginning? Yeah. Is that for an error? Does it call some sort of kernel? Yeah. So the question was what happens if it's not contiguous, at least in the code that we wrote, it will just throw an error because it's an assert. You could potentially write code to handle it, but there's almost no reason for memory to be fragmented because it will allocate. contiguously and you won't deallocate the middle of a memory unless you're doing something really tricky. And so you should really, unless you're doing something pretty advanced, expect to have contiguous memory. Do like a transposer jump operation that makes memory not contiguous? Right. So like when you're encoding at a higher level, you should be careful to reverse something you've made,. like you're forced to be contiguous before calling operation. Yeah.
 
-**中文**: 最开始的检查发生了什么？是的。那是用来检测错误的吗？它会调用某种内核吗？是的。因此问题在于：如果内存不连续，会发生什么？至少在我们编写的代码中，这会直接抛出错误，因为这是一个断言（assert）。你当然可以编写代码来处理这种情况，但内存几乎不会出现碎片化，因为内存分配本就是连续进行的；除非你做了非常特殊、复杂的事情，否则你也不会只释放一块内存中间的部分。因此，除非你正在实现相当高级的功能，否则你理应默认内存是连续的。比如执行转置（transpose）之类的跳转操作，是否会导致内存变得不连续？没错。因此，在更高层进行编码时，你需格外注意，及时撤销此前引入的非连续性——例如，在调用相关操作前，必须确保内存恢复为连续状态。
+**中文**: **问：** 开头的那个检查是怎么回事？那是用来报错的吗？它会调用某种内核吗？
 
-## 段落 93
+**答：** 这个问题问的是：**如果内存不是连续（contiguous）的会发生什么？**
+在我们编写的这段代码中，它会直接**抛出一个错误**，因为那里有一个断言（`assert`）。
+
+理论上，你可以编写代码来处理非连续内存的情况，但实际上**几乎没有必要**这么做。
+原因在于：内存分配时通常就是连续的；除非你进行了一些非常特殊的操作，否则不会去释放一块内存的中间部分导致其碎片化。
+因此，除非你在做非常高阶的操作，否则你应该默认内存都是连续的。
+
+**问：** 那像转置（transpose）这样的操作会让内存变得不连续，这该怎么办？
+
+**答：** 没错。
+所以，当你在更高层级进行编码时，需要格外小心：如果你之前的操作导致了内存不连续（例如转置），在调用当前这个算子之前，你必须**强制使其恢复为连续内存**（通常通过 `.contiguous()` 等方法）。
+
 
 **英文**: So the question was like if you're transposing, then you're no longer going to be contiguous. You're going to have like a jump between all the elements in the index. If you're sort of row traversing something that's sort of column store. Yeah. So I think transpose or like views or like essentially shuffling dimensions is like the one exception to this, but that's handleable in like the outer, sort of the wrapper part, right?. You can basically pass it something that is contiguously indexed. And for a lot of the matrices, you won't really care. So, yes. Right. So what would happen if you chose a different block size? The sort of GPU related sort of concerns would kick in, sort of like do you have enough blocks to saturate your SMs? And do you have enough work within each block? And those are kind of the two things that could matter here.
 
-**中文**: 因此，问题在于：如果你进行转置操作，数据就不再连续存储了，索引中的各个元素之间会出现跳变。例如，当你以行优先方式遍历一个按列存储的数据结构时，就会出现这种情况。是的。我认为，转置操作、视图（view）操作，或者本质上对维度顺序进行重排的操作，是这一规则的唯一例外；但这类操作可以在外层、即封装层中加以处理，对吧？你基本上可以传入一个索引连续的数据结构。而对于许多矩阵运算而言，你实际上并不在意这一点。所以，是的。那么，如果选择不同的分块大小，会发生什么情况呢？此时就会涉及与GPU相关的考量，比如：你是否拥有足够多的线程块来充分占用流式多处理器（SM）？每个线程块内部是否有足够的计算任务？这两点正是此处需要关注的关键因素。
+**中文**: **问：** 所以问题是，如果你进行了转置（transpose），内存就不再是连续的了。索引中的元素之间会出现“跳跃”，就像你在按行遍历一个按列存储的数据结构一样。
 
-## 段落 94
+**答：** 是的。
+我认为，**转置**、**视图**（views）或者本质上**打乱维度**（shuffling dimensions）的操作，是上述“内存连续”规则的少数例外情况。
+不过，这些问题通常可以在外层的**包装代码**（wrapper part）中处理。
+你基本上可以确保传递给内核的是**索引连续**的数据。
+而且对于很多矩阵运算来说，你可能并不真正关心底层的存储布局。所以，是的，这通常不是大问题。
+
+**问：** 那么，如果你选择了不同的**块大小**（block size）会发生什么？
+
+**答：** 这时，与 **GPU 架构相关**的考量就会起作用了。主要涉及两个方面：
+1.  你是否有足够的**块**（blocks）来填满你的**流多处理器**（SMs），使其达到饱和状态？
+2.  每个块内部是否有足够的**工作量**？
+
+这两点是决定性能的关键因素。
+
 
 **英文**: But I think my guess is that for block sizes that are relatively large, like 1024, it probably won't matter past this certain point. Because we're not doing anything advanced. It's all entry-wise operations for this very, very simple example. Yeah. Is the reason that our non-GPU operation is so slow because this huge asset like this small operation, and then some GPU asset kind of goes like that?. So the question was like, why was our non-CUDA kernel, sort of like manual thing, so slow? It's not that it's sending things back from GPU to CPU per se. Like X is going to live in the GPU. We allocate it in GPU. Like we'll do like as the device like CUDA. But it's going to basically not be in the SM the whole time, right? So once we do like X squared, right, that's a CUDA kernel.
 
-**中文**: 但我猜测，对于像1024这样相对较大的块尺寸而言，超过某个特定点后，性能差异可能就不再明显了。因为我们并未执行任何高级操作，而只是对这个极其简单的示例进行逐元素运算。是的。我们非GPU操作之所以如此缓慢，是否是因为这类微小操作需处理庞大的数据量，而GPU操作则能高效完成？因此问题在于：为何我们未使用CUDA核函数的手动实现方式会如此缓慢？这并非因为需要将数据频繁地从GPU传回CPU。例如，变量X将始终驻留在GPU上——我们是在GPU上为其分配内存的，即在设备端（如CUDA设备）上分配。但X并不会始终驻留在流式多处理器（SM）中，对吧？因此，当我们执行X的平方运算时，这实际上调用的是一个CUDA核函数。
+**中文**: **答：** 但我猜测，对于相对较大的块大小（比如 1024），超过某个临界点后，性能差异可能就不大了。
+毕竟我们在这个非常简单的例子中并没有做什么高级操作，全都是**逐元素**（element-wise）的运算。是的。
 
-## 段落 95
+**问：** 我们的非 GPU 操作之所以那么慢，是因为这个巨大的开销吗？就像这么小的一个操作，加上一些 GPU 的开销，导致曲线变成那样？
+
+**答：** 这个问题问的是：为什么我们那个**非 CUDA 内核**（也就是手动实现的版本）会如此缓慢？
+
+其实，原因**并不是**因为数据在 GPU 和 CPU 之间来回传输。
+你看，张量 `X` 是驻留在 **GPU** 上的。我们在 GPU 上分配了它（例如使用 `.to('cuda')`）。
+但是，问题在于它并没有**一直停留在流多处理器**（SM）中执行。
+
+举个例子，当我们执行 `X ** 2`（X 的平方）时：
+这本身就是一个 **CUDA 内核**。
+在手动实现（非融合）的情况下，每一个单独的操作（如平方、激活函数等）都会启动一个独立的内核。
+这意味着：
+1.  每个操作都要经历一次内核启动开销。
+2.  每个操作完成后，中间结果可能需要写回全局显存（Global Memory），然后再由下一个内核读取。
+3.  数据无法一直保留在速度极快的片上缓存或寄存器中供连续使用。
+
+相比之下，我们刚才写的融合内核（Fused Kernel）将所有这些步骤合并到了**一个**内核中，数据只需从全局显存读取一次，在 SM 内部处理完所有逻辑，再写回一次。这就避免了多次内核启动和频繁的全局显存读写，从而大幅提升了速度。
+
 
 **英文**: And so that multiplication operation will read the sort of vector from the global memory into the SMs, do the computation, it will write it back. And so this is all in the sort of DRAM to SM communication cost, rather than the CPU to GPU communication cost. Of course, if you write like as device CPU, then you'll get the CPU transfer cost in addition to the DRAM transfer cost. Okay, so now you've seen that and like, okay, so that was not too painful. But it would be really nice if we had nicer sort of Python abstractions for. writing CUDA kernels. And this is what Triton is. And Triton is quite nice. It has this very nice middle ground where you don't have to manage literally everything about the GPU. So Triton is sort of a domain specific language, developed by OpenAI in 2021.
 
-**中文**: 因此，该乘法运算会将向量从全局内存读取到流式多处理器（SM）中，执行计算，再将结果写回。整个过程涉及的是DRAM与SM之间的通信开销，而非CPU与GPU之间的通信开销。当然，如果你像在设备端（device）与CPU之间进行数据传输，那么除了DRAM传输开销外，还会额外产生CPU传输开销。好的，现在你已经了解了这一点，嗯，看起来还不算太难。但如果我们能拥有更简洁、更友好的Python抽象来编写CUDA核函数，那就再好不过了。而Triton正是为此而生。Triton非常出色，它提供了一个极佳的中间层次：你无需事无巨细地管理GPU的所有细节。Triton是一种领域特定语言（DSL），由OpenAI于2021年开发。
+**中文**: 因此，那个乘法操作会将向量从**全局显存**（Global Memory）读取到**流多处理器**（SMs）中，执行计算，然后再写回。
+所以，这里的耗时主要来自于 **DRAM 与 SM 之间的通信开销**，而不是 CPU 与 GPU 之间的通信开销。
 
-## 段落 96
+当然，如果你把设备设置为 CPU（`.to('cpu')`），那么除了 DRAM 的传输成本外，你还会额外承担 **CPU 与 GPU 之间的数据传输成本**。
+
+好了，现在大家已经看到了这个过程。虽然它并没有特别痛苦，但如果能有更优雅的 **Python 抽象**来编写 CUDA 内核，那将会非常好。
+
+这正是 **Triton** 的价值所在。
+Triton 非常棒，它提供了一个极佳的**中间地带**：你不需要事无巨细地管理 GPU 的每一个细节。
+Triton 是一种**领域特定语言**（DSL），由 **OpenAI** 在 **2021 年**开发。
 
 **英文**: And it makes GPU programming much more accessible. So you write everything kind of in Python, and you don't really think about the threads anymore. You think about thread blocks. And Triton manages a lot of stuff that is annoying, but can be automatically optimized. So it can manage coalescing of memory. So remember that from DRAM, you get four sort of adjacent values at once, what's something called burst mode. So you really wanna make sure that your memory retrievals are sort of grouped into adjacent sort of four element or more sort of calls at once. So it will handle those automatically, it will group those. It will do shared memory management when you need to sort of manage which sort of memory that you're writing to within the SM with multiple threads. From within each SM, you might need to stop or start threads all managed automatically.
 
-**中文**: 这使得GPU编程变得更加便捷。你只需用Python编写所有代码，而无需再过多考虑线程问题，只需关注线程块即可。Triton能够自动处理许多繁琐但可优化的细节：例如，它能自动管理内存访问的合并（coalescing）。如前所述，从DRAM中读取数据时，系统会以“突发模式”（burst mode）一次性获取四个相邻的数据值；因此，你需确保内存访问请求尽可能按相邻的四元素（或更多）为一组进行。Triton会自动完成此类分组操作。此外，在需要对流式多处理器（SM）内部由多个线程共享的内存进行管理时（例如指定写入哪类内存），Triton也会自动处理共享内存的分配与管理；在每个SM内部，线程的启动与暂停同样由Triton全自动管理。
+**中文**: 它让 GPU 编程变得更加**平易近人**（accessible）。
+你基本上完全使用 **Python** 进行编写，不再需要直接操心具体的**线程**（threads），而是专注于**线程块**（thread blocks）。
 
-## 段落 97
+Triton 会自动管理许多原本繁琐但可以被自动优化的细节：
+
+*   **内存合并**（Memory Coalescing）：
+    还记得吗？从 DRAM 读取数据时，通常会以**突发模式**（burst mode）一次性获取四个相邻的数值。
+    因此，你非常需要确保内存读取操作是成组进行的，即一次性请求四个或更多相邻元素。
+    Triton 会**自动处理**这一点，它会自动将这些访问分组优化。
+
+*   **共享内存管理**（Shared Memory Management）：
+    当你在一个 SM 内部，需要协调多个线程对特定内存区域（共享内存）的读写时，Triton 会自动帮你管理。
+
+*   **线程同步**（Thread Synchronization）：
+    在每个 SM 内部，如果需要停止或启动某些线程（即线程屏障同步），这一切也都由 Triton **自动管理**。
+
+简而言之，Triton 帮你屏蔽了底层复杂的硬件细节，让你能更高效地编写高性能内核。
+
 
 **英文**: But scheduling across SMs or what different SMs do, that's manual. So the programming model is that you're gonna think at the SM centric level and the compiler will handle a lot more of the lower level details. And Triton's quite nice because it can outperform by quite a bit a lot of high torch implementations. So it's kind of like going all the way to writing CUDA, but you're still in the very familiar Python land. And I think a very underappreciated advantage is sort of as it's written here, it's all in Python. You can step through it, you can kind of debug it fairly nicely. And so let's step through a Triton kernel. Like once again, we're gonna write GALU. And we're gonna do it in Triton. So this, I've put the code to be as similar structure as possible to our other code, right? So this is sort of the CPU side code, so to speak.
 
-**中文**: 但跨流式多处理器（SM）的调度，或是不同SM各自执行的任务，都需要手动完成。因此，编程模型要求你以SM为中心进行思考，而编译器则负责处理大量底层细节。Triton的优势十分显著，其性能往往大幅超越许多高度优化的PyTorch实现。它相当于直接编写CUDA代码，但你仍完全处于熟悉的Python环境中。我认为一个常被低估的重要优势正如文中所述：所有代码均用Python编写，你可以逐行调试，也能相当方便地进行调试。接下来，我们一起来剖析一个Triton核函数——再次以实现GALU为例，并使用Triton来完成。此处我已将代码结构尽量设计得与我们之前的其他代码保持一致，也就是说，这部分可视为“CPU端”的代码。
+**中文**: 但是，**跨 SM 的调度**（scheduling across SMs）或者不同 SM 具体执行什么任务，这部分仍然需要**手动**处理。
 
-## 段落 98
+其编程模型的核心思想是：你只需要站在 **SM 中心化**（SM-centric）的视角进行思考，而编译器会自动处理大量更底层的细节。
+
+Triton 非常出色，因为它的性能往往能**大幅超越**许多高度优化的 PyTorch 实现。
+它就像是你直接去写原生的 CUDA 代码一样高效，但你依然身处大家非常熟悉的 **Python 生态**中。
+
+我认为还有一个被严重低估的优势，正如这里所写的：**它完全是用 Python 编写的**。
+这意味着你可以对其进行**单步调试**（step through），能够相当方便地进行调试。
+
+接下来，让我们逐步剖析一个 Triton 内核。
+同样地，我们要编写 **GELU** 激活函数，但这次是用 Triton 来实现。
+这里的代码结构，我特意安排得与我们之前的其他代码**尽可能相似**。
+可以说，这部分展示的是 **CPU 端**（宿主端）的代码逻辑。
+
+![](img/lec6_024.png)
+
 
 **英文**: This is the wrapper Triton GALU code. It takes an X, which is a torch tensor, and I've got my two asserts at the top. And I'm gonna allocate an output tensor Y using empty like once again. And it has the same exact sort of coordinate computation sort of components. And even the kernel launch looks very similar. I've got this num blocks annotation. And then my block size is at the end here, not in part of this brackets. But basically I'm passing the same information to my kernel. And now trying GALU kernel is this code over here. And this is gonna do the same thing as what we were doing before, but now it's nicely written in Python.
 
-**中文**: 这是 Triton GALU 的封装代码。它接收一个张量 X（PyTorch 张量），我在开头添加了两个断言。接着，我再次使用 `empty_like` 分配输出张量 Y。其坐标计算逻辑组件与之前完全相同，甚至连核函数启动方式也极为相似：我仍使用 `num_blocks` 注解，而线程块大小则置于末尾，而非括号内。本质上，我向核函数传递的是相同的信息。现在，GALU 核函数即此处的代码，它将执行与之前相同的操作，但如今以清晰、规范的 Python 代码实现。
+**中文**: 这是 **Triton GELU** 的封装代码。
+它接收一个 PyTorch 张量 `X` 作为输入，我在顶部添加了两个断言（asserts）以确保条件满足。
 
-## 段落 99
+接着，我再次使用 `empty` 分配了一个输出张量 `Y`。
+这里的坐标计算逻辑组件与我们之前的实现完全一致。
 
-**英文**: And the mental model here is the inputs are going to be at X pointer. Y pointer is the output vector, sort of the starting coordinate. And the block size is how big each of my blocks are. And num elements is gonna be sort of the very end of my array. So now I need to get this set of lines, 557 to 561. This is doing the computation of my index, right?. I did I equals some formula before. This is doing the same calculation over here. I'm calculating where is the start of my current block. Well, that's my block ID times the size of the block.
+甚至**内核启动**（kernel launch）的方式看起来也非常相似：
+*   我使用了 `num_blocks` 注解来指定块数量。
+*   `block_size`（块大小）参数放在了末尾，而不是包含在那个方括号列表中。
+*   但本质上，我传递给内核的信息与之前是一样的。
 
-**中文**: 此处的思维模型是：输入位于X指针处，Y指针是输出向量（即起始坐标），块大小表示每个块的尺寸，而元素数量则对应数组末尾的位置。现在我需要处理第557至561行的代码，这部分用于计算索引，对吧？此前我已用某个公式计算出i值，此处执行的是相同的计算：我正在计算当前块的起始位置，即块ID乘以块大小。
+现在，这个 `triton_gelu` 内核就是这边的这段代码。
+它将执行与我们之前完全相同的操作，但现在是用非常优雅、清晰的 **Python** 编写的。
 
-## 段落 100
 
-**英文**: That gets me, let's say I live in block one. It'll get me this point right here at the middle. And then afterwards I need to know where do I live within my block? Well, that's gonna be kind of the offset. But now notice one difference. I don't get in an offset because I'm not programming threads, right? I'm programming blocks. And so what does that mean? Well, my offsets are actually a vector, not a single value. Cuz this is basically going to be, I'm gonna do vectorized operation, where the vectorized operation is gonna be handled by different threads. So here, my offsets are the start of the block plus a vector,. this range of block size sort of offset. So my offsets are all of these coordinates within block one at once.
+**英文**: And the mental model here is the inputs are going to be at X pointer. Y pointer is the output vector, sort of the starting coordinate. And the block size is how big each of my blocks are. And num elements is gonna be sort of the very end of my array. So now I need to get this set of lines, 557 to 561. This is doing the computation of my index, right?. I did I equals some formula before. This is doing the same calculation over here. I'm calculating where is the start of my current block. Well, that's my block ID times the size of the block. That gets me, let's say I live in block one. It'll get me this point right here at the middle. And then afterwards I need to know where do I live within my block? Well, that's gonna be kind of the offset. But now notice one difference. I don't get in an offset because I'm not programming threads, right? I'm programming blocks. And so what does that mean? Well, my offsets are actually a vector, not a single value. Cuz this is basically going to be, I'm gonna do vectorized operation, where the vectorized operation is gonna be handled by different threads. So here, my offsets are the start of the block plus a vector,. this range of block size sort of offset. So my offsets are all of these coordinates within block one at once.
 
-**中文**: 这让我想到，假设我住在第一区块，那么它会定位到该区块正中央的这个点。之后，我还需要知道我在自己所属区块内的具体位置，而这实际上就是一种偏移量。但请注意一个区别：我获取的并非单一的偏移量，因为我并非在直接编程线程，而是在编程区块。这意味着什么呢？我的偏移量实际上是一个向量，而非单个数值。原因在于，这本质上是一种向量化操作，而向量化操作将由不同的线程来并行处理。因此，我的偏移量是区块起始位置加上一个向量——即一个覆盖整个区块尺寸范围的偏移向量。换言之，我的偏移量是一次性涵盖第一区块内所有这些坐标的向量。
+**中文**: 这里的**思维模型**是：
+*   `X` 指针指向输入数据；
+*   `Y` 指针指向输出向量的起始位置；
+*   `block_size` 定义了每个块的大小；
+*   `num_elements` 则标志着数组的末尾。
 
-## 段落 101
+现在，我们需要关注第 557 到 561 行的代码。这部分是在计算**索引**（index），对吧？
+之前我们是用公式 `i = ...` 来计算，这里做的是同样的计算逻辑。
+
+首先，我们要计算**当前块的起始位置**：
+那就是 `block_id`（块ID）乘以 `block_size`（块大小）。
+假设我位于 **块1**（Block 1），这个计算会把我带到图中中间的这个点。
+
+接下来，我需要知道**我在块内的具体位置**在哪里？
+这通常由**偏移量**（offset）来决定。
+但请注意这里的一个**关键区别**：
+我不再获取单个偏移量值，因为我不再直接编写**线程**（threads）级别的代码，而是在编写**块**（blocks）级别的代码。
+
+这意味着什么？
+这意味着我的 `offsets` 现在是一个**向量**（vector），而不再是单个数值。
+因为这里即将执行的是**向量化操作**，而这些向量化操作将由底层的不同线程自动并行处理。
+
+所以在这里，我的 `offsets` 等于：**块的起始位置** 加上一个 **向量**。
+这个向量是一个范围，从 0 到 `block_size`。
+因此，我的 `offsets` 一次性代表了**块1内部的所有这些坐标**。
+
 
 **英文**: Of course, if I'm at the very end, I might go off the edge, and so I need a mask to handle anything that lives off the boundary of my vector. Now, I'm gonna load in a sort of single vectorized operation everything at once, so x pointer plus offsets. These are sort of the values that I'm responsible for masked up, and it's loaded into x, which is my sort of internal values,. my internal sort of temporary vector that I need. And with this temporary vector, I'm gonna do exactly the old Galu computation. There's no tanh, so I compute that manually. But this formula you can convince yourself is the same as what we have here. And then y is going to be the formula computed up here. Now, once I'm done, I need to write it back into my output sort of buffer, or my output vector, and so I compute sort of my targets. So this is y pointer plus offsets.
 
-**中文**: 当然，如果我位于向量的最末端，就可能越界，因此我需要一个掩码来处理向量边界之外的数据。现在，我将通过一次单指令多数据（SIMD）操作，同时加载所有数据：即 x 指针加上各偏移量。这些便是我负责处理并经掩码保护的数据，它们被加载到 x 中——也就是我的内部值、我所需的内部临时向量。接着，我将使用该临时向量执行与之前完全相同的门控线性单元（GLU）计算：此处不使用 tanh 函数，因此需手动计算；但你可以自行验证，该公式与上文所列公式完全等价。随后，y 将按上方公式计算得出。完成计算后，我需要将结果写回输出缓冲区（即输出向量），因此我需计算目标地址，即 y 指针加上各偏移量。
+**中文**: 当然，如果位于数组的**末尾**，计算可能会**越界**（go off the edge），因此我需要一个**掩码**（mask）来处理那些超出向量边界的数据。
 
-## 段落 102
+接下来，我将执行一次**向量化加载操作**，一次性读取所有数据：
+*   加载地址为 `x_ptr + offsets`。
+*   这些数据是我负责处理的（并已应用了掩码保护）。
+*   它们被加载到变量 `x` 中，这是我内部使用的**临时向量**。
+
+拿到这个临时向量后，我将执行与之前完全相同的 **GELU** 计算逻辑：
+*   由于没有直接的 `tanh` 函数可用，所以我手动实现了它。
+*   你可以验证，这里的公式与我们之前使用的公式是等价的。
+*   计算结果存储在 `y` 中。
+
+最后，当我完成计算后，需要将结果**写回**到输出缓冲区（即输出向量）中：
+*   我计算目标写入地址：`y_ptr + offsets`。
+*   然后将结果存入该位置。
+
 
 **英文**: I take my temporary values y, and then I store it, right? So this is very, very, very similar to what came before, but this one is the vectorized version. I get to operate on an entire block at once. And so instead of kind of thinking at the perspective of a thread, I'm thinking from the perspective of a block, but not too different, right? This is all fairly similar stuff. So now I've written my Triton-Galu, and all right,. I will do this fairly quickly, all right. So one last thing, I will only point out a few things here, because I don't wanna get so in the weeds that you all get up and leave. But the one last cool thing that we can do is Triton, of course, compiles into low level sort of almost machine code for the GPU. And we can look at this very low level called PTX code after the Triton compiler sort of goes over it. And it's actually kind of cool. You can kind of see how the GPU actually works at the thread level.
 
-**中文**: 我取出临时变量 y，然后将其存储起来，对吧？因此，这与之前的内容非常、非常、非常相似，但此处是向量化版本。我可以一次性对整个数据块进行操作。因此，我不再以线程为视角思考，而是以数据块为视角思考——不过差别其实并不大，对吧？这些内容整体上都相当类似。现在，我已经写好了 Triton-Gelu 实现，接下来我会快速演示一下。最后再强调一点：我仅指出其中几个要点，以免讲得过于深入而让大家失去兴趣甚至离席。最后一件很酷的事情是：Triton 当然会编译成面向 GPU 的底层代码（近乎机器码），我们可以在 Triton 编译器处理之后查看这种极底层的 PTX 代码。这实际上相当有趣，你甚至能从中窥见 GPU 在线程级别上的实际运行机制。
+**中文**: 我获取临时值 `y`，然后将其**存储**（store）回去，对吧？
 
-## 段落 103
+这与之前的代码**非常、非常相似**，但关键区别在于这是**向量化版本**。
+我可以**一次性处理整个块**（block）的数据。
+因此，我不再是从单个**线程**（thread）的视角思考，而是从**块**的视角出发；不过整体逻辑并没有太大不同，本质上都是类似的操作。
+
+好了，现在我已经完成了 **Triton-GELU** 的编写。
+接下来我会快速过一下最后一点内容。
+我不想深入太多细枝末节导致大家觉得枯燥而离场，所以只强调几个关键点。
+
+最后一件很酷的事情是：
+当然，Triton 会将代码编译成针对 GPU 的**底层代码**（几乎是机器码）。
+在 Triton 编译器处理完之后，我们可以查看一种叫做 **PTX**（Parallel Thread Execution）的底层代码。
+这其实非常有趣，通过它，你能够清晰地看到 GPU 在**线程级别**上究竟是如何工作的。
+
 
 **英文**: So this is the Triton-Galu kernel. It was generated by the compiler. And at first, it's going to do some of the really basic stuff. So what's it doing here? It's saying, well, I'm going to need to store some values, right? I'm gonna need to store intermediate computations. B means actually sort of untyped sort of basically like bytes. So I need bytes that are sort of 32-bit size. I need floats for doing computations called F. And I need another set of registers that are 64 bits, and that's another set of registers. And so I have all these sort of registers that I need for temporary computations. And then starting here, I'm gonna start computing basically my coordinates.
 
-**中文**: 这就是Triton-Galu内核，由编译器生成。初始阶段，它将执行一些非常基础的操作。那么，此处它在做什么呢？它表示：我需要存储一些数值，对吧？我需要存储中间计算结果。“B”表示一种无类型的数据，本质上类似于字节，因此我需要大小为32位的字节；用于计算的浮点数用“F”表示；此外还需要另一组64位的寄存器，这是另一套寄存器。因此，我拥有所有这些用于临时计算的寄存器。随后，从这里开始，我将着手计算我的坐标。
+**中文**: 这就是由编译器生成的 **Triton-GELU 内核**。
 
-## 段落 104
+起初，它会执行一些非常基础的操作。
+那么，它在这里具体做了什么？
+
+首先，它声明需要**存储一些值**，也就是需要用于**中间计算**的空间：
+*   **`B`**：代表未类型化的数据，基本上就是**字节**（bytes）。这里指的是需要 **32位** 大小的字节空间。
+*   **`F`**：代表用于计算的**浮点数**（floats）。
+*   此外，还需要另一组 **64位** 的寄存器。
+
+因此，编译器为我们分配了所有这些用于**临时计算**的寄存器。
+
+从这一行开始，它将正式开始计算我的**坐标**。
+
 
 **英文**: So sorry, this part is loading the various arguments to the function. So things like the x pointer and the y pointer get loaded here. Starting here, I start computing the coordinate offsets of my Triton sort of kernel. And then once I get down here, this LD global, this is the code that's used to load the values from x pointer back into my temporary registers. So it's basically saying load R2, R3, R4, R5 using the memory position in RD1. And notice how it's loading four things at once because it's cleverly handling coalescing, right? We know we can get four values for free. We should operate on all four of these values at once cuz we get them. And then you do the same thing again for, you do the same thing again here. And then you start to get basically the floating point operations, mall F dot 32, which basically goes through and does the tanh computations. I'm not gonna explain all the different pieces, but here it's multiplying by.
 
-**中文**: 非常抱歉，这部分代码正在加载函数所需的各项参数，例如x指针和y指针等均在此处加载。从这里开始，我着手计算Triton风格核函数的坐标偏移量。接着，当执行到此处时，“LD global”指令即用于将x指针所指向内存中的数值加载回我的临时寄存器中。其含义实质上是：利用RD1中存储的内存地址，同时将值加载至R2、R3、R4和R5寄存器。请注意，它是一次性加载四个值，这是因为编译器巧妙地实现了内存访问合并（coalescing）——我们已知可免费获取四个值，因此理应一次性对这四个值进行运算。随后，您会看到同样的操作再次执行一遍。之后便进入浮点运算阶段，即“mall F dot 32”指令，该指令遍历并执行tanh计算。我不会逐一解释所有细节，但此处正在进行的是乘法运算。
+**中文**: 抱歉，刚才那部分是在**加载函数的各种参数**。
+像 `x_ptr` 和 `y_ptr` 这样的指针就是在这里被加载的。
 
-## 段落 105
+从这里开始，程序开始计算我的 Triton 内核的**坐标偏移量**。
+
+接着往下看，这条 **`LD global`**（全局加载）指令，就是用来将数据从 `x_ptr` 加载回我的**临时寄存器**的代码。
+具体来说，它的含义是：使用 `RD1` 中的内存地址，一次性加载数据到寄存器 `R2`、`R3`、`R4` 和 `R5` 中。
+
+请注意它是如何**一次性加载四个值**的：
+这是因为它巧妙地利用了**合并访问**（coalescing）机制。
+既然我们知道可以“免费”获取这四个值（即带宽利用率最大化），我们就应该**同时处理这四个值**。
+
+随后，同样的操作会再次执行一遍。
+
+接下来，你就能看到核心的**浮点运算**了：
+指令 **`mul.f32`**（32位浮点乘法）开始执行，它贯穿整个流程来完成 **`tanh`** 的计算。
+我不会逐一解释所有的细节部分，但在这里，它正在进行乘法运算
+
 
 **英文**: a constant. It does x to the cube by multiplying the same numbers multiple times. And then it's gonna compute here 2 to the x, but we want e to the x. And so it multiplies by log 2 to get the exponentiated base. You can really see all of the different literal step by step operations that the GPU does in order to get you the final result. And so I'll skip all over to the end. This is all floating point computations that it needs to do. And then at the very end, it stores the values that it has, R38 through R41, into RD4, which is the memory position of our output. So this is kind of what's actually happening at the low level. And we see that each thread is operating on four values at a time.
 
-**中文**: 一个常量。它通过对同一数字进行多次相乘来计算 x 的立方。接着，它在此处计算 2 的 x 次方，但我们实际需要的是 e 的 x 次方，因此需乘以 log 2，以将底数转换为指数形式。你可以清晰地看到 GPU 为获得最终结果所执行的每一步具体字面操作。接下来我直接跳至最后部分：所有这些均为所需的浮点运算；最后，它将寄存器 R38 至 R41 中存储的值写入内存位置 RD4，即我们输出数据的存储地址。这便是底层实际发生的过程。我们还可观察到，每个线程一次处理四个数值。
+**中文**: 它乘以一个**常数**。
+它通过多次乘以相同的数来计算 **$x^3$**（x 的立方）。
 
-## 段落 106
+接着，它在这里计算 **$2^x$**，但我们需要的是 **$e^x$**。
+因此，它乘以 **$\ln(2)$**（log 2）来转换指数底数。
 
-**英文**: And its temporary storage is the registers, which is the really, really high speed storage that it has very locally. So we can see this is gonna, just looking at it, be probably pretty fast code, right?. Okay, so that was the PTX. And we can go through and see what it's doing for all sorts of things. But now, let's go back and actually benchmark things. So we got manual GeliU, 8. 1 seconds. PyTorch time, 1. 1 seconds. CUDA time, 1.
+你可以清晰地看到 GPU 为了得到最终结果所执行的每一个**具体的、逐步的操作**。
 
-**中文**: 其临时存储为寄存器，即位于处理器本地、速度极快的存储单元。因此，仅从表面上看，这段代码的执行速度很可能相当快，对吧？好了，以上便是PTX代码。我们可以逐条分析它在各种操作中的具体行为。但现在，让我们回到实际的性能基准测试环节。手动实现的Gelu函数耗时8.1秒；PyTorch实现耗时1.1秒；CUDA实现耗时1秒。
+所以我直接快进到最后部分：
+这里全是它需要执行的**浮点运算**。
 
-## 段落 107
+而在最后一步，它将计算结果（存储在寄存器 `R38` 到 `R41` 中）**存储**到 `RD4` 中，而 `RD4` 正是我们输出数据的**内存地址**。
 
-**英文**: 84 seconds. Triton time, 1. 848 seconds. So we didn't get any faster, but it was much easier to write Triton code, right?. We wrote it in Python. We thought about blocks. We could do vectorized additions. If you're doing more sophisticated stuff, basically Triton will handle a lot of the memory stuff for you. And so it's actually pretty good. And then profiling, once again we see single kernel launch that consumes all of the GPU time, right?.
+这就是底层实际发生的情况。
+我们可以看到，**每个线程**都在**同时处理四个值**。
 
-**中文**: 84秒。海神（Triton）时间：1.848秒。因此，我们并未获得速度提升，但编写海神代码确实容易得多，对吧？我们使用Python编写，以“块”为单位进行思考，可以执行向量化加法。如果你要实现更复杂的操作，海神基本上会为你自动处理大量内存相关事务，因此其实际表现相当出色。此外，在性能分析中，我们再次看到仅一次内核启动便占用了全部GPU时间，对吧？
 
-## 段落 108
+**英文**: And its temporary storage is the registers, which is the really, really high speed storage that it has very locally. So we can see this is gonna, just looking at it, be probably pretty fast code, right?. Okay, so that was the PTX. And we can go through and see what it's doing for all sorts of things. But now, let's go back and actually benchmark things. So we got manual GeliU, 8. 1 seconds. PyTorch time, 1. 1 seconds. CUDA time, 1.84 seconds. Triton time, 1. 848 seconds. So we didn't get any faster, but it was much easier to write Triton code, right?. We wrote it in Python. We thought about blocks. We could do vectorized additions. If you're doing more sophisticated stuff, basically Triton will handle a lot of the memory stuff for you. And so it's actually pretty good. And then profiling, once again we see single kernel launch that consumes all of the GPU time, right?.
+
+**中文**: 它的**临时存储**使用的是**寄存器**。
+这是位于芯片本地、速度**极快**的存储资源。
+所以，光看代码结构就能知道，这应该是一段相当快的代码，对吧？
+
+好了，以上就是 **PTX** 代码的分析。
+我们可以深入查看它在各种操作上的具体实现，但现在，让我们回到基准测试（benchmark）上来看看实际性能。
+
+测试结果如下：
+*   **手动实现的 GELU**：8.1 秒
+*   **PyTorch 原生实现**：1.1 秒
+*   **CUDA 实现**：1.84 秒
+*   **Triton 实现**：1.848 秒
+
+虽然我们的速度并没有变得更快（甚至比 PyTorch 慢），但编写 Triton 代码要**容易得多**，对吧？
+*   我们是用 **Python** 编写的；
+*   我们只需要从**块**（block）的角度思考；
+*   我们可以轻松实现**向量化加法**。
+
+如果你处理更复杂的逻辑，Triton 基本上会帮你自动处理大量的**内存管理**细节。
+因此，它的表现其实相当不错。
+
+最后再看一眼性能分析（profiling）：
+我们再次看到，整个 GPU 的运行时间几乎完全由**单次内核启动**（single kernel launch）所占据。
+
+![](img/lec6_025.png)
+
 
 **英文**: So that's great, and that gets Triton kernels. The last thing, at least in this sort of, whoops, one second here, okay. That I wanna talk about is Torch compile. Of course, writing CUDA kernels is cool and it makes you feel really good. But maybe we don't need to do that, right? The things that we were doing here were very simple. We were just taking these x cubed and exponentiation operations, and we were just shoving them all into a single CUDA kernel. And so maybe we can just do that without doing much. And so we've had the several different ways that we've showed you. But the last one I wanna talk about is this thing called Torch compile, which will take our non-optimized PyTorch code. And it will write more optimized code.
 
-**中文**: 所以这很棒，而且能获得 Triton 内核。最后一点——至少在这一类内容中——哎呀，稍等一下，好了。我想讨论的是 Torch Compile。当然，编写 CUDA 内核很酷，也会让你感觉特别棒。但也许我们根本不需要这么做，对吧？我们刚才所做的一切其实非常简单：只是将 x 的立方和指数运算等操作全部塞进一个 CUDA 内核中。因此，或许我们完全可以不费太多力气就实现这一点。我们之前已向大家展示了多种方法，而最后我要介绍的便是这个名为 Torch Compile 的工具，它能接收我们未经优化的 PyTorch 代码，并生成更优化的代码。
+**中文**: 这很棒，这就是 **Triton 内核**带来的效果。
 
-## 段落 109
+最后一点——哎呀，稍等一秒（这里有点小插曲）……好的，我想讨论的最后一个是 **`torch.compile`**。
+
+当然，手写 **CUDA 内核**很酷，能让人很有成就感。
+但也许我们**根本不需要**这么做，对吧？
+
+我们刚才做的操作其实非常简单：
+只是将 $x^3$（x 的立方）和指数运算组合在一起，然后把它们全部塞进一个单独的 CUDA 内核中。
+所以，也许我们无需大费周章就能实现这一点。
+
+此前我们已经展示了好几种不同的方法，
+而我想介绍的最后一种工具叫做 **`torch.compile`**。
+它能够接收我们**未经优化的 PyTorch 代码**，并自动生成**优化后的高效代码**。
+
+![](img/lec6_026.png)
 
 **英文**: And so here, it's gonna attempt to automatically do optimizations like kernel fusion. And this compiled GALU is gonna be equivalent in the actual. outputs that it generates, but now let's look at the run times, right? So we've got some runtime variation, but basically the same kind of numbers, right? 8. 1 seconds manual, 1. 1 seconds PyTorch, 1. 8 seconds CUDA, and 1. 47 seconds on Torch compile, right? So the punchline here is modern JIT compilers are pretty good. It can do optimizations like operation fusion without you having to do very much at all. And if you look under the hood, you can kind of see that there's. basically once again one thing that happens.
 
-**中文**: 因此，在此处，系统将尝试自动执行诸如内核融合之类的优化。而经编译的GALU在实际生成的输出上与原始版本完全等效；但接下来我们来看运行时间，对吧？尽管存在一些运行时波动，但总体数值基本一致：手动实现耗时8.1秒，PyTorch耗时1.1秒，CUDA耗时1.8秒，Torch Compile耗时1.47秒，对吧？因此，此处的关键结论是：现代即时编译器（JIT）性能相当出色，它能自动完成操作融合等优化，而你几乎无需做任何额外工作。若深入探究其内部机制，你便会发现——本质上，再次仅发生了一件事。
+**中文**: 因此，它将尝试自动执行诸如**内核融合**（kernel fusion）之类的优化。
+这个经过编译的 **GELU** 在生成的实际输出结果上与原版是**等价**的。
 
-## 段落 110
+但现在让我们来看看**运行时间**，对吧？
+虽然存在一些运行时的波动，但大体上的数据是这样的：
+*   **手动实现**：8.1 秒
+*   **PyTorch 原生**：1.1 秒
+*   **CUDA 实现**：1.8 秒
+*   **Torch Compile**：1.47 秒
+
+这里的**核心结论**是：现代的 **JIT**（即时编译器）已经相当出色了。
+它们能够在无需你进行大量手工操作的情况下，自动完成像**算子融合**这样的优化。
+
+如果你深入底层查看，你会发现情况基本上还是一样：**主要只发生了一件事**（指单次内核启动主导了执行过程）。
+
 
 **英文**: This is a sort of fused add multiply 10H Triton code. So it's generating Triton under the hood that basically is doing similar kinds of things as our Triton code, but it's actually slightly more optimized than what we did. And so it's getting slightly better performance than even our code. So Torch compile is quite nice, yes? How do you feel like the nation's current Torch compile will do better? Like, you're just gonna try to implement your price version C,. and probably just move like, if GEM, do you smash it, right? Yeah, so the question was like, when do you know that, I guess maybe the better way to phrase that question is, when do you know you can do better than Torch compile, right? Is sort of the relevant question. And I think for simple stuff like simple operator fusion, or the other thing that it's very good at is optimizing matrix multiplies. So Torch compile, as I said before, can do things like,. if it knows the shape of the matrices, can figure out which kernels to dispatch. It is very good at those things. I doubt that you can get much better than that.
 
-**中文**: 这是一种融合了加法与乘法的10H Triton代码。因此，它在底层生成的Triton代码所执行的操作与我们的Triton代码类似，但实际优化程度略高，因而性能也略优于我们自己的代码。所以Torch Compile效果相当不错，对吧？那么，您觉得当前版本的Torch Compile在哪些方面还能进一步提升呢？比如，您是否会尝试自行实现一个定制版本的C代码，然后直接替换——例如，若涉及GEMM（通用矩阵乘法），就直接用更优的内核替代，对吗？是的，这个问题实质上是在问：我们何时能判断自己实现的方案会优于Torch Compile？这才是真正关键的问题。我认为，对于诸如简单算子融合之类的基础任务，或它特别擅长的矩阵乘法优化，Torch Compile表现非常出色。如前所述，Torch Compile若已知矩阵形状，便能自动选择最优内核进行调度，这类任务它处理得极为高效。我怀疑，在这些方面我们很难再取得显著超越。
+**中文**: 这是一段类似于**融合加乘运算**（fused add-multiply）的 **Triton** 代码。
+实际上，它在底层生成的 Triton 代码与我们手写的逻辑类似，但优化程度**略高于**我们手动编写的版本。
+因此，它的性能甚至比我们自己写的代码还要**稍好一些**。
+所以，`torch.compile` 确实相当不错，对吧？
 
-## 段落 111
+**观众提问**：你觉得未来的 `torch.compile` 会表现得更出色吗？比如，如果你只是尝试实现自己的自定义版本（可能是指手写 CUDA/C++），是不是大概率还是无法超越它？就像处理 **GEMM**（通用矩阵乘法）时，你很难“打败”它，对吧？
+
+**回答**：是的，这个问题其实可以换个更准确的问法：**“在什么情况下，你知道自己能做得比 `torch.compile` 更好？”** 这才是关键所在。
+
+我认为：
+*   对于像**简单的算子融合**这类任务；
+*   或者它非常擅长的**矩阵乘法优化**；
+
+`torch.compile` 的表现已经非常出色了。正如我之前提到的，如果它知道矩阵的**形状**（shape），它就能自动判断并调度最合适的内核。
+在这些方面，我怀疑人类手动优化很难再取得比它**显著更好**的结果了。
+
 
 **英文**: But there are things like, if you see flash attention one, two, and three, those are pretty non-trivial optimizations. Like these days, Torch compile and like, Jax's XLA compiler can do those. But that's because we know in hindsight that those are the right optimizations to do. I think some of those things are a little bit non-trivial to figure out. Like, flash attention three has additional sort of hardware level optimizations that leverage the H100 hardware. That's not obvious to do with a JIT compiler. So there are some things that I think are quite hard with Torch compile, that I think you could do better. But in general, I think the point here is, you shouldn't go home and say, I'm gonna write CUDA kernels for every single part of my language model. That's probably not a good use of your time. But if you're writing a new architecture with some complicated piece, and you're not getting utilization, but you think you can, that's maybe the time to really bust out the triton.
 
-**中文**: 但有些优化确实非同小可，比如你看到的FlashAttention 1、2和3。如今，Torch Compile以及JAX的XLA编译器都能实现这类优化，但这恰恰是因为我们事后才明确知道这些正是正确的优化方向。我认为，其中一些优化的发现过程本身并不容易。例如，FlashAttention 3还引入了额外的硬件级优化，专门针对H100硬件特性进行深度适配——而这一点对即时编译（JIT）器而言并不显而易见。因此，我认为Torch Compile在某些方面确实面临较大挑战，而这些地方或许你能做得更好。但总体而言，此处的关键在于：你不应回家后就立刻宣称“我要为语言模型的每一部分都手写CUDA内核”——这很可能并非你时间的最佳利用方式。然而，如果你正在设计一种新架构，其中包含某个复杂模块，当前GPU利用率不足，而你确信本应能实现更高利用率，那么此时或许正是动用Triton大展身手的恰当时机。
+**中文**: 但是，也有一些情况例外。比如 **Flash Attention 1、2 和 3**，这些属于相当**非平凡**（non-trivial，即复杂且高难度）的优化。
 
-## 段落 112
+如今，`torch.compile` 和 JAX 的 **XLA 编译器**确实能够实现其中一些优化。
+但这主要是因为我们在**事后**已经明确了哪些是正确的优化策略（即人类先发现了算法，再教给编译器）。
+我认为，其中有些优化策略本身就很难被自动推导出来。
+例如，**Flash Attention 3** 包含了一些额外的**硬件级优化**，专门利用了 **H100 GPU** 的特性。
+对于即时编译（JIT）编译器来说，要自动发现并实现这种深度的硬件特定优化并不是一件显而易见或容易的事。
+
+因此，我认为确实存在一些 `torch.compile` 难以处理的场景，而在这些场景下，**手动优化可以做得更好**。
+
+但总的来说，我想强调的核心观点是：
+**你不应该回家后就决定为你语言模型的每一个部分都去手写 CUDA 内核**。
+那很可能是在浪费你的时间。
+
+**然而**，如果你正在设计一种**新架构**，其中包含某个**复杂的模块**，并且你发现当前的**硬件利用率**（utilization），但你坚信理论上可以更高——
+那么，这才是真正需要拿出 **Triton** （或手写 CUDA）来大显身手的时候。
+
 
 **英文**: Okay, so we're basically at time, but we can quickly go through one last example of triton. Maybe this will be useful for you in assignment two of doing softmax. So one difference is, until now we were doing just basic element-wise operations. And that's really easy, because you just operate on each element, and there's sort of no sort of complexity to those kinds of things. So now let's do softmax, which is, it has a reduction operation where you have to add across all of the elements. So how do we do that? Well, what we wanna do is we wanna normalize across each row of the matrix. And what we would like to do is we'd like to make this fast. So a naive version of this is gonna be pretty slow, and. now we're gonna write the triton kernel. So if I want it to be lazy, the easiest way to do this is, okay, actually you can think for a moment about what the easiest way to do this.
 
-**中文**: 好的，时间差不多了，但我们还是快速浏览一下 Triton 的最后一个示例。这或许对你们完成第二次作业中的 softmax 实现有帮助。此前我们一直仅进行基础的逐元素运算，这类操作非常简单，因为只需对每个元素单独处理，几乎不涉及任何复杂性。现在，我们来实现 softmax，它包含一个归约操作（reduction operation），即需要将所有元素相加。那么，我们该如何实现呢？我们的目标是对矩阵的每一行进行归一化。同时，我们希望该实现尽可能高效。因此，朴素的实现方式会相当慢，接下来我们将编写 Triton 内核。如果我希望实现是“惰性”的，最简便的方式是什么呢？实际上，你可以先花一点时间思考一下，什么才是最简单的实现方法。
+**中文**: 好的，时间差不多了，但我们可以快速过最后一个 **Triton** 的例子。
+这对你们在**作业二**中实现 **Softmax** 可能会有所帮助。
 
-## 段落 113
+此前的例子中，我们处理的都是基本的**逐元素操作**（element-wise operations）。
+那些操作非常简单，因为你只需要对每个元素独立运算，没有任何复杂的依赖关系。
+
+但现在我们要实现 **Softmax**，它包含一个**归约操作**（reduction operation）：你需要对所有元素进行求和。
+那我们要怎么做呢？
+
+我们的目标是对矩阵的**每一行**进行归一化。
+当然，我们希望这个过程尽可能**快**。
+一个**朴素版本**（naive version）的实现通常会相当慢，所以现在我们将编写一个 **Triton 内核**来优化它。
+
+如果我想“偷懒”（或者换个说法，寻找最直接的切入点），最简单的方法是什么？
+其实，大家可以先花一点时间思考一下：**实现这个功能最简单的思路是什么？**
+
 
 **英文**: Now, let's say you wanna write a softmax, so you're gonna normalize each row of a matrix. And imagine these matrices are pretty small. So you're just writing a kernel for small matrices, right? So if you're doing this, what's the right kind of block design?. Well, maybe what we should do is our grid should actually just be rows. So each SM is gonna handle a single row. That's kind of the optimal thing to do, because if we can fit a whole row into an SM, then we just sum across that row in the SM, and then we divide, right? That's great. And so that's gonna be the simple design for our very naive softmax kernel here. So all we're gonna do is that we're gonna make the block size basically, sorry,. we're gonna make each block a row. And so the block size should be number of columns plus a little bit of buffer to sort of be able to fit all the columns.
 
-**中文**: 现在，假设你想实现一个 Softmax 函数，即对矩阵的每一行进行归一化。再假设这些矩阵尺寸较小，因此你只需为小矩阵编写一个核函数，对吧？那么，此时最合适的线程块（block）设计是怎样的呢？  
-或许，我们的网格（grid）应直接按行组织：每个流式多处理器（SM）负责处理一行数据。这实际上是最优方案，因为若整行数据能完全装入一个 SM，则我们便可在该 SM 内直接对该行求和，再执行除法操作，对吧？这样效果很好。因此，这就是我们当前这个非常朴素的 Softmax 核函数所采用的简单设计方案。具体而言，我们将每个线程块设为对应矩阵的一整行；因此，线程块大小应等于列数，再额外预留少量缓冲空间，以确保能容纳全部列。
+**中文**: 现在，假设我们要编写一个 **Softmax** 函数，目标是对矩阵的**每一行**进行归一化。
+想象一下，这些矩阵的规模**相当小**。
+因此，我们实际上是在为**小矩阵**编写内核，对吧？
 
-## 段落 114
+在这种情况下，什么样的**块**（Block）才是最合适的呢？
 
-**英文**: So this is triton next power of 2 of n, and that's a nice way of padding out your columns. And then I'm gonna make each block a row. So the number of blocks is exactly the number of rows. And then I have my triton softmax kernel,. which is written in kind of the way that you expect. So now we have a matrix rather than a vector. So we have x pointers, we have y pointers, we need the strides of the matrices. And then we can basically figure out what row index I'm in. I can get the column offsets. This is gonna be the same kind of code as before.
+嗯，也许我们应该这样设计：
+我们的**网格**（Grid）维度应该直接对应**行数**。
+也就是说，让每一个 **SM**（流多处理器）负责处理**单独的一行**。
+这其实是一种**最优策略**。
+因为如果我们将整行数据都放入一个 SM 中，我们就可以直接在该 SM 内部对整行进行**求和**，然后再执行**除法**运算，对吧？这非常高效。
 
-**中文**: 因此，这是 n 的下一个 2 的幂次方（即 Triton 中的 next_power_of_2(n)），这是一种对列进行填充的简洁方法。接着，我将每个 block 视为一行，因此 block 的数量恰好等于行数。然后，我编写了 Triton Softmax 核函数，其写法符合常规预期：此时我们处理的是矩阵而非向量，因此需要 x 指针和 y 指针，并需提供矩阵的步长（strides）；随后即可确定当前所在的行索引，并获取列偏移量——这部分代码与之前基本相同。
+因此，这就是我们要为这个非常朴素的 Softmax 内核采用的**简单设计方案**。
+具体来说，我们将把每个 **Block** 定义为**一行**。
+所以，**Block 的大小**应该设置为**列数**，再加上一点**缓冲空间**，以确保能够容纳所有的列数据。
 
-## 段落 115
 
-**英文**: In fact, getting the row offsets simpler because each row is a block. And then now I'm gonna do basically the same kind of stuff. I'm gonna load in each row into my sort of SM's sort of local memory. And then I'm gonna do computation exactly in a way that looks like a softmax. I have my row, I subtract my max, I take the exponent, I sum it, and then I divide, which is going to give me my softmax normalized row. And I write it back to global memory, right? No complexity at all. Whenever your computations fit nicely in SM, writing Triton code looks very similar to writing just normal Python code,. just with a little bit of load and store and keeping track of where the blocks are. Right, so life is pretty simple. Let's go back, wait, where were we? To the Triton, here we go.
+**英文**: So this is triton next power of 2 of n, and that's a nice way of padding out your columns. And then I'm gonna make each block a row. So the number of blocks is exactly the number of rows. And then I have my triton softmax kernel,. which is written in kind of the way that you expect. So now we have a matrix rather than a vector. So we have x pointers, we have y pointers, we need the strides of the matrices. And then we can basically figure out what row index I'm in. I can get the column offsets. This is gonna be the same kind of code as before. In fact, getting the row offsets simpler because each row is a block. And then now I'm gonna do basically the same kind of stuff. I'm gonna load in each row into my sort of SM's sort of local memory. And then I'm gonna do computation exactly in a way that looks like a softmax. I have my row, I subtract my max, I take the exponent, I sum it, and then I divide, which is going to give me my softmax normalized row. And I write it back to global memory, right? No complexity at all. Whenever your computations fit nicely in SM, writing Triton code looks very similar to writing just normal Python code,. just with a little bit of load and store and keeping track of where the blocks are. Right, so life is pretty simple. Let's go back, wait, where were we? To the Triton, here we go.
 
-**中文**: 事实上，获取行偏移变得更加简单，因为每一行都是一个数据块。接下来，我将执行基本相同的操作：将每一行加载到流式多处理器（SM）的本地内存中，然后以类似于Softmax的方式进行计算——我先获取当前行，减去该行的最大值，再取指数，接着求和，最后进行除法运算，从而得到归一化后的Softmax行结果，并将其写回全局内存，对吧？整个过程毫无复杂性可言。只要你的计算能够很好地适配SM，编写Triton代码就与编写普通Python代码非常相似，只需添加少量的加载（load）、存储（store）操作，并留意数据块的位置即可。没错，生活就是如此简单。我们再回到前面——等等，刚才我们说到哪儿了？对，回到Triton，就是这里。
+**中文**: 所以，这里使用了 `triton.next_power_of_2(n)`，这是一种对列数进行**填充**（padding）的巧妙方法（将其补齐到 2 的幂次）。
 
-## 段落 116
+接着，我们将每个 **Block** 设定为对应**一行**。
+因此，**Block 的数量**就正好等于**行数**。
 
-**英文**: And then we can kind of see how fast all of our different pieces of code are. So I'll zoom out again, just to make sure. Okay, so manual time takes 3. 7 seconds. Our compile time is 1. 3 seconds for torch compile. The PyTorch time is 1. 5 seconds. And the Triton time is 1. 9 seconds.
+然后，我们编写了 **Triton Softmax 内核**，其写法符合大家的预期。
+现在我们要处理的是**矩阵**而不是向量。
+所以，我们需要传入输入指针 `x_ptr`、输出指针 `y_ptr`，以及矩阵的**步长**（strides）。
 
-**中文**: 然后我们就能大致看出各个代码片段的运行速度。我再放大一下视图，以确保无误。好的，手动实现耗时3.7秒，Torch Compile编译耗时1.3秒，PyTorch原生实现耗时1.5秒，Triton实现耗时1.9秒。
+接下来，我们可以很容易地计算出当前所在的**行索引**（row index），并获取**列偏移量**（column offsets）。
+这部分代码逻辑与之前非常相似。
+事实上，获取行偏移量甚至**更简单**了，因为每一行就是一个独立的 Block。
 
-## 段落 117
+随后，我们执行的操作基本一致：
+1.  将每一行数据加载到 SM（流多处理器）的**局部内存**（共享内存）中。
+2.  执行看起来完全像标准 Softmax 的计算流程：
+    *   找到行内的最大值并减去它（数值稳定性处理）；
+    *   取指数（exp）；
+    *   求和；
+    *   最后相除。
+    
+这样就得到了归一化后的 Softmax 行数据，并将其写回**全局内存**。
 
-**英文**: It's still a little bit slow. Torch compile can actually do better than sort of the native PyTorch implementation, especially when it knows about the shapes and sizes of certain operations. So finally, we can look in the profiler. The manual softmax is kind of a disaster here. You see all sorts of crazy operations happening all over the place. Let me clear this, if we go back up here, yep. We see all sorts of operations happening. We have x, we have max, we have sum, because we've implemented things naively. And we've got memory reads and writes everywhere. The compiled softmax is just gonna be sort of one fused softmax operation that goes quite fast.
+整个过程**毫无复杂性可言**。
+只要你的计算能够完美地适配在单个 **SM** 内部，编写 **Triton 代码**看起来就和编写普通的 **Python 代码**非常相似——
+无非就是多加了一些**加载**（load）、**存储**（store）操作，以及需要留意一下 **Block** 的位置而已。
+没错，事情就是这么简单。
 
-**中文**: 它的运行速度仍然略慢。Torch Compile 实际上可以比原生 PyTorch 实现表现得更好，尤其是在它已知某些运算的形状和尺寸时。最后，我们可以在性能分析器中查看结果：手动实现的 Softmax 在此处表现堪称灾难——你将看到各种混乱的操作遍布各处。让我清空一下视图；如果我们回到上方，没错，就能看到大量杂乱的操作：有输入 x、求最大值（max）、求和（sum），因为我们是以一种朴素的方式实现的，导致内存读写操作无处不在。而经过编译的 Softmax 则会被融合为单一的 Softmax 操作，因此运行速度非常快。
+让我们回到……等等，我们刚才讲到哪了？
+回到 **Triton** 这里，好，继续。
 
-## 段落 118
+![](img/lec6_027.png)
 
-**英文**: And then we've got PyTorch softmax, which is also one CUDA kernel call. And same thing with our Triton softmax. We have our nice Triton softmax kernel that is a single fused kernel for everything. Okay, I won't go through the PTX code for this. I think we're kind of at time and I don't wanna drag you through that low level again. But hopefully this has given you a flavor of lower level GPU programming for the purpose of making language models go fast. And hopefully you'll have fun doing assignment too. Thanks.
+![](img/lec6_028.png)
 
-**中文**: 然后是 PyTorch 的 softmax，它也只需一次 CUDA 内核调用；我们的 Triton softmax 同样如此。我们拥有一个简洁高效的 Triton softmax 内核，将所有操作融合为单个内核。好了，这部分的 PTX 代码我就不展开了——时间差不多了，我也不想再带大家深入这一底层细节。但希望这已让你初步领略了面向大语言模型加速的底层 GPU 编程风格。也希望你做作业时同样乐在其中。谢谢！
+![](img/lec6_029.png)
 
----
+![](img/lec6_030.png)
 
-*共 118 个段落，1178 句话*
+**英文**: And then we can kind of see how fast all of our different pieces of code are. So I'll zoom out again, just to make sure. Okay, so manual time takes 3. 7 seconds. Our compile time is 1. 3 seconds for torch compile. The PyTorch time is 1. 5 seconds. And the Triton time is 1. 9 seconds. It's still a little bit slow. Torch compile can actually do better than sort of the native PyTorch implementation, especially when it knows about the shapes and sizes of certain operations. So finally, we can look in the profiler. The manual softmax is kind of a disaster here. You see all sorts of crazy operations happening all over the place. Let me clear this, if we go back up here, yep. We see all sorts of operations happening. We have x, we have max, we have sum, because we've implemented things naively. And we've got memory reads and writes everywhere. The compiled softmax is just gonna be sort of one fused softmax operation that goes quite fast. And then we've got PyTorch softmax, which is also one CUDA kernel call. And same thing with our Triton softmax. We have our nice Triton softmax kernel that is a single fused kernel for everything. Okay, I won't go through the PTX code for this. I think we're kind of at time and I don't wanna drag you through that low level again. But hopefully this has given you a flavor of lower level GPU programming for the purpose of making language models go fast. And hopefully you'll have fun doing assignment too. Thanks.
+
+**中文**: 接下来，我们可以看看不同代码实现的**运行速度**。
+让我再缩小视图确认一下数据。
+
+好的，结果显示：
+*   **手动实现**（Manual）耗时 **3.7 秒**。
+*   **Torch Compile** 耗时 **1.3 秒**。
+*   **原生 PyTorch** 耗时 **1.5 秒**。
+*   **Triton** 实现耗时 **1.9 秒**。
+
+可以看出，当前的 Triton 版本仍然**稍慢一些**。
+事实上，**Torch Compile** 的表现甚至可以优于原生的 PyTorch 实现，特别是当它明确知晓某些操作的**形状**（shapes）和**尺寸**（sizes）时，它能进行更高效的优化。
+
+最后，让我们看看**性能分析器**（Profiler）的结果：
+*   **手动实现的 Softmax** 简直是一场**灾难**。你可以看到各种杂乱无章的操作四处发生。让我清理一下视图……没错，这里充斥着各种独立的操作：读取 `x`、计算 `max`、计算 `sum` 等等。这是因为我们采用了**朴素**（naive）的实现方式，导致内存的读取和写入无处不在，效率极低。
+*   **编译后的 Softmax**（Torch Compile）则被融合成了**单个**高效的 Softmax 操作，运行速度非常快。
+*   **PyTorch Softmax** 同样只调用了一个 **CUDA 内核**。
+*   我们的 **Triton Softmax** 也是如此：它是一个**单一的融合内核**（fused kernel），将所有步骤整合在一起完成。
+
+好了，我就不带大家深入查看这里的 **PTX 代码**了。
+我想时间差不多了，也不想再让大家陷入那些底层的细节中。
+
+希望这次讲解能让大家对**底层 GPU 编程**有个初步的了解，明白它是如何帮助我们要让**大语言模型**运行得更快的。
+也希望大家在完成**作业二**时能乐在其中。
+
+谢谢大家！
