@@ -243,6 +243,8 @@ GQA (Grouped Query Attention)：在分组查询注意力机制中，键值头（
 
 ![](img/lec10_006.png)
 
+![](img/lec10_007.png)
+
 **英文**: So basically, you're filling up this kV cache, which corresponds to the tokens that you've either prefilled with or that you've generated so far. So instead of t squared per token, it's going to be more like t. So concretely, the kV cache is for every sequence in your batch, for every token in your sequence,. for every layer of the transformer, for every head, you're going to store an h-dimensional vector. So you might think that this is going to take a lot of memory and you wouldn't be wrong. So there's two stages of inference. So prefill is you're given your product and coded in a vector. So this is just like what you do in training. It's paralyzable. It's fast.
 
 **中文**: 基本上，你正在填充这个 **KV 缓存**，其中包含了你预填充（prefill）的令牌以及迄今为止已生成的所有令牌。
@@ -284,22 +286,24 @@ GQA (Grouped Query Attention)：在分组查询注意力机制中，键值头（
 
 我们将具体计算生成的 浮点运算量（FLOPs） 和 数据传输量（Bytes）。
 
-首先，我们处理输入 X，它是一个维度为 B times T times D 的矩阵。注：讲师提到这里可能有些混淆，某些情况下这里的 T 其实应该是 S（提示词长度），但暂且不管它，我们继续分析。
+首先，我们处理输入 X，它是一个维度为 B X T X D 的矩阵。注：讲师提到这里可能有些混淆，某些情况下这里的 T 其实应该是 S（提示词长度），但暂且不管它，我们继续分析。
 
 这一步涉及大量的数据传输：
 数据量基本上是该矩阵大小的 2 倍。
 这是因为我们通常使用 BF16（Bfloat16） 精度，每个元素占 2 个字节（读取一次权重，读取/写入一次激活值，或者指权重量化前后的搬运，具体语境通常指读写总流量）。
 
 接下来是 三组矩阵变换，对应 MLP 层中的：
-上投影（Up Projection）
-门控投影（Gate Projection）
-下投影（Down Projection）
+
+- 上投影（Up Projection）
+- 门控投影（Gate Projection）
+- 下投影（Down Projection）
 
 这三个矩阵的规模在本质上是相同的（最多只是转置的区别）：
 上投影和门控投影通常将维度从 D 扩展到 F（通常是 4D）。
 下投影将维度从 F 压缩回 D。
 因此，它们的参数量级和计算模式是非常相似的。
 
+![](img/lec10_008.png)
 
 **英文**: So you need to transfer those. Then you do the up projection. That's some number of flops. So b times the dependency times f. So we're going to multiply two tensors, basically contracting dimension only gets counted once. Whereas other dimensions, you just kind of gather together. You need to write it out. You also have the gate, which is the same thing. You write it out. You compute your non-linearity.
 
@@ -355,6 +359,7 @@ GQA (Grouped Query Attention)：在分组查询注意力机制中，键值头（
 这部分的浮点运算量约为 $b \times s \times t \times d$。
 *(注：这里 $s$ 通常指序列长度或键值对的长度，$t$ 指查询的长度，在预填充阶段两者往往相等；在生成阶段 $t=1$)*
 
+![](img/lec10_009.png)
 
 **英文**: So remember, s and t are the same during a prefel. So that's your sequence length squared times b times d. And then I'm sort of only looking at the matrix multiplications because the flops from other steps don't really matter. And then you project out to, oh, sorry, you take a combination of this and v. So actually, this is mathematically incorrect because there's some softmaxes there. But the essence of the map balls are the same. So that's the same number of flops. And then you write to HBM. OK, so here I'm assuming there'll be more bytes transferred. If you didn't use flash attention, flash attention means that you don't have to keep on writing back to HBM into intermediate steps.
 
@@ -406,7 +411,7 @@ $$ \frac{s \times t}{s + t} $$
 *   **对于注意力机制**（Attention）：
     *   在生成阶段，无论你的序列有多长，也无论有多少用户（即无论 $b$ 多大），其计算强度**始终小于或等于 1**。
 
-这意味着在生成阶段，注意力机制永远无法摆脱内存带宽的限制，无法通过增加批次大小来提升计算效率。
+**这意味着在生成阶段，注意力机制永远无法摆脱内存带宽的限制，无法通过增加批次大小来提升计算效率**。
 
 
 
@@ -451,6 +456,7 @@ $$ \frac{s \times t}{s + t} $$
 
 让我们把重点放在……让我看看……好吧，我们开始吧。
 
+![](img/lec10_010.png)
 
 **英文**: So we're going to make some assumptions. So all of this sort of napkin math is a little bit stylized, but it gives you roughly the right kind of scaling and the right way to think about things. So we're going to assume that communication and compute can be perfectly overlapped, which is obviously false, but it's good enough for making these qualitative estimates. So what we're going to do is we're going to instantiate the latency and throughput for a long time to 13b on H100. So for a 13b, here are the values. So let's just put the sequence length to be 1,000,. hidden dimension to be 5,000, 4 times, actually. I don't know if that's not 4 times. But anyway, F is some multiple of that, number of heads, number of key value, I guess query heads, number of key value heads, which for a long time, two is the same. We'll get to that point later and so on.
 
@@ -659,6 +665,7 @@ $$ \text{总内存} = (\text{批次大小 } B \times \text{单序列缓存大小
 *   其中一些概念你们可能已经见过，但今天我将以一种更系统的方式逐一梳理。
 *   首先我们要讨论的一个想法叫做：**分组查询注意力机制**（Group Query Attention, GQA）。
 
+![](img/lec10_011.png)
 
 **英文**: So multi-head attention, which is the vanilla transformer, keeps around basically a number of heads. And for each of those, that number, you have same number of keys, values, and queries. There was one time a multi-query attention, which you only have one key and one value, basically one key value head. Turn out that that was not very expressive. So there was a intermediate point where you have a reduced number of keys and values, and then you have more queries. So why are we doing this? Well, remember, we want to reduce the KV cache size. So the fewer keys and values there are, the better. So the batch size and the sequence length doesn't get changed, but it's in the dimensionality of these vectors don't change, but it's the number of key value heads that we're reducing. So that's basically the idea. And this paper shows that you do get latency and throughput improvements, so times percent sample.
 
@@ -708,6 +715,7 @@ $$ \text{总内存} = (\text{批次大小 } B \times \text{单序列缓存大小
 
 所以，这是一个非常完美的优化方案！
 
+![](img/lec10_012.png)
 
 **英文**: We have to also make sure the accuracy doesn't drop. So this is this original paper that shows that this is full attention. This is GPUA. The time is much less, but the accuracy is basically the same. Now, what actually happened? So Lama II did not use this ratio,. but Lama III actually picked up a GQA, and probably motivated by the kind of inference cost. Actually, Lama II, I think the large model did have GQA, but not the smaller ones. So that's a GQA. There's another way to reduce the key value cache. And this comes from deep seek. So this is actually from the deep seek V2 paper,. and it's called multi-head latent tension, which taught to lecture it about previously, but I'll try to talk about it in the context of inference and its implications. So the basic idea is here's full attention. And GQA says, I'm going to use fewer keys and values. MLA says, I'm not going to change the number of key and values. I'm going to project these into a lower dimensional space. So it's another way of shrinking the KV size, but just in a different dimension. So instead of using n times h dimensions for the KV cache of each token, I'm going to project out to C dimensions. And this is what deep seek did. It's actually quite a aggressive reduction from 16,000 to 512.
 
@@ -735,6 +743,8 @@ $$ \text{总内存} = (\text{批次大小 } B \times \text{单序列缓存大小
 *   具体来说：对于每个 token，原本需要使用 `n × h`（头数 × 头维度）的维度来存储 KV Cache，现在将其投影压缩到 `C` 维。
 *   **DeepSeek** 正是这样做的：他们进行了一次非常激进的压缩，将维度从 **16,000** 直接降到了 **512**。
 
+
+![](img/lec10_013.png)
 
 **英文**: Only wrinkle is that this is not compatible with ropes,. so they need to add a few more dimensions to put rope back in. But overall, this is actually quite promising from a KV reduction perspective. I'm not going to do the math, but you can just trust me that you can see how the KV cache would be reduced a lot, and you get to the same latency and throughput advantages. And in terms of accuracy, they actually showed that compared to GQA, the mh. Sorry, actually, maybe I'm showing the wrong thing here. Maybe mh. OK. I meant to show that the MLA actually improves, but this table does not show that, so I have to dig that up later. But anyway, the MLA does preserve the accuracy as well. OK, so there's another idea, which says, well, GQA basically shares, you can think about it. as a sharing key value vectors, right? Within a token and within a sequence. But we can also look at something called cross layer attention, which there's a paper on this. But I think many people have been thinking about this and doing this. So I know none of this is actually the first paper. But basically, if you look at the Transformer I diagram,. you have the key value projection of one layer, and then you have the next layer. And these key value vectors are separate, usually. But the idea here with CLA is that we're just going to use the same key value projection across layers. That's why it's called cross layer attention.
 
@@ -766,6 +776,7 @@ $$ \text{总内存} = (\text{批次大小 } B \times \text{单序列缓存大小
 *   **CLA 的想法**是：我们不再为每一层单独计算键值投影，而是**在不同层之间共享同一组键值投影**。
 *   正因为是在“层与层之间”进行共享，所以被称为 **跨层注意力**（Cross-Layer Attention）。
 
+![](img/lec10_014.png)
 
 **英文**: So just as GQA shares across heads, CLA shares across layers. So here they show that they empirically improve the Pareto Frontier of accuracy and the KV cache size. So KV cache size, which relates to throughput and latency, you want to be small, and you want perplexity also to be small. So they're able to improve that. OK. So notice that, I mean, for example, H64 heads, the cache size goes, it gets reduced, but the validation perplexity does go up a little bit. But overall, there's kind of a advantage in making that trade off. So there's another way to do things. So local attention, which has been explored actually quite a bit since even there's a long former, there's. an opening-eye paper, and then mistro, and I think many others use this as well. It's a very, I guess, a natural idea. Instead of, if you look at a full attention diagram, it's dense and squared. And that's where a lot of your complexity comes from. And basically, the idea is you're going to just attempt to only the past k tokens, which. means that in the kv cache, as you're generating the sequence, you don't have to remember everything. As soon as the token kind of falls outside your window that you have attention, you can just throw it away. So local attention is very, you could say, that the kv cache size remains constant, as opposed to growing with a sequence length. So this is really good, because that even. long sequences you can have quite a small cache. But the problem is that this still hurts accuracy, because if you just think about it, why are we doing attention instead of RNNs, is that we needed to have long range to match model-run long range dependencies.
 
@@ -796,6 +807,7 @@ $$ \text{总内存} = (\text{批次大小 } B \times \text{单序列缓存大小
 *   思考一下我们为什么要用 **Attention** 而不是 **RNN**？正是因为我们需要捕捉 **长程依赖**（Long-range Dependencies）。
 *   如果简单地切断长程连接，就违背了引入注意力机制的初衷，导致模型无法处理需要远距离上下文的任务。
 
+![](img/lec10_015.png)
 
 **英文**: And this is, in some sense, even the color attention is a little bit overselling. This is only looking at the local context, which is not very expressive. So what you do here is you can interleave local attention with full global attention, hybrid layers. So for example, a character I used for every six layers, they had one global layer and five local layers. So it looks something, it deductions to cross-layer attention. So it looks something like this, where full attention, every layer, you have to store the kv cache. And for what they did is that for every six layers, you have the full attention. But in between you have this local attention. And on top of that, they have kv cache sharing locally, both for the local attention and the global attention. So this is like all the tricks, not all the tricks,.but many of the tricks combined together. So in summary, these are a few ways to reduce the kv cache size, because remember, inference is memory-limited. So you want to reduce the cache size, but you don't want her accuracy too much. And there's many ways to do it. You can lower the dimensionality of the kv cache. You can have few kv cache vectors. You can reduce the dimensionality of a kv vector. You can share the kv cache across layers. And also, you can use local attention on some of the layers. OK.
 
@@ -867,6 +879,7 @@ $$ \text{总内存} = (\text{批次大小 } B \times \text{单序列缓存大小
 1.  **状态空间模型（State Space Models, SSMs）**
 2.  **扩散模型（Diffusion Models）**
 
+
 **英文**: This is going to be fairly quick. So the idea of state space models is actually drawing ideas from signal processing and control theory. Initially, the motivation was trying to model long context sequences without suffering the n-squared blowup. So it wasn't necessary about inference speed, but it turns out if you solve that problem, you get faster inference, too. So there's a kind of early paper on s4, which uses classical state space models, which are basically these linear dynamical systems, which are used to model long contexts and sort of shoehorning them into the kind of a modern neural setup. This work is nice in that. It has sort of this RNN kind of interpretation due to the linearity structure and also has a convolution. interpretation as well. So they published this paper and show that it worked really well on these long context synthetic tasks. But what they found is that what discovered is that they don't really work well for language modeling.
 
 **中文**: 这部分内容将简要介绍**状态空间模型（State Space Models, SSMs）**。
@@ -881,6 +894,7 @@ $$ \text{总内存} = (\text{批次大小 } B \times \text{单序列缓存大小
 研究人员发表了这篇论文，并证明该方法在**长上下文合成任务**上表现非常出色。
 **然而**，他们随后发现，这种经典方法在**语言建模（Language Modeling）**任务上的表现并不理想。
 
+![](img/lec10_016.png)
 
 **英文**: And that's obviously kind of a disappointment because a lot of the value of transformers is being able to do language well. So in a series of papers, there was the sort of identified a set of kind of synthetic tasks that captured the essence of why these models weren't working well. And that's basically these associative recall tasks. So here's a synthetic task where you're given a basically sequence of key value pairs. And the goal is to predict basically look up the key output value. So in some sense, it's kind of a logically a trivial task. But it's long sequence because I can have a lot of key value pairs. And I'm going to have to look far back. It can be arbitrary long dependence. And you can see that local attention is not going to work very well because it's just going to remember the last few sequences.
 
