@@ -1,0 +1,671 @@
+{
+  "segments": [
+    {
+      "id": 0,
+      "start": 0.0,
+      "end": 2.44,
+      "text": "Maybe I want to take multiple gradient steps"
+    },
+    {
+      "id": 1,
+      "start": 2.44,
+      "end": 4.4,
+      "text": "after sampling from p theta once."
+    },
+    {
+      "id": 2,
+      "start": 4.4,
+      "end": 8.0,
+      "text": "What's called essentially sampling from one rollout"
+    },
+    {
+      "id": 3,
+      "start": 8.0,
+      "end": 9.6,
+      "text": "and going almost off policy."
+    },
+    {
+      "id": 4,
+      "start": 9.6,
+      "end": 12.16,
+      "text": "To enable that, I have to essentially have"
+    },
+    {
+      "id": 5,
+      "start": 12.16,
+      "end": 14.56,
+      "text": "important weighting corrections because the more steps"
+    },
+    {
+      "id": 6,
+      "start": 14.56,
+      "end": 19.12,
+      "text": "I take, the more stale my original samples become."
+    },
+    {
+      "id": 7,
+      "start": 19.12,
+      "end": 20.8,
+      "text": "And so this is what's called TRPO."
+    },
+    {
+      "id": 8,
+      "start": 20.8,
+      "end": 23.52,
+      "text": "You basically make corrections for all the gradient steps"
+    },
+    {
+      "id": 9,
+      "start": 23.52,
+      "end": 27.92,
+      "text": "you take, and then you constrain yourself to stay close."
+    },
+    {
+      "id": 10,
+      "start": 28.08,
+      "end": 30.28,
+      "text": "Now, PPO takes the final step and says,"
+    },
+    {
+      "id": 11,
+      "start": 30.28,
+      "end": 33.04,
+      "text": "instead of explicitly constraining myself"
+    },
+    {
+      "id": 12,
+      "start": 33.04,
+      "end": 36.2,
+      "text": "to stay close to my old policy using this KL constraint,"
+    },
+    {
+      "id": 13,
+      "start": 36.2,
+      "end": 41.04,
+      "text": "maybe what I can do is I can just clip the probability ratios"
+    },
+    {
+      "id": 14,
+      "start": 41.04,
+      "end": 43.24,
+      "text": "and this will naturally incentivize the model"
+    },
+    {
+      "id": 15,
+      "start": 43.24,
+      "end": 45.48,
+      "text": "to stay close to the original policy."
+    },
+    {
+      "id": 16,
+      "start": 45.48,
+      "end": 48.2,
+      "text": "So this is kind of PPO in one slide."
+    },
+    {
+      "id": 17,
+      "start": 48.2,
+      "end": 50.48,
+      "text": "I'm not going to go into this with too much more detail"
+    },
+    {
+      "id": 18,
+      "start": 50.48,
+      "end": 53.08,
+      "text": "because actually this won't be the primary algorithm"
+    },
+    {
+      "id": 19,
+      "start": 53.08,
+      "end": 54.92,
+      "text": "that I want to sort of just go through the rest"
+    },
+    {
+      "id": 20,
+      "start": 54.92,
+      "end": 56.96,
+      "text": "of the lecture with."
+    },
+    {
+      "id": 21,
+      "start": 56.96,
+      "end": 60.52,
+      "text": "So at least in kind of the open research space"
+    },
+    {
+      "id": 22,
+      "start": 60.52,
+      "end": 63.16,
+      "text": "and the academic space, a lot of the question"
+    },
+    {
+      "id": 23,
+      "start": 63.16,
+      "end": 65.04,
+      "text": "that I think people were concerned with was,"
+    },
+    {
+      "id": 24,
+      "start": 65.04,
+      "end": 66.56,
+      "text": "can we get rid of PPO?"
+    },
+    {
+      "id": 25,
+      "start": 66.56,
+      "end": 69.4,
+      "text": "We will see this theme on Thursday as well."
+    },
+    {
+      "id": 26,
+      "start": 69.4,
+      "end": 71.68,
+      "text": "PPO is very complicated."
+    },
+    {
+      "id": 27,
+      "start": 71.68,
+      "end": 74.28,
+      "text": "And we have debated, but decided against having you"
+    },
+    {
+      "id": 28,
+      "start": 74.28,
+      "end": 77.36,
+      "text": "implement PPO because it will be suffering."
+    },
+    {
+      "id": 29,
+      "start": 77.36,
+      "end": 80.24,
+      "text": "And so lots of people thought, can we get rid of PPO"
+    },
+    {
+      "id": 30,
+      "start": 80.24,
+      "end": 82.52,
+      "text": "and they tried other reasonable things?"
+    },
+    {
+      "id": 31,
+      "start": 82.52,
+      "end": 84.96,
+      "text": "And I will explain those reasonable things."
+    },
+    {
+      "id": 32,
+      "start": 84.96,
+      "end": 88.52,
+      "text": "Maybe we can SFT on the pairs, but for each of the pairs,"
+    },
+    {
+      "id": 33,
+      "start": 88.52,
+      "end": 92.2,
+      "text": "we can prepend like a good token for the chosen good outputs"
+    },
+    {
+      "id": 34,
+      "start": 92.2,
+      "end": 96.4,
+      "text": "and bad token to the chosen not the bad outputs."
+    },
+    {
+      "id": 35,
+      "start": 96.4,
+      "end": 99.04,
+      "text": "And then I can just condition on good when I generate."
+    },
+    {
+      "id": 36,
+      "start": 99.04,
+      "end": 100.44,
+      "text": "That does not work very well."
+    },
+    {
+      "id": 37,
+      "start": 100.44,
+      "end": 102.72,
+      "text": "I can train the model only on the preferred output."
+    },
+    {
+      "id": 38,
+      "start": 102.72,
+      "end": 105.92,
+      "text": "That also does not work super well."
+    },
+    {
+      "id": 39,
+      "start": 105.92,
+      "end": 109.88,
+      "text": "I can use a reward model, sample the best one out of those,"
+    },
+    {
+      "id": 40,
+      "start": 109.88,
+      "end": 110.92,
+      "text": "and then train on those."
+    },
+    {
+      "id": 41,
+      "start": 110.92,
+      "end": 113.84,
+      "text": "Never works OK, but maybe not that great."
+    },
+    {
+      "id": 42,
+      "start": 113.84,
+      "end": 115.8,
+      "text": "And so people tried all these variants,"
+    },
+    {
+      "id": 43,
+      "start": 115.8,
+      "end": 119.16,
+      "text": "but what really stuck was basically DPO."
+    },
+    {
+      "id": 44,
+      "start": 119.16,
+      "end": 123.0,
+      "text": "And I think the reason why it caught on as much as it did"
+    },
+    {
+      "id": 45,
+      "start": 123.0,
+      "end": 126.68,
+      "text": "was because it removed a lot of the complexity of PPO"
+    },
+    {
+      "id": 46,
+      "start": 126.68,
+      "end": 130.04,
+      "text": "and worked relatively well."
+    },
+    {
+      "id": 47,
+      "start": 130.04,
+      "end": 133.52,
+      "text": "And so you get rid of the reward model that exists in PPO."
+    },
+    {
+      "id": 48,
+      "start": 133.52,
+      "end": 135.72,
+      "text": "This is used to calculate the advantage."
+    },
+    {
+      "id": 49,
+      "start": 135.72,
+      "end": 137.48,
+      "text": "We get rid of any of the on-policy stuff,"
+    },
+    {
+      "id": 50,
+      "start": 137.48,
+      "end": 139.56,
+      "text": "like the importance ratio thing that I was talking about."
+    },
+    {
+      "id": 51,
+      "start": 139.56,
+      "end": 140.96,
+      "text": "You just get rid of all of those."
+    },
+    {
+      "id": 52,
+      "start": 140.96,
+      "end": 143.2,
+      "text": "Instead, we go back to the basics."
+    },
+    {
+      "id": 53,
+      "start": 143.2,
+      "end": 146.52,
+      "text": "We take gradient steps on the log loss of good things."
+    },
+    {
+      "id": 54,
+      "start": 146.52,
+      "end": 148.44,
+      "text": "And then we take negative gradient steps"
+    },
+    {
+      "id": 55,
+      "start": 148.44,
+      "end": 150.56,
+      "text": "on log losses of bad stuff."
+    },
+    {
+      "id": 56,
+      "start": 150.56,
+      "end": 154.0,
+      "text": "We go back to very simple basic things."
+    },
+    {
+      "id": 57,
+      "start": 154.0,
+      "end": 156.4,
+      "text": "And the last part of what I want to talk about today"
+    },
+    {
+      "id": 58,
+      "start": 156.4,
+      "end": 159.2,
+      "text": "is just deriving the DPO formula."
+    },
+    {
+      "id": 59,
+      "start": 159.2,
+      "end": 160.52,
+      "text": "So what is our goal?"
+    },
+    {
+      "id": 60,
+      "start": 160.52,
+      "end": 163.28,
+      "text": "Our goal is to optimize this quantity at the very top."
+    },
+    {
+      "id": 61,
+      "start": 163.28,
+      "end": 166.68,
+      "text": "This is just a rewriting of that in struct GPT equation."
+    },
+    {
+      "id": 62,
+      "start": 166.68,
+      "end": 168.44,
+      "text": "I have a reward at the very front."
+    },
+    {
+      "id": 63,
+      "start": 168.44,
+      "end": 170.04,
+      "text": "And then I have a kale divergence."
+    },
+    {
+      "id": 64,
+      "start": 170.04,
+      "end": 173.64,
+      "text": "This keeps me, this is pi theta, close to my reference."
+    },
+    {
+      "id": 65,
+      "start": 173.64,
+      "end": 175.88,
+      "text": "So this is very natural."
+    },
+    {
+      "id": 66,
+      "start": 175.88,
+      "end": 178.52,
+      "text": "So the first thing I'm going to do is I'm"
+    },
+    {
+      "id": 67,
+      "start": 178.52,
+      "end": 181.72,
+      "text": "going to assume that my policy pi theta is not actually"
+    },
+    {
+      "id": 68,
+      "start": 181.72,
+      "end": 182.4,
+      "text": "a neural network."
+    },
+    {
+      "id": 69,
+      "start": 182.4,
+      "end": 184.88,
+      "text": "I'm going to assume it's an arbitrary function of any kind."
+    },
+    {
+      "id": 70,
+      "start": 184.88,
+      "end": 189.24,
+      "text": "And if I do that, then I can write down essentially"
+    },
+    {
+      "id": 71,
+      "start": 189.24,
+      "end": 191.72,
+      "text": "what the optimal policy looks like."
+    },
+    {
+      "id": 72,
+      "start": 191.72,
+      "end": 193.24,
+      "text": "It just has this form."
+    },
+    {
+      "id": 73,
+      "start": 193.24,
+      "end": 195.6,
+      "text": "It's the exponential of the reward."
+    },
+    {
+      "id": 74,
+      "start": 195.6,
+      "end": 199.24,
+      "text": "And it's multiplying pi ref, the reference distribution"
+    },
+    {
+      "id": 75,
+      "start": 199.24,
+      "end": 200.24,
+      "text": "over here."
+    },
+    {
+      "id": 76,
+      "start": 200.24,
+      "end": 204.04,
+      "text": "I'm going to solve for the implied reward by solving for our x, y."
+    },
+    {
+      "id": 77,
+      "start": 204.04,
+      "end": 206.96,
+      "text": "And the clever part about DPO is now to say, OK,"
+    },
+    {
+      "id": 78,
+      "start": 206.96,
+      "end": 209.96,
+      "text": "it basically means that every policy,"
+    },
+    {
+      "id": 79,
+      "start": 209.96,
+      "end": 211.64,
+      "text": "instead of thinking about policies,"
+    },
+    {
+      "id": 80,
+      "start": 211.64,
+      "end": 213.36,
+      "text": "I can think about rewards, because the two"
+    },
+    {
+      "id": 81,
+      "start": 213.36,
+      "end": 217.84,
+      "text": "are one and the same under this nonparametric assumption."
+    },
+    {
+      "id": 82,
+      "start": 217.84,
+      "end": 220.12,
+      "text": "And so what you do is remember I have these two pieces."
+    },
+    {
+      "id": 83,
+      "start": 220.12,
+      "end": 223.12,
+      "text": "The left side, this is the Bradley Terry equation"
+    },
+    {
+      "id": 84,
+      "start": 223.12,
+      "end": 227.24,
+      "text": "from the Steenon paper, the one before in struct GPT."
+    },
+    {
+      "id": 85,
+      "start": 227.24,
+      "end": 230.6,
+      "text": "And on the right side, this is the DPO sort of equivalence"
+    },
+    {
+      "id": 86,
+      "start": 230.6,
+      "end": 231.44,
+      "text": "I wrote down."
+    },
+    {
+      "id": 87,
+      "start": 231.44,
+      "end": 235.32,
+      "text": "And then now what I can do is I can plug in these rewards"
+    },
+    {
+      "id": 88,
+      "start": 235.32,
+      "end": 239.52,
+      "text": "are into the subjective, and I can minimize this loss."
+    },
+    {
+      "id": 89,
+      "start": 239.52,
+      "end": 242.0,
+      "text": "I can say what I want to do is now I"
+    },
+    {
+      "id": 90,
+      "start": 242.0,
+      "end": 245.76,
+      "text": "want to find a policy such that the implied reward for that"
+    },
+    {
+      "id": 91,
+      "start": 245.76,
+      "end": 248.2,
+      "text": "policy has the highest probability"
+    },
+    {
+      "id": 92,
+      "start": 248.2,
+      "end": 250.28,
+      "text": "of generating my pairwise comparisons."
+    },
+    {
+      "id": 93,
+      "start": 250.28,
+      "end": 252.2,
+      "text": "So now I've taken a RL problem, and I"
+    },
+    {
+      "id": 94,
+      "start": 252.2,
+      "end": 255.16,
+      "text": "have turned it into a maximum likelihood problem."
+    },
+    {
+      "id": 95,
+      "start": 255.44,
+      "end": 259.76,
+      "text": "That's very much similar conceptually"
+    },
+    {
+      "id": 96,
+      "start": 259.76,
+      "end": 261.56,
+      "text": "to something like pre-training."
+    },
+    {
+      "id": 97,
+      "start": 261.56,
+      "end": 263.76,
+      "text": "All we're doing is maximizing the probabilities,"
+    },
+    {
+      "id": 98,
+      "start": 263.76,
+      "end": 265.52,
+      "text": "except what we're doing here is we're maximizing"
+    },
+    {
+      "id": 99,
+      "start": 265.52,
+      "end": 268.0,
+      "text": "the probabilities of the pairwise comparisons."
+    },
+    {
+      "id": 100,
+      "start": 268.0,
+      "end": 269.52,
+      "text": "So those are the key steps, start"
+    },
+    {
+      "id": 101,
+      "start": 269.52,
+      "end": 271.84,
+      "text": "by making the nonparametric assumptions,"
+    },
+    {
+      "id": 102,
+      "start": 271.84,
+      "end": 273.88,
+      "text": "parameterize the reward via the policy,"
+    },
+    {
+      "id": 103,
+      "start": 273.88,
+      "end": 278.08,
+      "text": "and then optimize it using the supervised losses."
+    },
+    {
+      "id": 104,
+      "start": 278.08,
+      "end": 279.4,
+      "text": "I think we're a few minutes over."
+    },
+    {
+      "id": 105,
+      "start": 279.4,
+      "end": 280.32,
+      "text": "So we'll stop here."
+    },
+    {
+      "id": 106,
+      "start": 280.32,
+      "end": 281.52,
+      "text": "I think this is a good place because we"
+    },
+    {
+      "id": 107,
+      "start": 281.52,
+      "end": 283.92,
+      "text": "got through the derivation of DPO."
+    },
+    {
+      "id": 108,
+      "start": 283.92,
+      "end": 285.84,
+      "text": "And we'll get through the rest of RLHF"
+    },
+    {
+      "id": 109,
+      "start": 285.84,
+      "end": 288.32,
+      "text": "at the start of next lecture."
+    },
+    {
+      "id": 110,
+      "start": 288.32,
+      "end": 291.36,
+      "text": "Thanks everyone for asking lots of good questions."
+    }
+  ],
+  "language": "en"
+}

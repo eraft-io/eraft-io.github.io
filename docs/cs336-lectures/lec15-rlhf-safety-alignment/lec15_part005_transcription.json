@@ -1,0 +1,1331 @@
+{
+  "segments": [
+    {
+      "id": 0,
+      "start": 0.0,
+      "end": 3.8,
+      "text": "And you can kind of see very similar things happening here."
+    },
+    {
+      "id": 1,
+      "start": 3.8,
+      "end": 5.36,
+      "text": "We've got on the top left box, like,"
+    },
+    {
+      "id": 2,
+      "start": 5.36,
+      "end": 6.44,
+      "text": "helpfulness."
+    },
+    {
+      "id": 3,
+      "start": 6.44,
+      "end": 8.44,
+      "text": "You should address the intent of the user's prompt."
+    },
+    {
+      "id": 4,
+      "start": 8.44,
+      "end": 10.36,
+      "text": "You should adhere to any requirements."
+    },
+    {
+      "id": 5,
+      "start": 10.36,
+      "end": 11.88,
+      "text": "Don't have misleading information."
+    },
+    {
+      "id": 6,
+      "start": 11.88,
+      "end": 15.04,
+      "text": "Very similar to the instruction BD setup."
+    },
+    {
+      "id": 7,
+      "start": 15.04,
+      "end": 17.8,
+      "text": "We've got, actually, here a style box, which"
+    },
+    {
+      "id": 8,
+      "start": 17.8,
+      "end": 21.36,
+      "text": "is what kinds of style are good or bad."
+    },
+    {
+      "id": 9,
+      "start": 21.36,
+      "end": 24.4,
+      "text": "And then we've got different rating scales"
+    },
+    {
+      "id": 10,
+      "start": 24.4,
+      "end": 27.76,
+      "text": "for the different responses."
+    },
+    {
+      "id": 11,
+      "start": 27.76,
+      "end": 31.12,
+      "text": "And if I remember right, I think the Google bar folks,"
+    },
+    {
+      "id": 12,
+      "start": 31.12,
+      "end": 33.88,
+      "text": "I think, gets a minute per question"
+    },
+    {
+      "id": 13,
+      "start": 33.88,
+      "end": 36.24,
+      "text": "to be doing this task, which is quite difficult."
+    },
+    {
+      "id": 14,
+      "start": 39.08,
+      "end": 43.92,
+      "text": "And then for InstructGPT, they go through scale and upwork,"
+    },
+    {
+      "id": 15,
+      "start": 43.92,
+      "end": 46.84,
+      "text": "and they collect data from about 40 people."
+    },
+    {
+      "id": 16,
+      "start": 46.84,
+      "end": 50.72,
+      "text": "This is really, really tiny by today's standards."
+    },
+    {
+      "id": 17,
+      "start": 50.72,
+      "end": 54.32,
+      "text": "But hopefully you get a sense of what types of groups"
+    },
+    {
+      "id": 18,
+      "start": 54.32,
+      "end": 55.96,
+      "text": "are being involved here."
+    },
+    {
+      "id": 19,
+      "start": 55.96,
+      "end": 60.84,
+      "text": "So this is the second part of our interactive exercise."
+    },
+    {
+      "id": 20,
+      "start": 60.84,
+      "end": 62.28,
+      "text": "OK, cool."
+    },
+    {
+      "id": 21,
+      "start": 62.28,
+      "end": 64.76,
+      "text": "So that's five minutes."
+    },
+    {
+      "id": 22,
+      "start": 64.76,
+      "end": 70.12,
+      "text": "I guess to take a straw poll, I think about 27 of you"
+    },
+    {
+      "id": 23,
+      "start": 70.12,
+      "end": 71.96,
+      "text": "managed to complete this, which is great."
+    },
+    {
+      "id": 24,
+      "start": 71.96,
+      "end": 75.32,
+      "text": "Thank you for your participation."
+    },
+    {
+      "id": 25,
+      "start": 75.32,
+      "end": 77.6,
+      "text": "How many of you managed to fact check all the facts?"
+    },
+    {
+      "id": 26,
+      "start": 80.6,
+      "end": 84.2,
+      "text": "One of the questions is the do you mean the field plan?"
+    },
+    {
+      "id": 27,
+      "start": 84.2,
+      "end": 84.96,
+      "text": "Yeah."
+    },
+    {
+      "id": 28,
+      "start": 84.96,
+      "end": 86.6,
+      "text": "The normal expression."
+    },
+    {
+      "id": 29,
+      "start": 86.6,
+      "end": 87.12,
+      "text": "Yeah."
+    },
+    {
+      "id": 30,
+      "start": 87.12,
+      "end": 88.76,
+      "text": "The field is actually wrong."
+    },
+    {
+      "id": 31,
+      "start": 88.76,
+      "end": 89.68,
+      "text": "Yes."
+    },
+    {
+      "id": 32,
+      "start": 89.68,
+      "end": 90.68,
+      "text": "Yes, that's right."
+    },
+    {
+      "id": 33,
+      "start": 90.68,
+      "end": 96.28,
+      "text": "So how many of you managed to fact check any or all of the facts?"
+    },
+    {
+      "id": 34,
+      "start": 96.28,
+      "end": 97.16,
+      "text": "Managed to fact check things?"
+    },
+    {
+      "id": 35,
+      "start": 97.16,
+      "end": 97.68,
+      "text": "Just one."
+    },
+    {
+      "id": 36,
+      "start": 97.68,
+      "end": 98.04,
+      "text": "Just one."
+    },
+    {
+      "id": 37,
+      "start": 98.04,
+      "end": 99.36,
+      "text": "OK."
+    },
+    {
+      "id": 38,
+      "start": 99.36,
+      "end": 102.4,
+      "text": "How many of you managed to check the math in the five minutes?"
+    },
+    {
+      "id": 39,
+      "start": 102.4,
+      "end": 104.84,
+      "text": "OK, so they're called people, OK, good, good, excellent."
+    },
+    {
+      "id": 40,
+      "start": 104.84,
+      "end": 107.76,
+      "text": "OK, that makes me happy."
+    },
+    {
+      "id": 41,
+      "start": 107.76,
+      "end": 111.04,
+      "text": "So the point of this exercise partially,"
+    },
+    {
+      "id": 42,
+      "start": 111.04,
+      "end": 113.76,
+      "text": "I think maybe you could have guessed what was going to happen"
+    },
+    {
+      "id": 43,
+      "start": 113.76,
+      "end": 114.72,
+      "text": "here."
+    },
+    {
+      "id": 44,
+      "start": 114.72,
+      "end": 117.8,
+      "text": "The shorter ones, most of them are essentially"
+    },
+    {
+      "id": 45,
+      "start": 117.8,
+      "end": 120.2,
+      "text": "taking the longer ones and actually just removing"
+    },
+    {
+      "id": 46,
+      "start": 120.2,
+      "end": 122.68,
+      "text": "the hallucinations to the best of my ability."
+    },
+    {
+      "id": 47,
+      "start": 122.68,
+      "end": 125.36,
+      "text": "And so for the most part, basically,"
+    },
+    {
+      "id": 48,
+      "start": 125.36,
+      "end": 127.92,
+      "text": "for those of you that picked the longer one"
+    },
+    {
+      "id": 49,
+      "start": 127.92,
+      "end": 130.88,
+      "text": "are sort of picking the slightly longer but hallucinated ones."
+    },
+    {
+      "id": 50,
+      "start": 130.88,
+      "end": 132.92,
+      "text": "I don't quite remember which of the pair of games ones"
+    },
+    {
+      "id": 51,
+      "start": 132.92,
+      "end": 136.32,
+      "text": "are hallucinated, but many of them are."
+    },
+    {
+      "id": 52,
+      "start": 136.32,
+      "end": 138.68,
+      "text": "And so we see the strong disappointment."
+    },
+    {
+      "id": 53,
+      "start": 138.68,
+      "end": 141.04,
+      "text": "And actually, the longer one gets more votes"
+    },
+    {
+      "id": 54,
+      "start": 141.04,
+      "end": 142.48,
+      "text": "despite having strong hallucinations."
+    },
+    {
+      "id": 55,
+      "start": 142.48,
+      "end": 143.8,
+      "text": "This one, I think, both is correct."
+    },
+    {
+      "id": 56,
+      "start": 143.8,
+      "end": 146.64,
+      "text": "So B is probably the better choice."
+    },
+    {
+      "id": 57,
+      "start": 146.64,
+      "end": 149.72,
+      "text": "The two math ones, I think you're going to also back out"
+    },
+    {
+      "id": 58,
+      "start": 149.72,
+      "end": 152.6,
+      "text": "by the unnaturalness of this construction."
+    },
+    {
+      "id": 59,
+      "start": 152.6,
+      "end": 155.04,
+      "text": "The one that's more conclusive actually"
+    },
+    {
+      "id": 60,
+      "start": 155.04,
+      "end": 157.6,
+      "text": "is going to the wrong conclusion."
+    },
+    {
+      "id": 61,
+      "start": 157.6,
+      "end": 162.48,
+      "text": "This is not mathematically fully correct here."
+    },
+    {
+      "id": 62,
+      "start": 162.48,
+      "end": 166.6,
+      "text": "And so you probably should find it difficult"
+    },
+    {
+      "id": 63,
+      "start": 166.6,
+      "end": 169.96,
+      "text": "to try to do these judgments this quickly."
+    },
+    {
+      "id": 64,
+      "start": 169.96,
+      "end": 172.64,
+      "text": "There are very, very strong challenges"
+    },
+    {
+      "id": 65,
+      "start": 172.64,
+      "end": 176.08,
+      "text": "in collecting this kind of pairwise feedback"
+    },
+    {
+      "id": 66,
+      "start": 176.08,
+      "end": 177.56,
+      "text": "at very, very large scales."
+    },
+    {
+      "id": 67,
+      "start": 177.56,
+      "end": 180.52,
+      "text": "Just because even though you only have to verify,"
+    },
+    {
+      "id": 68,
+      "start": 180.52,
+      "end": 183.56,
+      "text": "if I'm showing you a math problem or I'm showing you something"
+    },
+    {
+      "id": 69,
+      "start": 183.56,
+      "end": 188.84,
+      "text": "like a very strong, factually laid-in text,"
+    },
+    {
+      "id": 70,
+      "start": 188.84,
+      "end": 191.16,
+      "text": "you're going to have to basically break this down into claims"
+    },
+    {
+      "id": 71,
+      "start": 191.16,
+      "end": 195.72,
+      "text": "and check each one to know whether one is wrong and one is right."
+    },
+    {
+      "id": 72,
+      "start": 195.72,
+      "end": 199.24,
+      "text": "So this is just like a very labor-intensive and difficult task."
+    },
+    {
+      "id": 73,
+      "start": 199.24,
+      "end": 202.76,
+      "text": "And I gave you five minutes because essentially,"
+    },
+    {
+      "id": 74,
+      "start": 202.76,
+      "end": 205.72,
+      "text": "I think the new story that the Google bar article was"
+    },
+    {
+      "id": 75,
+      "start": 205.72,
+      "end": 209.72,
+      "text": "associated with was basically that the annotators"
+    },
+    {
+      "id": 76,
+      "start": 209.72,
+      "end": 211.64,
+      "text": "were given one minute, for example."
+    },
+    {
+      "id": 77,
+      "start": 211.64,
+      "end": 213.88,
+      "text": "And there was big complaints."
+    },
+    {
+      "id": 78,
+      "start": 213.88,
+      "end": 216.64,
+      "text": "Like this is not enough for us to judge the safety and factual"
+    },
+    {
+      "id": 79,
+      "start": 216.64,
+      "end": 218.16,
+      "text": "accuracy of the model."
+    },
+    {
+      "id": 80,
+      "start": 218.16,
+      "end": 220.6,
+      "text": "And you hopefully, somewhat agree that it"
+    },
+    {
+      "id": 81,
+      "start": 220.6,
+      "end": 221.96,
+      "text": "is a very difficult task."
+    },
+    {
+      "id": 82,
+      "start": 222.24,
+      "end": 224.24,
+      "text": "Right."
+    },
+    {
+      "id": 83,
+      "start": 224.24,
+      "end": 225.6,
+      "text": "It's OK."
+    },
+    {
+      "id": 84,
+      "start": 225.6,
+      "end": 230.16,
+      "text": "The lessons here, going back to the flow of the lecture,"
+    },
+    {
+      "id": 85,
+      "start": 230.16,
+      "end": 233.48,
+      "text": "it's very hard to get high quality, verifiable annotators."
+    },
+    {
+      "id": 86,
+      "start": 233.48,
+      "end": 236.44,
+      "text": "I think you are, in many ways, pretty high on the bar"
+    },
+    {
+      "id": 87,
+      "start": 236.44,
+      "end": 238.44,
+      "text": "of people that are actually motivated to do this"
+    },
+    {
+      "id": 88,
+      "start": 238.44,
+      "end": 240.44,
+      "text": "because you're just doing it because I asked you to,"
+    },
+    {
+      "id": 89,
+      "start": 240.44,
+      "end": 243.8,
+      "text": "not because I'm paying you to or to get grades."
+    },
+    {
+      "id": 90,
+      "start": 243.8,
+      "end": 246.36,
+      "text": "It's very difficult to get people to check correctness,"
+    },
+    {
+      "id": 91,
+      "start": 246.36,
+      "end": 248.84,
+      "text": "especially under time constraints."
+    },
+    {
+      "id": 92,
+      "start": 248.84,
+      "end": 252.0,
+      "text": "And the last one, I don't know if those of you"
+    },
+    {
+      "id": 93,
+      "start": 252.0,
+      "end": 255.16,
+      "text": "were doing this, but if you put in an online survey like this,"
+    },
+    {
+      "id": 94,
+      "start": 255.16,
+      "end": 257.12,
+      "text": "someone's just going to take the whole thing, dump it"
+    },
+    {
+      "id": 95,
+      "start": 257.12,
+      "end": 260.48,
+      "text": "into GPT-4, and then just copy the answer straight back"
+    },
+    {
+      "id": 96,
+      "start": 260.48,
+      "end": 263.04,
+      "text": "onto your pairwise responses."
+    },
+    {
+      "id": 97,
+      "start": 263.04,
+      "end": 265.08,
+      "text": "We've had several studies in the past where"
+    },
+    {
+      "id": 98,
+      "start": 265.08,
+      "end": 269.24,
+      "text": "an annotator had 95% agreement with GPT-4,"
+    },
+    {
+      "id": 99,
+      "start": 269.24,
+      "end": 273.4,
+      "text": "and you have to wonder what's going on there."
+    },
+    {
+      "id": 100,
+      "start": 273.4,
+      "end": 276.76,
+      "text": "And so despite the fact that pairwise feedback"
+    },
+    {
+      "id": 101,
+      "start": 276.76,
+      "end": 281.56,
+      "text": "is easier to collect than supervised imitation data,"
+    },
+    {
+      "id": 102,
+      "start": 281.56,
+      "end": 283.56,
+      "text": "there are still significant issues."
+    },
+    {
+      "id": 103,
+      "start": 283.56,
+      "end": 287.2,
+      "text": "And I'd be remiss to not point out the many things"
+    },
+    {
+      "id": 104,
+      "start": 287.2,
+      "end": 291.8,
+      "text": "that have been written about the problems that this creates."
+    },
+    {
+      "id": 105,
+      "start": 291.8,
+      "end": 295.28,
+      "text": "If you try to outsource this to the real countries,"
+    },
+    {
+      "id": 106,
+      "start": 295.28,
+      "end": 298.28,
+      "text": "there's pricing, concerns, and lots of ethical issues"
+    },
+    {
+      "id": 107,
+      "start": 298.28,
+      "end": 301.56,
+      "text": "that you all should be aware of if you're going to be"
+    },
+    {
+      "id": 108,
+      "start": 301.56,
+      "end": 304.4,
+      "text": "in the future, be a part of these kinds of data collection"
+    },
+    {
+      "id": 109,
+      "start": 304.4,
+      "end": 305.16,
+      "text": "pipelines."
+    },
+    {
+      "id": 110,
+      "start": 305.16,
+      "end": 307.24,
+      "text": "You want to make sure to get high quality data,"
+    },
+    {
+      "id": 111,
+      "start": 307.24,
+      "end": 310.06,
+      "text": "and to make sure that people are being paid"
+    },
+    {
+      "id": 112,
+      "start": 310.06,
+      "end": 312.04,
+      "text": "kind of living wage."
+    },
+    {
+      "id": 113,
+      "start": 312.04,
+      "end": 314.24,
+      "text": "The other thing to be aware of, this"
+    },
+    {
+      "id": 114,
+      "start": 314.24,
+      "end": 317.44,
+      "text": "is in the bias and safety angle, because for alignment,"
+    },
+    {
+      "id": 115,
+      "start": 317.44,
+      "end": 318.84,
+      "text": "I think this is a really important thing"
+    },
+    {
+      "id": 116,
+      "start": 318.84,
+      "end": 322.16,
+      "text": "to also touch on, is that in some tests,"
+    },
+    {
+      "id": 117,
+      "start": 322.16,
+      "end": 325.08,
+      "text": "RLHF and alignment come at the end of the pipeline."
+    },
+    {
+      "id": 118,
+      "start": 325.08,
+      "end": 327.04,
+      "text": "And because they come at the end of the pipeline,"
+    },
+    {
+      "id": 119,
+      "start": 327.04,
+      "end": 330.0,
+      "text": "they have very strong influence on model behaviors."
+    },
+    {
+      "id": 120,
+      "start": 330.0,
+      "end": 333.88,
+      "text": "One of the papers that actually per se in my post-doc shimani"
+    },
+    {
+      "id": 121,
+      "start": 333.88,
+      "end": 337.68,
+      "text": "and SN and SN post-doc online worked on,"
+    },
+    {
+      "id": 122,
+      "start": 337.68,
+      "end": 339.64,
+      "text": "was this paper on trying to figure out"
+    },
+    {
+      "id": 123,
+      "start": 339.64,
+      "end": 342.04,
+      "text": "how do subjective opinions of LM's align"
+    },
+    {
+      "id": 124,
+      "start": 342.04,
+      "end": 344.04,
+      "text": "with different groups of people."
+    },
+    {
+      "id": 125,
+      "start": 344.04,
+      "end": 345.92,
+      "text": "And one of the really interesting patterns"
+    },
+    {
+      "id": 126,
+      "start": 345.92,
+      "end": 348.24,
+      "text": "that we found was actually for InstructGPT."
+    },
+    {
+      "id": 127,
+      "start": 348.24,
+      "end": 352.72,
+      "text": "These are old models, but now still useful models."
+    },
+    {
+      "id": 128,
+      "start": 352.72,
+      "end": 355.12,
+      "text": "These models somehow became more aligned"
+    },
+    {
+      "id": 129,
+      "start": 355.12,
+      "end": 358.0,
+      "text": "with Southeast Asian religions than before."
+    },
+    {
+      "id": 130,
+      "start": 358.0,
+      "end": 360.64,
+      "text": "And then we looked in the appendix of InstructGPT,"
+    },
+    {
+      "id": 131,
+      "start": 360.64,
+      "end": 362.56,
+      "text": "and actually what's the nationality of the people"
+    },
+    {
+      "id": 132,
+      "start": 362.56,
+      "end": 365.32,
+      "text": "doing the annotation, it's Filipino and Bangladeshi"
+    },
+    {
+      "id": 133,
+      "start": 365.32,
+      "end": 366.68,
+      "text": "and 17% American."
+    },
+    {
+      "id": 134,
+      "start": 366.68,
+      "end": 368.28,
+      "text": "And I was like, oh, it's kind of surprising,"
+    },
+    {
+      "id": 135,
+      "start": 368.28,
+      "end": 371.12,
+      "text": "but it does circumstantial evidence lines up"
+    },
+    {
+      "id": 136,
+      "start": 371.12,
+      "end": 371.96,
+      "text": "with this kind of thing."
+    },
+    {
+      "id": 137,
+      "start": 371.96,
+      "end": 373.28,
+      "text": "And so you do have to be very careful,"
+    },
+    {
+      "id": 138,
+      "start": 373.28,
+      "end": 375.84,
+      "text": "because this is the thing that in some sense goes out"
+    },
+    {
+      "id": 139,
+      "start": 375.84,
+      "end": 378.24,
+      "text": "and ships."
+    },
+    {
+      "id": 140,
+      "start": 378.24,
+      "end": 383.32,
+      "text": "Others have also noted that depending on the annotator,"
+    },
+    {
+      "id": 141,
+      "start": 383.32,
+      "end": 385.64,
+      "text": "what they pay attention to is very different."
+    },
+    {
+      "id": 142,
+      "start": 385.64,
+      "end": 389.96,
+      "text": "I really like this paper from Hoscing Blossom in Bartolo,"
+    },
+    {
+      "id": 143,
+      "start": 389.96,
+      "end": 392.88,
+      "text": "where they basically study two different kinds of annotators."
+    },
+    {
+      "id": 144,
+      "start": 392.88,
+      "end": 395.08,
+      "text": "One is the authors, and they're very motivated"
+    },
+    {
+      "id": 145,
+      "start": 395.08,
+      "end": 398.96,
+      "text": "to judge things correctly with quotes, and then crowd workers."
+    },
+    {
+      "id": 146,
+      "start": 398.96,
+      "end": 401.12,
+      "text": "And what they really find is crowd workers"
+    },
+    {
+      "id": 147,
+      "start": 401.12,
+      "end": 404.0,
+      "text": "don't pay much attention to factuality."
+    },
+    {
+      "id": 148,
+      "start": 404.0,
+      "end": 405.52,
+      "text": "That's this row here."
+    },
+    {
+      "id": 149,
+      "start": 405.52,
+      "end": 407.48,
+      "text": "They pay more attention to formatting."
+    },
+    {
+      "id": 150,
+      "start": 407.48,
+      "end": 408.8,
+      "text": "So depending on the annotator,"
+    },
+    {
+      "id": 151,
+      "start": 408.8,
+      "end": 411.16,
+      "text": "you're getting different kinds of feedback,"
+    },
+    {
+      "id": 152,
+      "start": 411.16,
+      "end": 414.56,
+      "text": "even though you're asking them the same things."
+    },
+    {
+      "id": 153,
+      "start": 414.56,
+      "end": 417.84,
+      "text": "And so increasingly, people have turned"
+    },
+    {
+      "id": 154,
+      "start": 417.84,
+      "end": 422.44,
+      "text": "to, as with the instruction tuning phase, AI feedback,"
+    },
+    {
+      "id": 155,
+      "start": 422.44,
+      "end": 424.52,
+      "text": "where LM generated feedback."
+    },
+    {
+      "id": 156,
+      "start": 424.52,
+      "end": 428.72,
+      "text": "And so there's been many works, including some of our own,"
+    },
+    {
+      "id": 157,
+      "start": 428.72,
+      "end": 430.92,
+      "text": "that have shown things like, oh, if you"
+    },
+    {
+      "id": 158,
+      "start": 430.92,
+      "end": 433.36,
+      "text": "try to get pairwise feedback from GPT-4,"
+    },
+    {
+      "id": 159,
+      "start": 433.36,
+      "end": 436.44,
+      "text": "it has very strong agreement from GPT-4s,"
+    },
+    {
+      "id": 160,
+      "start": 436.44,
+      "end": 439.48,
+      "text": "estimated wind rates of models or responses,"
+    },
+    {
+      "id": 161,
+      "start": 439.48,
+      "end": 441.84,
+      "text": "and the human estimated ones on the y-axis."
+    },
+    {
+      "id": 162,
+      "start": 441.84,
+      "end": 443.2,
+      "text": "Same here."
+    },
+    {
+      "id": 163,
+      "start": 443.2,
+      "end": 445.24,
+      "text": "The agreement between human to human, which"
+    },
+    {
+      "id": 164,
+      "start": 445.24,
+      "end": 448.36,
+      "text": "is the blue box here, is roughly the same as the agreement"
+    },
+    {
+      "id": 165,
+      "start": 448.36,
+      "end": 451.88,
+      "text": "between GPT-4 and human, but is much cheaper."
+    },
+    {
+      "id": 166,
+      "start": 451.88,
+      "end": 456.72,
+      "text": "So there's lots of reasons, I think, why AI feedback"
+    },
+    {
+      "id": 167,
+      "start": 456.72,
+      "end": 459.24,
+      "text": "has become popular."
+    },
+    {
+      "id": 168,
+      "start": 459.24,
+      "end": 462.76,
+      "text": "And it has been used very extensively in RLHF."
+    },
+    {
+      "id": 169,
+      "start": 462.76,
+      "end": 464.72,
+      "text": "So if you look at ultra-feedback, which I think"
+    },
+    {
+      "id": 170,
+      "start": 464.72,
+      "end": 467.56,
+      "text": "is one of the very popular open source data sets"
+    },
+    {
+      "id": 171,
+      "start": 467.56,
+      "end": 471.12,
+      "text": "for off-policy RLHF, you see this."
+    },
+    {
+      "id": 172,
+      "start": 471.12,
+      "end": 474.8,
+      "text": "If Zephyr 7B, I think, was a hugging phase effort,"
+    },
+    {
+      "id": 173,
+      "start": 474.96,
+      "end": 478.8,
+      "text": "I want to say last year, to build a big, strong open model."
+    },
+    {
+      "id": 174,
+      "start": 478.8,
+      "end": 480.52,
+      "text": "And the reason why I bring this up, I think Zephyr"
+    },
+    {
+      "id": 175,
+      "start": 480.52,
+      "end": 483.08,
+      "text": "is probably not the most well-known model."
+    },
+    {
+      "id": 176,
+      "start": 483.08,
+      "end": 487.72,
+      "text": "But one of the things I remember about the hugging-face model"
+    },
+    {
+      "id": 177,
+      "start": 487.72,
+      "end": 490.64,
+      "text": "process was initially they were really interested"
+    },
+    {
+      "id": 178,
+      "start": 490.64,
+      "end": 492.0,
+      "text": "in human data collection."
+    },
+    {
+      "id": 179,
+      "start": 492.0,
+      "end": 494.96,
+      "text": "They were convinced that human crowd worker,"
+    },
+    {
+      "id": 180,
+      "start": 494.96,
+      "end": 497.56,
+      "text": "if you paid them enough and got the right vendors,"
+    },
+    {
+      "id": 181,
+      "start": 497.56,
+      "end": 501.36,
+      "text": "without perform AI-generated feedback."
+    },
+    {
+      "id": 182,
+      "start": 501.36,
+      "end": 503.8,
+      "text": "But kind of late in the process, they kind of realized"
+    },
+    {
+      "id": 183,
+      "start": 503.8,
+      "end": 506.44,
+      "text": "that with GPT-4 generated feedback for this kind of thing,"
+    },
+    {
+      "id": 184,
+      "start": 506.44,
+      "end": 507.64,
+      "text": "just worked much better."
+    },
+    {
+      "id": 185,
+      "start": 507.64,
+      "end": 510.6,
+      "text": "And so a more modern example of this is Tulu3,"
+    },
+    {
+      "id": 186,
+      "start": 510.6,
+      "end": 514.88,
+      "text": "which is a sort of post-training paper slash project"
+    },
+    {
+      "id": 187,
+      "start": 514.88,
+      "end": 516.32,
+      "text": "out of AI2."
+    },
+    {
+      "id": 188,
+      "start": 516.32,
+      "end": 517.92,
+      "text": "And they've done kind of roughly this."
+    },
+    {
+      "id": 189,
+      "start": 517.92,
+      "end": 519.44,
+      "text": "Like they take different prompts."
+    },
+    {
+      "id": 190,
+      "start": 519.44,
+      "end": 522.24,
+      "text": "They have lots of different models to generate responses."
+    },
+    {
+      "id": 191,
+      "start": 522.24,
+      "end": 525.72,
+      "text": "And they have LM sort of rate these to get chosen"
+    },
+    {
+      "id": 192,
+      "start": 525.72,
+      "end": 528.48,
+      "text": "versus non-chosen."
+    },
+    {
+      "id": 193,
+      "start": 528.48,
+      "end": 532.44,
+      "text": "And this really all just kind of goes back to the classic paper"
+    },
+    {
+      "id": 194,
+      "start": 532.44,
+      "end": 536.16,
+      "text": "would be the anthropic paper on constitutional AI, which"
+    },
+    {
+      "id": 195,
+      "start": 536.16,
+      "end": 540.48,
+      "text": "I think sort of really planted a flag on the ground"
+    },
+    {
+      "id": 196,
+      "start": 540.48,
+      "end": 544.76,
+      "text": "in terms of AI feedback being used for this kind of alignment"
+    },
+    {
+      "id": 197,
+      "start": 544.76,
+      "end": 545.16,
+      "text": "process."
+    },
+    {
+      "id": 198,
+      "start": 547.92,
+      "end": 550.44,
+      "text": "Finally, the last thing I want to talk about for data"
+    },
+    {
+      "id": 199,
+      "start": 550.44,
+      "end": 552.48,
+      "text": "is length effects."
+    },
+    {
+      "id": 200,
+      "start": 552.48,
+      "end": 556.72,
+      "text": "I think when we did the annotation, one of the things"
+    },
+    {
+      "id": 201,
+      "start": 556.72,
+      "end": 558.24,
+      "text": "that we saw was I think many of you"
+    },
+    {
+      "id": 202,
+      "start": 558.24,
+      "end": 559.44,
+      "text": "saw the longer response."
+    },
+    {
+      "id": 203,
+      "start": 559.44,
+      "end": 560.76,
+      "text": "And you're like, this is more detailed."
+    },
+    {
+      "id": 204,
+      "start": 560.76,
+      "end": 561.6,
+      "text": "I like details."
+    },
+    {
+      "id": 205,
+      "start": 561.6,
+      "end": 562.76,
+      "text": "This is good."
+    },
+    {
+      "id": 206,
+      "start": 562.76,
+      "end": 564.68,
+      "text": "It's not just for you."
+    },
+    {
+      "id": 207,
+      "start": 564.68,
+      "end": 568.04,
+      "text": "Models and people all have this bias."
+    },
+    {
+      "id": 208,
+      "start": 568.04,
+      "end": 571.0,
+      "text": "And so people have found that models that people have"
+    },
+    {
+      "id": 209,
+      "start": 571.0,
+      "end": 574.8,
+      "text": "thought were better were, in fact, maybe only just also longer."
+    },
+    {
+      "id": 210,
+      "start": 574.8,
+      "end": 577.4,
+      "text": "And then AI feedback seems to make models just generally"
+    },
+    {
+      "id": 211,
+      "start": 577.4,
+      "end": 578.44,
+      "text": "longer."
+    },
+    {
+      "id": 212,
+      "start": 578.44,
+      "end": 580.2,
+      "text": "And so this is always a confounder that you"
+    },
+    {
+      "id": 213,
+      "start": 580.2,
+      "end": 584.68,
+      "text": "want to be careful of length as a confounder for general"
+    },
+    {
+      "id": 214,
+      "start": 584.68,
+      "end": 585.24,
+      "text": "preference."
+    },
+    {
+      "id": 215,
+      "start": 585.24,
+      "end": 587.04,
+      "text": "OK, there was a question there."
+    },
+    {
+      "id": 216,
+      "start": 587.76,
+      "end": 590.64,
+      "text": "Not off policy, not off policy."
+    },
+    {
+      "id": 217,
+      "start": 590.64,
+      "end": 595.2,
+      "text": "OK, yeah, I'll talk about off versus on policy later."
+    },
+    {
+      "id": 218,
+      "start": 595.2,
+      "end": 598.04,
+      "text": "Off policy, I think I mentioned it here,"
+    },
+    {
+      "id": 219,
+      "start": 598.04,
+      "end": 601.48,
+      "text": "is going to refer to you collect these pairwise feedback"
+    },
+    {
+      "id": 220,
+      "start": 601.48,
+      "end": 602.48,
+      "text": "things."
+    }
+  ],
+  "language": "en"
+}

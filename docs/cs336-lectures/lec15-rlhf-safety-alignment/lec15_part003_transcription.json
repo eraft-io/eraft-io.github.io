@@ -1,0 +1,1427 @@
+{
+  "segments": [
+    {
+      "id": 0,
+      "start": 0.0,
+      "end": 4.32,
+      "text": "example or a sense of what this looks like."
+    },
+    {
+      "id": 1,
+      "start": 4.32,
+      "end": 7.36,
+      "text": "It's a bit of a shame that data mixes are often"
+    },
+    {
+      "id": 2,
+      "start": 7.36,
+      "end": 11.92,
+      "text": "pretty closely guarded secrets by a lot of the groups."
+    },
+    {
+      "id": 3,
+      "start": 11.92,
+      "end": 15.4,
+      "text": "So I've taken this figure from MiniCPM, which"
+    },
+    {
+      "id": 4,
+      "start": 15.4,
+      "end": 18.52,
+      "text": "we've talked about before, great paper"
+    },
+    {
+      "id": 5,
+      "start": 18.52,
+      "end": 22.48,
+      "text": "from the Chinese groups, where basically they have a two-stage"
+    },
+    {
+      "id": 6,
+      "start": 22.48,
+      "end": 24.6,
+      "text": "training pipeline, where they have a first stage where"
+    },
+    {
+      "id": 7,
+      "start": 24.6,
+      "end": 26.04,
+      "text": "they do peer-pre training."
+    },
+    {
+      "id": 8,
+      "start": 26.04,
+      "end": 27.56,
+      "text": "And if you look at this pie chart, this"
+    },
+    {
+      "id": 9,
+      "start": 28.04,
+      "end": 29.36,
+      "text": "is all pre-training data sets."
+    },
+    {
+      "id": 10,
+      "start": 29.36,
+      "end": 33.12,
+      "text": "Common crawl, code pre-training, pile, doma,"
+    },
+    {
+      "id": 11,
+      "start": 33.12,
+      "end": 38.0,
+      "text": "they've thrown it all in into one big pie."
+    },
+    {
+      "id": 12,
+      "start": 38.0,
+      "end": 40.08,
+      "text": "And then they have a second stage, which"
+    },
+    {
+      "id": 13,
+      "start": 40.08,
+      "end": 41.4,
+      "text": "they call the decay stage."
+    },
+    {
+      "id": 14,
+      "start": 41.4,
+      "end": 44.68,
+      "text": "And so if you remember my lecture on scaling laws,"
+    },
+    {
+      "id": 15,
+      "start": 44.68,
+      "end": 47.64,
+      "text": "I talked about WSD warm-up stable decay."
+    },
+    {
+      "id": 16,
+      "start": 47.64,
+      "end": 49.12,
+      "text": "So that's the stable stage."
+    },
+    {
+      "id": 17,
+      "start": 49.12,
+      "end": 50.56,
+      "text": "That's the decay stage."
+    },
+    {
+      "id": 18,
+      "start": 50.56,
+      "end": 52.24,
+      "text": "And in the decay stage, what have we got?"
+    },
+    {
+      "id": 19,
+      "start": 52.24,
+      "end": 56.72,
+      "text": "We've got Wikipedia, what people might call high quality data."
+    },
+    {
+      "id": 20,
+      "start": 56.72,
+      "end": 58.96,
+      "text": "We've got still the pre-training stuff mixed in there."
+    },
+    {
+      "id": 21,
+      "start": 58.96,
+      "end": 61.36,
+      "text": "So it's not pure post-training data."
+    },
+    {
+      "id": 22,
+      "start": 61.36,
+      "end": 64.12,
+      "text": "But then if you look at the right, we've got code SFT,"
+    },
+    {
+      "id": 23,
+      "start": 64.12,
+      "end": 67.48,
+      "text": "we've got Chinese books, we've got Oprah Chai,"
+    },
+    {
+      "id": 24,
+      "start": 67.48,
+      "end": 70.04,
+      "text": "we've got stack exchange question answering,"
+    },
+    {
+      "id": 25,
+      "start": 70.04,
+      "end": 73.6,
+      "text": "and evil instruct, and OSS instruct,"
+    },
+    {
+      "id": 26,
+      "start": 73.6,
+      "end": 76.04,
+      "text": "and all sorts of other things."
+    },
+    {
+      "id": 27,
+      "start": 76.04,
+      "end": 78.76,
+      "text": "So those are all kind of instruction tuning"
+    },
+    {
+      "id": 28,
+      "start": 78.76,
+      "end": 81.04,
+      "text": "or instruction tuning adjacent data sets"
+    },
+    {
+      "id": 29,
+      "start": 81.04,
+      "end": 85.52,
+      "text": "that you've thrown in onto the second half of pre-training."
+    },
+    {
+      "id": 30,
+      "start": 85.52,
+      "end": 88.4,
+      "text": "And I think used by most models today,"
+    },
+    {
+      "id": 31,
+      "start": 88.4,
+      "end": 91.24,
+      "text": "and many CPM and other sort of derived"
+    },
+    {
+      "id": 32,
+      "start": 91.24,
+      "end": 94.04,
+      "text": "elements that are derived from that lineage of models"
+    },
+    {
+      "id": 33,
+      "start": 94.04,
+      "end": 97.04,
+      "text": "have definitely sort of publicized this."
+    },
+    {
+      "id": 34,
+      "start": 97.04,
+      "end": 100.52,
+      "text": "I think it's extremely effective to do this."
+    },
+    {
+      "id": 35,
+      "start": 100.52,
+      "end": 103.84,
+      "text": "And so I think everyone has been following this."
+    },
+    {
+      "id": 36,
+      "start": 103.84,
+      "end": 108.36,
+      "text": "One last commentary I'll make before we move on to RLHF here"
+    },
+    {
+      "id": 37,
+      "start": 108.36,
+      "end": 114.12,
+      "text": "is that this whole process makes it very, very difficult"
+    },
+    {
+      "id": 38,
+      "start": 114.12,
+      "end": 117.56,
+      "text": "to reason about pre-trained models versus post-trained models."
+    },
+    {
+      "id": 39,
+      "start": 117.56,
+      "end": 121.6,
+      "text": "If you look at recent releases from Quinn or whatever"
+    },
+    {
+      "id": 40,
+      "start": 121.6,
+      "end": 122.92,
+      "text": "other companies that you're looking at,"
+    },
+    {
+      "id": 41,
+      "start": 122.92,
+      "end": 126.8,
+      "text": "and they say base model, that base model is probably"
+    },
+    {
+      "id": 42,
+      "start": 126.8,
+      "end": 128.96,
+      "text": "at the end of this process."
+    },
+    {
+      "id": 43,
+      "start": 128.96,
+      "end": 131.2,
+      "text": "And so it has basically gone through an instruction tuning"
+    },
+    {
+      "id": 44,
+      "start": 131.2,
+      "end": 135.2,
+      "text": "phase implicitly through its mid-training process."
+    },
+    {
+      "id": 45,
+      "start": 135.2,
+      "end": 137.6,
+      "text": "We don't exactly know what the mixes are"
+    },
+    {
+      "id": 46,
+      "start": 137.6,
+      "end": 139.52,
+      "text": "for a lot of these closed models."
+    },
+    {
+      "id": 47,
+      "start": 139.52,
+      "end": 142.88,
+      "text": "But it does actually mean that I think the term base models"
+    },
+    {
+      "id": 48,
+      "start": 142.88,
+      "end": 147.52,
+      "text": "are increasingly questionable what that really means."
+    },
+    {
+      "id": 49,
+      "start": 147.52,
+      "end": 150.2,
+      "text": "So that's my side comment that is useful for you"
+    },
+    {
+      "id": 50,
+      "start": 150.2,
+      "end": 151.6,
+      "text": "if you're thinking about base models."
+    },
+    {
+      "id": 51,
+      "start": 151.6,
+      "end": 152.6,
+      "text": "So yes."
+    },
+    {
+      "id": 52,
+      "start": 152.6,
+      "end": 154.48,
+      "text": "So what you said is this is a data mixture"
+    },
+    {
+      "id": 53,
+      "start": 154.48,
+      "end": 156.64,
+      "text": "you trained during the training stage."
+    },
+    {
+      "id": 54,
+      "start": 156.64,
+      "end": 158.8,
+      "text": "When you met Leonard today at GOOSE Zero,"
+    },
+    {
+      "id": 55,
+      "start": 158.8,
+      "end": 161.12,
+      "text": "that's when you got like this, thank you so long."
+    },
+    {
+      "id": 56,
+      "start": 161.12,
+      "end": 162.88,
+      "text": "Is that like the right thing for you, Tade?"
+    },
+    {
+      "id": 57,
+      "start": 162.88,
+      "end": 165.64,
+      "text": "It's in that last stage."
+    },
+    {
+      "id": 58,
+      "start": 165.64,
+      "end": 167.24,
+      "text": "Yeah, so that's right."
+    },
+    {
+      "id": 59,
+      "start": 167.24,
+      "end": 170.52,
+      "text": "That was the motivation for a lot of the two face training"
+    },
+    {
+      "id": 60,
+      "start": 170.52,
+      "end": 172.2,
+      "text": "for these groups."
+    },
+    {
+      "id": 61,
+      "start": 172.2,
+      "end": 175.92,
+      "text": "Like they basically use essentially the large drop in loss"
+    },
+    {
+      "id": 62,
+      "start": 175.92,
+      "end": 180.64,
+      "text": "as a way to try to anneal the model into the right mode."
+    },
+    {
+      "id": 63,
+      "start": 180.64,
+      "end": 184.48,
+      "text": "I think there's increasing studies into what's"
+    },
+    {
+      "id": 64,
+      "start": 184.48,
+      "end": 187.12,
+      "text": "the optimal point at which to switch."
+    },
+    {
+      "id": 65,
+      "start": 187.12,
+      "end": 189.04,
+      "text": "And I think it's a little bit more nuanced than that."
+    },
+    {
+      "id": 66,
+      "start": 189.04,
+      "end": 190.16,
+      "text": "But I think it's a first order."
+    },
+    {
+      "id": 67,
+      "start": 190.16,
+      "end": 192.64,
+      "text": "This has been a very effective recipe."
+    },
+    {
+      "id": 68,
+      "start": 192.64,
+      "end": 193.8,
+      "text": "Yes."
+    },
+    {
+      "id": 69,
+      "start": 193.8,
+      "end": 198.32,
+      "text": "Is this between landing and the transfer of the giving"
+    },
+    {
+      "id": 70,
+      "start": 198.32,
+      "end": 200.84,
+      "text": "or trying to think about the incentivized citation"
+    },
+    {
+      "id": 71,
+      "start": 200.84,
+      "end": 202.16,
+      "text": "being prepared later?"
+    },
+    {
+      "id": 72,
+      "start": 202.16,
+      "end": 204.08,
+      "text": "And do this also happen?"
+    },
+    {
+      "id": 73,
+      "start": 204.08,
+      "end": 204.6,
+      "text": "Yeah."
+    },
+    {
+      "id": 74,
+      "start": 204.6,
+      "end": 206.92,
+      "text": "So I guess there are two questions packed in one."
+    },
+    {
+      "id": 75,
+      "start": 206.92,
+      "end": 209.92,
+      "text": "But the question was like, is this primarily"
+    },
+    {
+      "id": 76,
+      "start": 209.92,
+      "end": 211.88,
+      "text": "for catastrophic forgetting?"
+    },
+    {
+      "id": 77,
+      "start": 211.88,
+      "end": 215.76,
+      "text": "And also does this help with the citations issue?"
+    },
+    {
+      "id": 78,
+      "start": 215.76,
+      "end": 218.36,
+      "text": "So to answer the second part first,"
+    },
+    {
+      "id": 79,
+      "start": 218.36,
+      "end": 220.68,
+      "text": "I think it doesn't help with the citation issue."
+    },
+    {
+      "id": 80,
+      "start": 220.68,
+      "end": 224.44,
+      "text": "Because just as sort of like a type signature thing,"
+    },
+    {
+      "id": 81,
+      "start": 224.44,
+      "end": 227.48,
+      "text": "the only things that can help with the citation issue"
+    },
+    {
+      "id": 82,
+      "start": 227.48,
+      "end": 230.32,
+      "text": "is if you know what facts the model knows."
+    },
+    {
+      "id": 83,
+      "start": 230.32,
+      "end": 232.76,
+      "text": "So you have to either ensure that the model always"
+    },
+    {
+      "id": 84,
+      "start": 232.76,
+      "end": 235.32,
+      "text": "knows the citation facts before you show it that's"
+    },
+    {
+      "id": 85,
+      "start": 235.32,
+      "end": 236.36,
+      "text": "Ft data."
+    },
+    {
+      "id": 86,
+      "start": 236.36,
+      "end": 239.72,
+      "text": "Or you have to check to see if the model knows it"
+    },
+    {
+      "id": 87,
+      "start": 239.72,
+      "end": 242.8,
+      "text": "and then show it that data if it does know it, right?"
+    },
+    {
+      "id": 88,
+      "start": 242.8,
+      "end": 243.68,
+      "text": "Which this doesn't do."
+    },
+    {
+      "id": 89,
+      "start": 243.68,
+      "end": 246.32,
+      "text": "This will always unconditionally put in those data points,"
+    },
+    {
+      "id": 90,
+      "start": 246.32,
+      "end": 248.0,
+      "text": "whether or not that citation has learned."
+    },
+    {
+      "id": 91,
+      "start": 248.0,
+      "end": 251.24,
+      "text": "So it has no way of fixing that adaptably."
+    },
+    {
+      "id": 92,
+      "start": 251.24,
+      "end": 252.48,
+      "text": "Catastrophic forgetting wise, I think"
+    },
+    {
+      "id": 93,
+      "start": 252.48,
+      "end": 256.44,
+      "text": "that is one of the motivations that if you have so much"
+    },
+    {
+      "id": 94,
+      "start": 256.44,
+      "end": 260.52,
+      "text": "Ft data, your trade offs are pretty tricky, right?"
+    },
+    {
+      "id": 95,
+      "start": 260.52,
+      "end": 262.84,
+      "text": "Because unless you're going to do this kind of almost"
+    },
+    {
+      "id": 96,
+      "start": 262.84,
+      "end": 264.72,
+      "text": "pre-training mixed in with post-training,"
+    },
+    {
+      "id": 97,
+      "start": 264.72,
+      "end": 266.24,
+      "text": "you have to think about regularization."
+    },
+    {
+      "id": 98,
+      "start": 266.24,
+      "end": 268.24,
+      "text": "You have to think about tiny step sizes"
+    },
+    {
+      "id": 99,
+      "start": 268.24,
+      "end": 270.68,
+      "text": "to avoid messing up your pre-training."
+    },
+    {
+      "id": 100,
+      "start": 270.68,
+      "end": 273.88,
+      "text": "And so I think this is partially motivated"
+    },
+    {
+      "id": 101,
+      "start": 273.88,
+      "end": 277.68,
+      "text": "by sort of catastrophic forgetting adjacent issues."
+    },
+    {
+      "id": 102,
+      "start": 277.68,
+      "end": 281.68,
+      "text": "It keeps the model sort of more general."
+    },
+    {
+      "id": 103,
+      "start": 281.68,
+      "end": 282.68,
+      "text": "Yes?"
+    },
+    {
+      "id": 104,
+      "start": 282.68,
+      "end": 289.08,
+      "text": "I'm trying to say, with a John Chowman example for investigation,"
+    },
+    {
+      "id": 105,
+      "start": 289.08,
+      "end": 292.04,
+      "text": "inside if the model doesn't know the reference"
+    },
+    {
+      "id": 106,
+      "start": 292.04,
+      "end": 294.68,
+      "text": "have included in the post-training data"
+    },
+    {
+      "id": 107,
+      "start": 294.68,
+      "end": 297.56,
+      "text": "that it knows it, so it does know not that."
+    },
+    {
+      "id": 108,
+      "start": 297.56,
+      "end": 299.84,
+      "text": "And then if we thought I was thinking here."
+    },
+    {
+      "id": 109,
+      "start": 299.84,
+      "end": 300.44,
+      "text": "That's right."
+    },
+    {
+      "id": 110,
+      "start": 300.44,
+      "end": 303.08,
+      "text": "Or that's the claim, right?"
+    },
+    {
+      "id": 111,
+      "start": 303.08,
+      "end": 308.64,
+      "text": "That if the model did know this citation that's right here,"
+    },
+    {
+      "id": 112,
+      "start": 308.64,
+      "end": 310.96,
+      "text": "then the model wouldn't necessarily out"
+    },
+    {
+      "id": 113,
+      "start": 310.96,
+      "end": 313.52,
+      "text": "of these two competing mechanisms."
+    },
+    {
+      "id": 114,
+      "start": 313.52,
+      "end": 316.6,
+      "text": "What it would learn is, oh, whenever I see this example,"
+    },
+    {
+      "id": 115,
+      "start": 316.6,
+      "end": 320.92,
+      "text": "I should retrieve my knowledge about Bivens and Michel L"
+    },
+    {
+      "id": 116,
+      "start": 320.92,
+      "end": 323.52,
+      "text": "and then use that as a citation."
+    },
+    {
+      "id": 117,
+      "start": 323.52,
+      "end": 327.88,
+      "text": "I think the reality of this is that it's always very complicated,"
+    },
+    {
+      "id": 118,
+      "start": 327.88,
+      "end": 329.92,
+      "text": "like what does it mean for a model to know something, how"
+    },
+    {
+      "id": 119,
+      "start": 329.92,
+      "end": 331.88,
+      "text": "reliably does it know something?"
+    },
+    {
+      "id": 120,
+      "start": 331.88,
+      "end": 334.24,
+      "text": "And so these two mechanisms are always"
+    },
+    {
+      "id": 121,
+      "start": 334.24,
+      "end": 336.52,
+      "text": "maybe in superposition for a model."
+    },
+    {
+      "id": 122,
+      "start": 336.52,
+      "end": 338.96,
+      "text": "It's really just a question of which one is more dominant."
+    },
+    {
+      "id": 123,
+      "start": 338.96,
+      "end": 340.8,
+      "text": "If a model just has no idea about this,"
+    },
+    {
+      "id": 124,
+      "start": 340.8,
+      "end": 343.72,
+      "text": "it's probably two that is more dominant."
+    },
+    {
+      "id": 125,
+      "start": 343.72,
+      "end": 345.88,
+      "text": "Whereas I think if the model knows it reliably,"
+    },
+    {
+      "id": 126,
+      "start": 345.88,
+      "end": 347.56,
+      "text": "it's more likely that it's just going"
+    },
+    {
+      "id": 127,
+      "start": 347.56,
+      "end": 348.96,
+      "text": "to learn the correct citation rather"
+    },
+    {
+      "id": 128,
+      "start": 348.96,
+      "end": 352.4,
+      "text": "than encouraging broad general hallucinations."
+    },
+    {
+      "id": 129,
+      "start": 352.4,
+      "end": 353.72,
+      "text": "Yes."
+    },
+    {
+      "id": 130,
+      "start": 353.72,
+      "end": 357.28,
+      "text": "I'm putting into all of the three diggers,"
+    },
+    {
+      "id": 131,
+      "start": 357.28,
+      "end": 361.2,
+      "text": "some kind of thought tokens that tell the model who I should."
+    },
+    {
+      "id": 132,
+      "start": 361.2,
+      "end": 362.4,
+      "text": "This looks like a plan."
+    },
+    {
+      "id": 133,
+      "start": 362.4,
+      "end": 364.12,
+      "text": "Let me check if I actually know it."
+    },
+    {
+      "id": 134,
+      "start": 364.12,
+      "end": 366.0,
+      "text": "And so I'm going to query myself."
+    },
+    {
+      "id": 135,
+      "start": 366.0,
+      "end": 368.6,
+      "text": "And you go and check if I'm getting consistent answers."
+    },
+    {
+      "id": 136,
+      "start": 368.6,
+      "end": 371.12,
+      "text": "And if so, I'll prove that."
+    },
+    {
+      "id": 137,
+      "start": 371.12,
+      "end": 372.96,
+      "text": "So in the entire training process,"
+    },
+    {
+      "id": 138,
+      "start": 372.96,
+      "end": 376.36,
+      "text": "you have some plan process with writing the track."
+    },
+    {
+      "id": 139,
+      "start": 376.36,
+      "end": 377.52,
+      "text": "OK."
+    },
+    {
+      "id": 140,
+      "start": 377.52,
+      "end": 378.92,
+      "text": "That is a very interesting idea."
+    },
+    {
+      "id": 141,
+      "start": 378.92,
+      "end": 382.12,
+      "text": "So just to repeat it, it has anyone"
+    },
+    {
+      "id": 142,
+      "start": 382.12,
+      "end": 384.56,
+      "text": "done something where you put in thought tokens"
+    },
+    {
+      "id": 143,
+      "start": 384.56,
+      "end": 387.12,
+      "text": "or the models checking itself for its knowledge of facts"
+    },
+    {
+      "id": 144,
+      "start": 387.12,
+      "end": 389.12,
+      "text": "as it trains or something like that, right?"
+    },
+    {
+      "id": 145,
+      "start": 389.12,
+      "end": 390.6,
+      "text": "Is that roughly right?"
+    },
+    {
+      "id": 146,
+      "start": 390.6,
+      "end": 391.88,
+      "text": "Yeah."
+    },
+    {
+      "id": 147,
+      "start": 391.88,
+      "end": 395.76,
+      "text": "So depending on how you interpret or implement that exact idea,"
+    },
+    {
+      "id": 148,
+      "start": 395.76,
+      "end": 398.84,
+      "text": "it starts to look a lot like reinforcement learning."
+    },
+    {
+      "id": 149,
+      "start": 398.84,
+      "end": 404.12,
+      "text": "Because for example, there's a method called a quiet star"
+    },
+    {
+      "id": 150,
+      "start": 404.12,
+      "end": 406.4,
+      "text": "from some folks here, no good men and their exalculate men"
+    },
+    {
+      "id": 151,
+      "start": 406.4,
+      "end": 410.36,
+      "text": "and others have done this, where they do essentially,"
+    },
+    {
+      "id": 152,
+      "start": 410.36,
+      "end": 413.56,
+      "text": "they try to learn the thinking process of a model"
+    },
+    {
+      "id": 153,
+      "start": 413.56,
+      "end": 417.92,
+      "text": "by predicting what happens on the answer token,"
+    },
+    {
+      "id": 154,
+      "start": 417.92,
+      "end": 419.48,
+      "text": "and then based on whether or not it's correct,"
+    },
+    {
+      "id": 155,
+      "start": 419.48,
+      "end": 423.16,
+      "text": "it tries to reinforce the model to have good thought"
+    },
+    {
+      "id": 156,
+      "start": 423.16,
+      "end": 424.16,
+      "text": "process."
+    },
+    {
+      "id": 157,
+      "start": 424.16,
+      "end": 426.36,
+      "text": "But even closer analogy to this is star, which"
+    },
+    {
+      "id": 158,
+      "start": 426.36,
+      "end": 429.2,
+      "text": "is the original paper, which is if the model gets something"
+    },
+    {
+      "id": 159,
+      "start": 429.2,
+      "end": 431.6,
+      "text": "correct, then that thinking process gets fed back"
+    },
+    {
+      "id": 160,
+      "start": 431.6,
+      "end": 432.88,
+      "text": "into the model training."
+    },
+    {
+      "id": 161,
+      "start": 432.88,
+      "end": 434.6,
+      "text": "And if it's wrong, then it doesn't."
+    },
+    {
+      "id": 162,
+      "start": 434.6,
+      "end": 437.64,
+      "text": "And it's very similar to what you're proposing, which"
+    },
+    {
+      "id": 163,
+      "start": 437.64,
+      "end": 440.24,
+      "text": "is to adaptively train the model based on correctness"
+    },
+    {
+      "id": 164,
+      "start": 440.24,
+      "end": 442.32,
+      "text": "of its knowledge or whatever else."
+    },
+    {
+      "id": 165,
+      "start": 442.32,
+      "end": 445.28,
+      "text": "I have a question just to do a thought process."
+    },
+    {
+      "id": 166,
+      "start": 445.28,
+      "end": 448.68,
+      "text": "Let me use this tool that checks myself"
+    },
+    {
+      "id": 167,
+      "start": 448.68,
+      "end": 452.04,
+      "text": "and I can leave her at some points, change what that tool gets."
+    },
+    {
+      "id": 168,
+      "start": 452.04,
+      "end": 454.44,
+      "text": "The points that will come with the responses."
+    },
+    {
+      "id": 169,
+      "start": 454.44,
+      "end": 456.44,
+      "text": "Yes, I do have the knowledge, no idea."
+    },
+    {
+      "id": 170,
+      "start": 456.44,
+      "end": 458.96,
+      "text": "And then you actually see the knowledge gets printed out"
+    },
+    {
+      "id": 171,
+      "start": 458.96,
+      "end": 460.2,
+      "text": "in person to do that."
+    },
+    {
+      "id": 172,
+      "start": 460.2,
+      "end": 460.96,
+      "text": "I see."
+    },
+    {
+      "id": 173,
+      "start": 460.96,
+      "end": 463.48,
+      "text": "So in this tool use example, are you"
+    },
+    {
+      "id": 174,
+      "start": 463.48,
+      "end": 467.92,
+      "text": "imagining that the fact would get replaced by a tool call,"
+    },
+    {
+      "id": 175,
+      "start": 467.92,
+      "end": 469.32,
+      "text": "or will the fact still be there?"
+    },
+    {
+      "id": 176,
+      "start": 469.32,
+      "end": 471.04,
+      "text": "I think the key question is, do you"
+    },
+    {
+      "id": 177,
+      "start": 471.04,
+      "end": 473.64,
+      "text": "force the model to predict the fact tokens,"
+    },
+    {
+      "id": 178,
+      "start": 473.64,
+      "end": 475.84,
+      "text": "or do you just force it to predict,"
+    },
+    {
+      "id": 179,
+      "start": 475.84,
+      "end": 478.2,
+      "text": "use a tool to look it up on Google token?"
+    },
+    {
+      "id": 180,
+      "start": 478.92,
+      "end": 482.32,
+      "text": "No, no, the tool just packs it from home losing."
+    },
+    {
+      "id": 181,
+      "start": 482.32,
+      "end": 484.08,
+      "text": "If you don't know the tool how you implement it,"
+    },
+    {
+      "id": 182,
+      "start": 484.08,
+      "end": 487.24,
+      "text": "but you see if the tool says, I as I do know it,"
+    },
+    {
+      "id": 183,
+      "start": 487.24,
+      "end": 491.64,
+      "text": "then there will actually be some response printed out"
+    },
+    {
+      "id": 184,
+      "start": 491.64,
+      "end": 492.72,
+      "text": "in the future in the data."
+    },
+    {
+      "id": 185,
+      "start": 492.72,
+      "end": 494.88,
+      "text": "If the tool says, no, I don't know it,"
+    },
+    {
+      "id": 186,
+      "start": 494.88,
+      "end": 496.52,
+      "text": "then the future is pretty dirty."
+    },
+    {
+      "id": 187,
+      "start": 496.52,
+      "end": 498.0,
+      "text": "Do you think I'm going to say, actually,"
+    },
+    {
+      "id": 188,
+      "start": 498.0,
+      "end": 499.8,
+      "text": "I don't know the time you must do it?"
+    },
+    {
+      "id": 189,
+      "start": 499.8,
+      "end": 500.64,
+      "text": "And so."
+    },
+    {
+      "id": 190,
+      "start": 500.64,
+      "end": 501.24,
+      "text": "Right."
+    },
+    {
+      "id": 191,
+      "start": 501.24,
+      "end": 504.68,
+      "text": "So I think that's hard because when you do pre-training,"
+    },
+    {
+      "id": 192,
+      "start": 504.68,
+      "end": 506.36,
+      "text": "like you have to know whether you know the fact"
+    },
+    {
+      "id": 193,
+      "start": 506.84,
+      "end": 510.52,
+      "text": "to know whether to take losses on that knowledge token,"
+    },
+    {
+      "id": 194,
+      "start": 510.52,
+      "end": 512.56,
+      "text": "like you can't defer it to inference time,"
+    },
+    {
+      "id": 195,
+      "start": 512.56,
+      "end": 514.0,
+      "text": "because you have to decide whether or not"
+    },
+    {
+      "id": 196,
+      "start": 514.0,
+      "end": 516.16,
+      "text": "you're going to take gradient steps."
+    },
+    {
+      "id": 197,
+      "start": 516.16,
+      "end": 518.2,
+      "text": "And the other sort of logistical difficulty here"
+    },
+    {
+      "id": 198,
+      "start": 518.2,
+      "end": 521.4,
+      "text": "is during pre-training time, you have a static dataset,"
+    },
+    {
+      "id": 199,
+      "start": 521.4,
+      "end": 524.64,
+      "text": "or for computational reasons, you would want a static dataset."
+    },
+    {
+      "id": 200,
+      "start": 524.64,
+      "end": 525.8,
+      "text": "And if you have a static dataset,"
+    },
+    {
+      "id": 201,
+      "start": 525.8,
+      "end": 528.56,
+      "text": "you can't adaptively do updates."
+    },
+    {
+      "id": 202,
+      "start": 528.56,
+      "end": 530.36,
+      "text": "Anything that solves the hallucination problem"
+    },
+    {
+      "id": 203,
+      "start": 530.36,
+      "end": 532.52,
+      "text": "has to be kind of reactive of the form,"
+    },
+    {
+      "id": 204,
+      "start": 532.52,
+      "end": 534.96,
+      "text": "what does the model know, and then do I take updates"
+    },
+    {
+      "id": 205,
+      "start": 534.96,
+      "end": 535.8,
+      "text": "on this or not?"
+    },
+    {
+      "id": 206,
+      "start": 535.8,
+      "end": 538.24,
+      "text": "But the pre-training stage, that's very difficult."
+    },
+    {
+      "id": 207,
+      "start": 538.24,
+      "end": 540.48,
+      "text": "Unless you're doing RL-style stuff at pre-training scale,"
+    },
+    {
+      "id": 208,
+      "start": 540.48,
+      "end": 544.84,
+      "text": "which would get you very close to that, but still very difficult."
+    },
+    {
+      "id": 209,
+      "start": 544.84,
+      "end": 547.12,
+      "text": "I'm happy to follow up, but I think, hopefully,"
+    },
+    {
+      "id": 210,
+      "start": 547.12,
+      "end": 549.8,
+      "text": "that answers the question."
+    },
+    {
+      "id": 211,
+      "start": 549.8,
+      "end": 550.64,
+      "text": "Oh, there's more stuff."
+    },
+    {
+      "id": 212,
+      "start": 550.64,
+      "end": 551.96,
+      "text": "Yes, OK."
+    },
+    {
+      "id": 213,
+      "start": 551.96,
+      "end": 557.68,
+      "text": "So if we find a particular increase of Lama,"
+    },
+    {
+      "id": 214,
+      "start": 557.68,
+      "end": 560.2,
+      "text": "it's in a retinue field."
+    },
+    {
+      "id": 215,
+      "start": 560.2,
+      "end": 563.44,
+      "text": "We can do this to emoji, but it's"
+    },
+    {
+      "id": 216,
+      "start": 563.44,
+      "end": 564.44,
+      "text": "a function."
+    },
+    {
+      "id": 217,
+      "start": 564.44,
+      "end": 567.4,
+      "text": "If you find a lot of emojis, I think that's the best."
+    },
+    {
+      "id": 218,
+      "start": 567.4,
+      "end": 569.08,
+      "text": "So it comes with a ground goal."
+    },
+    {
+      "id": 219,
+      "start": 569.08,
+      "end": 572.08,
+      "text": "It's not to follow it."
+    },
+    {
+      "id": 220,
+      "start": 572.08,
+      "end": 574.08,
+      "text": "It's not to have an algorithm."
+    },
+    {
+      "id": 221,
+      "start": 574.08,
+      "end": 575.08,
+      "text": "It's a test."
+    },
+    {
+      "id": 222,
+      "start": 575.08,
+      "end": 576.88,
+      "text": "It's similar to emoji items."
+    },
+    {
+      "id": 223,
+      "start": 576.88,
+      "end": 578.88,
+      "text": "I didn't."
+    },
+    {
+      "id": 224,
+      "start": 578.88,
+      "end": 579.48,
+      "text": "Yeah, OK."
+    },
+    {
+      "id": 225,
+      "start": 579.48,
+      "end": 580.88,
+      "text": "So the question was, if at pre-training,"
+    },
+    {
+      "id": 226,
+      "start": 580.88,
+      "end": 582.44,
+      "text": "we don't see emojis, but at post-training,"
+    },
+    {
+      "id": 227,
+      "start": 582.44,
+      "end": 585.24,
+      "text": "we put in a bunch of emojis at the end, what will happen?"
+    },
+    {
+      "id": 228,
+      "start": 585.24,
+      "end": 588.4,
+      "text": "It depends on the structure of the emojis, I guess."
+    },
+    {
+      "id": 229,
+      "start": 588.4,
+      "end": 591.56,
+      "text": "If the emojis are dependent on the inputs in a very complex way,"
+    },
+    {
+      "id": 230,
+      "start": 591.56,
+      "end": 593.12,
+      "text": "and that's very difficult to learn,"
+    },
+    {
+      "id": 231,
+      "start": 593.12,
+      "end": 595.32,
+      "text": "maybe what the model will learn is, well,"
+    },
+    {
+      "id": 232,
+      "start": 595.32,
+      "end": 597.64,
+      "text": "in post-training, what I saw was a bunch of emojis."
+    },
+    {
+      "id": 233,
+      "start": 597.64,
+      "end": 599.36,
+      "text": "I don't have enough data or training"
+    },
+    {
+      "id": 234,
+      "start": 599.36,
+      "end": 601.24,
+      "text": "to know what the complex pattern is."
+    },
+    {
+      "id": 235,
+      "start": 601.24,
+      "end": 602.96,
+      "text": "So the model will just learn to put a bunch of random"
+    },
+    {
+      "id": 236,
+      "start": 602.96,
+      "end": 604.56,
+      "text": "emojis at the end."
+    }
+  ],
+  "language": "en"
+}
