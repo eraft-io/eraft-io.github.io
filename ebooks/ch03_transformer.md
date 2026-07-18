@@ -27,6 +27,8 @@ Transformer 模型
 
 我们会自底向上构建：**MLP → Head → MultiHeadAttention → Block → Transformer**。每完成一个组件，都会用一段代码验证它的输入输出形状。
 
+> **推荐可视化工具**：在阅读本章之前，建议先访问 [Transformer Explainer](https://explainer.tubex.chat/) ——一个交互式的 Transformer 架构可视化学习网站。你可以在浏览器中输入文本，实时观察数据如何流经 Embedding、Attention、MLP 等每一层，直观理解每个组件的作用和数据形状的变化。带着这份直觉再来读下面的代码，会事半功倍。
+
 ## 3.1 Embedding：把 token 变成向量
 
 ### 3.1.1 为什么需要 Embedding
