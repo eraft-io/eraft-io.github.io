@@ -100,7 +100,7 @@ kl = F.kl_div(F.log_softmax(logits_p, dim=-1),
 
 在 RL 中，我们需要 token 级别的 log 概率：
 
-$$\log p(t_i | t_{<i}) = \log \text{softmax}(z_i)_{t_i}$$
+$$\log p(t_i \mid t_{\lt i}) = \log \text{softmax}(z_i)_{t_i}$$
 
 **PyTorch 实现**：
 
@@ -699,3 +699,141 @@ python scripts/train_grpo.py --group_size 16 --prompts_per_iter 4
 | **world_size** | world_size | 分布式训练中的 GPU 总数 |
 | **Zero-shot** | Zero-shot | 零样本：不提供示例直接让模型回答 |
 | **ZeRO** | Zero Redundancy Optimizer | DeepSpeed 的显存优化技术 |
+
+## 附录 F：代码库详解——train-llm-from-scratch
+
+本书全部代码均来自开源项目 [train-llm-from-scratch](https://github.com/FareedKhan-dev/train-llm-from-scratch)。该项目用纯 PyTorch 从零实现了一个完整的 LLM 训练流水线，涵盖从原始文本到对齐推理模型的全流程，不依赖 `trl`、`peft`、`transformers` 等外部库。
+
+### F.1 项目定位
+
+> *"A straightforward method for training your LLM, from downloading data to generating text."*
+
+该项目的核心理念是：**一个想法反复贯彻——把文本变成数字，预测下一个 token，然后不断改变数据和损失函数，直到模型做我们想让它做的事。**
+
+完整路径如下：
+
+```
+原始文本 → token → Transformer → 下一个 token 损失 → 基础模型
+基础模型 → SFT → 奖励模型 → {PPO, DPO} → GRPO → 评估与对话
+```
+
+### F.2 目录结构
+
+```
+train-llm-from-scratch/
+├── src/
+│   ├── models/                  # Transformer 模型，由小部件逐步搭建
+│   │   ├── mlp.py               # 前馈网络（MLP）
+│   │   ├── attention.py         # 单头与多头注意力
+│   │   ├── transformer_block.py # 一个 Block：Attention + MLP + 残差连接
+│   │   └── transformer.py       # 完整模型：Embeddings + Blocks + lm_head
+│   └── post_training/           # SFT、奖励模型、PPO、DPO、GRPO、评估、推理
+├── config/
+│   ├── config.py                # 旧版预训练配置（纯 Python 常量）
+│   ├── post_training_config.py  # 所有后训练阶段的 dataclass 定义
+│   └── loader.py                # 配置合并：defaults < base.json < stage.json < CLI
+├── configs/                     # 可编辑 JSON 配置文件，每个阶段一个文件（+ smoke/）
+├── data_loader/                 # 各类数据的 batch iterator
+├── scripts/                     # 所有可执行的训练/评估脚本
+├── ui/                          # Streamlit 控制面板
+├── docs/                        # MkDocs 文档站（理论 + 架构图）
+├── images/                      # README 中的架构图（+ 生成器）
+└── pyproject.toml               # pip install -e . 的安装配置
+```
+
+### F.3 核心设计原则：封装，不重写
+
+整个后训练流水线只修改了教学模型中的**一处**——在 `Transformer` 类中添加了一个 `forward_hidden` 方法，返回 `lm_head` 消费之前的最终隐藏状态。所有后训练头（PPO 的价值头、奖励模型的标量头）和 RL 对数概率计算都围绕这个方法组合，原始的从零模型保持不变。
+
+### F.4 训练流水线概览
+
+| 阶段 | 数据 | 核心损失 | 输出 |
+|------|------|---------|------|
+| 预训练 | The Pile（9.8B token） | 下一个 token 交叉熵 | `base_pretrained.pt`（~400M 参数） |
+| SFT | Alpaca + Dolly + GSM8K | 带掩码的交叉熵（仅助手 token） | `sft.pt` |
+| 奖励模型 | HH-RLHF + UltraFeedback | Bradley-Terry 偏好损失 | `reward.pt` |
+| DPO/ORPO/KTO | 偏好对 | 序列对数概率偏好损失 | `dpo.pt` |
+| PPO | 采样回复 + 奖励 | 截断策略梯度 + GAE + KL | `ppo.pt` |
+| GRPO | 分组采样 + 验证器 | 组相对截断策略梯度 | `grpo.pt` |
+
+### F.5 配置系统
+
+项目有两套配置系统：
+
+- **旧版**：`config/config.py`，纯 Python 常量，用于 `scripts/train_transformer.py`
+- **新版**：`config/post_training_config.py` + `configs/` 目录下的 JSON 文件，驱动所有其他阶段
+
+新版配置的合并优先级（从低到高）：
+
+```
+dataclass 默认值 < configs/base.json < configs/<stage>.json < CLI --field 覆盖
+```
+
+例如，修改 SFT 的学习率只需：
+
+```bash
+python scripts/train_sft.py --lr 2e-5 --batch_size 16
+```
+
+`configs/smoke/` 目录下有每个阶段的微型配置（小模型 + 少步数 + CPU），用于快速验证代码是否能跑通。
+
+### F.6 关键脚本一览
+
+**数据准备：**
+
+```bash
+python scripts/prepare_pretrain_data.py   # Pile 数据 → pile_train.h5
+python scripts/prepare_sft_data.py        # 指令数据 → sft_packed.h5
+python scripts/prepare_preference_data.py # 偏好对 → preferences.jsonl
+python scripts/prepare_rl_prompts.py      # RL prompt → rl_prompts.jsonl
+```
+
+**训练：**
+
+```bash
+python scripts/pretrain_base.py           # 预训练基础模型
+python scripts/train_sft.py               # 监督微调
+python scripts/train_reward.py            # 奖励模型
+python scripts/train_dpo.py               # DPO/ORPO/KTO
+python scripts/train_ppo.py               # PPO（经典 RLHF）
+python scripts/train_grpo.py              # GRPO（DeepSeek-R1 风格）
+```
+
+**评估与推理：**
+
+```bash
+python scripts/eval_post_training.py      # GSM8K 准确率评估
+python scripts/chat.py --ckpt xxx.pt      # 与任意 checkpoint 对话
+```
+
+**一键运行全部阶段：**
+
+```bash
+bash scripts/run_posttraining.sh          # SFT → RM → DPO → PPO → GRPO → 评估表
+```
+
+### F.7 硬件需求参考
+
+| GPU | 显存 | 13M 模型 | 2B 模型 | 最大实用训练规模 |
+|-----|------|---------|---------|----------------|
+| A100 | 40 GB | ✔ | ✔ | ~6B–8B |
+| RTX 4090 | 24 GB | ✔ | ✔ | ~4B |
+| RTX 3090 | 24 GB | ✔ | ✔ | ~3.5B–4B |
+| V100 | 16 GB | ✔ | ✘ | ~2B |
+| Tesla T4 | 16 GB | ✔ | ✘ | ~1.5B–2B |
+
+如果大配置显存不足，预训练脚本支持 `--amp`、`--grad-checkpointing`、`--grad-accum` 等选项来降低显存占用。
+
+### F.8 安装与快速开始
+
+```bash
+git clone https://github.com/FareedKhan-dev/train-llm-from-scratch.git
+cd train-llm-from-scratch
+pip install -e .              # 基础安装
+pip install -e ".[train]"     # + datasets + wandb
+pip install -e ".[ui]"        # + Streamlit 控制面板
+pip install -e ".[docs]"      # + MkDocs 文档
+pip install -e ".[all]"       # 全部可选依赖
+```
+
+该项目还提供了一个 **Streamlit 控制面板**（`streamlit run ui/app.py`），包含理论说明、一键训练、实时日志、指标图表、评估和对话功能，无需记忆命令即可驱动整个流水线。

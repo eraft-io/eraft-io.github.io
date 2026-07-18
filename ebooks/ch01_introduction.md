@@ -123,7 +123,7 @@ $$
 \mathcal{L}_{\text{DPO}} = -\log \sigma\Big(\beta \cdot \big[\underbrace{(\log \pi_\theta(y_w|x) - \log \pi_{\text{ref}}(y_w|x))}_{\text{chosen 的隐式奖励}} - \underbrace{(\log \pi_\theta(y_l|x) - \log \pi_{\text{ref}}(y_l|x))}_{\text{rejected 的隐式奖励}}\big]\Big)
 $$
 
-其中 $\pi_\theta$ 是正在训练的策略模型，$\pi_{\text{ref}}$ 是冻结的参考模型（通常是 SFT 模型的副本）。
+其中 π_θ 是正在训练的策略模型，π_ref 是冻结的参考模型（通常是 SFT 模型的副本）。
 
 ### PPO：经典 RLHF
 
