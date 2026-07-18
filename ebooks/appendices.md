@@ -8,9 +8,9 @@ Softmax 将一组实数（logits）转换为概率分布：
 
 $$\text{softmax}(z_i) = \frac{e^{z_i}}{\sum_{j=1}^{V} e^{z_j}}$$
 
-其中 $V$ 是词汇表大小，$z$ 是模型输出的 logits。
+其中 *V* 是词汇表大小，*z* 是模型输出的 logits。
 
-**数值稳定性**：直接计算 $e^{z_i}$ 可能溢出。实际实现中减去最大值：
+**数值稳定性**：直接计算 e^(z_i) 可能溢出。实际实现中减去最大值：
 
 $$\text{softmax}(z_i) = \frac{e^{z_i - \max(z)}}{\sum_{j=1}^{V} e^{z_j - \max(z)}}$$
 
@@ -23,15 +23,15 @@ import torch.nn.functional as F
 probs = F.softmax(logits, dim=-1)  # shape: (B, T, V)
 ```
 
-**温度缩放**：在 softmax 前除以温度 $T$，控制分布的"锐利度"：
+**温度缩放**：在 softmax 前除以温度 *T*，控制分布的"锐利度"：
 
 $$p_i = \frac{e^{z_i / T}}{\sum_j e^{z_j / T}}$$
 
 | 温度 | 效果 | 适用场景 |
 |------|------|---------|
-| $T < 1$ | 分布更集中（接近 argmax） | 确定性生成 |
-| $T = 1$ | 原始分布 | 默认 |
-| $T > 1$ | 分布更均匀（接近均匀分布） | 创造性生成 |
+| T < 1 | 分布更集中（接近 argmax） | 确定性生成 |
+| T = 1 | 原始分布 | 默认 |
+| T > 1 | 分布更均匀（接近均匀分布） | 创造性生成 |
 
 ### A.2 Cross-Entropy 损失
 
@@ -39,7 +39,7 @@ $$p_i = \frac{e^{z_i / T}}{\sum_j e^{z_j / T}}$$
 
 $$\mathcal{L}_{CE} = -\sum_{i=1}^{V} y_i \log(\hat{y}_i)$$
 
-其中 $y$ 是 one-hot 目标向量，$\hat{y}$ 是 softmax 概率。由于 $y$ 是 one-hot，简化为：
+其中 *y* 是 one-hot 目标向量，*ŷ* 是 softmax 概率。由于 *y* 是 one-hot，简化为：
 
 $$\mathcal{L}_{CE} = -\log(\hat{y}_{target})$$
 
@@ -68,9 +68,9 @@ KL 散度（Kullback-Leibler Divergence）衡量两个分布之间的"距离"：
 $$D_{KL}(P \| Q) = \sum_x P(x) \log \frac{P(x)}{Q(x)} = \mathbb{E}_P\left[\log P(x) - \log Q(x)\right]$$
 
 **性质**：
-- $D_{KL} \geq 0$（Gibbs 不等式）
-- $D_{KL} = 0$ 当且仅当 $P = Q$
-- 不对称：$D_{KL}(P \| Q) \neq D_{KL}(Q \| P)$
+- D_KL ≥ 0（Gibbs 不等式）
+- D_KL = 0 当且仅当 P = Q
+- 不对称：D_KL(P ‖ Q) ≠ D_KL(Q ‖ P)
 
 **在 PPO/DPO 中的应用**：
 
@@ -121,7 +121,7 @@ $$\hat{A}_t = \sum_{l=0}^{T-t-1} (\gamma \lambda)^l \delta_{t+l}$$
 
 $$\delta_t = r_t + \gamma V(s_{t+1}) - V(s_t)$$
 
-$\gamma$ 是折扣因子（通常 1.0），$\lambda$ 是 GAE 衰减因子（通常 0.95）。
+γ 是折扣因子（通常 1.0），λ 是 GAE 衰减因子（通常 0.95）。
 
 ---
 
@@ -639,7 +639,7 @@ python scripts/train_grpo.py --group_size 16 --prompts_per_iter 4
 | **Chinchilla** | Chinchilla | DeepMind 的 Scaling Law 研究：模型和数据应同步增大 |
 | **Context Length** | Context Length | 模型能处理的最大 token 序列长度 |
 | **Cosine Schedule** | Cosine Schedule | 学习率调度：warmup + 余弦衰减到 min_lr |
-| **Cross-Entropy** | Cross-Entropy | 交叉熵损失：$-\log p(target)$ |
+| **Cross-Entropy** | Cross-Entropy | 交叉熵损失：-log p(target) |
 | **Curriculum Learning** | Curriculum Learning | 课程学习：先学简单任务再学困难任务 |
 | **DDP** | DistributedDataParallel | PyTorch 的分布式数据并行训练框架 |
 | **DPO** | Direct Preference Optimization | 直接从偏好数据优化策略，无需 Reward Model |
@@ -671,7 +671,7 @@ python scripts/train_grpo.py --group_size 16 --prompts_per_iter 4
 | **OOM** | Out of Memory | 显存不足错误 |
 | **ORPO** | Odds Ratio Preference Optimization | 使用 odds ratio 的偏好优化 |
 | **Packed Data** | Packed Data | 将多条对话拼接成固定长度的训练样本 |
-| **Perplexity** | Perplexity | 困惑度：$\exp(\text{loss})$，衡量模型不确定性 |
+| **Perplexity** | Perplexity | 困惑度：exp(loss)，衡量模型不确定性 |
 | **Policy** | Policy | RL 中的策略模型（即被训练的 LLM） |
 | **PPO** | Proximal Policy Optimization | 近端策略优化：带裁剪的 RL 算法 |
 | **Preference Data** | Preference Data | 偏好数据：(prompt, chosen, rejected) 三元组 |
