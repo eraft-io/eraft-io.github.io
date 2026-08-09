@@ -18,273 +18,1020 @@
             <li>
               <a href="#intro">MIT6.824 分布式系统系列</a>
               <ul>
-                <li><a href="./index.html">（一）体验分布式KV存储系统eraftkv </a></li>
-                <li><a href="./ebook-ch2.html">（二）Go 语言基础知识</a></li>
-                <li><a href="./ebook-ch3.html">（三）Raft 论文解读 </a></li>
-                <li><a href="./ebook-ch4.html">（四）构建 Raft 库                </a></li>
-                <li><a href="./ebook-ch5.html">（五）基于 Raft 库，实现简单的分布式 KV 系   </a></li>
-                <li><a href="./ebook-ch6.html">（六）Multi-Raft 设计与实现   </a></li>
-                <li><a href="./ebook-ch7.html">（七）分布式事务初探   </a></li>
+                <li><a href="./index.html">（一）项目概览与构建测试</a></li>
+                <li><a href="./ebook-ch2.html">（二）C++ 并发编程基础</a></li>
+                <li><a href="./ebook-ch3.html">（三）Raft 论文解读</a></li>
+                <li><a href="./ebook-ch4.html">（四）构建 Raft 库</a></li>
+                <li><a href="./ebook-ch5.html">（五）基于 Raft 库实现分布式 KV 系统</a></li>
+                <li><a href="./ebook-ch6.html">（六）Multi-Raft 设计与实现</a></li>
+                <li><a href="./ebook-ch7.html">（七）分布式事务初探</a></li>
               </ul>
             </li>
           </ol>
         </details>
 
-      <h2 id="intro"> MIT 分布式系统（五）基于 Raft 库，实现简单的分布式 KV 系统 <a class="anchor" href="#intro">#</a></h2>
+      <h2 id="intro"> MIT 分布式系统（五）基于 Raft 库实现分布式 KV 系统 <a class="anchor" href="#intro">#</a></h2>
 
-      <h3>
-        系统架构概览
-      </h3>
+      <h3>系统架构概览</h3>
 
       <p>
-        上一章中，我们已经介绍了我们构建好的 Raft 库，它在 eraft/raftcore 目录下。现在我们要使用这个库来构建一个高可用的分布式 KV 存储系统。
+        上一章中，我们已经完整介绍了 raft_cpp 中的 Raft 库实现。现在我们要使用这个库来构建一个高可用的分布式 KV 存储系统。
       </p>
 
       <div style="text-align: center; width: 100%; border: black solid 1px;">
         <img src="./resources/raft_overview.png" width="80%" style="display: inline-block; margin-bottom: 5%;"/>
       </div>
 
-     <p>
-        让我们回到上图，这个图在我们一开始介绍 Raft 的时候讲到过，我们这一章就要实现这样一个系统。
-     </p>
+      <p>
+        如上图所示，客户端通过 RPC 将 Put/Get/Append 请求发送到 KVServer。KVServer 将请求序列化为 Command 后通过 Raft 库的 Start() 接口提交到 Raft 共识层。Raft 库在日志条目被提交后，通过 applyCh（一个 BlockingQueue&lt;ApplyMsg&gt;）通知 KVServer 的 applier 线程。applier 线程将日志反序列化并应用到状态机中，然后通过 notifyChan 通知正在等待的 HandleCommand 调用，最终返回结果给客户端。
+      </p>
 
-     <h3>
-        对外接口定义
-     </h3>
+      <h3>对外接口定义</h3>
 
-     <p>
-        第一步我们来定义系统与客户端的交互接口，客户端可以发送 Put 和 Get 操作将 KV 数据写到系统中。我们需要定义这两个操作的 RPC。我们将它们合并到一个 RPC 请求里面，定义如下：
-     </p>
+      <p>
+        第一步我们来定义系统与客户端的交互接口。客户端可以发送 Put、Append 和 Get 操作将 KV 数据写到系统中。我们将所有操作的请求和响应定义在 kvcommon.h 中：
+      </p>
 
-      
-        <pre>
-        // <br/>
-// client op type <br/>
-//<br/>
-enum OpType {<br/>
-    OpPut = 0;<br/>
-    OpAppend = 1;<br/>
-    OpGet = 2;<br/>
-}<br/>
-<br/>
-//<br/>
-// client command request<br/>
-//<br/>
-message CommandRequest {<br/>
-    string key = 1;<br/>
-    string value = 2;<br/>
-    OpType op_type = 3;<br/>
-    int64  client_id = 4;<br/>
-    int64  command_id = 5;<br/>
-    bytes  context = 6;<br/>
-}<br/>
-<br/>
-//<br/>
-// client command response<br/>
-//<br/>
-message CommandResponse {<br/>
-    string value = 1;<br/>
-    int64  leader_id = 2;<br/>
-    int64  err_code = 3;<br/>
-}<br/>
+      <pre>
+// kvcommon.h
 
-rpc DoCommand (CommandRequest) returns (CommandResponse) {}<br/>
-</pre>
-       
+// 客户端操作类型
+enum OperationOp : uint8_t {
+    OpPut    = 0,
+    OpAppend = 1,
+    OpGet    = 2
+};
 
-     <p>
-        其中 OpType 定义了我们支持的操作类型：put,Append,get。 客户端请求的内容定义在了 CommandRequest 中。CommandRequest 中有我们的 key, value 以及操作类型，还有客户端 id 以及命令 id, 还有一个字节类型的 context （context 可以存放一些我们需要附加的不确定的内容）。
-     </p>
+// 错误码
+enum Err : uint8_t {
+    OK             = 0,
+    ErrNoKey       = 1,
+    ErrWrongLeader = 2,
+    ErrTimeout     = 3
+};
 
-     <p>
-        响应 CommandResponse 包括了返回值 value ，leader_id 字段（告诉我们当前 Leader 是哪个节点的。因为最开始客户端发送请求时，不知道那个节点被选成 Leader 。我们通过一次试探请求拿到 Leader 节点的 id, 然后再次发送请求给 Leader 节点。），以及错误码 err_code（记录可能出现的错误）。
-     </p>
+// 客户端命令请求
+struct CommandRequest {
+    std::string key;
+    std::string value;
+    OperationOp op       = OpGet;
+    int64_t     clientId  = 0;
+    int64_t     commandId = 0;
+};
 
-     <p>
-        客户端通过 DoCommand RPC 请求到我们的分布式 KV 系统。那我们的系统是怎么处理请求的呢？首先，我们来看看服务端的结构的定义。 mu 是一把读写锁，用来对可能出现并发冲突的操作加锁。dead 表示当前服务节点的状态，是不是存活。Rf 比较重要，这个是只想我们之前构建的 Raft 结构的指针。applyCh 是一个通道，用来从我们的算法库中返回已经 apply 的日志。我们的 server 拿到这个日之后需要 apply 到实际的状态机中。stm 就是我们的状态机了，我们一会儿介绍。notifyChans 是一个存储客户端响应的 map，其中值是一个通道。KvServer 在应用日志到状态机操作完之后，会给客户端发送响应到这个通道中。stopApplyCh 用来停止我们的 Apply 操作。 
-     </p>
+// 客户端命令响应
+struct CommandResponse {
+    Err         err   = OK;
+    std::string value;
+};
 
-     <h3>
-        服务端核心实现分析
-     </h3>
+// 包装在 Raft 日志中的 Command
+struct Command {
+    CommandRequest request;
+};
+      </pre>
 
-      
-        <pre>
-        type KvServer struct {<br/>
-            <br/>
-            mu      sync.RWMutex<br/>
-            dead    int32<br/>
-            Rf      *raftcore.Raft<br/>
-            applyCh chan *pb.ApplyMsg<br/>
-        
-            lastApplied int<br/>
-        
-            stm         StateMachine<br/>
-            notifyChans map[int]chan *pb.CommandResponse<br/>
-            stopApplyCh chan interface{}<br/>
-            <br/>
-            pb.UnimplementedRaftServiceServer<br/>
-        }<br/>
-    </pre>
-       
+      <p>
+        其中 OperationOp 定义了支持的操作类型：OpPut（写入）、OpAppend（追加）、OpGet（读取）。CommandRequest 中包含 key、value、操作类型，以及用于去重的 clientId 和 commandId。CommandResponse 包含错误码 err 和返回值 value。当节点不是 Leader 时返回 ErrWrongLeader，客户端会切换到其他节点重试。
+      </p>
 
-     <p>有了这个结构之后，我们要如何应用 Raft 算法库实现图中高可用的 kv 分布式系统呢？
-    </p>
+      <p>
+        在 Go 版本中，这些结构通过 protobuf 定义为 RPC 消息。而在 raft_cpp 中，我们使用自定义的二进制序列化方式，由 kvser 命名空间中的 serializeCommand / deserializeCommand 函数完成 Command 与字节数组之间的转换：
+      </p>
 
-    <p>
+      <pre>
+// kvcommon.h — kvser 命名空间
 
-        1.首先我们要构造到每个 server 的 rpc 客户端；
-        <br/>
-2.然后，构造 applyCh 通道，以及构造日志存储结构；
-<br/>
-3.之后，调用 MakeRaft 构造我们的 Raft 算法库核心结构；
-<br/>
-4.最后，启动 Apply Goruntine，从通道中监听在经过 Raft 算法库之后返回的消息。
-<br/>
-    </p>
+namespace kvser {
 
-     
-        <pre>
-        func MakeKvServer(nodeId int) *KvServer {<br/>
-            clientEnds := []*raftcore.RaftClientEnd{}<br/>
-            for id, addr := range PeersMap {<br/>
-                newEnd := raftcore.MakeRaftClientEnd(addr, uint64(id))<br/>
-                clientEnds = append(clientEnds, newEnd)<br/>
-            }<br/>
-            newApplyCh := make(chan *pb.ApplyMsg)<br/>
-            <br/>
-            logDbEng, err := storage_eng.MakeLevelDBKvStore("./data/kv_server" + "/node_" + strconv.Itoa(nodeId))<br/>
-            if err != nil {<br/>
-                raftcore.PrintDebugLog("boot storage engine err!")<br/>
-                panic(err)<br/>
-            }<br/>
-            <br/>
-            // 构造 Raft 结构，传入 clientEnds，当前节点 id, 日志存储的 db, apply 通道，心跳超时时间，和选举超时时间<br/>
-            // 由于是测试，为了方便观察选举的日志，我们设置的时间是 1s 和 3s, 你可以设置的更短<br/>
-            newRf := raftcore.MakeRaft(clientEnds, nodeId, logDbEng, newApplyCh, 1000, 3000)<br/>
-            kvSvr := &KvServer{Rf: newRf, applyCh: newApplyCh, dead: 0, lastApplied: 0, stm: NewMemKV(), notifyChans: make(map[int]chan *pb.CommandResponse)}<br/>
-            kvSvr.stopApplyCh = make(chan interface{})<br/>
-            <br/>
-            // 启动 apply Goruntine
-            go kvSvr.ApplingToStm(kvSvr.stopApplyCh)<br/>
-            <br/>
-            return kvSvr
-            <br/>
-        }
-        <br/>
-    </pre>
-      
+inline std::vector&lt;uint8_t&gt; serializeCommand(const Command& cmd) {
+    std::vector&lt;uint8_t&gt; buf;
+    writeString(buf, cmd.request.key);
+    writeString(buf, cmd.request.value);
+    writeUint8(buf, static_cast&lt;uint8_t&gt;(cmd.request.op));
+    writeInt64(buf, cmd.request.clientId);
+    writeInt64(buf, cmd.request.commandId);
+    return buf;
+}
 
-    <p>
-        客户端命令到来之后，最开始调用的是 DoCommand 函数，我们来看看这个函数做了哪些工作：
-    </p>
+inline Command deserializeCommand(const uint8_t* data, size_t size) {
+    const uint8_t* p = data;
+    Command cmd;
+    cmd.request.key       = readString(p);
+    cmd.request.value     = readString(p);
+    cmd.request.op        = static_cast&lt;OperationOp&gt;(readUint8(p));
+    cmd.request.clientId  = readInt64(p);
+    cmd.request.commandId = readInt64(p);
+    return cmd;
+}
 
-    <p>
-        首先，Docommand 函数调用 Marshal 序列化了我们的 CommandResponse 到 reqBytes 的字节数组中，然后调用 Raft 库的 Propose 接口，把提案提交到我们的算法库中。Raft 算法中只有 Leader 可以处理提案。如果节点不是 Leader 我们会直接返回给客户端 ErrCodeWrongLeader 的错误码。之后就是从 getNotifyChan 拿到当前日志 id 对应的 apply 通知通道。只有这条日志通知到了，下面 select 才会继续往下走，拿到值放到 cmdResp.Value 中，当然如果操作超过了 ErrCodeExecTimeout 时间也会生成错误码，响应客户端执行超超时。
-    </p>
+} // namespace kvser
+      </pre>
 
-     
-        <pre>
-        func (s *KvServer) DoCommand(ctx context.Context, req *pb.CommandRequest) (*pb.CommandResponse, error) {<br/>
-            raftcore.PrintDebugLog(fmt.Sprintf("do cmd %s", req.String()))<br/>
-            <br/>
-            cmdResp := &pb.CommandResponse{}<br/>
-            <br/>
-            if req != nil {<br/>
-                reqBytes, err := json.Marshal(req)<br/>
-                if err != nil {<br/>
-                    return nil, err<br/>
-                }<br/>
-                idx, _, isLeader := s.Rf.Propose(reqBytes)<br/>
-                if !isLeader {<br/>
-                    cmdResp.ErrCode = common.ErrCodeWrongLeader<br/>
-                    return cmdResp, nil<br/>
-                }<br/><br/>
-        
-                s.mu.Lock()<br/>
-                ch := s.getNotifyChan(idx)<br/>
-                s.mu.Unlock()<br/>
-                <br/>
-                select {<br/>
-                case res := <-ch:<br/>
-                    cmdResp.Value = res.Value<br/>
-                case <-time.After(ExecCmdTimeout):<br/>
-                    cmdResp.ErrCode = common.ErrCodeExecTimeout<br/>
-                    cmdResp.Value = "exec cmd timeout"<br/>
-                }<br/>
-                <br/>
-                go func() {<br/>
-                    s.mu.Lock()<br/>
-                    delete(s.notifyChans, idx)<br/>
-                    s.mu.Unlock()<br/>
-                }()<br/>
-                <br/>
+      <p>
+        这种自定义序列化方式比 protobuf 更轻量，适合在 Raft 日志内部使用。序列化格式为：key（长度+内容）+ value（长度+内容）+ op（1 字节）+ clientId（8 字节）+ commandId（8 字节）。
+      </p>
+
+      <h3>状态机接口与实现</h3>
+
+      <p>
+        KVServer 需要维护一个状态机来存储实际的 KV 数据。我们定义了一个抽象接口 KVStateMachine，以便将来替换不同的存储引擎：
+      </p>
+
+      <pre>
+// kvstatemachine.h
+
+class KVStateMachine {
+public:
+    virtual ~KVStateMachine() = default;
+    virtual Err Get(const std::string& key, std::string& value) = 0;
+    virtual Err Put(const std::string& key, const std::string& value) = 0;
+    virtual Err Append(const std::string& key, const std::string& value) = 0;
+    virtual void Close() = 0;
+    virtual int64_t Size() = 0;
+
+    // 快照支持：导出所有 KV 和批量写入
+    virtual std::vector&lt;std::pair&lt;std::string, std::string&gt;&gt; DumpAll() = 0;
+    virtual void BulkPut(const std::vector&lt;std::pair&lt;std::string, std::string&gt;&gt;& pairs) = 0;
+};
+      </pre>
+
+      <p>
+        raft_cpp 提供了基于 RocksDB 的具体实现 RocksDBKV：
+      </p>
+
+      <pre>
+// kvstatemachine.h
+
+class RocksDBKV : public KVStateMachine {
+public:
+    explicit RocksDBKV(const std::string& path);
+    ~RocksDBKV() override;
+
+    Err Get(const std::string& key, std::string& value) override;
+    Err Put(const std::string& key, const std::string& value) override;
+    Err Append(const std::string& key, const std::string& value) override;
+    void Close() override;
+    int64_t Size() override;
+
+    std::vector&lt;std::pair&lt;std::string, std::string&gt;&gt; DumpAll() override;
+    void BulkPut(const std::vector&lt;std::pair&lt;std::string, std::string&gt;&gt;& pairs) override;
+
+private:
+    std::unique_ptr&lt;rocksdb::DB&gt; db_;
+    std::unique_ptr&lt;rocksdb::Options&gt; opts_;
+    std::string path_;
+    bool        closed_ = false;
+};
+      </pre>
+
+      <p>
+        RocksDBKV 使用 RocksDB 作为底层存储引擎，所有 KV 数据持久化到磁盘。DumpAll() 和 BulkPut() 方法用于快照的导出和恢复。通过抽象接口的设计，未来可以轻松替换为其他存储引擎（如内存哈希表），只需实现 KVStateMachine 接口即可。
+      </p>
+
+      <h3>KVServer 类设计</h3>
+
+      <p>
+        有了状态机接口和 Raft 库之后，我们来定义 KVServer 的核心结构。KVServer 继承自 enable_shared_from_this，以便在异步回调中安全地获取自身的 shared_ptr：
+      </p>
+
+      <pre>
+// kvserver.h
+
+class KVServer : public std::enable_shared_from_this&lt;KVServer&gt; {
+public:
+    static std::shared_ptr&lt;KVServer&gt; Make(
+        std::vector&lt;std::shared_ptr&lt;RaftPeer&gt;&gt; peers,
+        int me,
+        std::shared_ptr&lt;Persister&gt; persister,
+        int maxRaftState,
+        const std::string& dbPath);
+
+    void HandleCommand(const CommandRequest& req, CommandResponse& resp);
+    void Kill();
+    bool killed() const { return dead_.load(std::memory_order_relaxed); }
+
+private:
+    KVServer() = default;
+
+    // ── 成员变量 ──
+    mutable std::mutex mu_;
+    std::atomic&lt;bool&gt; dead_{false};
+
+    std::shared_ptr&lt;Raft&gt; rf_;                          // Raft 实例
+    std::shared_ptr&lt;BlockingQueue&lt;ApplyMsg&gt;&gt; applyCh_;  // apply 通道
+    int maxRaftState_ = -1;                              // 快照阈值
+    int lastApplied_  = 0;                               // 已应用日志索引
+
+    std::unique_ptr&lt;KVStateMachine&gt; stateMachine_;      // 状态机
+    std::unordered_map&lt;int64_t, OperationContext&gt; lastOperations_;  // 去重表
+
+    // notifyChans_[index] = 通知 HandleCommand 的通道
+    std::unordered_map&lt;int, std::shared_ptr&lt;BlockingQueue&lt;CommandResponse&gt;&gt;&gt; notifyChans_;
+
+    std::thread applierThread_;  // applier 线程
+};
+      </pre>
+
+      <p>
+        各成员的作用如下：
+      </p>
+
+      <p>
+        <strong>rf_</strong>：Raft 实例的 shared_ptr，是 KVServer 与共识层交互的桥梁。<br/>
+        <strong>applyCh_</strong>：BlockingQueue&lt;ApplyMsg&gt; 类型的 apply 通道，Raft 库在日志提交后向此队列推送 ApplyMsg。<br/>
+        <strong>stateMachine_</strong>：状态机的 unique_ptr，存储实际的 KV 数据（RocksDBKV 实现）。<br/>
+        <strong>lastOperations_</strong>：去重表，记录每个 clientId 最近一次执行的命令信息（OperationContext）。<br/>
+        <strong>notifyChans_</strong>：通知通道映射表，key 为日志索引，value 为 BlockingQueue&lt;CommandResponse&gt;。当 applier 线程处理完某条日志后，通过对应通道通知正在等待的 HandleCommand 调用。<br/>
+        <strong>maxRaftState_</strong>：Raft 状态大小阈值，超过此值时触发快照。
+      </p>
+
+      <p>
+        对比 Go 版本，Go 中使用 sync.RWMutex 和 channel 实现，C++ 版本使用 std::mutex 和 BlockingQueue<T> 替代，功能完全对应。Go 中的 stopApplyCh 通道被 BlockingQueue 的 close() 方法替代，用于优雅地停止 applier 线程。
+      </p>
+
+      <h3>构造流程：KVServer::Make()</h3>
+
+      <p>
+        KVServer 使用工厂方法 Make() 进行构造，流程如下：
+      </p>
+
+      <pre>
+// kvserver.cpp
+
+std::shared_ptr&lt;KVServer&gt; KVServer::Make(
+    std::vector&lt;std::shared_ptr&lt;RaftPeer&gt;&gt; peers,
+    int me,
+    std::shared_ptr&lt;Persister&gt; persister,
+    int maxRaftState,
+    const std::string& dbPath)
+{
+    auto applyCh = std::make_shared&lt;BlockingQueue&lt;ApplyMsg&gt;&gt;();
+
+    // 1. 创建 KVServer 实例（使用 new 而非 make_shared，确保 enable_shared_from_this 生效）
+    std::shared_ptr&lt;KVServer&gt; kv(new KVServer());
+    kv->maxRaftState_ = maxRaftState;
+    kv->applyCh_      = applyCh;
+
+    // 2. 构造 Raft 实例
+    kv->rf_           = raft::Raft::Make(peers, me, persister, applyCh);
+
+    // 3. 构造 RocksDB 状态机
+    kv->stateMachine_ = std::make_unique&lt;RocksDBKV&gt;(dbPath);
+
+    // 4. 从快照恢复状态
+    auto snap = persister->ReadSnapshot();
+    if (!snap.empty()) {
+        kv->restoreSnapshot(snap);
+    }
+
+    // 5. 启动 applier 线程
+    kv->applierThread_ = std::thread(&KVServer::applier, kv.get());
+
+    return kv;
+}
+      </pre>
+
+      <p>
+        构造流程对应了 Go 版本中的几个步骤：创建 apply 通道、构造 Raft 实例、创建状态机、从快照恢复、启动 applier 协程。在 C++ 版本中，这些步骤完全对应，只是将 Go 的 goroutine 替换为 std::thread，将 channel 替换为 BlockingQueue。值得注意的是使用 new 而非 make_shared 创建 KVServer，这是为了让 enable_shared_from_this 在后续的异步回调中能正确工作。
+      </p>
+
+      <h3>请求处理：HandleCommand()</h3>
+
+      <p>
+        客户端命令到来后，首先调用的是 HandleCommand 函数。它的工作流程是：先做去重检查，然后将请求序列化并提交到 Raft，最后等待 applier 线程通过 notifyChan 通知结果。
+      </p>
+
+      <pre>
+// kvserver.cpp
+
+void KVServer::HandleCommand(const CommandRequest& req, CommandResponse& resp) {
+    // 1. 去重检查（非 Get 操作）
+    {
+        std::lock_guard&lt;std::mutex&gt; lk(mu_);
+        if (req.op != OpGet && isDuplicateRequest(req.clientId, req.commandId)) {
+            auto it = lastOperations_.find(req.clientId);
+            if (it != lastOperations_.end()) {
+                resp = it->second.lastResponse;  // 直接返回上次的结果
+                return;
             }
-            <br/>
-            return cmdResp, nil<br/>
-        }<br/>
-    </pre>
-      
+        }
+    }
 
-    <p>
-        最后我们来看看 Apply Goruntine 干的事情：
-    </p>
+    // 2. 序列化命令并提交到 Raft
+    struct Command cmd;
+    cmd.request = req;
+    auto cmdBytes = kvser::serializeCommand(cmd);
 
-    <p>
-        它等待 s.applyCh 通道中 apply 消息的到来。这个 applyCh 我们在 Raft 库中提到过，它用来通知应用层日志已经提交，应用层可以把日志应用到状态机了。当 applyCh 中 appliedMsg 到来之后，我们更新了 KvServer 的 lastApplied 号，然后根据客户端的操作类型对我们的状态机做不同的操作，做完之后把响应放到 notifyChan 中，也就是 DoCommand 等待的那个通道，至此整个请求处理的流程已经结束。
-    </p>
+    auto result = rf_->Start(cmdBytes);
+    if (!result.isLeader) {
+        resp.err = ErrWrongLeader;
+        return;
+    }
 
-     
-        <br/>
-        <pre>
-        func (s *KvServer) ApplingToStm(done <-chan interface{}) {<br/>
-            for !s.IsKilled() {<br/>
-                select {<br/>
-                case <-done:<br/>
-                    return<br/>
-                case appliedMsg := <-s.applyCh:<br/>
-                    req := &pb.CommandRequest{}<br/>
-                    if err := json.Unmarshal(appliedMsg.Command, req); err != nil {<br/>
-                        raftcore.PrintDebugLog("Unmarshal CommandRequest err")<br/>
-                        continue<br/>
-                    }<br/>
-                    s.lastApplied = int(appliedMsg.CommandIndex)<br/>
-                    <br/>
-                    var value string<br/>
-                    switch req.OpType {<br/>
-                    case pb.OpType_OpPut:<br/>
-                        s.stm.Put(req.Key, req.Value)<br/>
-                    case pb.OpType_OpAppend:<br/>
-                        s.stm.Append(req.Key, req.Value)<br/>
-                    case pb.OpType_OpGet:<br/>
-                        value, _ = s.stm.Get(req.Key)<br/>
-                    }<br/>
-                    <br/>
-                    cmdResp := &pb.CommandResponse{}<br/>
-                    cmdResp.Value = value<br/>
-                    ch := s.getNotifyChan(int(appliedMsg.CommandIndex))<br/>
-                    ch <- cmdResp<br/>
-                }<br/>
-            }<br/>
-        }<br/>
-    </pre>
-      
+    // 3. 等待 applier 线程的通知（带超时）
+    std::shared_ptr&lt;BlockingQueue&lt;CommandResponse&gt;&gt; ch;
+    {
+        std::lock_guard&lt;std::mutex&gt; lk(mu_);
+        ch = getNotifyChan(result.index);
+    }
 
-    <h3>
-        客户端实现介绍
-    </h3>
+    CommandResponse reply;
+    bool got = ch->pop_for(reply, kExecuteTimeout);  // 超时 500ms
 
-    <p>
-        客户端实现就比较简单了，主要是构造 Get 和 Put 的 CommandRequest 调用 DoCommand 发送到服务端，逻辑实现在 cmd/kvcli/kvcli.go 里面。
-    </p>
+    if (got) {
+        resp = reply;
+    } else {
+        resp.err = ErrTimeout;
+    }
 
-    <p>
-        我们总结一下：
-    </p>
+    // 4. 异步清理通知通道
+    std::thread([this, index = result.index]() {
+        std::lock_guard&lt;std::mutex&gt; lk(mu_);
+        removeOutdatedNotifyChan(index);
+    }).detach();
+}
+      </pre>
 
-    <p>
-        客户端请求到来之后， KvServer 首先会调用 Propose 提交日志到 Raft 中算法库。Raft 算法库经过共识之后提交这条日志，并通知 applyCh，KvServer 会在 Apply Goruntine 中将 applyCh 的消息解码，然后将操作应用到自己的状态机中，最后把结果写到通知客户端的 notifyChan 中，在DoCommand 中响应结果给客户端。
-    </p>
+      <p>
+        HandleCommand 的核心逻辑包括：
+      </p>
+
+      <p>
+        1. <strong>去重检查</strong>：对于 Put 和 Append 操作，检查是否为重复请求。如果是重复请求，直接返回上次的响应结果，避免重复执行。<br/>
+        2. <strong>提交到 Raft</strong>：将 CommandRequest 序列化为字节数组，调用 rf_->Start() 提交到 Raft 共识层。如果当前节点不是 Leader，返回 ErrWrongLeader。<br/>
+        3. <strong>等待通知</strong>：获取该日志索引对应的 notifyChan，调用 pop_for() 带超时地等待结果。如果超时（kExecuteTimeout = 500ms），返回 ErrTimeout。<br/>
+        4. <strong>异步清理</strong>：使用 detach 的线程清理已完成的 notifyChan，避免内存泄漏。
+      </p>
+
+      <p>
+        对比 Go 版本中的 DoCommand 函数，C++ 版本使用了 BlockingQueue 的 pop_for() 方法实现带超时的等待，替代了 Go 中的 select + time.After 模式。异步清理通道的逻辑也类似，Go 使用 goroutine，C++ 使用 detach 的 std::thread。
+      </p>
+
+      <h3>Applier 线程</h3>
+
+      <p>
+        applier 线程是 KVServer 的核心后台线程，负责从 applyCh 中读取 Raft 库提交的 ApplyMsg，将其反序列化并应用到状态机中，然后通知正在等待的 HandleCommand 调用。
+      </p>
+
+      <pre>
+// kvserver.cpp
+
+void KVServer::applier() {
+    ApplyMsg message;
+    while (applyCh_->pop(message)) {       // 阻塞等待 apply 通道
+        if (killed()) break;
+
+        int lastIndex = -1;
+        applyOneMessage(message, lastIndex);
+
+        // 排空所有待处理消息后再检查快照
+        ApplyMsg next;
+        while (!killed() && applyCh_->try_pop(next)) {
+            applyOneMessage(next, lastIndex);
+        }
+
+        // 检查是否需要快照
+        if (lastIndex >= 0) {
+            std::lock_guard&lt;std::mutex&gt; lk(mu_);
+            if (needSnapshot()) {
+                takeSnapshot(lastIndex);
+            }
+        }
+    }
+}
+      </pre>
+
+      <p>
+        applier 线程会先处理一条消息，然后通过 try_pop() 排空所有剩余的待处理消息，最后统一检查是否需要快照。这种批量处理方式可以防止日志在应用速度跟不上追加速度时无限增长。对比 Go 版本中的 ApplingToStm 协程，C++ 版本使用 BlockingQueue 的 pop()（阻塞）和 try_pop()（非阻塞）替代了 Go 的 select-case-channel 模式。
+      </p>
+
+      <p>
+        applyOneMessage() 是处理单条 ApplyMsg 的核心函数：
+      </p>
+
+      <pre>
+// kvserver.cpp
+
+void KVServer::applyOneMessage(const ApplyMsg& message, int& lastIndex) {
+    if (message.command_valid) {
+        std::lock_guard&lt;std::mutex&gt; lk(mu_);
+
+        // 跳过已应用的消息
+        if (message.command_index <= lastApplied_) {
+            return;
+        }
+        lastApplied_ = message.command_index;
+        lastIndex = message.command_index;
+
+        // 反序列化 Command
+        struct Command command = kvser::deserializeCommand(message.command);
+
+        CommandResponse response;
+
+        // 去重检查
+        if (command.request.op != OpGet &&
+            isDuplicateRequest(command.request.clientId, command.request.commandId))
+        {
+            response = lastOperations_[command.request.clientId].lastResponse;
+        } else {
+            // 应用到状态机
+            response = applyLogToStateMachine(command);
+            // 更新去重表（非 Get 操作）
+            if (command.request.op != OpGet) {
+                OperationContext ctx;
+                ctx.maxAppliedCommandId = command.request.commandId;
+                ctx.lastResponse = response;
+                lastOperations_[command.request.clientId] = ctx;
+            }
+        }
+
+        // 通知等待的 HandleCommand（仅当当前是 Leader 且任期匹配）
+        auto [currentTerm, isLeader] = rf_->GetState();
+        if (isLeader && message.command_term == currentTerm) {
+            auto ch = getNotifyChan(message.command_index);
+            ch->push(response);
+        }
+
+    } else if (message.snapshot_valid) {
+        std::lock_guard&lt;std::mutex&gt; lk(mu_);
+        if (rf_->CondInstallSnapshot(
+                message.snapshot_term, message.snapshot_index, message.snapshot))
+        {
+            restoreSnapshot(message.snapshot);
+            lastApplied_ = message.snapshot_index;
+            lastIndex = message.snapshot_index;
+        }
+    }
+}
+      </pre>
+
+      <p>
+        applyOneMessage 的处理逻辑：
+      </p>
+
+      <p>
+        1. <strong>跳过过期消息</strong>：如果 command_index 小于等于 lastApplied_，说明是重复消息，直接跳过。<br/>
+        2. <strong>反序列化</strong>：将 ApplyMsg 中的 command 字段反序列化为 Command 结构。<br/>
+        3. <strong>去重检查</strong>：再次检查是否为重复请求（因为从 HandleCommand 提交到 applier 处理之间可能有时间差）。如果是重复请求，从 lastOperations_ 中取回上次的响应。<br/>
+        4. <strong>应用到状态机</strong>：调用 applyLogToStateMachine() 将操作应用到 RocksDBKV 状态机。<br/>
+        5. <strong>更新去重表</strong>：对于非 Get 操作，记录 clientId 到 OperationContext 的映射，供后续去重使用。<br/>
+        6. <strong>通知 Leader</strong>：只有当前节点是 Leader 且任期匹配时，才通过 notifyChan 通知 HandleCommand。这是因为在 Leader 切换期间，旧 Leader 提交的日志可能仍被提交，但旧 Leader 不应再响应客户端。<br/>
+        7. <strong>快照处理</strong>：如果是 snapshot_valid 的消息，调用 CondInstallSnapshot 安装快照并恢复状态。
+      </p>
+
+      <p>
+        applyLogToStateMachine() 是实际执行 KV 操作的函数，根据操作类型调用状态机的对应接口：
+      </p>
+
+      <pre>
+// kvserver.cpp
+
+CommandResponse KVServer::applyLogToStateMachine(const struct Command& cmd) {
+    CommandResponse resp;
+    switch (cmd.request.op) {
+        case OpPut:
+            resp.err = stateMachine_->Put(cmd.request.key, cmd.request.value);
+            break;
+        case OpAppend:
+            resp.err = stateMachine_->Append(cmd.request.key, cmd.request.value);
+            break;
+        case OpGet:
+            resp.err = stateMachine_->Get(cmd.request.key, resp.value);
+            break;
+    }
+    return resp;
+}
+      </pre>
+
+      <h3>去重检测机制</h3>
+
+      <p>
+        在分布式系统中，客户端可能因为网络超时而重试已经发送过的请求。如果不做去重，同一个 Put 操作可能被执行多次，导致数据不一致。raft_cpp 通过 lastOperations_ 表和 OperationContext 结构来实现去重：
+      </p>
+
+      <pre>
+// kvcommon.h
+
+struct OperationContext {
+    int64_t          maxAppliedCommandId = 0;
+    CommandResponse  lastResponse;
+};
+      </pre>
+
+      <p>
+        每个 clientId 对应一个 OperationContext，记录了该客户端最近一次执行的 commandId 和对应的响应。去重检查的逻辑非常简单：
+      </p>
+
+      <pre>
+// kvserver.cpp
+
+bool KVServer::isDuplicateRequest(int64_t clientId, int64_t requestId) {
+    auto it = lastOperations_.find(clientId);
+    return it != lastOperations_.end() && requestId <= it->second.maxAppliedCommandId;
+}
+      </pre>
+
+      <p>
+        如果 requestId 小于等于已记录的 maxAppliedCommandId，说明这是一个重复请求，直接返回 lastResponse 中缓存的结果。注意 Get 操作不需要去重，因为读操作是幂等的。
+      </p>
+
+      <p>
+        去重检查发生在两个地方：HandleCommand 入口处和 applyOneMessage 中实际应用前。这是因为在 HandleCommand 提交到 Raft 之后、applier 处理之前，可能有其他重复请求也被提交了，所以在 applier 中需要再次检查。
+      </p>
+
+      <div style="border:1px solid rgba(128,128,128,0.3);border-radius:10px;padding:20px;margin:24px 0;background:rgba(128,128,128,0.05);">
+      <p style="text-align:center;font-weight:bold;margin-bottom:16px;font-size:16px;">🎬 KV 请求去重检测演示</p>
+      <svg id="dedupSvg" viewBox="0 0 600 300" style="width:100%;max-width:600px;display:block;margin:0 auto;">
+      <defs>
+      <marker id="dedupMA" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><polygon points="0,0,9,3,0,6" fill="#1565c0"/></marker>
+      <marker id="dedupMB" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><polygon points="0,0,9,3,0,6" fill="#4CAF50"/></marker>
+      <marker id="dedupMC" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><polygon points="0,0,9,3,0,6" fill="#ff9800"/></marker>
+      </defs>
+      <rect x="20" y="40" width="70" height="35" rx="6" fill="#9e9e9e" stroke="#616161" stroke-width="2"/>
+      <text x="55" y="62" text-anchor="middle" fill="white" font-size="11" font-weight="bold">Client</text>
+      <rect id="dedupHC" x="200" y="40" width="130" height="35" rx="6" fill="#e3f2fd" stroke="#1565c0" stroke-width="2" style="transition:fill 0.4s;"/>
+      <text x="265" y="62" text-anchor="middle" fill="#1565c0" font-size="11" font-weight="bold">HandleCommand</text>
+      <rect id="dedupRF" x="200" y="120" width="130" height="35" rx="6" fill="#fff3e0" stroke="#e65100" stroke-width="2" style="transition:fill 0.4s;"/>
+      <text x="265" y="142" text-anchor="middle" fill="#e65100" font-size="11" font-weight="bold">Raft (Start)</text>
+      <rect id="dedupSM" x="200" y="200" width="130" height="35" rx="6" fill="#e8f5e9" stroke="#2e7d32" stroke-width="2" style="transition:fill 0.4s;"/>
+      <text x="265" y="222" text-anchor="middle" fill="#2e7d32" font-size="11" font-weight="bold">StateMachine</text>
+      <rect id="dedupTable" x="420" y="40" width="160" height="80" rx="6" fill="#f5f5f5" stroke="#999" stroke-width="2" style="transition:fill 0.4s;"/>
+      <text x="500" y="60" text-anchor="middle" font-size="10" fill="#666" font-weight="bold">lastOperations_</text>
+      <text id="dedupTableContent" x="500" y="80" text-anchor="middle" font-size="9" fill="#999">（空）</text>
+      <text id="dedupTableEntry" x="500" y="105" text-anchor="middle" font-size="9" fill="#4CAF50" style="opacity:0;transition:opacity 0.4s;">cid=1: maxCmdId=5</text>
+      <text id="dedupCached" x="265" y="260" text-anchor="middle" font-size="10" fill="#4CAF50" style="opacity:0;transition:opacity 0.4s;">✓ 响应已缓存</text>
+      <rect id="dedupCheckHL" x="415" y="35" width="170" height="90" rx="6" fill="none" stroke="#ff9800" stroke-width="2" stroke-dasharray="6,3" style="opacity:0;transition:opacity 0.4s;"/>
+      <g id="dedupArrows1" style="opacity:0;transition:opacity 0.4s;">
+      <line x1="90" y1="57" x2="200" y2="57" stroke="#1565c0" stroke-width="2" marker-end="url(#dedupMA)"/>
+      <text x="145" y="50" text-anchor="middle" font-size="9" fill="#1565c0">Put(x,5) cmdId=5</text>
+      <line x1="265" y1="75" x2="265" y2="120" stroke="#1565c0" stroke-width="2" marker-end="url(#dedupMA)"/>
+      <line x1="265" y1="155" x2="265" y2="200" stroke="#1565c0" stroke-width="2" marker-end="url(#dedupMA)"/>
+      <text x="295" y="180" font-size="9" fill="#1565c0">apply</text>
+      <line x1="330" y1="57" x2="420" y2="57" stroke="#4CAF50" stroke-width="2" marker-end="url(#dedupMB)"/>
+      <text x="375" y="50" text-anchor="middle" font-size="9" fill="#4CAF50">缓存响应</text>
+      </g>
+      <g id="dedupArrows2" style="opacity:0;transition:opacity 0.4s;">
+      <line x1="90" y1="57" x2="200" y2="57" stroke="#ff9800" stroke-width="2" marker-end="url(#dedupMC)"/>
+      <text x="145" y="50" text-anchor="middle" font-size="9" fill="#ff9800">重试 cmdId=5</text>
+      <path d="M 200 50 Q 120 20 90 45" stroke="#ff9800" stroke-width="2" fill="none" stroke-dasharray="5,3" marker-end="url(#dedupMC)"/>
+      <text x="130" y="15" text-anchor="middle" font-size="9" fill="#ff9800">直接返回缓存！</text>
+      </g>
+      </svg>
+      <div style="text-align:center;margin-top:12px;">
+      <button onclick="dedupPlay()" style="padding:8px 20px;cursor:pointer;border:none;border-radius:6px;background:#4CAF50;color:white;font-size:14px;">▶ 播放</button>
+      <button onclick="dedupReset()" style="padding:8px 20px;cursor:pointer;border:none;border-radius:6px;background:#888;color:white;font-size:14px;">↻ 重置</button>
+      </div>
+      <div id="dedupNarr" style="text-align:center;margin-top:10px;min-height:24px;font-size:14px;"></div>
+      </div>
+      <script>
+      (function(){
+      var T=[],playing=false;
+      function clr(){T.forEach(clearTimeout);T=[];}
+      function op(id,on){var e=document.getElementById(id);if(e)e.style.opacity=on?'1':'0';}
+      function hl(id,on){var e=document.getElementById(id);if(!e)return;var c={dedupHC:['#bbdefb','#e3f2fd'],dedupRF:['#ffe0b2','#fff3e0'],dedupSM:['#c8e6c9','#e8f5e9']};if(c[id])e.style.fill=on?c[id][0]:c[id][1];}
+      function narr(t){document.getElementById('dedupNarr').textContent=t;}
+      window.dedupPlay=function(){
+        if(playing)return;playing=true;dedupReset();
+        narr('① 客户端首次发送 Put(x,5)，clientId=1, commandId=5');
+        hl('dedupHC',1);op('dedupArrows1',1);
+        T.push(setTimeout(function(){
+          narr('② HandleCommand 检查 lastOperations_：无记录，非重复请求');
+          op('dedupCheckHL',1);
+          T.push(setTimeout(function(){
+            op('dedupCheckHL',0);
+            narr('③ 提交到 Raft 共识 → applier 应用到状态机');
+            hl('dedupHC',0);hl('dedupRF',1);
+            T.push(setTimeout(function(){
+              hl('dedupRF',0);hl('dedupSM',1);
+              T.push(setTimeout(function(){
+                hl('dedupSM',0);
+                narr('④ 应用完成，响应缓存到 lastOperations_[clientId=1]');
+                op('dedupTableEntry',1);
+                document.getElementById('dedupTableContent').textContent='cid=1: maxCmdId=5';
+                op('dedupCached',1);
+                T.push(setTimeout(function(){
+                  narr('⑤ 客户端超时重试，发送相同的 Put(x,5) cmdId=5');
+                  op('dedupArrows1',0);op('dedupCached',0);
+                  op('dedupArrows2',1);hl('dedupHC',1);
+                  T.push(setTimeout(function(){
+                    narr('⑥ 检查 lastOperations_：cmdId=5 ≤ maxCmdId=5，重复！');
+                    op('dedupCheckHL',1);
+                    T.push(setTimeout(function(){
+                      op('dedupCheckHL',0);
+                      narr('⑦ 直接返回缓存结果，不提交到 Raft！');
+                      T.push(setTimeout(function(){
+                        narr('演示完成！去重机制有效防止重复执行。');
+                        hl('dedupHC',0);playing=false;
+                      },1500));
+                    },1500));
+                  },1500));
+                },1500));
+              },1500));
+            },1500));
+          },1500));
+        },1500));
+      };
+      window.dedupReset=function(){
+        clr();hl('dedupHC',0);hl('dedupRF',0);hl('dedupSM',0);
+        op('dedupArrows1',0);op('dedupArrows2',0);op('dedupCheckHL',0);
+        op('dedupTableEntry',0);op('dedupCached',0);
+        document.getElementById('dedupTableContent').textContent='（空）';
+        narr('');playing=false;
+      };
+      })();
+      </script>
+
+      <h3>快照机制</h3>
+
+      <p>
+        随着系统运行，Raft 日志会不断增长。当日志大小超过阈值 maxRaftState_ 时，KVServer 会触发快照，将状态机的当前状态序列化保存，然后通过 rf_->Snapshot() 通知 Raft 库截断日志。
+      </p>
+
+      <pre>
+// kvserver.cpp
+
+bool KVServer::needSnapshot() {
+    return maxRaftState_ != -1 && rf_->GetRaftStateSize() >= maxRaftState_;
+}
+
+void KVServer::takeSnapshot(int index) {
+    // 1. 导出所有 KV 数据
+    auto kvPairs = stateMachine_->DumpAll();
+
+    // 2. 序列化去重表
+    std::vector&lt;std::pair&lt;int64_t, OperationContext&gt;&gt; ops(
+        lastOperations_.begin(), lastOperations_.end());
+
+    // 3. 序列化快照并提交给 Raft 库
+    auto snapshot = kvser::serializeSnapshot(kvPairs, ops);
+    rf_->Snapshot(index, snapshot);
+}
+      </pre>
+
+      <p>
+        快照内容包含两部分：状态机的所有 KV 数据和去重表 lastOperations_。将去重表也纳入快照是为了确保节点重启后仍能正确去重。快照的序列化格式由 kvser::serializeSnapshot() 和 kvser::deserializeSnapshot() 函数处理，格式为：KV 条目数量 + KV 数据 + 去重条目数量 + 去重数据。
+      </p>
+
+      <p>
+        恢复快照时，将快照数据反序列化后恢复状态机和去重表：
+      </p>
+
+      <pre>
+// kvserver.cpp
+
+void KVServer::restoreSnapshot(const std::vector&lt;uint8_t&gt;& snap) {
+    if (snap.empty()) return;
+
+    std::vector&lt;std::pair&lt;std::string, std::string&gt;&gt; kvPairs;
+    std::vector&lt;std::pair&lt;int64_t, OperationContext&gt;&gt; ops;
+    kvser::deserializeSnapshot(snap.data(), snap.size(), kvPairs, ops);
+
+    // 恢复状态机
+    stateMachine_->BulkPut(kvPairs);
+
+    // 恢复去重表
+    lastOperations_.clear();
+    for (auto& [cid, ctx] : ops) {
+        lastOperations_[cid] = ctx;
+    }
+}
+      </pre>
+
+      <p>
+        快照恢复发生在两个时机：KVServer::Make() 构造时从 Persister 读取持久化的快照数据，以及 applier 线程收到 InstallSnapshot RPC 触发的 snapshot_valid 消息时。两种情况都调用 restoreSnapshot() 完成状态恢复。
+      </p>
+
+      <div style="border:1px solid rgba(128,128,128,0.3);border-radius:10px;padding:20px;margin:24px 0;background:rgba(128,128,128,0.05);">
+      <p style="text-align:center;font-weight:bold;margin-bottom:16px;font-size:16px;">🎬 KV 快照机制演示</p>
+      <svg id="kvsnapSvg" viewBox="0 0 600 280" style="width:100%;max-width:600px;display:block;margin:0 auto;">
+      <defs>
+      <marker id="kvsnapMA" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><polygon points="0,0,9,3,0,6" fill="#e65100"/></marker>
+      </defs>
+      <text x="300" y="25" text-anchor="middle" font-size="11" fill="#999">Raft 状态大小</text>
+      <rect x="100" y="32" width="400" height="12" rx="6" fill="#e0e0e0" stroke="#999" stroke-width="1"/>
+      <rect id="kvsnapMeter" x="100" y="32" width="120" height="12" rx="6" fill="#4CAF50" style="transition:width 0.3s,fill 0.3s;"/>
+      <text id="kvsnapSizeT" x="300" y="60" text-anchor="middle" font-size="10" fill="#666">300 / 1000 bytes</text>
+      <text x="80" y="100" text-anchor="middle" font-size="10" fill="#999">日志</text>
+      <g id="kvsnapLogs" style="opacity:1;transition:opacity 0.5s;">
+      <rect x="100" y="105" width="30" height="25" rx="3" fill="#e3f2fd" stroke="#2196f3" stroke-width="1.5"/><text x="115" y="122" text-anchor="middle" font-size="9" fill="#333">1</text>
+      <rect x="130" y="105" width="30" height="25" rx="3" fill="#e3f2fd" stroke="#2196f3" stroke-width="1.5"/><text x="145" y="122" text-anchor="middle" font-size="9" fill="#333">2</text>
+      <rect x="160" y="105" width="30" height="25" rx="3" fill="#e3f2fd" stroke="#2196f3" stroke-width="1.5"/><text x="175" y="122" text-anchor="middle" font-size="9" fill="#333">3</text>
+      <rect x="190" y="105" width="30" height="25" rx="3" fill="#e3f2fd" stroke="#2196f3" stroke-width="1.5"/><text x="205" y="122" text-anchor="middle" font-size="9" fill="#333">4</text>
+      <rect id="kvsnapE5" x="220" y="105" width="30" height="25" rx="3" fill="#e3f2fd" stroke="#2196f3" stroke-width="1.5" style="opacity:0;transition:opacity 0.3s;"/><text id="kvsnapE5T" x="235" y="122" text-anchor="middle" font-size="9" fill="#333" style="opacity:0;transition:opacity 0.3s;">5</text>
+      <rect id="kvsnapE6" x="250" y="105" width="30" height="25" rx="3" fill="#e3f2fd" stroke="#2196f3" stroke-width="1.5" style="opacity:0;transition:opacity 0.3s;"/><text id="kvsnapE6T" x="265" y="122" text-anchor="middle" font-size="9" fill="#333" style="opacity:0;transition:opacity 0.3s;">6</text>
+      <rect id="kvsnapE7" x="280" y="105" width="30" height="25" rx="3" fill="#e3f2fd" stroke="#2196f3" stroke-width="1.5" style="opacity:0;transition:opacity 0.3s;"/><text id="kvsnapE7T" x="295" y="122" text-anchor="middle" font-size="9" fill="#333" style="opacity:0;transition:opacity 0.3s;">7</text>
+      <rect id="kvsnapE8" x="310" y="105" width="30" height="25" rx="3" fill="#e3f2fd" stroke="#2196f3" stroke-width="1.5" style="opacity:0;transition:opacity 0.3s;"/><text id="kvsnapE8T" x="325" y="122" text-anchor="middle" font-size="9" fill="#333" style="opacity:0;transition:opacity 0.3s;">8</text>
+      </g>
+      <rect id="kvsnapHL" x="95" y="100" width="130" height="35" rx="5" fill="none" stroke="#ff9800" stroke-width="2" stroke-dasharray="6,3" style="opacity:0;transition:opacity 0.4s;"/>
+      <g id="kvsnapActArrows" style="opacity:0;transition:opacity 0.4s;">
+      <line x1="265" y1="175" x2="265" y2="140" stroke="#e65100" stroke-width="2" marker-end="url(#kvsnapMA)"/>
+      <text x="380" y="160" text-anchor="middle" font-size="9" fill="#e65100">takeSnapshot()</text>
+      </g>
+      <text id="kvsnapStep" x="300" y="200" text-anchor="middle" font-size="9" fill="#666" style="opacity:0;transition:opacity 0.4s;">DumpAll() → serializeSnapshot() → rf->Snapshot()</text>
+      <g id="kvsnapAfter" style="opacity:0;transition:opacity 0.5s;">
+      <rect x="100" y="105" width="90" height="25" rx="3" fill="#fff8e1" stroke="#ffc107" stroke-width="2"/><text x="145" y="122" text-anchor="middle" font-size="9" fill="#f57c00" font-weight="bold">Snapshot</text>
+      <rect x="190" y="105" width="30" height="25" rx="3" fill="#e3f2fd" stroke="#2196f3" stroke-width="1.5"/><text x="205" y="122" text-anchor="middle" font-size="9" fill="#333">5</text>
+      <rect x="220" y="105" width="30" height="25" rx="3" fill="#e3f2fd" stroke="#2196f3" stroke-width="1.5"/><text x="235" y="122" text-anchor="middle" font-size="9" fill="#333">6</text>
+      <rect x="250" y="105" width="30" height="25" rx="3" fill="#e3f2fd" stroke="#2196f3" stroke-width="1.5"/><text x="265" y="122" text-anchor="middle" font-size="9" fill="#333">7</text>
+      <rect x="280" y="105" width="30" height="25" rx="3" fill="#e3f2fd" stroke="#2196f3" stroke-width="1.5"/><text x="295" y="122" text-anchor="middle" font-size="9" fill="#333">8</text>
+      <text x="200" y="155" text-anchor="middle" font-size="9" fill="#4CAF50">✓ 日志已截断，大小大幅减少</text>
+      </g>
+      </svg>
+      <div style="text-align:center;margin-top:12px;">
+      <button onclick="kvsnapPlay()" style="padding:8px 20px;cursor:pointer;border:none;border-radius:6px;background:#4CAF50;color:white;font-size:14px;">▶ 播放</button>
+      <button onclick="kvsnapReset()" style="padding:8px 20px;cursor:pointer;border:none;border-radius:6px;background:#888;color:white;font-size:14px;">↻ 重置</button>
+      </div>
+      <div id="kvsnapNarr" style="text-align:center;margin-top:10px;min-height:24px;font-size:14px;"></div>
+      </div>
+      <script>
+      (function(){
+      var T=[],playing=false,iv=null;
+      function clr(){T.forEach(clearTimeout);T=[];if(iv){clearInterval(iv);iv=null;}}
+      function op(id,on){var e=document.getElementById(id);if(e)e.style.opacity=on?'1':'0';}
+      function narr(t){document.getElementById('kvsnapNarr').textContent=t;}
+      function meter(w,color){var m=document.getElementById('kvsnapMeter');m.setAttribute('width',w);m.setAttribute('fill',color);}
+      function sizeText(t){document.getElementById('kvsnapSizeT').textContent=t;}
+      window.kvsnapPlay=function(){
+        if(playing)return;playing=true;kvsnapReset();
+        narr('① 日志不断增长，Raft 状态大小逐渐接近阈值');
+        var entries=[['kvsnapE5','kvsnapE5T'],['kvsnapE6','kvsnapE6T'],['kvsnapE7','kvsnapE7T'],['kvsnapE8','kvsnapE8T']];
+        var sizes=[['160','#ff9800','500 / 1000 bytes'],['240','#ff9800','700 / 1000 bytes'],['320','#ff9800','850 / 1000 bytes'],['380','#f44336','950 / 1000 bytes']];
+        var idx=0;
+        iv=setInterval(function(){
+          if(idx>=entries.length){
+            clearInterval(iv);iv=null;
+            narr('② 状态大小超过 maxRaftState_ 阈值，触发快照');
+            meter('400','#f44336');sizeText('1000 / 1000 bytes (超限!)');
+            T.push(setTimeout(function(){
+              narr('③ 标记条目 1~4 为待快照区域');
+              op('kvsnapHL',1);
+              T.push(setTimeout(function(){
+                narr('④ 执行 takeSnapshot(): DumpAll + serializeSnapshot + rf->Snapshot()');
+                op('kvsnapHL',0);op('kvsnapActArrows',1);op('kvsnapStep',1);
+                T.push(setTimeout(function(){
+                  narr('⑤ 日志截断：条目 1~4 被快照替换');
+                  op('kvsnapLogs',0);op('kvsnapActArrows',0);op('kvsnapStep',0);
+                  op('kvsnapAfter',1);
+                  meter('150','#4CAF50');sizeText('200 / 1000 bytes');
+                  T.push(setTimeout(function(){
+                    narr('演示完成！快照有效压缩了日志空间。');
+                    playing=false;
+                  },2000));
+                },2000));
+              },1500));
+            },1000));
+            return;
+          }
+          op(entries[idx][0],1);op(entries[idx][1],1);
+          meter(sizes[idx][0],sizes[idx][1]);sizeText(sizes[idx][2]);
+          idx++;
+        },700);
+      };
+      window.kvsnapReset=function(){
+        clr();
+        ['kvsnapE5','kvsnapE5T','kvsnapE6','kvsnapE6T','kvsnapE7','kvsnapE7T','kvsnapE8','kvsnapE8T','kvsnapHL','kvsnapActArrows','kvsnapStep','kvsnapAfter'].forEach(function(id){op(id,0);});
+        op('kvsnapLogs',1);
+        meter('120','#4CAF50');sizeText('300 / 1000 bytes');
+        narr('');playing=false;
+      };
+      })();
+      </script>
+
+      <h3>Clerk 客户端</h3>
+
+      <p>
+        Clerk 是客户端的封装，提供 Get/Put/Append 三个高级接口，内部实现了自动重试和 Leader 发现逻辑。
+      </p>
+
+      <pre>
+// clerk.h
+
+class Clerk {
+public:
+    explicit Clerk(std::vector&lt;std::shared_ptr&lt;KVPeer&gt;&gt; servers);
+
+    std::string Get(const std::string& key);
+    void Put(const std::string& key, const std::string& value);
+    void Append(const std::string& key, const std::string& value);
+
+private:
+    std::string doCommand(const std::string& key, const std::string& value, OperationOp op);
+
+    std::vector&lt;std::shared_ptr&lt;KVPeer&gt;&gt; servers_;
+    int     leaderId_  = 0;     // 缓存的 Leader 节点索引
+    int64_t clientId_  = 0;    // 客户端唯一 ID
+    int64_t commandId_ = 0;    // 递增的命令 ID
+};
+      </pre>
+
+      <p>
+        Clerk 通过 KVPeer 抽象接口与服务端通信。在测试中，InMemKVPeer 直接调用 KVServer::HandleCommand()；在生产环境中，可以使用 gRPC 客户端实现。这种抽象接口的设计使得测试环境可以使用内存模拟网络，而无需启动真实的 gRPC 服务。
+      </p>
+
+      <p>
+        doCommand 是核心的重试循环：
+      </p>
+
+      <pre>
+// clerk.cpp
+
+std::string Clerk::doCommand(const std::string& key,
+                              const std::string& value, OperationOp op) {
+    CommandRequest req;
+    req.key       = key;
+    req.value     = value;
+    req.op        = op;
+    req.clientId  = clientId_;
+    req.commandId = commandId_;
+
+    for (;;) {
+        CommandResponse resp;
+        bool ok = servers_[leaderId_]->Command(req, resp);
+
+        if (!ok || resp.err == ErrWrongLeader || resp.err == ErrTimeout) {
+            // 网络错误或不是 Leader 或超时，切换到下一个节点重试
+            leaderId_ = (leaderId_ + 1) % static_cast&lt;int&gt;(servers_.size());
+            std::this_thread::sleep_for(std::chrono::milliseconds(10));
+            continue;
+        }
+
+        commandId_++;  // 成功后才递增 commandId
+        return resp.value;
+    }
+}
+      </pre>
+
+      <p>
+        doCommand 的重试逻辑：
+      </p>
+
+      <p>
+        1. 构造 CommandRequest，包含 clientId 和 commandId。<br/>
+        2. 向当前缓存的 leaderId 节点发送请求。<br/>
+        3. 如果返回网络错误（ok=false）、ErrWrongLeader 或 ErrTimeout，则切换到下一个节点重试。<br/>
+        4. <strong>关键点</strong>：commandId_ 只在成功后才递增。这保证了如果请求超时但实际被 Raft 提交了，客户端重试时使用相同的 commandId，服务端的去重机制会识别并返回上次的结果。
+      </p>
+
+      <p>
+        clientId 在构造函数中通过 nrand() 生成一个随机 64 位整数，确保不同客户端之间不会冲突。commandId 从 0 开始递增，每次成功执行后才加 1。
+      </p>
+
+      <h3>请求处理全流程总结</h3>
+
+      <p>
+        让我们总结一下完整的请求处理流程：
+      </p>
+
+      <p>
+        1. <strong>客户端</strong>：Clerk 调用 Get/Put/Append，内部通过 doCommand 构造 CommandRequest，发送到缓存的 Leader 节点。如果遇到 ErrWrongLeader 或超时，自动切换节点重试。<br/>
+        2. <strong>Leader 接收</strong>：KVServer::HandleCommand 先做去重检查，然后将请求序列化为 Command 并调用 rf_->Start() 提交到 Raft 共识层。如果不是 Leader，返回 ErrWrongLeader。<br/>
+        3. <strong>Raft 共识</strong>：Raft 库将 Command 追加到 Leader 日志，通过 AppendEntries RPC 复制到 Follower，获得多数派确认后提交。<br/>
+        4. <strong>应用日志</strong>：Raft 库通过 applyCh 将已提交的 ApplyMsg 推送给 KVServer 的 applier 线程。applier 反序列化 Command，应用到状态机，更新去重表。<br/>
+        5. <strong>通知 Leader</strong>：applier 通过 notifyChan 将结果通知正在等待的 HandleCommand 调用。<br/>
+        6. <strong>返回客户端</strong>：HandleCommand 从 notifyChan 获取结果，返回给 Clerk，Clerk 递增 commandId 并返回结果。
+      </p>
+
+      <p>
+        整个流程中，Raft 共识层保证了所有副本以相同顺序应用相同的命令，从而实现强一致性。去重机制保证了客户端重试不会导致重复执行。快照机制保证了日志不会无限增长。这三者共同构成了一个可靠、高效、可扩展的分布式 KV 存储系统。
+      </p>
+
+      <div style="border:1px solid rgba(128,128,128,0.3);border-radius:10px;padding:20px;margin:24px 0;background:rgba(128,128,128,0.05);">
+      <p style="text-align:center;font-weight:bold;margin-bottom:16px;font-size:16px;">🎬 KV 请求处理全流程演示</p>
+      <svg id="kvfSvg" viewBox="0 0 600 400" style="width:100%;max-width:600px;display:block;margin:0 auto;">
+      <defs>
+      <marker id="kvfMA" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><polygon points="0,0,9,3,0,6" fill="#1565c0"/></marker>
+      <marker id="kvfMB" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><polygon points="0,0,9,3,0,6" fill="#e65100"/></marker>
+      <marker id="kvfMC" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><polygon points="0,0,9,3,0,6" fill="#4CAF50"/></marker>
+      </defs>
+      <rect x="20" y="30" width="70" height="35" rx="6" fill="#9e9e9e" stroke="#616161" stroke-width="2"/>
+      <text x="55" y="52" text-anchor="middle" fill="white" font-size="11" font-weight="bold">Client</text>
+      <rect id="kvfHC" x="200" y="30" width="130" height="35" rx="6" fill="#e3f2fd" stroke="#1565c0" stroke-width="2" style="transition:fill 0.4s;"/>
+      <text x="265" y="52" text-anchor="middle" fill="#1565c0" font-size="11" font-weight="bold">HandleCommand</text>
+      <rect id="kvfRF" x="200" y="100" width="130" height="35" rx="6" fill="#fff3e0" stroke="#e65100" stroke-width="2" style="transition:fill 0.4s;"/>
+      <text x="265" y="122" text-anchor="middle" fill="#e65100" font-size="11" font-weight="bold">Raft (Start)</text>
+      <circle cx="440" cy="117" r="18" fill="#66bb6a" stroke="#2e7d32" stroke-width="2"/>
+      <text x="440" y="122" text-anchor="middle" fill="white" font-size="11" font-weight="bold">S2</text>
+      <circle cx="540" cy="117" r="18" fill="#66bb6a" stroke="#2e7d32" stroke-width="2"/>
+      <text x="540" y="122" text-anchor="middle" fill="white" font-size="11" font-weight="bold">S3</text>
+      <rect id="kvfAC" x="200" y="170" width="130" height="35" rx="6" fill="#f3e5f5" stroke="#7b1fa2" stroke-width="2" style="transition:fill 0.4s;"/>
+      <text x="265" y="192" text-anchor="middle" fill="#7b1fa2" font-size="11" font-weight="bold">applyCh</text>
+      <rect id="kvfAP" x="200" y="240" width="130" height="35" rx="6" fill="#e8f5e9" stroke="#2e7d32" stroke-width="2" style="transition:fill 0.4s;"/>
+      <text x="265" y="262" text-anchor="middle" fill="#2e7d32" font-size="11" font-weight="bold">applier</text>
+      <rect id="kvfSM" x="200" y="310" width="130" height="35" rx="6" fill="#e0f7fa" stroke="#00838f" stroke-width="2" style="transition:fill 0.4s;"/>
+      <text x="265" y="332" text-anchor="middle" fill="#00838f" font-size="11" font-weight="bold">RocksDB</text>
+      <rect id="kvfNC" x="400" y="240" width="130" height="35" rx="6" fill="#e3f2fd" stroke="#1565c0" stroke-width="2" style="transition:fill 0.4s;"/>
+      <text x="465" y="262" text-anchor="middle" fill="#1565c0" font-size="11" font-weight="bold">notifyChan</text>
+      <g id="kvfA1" style="opacity:0;transition:opacity 0.4s;">
+      <line x1="90" y1="47" x2="200" y2="47" stroke="#1565c0" stroke-width="2" marker-end="url(#kvfMA)"/>
+      <text x="145" y="40" text-anchor="middle" font-size="9" fill="#1565c0">Put(x,5)</text>
+      </g>
+      <g id="kvfA2" style="opacity:0;transition:opacity 0.4s;">
+      <line x1="265" y1="65" x2="265" y2="100" stroke="#1565c0" stroke-width="2" marker-end="url(#kvfMA)"/>
+      <text x="300" y="85" font-size="9" fill="#1565c0">Start(cmd)</text>
+      </g>
+      <g id="kvfA3" style="opacity:0;transition:opacity 0.4s;">
+      <line x1="330" y1="110" x2="422" y2="112" stroke="#e65100" stroke-width="2" marker-end="url(#kvfMB)"/>
+      <text x="375" y="102" text-anchor="middle" font-size="8" fill="#e65100">AppendEntries</text>
+      <line x1="330" y1="125" x2="522" y2="117" stroke="#e65100" stroke-width="2" marker-end="url(#kvfMB)"/>
+      <text x="430" y="140" text-anchor="middle" font-size="8" fill="#e65100">AppendEntries</text>
+      </g>
+      <g id="kvfA4" style="opacity:0;transition:opacity 0.4s;">
+      <line x1="422" y1="127" x2="330" y2="120" stroke="#4CAF50" stroke-width="2" stroke-dasharray="5,3" marker-end="url(#kvfMC)"/>
+      <text x="380" y="155" text-anchor="middle" font-size="8" fill="#4CAF50">OK</text>
+      <line x1="522" y1="127" x2="330" y2="125" stroke="#4CAF50" stroke-width="2" stroke-dasharray="5,3" marker-end="url(#kvfMC)"/>
+      </g>
+      <g id="kvfA5" style="opacity:0;transition:opacity 0.4s;">
+      <line x1="265" y1="135" x2="265" y2="170" stroke="#7b1fa2" stroke-width="2" marker-end="url(#kvfMA)"/>
+      <text x="300" y="155" font-size="9" fill="#7b1fa2">push</text>
+      </g>
+      <g id="kvfA6" style="opacity:0;transition:opacity 0.4s;">
+      <line x1="265" y1="205" x2="265" y2="240" stroke="#7b1fa2" stroke-width="2" marker-end="url(#kvfMA)"/>
+      <text x="300" y="225" font-size="9" fill="#7b1fa2">pop</text>
+      </g>
+      <g id="kvfA7" style="opacity:0;transition:opacity 0.4s;">
+      <line x1="265" y1="275" x2="265" y2="310" stroke="#2e7d32" stroke-width="2" marker-end="url(#kvfMA)"/>
+      <text x="300" y="295" font-size="9" fill="#2e7d32">apply</text>
+      </g>
+      <g id="kvfA8" style="opacity:0;transition:opacity 0.4s;">
+      <line x1="330" y1="257" x2="400" y2="257" stroke="#1565c0" stroke-width="2" marker-end="url(#kvfMA)"/>
+      <text x="365" y="250" text-anchor="middle" font-size="9" fill="#1565c0">push(resp)</text>
+      </g>
+      <g id="kvfA9" style="opacity:0;transition:opacity 0.4s;">
+      <path d="M 400 247 Q 340 180 330 55" stroke="#4CAF50" stroke-width="2" fill="none" stroke-dasharray="5,3" marker-end="url(#kvfMC)"/>
+      <text x="380" y="160" text-anchor="middle" font-size="8" fill="#4CAF50">pop(resp)</text>
+      </g>
+      <g id="kvfA10" style="opacity:0;transition:opacity 0.4s;">
+      <path d="M 200 40 Q 100 15 90 35" stroke="#4CAF50" stroke-width="2" fill="none" marker-end="url(#kvfMC)"/>
+      <text x="120" y="10" text-anchor="middle" font-size="9" fill="#4CAF50">OK</text>
+      </g>
+      </svg>
+      <div style="text-align:center;margin-top:12px;">
+      <button onclick="kvfPlay()" style="padding:8px 20px;cursor:pointer;border:none;border-radius:6px;background:#4CAF50;color:white;font-size:14px;">▶ 播放</button>
+      <button onclick="kvfReset()" style="padding:8px 20px;cursor:pointer;border:none;border-radius:6px;background:#888;color:white;font-size:14px;">↻ 重置</button>
+      </div>
+      <div id="kvfNarr" style="text-align:center;margin-top:10px;min-height:24px;font-size:14px;"></div>
+      </div>
+      <script>
+      (function(){
+      var T=[],playing=false;
+      function clr(){T.forEach(clearTimeout);T=[];}
+      function op(id,on){var e=document.getElementById(id);if(e)e.style.opacity=on?'1':'0';}
+      function hl(id,on){var e=document.getElementById(id);if(!e)return;var c={kvfHC:['#bbdefb','#e3f2fd'],kvfRF:['#ffe0b2','#fff3e0'],kvfAC:['#e1bee7','#f3e5f5'],kvfAP:['#c8e6c9','#e8f5e9'],kvfSM:['#b2ebf2','#e0f7fa'],kvfNC:['#bbdefb','#e3f2fd']};if(c[id])e.style.fill=on?c[id][0]:c[id][1];}
+      function narr(t){document.getElementById('kvfNarr').textContent=t;}
+      function showStep(s){for(var i=1;i<=10;i++){op('kvfA'+i,i<=s?1:0);}}
+      window.kvfPlay=function(){
+        if(playing)return;playing=true;kvfReset();
+        narr('① 客户端发送 Put(x,5) 请求到 HandleCommand');
+        hl('kvfHC',1);showStep(1);
+        T.push(setTimeout(function(){
+          narr('② HandleCommand 序列化命令，调用 rf->Start() 提交到 Raft');
+          hl('kvfHC',0);hl('kvfRF',1);showStep(2);
+        },1500));
+        T.push(setTimeout(function(){
+          narr('③ Raft 将日志复制到 Followers（AppendEntries）');
+          showStep(3);
+        },3000));
+        T.push(setTimeout(function(){
+          narr('④ Followers 追加日志并返回 OK，Raft 获得多数派确认');
+          showStep(4);
+        },4500));
+        T.push(setTimeout(function(){
+          narr('⑤ Raft 提交日志，通过 applyCh 推送 ApplyMsg');
+          hl('kvfRF',0);hl('kvfAC',1);showStep(5);
+        },6000));
+        T.push(setTimeout(function(){
+          narr('⑥ applier 从 applyCh 取出消息，反序列化 Command');
+          hl('kvfAC',0);hl('kvfAP',1);showStep(6);
+        },7500));
+        T.push(setTimeout(function(){
+          narr('⑦ applier 将操作应用到状态机（RocksDB），更新去重表');
+          hl('kvfAP',0);hl('kvfSM',1);showStep(7);
+        },9000));
+        T.push(setTimeout(function(){
+          narr('⑧ applier 将结果推送到 notifyChan');
+          hl('kvfSM',0);hl('kvfNC',1);hl('kvfAP',1);showStep(8);
+        },10500));
+        T.push(setTimeout(function(){
+          narr('⑨ HandleCommand 从 notifyChan 取出结果');
+          hl('kvfAP',0);hl('kvfNC',0);hl('kvfHC',1);showStep(9);
+        },12000));
+        T.push(setTimeout(function(){
+          narr('⑩ HandleCommand 返回响应给客户端，请求完成！');
+          hl('kvfHC',0);showStep(10);
+        },13500));
+        T.push(setTimeout(function(){
+          narr('演示完成！完整请求处理流程结束。');
+          playing=false;
+        },15500));
+      };
+      window.kvfReset=function(){
+        clr();hl('kvfHC',0);hl('kvfRF',0);hl('kvfAC',0);hl('kvfAP',0);hl('kvfSM',0);hl('kvfNC',0);
+        for(var i=1;i<=10;i++){op('kvfA'+i,0);}
+        narr('');playing=false;
+      };
+      })();
+      </script>
 
       <h3>捐赠
       </h3>
@@ -300,23 +1047,6 @@ rpc DoCommand (CommandRequest) returns (CommandResponse) {}<br/>
       <p> 遵循MIT协议开源。</p>
       <p> 感谢 「赫蹏」 提供如此优秀的中文排版系统 </p>
 
-
-      <!-- <footer class="heti-fn">
-        <ol>
-          <li id="fn-01">
-            <a href="#ref-01" title="移至">^</a>
-            CSS Reset：指代类似Eric Meyer's Reset CSS的样式重置方案
-          </li>
-          <li id="fn-02">
-            <a href="#ref-02" title="移至">^</a>
-            《中文排版需求》：https://w3c.github.io/clreq/
-          </li>
-          <li id="fn-03">
-            <a href="#ref-03" title="移至">^</a>
-            在当下前端技术尚不能完美解决中西文混排间距的情况下，常见的输入习惯是手动在中西文间加入空格（https://github.com/vinta/pangu.js）。这样做的弊端一是间距不可控（有时显得过大），二是通过空格符来排版只能算无奈之举。好消息是在最新的macOS、iOS中，使用原生语言开发的文本区域会自动处理中西文混排的间距（无论是否加空格），期待不用手敲空格的日子早日到来。
-          </li>
-        </ol>
-      </footer> -->
       <script src="https://giscus.app/client.js"
       data-repo="eraft-io/eraft-io.github.io"
       data-repo-id="MDEwOlJlcG9zaXRvcnkzOTYyMDM3NjU="

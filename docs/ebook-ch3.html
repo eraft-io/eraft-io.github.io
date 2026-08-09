@@ -18,178 +18,588 @@
           <li>
             <a href="#intro">MIT6.824 分布式系统系列</a>
             <ul>
-                <li><a href="./index.html">（一）体验分布式KV存储系统eraftkv </a></li>
-                <li><a href="./ebook-ch2.html">（二）Go 语言基础知识</a></li>
+                <li><a href="./index.html">（一）项目概览与构建测试 </a></li>
+                <li><a href="./ebook-ch2.html">（二）C++ 并发编程基础</a></li>
                 <li><a href="./ebook-ch3.html">（三）Raft 论文解读 </a></li>
-                <li><a href="./ebook-ch4.html">（四）构建 Raft 库                </a></li>
-                <li><a href="./ebook-ch5.html">（五）基于 Raft 库，实现简单的分布式 KV 系   </a></li>
-                <li><a href="./ebook-ch6.html">（六）Multi-Raft 设计与实现   </a></li>
-                <li><a href="./ebook-ch7.html">（七）分布式事务初探   </a></li>
+                <li><a href="./ebook-ch4.html">（四）构建 Raft 库</a></li>
+                <li><a href="./ebook-ch5.html">（五）基于 Raft 库实现分布式 KV 系统</a></li>
+                <li><a href="./ebook-ch6.html">（六）Multi-Raft 设计与实现</a></li>
+                <li><a href="./ebook-ch7.html">（七）分布式事务初探</a></li>
             </ul>
           </li>
         </ol>
       </details>
 
       <h2 id="intro"> MIT 分布式系统（三）Raft 论文解读 <a class="anchor" href="#intro">#</a></h2>
-   
-      <h3>
-        raft 概览
-      </h3>
-      这一小节我们不深入 Raft 算法细节，而是带着大家概览一下 Raft 算法在一个实际的应用系统中的应用。
+
+      <p>
+        本章我们解读 Raft 论文的核心内容，并对照 raft_cpp 项目中的 C++ 代码定义，帮助大家在概念和代码之间建立映射。代码中的类型定义位于 <code>raft_cpp/include/raft/types.h</code> 和 <code>raft_cpp/include/raft/raft.h</code>。
+      </p>
+
+      <h3>Raft 概览</h3>
+
+      <p>
+        我们不深入算法细节，而是先概览 Raft 在一个实际应用系统中的角色。
+      </p>
       <div style="text-align: center; width: 100%; border: black solid 1px;">
         <img src="./resources/raft_overview.png" width="80%" style="display: inline-block; margin-bottom: 5%;"/>
       </div>
 
       <p>
-      我们看到上图的系统，这是一个使用 Raft 算法实现的一个分布式 KV 系统。我们这个系统的设计目标是保证集群中所有节点状态一致，也就是每个节点中 KV 表（这里使用通俗的“表”的概念描述，实际这些数据会存储到一个存储引擎里面）里面的数据状态最终是一致的。
-    </p>
+        上图是一个使用 Raft 算法实现的分布式 KV 系统。设计目标是保证集群中所有节点状态一致——每个节点的 KV 表数据最终是一致的。
+      </p>
 
-    <p>
+      <p>
+        先不考虑故障场景，看看系统正常运行时的流程。以 Put 操作为例：客户端将 Put 请求发送给 Leader 节点对应的应用层，应用层将操作包装后提交给 Raft 层。Raft 为这个 Put 请求生成一条日志条目存储到自己的日志序列中，同时将这条操作日志复制给集群中的 Follower 节点。当半数以上节点都复制了这个日志并返回响应后，Leader 提交这条日志并应用到状态机（写入 KV 表），然后响应客户端。Leader 会在下一次复制请求中把 commit 信息带给 Follower，Follower 也应用这条日志。最终集群中所有节点的状态一致，整个系统运行的时序如下图所示。
+      </p>
 
-先不考虑故障的场景，我们来看看系统在正常的情况下是怎么运行的。
-        
-</p>
+      <div style="text-align: center; width: 100%; border: black solid 1px;">
+        <img src="./resources/raft_seq.png" width="80%" style="display: inline-block; margin-bottom: 5%;"/>
+      </div>
 
-<p>
-我们来分析一下 Put 操作经过这个系统的流程，首先客户端会将 Put 请求发送给当前 Raft 集群中的 Leader 节点对应的 K/V 应用层。这个操作会被 Leader 包装成一个操作给 Raft 层，Raft 对这个 Put 请求生成一条日志存储到自己的日志序列中，同时会把这的操作日志，复制给集群中的 Follower 节点，当集群中的半数以上节点都复制这个日志并返回响应之后，Leader 会提交这条日志，并应用这条日志，写入数据到 KV 表，并通知应用层。这个操作成功执行，这时候 K/V 层会响应客户端，同时 Leader 会把 Commit 信息在下一次复制请求带给 Follwer，Follower 也会应用这条日志，写入数据到 KV 表中，最终集群中所有节点的状态一致，整个系统的运行的时序下图所示。 
-</p>
+      <p>
+        乍一看很简单，但深入算法细节时会遇到许多问题：日志复制时有很多约束条件来保证一致性；故障时如何正确选出下一个 Leader；多次故障后日志状态一致性如何安全保证。这些正是后续章节结合代码分析的重点。
+      </p>
 
-<div style="text-align: center; width: 100%; border: black solid 1px;">
-    <img src="./resources/raft_seq.png" width="80%" style="display: inline-block; margin-bottom: 5%;"/>
-  </div>
+      <h3>分布式系统中的脑裂</h3>
 
-<p>
-    这就是应用 Raft 实现一个能保证一致性状态系统的例子，乍一看，像是很简单。但是当你深入到算法细节里面的时候，这个系统就简单了。例如日志复制的时候会有很多约束条件来保证提交日志的一致性，以及故障的时候如何正确的选出下一个 leader？多次故障之后，日志状态一致性如何能够安全的保证？当然，这些细节也是我们后续分析的重点，我们会结合具体代码，尽量简单，让你系统的理解 raft 在处理这些问题时候的解决办法。
-</p>
+      <p>
+        在介绍 Raft 算法之前，先看分布式系统的脑裂问题。脑裂字面上是"大脑裂开"的意思——大脑是人体的控制中心，裂开了整个系统就会出现紊乱。
+      </p>
 
-<h3>
-    分布式系统中的脑裂
-</h3>
-<p>
-在我们介绍 Raft 算法之前我们先来看一下分布式系统的脑裂的问题，脑裂字面上是大脑裂开的意思，大脑是人体的控制中心，如果裂开了，那么整个系统就会出现紊乱。
-</p>
+      <p>
+        对应到分布式系统中，一般是集群中的节点由于网络故障或其他故障被划分成不同的分区，不同分区由于无法通信会出现状态不一致。如果系统没有处理这种情况，网络恢复后也无法保证正确性。
+      </p>
 
-<p>
-对应到我们分布式系统里面，一般就是集群中的节点由于网络故障或者其他故障被划分成不同的分区，这时候系统中不同分区由于无法通信会出现状态不一致的情况，如果系统没有考虑处理这种情况。那么当网络再恢复的时候，系统也就没法再保证正确性了。
-</p>
-<div style="text-align: center; width: 100%; border: black solid 1px;">
-    <img src="./resources/splitbrain.jpeg" width="80%" style="display: inline-block; margin-bottom: 5%;"/>
-  </div>
+      <div style="text-align: center; width: 100%; border: black solid 1px;">
+        <img src="./resources/splitbrain.jpeg" width="80%" style="display: inline-block; margin-bottom: 5%;"/>
+      </div>
 
-  <p>
-    我们看到上图, 这就是分布式系统出现网络分区的情形。系统里面有 A-E 五个节点，由于故障， A,B 节点和 C,D,E 节点被划分到了各自的网络分区里面。绿色的圆形代表两个客户端，如果它们向不同的分区节点写入数据，那么系统能保证分区恢复后状态一致吗？Raft 算法解决了这个问题，在后续下一节讨论怎么解决的。
-  </p>
-<h3>
-    多数派协议
-</h3>
+      <p>
+        上图展示了网络分区的情形。系统有 A-E 五个节点，由于故障，A、B 节点和 C、D、E 节点被划分到各自的网络分区中。绿色圆形代表两个客户端，如果它们向不同分区的节点写入数据，系统能保证分区恢复后状态一致吗？Raft 算法解决了这个问题。
+      </p>
 
-<p>
-Raft 论文中提到的半数票决 (Majority Vote) ，也叫做多数派协议。是解决脑裂问题的关键，首先我们来解释一下半数票决是怎么做的，假设分布式系统中有 2*f + 1 个服务器，系统在做决策的时候需要系统中半数节点以上投票同意，也就是必须要 f + 1 个服务器都要活着，系统才能正常工作。那么这个系统最多可以接受 f 个服务器出现故障。
-</p>
+      <h3>多数派协议</h3>
 
-<p>
-Raft 正是应用了半数票决来解决脑裂问题，假设我们有奇数个节点 (3,5...2n+1) 个节点组成的分布式系统，其中一旦出现网络分区，那么必然会有一个分区存在半数节点以上的，那么过半票决这个策略就能正常运行，这样系统就不会因此不可用，多数派票决正是解决脑裂问题的关键。
-</p>
+      <p>
+        Raft 论文中提到的半数票决（Majority Vote），也叫多数派协议，是解决脑裂问题的关键。假设分布式系统中有 <code>2*f + 1</code> 个服务器，系统做决策时需要半数以上节点投票同意，即必须 <code>f + 1</code> 个服务器都活着。这样系统最多可以接受 <code>f</code> 个服务器故障。
+      </p>
 
-<h3>
-    Raft 的日志结构
-</h3>
+      <p>
+        Raft 正是应用了半数票决来解决脑裂。奇数个节点（3、5...2n+1）组成的系统一旦出现网络分区，必然有一个分区存在半数以上节点，多数派票决就能正常运行，系统不会因此不可用。
+      </p>
 
-<p>
-    前面我们概览了整个 Raft 算法的流程，请求经过系统最开始就要写 Raft 算法层的日志了，那这个日志的结构是什么样的呢？接下来我们就来看看 Raft 日志的结构：
-</p>
+      <h3>Raft 的日志结构</h3>
 
-<div style="text-align: center; width: 100%; border: black solid 1px;">
-    <img src="./resources/log_detail.png" width="80%" style="display: inline-block; margin-bottom: 5%;"/>
-  </div>
-<p>
-    上图表示一个 raft 节点日志的结构，日志主要用来记录用户的操作，我们会对这些操作进行编号。图中每一条（1~8）日志都有独立的编号 log index。然后日志中还有任期号，如图中 1-3号日志为任期 1 的日志。这个任期号是用来表示这个日志的选举状态的，我们后面解释它的作用。 然后每个日志都有一个操作，这个操作是对状态机的操作，如 1 号日志我们的操作是把 x 设置成 3。
-</p>
+      <p>
+        请求经过系统最开始就要写入 Raft 日志了。在 raft_cpp 的 <code>types.h</code> 中，日志条目 <code>Entry</code> 的定义如下：
+      </p>
 
-<h3>
-    Raft 的状态转换
-</h3>
+<pre>
+struct Entry {
+    int index   = 0;    // 日志索引号
+    int term    = 0;    // 任期号
+    std::vector&lt;uint8_t&gt; command;  // 操作的序列化数据
+};
+</pre>
 
-<p>
-    Raft 协议的工作模式是一个 Leader 和多个 Follower 节点的模式。在 Raft 协议中，每个节点都维护了一个状态机。该状态机有 3 中状态：Leader、Follower 和 Candidate。系统起来后的任意一个时间点，集群中的任何节点都处于这三个状态中的一个。
-</p>
-<div style="text-align: center; width: 100%; border: black solid 1px;">
-    <img src="./resources/raft_state.jpg" width="80%" style="display: inline-block; margin-bottom: 5%;"/>
-  </div>
+      <p>
+        每条日志有独立的编号 <code>index</code>，任期号 <code>term</code> 表示这条日志产生时的选举状态，<code>command</code> 是对状态机的操作（如 "set x = 3"）。Raft 节点的日志序列就是一组 <code>Entry</code> 的有序集合，在代码中用 <code>std::vector&lt;Entry&gt; logs_</code> 表示。
+      </p>
 
-  <p>
-    每个节点一启动就会进入 Follower 状态，然后当选举超时时间到达后，它会转换成 Candidate 状态，这时候就开始选举了，当它获得半数节点以上的选票之后，Candidate 状态的节点会转变成 Leader。或者当 Candidate 状态的节点发现了一个新的 leader 或者收到新任期的消息，它会变成 Follower, Leader 发现更高任期的消息也会变成 Follower, 系统正常运行中会一直在这三种状态之间转换。
-  </p>
+      <div style="text-align: center; width: 100%; border: black solid 1px;">
+        <img src="./resources/log_detail.png" width="80%" style="display: inline-block; margin-bottom: 5%;"/>
+      </div>
 
-  <h3>
-    Leader 选举
-  </h3>
-  在说明 Leader 选举流程之前，我们先来解释下 Raft 协议中与选举相关的两个超时时间：
-<br/>
-选举超时（election timeout）时间和心跳超时 (heartbeat timeout) 时间。当 Follower 节点在选举超时时间之内没有收到来自 Leader 的心跳消息之后，就会切换成 Candidate 开始新一轮的选举。选举超时时间一般设置为 150ms ~ 300ms 的随机数，这里随机的目的是为了避免节点同时发起选票到时有相同票数的节点，从而选举失败重新选举的情况，增加这个时间的随机性有利于更快的选出 Leader。心跳超时时间则是指 Leader 向 Follower 节点发送的心跳消息间隔时间。
-<br/>
-我们来梳理一下选举的流程
-<br/>
-1.集群初始化，所有节点都会变成 Follower 状态。
-<br/>
-2.经过一段时间后（选举超时时间到达）Follower 还没收到来自 Leader 的心跳消息，那么它会开始切换为 Candidate 开始发起选举。
-<br/>
-3.变成 Candidate 之后节点的任期号也会增加，同时给自己投一票，然后并行的向集群中的其他节点发送请求投票 (RequestVoteRPC) 消息。
-<br/>
-4.Candidate 状态的节点赢得了半数以上选票成为 Leader 节点，之后散播心跳给集群中其他节点，成功选举成 Leader
-<br/>
-以上是大致的流程，但是有两个细节点需要注意：
-<br/>
-在等待投票的过程中，Candidate 可能会收到来自另外一个节点成为了 Leader 之后发送的心跳消息，如果这个消息中 Leader 的任期号 （term）大于 Candidate 当前记录的任期号，Candidate 会认为这个 Leader 是合法的，它会装换为 Follower 节点。如果这个心跳消息的任期号小于 Candidate 当前的任期号，Candidate 将会拒绝这个消息，继续保持当前状态
-<br/>
-另一种可能的结果是 Candidate 即没有赢得选举也没有输：也就是集群中多个 Follower 节点同时成为了 Candidate, 这种情况叫做选票分裂，没有任何 Candidate 节点获得大多数选票，当这种情况发生的时候，每个 Candidate 会重新设置一个随机的选举超时时间，然后继续选举，由于选举时间是随机的，下一轮选举很大概率会有一个节点获得多数选票会成为新的 Leader。
-<br/>
+      <h3>Raft 的状态转换</h3>
 
-<h3>
-    日志复制
-</h3>
+      <p>
+        Raft 协议采用 Leader 和多个 Follower 的模式。每个节点维护一个状态机，有三种状态：Leader、Follower 和 Candidate。在 <code>types.h</code> 中用枚举类定义：
+      </p>
 
-我们假设集群中有 A，B，C 三个节点，其中节点 A 为 Leader，此时客户端发送了一个操作到集群：
-<br/>
-1.当收到客户端请求，节点 A 将会更新操作记录到本地的 Log 中。
-<br/>
-2.节点 A 会向集群中其他节点发送 AppendEntries 消息，消息中记录了 Leader 节点最近收到的客户端提交请求的日志信息（还没有同步给 Follower 的部分）。
-<br/>
-3.B，C 收到来自 A 的 AppendEntries 消息时，会将操作记录到本地的 Log 中，并返回通知 Leader 成功追加日志的消息。
-<br/>
-4.当 A 收到半数节点以上成功追加日志响应消息时，会认为集群中有半数节点完成了日志同步操作，它会将日志提交的 committed 号更新。
-<br/>
-5.Leader 向客户端返回响应，并且在下一次发送 AppendEntires 消息的时候把 commit 号通知给 Follower
-<br/>
-6.Follower 收到消息之后，也会更新自己本地的 commit 号。
-<br/>
-注意：上述流程是假设正常的情形下的流程，如果 Follower 宕机了或者运行很慢或者 Leader 发过来的消息某次丢失了, Leader 上记录了到某个 Follower 同步的日志进度，如果追加请求没成功，会不停的重新发送消息，直到所有 Follower 都存储了所有的日志条目。
-<br/>
+<pre>
+enum class NodeState : uint8_t {
+    Follower  = 0,
+    Candidate = 1,
+    Leader    = 2
+};
+</pre>
 
-<h3>
-    日志合并和快照发送
-</h3>
+      <div style="text-align: center; width: 100%; border: black solid 1px;">
+        <img src="./resources/raft_state.jpg" width="80%" style="display: inline-block; margin-bottom: 5%;"/>
+      </div>
 
-<p>
-    Raft 论文在第 7 章介绍了日志压缩合并相关要点，按我们前面介绍的 Raft 复制相关内容，只要客户端有新的操作过来，就会写我们的日志文件，并且 Leader 同步给 Follower 之后，集群中所有节点的日志量都会随着操作的变多一直增长。eraft 中使用 leveldb 存储了 Raft 日志条目，如果日志量不断增长，那么我们引擎去访问日志的耗时就会不断增长，如果有节点挂了重新加入集群，我们需要给它追加大量的日志，这个操作会非常消耗 IO 资源，影响系统性能。
+      <p>
+        节点一启动就进入 Follower 状态，当选举超时时间到达后转为 Candidate 发起选举。获得半数以上选票后，Candidate 转变为 Leader。Candidate 发现更高任期的消息会变为 Follower，Leader 发现更高任期的消息也会变为 Follower。系统正常运行时一直在这三种状态之间转换。
+      </p>
 
-</p>
+      <p>
+        对照论文 Figure 2，<code>raft.h</code> 中 Raft 类的成员可以清晰地分为三组：持久状态（<code>currentTerm_</code>、<code>votedFor_</code>、<code>logs_</code>）、所有节点的易失状态（<code>commitIndex_</code>、<code>lastApplied_</code>）和 Leader 独有的易失状态（<code>nextIndex_</code>、<code>matchIndex_</code>）。
+      </p>
 
-那么如何解决这个问题呢，首先我们再分析下日志结构：
+      <h3>Leader 选举</h3>
 
-<br/>
-<div style="text-align: center; width: 100%; border: black solid 1px;">
-    <img src="./resources/snapshot.png" width="80%" style="display: inline-block; margin-bottom: 5%;"/>
-  </div>
-  <p>
-  我们看到这里的操作，都是对 x，y 的操作，每次日志提交完，我们都会应用日志到状态机中。这里我们会发现其实我们并没有必要存储每一个日志条目，我们只关心一致的状态，也就是已经提交的日志让状态机最终到达一种什么样的状态。那么在图中，我们就可以把 1,2,3,4 号日志的操作之后状态机记录下来，也就是 x <- 0, y = 9, 并且记录这个状态之后第一条日制的信息，然后 1～4 号日志可以被安全的删除了。
-</p>
-  <p>
-以上的整个操作在 Raft 里面被叫做快照 (snapshot)，Raft 会定期的打快照吧历史的状态记录下来。当集群中有某个节点挂了，并且日志完全无法找回之后，集群中 Leader 节点首先会发送快照给这个挂掉之后新加入的节点，并且用一个 InstallSnapshot 的 RPC 发送快照数据给它，对端安装快照数据之后，会继续同步增量的日志，这样新的节点能快速的恢复状态。
-</p>
+      <p>
+        Raft 中有两个超时时间控制选举流程：选举超时（election timeout）和心跳超时（heartbeat timeout）。Follower 在选举超时内没收到 Leader 心跳就转为 Candidate 开始选举。选举超时设为随机值以避免多节点同时竞选。在 raft_cpp 的 <code>util.h</code> 中，选举超时为 1000~2000ms 的随机值，心跳超时固定为 125ms。
+      </p>
 
-      <h3>捐赠
-      </h3>
+      <p>
+        选举流程如下：集群初始化时所有节点都是 Follower；经过一段时间后（选举超时到达）某个节点率先转为 Candidate，增加自己的任期号，给自己投一票，然后并行向其他节点发送 RequestVote RPC：
+      </p>
+
+<pre>
+// types.h 中的 RequestVote 请求/响应
+struct RequestVoteRequest {
+    int term;           // 候选人的任期号
+    int candidate_id;   // 候选人 id
+    int last_log_index;  // 候选人最后一条日志的索引
+    int last_log_term;  // 候选人最后一条日志的任期
+};
+
+struct RequestVoteResponse {
+    int  term;          // 投票节点的当前任期
+    bool vote_granted;  // 是否同意投票
+};
+</pre>
+
+      <p>
+        Candidate 赢得半数以上选票后成为 Leader，之后向其他节点散播心跳。如果 Candidate 在等待投票时收到更高任期的心跳，它会变为 Follower；如果多个节点同时成为 Candidate 导致选票分裂（没有任何候选人获得多数选票），每个 Candidate 会重新设置随机超时时间继续选举，大概率下一轮会有一个节点获得多数选票。
+      </p>
+
+      <div style="border:1px solid rgba(128,128,128,0.3);border-radius:10px;padding:20px;margin:24px 0;background:rgba(128,128,128,0.05);">
+      <p style="text-align:center;font-weight:bold;margin-bottom:16px;font-size:16px;">🎬 Raft Leader 选举过程演示</p>
+      <svg id="eleSvg" viewBox="0 0 600 300" style="width:100%;max-width:600px;display:block;margin:0 auto;">
+      <defs>
+      <marker id="eleMA" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><polygon points="0,0,9,3,0,6" fill="#e65100"/></marker>
+      <marker id="eleMB" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><polygon points="0,0,9,3,0,6" fill="#1565c0"/></marker>
+      </defs>
+      <text x="100" y="25" text-anchor="middle" font-size="11" fill="#999">选举超时</text>
+      <rect id="eleBar0" x="60" y="32" width="80" height="6" rx="3" fill="#66bb6a"/>
+      <text x="300" y="25" text-anchor="middle" font-size="11" fill="#999">选举超时</text>
+      <rect id="eleBar1" x="260" y="32" width="80" height="6" rx="3" fill="#66bb6a"/>
+      <text x="500" y="25" text-anchor="middle" font-size="11" fill="#999">选举超时</text>
+      <rect id="eleBar2" x="460" y="32" width="80" height="6" rx="3" fill="#66bb6a"/>
+      <circle id="eleC0" cx="100" cy="160" r="40" fill="#66bb6a" stroke="#2e7d32" stroke-width="3"/>
+      <text x="100" y="156" text-anchor="middle" fill="white" font-size="18" font-weight="bold">S1</text>
+      <text id="eleS0" x="100" y="176" text-anchor="middle" fill="white" font-size="11">Follower</text>
+      <text id="eleT0" x="100" y="220" text-anchor="middle" fill="#888" font-size="12">Term: 0</text>
+      <circle id="eleC1" cx="300" cy="160" r="40" fill="#66bb6a" stroke="#2e7d32" stroke-width="3"/>
+      <text x="300" y="156" text-anchor="middle" fill="white" font-size="18" font-weight="bold">S2</text>
+      <text id="eleS1" x="300" y="176" text-anchor="middle" fill="white" font-size="11">Follower</text>
+      <text id="eleT1" x="300" y="220" text-anchor="middle" fill="#888" font-size="12">Term: 0</text>
+      <circle id="eleC2" cx="500" cy="160" r="40" fill="#66bb6a" stroke="#2e7d32" stroke-width="3"/>
+      <text x="500" y="156" text-anchor="middle" fill="white" font-size="18" font-weight="bold">S3</text>
+      <text id="eleS2" x="500" y="176" text-anchor="middle" fill="white" font-size="11">Follower</text>
+      <text id="eleT2" x="500" y="220" text-anchor="middle" fill="#888" font-size="12">Term: 0</text>
+      <g id="eleArrows" style="opacity:0;transition:opacity 0.4s;">
+      <line x1="140" y1="150" x2="260" y2="150" stroke="#e65100" stroke-width="2" marker-end="url(#eleMA)"/>
+      <text x="200" y="142" text-anchor="middle" font-size="9" fill="#e65100">RequestVote</text>
+      <line x1="140" y1="170" x2="460" y2="170" stroke="#e65100" stroke-width="2" marker-end="url(#eleMA)"/>
+      <text x="300" y="185" text-anchor="middle" font-size="9" fill="#e65100">RequestVote</text>
+      <line x1="260" y1="155" x2="140" y2="155" stroke="#1565c0" stroke-width="2" stroke-dasharray="5,3" marker-end="url(#eleMB)"/>
+      <text x="200" y="130" text-anchor="middle" font-size="9" fill="#1565c0">Vote YES</text>
+      <line x1="460" y1="155" x2="140" y2="155" stroke="#1565c0" stroke-width="2" stroke-dasharray="5,3" marker-end="url(#eleMB)"/>
+      <text x="320" y="200" text-anchor="middle" font-size="9" fill="#1565c0">Vote YES</text>
+      </g>
+      <g id="eleHB" style="opacity:0;transition:opacity 0.4s;">
+      <line x1="140" y1="160" x2="260" y2="160" stroke="#1565c0" stroke-width="2" marker-end="url(#eleMB)"/>
+      <line x1="140" y1="160" x2="460" y2="160" stroke="#1565c0" stroke-width="2" marker-end="url(#eleMB)"/>
+      <text x="200" y="150" text-anchor="middle" font-size="9" fill="#1565c0">Heartbeat</text>
+      </g>
+      </svg>
+      <div style="text-align:center;margin-top:12px;">
+      <button onclick="elePlay()" style="padding:8px 20px;cursor:pointer;border:none;border-radius:6px;background:#4CAF50;color:white;font-size:14px;">▶ 播放</button>
+      <button onclick="eleReset()" style="padding:8px 20px;cursor:pointer;border:none;border-radius:6px;background:#888;color:white;font-size:14px;">↻ 重置</button>
+      </div>
+      <div id="eleNarr" style="text-align:center;margin-top:10px;min-height:24px;font-size:14px;"></div>
+      </div>
+      <script>
+      (function(){
+      var T=[],playing=false,iv=null;
+      function clr(){T.forEach(clearTimeout);T=[];if(iv){clearInterval(iv);iv=null;}}
+      function st(i,c,s,t){
+        if(c)document.getElementById('eleC'+i).setAttribute('fill',c);
+        if(s)document.getElementById('eleS'+i).textContent=s;
+        if(t!==undefined)document.getElementById('eleT'+i).textContent='Term: '+t;
+      }
+      function bar(i,c,w){var b=document.getElementById('eleBar'+i);b.setAttribute('fill',c);if(w)b.setAttribute('width',w);}
+      function show(g,on){document.getElementById(g).style.opacity=on?'1':'0';}
+      function narr(t){document.getElementById('eleNarr').textContent=t;}
+      window.elePlay=function(){
+        if(playing)return;playing=true;eleReset();
+        narr('① 集群启动，所有节点初始为 Follower（Term 0），开始选举超时倒计时');
+        bar(0,'#ff9800','80');bar(1,'#ff9800','80');bar(2,'#ff9800','80');
+        var w=80;iv=setInterval(function(){
+          w-=4;
+          if(w<=0){
+            clearInterval(iv);iv=null;
+            bar(0,'#f44336','0');
+            st(0,'#ff9800','Candidate',1);
+            narr('② S1 选举超时最先到达，转为 Candidate（Term 1），给自己投票');
+            T.push(setTimeout(function(){
+              narr('③ S1 并行向 S2、S3 发送 RequestVote RPC');
+              show('eleArrows',1);
+              T.push(setTimeout(function(){
+                narr('④ S2、S3 检查日志后同意投票');
+                bar(1,'#4caf50','80');bar(2,'#4caf50','80');
+                T.push(setTimeout(function(){
+                  narr('⑤ S1 获得多数选票（3 ≥ 2），成为 Leader！');
+                  show('eleArrows',0);
+                  st(0,'#2196f3','Leader',1);
+                  T.push(setTimeout(function(){
+                    narr('⑥ Leader 周期性发送心跳维护权威');
+                    show('eleHB',1);
+                    T.push(setTimeout(function(){
+                      narr('演示完成！点击「重置」后可重新播放。');
+                      playing=false;
+                    },2000));
+                  },1500));
+                },1500));
+              },1500));
+            },1500));
+          }
+          bar(0,'#ff9800',w);bar(1,'#ff9800',w);bar(2,'#ff9800',w);
+        },80);
+      };
+      window.eleReset=function(){
+        clr();
+        st(0,'#66bb6a','Follower',0);st(1,'#66bb6a','Follower',0);st(2,'#66bb6a','Follower',0);
+        bar(0,'#66bb6a','80');bar(1,'#66bb6a','80');bar(2,'#66bb6a','80');
+        show('eleArrows',0);show('eleHB',0);
+        narr('');playing=false;
+      };
+      })();
+      </script>
+
+      <h3>日志复制</h3>
+
+      <p>
+        假设集群有 A、B、C 三个节点，A 为 Leader，客户端发送一个操作到集群：
+      </p>
+
+      <p>
+        1. 节点 A 收到客户端请求，将操作记录到本地日志中。<br/>
+        2. A 向其他节点发送 AppendEntries 消息，消息中包含尚未同步的日志条目。<br/>
+        3. B、C 收到 AppendEntries 后将日志追加到本地，返回成功响应。<br/>
+        4. A 收到半数以上成功响应后，更新 commit 号。<br/>
+        5. A 向客户端返回响应，并在下一次 AppendEntries 时把 commit 号通知 Follower。<br/>
+        6. Follower 收到 commit 号后也更新自己的 commit 号，应用日志到状态机。
+      </p>
+
+      <p>
+        AppendEntries 的消息结构在 <code>types.h</code> 中定义：
+      </p>
+
+<pre>
+struct AppendEntriesRequest {
+    int term;            // Leader 的任期号
+    int leader_id;       // Leader 的 id
+    int prev_log_index;  // 前一条日志的索引（一致性检查）
+    int prev_log_term;   // 前一条日志的任期
+    int leader_commit;   // Leader 的 commit 号
+    std::vector&lt;Entry&gt; entries;  // 要同步的日志条目
+};
+
+struct AppendEntriesResponse {
+    int  term;           // 响应节点的当前任期
+    bool success;        // 是否追加成功
+    int  conflict_index;  // 冲突索引（快速回退优化）
+    int  conflict_term;   // 冲突任期
+};
+</pre>
+
+      <p>
+        正常情况下上述流程很顺利。如果 Follower 宕机或运行很慢或消息丢失，Leader 会记录到每个 Follower 的复制进度（<code>nextIndex_</code> 和 <code>matchIndex_</code>），追加失败就不停重试，直到所有 Follower 都存储了所有日志条目。响应中的 <code>conflict_index</code> 和 <code>conflict_term</code> 用于快速回退优化，让 Leader 能一次性跳到冲突位置而非逐条回退。
+      </p>
+
+      <div style="border:1px solid rgba(128,128,128,0.3);border-radius:10px;padding:20px;margin:24px 0;background:rgba(128,128,128,0.05);">
+      <p style="text-align:center;font-weight:bold;margin-bottom:16px;font-size:16px;">🎬 Raft 日志复制过程演示</p>
+      <svg id="logSvg" viewBox="0 0 680 360" style="width:100%;max-width:680px;display:block;margin:0 auto;">
+      <defs>
+      <marker id="logMA" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><polygon points="0,0,9,3,0,6" fill="#e65100"/></marker>
+      <marker id="logMB" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><polygon points="0,0,9,3,0,6" fill="#1565c0"/></marker>
+      <marker id="logMC" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><polygon points="0,0,9,3,0,6" fill="#4CAF50"/></marker>
+      </defs>
+      <rect x="20" y="80" width="60" height="40" rx="6" fill="#9e9e9e" stroke="#616161" stroke-width="2"/>
+      <text x="50" y="105" text-anchor="middle" fill="white" font-size="12" font-weight="bold">Client</text>
+      <circle cx="200" cy="120" r="35" fill="#2196f3" stroke="#1565c0" stroke-width="3"/>
+      <text x="200" y="116" text-anchor="middle" fill="white" font-size="14" font-weight="bold">S1</text>
+      <text x="200" y="132" text-anchor="middle" fill="white" font-size="10">Leader</text>
+      <rect x="155" y="170" width="30" height="25" rx="3" fill="#e8f5e9" stroke="#4CAF50" stroke-width="1.5"/>
+      <text x="170" y="187" text-anchor="middle" font-size="10" fill="#333">1</text>
+      <rect x="185" y="170" width="30" height="25" rx="3" fill="#e8f5e9" stroke="#4CAF50" stroke-width="1.5"/>
+      <text x="200" y="187" text-anchor="middle" font-size="10" fill="#333">2</text>
+      <rect id="logS1New" x="215" y="170" width="30" height="25" rx="3" fill="#fff3e0" stroke="#ff9800" stroke-width="2" style="opacity:0;transition:opacity 0.4s;"/>
+      <text id="logS1NewT" x="230" y="187" text-anchor="middle" font-size="10" fill="#333" style="opacity:0;transition:opacity 0.4s;">3</text>
+      <line id="logS1Cmt" x1="248" y1="165" x2="248" y2="200" stroke="#f44336" stroke-width="2" style="opacity:0;transition:opacity 0.4s;"/>
+      <text id="logS1CmtT" x="248" y="160" text-anchor="middle" font-size="8" fill="#f44336" style="opacity:0;transition:opacity 0.4s;">commit</text>
+      <circle cx="420" cy="120" r="35" fill="#66bb6a" stroke="#2e7d32" stroke-width="3"/>
+      <text x="420" y="116" text-anchor="middle" fill="white" font-size="14" font-weight="bold">S2</text>
+      <text x="420" y="132" text-anchor="middle" fill="white" font-size="10">Follower</text>
+      <rect x="375" y="170" width="30" height="25" rx="3" fill="#e8f5e9" stroke="#4CAF50" stroke-width="1.5"/>
+      <text x="390" y="187" text-anchor="middle" font-size="10" fill="#333">1</text>
+      <rect x="405" y="170" width="30" height="25" rx="3" fill="#e8f5e9" stroke="#4CAF50" stroke-width="1.5"/>
+      <text x="420" y="187" text-anchor="middle" font-size="10" fill="#333">2</text>
+      <rect id="logS2New" x="435" y="170" width="30" height="25" rx="3" fill="#fff3e0" stroke="#ff9800" stroke-width="2" style="opacity:0;transition:opacity 0.4s;"/>
+      <text id="logS2NewT" x="450" y="187" text-anchor="middle" font-size="10" fill="#333" style="opacity:0;transition:opacity 0.4s;">3</text>
+      <line id="logS2Cmt" x1="468" y1="165" x2="468" y2="200" stroke="#f44336" stroke-width="2" style="opacity:0;transition:opacity 0.4s;"/>
+      <text id="logS2CmtT" x="468" y="160" text-anchor="middle" font-size="8" fill="#f44336" style="opacity:0;transition:opacity 0.4s;">commit</text>
+      <circle cx="620" cy="120" r="35" fill="#66bb6a" stroke="#2e7d32" stroke-width="3"/>
+      <text x="620" y="116" text-anchor="middle" fill="white" font-size="14" font-weight="bold">S3</text>
+      <text x="620" y="132" text-anchor="middle" fill="white" font-size="10">Follower</text>
+      <rect x="575" y="170" width="30" height="25" rx="3" fill="#e8f5e9" stroke="#4CAF50" stroke-width="1.5"/>
+      <text x="590" y="187" text-anchor="middle" font-size="10" fill="#333">1</text>
+      <rect x="605" y="170" width="30" height="25" rx="3" fill="#e8f5e9" stroke="#4CAF50" stroke-width="1.5"/>
+      <text x="620" y="187" text-anchor="middle" font-size="10" fill="#333">2</text>
+      <rect id="logS3New" x="635" y="170" width="30" height="25" rx="3" fill="#fff3e0" stroke="#ff9800" stroke-width="2" style="opacity:0;transition:opacity 0.4s;"/>
+      <text id="logS3NewT" x="650" y="187" text-anchor="middle" font-size="10" fill="#333" style="opacity:0;transition:opacity 0.4s;">3</text>
+      <line id="logS3Cmt" x1="668" y1="165" x2="668" y2="200" stroke="#f44336" stroke-width="2" style="opacity:0;transition:opacity 0.4s;"/>
+      <text id="logS3CmtT" x="668" y="160" text-anchor="middle" font-size="8" fill="#f44336" style="opacity:0;transition:opacity 0.4s;">commit</text>
+      <g id="logArrows" style="opacity:0;transition:opacity 0.4s;">
+      <line x1="80" y1="100" x2="165" y2="110" stroke="#9e9e9e" stroke-width="2" marker-end="url(#logMC)"/>
+      <text x="100" y="95" font-size="9" fill="#616161">SET x=5</text>
+      <line x1="235" y1="130" x2="385" y2="130" stroke="#e65100" stroke-width="2" marker-end="url(#logMA)"/>
+      <text x="310" y="122" text-anchor="middle" font-size="9" fill="#e65100">AppendEntries</text>
+      <line x1="235" y1="140" x2="585" y2="140" stroke="#e65100" stroke-width="2" marker-end="url(#logMA)"/>
+      <text x="420" y="155" text-anchor="middle" font-size="9" fill="#e65100">AppendEntries</text>
+      <line x1="385" y1="125" x2="235" y2="125" stroke="#1565c0" stroke-width="2" stroke-dasharray="5,3" marker-end="url(#logMB)"/>
+      <text x="310" y="118" text-anchor="middle" font-size="9" fill="#1565c0">OK</text>
+      <line x1="585" y1="135" x2="235" y2="135" stroke="#1565c0" stroke-width="2" stroke-dasharray="5,3" marker-end="url(#logMB)"/>
+      <text x="420" y="170" text-anchor="middle" font-size="9" fill="#1565c0">OK</text>
+      </g>
+      <g id="logCResp" style="opacity:0;transition:opacity 0.4s;">
+      <line x1="165" y1="95" x2="80" y2="95" stroke="#4CAF50" stroke-width="2" marker-end="url(#logMC)"/>
+      <text x="100" y="88" font-size="9" fill="#4CAF50">OK</text>
+      </g>
+      <text x="200" y="280" text-anchor="middle" font-size="10" fill="#999">状态机</text>
+      <rect x="170" y="288" width="60" height="30" rx="4" fill="#f5f5f5" stroke="#bbb" stroke-width="1.5" id="logSM1" style="opacity:0.3;transition:opacity 0.4s;"/>
+      <text x="200" y="308" text-anchor="middle" font-size="10" fill="#666">x=5</text>
+      <text x="420" y="280" text-anchor="middle" font-size="10" fill="#999">状态机</text>
+      <rect x="390" y="288" width="60" height="30" rx="4" fill="#f5f5f5" stroke="#bbb" stroke-width="1.5" id="logSM2" style="opacity:0.3;transition:opacity 0.4s;"/>
+      <text x="420" y="308" text-anchor="middle" font-size="10" fill="#666">x=5</text>
+      <text x="620" y="280" text-anchor="middle" font-size="10" fill="#999">状态机</text>
+      <rect x="590" y="288" width="60" height="30" rx="4" fill="#f5f5f5" stroke="#bbb" stroke-width="1.5" id="logSM3" style="opacity:0.3;transition:opacity 0.4s;"/>
+      <text x="620" y="308" text-anchor="middle" font-size="10" fill="#666">x=5</text>
+      </svg>
+      <div style="text-align:center;margin-top:12px;">
+      <button onclick="logPlay()" style="padding:8px 20px;cursor:pointer;border:none;border-radius:6px;background:#4CAF50;color:white;font-size:14px;">▶ 播放</button>
+      <button onclick="logReset()" style="padding:8px 20px;cursor:pointer;border:none;border-radius:6px;background:#888;color:white;font-size:14px;">↻ 重置</button>
+      </div>
+      <div id="logNarr" style="text-align:center;margin-top:10px;min-height:24px;font-size:14px;"></div>
+      </div>
+      <script>
+      (function(){
+      var T=[],playing=false;
+      function clr(){T.forEach(clearTimeout);T=[];}
+      function op(id,on){var e=document.getElementById(id);if(e)e.style.opacity=on?'1':'0';}
+      function narr(t){document.getElementById('logNarr').textContent=t;}
+      function sm(i,on){op('logSM'+i,on?1:0.3);}
+      window.logPlay=function(){
+        if(playing)return;playing=true;logReset();
+        narr('① 客户端发送 SET x=5 请求给 Leader S1');
+        op('logArrows',1);
+        T.push(setTimeout(function(){
+          narr('② Leader S1 将操作写入本地日志（条目 3，Term 2）');
+          op('logS1New',1);op('logS1NewT',1);
+        },1500));
+        T.push(setTimeout(function(){
+          narr('③ S1 向 S2、S3 发送 AppendEntries RPC，携带条目 3');
+        },3000));
+        T.push(setTimeout(function(){
+          narr('④ S2、S3 追加日志条目，返回成功响应');
+          op('logS2New',1);op('logS2NewT',1);
+          op('logS3New',1);op('logS3NewT',1);
+        },4500));
+        T.push(setTimeout(function(){
+          narr('⑤ S1 收到多数响应，更新 commitIndex=3，应用到状态机');
+          op('logS1Cmt',1);op('logS1CmtT',1);sm(1,1);
+        },6000));
+        T.push(setTimeout(function(){
+          narr('⑥ S1 响应客户端 OK，并在下一次心跳中通知 Follower commit');
+          op('logCResp',1);
+        },7500));
+        T.push(setTimeout(function(){
+          narr('⑦ S2、S3 收到 commit 号后更新并应用到各自状态机');
+          op('logS2Cmt',1);op('logS2CmtT',1);
+          op('logS3Cmt',1);op('logS3CmtT',1);
+          sm(2,1);sm(3,1);
+        },9000));
+        T.push(setTimeout(function(){
+          narr('演示完成！日志复制成功，所有节点状态一致。');
+          playing=false;
+        },11000));
+      };
+      window.logReset=function(){
+        clr();
+        ['logS1New','logS1NewT','logS1Cmt','logS1CmtT','logS2New','logS2NewT','logS2Cmt','logS2CmtT','logS3New','logS3NewT','logS3Cmt','logS3CmtT','logArrows','logCResp'].forEach(function(id){op(id,0);});
+        sm(1,0);sm(2,0);sm(3,0);
+        narr('');playing=false;
+      };
+      })();
+      </script>
+
+      <h3>日志合并和快照发送</h3>
+
+      <p>
+        Raft 论文第 7 章介绍了日志压缩。按前面的复制逻辑，只要客户端有新操作就会写日志，日志量随操作增多一直增长。如果日志量不断增长，访问日志的耗时会增加，落后节点追赶也会非常消耗 IO 资源。
+      </p>
+
+      <p>
+        解决方案是快照（Snapshot）：每次日志提交后应用到状态机，我们只关心最终状态。可以定期将已提交日志产生的状态机状态记录下来，然后安全删除这些日志条目。代码中，快照的 RPC 消息定义如下：
+      </p>
+
+<pre>
+struct InstallSnapshotRequest {
+    int term;                // Leader 的任期号
+    int leader_id;           // Leader 的 id
+    int last_included_index; // 快照最后一条日志的索引
+    int last_included_term;  // 快照最后一条日志的任期
+    std::vector&lt;uint8_t&gt; data;  // 状态机序列化数据
+};
+
+struct InstallSnapshotResponse {
+    int term;  // 响应节点的当前任期
+};
+</pre>
+
+      <div style="text-align: center; width: 100%; border: black solid 1px;">
+        <img src="./resources/snapshot.png" width="80%" style="display: inline-block; margin-bottom: 5%;"/>
+      </div>
+
+      <p>
+        如上图，1~4 号日志的操作结果（x=0, y=9）被记录为快照后，这些日志可以被安全删除。当某个节点挂了重新加入集群且日志完全无法找回时，Leader 会通过 InstallSnapshot RPC 发送快照数据，对端安装快照后继续同步增量日志，快速恢复状态。代码中 <code>raft.h</code> 的 <code>Snapshot()</code> 和 <code>CondInstallSnapshot()</code> 方法分别负责 Leader 端打快照和 Follower 端安装快照，我们将在下一章详细分析实现。
+      </p>
+
+      <div style="border:1px solid rgba(128,128,128,0.3);border-radius:10px;padding:20px;margin:24px 0;background:rgba(128,128,128,0.05);">
+      <p style="text-align:center;font-weight:bold;margin-bottom:16px;font-size:16px;">🎬 Raft 日志快照与压缩演示</p>
+      <svg id="snapSvg" viewBox="0 0 680 220" style="width:100%;max-width:680px;display:block;margin:0 auto;">
+      <defs>
+      <marker id="snapMA" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><polygon points="0,0,9,3,0,6" fill="#e65100"/></marker>
+      </defs>
+      <g id="snapBefore" style="opacity:1;transition:opacity 0.5s;">
+      <text x="250" y="25" text-anchor="middle" font-size="12" fill="#666" font-weight="bold">Leader S1 - 日志压缩前</text>
+      <circle cx="250" cy="50" r="20" fill="#2196f3" stroke="#1565c0" stroke-width="2"/>
+      <text x="250" y="55" text-anchor="middle" fill="white" font-size="11" font-weight="bold">S1</text>
+      <text x="100" y="95" text-anchor="middle" font-size="10" fill="#999">已提交日志</text>
+      <rect x="120" y="105" width="35" height="28" rx="3" fill="#e8f5e9" stroke="#4CAF50" stroke-width="1.5"/>
+      <text x="137" y="124" text-anchor="middle" font-size="10" fill="#333">1</text>
+      <rect x="155" y="105" width="35" height="28" rx="3" fill="#e8f5e9" stroke="#4CAF50" stroke-width="1.5"/>
+      <text x="172" y="124" text-anchor="middle" font-size="10" fill="#333">2</text>
+      <rect x="190" y="105" width="35" height="28" rx="3" fill="#e8f5e9" stroke="#4CAF50" stroke-width="1.5"/>
+      <text x="207" y="124" text-anchor="middle" font-size="10" fill="#333">3</text>
+      <rect x="225" y="105" width="35" height="28" rx="3" fill="#e8f5e9" stroke="#4CAF50" stroke-width="1.5"/>
+      <text x="242" y="124" text-anchor="middle" font-size="10" fill="#333">4</text>
+      <rect x="260" y="105" width="35" height="28" rx="3" fill="#e3f2fd" stroke="#2196f3" stroke-width="1.5"/>
+      <text x="277" y="124" text-anchor="middle" font-size="10" fill="#333">5</text>
+      <rect x="295" y="105" width="35" height="28" rx="3" fill="#e3f2fd" stroke="#2196f3" stroke-width="1.5"/>
+      <text x="312" y="124" text-anchor="middle" font-size="10" fill="#333">6</text>
+      <rect x="330" y="105" width="35" height="28" rx="3" fill="#e3f2fd" stroke="#2196f3" stroke-width="1.5"/>
+      <text x="347" y="124" text-anchor="middle" font-size="10" fill="#333">7</text>
+      <rect x="365" y="105" width="35" height="28" rx="3" fill="#e3f2fd" stroke="#2196f3" stroke-width="1.5"/>
+      <text x="382" y="124" text-anchor="middle" font-size="10" fill="#333">8</text>
+      <rect id="snapHL" x="115" y="100" width="150" height="38" rx="5" fill="none" stroke="#ff9800" stroke-width="2" stroke-dasharray="6,3" style="opacity:0;transition:opacity 0.4s;"/>
+      </g>
+      <g id="snapAfter" style="opacity:0;transition:opacity 0.5s;">
+      <text x="250" y="25" text-anchor="middle" font-size="12" fill="#666" font-weight="bold">Leader S1 - 日志压缩后</text>
+      <circle cx="250" cy="50" r="20" fill="#2196f3" stroke="#1565c0" stroke-width="2"/>
+      <text x="250" y="55" text-anchor="middle" fill="white" font-size="11" font-weight="bold">S1</text>
+      <text x="100" y="95" text-anchor="middle" font-size="10" fill="#999">压缩后日志</text>
+      <rect x="120" y="105" width="80" height="28" rx="3" fill="#fff8e1" stroke="#ffc107" stroke-width="2"/>
+      <text x="160" y="124" text-anchor="middle" font-size="9" fill="#f57c00" font-weight="bold">Snapshot</text>
+      <text x="160" y="150" text-anchor="middle" font-size="8" fill="#999">x=0, y=9 (idx≤4)</text>
+      <rect x="200" y="105" width="35" height="28" rx="3" fill="#e3f2fd" stroke="#2196f3" stroke-width="1.5"/>
+      <text x="217" y="124" text-anchor="middle" font-size="10" fill="#333">5</text>
+      <rect x="235" y="105" width="35" height="28" rx="3" fill="#e3f2fd" stroke="#2196f3" stroke-width="1.5"/>
+      <text x="252" y="124" text-anchor="middle" font-size="10" fill="#333">6</text>
+      <rect x="270" y="105" width="35" height="28" rx="3" fill="#e3f2fd" stroke="#2196f3" stroke-width="1.5"/>
+      <text x="287" y="124" text-anchor="middle" font-size="10" fill="#333">7</text>
+      <rect x="305" y="105" width="35" height="28" rx="3" fill="#e3f2fd" stroke="#2196f3" stroke-width="1.5"/>
+      <text x="322" y="124" text-anchor="middle" font-size="10" fill="#333">8</text>
+      </g>
+      <g id="snapFollow" style="opacity:0;transition:opacity 0.5s;">
+      <text x="540" y="25" text-anchor="middle" font-size="12" fill="#666" font-weight="bold">Follower S2</text>
+      <circle cx="540" cy="50" r="20" fill="#66bb6a" stroke="#2e7d32" stroke-width="2"/>
+      <text x="540" y="55" text-anchor="middle" fill="white" font-size="11" font-weight="bold">S2</text>
+      <text x="540" y="95" text-anchor="middle" font-size="10" fill="#999">日志严重落后</text>
+      <rect x="490" y="105" width="35" height="28" rx="3" fill="#e8f5e9" stroke="#4CAF50" stroke-width="1.5"/>
+      <text x="507" y="124" text-anchor="middle" font-size="10" fill="#333">1</text>
+      <text x="580" y="124" text-anchor="middle" font-size="9" fill="#f44336">← 落后太多!</text>
+      </g>
+      <g id="snapInstall" style="opacity:0;transition:opacity 0.4s;">
+      <line x1="345" y1="119" x2="485" y2="119" stroke="#e65100" stroke-width="2" marker-end="url(#snapMA)"/>
+      <text x="415" y="111" text-anchor="middle" font-size="9" fill="#e65100">InstallSnapshot</text>
+      </g>
+      <g id="snapFollowAfter" style="opacity:0;transition:opacity 0.5s;">
+      <text x="540" y="25" text-anchor="middle" font-size="12" fill="#666" font-weight="bold">Follower S2</text>
+      <circle cx="540" cy="50" r="20" fill="#66bb6a" stroke="#2e7d32" stroke-width="2"/>
+      <text x="540" y="55" text-anchor="middle" fill="white" font-size="11" font-weight="bold">S2</text>
+      <text x="540" y="95" text-anchor="middle" font-size="10" fill="#999">安装快照后恢复</text>
+      <rect x="460" y="105" width="80" height="28" rx="3" fill="#fff8e1" stroke="#ffc107" stroke-width="2"/>
+      <text x="500" y="124" text-anchor="middle" font-size="9" fill="#f57c00" font-weight="bold">Snapshot</text>
+      <rect x="540" y="105" width="35" height="28" rx="3" fill="#e3f2fd" stroke="#2196f3" stroke-width="1.5"/>
+      <text x="557" y="124" text-anchor="middle" font-size="10" fill="#333">5</text>
+      <rect x="575" y="105" width="35" height="28" rx="3" fill="#e3f2fd" stroke="#2196f3" stroke-width="1.5"/>
+      <text x="592" y="124" text-anchor="middle" font-size="10" fill="#333">6</text>
+      <rect x="610" y="105" width="35" height="28" rx="3" fill="#e3f2fd" stroke="#2196f3" stroke-width="1.5"/>
+      <text x="627" y="124" text-anchor="middle" font-size="10" fill="#333">7</text>
+      <rect x="645" y="105" width="35" height="28" rx="3" fill="#e3f2fd" stroke="#2196f3" stroke-width="1.5"/>
+      <text x="662" y="124" text-anchor="middle" font-size="10" fill="#333">8</text>
+      <text x="555" y="155" text-anchor="middle" font-size="10" fill="#4CAF50" font-weight="bold">✓ 恢复完成！</text>
+      </g>
+      </svg>
+      <div style="text-align:center;margin-top:12px;">
+      <button onclick="snapPlay()" style="padding:8px 20px;cursor:pointer;border:none;border-radius:6px;background:#4CAF50;color:white;font-size:14px;">▶ 播放</button>
+      <button onclick="snapReset()" style="padding:8px 20px;cursor:pointer;border:none;border-radius:6px;background:#888;color:white;font-size:14px;">↻ 重置</button>
+      </div>
+      <div id="snapNarr" style="text-align:center;margin-top:10px;min-height:24px;font-size:14px;"></div>
+      </div>
+      <script>
+      (function(){
+      var T=[],playing=false;
+      function clr(){T.forEach(clearTimeout);T=[];}
+      function op(id,on){var e=document.getElementById(id);if(e)e.style.opacity=on?'1':'0';}
+      function narr(t){document.getElementById('snapNarr').textContent=t;}
+      window.snapPlay=function(){
+        if(playing)return;playing=true;snapReset();
+        narr('① Leader S1 的日志不断增长（条目 1~8），其中 1~4 已提交并应用');
+        T.push(setTimeout(function(){
+          narr('② 标记条目 1~4 为待压缩区域（状态机已记录最终状态 x=0, y=9）');
+          op('snapHL',1);
+        },2000));
+        T.push(setTimeout(function(){
+          narr('③ 执行 Snapshot()：将状态机状态序列化为快照，安全删除条目 1~4');
+          op('snapBefore',0);op('snapAfter',1);
+        },3500));
+        T.push(setTimeout(function(){
+          narr('④ 压缩后的日志：快照 + 条目 5~8，大幅减少存储空间');
+        },5000));
+        T.push(setTimeout(function(){
+          narr('⑤ Follower S2 宕机后重新加入，日志严重落后，无法通过 AppendEntries 追赶');
+          op('snapFollow',1);
+        },6500));
+        T.push(setTimeout(function(){
+          narr('⑥ Leader 通过 InstallSnapshot RPC 发送快照数据给 S2');
+          op('snapInstall',1);
+        },8000));
+        T.push(setTimeout(function(){
+          narr('⑦ S2 安装快照后恢复状态，继续同步增量日志 5~8');
+          op('snapFollow',0);op('snapInstall',0);op('snapFollowAfter',1);
+        },9500));
+        T.push(setTimeout(function(){
+          narr('演示完成！快照机制有效压缩日志并帮助落后节点快速恢复。');
+          playing=false;
+        },11500));
+      };
+      window.snapReset=function(){
+        clr();
+        op('snapBefore',1);op('snapHL',0);op('snapAfter',0);
+        op('snapFollow',0);op('snapInstall',0);op('snapFollowAfter',0);
+        narr('');playing=false;
+      };
+      })();
+      </script>
+
+      <h3>捐赠</h3>
 
       <p>
         整理这本书耗费了我们大量的时间和精力。如果你觉得有帮助，一瓶矿泉水的价格支持我们继续输出优质的分布式存储知识体系，2.99¥，感谢大家的支持。
@@ -202,22 +612,6 @@ Raft 正是应用了半数票决来解决脑裂问题，假设我们有奇数个
       <p> 遵循MIT协议开源。</p>
       <p> 感谢 「赫蹏」 提供如此优秀的中文排版系统 </p>
 
-      <!-- <footer class="heti-fn">
-        <ol>
-          <li id="fn-01">
-            <a href="#ref-01" title="移至">^</a>
-            CSS Reset：指代类似Eric Meyer's Reset CSS的样式重置方案
-          </li>
-          <li id="fn-02">
-            <a href="#ref-02" title="移至">^</a>
-            《中文排版需求》：https://w3c.github.io/clreq/
-          </li>
-          <li id="fn-03">
-            <a href="#ref-03" title="移至">^</a>
-            在当下前端技术尚不能完美解决中西文混排间距的情况下，常见的输入习惯是手动在中西文间加入空格（https://github.com/vinta/pangu.js）。这样做的弊端一是间距不可控（有时显得过大），二是通过空格符来排版只能算无奈之举。好消息是在最新的macOS、iOS中，使用原生语言开发的文本区域会自动处理中西文混排的间距（无论是否加空格），期待不用手敲空格的日子早日到来。
-          </li>
-        </ol>
-      </footer> -->
       <script src="https://giscus.app/client.js"
       data-repo="eraft-io/eraft-io.github.io"
       data-repo-id="MDEwOlJlcG9zaXRvcnkzOTYyMDM3NjU="
@@ -239,9 +633,6 @@ Raft 正是应用了半数票决来解决脑裂问题，假设我们有奇数个
     <span id="busuanzi_container_site_pv">本站总访问量<span id="busuanzi_value_site_pv"></span>次</span>
 
   </main>
-
-
-
 
   <aside class="panel">
     <ul class="panel-list panel-list--gray">

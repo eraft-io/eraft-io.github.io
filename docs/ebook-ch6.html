@@ -18,38 +18,36 @@
             <li>
               <a href="#intro">MIT6.824 分布式系统系列</a>
               <ul>
-                <li><a href="./index.html">（一）体验分布式KV存储系统eraftkv </a></li>
-                <li><a href="./ebook-ch2.html">（二）Go 语言基础知识</a></li>
-                <li><a href="./ebook-ch3.html">（三）Raft 论文解读 </a></li>
-                <li><a href="./ebook-ch4.html">（四）构建 Raft 库                </a></li>
-                <li><a href="./ebook-ch5.html">（五）基于 Raft 库，实现简单的分布式 KV 系   </a></li>
-                <li><a href="./ebook-ch6.html">（六）Multi-Raft 设计与实现   </a></li>
-                <li><a href="./ebook-ch7.html">（七）分布式事务初探   </a></li>
+                <li><a href="./index.html">（一）项目概览与构建测试</a></li>
+                <li><a href="./ebook-ch2.html">（二）C++ 并发编程基础</a></li>
+                <li><a href="./ebook-ch3.html">（三）Raft 论文解读</a></li>
+                <li><a href="./ebook-ch4.html">（四）构建 Raft 库</a></li>
+                <li><a href="./ebook-ch5.html">（五）基于 Raft 库实现分布式 KV 系统</a></li>
+                <li><a href="./ebook-ch6.html">（六）Multi-Raft 设计与实现</a></li>
+                <li><a href="./ebook-ch7.html">（七）分布式事务初探</a></li>
               </ul>
             </li>
           </ol>
         </details>
 
       <h2 id="intro"> MIT 分布式系统（六）Multi-Raft 设计与实现 <a class="anchor" href="#intro">#</a></h2>
-    
-      <h3>
-        设计思考
-      </h3>
+
+      <h3>设计思考</h3>
 
       <p>
-        在上一章中，我们应用 Raft 实现了一个单分组的 Raft KV 集群。客户端写请求到 Leader，Leader 把操作复制到 Follower 节点。当 Leader 挂了，会按我们第四章描述的 Raft 算法库，进行一轮新的选举，选出新的 Leader 后继续提供服务。这样我们就有了一个高可用的集群。
+        在上一章中，我们应用 Raft 实现了一个单分组的 KV 集群。客户端写请求到 Leader，Leader 把操作复制到 Follower 节点。当 Leader 挂了，会按第四章描述的 Raft 算法库进行一轮新的选举，选出新的 Leader 后继续提供服务。这样我们就有了一个高可用的集群。
       </p>
 
       <p>
-        我们通过单分组的 KV 集群实现了高可用，以及分区容忍性，但是分布式系统还有一个可扩展的特性，也就是我们可以通过堆机器的方式来让系统实现更高的吞吐量。我们第五章实现的是单分组集群，只有单个 Leader 节点承担客户端的写入。单分组集群系统的吞吐量上线取决于单机的性能。那么我们该如何实现分布式可扩展性呢？
+        我们通过单分组的 KV 集群实现了高可用以及分区容忍性，但是分布式系统还有一个可扩展的特性——我们可以通过增加机器来让系统实现更高的吞吐量。第五章实现的是单分组集群，只有单个 Leader 节点承担客户端的写入，吞吐量上限取决于单机性能。那么我们该如何实现分布式可扩展性呢？
       </p>
 
       <p>
-        接下来我们将介绍 Multi-Raft 实现，它可以解决单分组集群的可扩展性问题。它的思路是这样的：既然单组有上限，那么我们可不可以用多组 Raft KV 集群来实现扩展呢？我们需要有一个配置中心来管理多个分组服务器的地址信息。有了多个分组之后，我们就要考虑怎么样把用户的请求均衡地分发到相应的分组服务器上了。我们可以使用哈希算法来解决这个问题，对用户的 key 做哈希计算，然后映射到不同的服务分组上，这样可以保证流量的均衡。
+        接下来我们将介绍 Multi-Raft 实现，它可以解决单分组集群的可扩展性问题。思路是这样的：既然单组有上限，那么我们可不可以用多组 Raft KV 集群来实现扩展呢？我们需要有一个配置中心来管理多个分组服务器的地址信息。有了多个分组之后，我们就要考虑怎样把用户的请求均衡地分发到相应的分组服务器上。我们可以使用哈希算法来解决这个问题，对用户的 key 做哈希计算，然后映射到不同的服务分片（Shard）上，这样可以保证流量的均衡。
       </p>
 
       <p>
-        整合一下上面的思路，我们可以得到如下的系统架构图 a：
+        整合一下上面的思路，我们可以得到如下的系统架构图：
       </p>
 
       <div style="text-align: center; width: 100%; border: black solid 1px;">
@@ -57,361 +55,1495 @@
       </div>
 
       <p>
-        在第一章开篇，我们介绍了系统的整体架构并且带大家体验了系统的运行。之后，我们讲解了Go语言的基础知识、Raft 算法库以及应用 Raft 算法库的示例。相信大家现在对这个系统已经有了一个更加深入的理解。
+        首先，客户端启动之后，会从配置服务器（ShardCtrler）拉取集群的分组信息以及分组负责的数据分片（Shard）信息到本地。客户端发送请求的时候会计算 key 的哈希值，找到相应的分片以及负责这个分片的服务器分组（ShardKV）地址信息，然后将操作发送到对应的服务器分组进行处理。这里 ShardCtrler 服务器分组和 ShardKV 服务器分组都是高可用的，多个 ShardKV 实现了系统的可扩展性。
       </p>
 
       <p>
-        首先，客户端启动之后，会从配置服务器（ConfigServer）拉取集群的分组信息，以及分组负责的数据桶（Bucket）信息到本地。客户端发送请求的时候会计算 key 的哈希值，找到相应的桶以及负责这个桶的服务器分组（ShardServer）地址信息，然后将操作发送到对应的服务器分组进行处理。这里 ConfigServer 服务器分组和 ShardServer 服务器分组都是高可用的，多个 ShardServer 实现了系统的可扩展性。
+        在 raft_cpp 中，这一章对应 MIT 6.824 的 Lab 4A（ShardCtrler）和 Lab 4B（ShardKV）。下面我们分别来看这两个核心组件的 C++ 实现。
       </p>
 
-      <h3>
-        配置服务器实现分析
-      </h3>
-      
+      <h3>ShardCtrler 配置服务器实现</h3>
+
       <p>
-        配置服务的实现在 eraft/configserver 目录下。根据上面的架构图，我们大概可以知道配置服务器需要存储哪些信息：（1）每个服务分组的服务器地址信息；（2）服务分组负责的数据桶信息。这个结构定义如下：
+        配置服务的实现在 shardctrler.h / shardctrler.cpp 中。根据上面的架构图，配置服务器需要存储以下信息：（1）每个服务分组的服务器地址信息；（2）服务分组负责的分片信息。这个结构定义在 sc_common.h 中：
       </p>
 
-       
-        type Config struct {
-            Version int
-            Buckets [common.NBuckets]int
-            Groups  map[int][]string
+      <pre>
+// sc_common.h
+
+constexpr int NShards = 10;  // 系统中分片的最大数量
+
+struct SCConfig {
+    int Num = 0;                                       // 配置版本号
+    std::array&lt;int, NShards&gt; Shards = {};               // shard -> gid
+    std::map&lt;int, std::vector&lt;std::string&gt;&gt; Groups;      // gid -> servers[]
+
+    SCConfig() { Shards.fill(0); }
+};
+
+inline SCConfig DefaultSCConfig() {
+    SCConfig c;
+    c.Num = 0;
+    return c;
+}
+      </pre>
+
+      <p>
+        Num 表示当前配置的版本号。Shards 数组存储了每个分片由哪个分组（gid）负责。NShards 是一个常量，表示系统中分片的数量，默认为 10。对于大规模的分布式系统，NShards 可以被设置得更大。Groups 是一个映射表，记录了每个 gid 对应的服务器地址列表。
+      </p>
+
+      <p>
+        配置服务器支持四个操作：Join（加入新分组）、Leave（删除分组）、Move（重新分配分片）、Query（查询配置）。操作类型和请求/响应结构定义如下：
+      </p>
+
+      <pre>
+// sc_common.h
+
+enum SCOperationOp : uint8_t {
+    SCOpJoin  = 0,
+    SCOpLeave = 1,
+    SCOpMove  = 2,
+    SCOpQuery = 3
+};
+
+struct SCCommandRequest {
+    std::map&lt;int, std::vector&lt;std::string&gt;&gt; Servers;  // for Join
+    std::vector&lt;int&gt; GIDs;                             // for Leave
+    int Shard = 0;                                     // for Move
+    int GID   = 0;                                     // for Move
+    int Num   = 0;                                     // for Query
+    SCOperationOp Op = SCOpQuery;
+    int64_t ClientId  = 0;
+    int64_t CommandId = 0;
+};
+
+struct SCCommandResponse {
+    SCErr    Err = SC_OK;
+    SCConfig Config;
+};
+      </pre>
+
+      <p>
+        配置服务器定义了一个抽象的状态机接口 ConfigStateMachine，以及基于内存的实现 MemoryConfigStateMachine：
+      </p>
+
+      <pre>
+// sc_statemachine.h
+
+class ConfigStateMachine {
+public:
+    virtual ~ConfigStateMachine() = default;
+    virtual SCErr Join(const std::map&lt;int, std::vector&lt;std::string&gt;&gt;& groups) = 0;
+    virtual SCErr Leave(const std::vector&lt;int&gt;& gids) = 0;
+    virtual SCErr Move(int shard, int gid) = 0;
+    virtual std::pair&lt;SCConfig, SCErr&gt; Query(int num) = 0;
+    virtual void Close() = 0;
+    virtual int64_t Size() = 0;
+};
+
+class MemoryConfigStateMachine : public ConfigStateMachine {
+public:
+    MemoryConfigStateMachine();
+    SCErr Join(const std::map&lt;int, std::vector&lt;std::string&gt;&gt;& groups) override;
+    SCErr Leave(const std::vector&lt;int&gt;& gids) override;
+    SCErr Move(int shard, int gid) override;
+    std::pair&lt;SCConfig, SCErr&gt; Query(int num) override;
+    void Close() override {}
+    int64_t Size() override { return static_cast&lt;int64_t&gt;(configs_.size()); }
+
+protected:
+    std::vector&lt;SCConfig&gt; configs_;
+};
+      </pre>
+
+      <p>
+        MemoryConfigStateMachine 内部维护了一个 configs_ 向量，保存了所有历史版本的配置。Join 操作会创建新的配置版本，将新分组加入 Groups 映射，并将新分片分配给分组中最少分片的组。Leave 操作会移除指定分组，并将这些分组负责的分片重新分配。Move 操作会将指定分片从一个分组迁移到另一个分组。Query 操作根据版本号查询配置，num=-1 表示查询最新配置。
+      </p>
+
+      <p>
+        ShardCtrler 类的设计与第五章的 KVServer 非常类似，只是将 KV 操作替换为配置操作：
+      </p>
+
+      <pre>
+// shardctrler.h
+
+class ShardCtrler : public std::enable_shared_from_this&lt;ShardCtrler&gt; {
+public:
+    static std::shared_ptr&lt;ShardCtrler&gt; Make(
+        std::vector&lt;std::shared_ptr&lt;RaftPeer&gt;&gt; peers,
+        int me,
+        std::shared_ptr&lt;Persister&gt; persister);
+
+    void HandleCommand(const SCCommandRequest& req, SCCommandResponse& resp);
+    void Kill();
+
+private:
+    ShardCtrler() = default;
+
+    mutable std::mutex mu_;
+    std::atomic&lt;bool&gt; dead_{false};
+
+    std::shared_ptr&lt;Raft&gt; rf_;
+    std::shared_ptr&lt;BlockingQueue&lt;ApplyMsg&gt;&gt; applyCh_;
+    int lastApplied_ = 0;
+
+    std::unique_ptr&lt;ConfigStateMachine&gt; stateMachine_;
+    std::unordered_map&lt;int64_t, SCOperationContext&gt; lastOperations_;
+    std::unordered_map&lt;int, std::shared_ptr&lt;BlockingQueue&lt;SCCommandResponse&gt;&gt;&gt; notifyChans_;
+
+    std::thread applierThread_;
+};
+      </pre>
+
+      <p>
+        HandleCommand 的处理流程与 KVServer::HandleCommand 几乎一样：先做去重检查（非 Query 操作），然后序列化提交到 Raft，等待 applier 通过 notifyChan 通知结果：
+      </p>
+
+      <pre>
+// shardctrler.cpp
+
+void ShardCtrler::HandleCommand(const SCCommandRequest& req, SCCommandResponse& resp) {
+    // 1. 去重检查（非 Query 操作）
+    {
+        std::lock_guard&lt;std::mutex&gt; lk(mu_);
+        if (req.Op != SCOpQuery && isDuplicateRequest(req.ClientId, req.CommandId)) {
+            auto it = lastOperations_.find(req.ClientId);
+            if (it != lastOperations_.end()) {
+                resp = it->second.LastResponse;
+                return;
+            }
         }
-        
+    }
+
+    // 2. 序列化并提交到 Raft
+    SCCommand cmd;
+    cmd.Request = req;
+    auto cmdBytes = scser::serializeCommand(cmd);
+
+    auto result = rf_->Start(cmdBytes);
+    if (!result.isLeader) {
+        resp.Err = SC_ErrWrongLeader;
+        return;
+    }
+
+    // 3. 等待通知
+    std::shared_ptr&lt;BlockingQueue&lt;SCCommandResponse&gt;&gt; ch;
+    {
+        std::lock_guard&lt;std::mutex&gt; lk(mu_);
+        ch = getNotifyChan(result.index);
+    }
+
+    SCCommandResponse reply;
+    bool got = ch->pop_for(reply, kSCExecuteTimeout);
+
+    if (got) {
+        resp = reply;
+    } else {
+        resp.Err = SC_ErrTimeout;
+    }
+
+    // 4. 异步清理
+    std::thread([this, index = result.index]() {
+        std::lock_guard&lt;std::mutex&gt; lk(mu_);
+        removeOutdatedNotifyChan(index);
+    }).detach();
+}
+      </pre>
 
       <p>
-        Version 表示当前配置的版本号。Buckets 存储了分组负责的桶信息。NBuckets 是一个常量，表示系统中最大的桶数量。这里我们默认是 10。对于大规模的分布式系统， Buckets 值可以被设置为很大。
+        applier 线程从 applyCh 中读取已提交的消息，根据操作类型应用到配置状态机：
       </p>
 
-      <p>
-        我们看到下面的配置示例：配置版本号为 6 ，10 个桶和1个分组服务。 
-      </p>
+      <pre>
+// shardctrler.cpp
 
-      <p>
-        我们设置 127.0.0.1:6088，127.0.0.1:6089，127.0.0.1:6090 这三台服务器组成分组 1。Buckets 数组中 0-4 号桶都是分组 1 负责的。5-9 号桶为 0，表示当前没有分组负责这些桶的数据写入。
-      </p>
-
-       
-        {"Version":6,"Buckets":[1,1,1,1,1,0,0,0,0,0],"Groups":{"1":["127.0.0.1:6088","127.0.0.1:6089","127.0.0.1:6090"]}}
-        
-
-      <p>
-        eraft 中把上述配置信息存储到了 leveldb 中。下面是几个操作的接口，Join 操作 是把一个分组的服务器加入到集群配置中；Leave 操作是删除某些分组的服务器配置信息；Move 操作是将某个桶分配给相应的分组负责；Query 操作是查询配置信息。这些操作是通过修改 Config 这个结构，并将数据持久化到 leveldb 中实现。操作的代码实现逻辑在 eraft/configserver/config_stm.go 里面。
-      </p>
-
-       
-        <pre>
-        type ConfigStm interface { <br/>
-            Join(groups map[int][]string) error<br/>
-            Leave(gids []int) error<br/>
-            Move(bucket_id, gid int) error<br/>
-            Query(num int) (Config, error)<br/>
-        }<br/>
-    </pre>
-        
-
-      <p>
-        配置服务器的核心逻辑在 config_server.go 里面，可以看到和我们第四章实现的单分组 kv 极其类似。这里只是把 Put, Get 操作给改成了对配置的 Join、Leave、Move、Query 操作。 每一次操作都经过一次共识，保证三个服务节点都有一致的配置。这样 Leader 配置节点挂掉后，集群中仍然可以从新的 Leader 配置服务器中获取配置信息。
-
-      </p>
-
-
-      <h3>
-        分片服务器实现分析
-
-      </h3>
-
-      <p>
-        首先，我们看到 bucket 定义如下：
-      </p>
-
-       
-        <pre>
-        // a bucket is a logical partition in a distributed system <br/>
-        //  it has a unique id, a pointer to db engine, and status<br/>
-        //<br/>
-        type Bucket struct {<br/>
-            ID     int<br/>
-            KvDB   storage_eng.KvStore<br/>
-            Status buketStatus<br/>
-        }<br/>
-    </pre>
-        
-
-      <p>
-        桶具有一个唯一标识的 ID。 前面我们介绍配置服务器的时，介绍过一个服务分组负责一部分桶的数据。在配置服务器中，1·桶关联的 ID 值就是配置数组的索引号。 同时，桶还关联了一个 KvStore 的接口。我们写数据的时候会传入当前服务器持有的数据存储引擎，下面是对桶中数据的操作，有 Get, Put, Append。
-      </p>
-
-       
-<pre>
-        // <br/>
-        // get encode key data from engine<br/>
-        //<br/>
-        func (bu *Bucket) Get(key string) (string, error) {<br/>
-            encodeKey := strconv.Itoa(bu.ID) + SPLIT + key<br/>
-            v, err := bu.KvDB.Get(encodeKey)<br/>
-            if err != nil {<br/>
-                return "", err<br/>
-            }<br/>
-            return v, nil<br/>
+SCCommandResponse ShardCtrler::applyLogToStateMachine(const SCCommand& cmd) {
+    SCCommandResponse resp;
+    switch (cmd.Request.Op) {
+        case SCOpJoin:
+            resp.Err = stateMachine_->Join(cmd.Request.Servers);
+            break;
+        case SCOpLeave:
+            resp.Err = stateMachine_->Leave(cmd.Request.GIDs);
+            break;
+        case SCOpMove:
+            resp.Err = stateMachine_->Move(cmd.Request.Shard, cmd.Request.GID);
+            break;
+        case SCOpQuery: {
+            auto [config, err] = stateMachine_->Query(cmd.Request.Num);
+            resp.Config = config;
+            resp.Err = err;
+            break;
         }
-        <br/><br/>
-        //<br/>
-        // put key, value data to db engine<br/>
-        //<br/>
-        func (bu *Bucket) Put(key, value string) error {<br/>
-            encodeKey := strconv.Itoa(bu.ID) + SPLIT + key<br/>
-            return bu.KvDB.Put(encodeKey, value)<br/>
-        }<br/>
-        <br/>
-        //<br/>
-        // appned data  to engine<br/>
-        //<br/>
-        func (bu *Bucket) Append(key, value string) error {<br/>
-            oldV, err := bu.Get(key)<br/>
-            if err != nil {<br/>
-                return err<br/>
-            }<br/>
-            return bu.Put(key, oldV+value)<br/>
-        }<br/>
-        <br/>
-    </pre>
-        
-
-      <p>
-        接下来我们来看看 ShardServer 定义的结构体
-      </p>
-
-       
-        <pre>
-        type ShardKV struct {<br/>
-            mu      sync.RWMutex<br/>
-            dead    int32<br/>
-            rf      *raftcore.Raft<br/>
-            applyCh chan *pb.ApplyMsg<br/>
-            gid_    int<br/>
-            cvCli   *configserver.CfgCli<br/>
-        
-            lastApplied int<br/>
-            lastConfig  configserver.Config<br/>
-            curConfig   configserver.Config<br/>
-        
-            stm map[int]*Bucket<br/>
-        
-            dbEng storage_eng.KvStore<br/>
-        
-            notifyChans map[int]chan *pb.CommandResponse<br/>
-        
-            stopApplyCh chan interface{}<br/>
-        
-            pb.UnimplementedRaftServiceServer<br/>
-        } <br/>
-    </pre>
-        
-
-      <p>
-        这个结构和我们应用 Raft 实现单组 KvServer 的结构特别类似。这里的状态机是 map[int]*Bucket 类型的，代表当前服务器的桶的数据。分片服务器需要和配置服务器交互，知道自己负责哪些分片的数据。cvCli 定义了到配置服务器的客户端。lastConfig，curConfig 分别记录了上一个版本以及当前版本的集群配置表。服务器知道这个表之后就知道自己负责哪些分片的数据。当集群拓扑变更后，配置表会变化，分片服务器能第一时间感知到变化，并且应用新的配置表。其他结构就和我们之前介绍单组 KvServer 一样了。
-      </p>
-
-      <p>
-        我们看看 ShardServer 构造流程和单组 KvServer 的区别。首先， Server 启动的时候我们初始化了两个引擎，一个用来存储 Raft 日志的 logDbEng，另一个用来存储实际数据的 newdbEng。cvCli 是到配置服务器分组的连接客户。，我们调用 MakeCfgSvrClient 构造到配置服务器的客户端，传入配置服务器分组的地址列表。
-      </p>
-
-       
-        <pre>
-//<br/>
-// MakeShardKVServer make a new shard kv server<br/>
-// peerMaps: init peer map in the raft group<br/>
-// nodeId: the peer's nodeId in the raft group<br/>
-// gid: the node's raft group id<br/>
-// configServerAddr: config server addr (leader addr, need to optimized into config server peer map)<br/>
-//<br/>
-func MakeShardKVServer(peerMaps map[int]string, nodeId int, gid int, configServerAddrs string) *ShardKV {<br/>
-    ...<br/>
-
-	logDbEng := storage_eng.EngineFactory("leveldb", "./log_data/shard_svr/group_"+strconv.Itoa(gid)+"/node_"+strconv.Itoa(nodeId))<br/>
-	newRf := raftcore.MakeRaft(clientEnds, nodeId, logDbEng, newApplyCh, 500, 1500)<br/>
-	newdbEng := storage_eng.EngineFactory("leveldb", "./data/group_"+strconv.Itoa(gid)+"/node_"+strconv.Itoa(nodeId))<br/>
-    <br/>
-	shardKv := &ShardKV{<br/>
-        ...<br/>
-		cvCli:       configserver.MakeCfgSvrClient(common.UN_UNSED_TID, strings.Split(configServerAddrs, ",")),<br/>
-		lastApplied: 0,<br/>
-		curConfig:   configserver.DefaultConfig(),<br/>
-		lastConfig:  configserver.DefaultConfig(),<br/>
-		stm:         make(map[int]*Bucket),<br/>
-		...<br/>
-	}
-    <br/><br/>
-	shardKv.initStm(shardKv.dbEng)<br/>
-
-	shardKv.curConfig = *shardKv.cvCli.Query(-1)<br/>
-	shardKv.lastConfig = *shardKv.cvCli.Query(-1)<br/>
-    ...<br/>
-    <br/>
-	go shardKv.ConfigAction()<br/>
-    <br/>
-	return shardKv<br/>
-}<br/>
-</pre>
-        
-
-      <p>
-        我们 initStm 函数初始化了状态机里面的每个 Bucket。之后，调用 cvCli.Query(-1) 查询当前最新的配置缓存到本地的 curConfig，lastConfig，初始启动，这两个配置是一样的。
-      </p>
-
-      <p>
-        这里有一个执行任务为 ConfigAction 的 Goruntine，我们来看看它干了啥。 核心逻辑如下，下面的逻辑是一个循环执行的，时间间隔是 1s。 首先我们通过 cvCli.Query 尝试查询下一个配置版本信息，如果当前集群没有配置变更，返回 nil，我们 continue 进入下一轮循环，啥也不干。
-      </p>
-
-      <p>
-        如果有新的配置变更，比如加入了新的服务器分组，我们就会对比新的配置和当前配置的版本信息。如果匹配上，当前节点作为 Leader 需要把这个配置变化信息发送到这个服务器分组，让大家都知道新的配置变化。分组服务里面的每个服务器配置都要是一致的，这里我们通过 Propose 提交一个 OpType_OpConfigChange 的提案。
-      </p>
-
-       
-        <pre>
-        if _, isLeader := s.rf.GetState(); isLeader {<br/>
-            ...<br/>
-                nextConfig := s.cvCli.Query(int64(curConfVersion) + 1)<br/>
-                if nextConfig == nil {<br/>
-                    continue<br/>
-                }<br/>
-                nextCfBytes, _ := json.Marshal(nextConfig)<br/>
-                curCfBytes, _ := json.Marshal(s.curConfig)<br/>
-                raftcore.PrintDebugLog("next config -> " + string(nextCfBytes))<br/>
-                raftcore.PrintDebugLog("cur config -> " + string(curCfBytes))<br/>
-                if nextConfig.Version == curConfVersion+1 {<br/>
-                    req := &pb.CommandRequest{}<br/>
-                    nextCfBytes, _ := json.Marshal(nextConfig)<br/>
-                    raftcore.PrintDebugLog("can perform next conf -> " + string(nextCfBytes))<br/>
-                    req.Context = nextCfBytes<br/>
-                    req.OpType = pb.OpType_OpConfigChange<br/>
-                    reqBytes, _ := json.Marshal(req)<br/>
-                    idx, _, isLeader := s.rf.Propose(reqBytes)<br/>
-                    if !isLeader {<br/>
-                        return<br/>
-                    }<br/>
-                    <br/>
-                    ...<br/>
-                }<br/>
-            }<br/>
-        </pre>
-        
-
-      <p>
-        最后我们看看分组中的服务器是怎么 Apply 这个日志的
-      </p>
-
-       
-        <pre>
-nextConfig := &configserver.Config{}
-json.Unmarshal(req.Context, nextConfig)
-if nextConfig.Version == s.curConfig.Version+1 {
-    ...
-	s.lastConfig = s.curConfig
-	s.curConfig = *nextConfig
-	cfBytes, _ := json.Marshal(s.curConfig)
-	raftcore.PrintDebugLog("applied config to server -> " + string(cfBytes))
+    }
+    return resp;
 }
-        </pre>
-				
-        
-<p>
-    我们会更新 Server 的 lastConfig 和 curConfig 配置信息。
-</p>
+      </pre>
 
-<h3>
-    客户端实现分析
+      <p>
+        SCClerk 是配置服务器的客户端，提供 Query/Join/Leave/Move 四个接口，内部实现了与 Clerk 类似的自动重试和 Leader 发现逻辑。ShardKV 节点通过 SCClerk 来查询最新的配置信息，客户端通过 SCClerk 来加入/离开分组。
+      </p>
 
-</h3>
+      <pre>
+// sc_clerk.h
 
-<p>
-    当客户端写入一个 Key 到系统中时，我们首先需要知道 Key 属于那个分组服务器负责。在构造客户端的时候，我们会先将最新的配置信息缓存到本地。
-</p>
+class SCClerk {
+public:
+    explicit SCClerk(std::vector&lt;std::shared_ptr&lt;SCClerkPeer&gt;&gt; servers);
 
- 
-    <pre>
-// make a kv cilent
-//
-func MakeKvClient(csAddrs string) *KvClient {
-	...
-	kvCli.config = kvCli.csCli.Query(-1)
-	return kvCli
+    SCConfig Query(int num);                                    // 查询配置
+    void Join(const std::map&lt;int, std::vector&lt;std::string&gt;&gt;& servers);  // 加入分组
+    void Leave(const std::vector&lt;int&gt;& gids);                      // 离开分组
+    void Move(int shard, int gid);                              // 迁移分片
+
+private:
+    SCConfig doCommand(const SCCommandRequest& req);
+
+    std::vector&lt;std::shared_ptr&lt;SCClerkPeer&gt;&gt; servers_;
+    int     leaderId_  = 0;
+    int64_t clientId_  = 0;
+    int64_t commandId_ = 0;
+};
+      </pre>
+
+      <h3>ShardKV 分片服务器实现</h3>
+
+      <p>
+        ShardKV 是实际处理客户端 KV 请求的分片服务器。与第五章的 KVServer 不同，ShardKV 需要处理分片迁移、配置更新、跨组通信等复杂逻辑。我们先来看分片状态和命令类型的定义：
+      </p>
+
+      <pre>
+// skv_common.h
+
+// 分片状态
+enum ShardStatus : uint8_t {
+    Serving   = 0,   // 正常服务
+    Pulling   = 1,   // 正在从其他分组拉取数据
+    BePulling = 2,   // 正在被其他分组拉取数据
+    GCing     = 3    // 等待垃圾回收（数据已拉走但尚未清理）
+};
+
+// 命令类型
+enum SKVCommandType : uint8_t {
+    SKV_Operation     = 0,  // 普通 KV 操作
+    SKV_Configuration = 1,  // 配置更新
+    SKV_InsertShards  = 2,  // 插入拉取到的分片数据
+    SKV_DeleteShards  = 3,  // 删除已迁走的分片数据
+    SKV_EmptyEntry    = 4   // 空条目（保证 Leader 有当前任期日志）
+};
+      </pre>
+
+      <p>
+        分片有四种状态，构成了一个状态机：<strong>Serving</strong> 表示分片正常服务客户端请求；<strong>Pulling</strong> 表示分片刚分配给本组，正在从旧所有者拉取数据；<strong>BePulling</strong> 表示分片不再属于本组，正在被新所有者拉取数据；<strong>GCing</strong> 表示数据已被新所有者拉走，等待本地清理。
+      </p>
+
+      <div style="margin: 2em 0; text-align: center;">
+        <p><strong>分片状态机演示</strong></p>
+        <svg id="ssmSVG" viewBox="0 0 560 380" style="width:100%;max-width:560px;">
+          <defs>
+            <marker id="ssmMA" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+              <polygon points="0 0, 8 4, 0 8" fill="#666"/>
+            </marker>
+            <marker id="ssmMB" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+              <polygon points="0 0, 8 4, 0 8" fill="#ff9800"/>
+            </marker>
+          </defs>
+          <text x="280" y="22" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">新所有者路径</text>
+          <g id="ssmServing1">
+            <circle cx="80" cy="60" r="35" fill="#4caf50" stroke="#388e3c" stroke-width="2"/>
+            <text x="80" y="56" text-anchor="middle" font-size="11" fill="white" font-weight="bold">Serving</text>
+            <text x="80" y="70" text-anchor="middle" font-size="9" fill="white">正常服务</text>
+          </g>
+          <g id="ssmPulling">
+            <circle cx="240" cy="60" r="35" fill="#fff" stroke="#ff9800" stroke-width="2"/>
+            <text x="240" y="56" text-anchor="middle" font-size="11" fill="#ff9800" font-weight="bold">Pulling</text>
+            <text x="240" y="70" text-anchor="middle" font-size="9" fill="#ff9800">拉取数据</text>
+          </g>
+          <g id="ssmGCing">
+            <circle cx="400" cy="60" r="35" fill="#fff" stroke="#f44336" stroke-width="2"/>
+            <text x="400" y="56" text-anchor="middle" font-size="11" fill="#f44336" font-weight="bold">GCing</text>
+            <text x="400" y="70" text-anchor="middle" font-size="9" fill="#f44336">等待清理</text>
+          </g>
+          <g id="ssmServing2">
+            <circle cx="500" cy="60" r="28" fill="#fff" stroke="#4caf50" stroke-width="2" stroke-dasharray="4 2"/>
+            <text x="500" y="58" text-anchor="middle" font-size="10" fill="#4caf50" font-weight="bold">Serving</text>
+          </g>
+          <line id="ssmA1" x1="115" y1="60" x2="205" y2="60" stroke="#ff9800" stroke-width="2" marker-end="url(#ssmMB)" style="opacity:0;transition:opacity 0.4s;"/>
+          <line id="ssmA2" x1="275" y1="60" x2="365" y2="60" stroke="#ff9800" stroke-width="2" marker-end="url(#ssmMB)" style="opacity:0;transition:opacity 0.4s;"/>
+          <line id="ssmA3" x1="435" y1="60" x2="472" y2="60" stroke="#4caf50" stroke-width="2" marker-end="url(#ssmMA)" style="opacity:0;transition:opacity 0.4s;"/>
+          <text id="ssmAL1" x="160" y="50" text-anchor="middle" font-size="9" fill="#ff9800" style="opacity:0;transition:opacity 0.4s;">获得所有权</text>
+          <text id="ssmAL2" x="320" y="50" text-anchor="middle" font-size="9" fill="#ff9800" style="opacity:0;transition:opacity 0.4s;">数据接收完成</text>
+          <text id="ssmAL3" x="453" y="50" text-anchor="middle" font-size="9" fill="#4caf50" style="opacity:0;transition:opacity 0.4s;">GC完成</text>
+          <text x="280" y="200" text-anchor="middle" font-size="14" fill="#555" font-weight="bold">旧所有者路径</text>
+          <g id="ssmServing3">
+            <circle cx="140" cy="240" r="35" fill="#4caf50" stroke="#388e3c" stroke-width="2"/>
+            <text x="140" y="236" text-anchor="middle" font-size="11" fill="white" font-weight="bold">Serving</text>
+            <text x="140" y="250" text-anchor="middle" font-size="9" fill="white">正常服务</text>
+          </g>
+          <g id="ssmBePulling">
+            <circle cx="340" cy="240" r="35" fill="#fff" stroke="#9c27b0" stroke-width="2"/>
+            <text x="340" y="236" text-anchor="middle" font-size="10" fill="#9c27b0" font-weight="bold">BePulling</text>
+            <text x="340" y="250" text-anchor="middle" font-size="9" fill="#9c27b0">被拉取中</text>
+          </g>
+          <g id="ssmServing4">
+            <circle cx="460" cy="240" r="28" fill="#fff" stroke="#4caf50" stroke-width="2" stroke-dasharray="4 2"/>
+            <text x="460" y="238" text-anchor="middle" font-size="10" fill="#4caf50" font-weight="bold">Serving</text>
+          </g>
+          <line id="ssmA4" x1="175" y1="240" x2="305" y2="240" stroke="#9c27b0" stroke-width="2" marker-end="url(#ssmMA)" style="opacity:0;transition:opacity 0.4s;"/>
+          <line id="ssmA5" x1="375" y1="240" x2="432" y2="240" stroke="#4caf50" stroke-width="2" marker-end="url(#ssmMA)" style="opacity:0;transition:opacity 0.4s;"/>
+          <text id="ssmAL4" x="240" y="230" text-anchor="middle" font-size="9" fill="#9c27b0" style="opacity:0;transition:opacity 0.4s;">失去所有权</text>
+          <text id="ssmAL5" x="403" y="230" text-anchor="middle" font-size="9" fill="#4caf50" style="opacity:0;transition:opacity 0.4s;">清除数据</text>
+          <rect x="20" y="310" width="520" height="50" rx="5" fill="rgba(128,128,128,0.05)" stroke="#ccc"/>
+          <text id="ssmNarr" x="280" y="340" text-anchor="middle" font-size="12" fill="#333">点击「播放」查看分片状态转换过程</text>
+        </svg>
+        <p>
+          <button onclick="ssmPlay()" style="padding:6px 16px;cursor:pointer;">▶ 播放</button>
+          <button onclick="ssmReset()" style="padding:6px 16px;cursor:pointer;margin-left:8px;">↺ 重置</button>
+        </p>
+      </div>
+      <script>
+      (function(){
+        var timers=[];
+        var narr=document.getElementById('ssmNarr');
+        function show(id){var el=document.getElementById(id);if(el)el.style.opacity=1;}
+        function hl(id,fill,stroke,tc){
+          var g=document.getElementById(id);if(!g)return;
+          var c=g.querySelector('circle');if(c){c.setAttribute('fill',fill);c.setAttribute('stroke',stroke);}
+          var texts=g.querySelectorAll('text');for(var i=0;i<texts.length;i++){texts[i].setAttribute('fill',tc);}
+        }
+        var steps=[
+          {t:0,f:function(){narr.textContent='Serving：分片正常服务客户端请求';}},
+          {t:1200,f:function(){
+            show('ssmA1');show('ssmAL1');
+            hl('ssmPulling','#fff3e0','#ff9800','#ff9800');
+            narr.textContent='新所有者获得分片所有权 → Pulling：需要从旧所有者拉取数据';
+          }},
+          {t:2800,f:function(){
+            show('ssmA2');show('ssmAL2');
+            hl('ssmGCing','#ffebee','#f44336','#f44336');
+            narr.textContent='数据接收完成 → GCing：数据已到位，等待通知旧所有者清理';
+          }},
+          {t:4400,f:function(){
+            show('ssmA3');show('ssmAL3');
+            hl('ssmServing2','#e8f5e9','#4caf50','#4caf50');
+            narr.textContent='垃圾回收完成 → 恢复 Serving，分片正常服务';
+          }},
+          {t:6000,f:function(){
+            show('ssmA4');show('ssmAL4');
+            hl('ssmBePulling','#f3e5f5','#9c27b0','#9c27b0');
+            narr.textContent='旧所有者失去分片所有权 → BePulling：等待新所有者拉取数据';
+          }},
+          {t:7600,f:function(){
+            show('ssmA5');show('ssmAL5');
+            hl('ssmServing4','#e8f5e9','#4caf50','#4caf50');
+            narr.textContent='新所有者拉取完成 → 旧所有者清除数据，恢复 Serving';
+          }},
+          {t:9200,f:function(){
+            narr.textContent='状态机：新所有者 Serving→Pulling→GCing→Serving，旧所有者 Serving→BePulling→Serving';
+          }}
+        ];
+        window.ssmPlay=function(){
+          ssmReset();
+          for(var i=0;i<steps.length;i++){(function(s){timers.push(setTimeout(s.f,s.t));})(steps[i]);}
+        };
+        window.ssmReset=function(){
+          for(var i=0;i<timers.length;i++)clearTimeout(timers[i]);
+          timers=[];
+          var ids=['ssmA1','ssmA2','ssmA3','ssmA4','ssmA5','ssmAL1','ssmAL2','ssmAL3','ssmAL4','ssmAL5'];
+          for(var i=0;i<ids.length;i++){var el=document.getElementById(ids[i]);if(el)el.style.opacity=0;}
+          hl('ssmPulling','#fff','#ff9800','#ff9800');
+          hl('ssmGCing','#fff','#f44336','#f44336');
+          hl('ssmServing2','#fff','#4caf50','#4caf50');
+          hl('ssmBePulling','#fff','#9c27b0','#9c27b0');
+          hl('ssmServing4','#fff','#4caf50','#4caf50');
+          narr.textContent='点击「播放」查看分片状态转换过程';
+        };
+      })();
+      </script>
+
+      <p>
+        SKVCommand 是存储在 Raft 日志中的命令包装，支持五种类型：普通 KV 操作、配置更新、插入分片数据、删除分片数据和空条目。空条目的作用是保证 Leader 在当前任期有日志条目，这对于 Raft 的选举承诺机制很重要。
+      </p>
+
+      <pre>
+// skv_common.h
+
+struct SKVCommand {
+    SKVCommandType type = SKV_EmptyEntry;
+    std::vector&lt;uint8_t&gt; data;  // 序列化的 payload
+};
+
+// 分片操作请求（跨组通信）
+struct ShardOperationRequest {
+    int              configNum = 0;
+    std::vector&lt;int&gt; shardIDs;
+};
+
+// 分片操作响应（跨组通信）
+struct ShardOperationResponse {
+    SKVErr  err       = SKV_OK;
+    int     configNum = 0;
+    std::map&lt;int, std::map&lt;std::string, std::string&gt;&gt; shards;        // shardID -> KV data
+    std::map&lt;int64_t, SKVOperationContext&gt;             lastOperations; // 去重信息
+};
+
+// key 到分片的映射
+inline int key2shard(const std::string& key) {
+    int shard = 0;
+    if (!key.empty()) {
+        shard = static_cast&lt;unsigned char&gt;(key[0]);
+    }
+    return shard % NShards;
 }
-</pre>
+      </pre>
 
-  
+      <p>
+        key2shard() 使用 key 的第一个字符对 NShards 取模来计算分片 ID。ShardOperationRequest/Response 用于跨组通信，当分片迁移时，新所有者通过 GetShardsData RPC 从旧所有者拉取数据，旧所有者通过 DeleteShardsData RPC 通知新所有者可以清理数据。
+      </p>
 
-<p>
-    客户端中我们提供了 Get(key string) 和 Put(key, value string) 的接口，它们都是调用公用的 Command 方法去访问我们的分组服务器。  
-</p>
+      <p>
+        ShardKV 类是整个分片服务器的核心，它继承了 enable_shared_from_this 并运行 5 个后台线程：
+      </p>
 
+      <pre>
+// shardkv.h
 
- 
-    <pre>
-//
-// Command
-// do user normal command
-//
-func (kvCli *KvClient) Command(req *pb.CommandRequest) (string, error) {
-	bucket_id := common.Key2BucketID(req.Key)
-	gid := kvCli.config.Buckets[bucket_id]
-	if gid == 0 {
-		return "", errors.New("there is no shard in charge of this bucket, please join the server group before")
-	}
-	if servers, ok := kvCli.config.Groups[gid]; ok {
-		for _, svrAddr := range servers {
-			if kvCli.GetConnFromCache(svrAddr) == nil {
-				kvCli.rpcCli = raftcore.MakeRaftClientEnd(svrAddr, common.UN_UNSED_TID)
-			} else {
-				kvCli.rpcCli = kvCli.GetConnFromCache(svrAddr)
-			}
-			resp, err := (*kvCli.rpcCli.GetRaftServiceCli()).DoCommand(context.Background(), req)
-			if err != nil {
-				// node down
-				raftcore.PrintDebugLog("there is a node down is cluster, but we can continue with outher node")
-				continue
-			}
-			switch resp.ErrCode {
-			case common.ErrCodeNoErr:
-				kvCli.commandId++
-				return resp.Value, nil
-			case common.ErrCodeWrongGroup:
-				kvCli.config = kvCli.csCli.Query(-1)
-				return "", errors.New("WrongGroup")
-			case common.ErrCodeWrongLeader:
-				kvCli.rpcCli = raftcore.MakeRaftClientEnd(servers[resp.LeaderId], common.UN_UNSED_TID)
-				resp, err := (*kvCli.rpcCli.GetRaftServiceCli()).DoCommand(context.Background(), req)
-				if err != nil {
-					fmt.Printf("err %s", err.Error())
-					panic(err)
-				}
-				if resp.ErrCode == common.ErrCodeNoErr {
-					kvCli.commandId++
-					return resp.Value, nil
-				}
-			default:
-				return "", errors.New("unknow code")
-			}
-		}
-	} else {
-		return "", errors.New("please join the server group first")
-	}
-	return "", errors.New("unknow code")
+class ShardKV : public std::enable_shared_from_this&lt;ShardKV&gt; {
+public:
+    static std::shared_ptr&lt;ShardKV&gt; Make(
+        std::vector&lt;std::shared_ptr&lt;RaftPeer&gt;&gt; peers,
+        int me,
+        std::shared_ptr&lt;Persister&gt; persister,
+        int maxRaftState,
+        int gid,
+        std::shared_ptr&lt;SCClerk&gt; sc,
+        ShardKVPeerProvider peerProvider);
+
+    void Command(const SKVCommandRequest& req, SKVCommandResponse& resp);
+    void GetShardsData(const ShardOperationRequest& req, ShardOperationResponse& resp);
+    void DeleteShardsData(const ShardOperationRequest& req, ShardOperationResponse& resp);
+
+private:
+    // ── 成员变量 ──
+    std::shared_ptr&lt;Raft&gt; rf_;
+    std::shared_ptr&lt;BlockingQueue&lt;ApplyMsg&gt;&gt; applyCh_;
+    int maxRaftState_ = -1;
+    int lastApplied_  = 0;
+
+    int gid_;                                    // 本组的分组 ID
+    std::shared_ptr&lt;SCClerk&gt; sc_;               // 配置服务器客户端
+
+    std::array&lt;std::map&lt;std::string, std::string&gt;, NShards&gt; shards_;  // 分片数据
+    std::array&lt;ShardStatus, NShards&gt; shardStatus_ = {};                 // 分片状态
+
+    SCConfig currentConfig_;
+    SCConfig lastConfig_;
+
+    std::unordered_map&lt;int64_t, SKVOperationContext&gt; lastOperations_;
+    std::unordered_map&lt;int, std::shared_ptr&lt;BlockingQueue&lt;SKVCommandResponse&gt;&gt;&gt; notifyChans_;
+
+    ShardKVPeerProvider peerProvider_;            // 跨组通信的 peer 提供器
+
+    // 5 个后台线程
+    std::thread applierThread_;
+    std::thread configureThread_;
+    std::thread migrationThread_;
+    std::thread gcThread_;
+    std::thread emptyEntryThread_;
+};
+      </pre>
+
+      <p>
+        ShardKV 的构造流程在 Make() 工厂方法中，启动了 5 个后台线程：
+      </p>
+
+      <pre>
+// shardkv.cpp
+
+std::shared_ptr&lt;ShardKV&gt; ShardKV::Make(
+    std::vector&lt;std::shared_ptr&lt;RaftPeer&gt;&gt; peers,
+    int me,
+    std::shared_ptr&lt;Persister&gt; persister,
+    int maxRaftState,
+    int gid,
+    std::shared_ptr&lt;SCClerk&gt; sc,
+    ShardKVPeerProvider peerProvider)
+{
+    auto applyCh = std::make_shared&lt;BlockingQueue&lt;ApplyMsg&gt;&gt;();
+
+    std::shared_ptr&lt;ShardKV&gt; kv(new ShardKV());
+    kv->maxRaftState_  = maxRaftState;
+    kv->applyCh_       = applyCh;
+    kv->rf_            = raft::Raft::Make(peers, me, persister, applyCh);
+    kv->gid_           = gid;
+    kv->sc_            = sc;
+    kv->peerProvider_  = std::move(peerProvider);
+    kv->currentConfig_ = DefaultSCConfig();
+    kv->lastConfig_    = DefaultSCConfig();
+
+    // 初始化分片状态
+    kv->initStateMachines();
+
+    // 从快照恢复
+    auto snap = persister->ReadSnapshot();
+    if (!snap.empty()) {
+        kv->restoreSnapshot(snap);
+    }
+
+    // 使用 weak_ptr 避免循环引用
+    std::weak_ptr&lt;ShardKV&gt; weakKv = kv;
+
+    // 启动 5 个后台线程
+    kv->applierThread_     = std::thread(&ShardKV::applier, kv.get());
+    kv->configureThread_   = std::thread(&ShardKV::monitorLoop, kv.get(),
+        [weakKv]() { auto kv = weakKv.lock(); if (kv) kv->configureAction(); },
+        kConfigureMonitorTimeout);
+    kv->migrationThread_   = std::thread(&ShardKV::monitorLoop, kv.get(),
+        [weakKv]() { auto kv = weakKv.lock(); if (kv) kv->migrationAction(); },
+        kMigrationMonitorTimeout);
+    kv->gcThread_          = std::thread(&ShardKV::monitorLoop, kv.get(),
+        [weakKv]() { auto kv = weakKv.lock(); if (kv) kv->gcAction(); },
+        kGCMonitorTimeout);
+    kv->emptyEntryThread_  = std::thread(&ShardKV::monitorLoop, kv.get(),
+        [weakKv]() { auto kv = weakKv.lock(); if (kv) kv->checkEntryInCurrentTermAction(); },
+        kEmptyEntryDetectorTimeout);
+
+    return kv;
 }
-</pre>
-  
+      </pre>
 
-<p>
-1.首先我们会使用 Key2BucketID 函数对 Key 做 CRC32 运算，得到它应该被分配到桶的 ID； <br/>
+      <p>
+        注意这里使用了 weak_ptr 来避免循环引用：线程的 lambda 捕获了 weak_ptr 而非 shared_ptr，每次执行时先尝试 lock() 获取 shared_ptr，如果对象已销毁则跳过。这是 C++ 生命周期管理的常见模式。
+      </p>
 
-2.然后 从本地缓存的 kvCli.config 配置里面找到负责这个 bucket id 数据的服务器分组；<br/>
+      <p>
+        5 个线程的职责分别是：
+      </p>
+      <p>
+        <strong>applier</strong>：从 applyCh 读取 Raft 提交的消息，应用到状态机。<br/>
+        <strong>configureThread</strong>：定期查询配置服务器是否有新配置，有则提交到 Raft。<br/>
+        <strong>migrationThread</strong>：定期检查是否有分片需要从其他组拉取数据。<br/>
+        <strong>gcThread</strong>：定期检查是否有分片需要通知旧所有者清理数据。<br/>
+        <strong>emptyEntryThread</strong>：定期检查 Leader 是否在当前任期有日志，没有则提交空条目。
+      </p>
 
-3.拿到服务器分组之后，我们会向第一个服务器发送 DoCommand RPC；<br/>
+      <h4>请求处理：Command() 与 Execute()</h4>
 
-4.如果这个服务器不是 Leader，它会返回 Leader 的 ID。然后客户端会重新发 DoCommand RPC 给 Leader 节点。<br/>
-</p>
+      <pre>
+// shardkv.cpp
+
+void ShardKV::Command(const SKVCommandRequest& req, SKVCommandResponse& resp) {
+    int shardID = key2shard(req.key);
+    {
+        std::lock_guard&lt;std::mutex&gt; lk(mu_);
+        // 去重检查（非 Get 操作）
+        if (req.op != OpGet && isDuplicateRequest(req.clientId, req.commandId)) {
+            auto it = lastOperations_.find(req.clientId);
+            if (it != lastOperations_.end()) {
+                resp = it->second.lastResponse;
+                return;
+            }
+        }
+        // 检查是否可以服务这个分片
+        if (!canServe(shardID)) {
+            resp.err = SKV_ErrWrongGroup;
+            return;
+        }
+    }
+
+    // 构造 Operation 命令并执行
+    auto cmd = skvser::makeOperationCmd(req);
+    Execute(cmd, resp);
+}
+
+void ShardKV::Execute(const SKVCommand& cmd, SKVCommandResponse& resp) {
+    auto cmdBytes = skvser::serializeCommand(cmd);
+
+    auto result = rf_->Start(cmdBytes);
+    if (!result.isLeader) {
+        resp.err = SKV_ErrWrongLeader;
+        return;
+    }
+
+    // 等待结果
+    std::shared_ptr&lt;BlockingQueue&lt;SKVCommandResponse&gt;&gt; ch;
+    {
+        std::lock_guard&lt;std::mutex&gt; lk(mu_);
+        ch = getNotifyChan(result.index);
+    }
+
+    SKVCommandResponse reply;
+    bool got = ch->pop_for(reply, kSKVExecuteTimeout);
+
+    if (got) {
+        resp = reply;
+    } else {
+        resp.err = SKV_ErrTimeout;
+    }
+
+    // 异步清理
+    std::weak_ptr&lt;ShardKV&gt; weakSelf = shared_from_this();
+    std::thread([weakSelf, index = result.index]() {
+        auto self = weakSelf.lock();
+        if (!self) return;
+        std::lock_guard&lt;std::mutex&gt; lk(self->mu_);
+        self->removeOutdatedNotifyChan(index);
+    }).detach();
+}
+      </pre>
+
+      <p>
+        Command() 首先计算 key 对应的分片 ID，然后检查去重和分片服务状态。canServe() 判断当前分组是否可以服务该分片——需要满足两个条件：配置表中该分片属于本组（gid_），且分片状态为 Serving 或 GCing。如果不能服务，返回 ErrWrongGroup，客户端会刷新配置重试。
+      </p>
+
+      <pre>
+// shardkv.cpp
+
+bool ShardKV::canServe(int shardID) {
+    return currentConfig_.Shards[shardID] == gid_ &&
+           (shardStatus_[shardID] == Serving || shardStatus_[shardID] == GCing);
+}
+      </pre>
+
+      <h4>Applier 线程与 Apply 处理</h4>
+
+      <p>
+        applier 线程从 applyCh 中读取消息，根据命令类型分发到不同的处理函数：
+      </p>
+
+      <pre>
+// shardkv.cpp
+
+void ShardKV::applier() {
+    ApplyMsg message;
+    while (applyCh_->pop(message)) {
+        if (killed()) break;
+
+        if (message.command_valid) {
+            std::lock_guard&lt;std::mutex&gt; lk(mu_);
+
+            if (message.command_index <= lastApplied_) {
+                continue;
+            }
+            lastApplied_ = message.command_index;
+
+            auto command = skvser::deserializeCommand(message.command);
+            SKVCommandResponse response;
+
+            switch (command.type) {
+                case SKV_Operation: {
+                    auto req = skvser::deserializeRequest(command.data.data());
+                    response = applyOperation(req);
+                    break;
+                }
+                case SKV_Configuration: {
+                    auto config = skvser::deserializeConfig(command.data.data());
+                    response = applyConfiguration(config);
+                    break;
+                }
+                case SKV_InsertShards: {
+                    auto info = skvser::deserializeShardOpResp(command.data.data());
+                    response = applyInsertShards(info);
+                    break;
+                }
+                case SKV_DeleteShards: {
+                    auto req = skvser::deserializeShardOpReq(command.data.data());
+                    response = applyDeleteShards(req);
+                    break;
+                }
+                case SKV_EmptyEntry:
+                    response.err = SKV_OK;
+                    break;
+            }
+
+            // 通知等待的 Execute 调用（任期匹配时）
+            auto [currentTerm, isLeader] = rf_->GetState();
+            if (message.command_term == currentTerm) {
+                auto ch = getNotifyChan(message.command_index);
+                ch->push(response);
+            }
+
+            // 检查快照
+            if (needSnapshot()) {
+                takeSnapshot(message.command_index);
+            }
+        } else if (message.snapshot_valid) {
+            std::lock_guard&lt;std::mutex&gt; lk(mu_);
+            if (rf_->CondInstallSnapshot(
+                    message.snapshot_term, message.snapshot_index, message.snapshot)) {
+                restoreSnapshot(message.snapshot);
+                lastApplied_ = message.snapshot_index;
+            }
+        }
+    }
+}
+      </pre>
+
+      <p>
+        applyOperation() 处理普通 KV 操作，与 KVServer 类似但增加了分片状态检查：
+      </p>
+
+      <pre>
+// shardkv.cpp
+
+SKVCommandResponse ShardKV::applyOperation(const SKVCommandRequest& req) {
+    int shardID = key2shard(req.key);
+
+    if (!canServe(shardID)) {
+        return {SKV_ErrWrongGroup, ""};
+    }
+
+    // 去重检查
+    if (req.op != OpGet && isDuplicateRequest(req.clientId, req.commandId)) {
+        auto it = lastOperations_.find(req.clientId);
+        if (it != lastOperations_.end()) {
+            return it->second.lastResponse;
+        }
+    }
+
+    SKVCommandResponse resp;
+    switch (req.op) {
+        case OpPut:
+            shards_[shardID][req.key] = req.value;
+            resp.err = SKV_OK;
+            break;
+        case OpAppend: {
+            auto& val = shards_[shardID][req.key];
+            val += req.value;
+            resp.value = val;
+            resp.err = SKV_OK;
+            break;
+        }
+        case OpGet: {
+            auto it = shards_[shardID].find(req.key);
+            if (it != shards_[shardID].end()) {
+                resp.value = it->second;
+                resp.err = SKV_OK;
+            } else {
+                resp.err = SKV_ErrNoKey;
+            }
+            break;
+        }
+    }
+
+    // 更新去重表（非 Get 操作）
+    if (req.op != OpGet) {
+        SKVOperationContext ctx;
+        ctx.maxAppliedCommandId = req.commandId;
+        ctx.lastResponse = resp;
+        lastOperations_[req.clientId] = ctx;
+    }
+
+    return resp;
+}
+      </pre>
+
+      <p>
+        注意 ShardKV 的分片数据存储在内存中（std::array&lt;std::map&lt;std::string, std::string&gt;, NShards&gt;），而非使用 RocksDB。这是因为每个分片的数据量较小，内存存储更方便迁移和快照。
+      </p>
+
+      <h4>配置更新：applyConfiguration() 与 updateShardStatus()</h4>
+
+      <pre>
+// shardkv.cpp
+
+SKVCommandResponse ShardKV::applyConfiguration(const SCConfig& nextConfig) {
+    if (nextConfig.Num == currentConfig_.Num + 1) {
+        updateShardStatus(nextConfig);
+        lastConfig_ = currentConfig_;
+        currentConfig_ = nextConfig;
+        return {SKV_OK, ""};
+    }
+    return {SKV_ErrOutDated, ""};
+}
+      </pre>
+
+      <p>
+        当新配置的版本号正好比当前配置大 1 时，调用 updateShardStatus() 更新分片状态，然后更新 lastConfig_ 和 currentConfig_。updateShardStatus() 是分片状态机的核心：
+      </p>
+
+      <pre>
+// shardkv.cpp
+
+void ShardKV::updateShardStatus(const SCConfig& nextConfig) {
+    for (int i = 0; i &lt; NShards; ++i) {
+        int prevOwner = currentConfig_.Shards[i];
+        int nextOwner = nextConfig.Shards[i];
+
+        if (prevOwner != gid_ && nextOwner == gid_) {
+            // 获得分片的所有权
+            if (prevOwner == 0) {
+                shardStatus_[i] = Serving;    // 之前没有所有者，直接服务
+            } else {
+                shardStatus_[i] = Pulling;    // 之前有所有者，需要拉取数据
+            }
+        } else if (prevOwner == gid_ && nextOwner != gid_) {
+            // 失去分片的所有权
+            if (nextOwner == 0) {
+                // 分片分配给 gid 0（无所有者），不做处理
+            } else {
+                shardStatus_[i] = BePulling;  // 等待新所有者拉取数据
+            }
+        } else if (prevOwner == gid_ && nextOwner == gid_) {
+            // 保留分片所有权
+            if (shardStatus_[i] != Pulling) {
+                shardStatus_[i] = Serving;
+            }
+            // 如果正在 Pulling，保持 Pulling 状态不变
+        }
+    }
+}
+      </pre>
+
+      <p>
+        updateShardStatus 的逻辑：对于每个分片，比较前后配置中的所有者：
+      </p>
+      <p>
+        - 如果本组<strong>获得</strong>分片所有权：之前无所有者（gid=0）则直接 Serving，之前有所有者则设为 Pulling（需要从旧所有者拉数据）。<br/>
+        - 如果本组<strong>失去</strong>分片所有权：设为 BePulling（等待新所有者拉取数据后再清理）。<br/>
+        - 如果本组<strong>保留</strong>分片所有权：保持原状态（如果正在 Pulling 则继续，否则设为 Serving）。
+      </p>
+
+      <h4>分片迁移：migrationAction() 与 applyInsertShards()</h4>
+
+      <p>
+        migrationThread 定期（50ms）检查是否有处于 Pulling 状态的分片，如果有，则从旧所有者拉取数据：
+      </p>
+
+      <pre>
+// shardkv.cpp
+
+void ShardKV::migrationAction() {
+    std::map&lt;int, std::vector&lt;int&gt;&gt; gid2shardIDs;
+    int configNum;
+    {
+        std::lock_guard&lt;std::mutex&gt; lk(mu_);
+        gid2shardIDs = getShardIDsByStatus(Pulling);
+        configNum = currentConfig_.Num;
+    }
+
+    for (auto& [gid, shardIDs] : gid2shardIDs) {
+        ShardOperationRequest pullReq;
+        pullReq.configNum = configNum;
+        pullReq.shardIDs  = shardIDs;
+
+        // 尝试源分组中的每个服务器
+        const auto& servers = lastConfig_.Groups.count(gid) ?
+            lastConfig_.Groups.at(gid) : currentConfig_.Groups.at(gid);
+
+        bool success = false;
+        for (size_t i = 0; i &lt; servers.size() && !success; ++i) {
+            if (!peerProvider_) continue;
+            auto peer = peerProvider_(gid, static_cast&lt;int&gt;(i), servers[i]);
+            if (!peer) continue;
+
+            ShardOperationResponse resp;
+            if (peer->GetShardsData(pullReq, resp) && resp.err == SKV_OK) {
+                // 通过 Raft 提交 InsertShards 命令
+                auto cmd = skvser::makeInsertShardsCmd(resp);
+                SKVCommandResponse cmdResp;
+                Execute(cmd, cmdResp);
+                success = true;
+            }
+        }
+    }
+}
+      </pre>
+
+      <p>
+        migrationAction 首先找到所有处于 Pulling 状态的分片，按旧所有者 gid 分组。然后对每个旧所有者，尝试与其组中的服务器通信，调用 GetShardsData RPC 拉取分片数据和去重信息。成功后通过 Raft 提交 InsertShards 命令，确保所有副本一致地接收分片数据。
+      </p>
+
+      <p>
+        GetShardsData RPC 的处理（只在 Leader 上执行）：
+      </p>
+
+      <pre>
+// shardkv.cpp
+
+void ShardKV::GetShardsData(const ShardOperationRequest& req, ShardOperationResponse& resp) {
+    auto [term, isLeader] = rf_->GetState();
+    if (!isLeader) {
+        resp.err = SKV_ErrWrongLeader;
+        return;
+    }
+
+    std::lock_guard&lt;std::mutex&gt; lk(mu_);
+
+    if (currentConfig_.Num &lt; req.configNum) {
+        resp.err = SKV_ErrNotReady;  // 还没更新到对应配置
+        return;
+    }
+
+    // 返回请求的分片数据和去重信息
+    resp.shards.clear();
+    for (int shardID : req.shardIDs) {
+        resp.shards[shardID] = shards_[shardID];
+    }
+
+    resp.lastOperations.clear();
+    for (auto& [cid, ctx] : lastOperations_) {
+        resp.lastOperations[cid] = ctx;
+    }
+
+    resp.configNum = req.configNum;
+    resp.err = SKV_OK;
+}
+      </pre>
+
+      <p>
+        applyInsertShards() 在 applier 线程中被调用，将拉取到的分片数据应用到本地：
+      </p>
+
+      <pre>
+// shardkv.cpp
+
+SKVCommandResponse ShardKV::applyInsertShards(const ShardOperationResponse& info) {
+    if (info.configNum == currentConfig_.Num) {
+        for (auto& [shardId, shardData] : info.shards) {
+            if (shardStatus_[shardId] == Pulling) {
+                for (auto& [k, v] : shardData) {
+                    shards_[shardId][k] = v;
+                }
+                shardStatus_[shardId] = GCing;  // 数据已接收，等待清理旧数据
+            }
+        }
+        // 合并去重信息
+        for (auto& [cid, ctx] : info.lastOperations) {
+            auto it = lastOperations_.find(cid);
+            if (it == lastOperations_.end() ||
+                it->second.maxAppliedCommandId &lt; ctx.maxAppliedCommandId) {
+                lastOperations_[cid] = ctx;
+            }
+        }
+        return {SKV_OK, ""};
+    }
+    return {SKV_ErrOutDated, ""};
+}
+      </pre>
+
+      <p>
+        分片数据接收后，分片状态从 Pulling 变为 GCing，表示数据已到位但还需要通知旧所有者清理。同时合并去重信息，确保客户端在分片迁移后仍能正确去重。
+      </p>
+
+      <h4>垃圾回收：gcAction() 与 applyDeleteShards()</h4>
+
+      <p>
+        gcThread 定期（50ms）检查是否有处于 GCing 状态的分片，通知旧所有者可以清理数据：
+      </p>
+
+      <pre>
+// shardkv.cpp
+
+void ShardKV::gcAction() {
+    std::map&lt;int, std::vector&lt;int&gt;&gt; gid2shardIDs;
+    int configNum;
+    {
+        std::lock_guard&lt;std::mutex&gt; lk(mu_);
+        gid2shardIDs = getShardIDsByStatus(GCing);
+        configNum = currentConfig_.Num;
+    }
+
+    for (auto& [gid, shardIDs] : gid2shardIDs) {
+        ShardOperationRequest gcReq;
+        gcReq.configNum = configNum;
+        gcReq.shardIDs  = shardIDs;
+
+        const auto& servers = lastConfig_.Groups.count(gid) ?
+            lastConfig_.Groups.at(gid) : currentConfig_.Groups.at(gid);
+
+        bool success = false;
+        for (size_t i = 0; i &lt; servers.size() && !success; ++i) {
+            if (!peerProvider_) continue;
+            auto peer = peerProvider_(gid, static_cast&lt;int&gt;(i), servers[i]);
+            if (!peer) continue;
+
+            ShardOperationResponse resp;
+            if (peer->DeleteShardsData(gcReq, resp) && resp.err == SKV_OK) {
+                // 通过 Raft 提交本地 DeleteShards 命令
+                auto cmd = skvser::makeDeleteShardsCmd(gcReq);
+                SKVCommandResponse cmdResp;
+                Execute(cmd, cmdResp);
+                success = true;
+            }
+        }
+    }
+}
+      </pre>
+
+      <p>
+        DeleteShardsData RPC 发送给旧所有者，通知它这些分片的数据已经被新所有者接收。旧所有者收到后通过 Raft 提交 DeleteShards 命令，在 applyDeleteShards 中将分片状态从 BePulling 变为 Serving（或清理数据）：
+      </p>
+
+      <pre>
+// shardkv.cpp
+
+SKVCommandResponse ShardKV::applyDeleteShards(const ShardOperationRequest& req) {
+    if (req.configNum == currentConfig_.Num) {
+        for (int shardId : req.shardIDs) {
+            if (shardStatus_[shardId] == GCing) {
+                shardStatus_[shardId] = Serving;     // 新所有者：GC 完成，正常服务
+            } else if (shardStatus_[shardId] == BePulling) {
+                shardStatus_[shardId] = Serving;     // 旧所有者：清理数据
+                clearShardData(shardId);
+            }
+        }
+        return {SKV_OK, ""};
+    }
+    return {SKV_OK, ""};  // 已经过了这个配置版本，当作成功处理
+}
+      </pre>
+
+      <p>
+        这里有一个巧妙的设计：DeleteShards 命令在新所有者和旧所有者上都被应用，但产生不同的效果。在新所有者上（GCing 状态），分片变为 Serving；在旧所有者上（BePulling 状态），分片变为 Serving 并清理数据。
+      </p>
+
+      <h4>配置更新：configureAction()</h4>
+
+      <pre>
+// shardkv.cpp
+
+void ShardKV::configureAction() {
+    bool canPerformNextConfig = true;
+    int currentConfigNum;
+    {
+        std::lock_guard&lt;std::mutex&gt; lk(mu_);
+        for (int i = 0; i &lt; NShards; ++i) {
+            if (shardStatus_[i] != Serving) {
+                canPerformNextConfig = false;
+                break;
+            }
+        }
+        currentConfigNum = currentConfig_.Num;
+    }
+
+    if (canPerformNextConfig) {
+        auto nextConfig = sc_->Query(currentConfigNum + 1);
+        if (nextConfig.Num == currentConfigNum + 1) {
+            auto cmd = skvser::makeConfigurationCmd(nextConfig);
+            SKVCommandResponse resp;
+            Execute(cmd, resp);
+        }
+    }
+}
+      </pre>
+
+      <p>
+        configureAction 定期（100ms）检查是否可以更新到下一个配置版本。<strong>关键点</strong>：只有当所有分片都处于 Serving 状态时才更新配置，这确保了迁移过程完成后再开始新一轮迁移，避免并发迁移导致数据不一致。
+      </p>
+
+      <div style="margin: 2em 0; text-align: center;">
+        <p><strong>配置更新流程演示</strong></p>
+        <svg id="cfgSVG" viewBox="0 0 560 360" style="width:100%;max-width:560px;">
+          <defs>
+            <marker id="cfgMA" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+              <polygon points="0 0, 8 4, 0 8" fill="#2196f3"/>
+            </marker>
+          </defs>
+          <text x="280" y="22" text-anchor="middle" font-size="12" fill="#555" font-weight="bold">检查所有分片状态</text>
+          <g id="cfgShards">
+            <circle id="cfgS0" cx="100" cy="55" r="12" fill="#4caf50" stroke="#388e3c"/><text x="100" y="59" text-anchor="middle" font-size="8" fill="white">0</text>
+            <circle id="cfgS1" cx="130" cy="55" r="12" fill="#4caf50" stroke="#388e3c"/><text x="130" y="59" text-anchor="middle" font-size="8" fill="white">1</text>
+            <circle id="cfgS2" cx="160" cy="55" r="12" fill="#4caf50" stroke="#388e3c"/><text x="160" y="59" text-anchor="middle" font-size="8" fill="white">2</text>
+            <circle id="cfgS3" cx="190" cy="55" r="12" fill="#4caf50" stroke="#388e3c"/><text x="190" y="59" text-anchor="middle" font-size="8" fill="white">3</text>
+            <circle id="cfgS4" cx="220" cy="55" r="12" fill="#4caf50" stroke="#388e3c"/><text x="220" y="59" text-anchor="middle" font-size="8" fill="white">4</text>
+            <circle id="cfgS5" cx="250" cy="55" r="12" fill="#4caf50" stroke="#388e3c"/><text x="250" y="59" text-anchor="middle" font-size="8" fill="white">5</text>
+            <circle id="cfgS6" cx="280" cy="55" r="12" fill="#4caf50" stroke="#388e3c"/><text x="280" y="59" text-anchor="middle" font-size="8" fill="white">6</text>
+            <circle id="cfgS7" cx="310" cy="55" r="12" fill="#4caf50" stroke="#388e3c"/><text x="310" y="59" text-anchor="middle" font-size="8" fill="white">7</text>
+            <circle id="cfgS8" cx="340" cy="55" r="12" fill="#4caf50" stroke="#388e3c"/><text x="340" y="59" text-anchor="middle" font-size="8" fill="white">8</text>
+            <circle id="cfgS9" cx="370" cy="55" r="12" fill="#4caf50" stroke="#388e3c"/><text x="370" y="59" text-anchor="middle" font-size="8" fill="white">9</text>
+          </g>
+          <text id="cfgWarn" x="460" y="59" font-size="11" fill="#f44336" font-weight="bold" style="opacity:0;transition:opacity 0.4s;">✗ 有分片未就绪</text>
+          <text id="cfgOK" x="460" y="59" font-size="11" fill="#4caf50" font-weight="bold" style="opacity:0;transition:opacity 0.4s;">✓ 全部 Serving</text>
+          <line id="cfgA1" x1="280" y1="77" x2="280" y2="100" stroke="#2196f3" stroke-width="2" marker-end="url(#cfgMA)" style="opacity:0;transition:opacity 0.4s;"/>
+          <g id="cfgSCClerk">
+            <rect x="180" y="105" width="200" height="40" rx="8" fill="#e3f2fd" stroke="#2196f3" stroke-width="2"/>
+            <text x="280" y="125" text-anchor="middle" font-size="12" fill="#1565c0" font-weight="bold">SCClerk::Query(N+1)</text>
+            <text x="280" y="139" text-anchor="middle" font-size="10" fill="#1565c0">查询配置服务器</text>
+          </g>
+          <line id="cfgA2" x1="280" y1="150" x2="280" y2="173" stroke="#2196f3" stroke-width="2" marker-end="url(#cfgMA)" style="opacity:0;transition:opacity 0.4s;"/>
+          <g id="cfgRaft">
+            <rect x="180" y="178" width="200" height="40" rx="8" fill="#fff3e0" stroke="#ff9800" stroke-width="2"/>
+            <text x="280" y="198" text-anchor="middle" font-size="12" fill="#e65100" font-weight="bold">Raft::Start(Config)</text>
+            <text x="280" y="212" text-anchor="middle" font-size="10" fill="#e65100">提交配置命令到 Raft</text>
+          </g>
+          <line id="cfgA3" x1="280" y1="223" x2="280" y2="246" stroke="#2196f3" stroke-width="2" marker-end="url(#cfgMA)" style="opacity:0;transition:opacity 0.4s;"/>
+          <g id="cfgApply">
+            <rect x="150" y="251" width="260" height="40" rx="8" fill="#e8f5e9" stroke="#4caf50" stroke-width="2"/>
+            <text x="280" y="271" text-anchor="middle" font-size="12" fill="#2e7d32" font-weight="bold">applyConfiguration()</text>
+            <text x="280" y="285" text-anchor="middle" font-size="10" fill="#2e7d32">→ updateShardStatus() 更新分片状态</text>
+          </g>
+          <text id="cfgStateChange" x="280" y="320" text-anchor="middle" font-size="11" fill="#666" style="opacity:0;transition:opacity 0.4s;">获得分片→Pulling | 失去分片→BePulling | 保留→Serving</text>
+        </svg>
+        <p id="cfgNarr" style="font-size:12px;color:#333;margin:8px 0;">点击「播放」查看配置更新流程</p>
+        <p>
+          <button onclick="cfgPlay()" style="padding:6px 16px;cursor:pointer;">▶ 播放</button>
+          <button onclick="cfgReset()" style="padding:6px 16px;cursor:pointer;margin-left:8px;">↺ 重置</button>
+        </p>
+      </div>
+      <script>
+      (function(){
+        var timers=[];
+        var narr=document.getElementById('cfgNarr');
+        function show(id){var el=document.getElementById(id);if(el)el.style.opacity=1;}
+        function hide(id){var el=document.getElementById(id);if(el)el.style.opacity=0;}
+        function hl(id,fill,stroke){
+          var g=document.getElementById(id);if(!g)return;
+          var r=g.querySelector('rect');if(r){r.setAttribute('fill',fill);r.setAttribute('stroke',stroke);}
+        }
+        function setShard(id,fill,stroke){
+          var c=document.getElementById(id);if(c){c.setAttribute('fill',fill);c.setAttribute('stroke',stroke);}
+        }
+        var steps=[
+          {t:0,f:function(){
+            setShard('cfgS3','#fff3e0','#ff9800');
+            setShard('cfgS7','#ffebee','#f44336');
+            show('cfgWarn');
+            narr.textContent='configureAction 检查所有分片是否处于 Serving 状态';
+          }},
+          {t:2000,f:function(){
+            setShard('cfgS3','#4caf50','#388e3c');
+            setShard('cfgS7','#4caf50','#388e3c');
+            hide('cfgWarn');show('cfgOK');
+            narr.textContent='所有分片都变为 Serving，可以安全更新配置';
+          }},
+          {t:3500,f:function(){
+            show('cfgA1');hl('cfgSCClerk','#bbdefb','#2196f3');
+            narr.textContent='向 ShardCtrler 查询配置版本 N+1';
+          }},
+          {t:5000,f:function(){
+            show('cfgA2');hl('cfgRaft','#ffe0b2','#ff9800');
+            narr.textContent='通过 Raft::Start 提交 Configuration 命令，确保所有副本一致';
+          }},
+          {t:6500,f:function(){
+            show('cfgA3');hl('cfgApply','#c8e6c9','#4caf50');
+            narr.textContent='applier 应用配置，调用 updateShardStatus() 更新分片状态';
+          }},
+          {t:8000,f:function(){
+            show('cfgStateChange');
+            narr.textContent='获得分片→Pulling | 失去分片→BePulling | 保留→Serving';
+          }},
+          {t:10000,f:function(){
+            narr.textContent='关键：只有所有分片都 Serving 时才更新配置，避免并发迁移导致数据不一致';
+          }}
+        ];
+        window.cfgPlay=function(){
+          cfgReset();
+          for(var i=0;i<steps.length;i++){(function(s){timers.push(setTimeout(s.f,s.t));})(steps[i]);}
+        };
+        window.cfgReset=function(){
+          for(var i=0;i<timers.length;i++)clearTimeout(timers[i]);
+          timers=[];
+          var ids=['cfgA1','cfgA2','cfgA3','cfgWarn','cfgOK','cfgStateChange'];
+          for(var i=0;i<ids.length;i++)hide(ids[i]);
+          hl('cfgSCClerk','#e3f2fd','#2196f3');
+          hl('cfgRaft','#fff3e0','#ff9800');
+          hl('cfgApply','#e8f5e9','#4caf50');
+          for(var i=0;i<10;i++)setShard('cfgS'+i,'#4caf50','#388e3c');
+          narr.textContent='点击「播放」查看配置更新流程';
+        };
+      })();
+      </script>
+
+      <h4>空条目检测：checkEntryInCurrentTermAction()</h4>
+
+      <pre>
+// shardkv.cpp
+
+void ShardKV::checkEntryInCurrentTermAction() {
+    if (!rf_->HasLogInCurrentTerm()) {
+        auto cmd = skvser::makeEmptyEntryCmd();
+        SKVCommandResponse resp;
+        Execute(cmd, resp);
+    }
+}
+      </pre>
+
+      <p>
+        这个线程定期（200ms）检查 Leader 是否在当前任期有日志条目。如果没有，提交一个空条目到 Raft。这是 Raft 协议中的一个重要优化：新当选的 Leader 需要在当前任期提交至少一条日志，才能安全地提交之前任期的日志（参考 Raft 论文 Figure 8 的问题）。
+      </p>
+
+      <h4>快照与恢复</h4>
+
+      <p>
+        ShardKV 的快照包含：所有分片数据、分片状态、去重信息、当前配置和上一配置：
+      </p>
+
+      <pre>
+// shardkv.cpp
+
+void ShardKV::takeSnapshot(int index) {
+    std::map&lt;int64_t, SKVOperationContext&gt; orderedOps(
+        lastOperations_.begin(), lastOperations_.end());
+    auto snapshot = skvser::serializeSnapshot(
+        shards_, shardStatus_, orderedOps, currentConfig_, lastConfig_);
+    rf_->Snapshot(index, snapshot);
+}
+
+void ShardKV::restoreSnapshot(const std::vector&lt;uint8_t&gt;& snap) {
+    if (snap.empty()) {
+        initStateMachines();
+        return;
+    }
+    std::map&lt;int64_t, SKVOperationContext&gt; orderedOps;
+    skvser::deserializeSnapshot(
+        snap.data(), snap.size(),
+        shards_, shardStatus_, orderedOps, currentConfig_, lastConfig_);
+    lastOperations_.clear();
+    for (auto& [cid, ctx] : orderedOps) {
+        lastOperations_[cid] = ctx;
+    }
+}
+      </pre>
+
+      <h3>客户端实现</h3>
+
+      <p>
+        ShardKVClerk 是分片 KV 系统的客户端。与第五章的 Clerk 不同，它需要先从 ShardCtrler 获取配置信息，再根据 key 计算分片，找到负责该分片的分组服务器：
+      </p>
+
+      <pre>
+// skv_clerk.h
+
+class ShardKVClerk {
+public:
+    explicit ShardKVClerk(std::shared_ptr&lt;SCClerk&gt; sm);
+
+    std::string Get(const std::string& key);
+    void Put(const std::string& key, const std::string& value);
+    void Append(const std::string& key, const std::string& value);
+
+    void SetPeers(int gid, std::vector&lt;std::shared_ptr&lt;ShardKVClientPeer&gt;&gt; peers);
+
+private:
+    std::string doCommand(const SKVCommandRequest& req);
+
+    std::shared_ptr&lt;SCClerk&gt; sm_;               // 配置服务器客户端
+    SCConfig config_;                              // 缓存的配置
+    std::map&lt;int, std::vector&lt;std::shared_ptr&lt;ShardKVClientPeer&gt;&gt;&gt; clients_;  // gid -> peers
+    std::map&lt;int, int&gt; leaderIds_;                 // gid -> leader index
+    int64_t clientId_  = 0;
+    int64_t commandId_ = 0;
+};
+      </pre>
+
+      <p>
+        ShardKVClerk 的工作流程：
+      </p>
+
+      <p>
+        1. 构造时通过 SCClerk 查询最新的配置信息，缓存到 config_ 中。<br/>
+        2. 收到 Get/Put/Append 请求时，先计算 key2shard(key)，得到分片 ID。<br/>
+        3. 查 config_.Shards[shardID] 得到负责该分片的 gid。<br/>
+        4. 查 clients_[gid] 得到该分组的所有服务器 peer。<br/>
+        5. 向缓存的 leaderId 节点发送请求，如果返回 ErrWrongGroup 则刷新配置重试。
+      </p>
+
+      <p>
+        与 Clerk 类似，commandId_ 只在成功后才递增，配合服务端的去重机制保证幂等性。
+      </p>
+
+      <h3>分片迁移全流程总结</h3>
+
+      <p>
+        让我们总结一下分片迁移的完整流程。假设配置从版本 N 更新到版本 N+1，分片 S 从分组 A 迁移到分组 B：
+      </p>
+
+      <p>
+        1. <strong>配置更新</strong>：B 组的 configureAction 查询到配置 N+1，通过 Raft 提交 Configuration 命令。B 组的 applier 应用后，updateShardStatus 将分片 S 设为 <strong>Pulling</strong>。A 组也会收到同样的配置更新，将分片 S 设为 <strong>BePulling</strong>。<br/>
+        2. <strong>数据拉取</strong>：B 组的 migrationAction 检测到分片 S 处于 Pulling，向 A 组发送 GetShardsData RPC。A 组的 Leader 返回分片 S 的 KV 数据和去重信息。<br/>
+        3. <strong>数据插入</strong>：B 组通过 Raft 提交 InsertShards 命令，applier 应用后将数据写入本地，分片 S 状态变为 <strong>GCing</strong>。<br/>
+        4. <strong>垃圾回收</strong>：B 组的 gcAction 检测到分片 S 处于 GCing，向 A 组发送 DeleteShardsData RPC。A 组通过 Raft 提交 DeleteShards 命令，applier 应用后清除分片 S 的数据，状态变为 <strong>Serving</strong>（空数据）。同时 B 组的 applier 也会应用这个 DeleteShards 命令，将分片 S 从 GCing 变为 <strong>Serving</strong>。<br/>
+        5. <strong>恢复服务</strong>：分片 S 在 B 组上变为 Serving 状态，可以正常服务客户端请求。所有分片都 Serving 后，configureAction 才会查询下一个配置版本。
+      </p>
+
+      <p>
+        这个流程保证了分片迁移过程中的数据一致性：通过 Raft 共识确保所有副本一致地更新配置、接收数据和清理数据；通过分片状态机确保迁移步骤的有序性；通过去重信息传递确保迁移后客户端仍能正确去重。
+      </p>
+
+      <div style="margin: 2em 0; text-align: center;">
+        <p><strong>分片迁移全流程演示</strong></p>
+        <svg id="migSVG" viewBox="0 0 600 400" style="width:100%;max-width:600px;">
+          <defs>
+            <marker id="migMA" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+              <polygon points="0 0, 8 4, 0 8" fill="#2196f3"/>
+            </marker>
+            <marker id="migMB" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+              <polygon points="0 0, 8 4, 0 8" fill="#ff9800"/>
+            </marker>
+          </defs>
+          <rect x="20" y="40" width="200" height="200" rx="10" fill="rgba(156,39,176,0.05)" stroke="#9c27b0" stroke-width="1.5" stroke-dasharray="5 3"/>
+          <text x="120" y="30" text-anchor="middle" font-size="13" fill="#9c27b0" font-weight="bold">Group A（旧所有者）</text>
+          <rect x="380" y="40" width="200" height="200" rx="10" fill="rgba(33,150,243,0.05)" stroke="#2196f3" stroke-width="1.5" stroke-dasharray="5 3"/>
+          <text x="480" y="30" text-anchor="middle" font-size="13" fill="#2196f3" font-weight="bold">Group B（新所有者）</text>
+          <g id="migShardA">
+            <circle cx="120" cy="85" r="30" fill="#4caf50" stroke="#388e3c" stroke-width="2"/>
+            <text x="120" y="83" text-anchor="middle" font-size="11" fill="white" font-weight="bold" id="migStatA">Serving</text>
+            <text x="120" y="97" text-anchor="middle" font-size="9" fill="white">分片 S</text>
+          </g>
+          <g id="migShardB">
+            <circle cx="480" cy="85" r="30" fill="#fff" stroke="#4caf50" stroke-width="2" stroke-dasharray="4 2"/>
+            <text x="480" y="83" text-anchor="middle" font-size="11" fill="#4caf50" font-weight="bold" id="migStatB">Serving</text>
+            <text x="480" y="97" text-anchor="middle" font-size="9" fill="#4caf50">分片 S</text>
+          </g>
+          <g id="migCfgA" style="opacity:0;transition:opacity 0.4s;">
+            <rect x="50" y="135" width="140" height="30" rx="5" fill="#f3e5f5" stroke="#9c27b0" stroke-width="1.5"/>
+            <text x="120" y="155" text-anchor="middle" font-size="10" fill="#9c27b0">applyConfiguration</text>
+          </g>
+          <g id="migCfgB" style="opacity:0;transition:opacity 0.4s;">
+            <rect x="410" y="135" width="140" height="30" rx="5" fill="#e3f2fd" stroke="#2196f3" stroke-width="1.5"/>
+            <text x="480" y="155" text-anchor="middle" font-size="10" fill="#2196f3">configureAction</text>
+          </g>
+          <g id="migGetA" style="opacity:0;transition:opacity 0.4s;">
+            <rect x="50" y="175" width="140" height="30" rx="5" fill="#f3e5f5" stroke="#9c27b0" stroke-width="1.5"/>
+            <text x="120" y="195" text-anchor="middle" font-size="10" fill="#9c27b0">GetShardsData</text>
+          </g>
+          <g id="migMigB" style="opacity:0;transition:opacity 0.4s;">
+            <rect x="410" y="175" width="140" height="30" rx="5" fill="#e3f2fd" stroke="#2196f3" stroke-width="1.5"/>
+            <text x="480" y="195" text-anchor="middle" font-size="10" fill="#2196f3">migrationAction</text>
+          </g>
+          <g id="migInsB" style="opacity:0;transition:opacity 0.4s;">
+            <rect x="410" y="175" width="140" height="30" rx="5" fill="#e3f2fd" stroke="#2196f3" stroke-width="1.5"/>
+            <text x="480" y="195" text-anchor="middle" font-size="10" fill="#2196f3">applyInsertShards</text>
+          </g>
+          <g id="migGcB" style="opacity:0;transition:opacity 0.4s;">
+            <rect x="410" y="175" width="140" height="30" rx="5" fill="#e3f2fd" stroke="#2196f3" stroke-width="1.5"/>
+            <text x="480" y="195" text-anchor="middle" font-size="10" fill="#2196f3">gcAction</text>
+          </g>
+          <g id="migDelA" style="opacity:0;transition:opacity 0.4s;">
+            <rect x="50" y="175" width="140" height="30" rx="5" fill="#f3e5f5" stroke="#9c27b0" stroke-width="1.5"/>
+            <text x="120" y="195" text-anchor="middle" font-size="10" fill="#9c27b0">applyDeleteShards</text>
+          </g>
+          <g id="migDelB" style="opacity:0;transition:opacity 0.4s;">
+            <rect x="410" y="175" width="140" height="30" rx="5" fill="#e3f2fd" stroke="#2196f3" stroke-width="1.5"/>
+            <text x="480" y="195" text-anchor="middle" font-size="10" fill="#2196f3">applyDeleteShards</text>
+          </g>
+          <line id="migA1" x1="410" y1="190" x2="195" y2="190" stroke="#ff9800" stroke-width="2" stroke-dasharray="6 3" marker-end="url(#migMB)" style="opacity:0;transition:opacity 0.4s;"/>
+          <text id="migL1" x="300" y="183" text-anchor="middle" font-size="9" fill="#ff9800" style="opacity:0;transition:opacity 0.4s;">GetShardsData RPC</text>
+          <line id="migA2" x1="195" y1="150" x2="410" y2="150" stroke="#2196f3" stroke-width="2" stroke-dasharray="6 3" marker-end="url(#migMA)" style="opacity:0;transition:opacity 0.4s;"/>
+          <text id="migL2" x="300" y="143" text-anchor="middle" font-size="9" fill="#2196f3" style="opacity:0;transition:opacity 0.4s;">分片数据 + 去重信息</text>
+          <line id="migA3" x1="410" y1="190" x2="195" y2="190" stroke="#ff9800" stroke-width="2" stroke-dasharray="6 3" marker-end="url(#migMB)" style="opacity:0;transition:opacity 0.4s;"/>
+          <text id="migL3" x="300" y="183" text-anchor="middle" font-size="9" fill="#ff9800" style="opacity:0;transition:opacity 0.4s;">DeleteShardsData RPC</text>
+          <line id="migA4" x1="195" y1="150" x2="410" y2="150" stroke="#2196f3" stroke-width="2" stroke-dasharray="6 3" marker-end="url(#migMA)" style="opacity:0;transition:opacity 0.4s;"/>
+          <text id="migL4" x="300" y="143" text-anchor="middle" font-size="9" fill="#2196f3" style="opacity:0;transition:opacity 0.4s;">DeleteShards 确认</text>
+          <text id="migStep1" x="300" y="265" text-anchor="middle" font-size="12" fill="#9c27b0" font-weight="bold" style="opacity:0;transition:opacity 0.4s;">步骤1：配置更新</text>
+          <text id="migStep2" x="300" y="265" text-anchor="middle" font-size="12" fill="#ff9800" font-weight="bold" style="opacity:0;transition:opacity 0.4s;">步骤2：数据拉取</text>
+          <text id="migStep3" x="300" y="265" text-anchor="middle" font-size="12" fill="#2196f3" font-weight="bold" style="opacity:0;transition:opacity 0.4s;">步骤3：数据插入</text>
+          <text id="migStep4" x="300" y="265" text-anchor="middle" font-size="12" fill="#ff9800" font-weight="bold" style="opacity:0;transition:opacity 0.4s;">步骤4：垃圾回收</text>
+          <text id="migStep5" x="300" y="265" text-anchor="middle" font-size="12" fill="#4caf50" font-weight="bold" style="opacity:0;transition:opacity 0.4s;">步骤5：恢复服务</text>
+          <rect x="20" y="285" width="560" height="80" rx="5" fill="rgba(128,128,128,0.05)" stroke="#ccc"/>
+          <text id="migNarr" x="300" y="310" text-anchor="middle" font-size="12" fill="#333">点击「播放」查看分片迁移全流程</text>
+          <text id="migNarr2" x="300" y="335" text-anchor="middle" font-size="11" fill="#666"></text>
+        </svg>
+        <p>
+          <button onclick="migPlay()" style="padding:6px 16px;cursor:pointer;">▶ 播放</button>
+          <button onclick="migReset()" style="padding:6px 16px;cursor:pointer;margin-left:8px;">↺ 重置</button>
+        </p>
+      </div>
+      <script>
+      (function(){
+        var timers=[];
+        var narr=document.getElementById('migNarr');
+        var narr2=document.getElementById('migNarr2');
+        function show(id){var el=document.getElementById(id);if(el)el.style.opacity=1;}
+        function hide(id){var el=document.getElementById(id);if(el)el.style.opacity=0;}
+        function showG(id){var el=document.getElementById(id);if(el)el.style.opacity=1;}
+        function hideG(id){var el=document.getElementById(id);if(el)el.style.opacity=0;}
+        function setStat(shardId,text,fill,stroke,tc){
+          var g=document.getElementById(shardId);if(!g)return;
+          var c=g.querySelector('circle');
+          if(c){
+            c.setAttribute('fill',fill);
+            c.setAttribute('stroke',stroke);
+            if(fill==='#fff')c.setAttribute('stroke-dasharray','4 2');
+            else c.removeAttribute('stroke-dasharray');
+          }
+          var statId=shardId.replace('migShard','migStat');
+          var t=document.getElementById(statId);
+          if(t){t.textContent=text;t.setAttribute('fill',tc);}
+          var texts=g.querySelectorAll('text');
+          for(var i=0;i<texts.length;i++)texts[i].setAttribute('fill',tc);
+        }
+        var steps=[
+          {t:0,f:function(){
+            show('migStep1');showG('migCfgB');showG('migCfgA');
+            setStat('migShardB','Pulling','#fff3e0','#ff9800','#ff9800');
+            setStat('migShardA','BePulling','#f3e5f5','#9c27b0','#9c27b0');
+            narr.textContent='步骤1：配置更新';
+            narr2.textContent='B组 configureAction 提交配置，updateShardStatus 设置分片状态';
+          }},
+          {t:2000,f:function(){
+            hide('migStep1');show('migStep2');
+            hideG('migCfgB');hideG('migCfgA');
+            showG('migMigB');showG('migGetA');
+            show('migA1');show('migL1');
+            narr.textContent='步骤2：数据拉取';
+            narr2.textContent='B组 migrationAction 向 A组发送 GetShardsData RPC';
+          }},
+          {t:4000,f:function(){
+            hide('migStep2');show('migStep3');
+            hideG('migMigB');hideG('migGetA');
+            hide('migA1');hide('migL1');
+            showG('migInsB');
+            show('migA2');show('migL2');
+            setStat('migShardB','GCing','#ffebee','#f44336','#f44336');
+            narr.textContent='步骤3：数据插入';
+            narr2.textContent='B组通过 Raft 提交 InsertShards，applier 写入数据';
+          }},
+          {t:6000,f:function(){
+            hide('migStep3');show('migStep4');
+            hideG('migInsB');hide('migA2');hide('migL2');
+            showG('migGcB');
+            show('migA3');show('migL3');
+            narr.textContent='步骤4：垃圾回收';
+            narr2.textContent='B组 gcAction 向 A组发送 DeleteShardsData RPC';
+          }},
+          {t:8000,f:function(){
+            hide('migStep4');show('migStep5');
+            hideG('migGcB');hide('migA3');hide('migL3');
+            showG('migDelA');showG('migDelB');
+            show('migA4');show('migL4');
+            setStat('migShardA','Serving','#e8f5e9','#4caf50','#4caf50');
+            setStat('migShardB','Serving','#e8f5e9','#4caf50','#4caf50');
+            narr.textContent='步骤5：恢复服务';
+            narr2.textContent='A组清除数据→Serving，B组 GCing→Serving';
+          }},
+          {t:10000,f:function(){
+            hide('migStep5');hideG('migDelA');hideG('migDelB');
+            hide('migA4');hide('migL4');
+            narr.textContent='迁移完成';
+            narr2.textContent='所有分片恢复 Serving 后，才能查询下一个配置版本';
+          }}
+        ];
+        window.migPlay=function(){
+          migReset();
+          for(var i=0;i<steps.length;i++){(function(s){timers.push(setTimeout(s.f,s.t));})(steps[i]);}
+        };
+        window.migReset=function(){
+          for(var i=0;i<timers.length;i++)clearTimeout(timers[i]);
+          timers=[];
+          var ids=['migA1','migL1','migA2','migL2','migA3','migL3','migA4','migL4','migStep1','migStep2','migStep3','migStep4','migStep5'];
+          for(var i=0;i<ids.length;i++)hide(ids[i]);
+          var gs=['migCfgB','migCfgA','migMigB','migGetA','migInsB','migGcB','migDelA','migDelB'];
+          for(var i=0;i<gs.length;i++)hideG(gs[i]);
+          setStat('migShardA','Serving','#4caf50','#388e3c','white');
+          setStat('migShardB','Serving','#fff','#4caf50','#4caf50');
+          narr.textContent='点击「播放」查看分片迁移全流程';
+          narr2.textContent='';
+        };
+      })();
+      </script>
+
+      <p>
+        对比 Go 版本的 eraft 实现，raft_cpp 的 Multi-Raft 实现有以下改进：
+      </p>
+      <p>
+        - Go 版本只有 ConfigAction 一个后台协程，迁移和 GC 逻辑混在 apply 中。C++ 版本拆分为 5 个独立线程，职责更清晰。<br/>
+        - Go 版本使用 Bucket 概念，每个 Bucket 关联一个 DB 引擎。C++ 版本使用分片（Shard）概念，分片数据存储在内存 map 中，更简洁。<br/>
+        - Go 版本的跨组通信直接使用 gRPC 客户端。C++ 版本通过 ShardKVPeerProvider 抽象接口实现，测试中使用内存模拟，生产中使用 gRPC。<br/>
+        - C++ 版本增加了空条目检测线程（emptyEntryThread），主动解决 Raft Figure 8 问题。<br/>
+        - C++ 版本的分片状态机设计更完善，明确了 Serving/Pulling/BePulling/GCing 四个状态及其转换。
+      </p>
 
       <h3>捐赠
       </h3>
@@ -427,23 +1559,6 @@ func (kvCli *KvClient) Command(req *pb.CommandRequest) (string, error) {
       <p> 遵循MIT协议开源。</p>
       <p> 感谢 「赫蹏」 提供如此优秀的中文排版系统 </p>
 
-
-      <!-- <footer class="heti-fn">
-        <ol>
-          <li id="fn-01">
-            <a href="#ref-01" title="移至">^</a>
-            CSS Reset：指代类似Eric Meyer's Reset CSS的样式重置方案
-          </li>
-          <li id="fn-02">
-            <a href="#ref-02" title="移至">^</a>
-            《中文排版需求》：https://w3c.github.io/clreq/
-          </li>
-          <li id="fn-03">
-            <a href="#ref-03" title="移至">^</a>
-            在当下前端技术尚不能完美解决中西文混排间距的情况下，常见的输入习惯是手动在中西文间加入空格（https://github.com/vinta/pangu.js）。这样做的弊端一是间距不可控（有时显得过大），二是通过空格符来排版只能算无奈之举。好消息是在最新的macOS、iOS中，使用原生语言开发的文本区域会自动处理中西文混排的间距（无论是否加空格），期待不用手敲空格的日子早日到来。
-          </li>
-        </ol>
-      </footer> -->
       <script src="https://giscus.app/client.js"
       data-repo="eraft-io/eraft-io.github.io"
       data-repo-id="MDEwOlJlcG9zaXRvcnkzOTYyMDM3NjU="
@@ -461,7 +1576,6 @@ func (kvCli *KvClient) Command(req *pb.CommandRequest) (string, error) {
   </script>
 
     </article>
-
     <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
     <span id="busuanzi_container_site_pv">本站总访问量<span id="busuanzi_value_site_pv"></span>次</span>
 

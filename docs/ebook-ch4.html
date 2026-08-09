@@ -18,732 +18,772 @@
             <li>
               <a href="#intro">MIT6.824 分布式系统系列</a>
               <ul>
-                <li><a href="./index.html">（一）体验分布式KV存储系统eraftkv </a></li>
-                <li><a href="./ebook-ch2.html">（二）Go 语言基础知识</a></li>
+                <li><a href="./index.html">（一）项目概览与构建测试 </a></li>
+                <li><a href="./ebook-ch2.html">（二）C++ 并发编程基础</a></li>
                 <li><a href="./ebook-ch3.html">（三）Raft 论文解读 </a></li>
-                <li><a href="./ebook-ch4.html">（四）构建 Raft 库                </a></li>
-                <li><a href="./ebook-ch5.html">（五）基于 Raft 库，实现简单的分布式 KV 系   </a></li>
-                <li><a href="./ebook-ch6.html">（六）Multi-Raft 设计与实现   </a></li>
-                <li><a href="./ebook-ch7.html">（七）分布式事务初探   </a></li>
+                <li><a href="./ebook-ch4.html">（四）构建 Raft 库</a></li>
+                <li><a href="./ebook-ch5.html">（五）基于 Raft 库实现分布式 KV 系统</a></li>
+                <li><a href="./ebook-ch6.html">（六）Multi-Raft 设计与实现</a></li>
+                <li><a href="./ebook-ch7.html">（七）分布式事务初探</a></li>
               </ul>
             </li>
           </ol>
         </details>
 
-      <h2 id="intro"> MIT 分布式系统（四）构建 Raft 库   <a class="anchor" href="#intro">#</a></h2>
-
-      <h3>
-        核心数据结构设计
-      </h3>
+      <h2 id="intro"> MIT 分布式系统（四）构建 Raft 库 <a class="anchor" href="#intro">#</a></h2>
 
       <p>
-        我们上一章节讲了 Raft 算法的主要内容，现在我们要代码实现它们了。首先我们需要抽象出我们需要的数据结构。先来梳理一下可能用到的数据结构，首先节点之间需要互相访问，那我们需要定义访问其他节点的网络客户端，这里面要包含节点的 id, 地址，还有 rpc 的客户端，整个结构我们抽象为 RaftClientEnd，主要数据内容如下：
+        上一章我们解读了 Raft 论文的核心内容，现在要用代码实现它了。本项目 raft_cpp 使用 C++17 实现了完整的 Raft 共识算法库，代码位于 <code>raft_cpp/src/raft.cpp</code> 和 <code>raft_cpp/include/raft/raft.h</code>。本章将结合这些代码，详细讲解 Raft 的工程实现。
       </p>
 
-       
-<pre>
-type RaftClientEnd struct { <br/>
-    id             uint64<br/>
-    addr           string<br/>
-    raftServiceCli *raftpb.RaftServiceClient  // grpc 客户端
-}        
-</pre>
-        
+      <h3>核心数据结构设计</h3>
+
       <p>
-        节点状态我们之前描述的有三种，定义如下：
+        首先需要抽象出 Raft 节点的数据结构。对照论文 Figure 2 中的持久状态和易失状态，我们在 <code>raft.h</code> 中定义了 <code>Raft</code> 类，核心成员如下：
       </p>
 
-       
 <pre>
-  const (<br/>
-	NodeRoleFollower NodeRole = iota<br/>
-	NodeRoleCandidate<br/>
-	NodeRoleLeader<br/>
-    )
-</pre>
-        
-      我们要完成选举操作的话需要两个超时时间，这里我们使用 Golang time 库里面的 Timer 实现，它可以定时的给一个通道发送消息，我们可以用它来实现选举超时和心跳超时。
+class Raft : public std::enable_shared_from_this&lt;Raft&gt; {
+private:
+    mutable std::mutex mu_;  // 保护以下所有共享状态
 
-       
-        electionTimer    *time.Timer<br/>
-heartbeatTimer   *time.Timer<br/>
-        
-      除此之外我们还需要记录当前节点的 id, 当前的任期号，为谁投票，获得票数的统计，已经提交的日志索引号，最后 apply 到状态机的日志号，以及节点如果是 Leader 的话需要记录到其他节点复制最新匹配的日志号，这写数据结构定义如下：
+    std::vector&lt;std::shared_ptr&lt;RaftPeer&gt;&gt; peers_;  // 对端节点抽象
+    std::shared_ptr&lt;Persister&gt; persister_;           // 持久化层
+    int  me_  = 0;                                    // 当前节点 id
+    std::atomic&lt;bool&gt; dead_{false};                  // 节点存活状态
 
+    std::shared_ptr&lt;BlockingQueue&lt;ApplyMsg&gt;&gt; applyCh_;  // apply 通道
+    std::condition_variable_any applyCond_;  // 唤醒 applier 线程
 
-       
+    // 每个 peer 一个独立的 replicator 锁和条件变量
+    std::vector&lt;std::unique_ptr&lt;std::mutex&gt;&gt; replicatorMu_;
+    std::vector&lt;std::unique_ptr&lt;std::condition_variable&gt;&gt; replicatorCv_;
 
-<pre>
-type Raft struct {<br/>
-    mu             sync.RWMutex<br/>
-    peers          []*RaftClientEnd // rpc 客户端<br/>
-    me_            int  // 自己的 id<br/>
-    dead           int32 // 节点的状态<br/>
-    applyCh        chan *pb.ApplyMsg // apply 协程通道<br/>
-    applyCond      *sync.Cond // apply 流程控制的信号量<br/>
-    replicatorCond []*sync.Cond // 复制操作控制的信号量<br/>
-    role           NodeRole  // 节点当前的状态<br/>
-    curTerm        int64  // 当前的任期<br/>
-    votedFor       int64  // 为谁投票<br/>
-    grantedVotes   int    // 已经获得的票数 <br/>
-    logs           *RaftLog  // 日志信息<br/>
-    commitIdx      int64     // 已经提交的最大的日志 id<br/>
-    lastApplied    int64     // 已经 apply 的最大日志的 id<br/>
-    nextIdx        []int     // 到其他节点下一个匹配的日志 id 信息<br/>
-    matchIdx       []int     // 到其他节点当前匹配的日志 id 信息<br/>
+    NodeState state_ = NodeState::Follower;
 
-    leaderId         int64   // 集群中当前 Leader 节点的 id<br/>
-    electionTimer    *time.Timer  // 选举超时定时器<br/>
-    heartbeatTimer   *time.Timer  // 心跳超时定时器<br/>
-    heartBeatTimeout uint64       // 心跳超时时间<br/>
-    baseElecTimeout  uint64       // 选举超时时间<br/>
-}
+    // ── 持久状态（论文 Figure 2 Persistent state）──
+    int currentTerm_ = 0;          // 当前任期号
+    int votedFor_    = -1;        // 为谁投票（-1 表示未投票）
+    std::vector&lt;Entry&gt; logs_;     // 日志序列，logs_[0] 是哨兵条目
+
+    // ── 易失状态（论文 Figure 2 Volatile state）──
+    int commitIndex_ = 0;          // 已提交的最大日志索引
+    int lastApplied_ = 0;          // 已 apply 到状态机的最大日志索引
+    std::vector&lt;int&gt; nextIndex_;  // 到每个 peer 下一批发送的日志索引
+    std::vector&lt;int&gt; matchIndex_; // 到每个 peer 已匹配的日志索引
+
+    // ── 超时截止时间 ──
+    std::chrono::steady_clock::time_point electionDeadline_;
+    std::chrono::steady_clock::time_point heartbeatDeadline_;
+
+    // ── 后台线程 ──
+    std::thread tickerThread_;
+    std::thread applierThread_;
+    std::vector&lt;std::thread&gt; replicatorThreads_;
+};
 </pre>
 
-      首先系统启动的时候需要构造 Raft 这个结构体，这个流程是在 MakeRaft 里面实现的，它主要是初始化与一些变量，两个定时器，并启动相关的协程，我们这里对每个对端节点复制有 Replicator 协程，触发两个超时时间有 Tick 协程，应用已经提交的日志有 Applier 协程。
+      <p>
+        对比论文定义，<code>currentTerm_</code>、<code>votedFor_</code>、<code>logs_</code> 是持久状态，节点重启后需要恢复；<code>commitIndex_</code>、<code>lastApplied_</code> 是所有节点共享的易失状态；<code>nextIndex_</code>、<code>matchIndex_</code> 是 Leader 独有的易失状态。日志序列 <code>logs_</code> 的第 0 个元素是哨兵条目（dummy entry），它的 index 和 term 记录了快照的基准点。
+      </p>
 
-      <h3>
-        协程模型
-      </h3>
-      <div style="text-align: center; width: 100%; border: black solid 1px;">
-        <img src="./resources/goruntine_model.svg" width="90%" style="display: inline-block; margin-bottom: 5%;"/>
-      </div>
+      <p>
+        节点状态在 <code>types.h</code> 中用枚举类定义：
+      </p>
 
-      <p>上图展示了我们 raftcore 里面的协程模型，当应用层提案 (propose) 到来之后主协程会在本地追加日志，然后发送 BroadcastAppend，然后到其他节点复制日志的协程的等待就会被唤醒，开始进行一轮的的复制，replicateOneRound 成功复制半数节点日志之后会触发 commit, rf.applyCond.Signal() 会唤醒等待做 Apply 操作的 Applier 协程。
-
-    </p>
-
-    <p>另外 Tick 协程会监听 Timer 两个超时的 C 通道信号，一旦心跳超时并且当前节点的状态是 Leader，就会调用 BroadcastHeartbeat 发送心跳，发心跳的时候也会 replicateOneRound 就和上述一样，如果成功复制半数节点日志之后会触发 commit, rf.applyCond.Signal() 就会唤醒等待做 Apply 操作的 Applier 协程。
-
-    </p>
-
-    <p>
-        Applier 协程 apply 完消息之后会把 ApplyMsg 消息写入 rf.applyCh 通知应用层，应用层的协程和以监听这个通道，如果有 ApplyMsg 到来就把它应用到状态机。 
-    </p>
-
-    <h3>
-        Rpc 定义
-    </h3>
-    eraft 的 rpc 定义文件在 pbs 目录下的 raftbasic.proto 文件中，主要的消息如下：
-
-    <br/>
-    Entry
-
-    <p>
-        这个是一个日志条目信息表示，和我们之前描述的一样，它有任期号 term，索引号 index, 以及操作的序列化数据 data 我们用一个字节流来存储，日志条目有两种类型一种是 Normal 正常日志，另一种是 ConfChange 配置变更的日志：
-    </p>
-
-     
 <pre>
-enum EntryType {<br/>
-    EntryNormal = 0;<br/>
-    EntryConfChange = 1;<br/>
-}<br/>
-<br/>
-message Entry {<br/>
-    EntryType entry_type = 1;<br/>
-    uint64    term = 2;<br/>
-    int64     index = 3;<br/>
-    bytes     data = 4;<br/>
-}
+enum class NodeState : uint8_t {
+    Follower  = 0,
+    Candidate = 1,
+    Leader    = 2
+};
 </pre>
-      
 
-    <h3>
-        RequestVote 相关
-    </h3>
+      <p>
+        系统启动时通过 <code>Raft::Make()</code> 工厂方法构造 Raft 实例，它初始化所有变量、恢复持久状态、并启动三类后台线程：ticker（驱动选举超时）、applier（将已提交日志推送到应用层）、replicator（每个 peer 一个，负责日志复制和心跳）。
+      </p>
 
-    下面是请求投票 RPC 的定义，基本和论文里面保持一致：
-    <br/>
-请求投票里面有候选人的任期号，它的 id 以及它最后一条日志的索引以及任期号信息。
-<br/>
-响应里面有个任期号，这个用来给候选人在选举失败的时候更新自己的任期，还有一个 vote_granted 表示这个请求投票操作是否被对端节点接受。
-<br/>
+      <h3>线程模型</h3>
 
- 
+      <p>
+        Go 版本的 Raft 使用 goroutine 实现并发，C++ 版本则使用 <code>std::thread</code>。核心线程模型如下：
+      </p>
+
+      <p>
+        <strong>1. ticker 线程</strong>：以 10ms 为间隔轮询，检查选举超时是否到期。如果到期且当前不是 Leader，就发起一轮新的选举。
+      </p>
+
 <pre>
-message RequestVoteRequest {<br/>
-    int64 term = 1;<br/>
-    int64 candidate_id = 2;<br/>
-    int64 last_log_index = 3;<br/>
-    int64 last_log_term = 4;<br/>
-}<br/>
+void Raft::ticker() {
+    while (!killed()) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        std::unique_lock&lt;std::mutex&gt; lk(mu_);
+        auto now = std::chrono::steady_clock::now();
 
-message RequestVoteResponse {<br/>
-    int64 term = 1;<br/>
-    bool  vote_granted = 2;<br/>
-}<br/>
-
-service RaftService {<br/>
-    //...<br/>
-    rpc RequestVote (RequestVoteRequest) returns 
-    (RequestVoteResponse) {}<br/>
-}<br/>
-</pre>
-  
-
-<h3>
-    AppendEntries 相关
-</h3>
-
-<p>
-    日志追加操作的定义如下，基本也和论文里面一致：
-</p>
-
-<p>
-    请求里面有 Leader 的任期，id （用来告诉 follower, 这样 client 访问了 follower 之后可以被告知 leader 节点是哪个）， prev_log_index 表示消息里面将要同步的第一条日志前一条日志的的索引信息，prev_log_term 是它的任期信息，leader_commit 则是 leader 的 commit 号 (可以用来周知 follower 节点当前的 commit 进度)，entries 表示日志条目信息。
-</p>
-
-<p>
-    响应里面 term 用来告诉 leader 是否出新的任期的消息，可以用来更新 leader 的任期号，success 表示日志追加操作是否成功，conflict_index 用来记录冲突日志的索引号，conflict_term 用来记录冲突日志的任期号。 
-</p>
-
- 
-
-    <pre>
-message AppendEntriesRequest {<br/>
-    int64    term = 1;<br/>
-    int64    leader_id = 2;<br/>
-    int64    prev_log_index = 3;<br/>
-    int64    prev_log_term = 4;<br/>
-    int64    leader_commit = 5;<br/>
-    repeated Entry entries = 6;<br/>
-}<br/>
-
-message AppendEntriesResponse {<br/>
-    int64  term = 1;<br/>
-    bool  success = 2;<br/>
-    int64 conflict_index = 3;<br/>
-    int64 conflict_term = 4;<br/>
-}<br/>
-
-
-service RaftService {<br/>
-    //...<br/>
-    rpc AppendEntries (AppendEntriesRequest) returns 
-    (AppendEntriesResponse) {}<br/>
-}<br/>
-</pre>
-  
-
-<h3>
-    Leader 选举实现分析
-</h3>
-
-<p>
-    Raft 官网提供了一个算法的动态演示动画，我们先来直观感受下 Leader 选举的流程，然后结合代码介绍这个流程。
-    待续。。
-</p>
-
-<p>
-    首先 Raft 算法中有两个超时时间用来控制着 Leader 选举的流程，首先是选举超时，这个是 Candidate 等待变成 Leader 的时间跨度，如果在这个时间内还没被选成 Leader, 这个超时定时器会被重置。我们前面也介绍过，这个超时时间设置一般在 150ms 到 300ms 之间。
-</p>
-
-<div style="text-align: center; width: 100%; border: black solid 1px;">
-    <img src="./resources/raft_elec001.png" width="90%" style="display: inline-block; margin-bottom: 5%;"/>
-  </div>  
-
-  <p>
-    启动的时候，所有节点的选举超市时间都被设置到 150～300ms 之间的随机值，那么大概率有一个节点会率先达到超市时间，如图 A,B,C 节点的 C 先达到超时时间，它从 Follower 变成 Candidate, 随后开始新任期的选举，它会给自己投一票，然后向集群中的其他节点发送 RequestVoteRequest rpc 请求它们的投票。
-  </p>
-
-  <p>
-    1.eraft 代码中在启动，也就是应用层调用 MakeRaft 函数的时候会传入 baseElectionTimeOutMs 和 heartbeatTimeOutMs， 这里心跳超市时间是固定的，选举超时时间我们使用 MakeAnRandomElectionTimeout 构造生成了一个随机超市时间。
-  </p>
-
-   
-<pre>
-func MakeRaft(peers []*RaftClientEnd, me int, newdbEng storage_eng.KvStore, applyCh chan *pb.ApplyMsg, heartbeatTimeOutMs uint64, baseElectionTimeOutMs uint64) *Raft {
-
-...
-
-heartbeatTimer:   time.NewTimer(time.Millisecond * time.Duration(heartbeatTimeOutMs)),
-electionTimer:    time.NewTimer(time.Millisecond * time.Duration(MakeAnRandomElectionTimeout(int(baseElectionTimeOutMs)))),
-...
-</pre>
-  
-
-  <p>
-    2.达到选举超时后, 节点 C 首先把自己状态改成 Candidate，然后增加自己的任期号，开始选举。
-  </p>
-
-   
-<pre>
-//
-// Tick raft heart, this ticket trigger raft main flow running
-//
-func (rf *Raft) Tick() {
-    for !rf.IsKilled() {
-        select {
-        case <-rf.electionTimer.C:
-            {
-                rf.SwitchRaftNodeRole(NodeRoleCandidate)
-                rf.IncrCurrentTerm()
-                rf.Election()
-                rf.electionTimer.Reset(time.Millisecond * time.Duration(MakeAnRandomElectionTimeout(int(rf.baseElecTimeout))))
-            }
-        ...
+        // 选举超时检测
+        if (electionDeadline_ != std::chrono::steady_clock::time_point{} &&
+            now >= electionDeadline_) {
+            changeState(NodeState::Candidate);
+            currentTerm_ += 1;
+            StartElection();
+            electionDeadline_ = now + RandomizedElectionTimeout();
+        }
+        // 心跳由 replicator 线程的 wait_for 超时机制处理
     }
 }
 </pre>
-    
 
-  <p>
-    3.下面这段代码就是发起选举的核心逻辑了，首先节点 IncrGrantedVotes 给自己投一票，然后把 votedFor 设置成自己，之后构造 RequestVoteRequest rpc 请求，带上自己的任期号，CandidateId 也就是自己的 id, 最后一个日志条目的索引还有任期号，然后把当前 Raft 状态持久化，向集群中的其他节点并行的发送，RequestVote 请求
-  </p>
+      <p>
+        <strong>2. applier 线程</strong>：等待 <code>commitIndex_</code> 前进，将已提交的日志条目打包成 <code>ApplyMsg</code> 推送到 <code>applyCh_</code> 通道通知应用层。
+      </p>
 
-   
 <pre>
-//
-// Election  make a new election
-//
-func (rf *Raft) Election() {
-	fmt.Printf("%d start election \n", rf.me_)
-	rf.IncrGrantedVotes()
-	rf.votedFor = int64(rf.me_)
-	voteReq := &pb.RequestVoteRequest{
-		Term:         rf.curTerm,
-		CandidateId:  int64(rf.me_),
-		LastLogIndex: int64(rf.logs.GetLast().Index),
-		LastLogTerm:  int64(rf.logs.GetLast().Term),
-	}
-	rf.PersistRaftState()
-	for _, peer := range rf.peers {
-		if int(peer.id) == rf.me_ {
-			continue
-		}
-		go func(peer *RaftClientEnd) {
-			PrintDebugLog(fmt.Sprintf("send request vote to %s %s\n", peer.addr, voteReq.String()))
+void Raft::applier() {
+    while (!killed()) {
+        std::vector&lt;Entry&gt; toApply;
+        int appliedUpTo = 0;
+        {
+            std::unique_lock&lt;std::mutex&gt; lk(mu_);
+            // 阻塞等待 commitIndex 前进
+            applyCond_.wait(lk, [&] {
+                return lastApplied_ &lt; commitIndex_ || killed();
+            });
+            if (killed()) break;
+            if (lastApplied_ >= commitIndex_) continue;
 
-			requestVoteResp, err := (*peer.raftServiceCli).RequestVote(context.Background(), voteReq)
-			if err != nil {
-				PrintDebugLog(fmt.Sprintf("send request vote to %s failed %v\n", peer.addr, err.Error()))
-			}
-			...
-		}(peer)
-	}
+            int firstIndex = getFirstLog().index;
+            int ci = commitIndex_;
+            for (int i = lastApplied_ + 1; i &lt;= ci; ++i) {
+                toApply.push_back(logs_[i - firstIndex]);
+            }
+            appliedUpTo = ci;
+        }
+
+        // 在锁外推送，避免阻塞
+        for (const auto& entry : toApply) {
+            ApplyMsg msg;
+            msg.command_valid = true;
+            msg.command       = entry.command;
+            msg.command_term  = entry.term;
+            msg.command_index = entry.index;
+            applyCh_->push(std::move(msg));
+        }
+
+        {
+            std::lock_guard&lt;std::mutex&gt; lk(mu_);
+            lastApplied_ = std::max(lastApplied_, appliedUpTo);
+        }
+    }
 }
 </pre>
-    
 
-  <div style="text-align: center; width: 100%; border: black solid 1px;">
-    <img src="./resources/raft_elec002.png" width="90%" style="display: inline-block; margin-bottom: 5%;"/>
-  </div>  
-<p>
-    如果 A,B 收到请求的时候还没有发出投票（因为它们还没达到选举超时时间），它们就会给候选人节点 C 投票, 同时重设自己的选举超时定时器。
-</p>
+      <p>
+        <strong>3. replicator 线程（每个 peer 一个）</strong>：使用 <code>wait_for</code> 在 100ms 超时或被唤醒时执行一轮复制。这同时实现了心跳机制——当没有新日志需要复制时，超时触发会发送空的 AppendEntries 心跳。
+      </p>
 
-<p>
-    4.eraft 处理投票请求的细节如下, 我们结合图中的例子分析下面的逻辑，假设 A 节点正在处理来自 C 的投票请求，那么首先 C 的 任期号大于 A 的, 代码中 1 的 if 分支不会执行, 在 2 这里， A 节点发现来自 C 的请求投票消息的任期号大于自己的，它会调用 SwitchRaftNodeRole 变成 Follower 节点, 在回 C 消息之前，代码中 3 号位置 A 调用 electionTimer.Reset 重设了自己的选举超时定时器。
-</p>
-
- 
 <pre>
-     
-//
-// HandleRequestVote  handle request vote from other node
-//
-func (rf *Raft) HandleRequestVote(req *pb.RequestVoteRequest, resp *pb.RequestVoteResponse) {
-	rf.mu.Lock()
-	defer rf.mu.Unlock()
-	defer rf.PersistRaftState()
+void Raft::replicator(int peer) {
+    while (!killed()) {
+        {
+            std::unique_lock&lt;std::mutex&gt; lk(*replicatorMu_[peer]);
+            // 超时唤醒 = 心跳；条件满足唤醒 = 有新日志要复制
+            replicatorCv_[peer]->wait_for(lk, std::chrono::milliseconds(100), [&] {
+                std::lock_guard&lt;std::mutex&gt; rlk(mu_);
+                return needReplicating(peer) || killed();
+            });
+            if (killed()) break;
+        }
+        bool isLeader = false;
+        {
+            std::lock_guard&lt;std::mutex&gt; rlk(mu_);
+            isLeader = (state_ == NodeState::Leader);
+        }
+        if (isLeader && !killed()) {
+            replicateOneRound(peer);
+        }
+    }
+}
+</pre>
 
-    // 1
-	if req.Term < rf.curTerm || (req.Term == rf.curTerm && rf.votedFor != -1 && rf.votedFor != req.CandidateId) {
-		resp.Term, resp.VoteGranted = rf.curTerm, false
-		return
-	}
+      <p>
+        当应用层调用 <code>Start()</code> 提交提案时，会在本地追加日志，然后调用 <code>BroadcastHeartbeat()</code> 唤醒所有 replicator 线程开始复制。复制成功半数以上节点后触发 commit，<code>applyCond_.notify_all()</code> 唤醒 applier 线程将日志推送到应用层。整个流程通过条件变量实现了线程间的高效同步。
+      </p>
 
-    // 2 
-	if req.Term > rf.curTerm {
-		rf.SwitchRaftNodeRole(NodeRoleFollower)
-		rf.curTerm, rf.votedFor = req.Term, -1
-	}
-	
-	...
-	
-	rf.votedFor = req.CandidateId
-	
-	// 3
-	rf.electionTimer.Reset(time.Millisecond * time.Duration(MakeAnRandomElectionTimeout(int(rf.baseElecTimeout))))
-	resp.Term, resp.VoteGranted = rf.curTerm, true
-}   
-    </pre>
-  
+      <h3>RaftPeer 抽象接口</h3>
 
-<div style="text-align: center; width: 100%; border: black solid 1px;">
-    <img src="./resources/raft_elec003.png" width="90%" style="display: inline-block; margin-bottom: 5%;"/>
-  </div>  
+      <p>
+        节点之间需要互相通信。我们定义了 <code>RaftPeer</code> 抽象接口（<code>raft_peer.h</code>），它包含三个 RPC 方法：
+      </p>
 
-  <p>
-    C 收到半数票以上，也就是 A, B 节点的任意一个的投票加上自己那一张选票，它就变成了 Leader，然后停止自己的选举超时定时器。
-  </p>
+<pre>
+class RaftPeer {
+public:
+    virtual ~RaftPeer() = default;
 
-  <p>
-    5.C 统计票数处理请求投票的响应如下，注意：这段代码加了锁，应为这里涉及到多个 Goruntine 去修改 rf 中的非原子变量，如果不加锁可能会导致逻辑错误。代码中 1 处，如果收到投票的响应 VoteGranted 是 true。C 就会调用 IncrGrantedVotes 递增自己拥有的票书，然后 if rf.grantedVotes > len(rf.peers)/2 判断是否拿到了半数以上票，如果是的调用 SwitchRaftNodeRole 切换自己的状态为 Leader，之后 BroadcastHeartbeat 广播心跳消息，并重新设置自己的得票数 grantedVotes 为 0。
-  </p>
+    virtual bool RequestVote(const RequestVoteRequest& args,
+                             RequestVoteResponse& reply) = 0;
 
-   
-    <pre>
-        if requestVoteResp != nil {
-            rf.mu.Lock()
-            defer rf.mu.Unlock()
-            PrintDebugLog(fmt.Sprintf("send request vote to %s recive -> %s, curterm %d, req term %d", peer.addr, requestVoteResp.String(), rf.curTerm, voteReq.Term))
-            if rf.curTerm == voteReq.Term && rf.role == NodeRoleCandidate {
-                // 1
-                if requestVoteResp.VoteGranted {
-                    // success granted the votes
-                    PrintDebugLog("I grant vote")
-                    rf.IncrGrantedVotes()
-                    if rf.grantedVotes > len(rf.peers)/2 {
-                        PrintDebugLog(fmt.Sprintf("node %d get majority votes int term %d ", rf.me_, rf.curTerm))
-                        rf.SwitchRaftNodeRole(NodeRoleLeader)
-                        rf.BroadcastHeartbeat()
-                        rf.grantedVotes = 0
+    virtual bool AppendEntries(const AppendEntriesRequest& args,
+                               AppendEntriesResponse& reply) = 0;
+
+    virtual bool InstallSnapshot(const InstallSnapshotRequest& args,
+                                 InstallSnapshotResponse& reply) = 0;
+};
+</pre>
+
+      <p>
+        在测试环境中，<code>InMemPeer</code>（定义在 <code>config.h</code>）通过 <code>weak_ptr</code> 直接调用目标 Raft 实例的方法，模拟内存网络，还支持 <code>setEnabled()</code> 来模拟网络断连。在生产环境中，<code>GrpcClient</code> 实现了这个接口，通过 gRPC 进行跨节点通信。这种抽象设计使得同一套 Raft 核心代码可以无缝在测试和生产环境中运行。
+      </p>
+
+      <h3>RPC 消息定义</h3>
+
+      <p>
+        RPC 消息结构定义在 <code>types.h</code> 中，与论文保持一致。同时，<code>proto/raft.proto</code> 提供了 gRPC 传输层的服务定义。
+      </p>
+
+      <p>
+        <strong>日志条目 Entry</strong>：每条日志包含索引号、任期号和操作数据。
+      </p>
+
+<pre>
+struct Entry {
+    int index   = 0;
+    int term    = 0;
+    std::vector&lt;uint8_t&gt; command;   // 序列化后的操作数据
+};
+</pre>
+
+      <p>
+        <strong>RequestVote 请求/响应</strong>：请求中携带候选人的任期号、id 以及最后一条日志的索引和任期，用于判断候选人日志是否足够新。
+      </p>
+
+<pre>
+struct RequestVoteRequest {
+    int term;           // 候选人的任期号
+    int candidate_id;   // 候选人 id
+    int last_log_index; // 候选人最后一条日志的索引
+    int last_log_term;  // 候选人最后一条日志的任期
+};
+
+struct RequestVoteResponse {
+    int  term;          // 投票节点的当前任期（用于候选人更新自己的任期）
+    bool vote_granted;  // 是否投票
+};
+</pre>
+
+      <p>
+        <strong>AppendEntries 请求/响应</strong>：请求中携带 Leader 的任期、id、前一条日志的索引和任期（用于一致性检查）、Leader 的 commit 号以及要同步的日志条目。响应中增加了 <code>conflict_index</code> 和 <code>conflict_term</code> 用于快速回退优化。
+      </p>
+
+<pre>
+struct AppendEntriesRequest {
+    int term;            // Leader 的任期号
+    int leader_id;       // Leader 的 id
+    int prev_log_index;  // 紧接新日志前一条的索引
+    int prev_log_term;   // 该条目的任期
+    int leader_commit;   // Leader 的 commit 号
+    std::vector&lt;Entry&gt; entries;  // 要同步的日志条目
+};
+
+struct AppendEntriesResponse {
+    int  term;            // 响应节点的当前任期
+    bool success;         // 是否追加成功
+    int  conflict_index;  // 冲突日志索引（快速回退优化）
+    int  conflict_term;   // 冲突日志任期
+};
+</pre>
+
+      <p>
+        <strong>InstallSnapshot 请求/响应</strong>：当 Follower 落后太多（需要的日志已被快照截断）时，Leader 发送快照数据。
+      </p>
+
+<pre>
+struct InstallSnapshotRequest {
+    int term;                // Leader 的任期号
+    int leader_id;           // Leader 的 id
+    int last_included_index; // 快照最后一条日志的索引
+    int last_included_term;  // 快照最后一条日志的任期
+    std::vector&lt;uint8_t&gt; data;  // 状态机序列化数据
+};
+
+struct InstallSnapshotResponse {
+    int term;  // 响应节点的当前任期
+};
+</pre>
+
+      <p>
+        对应的 gRPC 服务定义在 <code>raft.proto</code> 中，将上述结构映射为 protobuf 消息，方便跨节点网络传输。
+      </p>
+
+      <h3>Leader 选举实现分析</h3>
+
+      <p>
+        Raft 使用两个超时时间控制选举流程：选举超时（election timeout）和心跳超时（heartbeat timeout）。在 <code>util.h</code> 中，选举超时设置为 1000ms ~ 2000ms 之间的随机值，心跳超时固定为 125ms。
+      </p>
+
+<pre>
+constexpr int kHeartbeatTimeoutMs = 125;
+constexpr int kElectionTimeoutMs  = 1000;
+
+inline std::chrono::milliseconds RandomizedElectionTimeout() {
+    thread_local std::mt19937 rng(
+        std::random_device{}() ^
+        static_cast&lt;unsigned&gt;(std::chrono::steady_clock::now()
+                                   .time_since_epoch().count()));
+    std::uniform_int_distribution&lt;int&gt; dist(0, kElectionTimeoutMs - 1);
+    return std::chrono::milliseconds(kElectionTimeoutMs + dist(rng));
+}
+</pre>
+
+      <p>
+        随机化的选举超时确保集群中大概率只有一个节点率先超时发起选举，避免多节点同时竞选导致选票分裂。
+      </p>
+
+      <p>
+        <strong>选举流程</strong>：当 ticker 线程检测到选举超时到期，节点切换为 Candidate 状态，增加任期号，调用 <code>StartElection()</code>：
+      </p>
+
+<pre>
+void Raft::StartElection() {
+    auto request = genRequestVoteRequest();
+    auto grantedVotes = std::make_shared&lt;std::atomic&lt;int&gt;&gt;(1);  // 自己一票
+    votedFor_ = me_;
+    persist();
+
+    auto self = shared_from_this();
+    for (size_t peer = 0; peer &lt; peers_.size(); ++peer) {
+        if (static_cast&lt;int&gt;(peer) == me_) continue;
+
+        // 为每个 peer 启动一个 detached 线程发送 RequestVote
+        std::thread([self, request, peer, grantedVotes]() {
+            RequestVoteResponse response;
+            bool ok = false;
+            self->sendRequestVote(peer, request, response, ok);
+            if (!ok) return;
+
+            std::lock_guard&lt;std::mutex&gt; lk(self->mu_);
+            if (self->currentTerm_ == request.term &&
+                self->state_ == NodeState::Candidate) {
+                if (response.vote_granted) {
+                    int votes = grantedVotes->fetch_add(1) + 1;
+                    if (votes > static_cast&lt;int&gt;(self->peers_.size()) / 2) {
+                        self->changeState(NodeState::Leader);
+                        self->BroadcastHeartbeat(true);
                     }
-                // 2
-                } else if requestVoteResp.Term > rf.curTerm {
-                    // request vote reject
-                    rf.SwitchRaftNodeRole(NodeRoleFollower)
-                    rf.curTerm, rf.votedFor = requestVoteResp.Term, -1
-                    rf.PersistRaftState()
+                } else if (response.term > self->currentTerm_) {
+                    self->changeState(NodeState::Follower);
+                    self->currentTerm_ = response.term;
+                    self->votedFor_ = -1;
+                    self->persist();
+                }
+            }
+        }).detach();
+    }
+}
+</pre>
+
+      <p>
+        这里使用 <code>shared_ptr&lt;atomic&lt;int&gt;&gt;</code> 统计票数，因为多个 detached 线程会并发修改它。当票数超过半数时，切换为 Leader 并广播心跳。如果收到更高任期的响应，则回退为 Follower。
+      </p>
+
+      <p>
+        <strong>处理投票请求</strong>：收到 RequestVote 的节点在 <code>HandleRequestVote()</code> 中决定是否投票：
+      </p>
+
+<pre>
+void Raft::HandleRequestVote(const RequestVoteRequest& req, RequestVoteResponse& resp) {
+    std::lock_guard&lt;std::mutex&gt; lk(mu_);
+
+    // 拒绝过期任期的投票请求
+    if (req.term &lt; currentTerm_ ||
+        (req.term == currentTerm_ && votedFor_ != -1 && votedFor_ != req.candidate_id)) {
+        resp.term = currentTerm_;
+        resp.vote_granted = false;
+        return;
+    }
+    // 发现更高任期，更新自己并变为 Follower
+    if (req.term > currentTerm_) {
+        changeState(NodeState::Follower);
+        currentTerm_ = req.term;
+        votedFor_ = -1;
+    }
+    // 检查候选人日志是否至少和本地一样新
+    if (!isLogUpToDate(req.last_log_term, req.last_log_index)) {
+        resp.term = currentTerm_;
+        resp.vote_granted = false;
+        return;
+    }
+    // 投票并重置选举超时
+    votedFor_ = req.candidate_id;
+    electionDeadline_ = std::chrono::steady_clock::now() + RandomizedElectionTimeout();
+    resp.term = currentTerm_;
+    resp.vote_granted = true;
+}
+</pre>
+
+      <p>
+        <code>isLogUpToDate()</code> 比较候选人最后一条日志的任期和索引，只有候选人的日志至少和本地一样新才会投票。投票后重置选举超时，防止该节点在等待期间又发起选举。
+      </p>
+
+      <p>
+        当 Leader 选出后，<code>changeState(NodeState::Leader)</code> 会初始化 <code>nextIndex_</code> 和 <code>matchIndex_</code>，并设置心跳超时。之后 Leader 通过 replicator 线程持续发送心跳，Follower 每次收到 AppendEntries（含心跳）都会重置选举超时，只要 Leader 正常运行就不会触发新的选举。
+      </p>
+
+      <h3>日志复制实现分析</h3>
+
+      <p>
+        选举完成后，Leader 开始处理客户端请求。应用层调用 <code>Start()</code> 提交提案：
+      </p>
+
+<pre>
+Raft::StartResult Raft::Start(const std::vector&lt;uint8_t&gt;& command) {
+    std::lock_guard&lt;std::mutex&gt; lk(mu_);
+    if (state_ != NodeState::Leader) {
+        return {-1, -1, false};
+    }
+    auto newLog = appendNewEntry(command);  // 追加日志到本地
+    BroadcastHeartbeat(false);              // 唤醒 replicator 线程
+    return {newLog.index, newLog.term, true};
+}
+</pre>
+
+      <p>
+        <code>appendNewEntry()</code> 构造新的 Entry（index = 上一条 +1，term = 当前任期），追加到 <code>logs_</code> 末尾，更新自己的 <code>matchIndex_</code>，并持久化状态。然后 <code>BroadcastHeartbeat()</code> 通过 <code>notify_one()</code> 唤醒每个 peer 的 replicator 线程。
+      </p>
+
+      <p>
+        replicator 线程被唤醒后执行 <code>replicateOneRound()</code>，将日志打包成 AppendEntriesRequest 发送给 Follower：
+      </p>
+
+<pre>
+bool Raft::replicateOneRound(int peer) {
+    bool useSnapshot = false;
+    AppendEntriesRequest aeReq;
+    InstallSnapshotRequest snapReq;
+
+    {
+        std::lock_guard&lt;std::mutex&gt; lk(mu_);
+        if (state_ != NodeState::Leader) return false;
+
+        int prevLogIndex = nextIndex_[peer] - 1;
+        useSnapshot = (prevLogIndex &lt; getFirstLog().index);
+
+        if (useSnapshot) {
+            snapReq = genInstallSnapshotRequest();
+        } else {
+            aeReq = genAppendEntriesRequest(prevLogIndex);
+        }
+    }
+
+    // 在锁外发送 RPC，避免长时间持锁
+    if (useSnapshot) {
+        InstallSnapshotResponse resp;
+        bool ok = false;
+        sendInstallSnapshot(peer, snapReq, resp, ok);
+        if (ok) {
+            std::lock_guard&lt;std::mutex&gt; lk(mu_);
+            handleInstallSnapshotResponse(peer, snapReq, resp);
+        }
+        return ok;
+    } else {
+        AppendEntriesResponse resp;
+        bool ok = false;
+        sendAppendEntries(peer, aeReq, resp, ok);
+        if (ok) {
+            std::lock_guard&lt;std::mutex&gt; lk(mu_);
+            handleAppendEntriesResponse(peer, aeReq, resp);
+        }
+        return ok;
+    }
+}
+</pre>
+
+      <p>
+        注意这里采用了"单次加锁准备请求、锁外发送 RPC、再次加锁处理响应"的模式，避免在 RPC 等待期间持锁导致死锁或性能下降。
+      </p>
+
+      <p>
+        <strong>Follower 处理 AppendEntries</strong>：核心是一致性检查——验证 <code>prev_log_index</code> 处的日志任期是否匹配：
+      </p>
+
+<pre>
+void Raft::HandleAppendEntries(const AppendEntriesRequest& req, AppendEntriesResponse& resp) {
+    std::lock_guard&lt;std::mutex&gt; lk(mu_);
+
+    if (req.term &lt; currentTerm_) {
+        resp.term = currentTerm_;
+        resp.success = false;
+        return;
+    }
+    if (req.term > currentTerm_) {
+        currentTerm_ = req.term;
+        votedFor_ = -1;
+    }
+    changeState(NodeState::Follower);
+    electionDeadline_ = std::chrono::steady_clock::now() + RandomizedElectionTimeout();
+
+    // prev_log_index 已被快照截断
+    if (req.prev_log_index &lt; getFirstLog().index) {
+        resp.success = false;
+        return;
+    }
+    // 一致性检查：prev_log_index 处的任期是否匹配
+    if (!matchLog(req.prev_log_term, req.prev_log_index)) {
+        resp.term = currentTerm_;
+        resp.success = false;
+        // 快速回退优化：计算冲突位置
+        int lastIndex = getLastLog().index;
+        if (lastIndex &lt; req.prev_log_index) {
+            resp.conflict_term = -1;
+            resp.conflict_index = lastIndex + 1;
+        } else {
+            int firstIndex = getFirstLog().index;
+            resp.conflict_term = logs_[req.prev_log_index - firstIndex].term;
+            int idx = req.prev_log_index - 1;
+            while (idx >= firstIndex && logs_[idx - firstIndex].term == resp.conflict_term) {
+                --idx;
+            }
+            resp.conflict_index = idx;
+        }
+        return;
+    }
+
+    // 追加日志（覆盖冲突条目）
+    int firstIndex = getFirstLog().index;
+    for (size_t i = 0; i &lt; req.entries.size(); ++i) {
+        const auto& entry = req.entries[i];
+        if (entry.index - firstIndex >= static_cast&lt;int&gt;(logs_.size()) ||
+            logs_[entry.index - firstIndex].term != entry.term) {
+            logs_.resize(entry.index - firstIndex);
+            for (size_t j = i; j &lt; req.entries.size(); ++j) {
+                logs_.push_back(req.entries[j]);
+            }
+            break;
+        }
+    }
+
+    advanceCommitIndexForFollower(req.leader_commit);
+    resp.term = currentTerm_;
+    resp.success = true;
+}
+</pre>
+
+      <p>
+        <strong>Leader 处理 AppendEntries 响应</strong>：成功时更新 <code>matchIndex_</code> 和 <code>nextIndex_</code>，并推进 commitIndex；失败时根据冲突信息快速回退 <code>nextIndex_</code>：
+      </p>
+
+<pre>
+void Raft::handleAppendEntriesResponse(int peer, const AppendEntriesRequest& req,
+                                       const AppendEntriesResponse& resp) {
+    if (state_ != NodeState::Leader || currentTerm_ != req.term) return;
+
+    if (resp.success) {
+        matchIndex_[peer] = req.prev_log_index + static_cast&lt;int&gt;(req.entries.size());
+        nextIndex_[peer]  = matchIndex_[peer] + 1;
+        advanceCommitIndexForLeader();
+    } else {
+        if (resp.term > currentTerm_) {
+            changeState(NodeState::Follower);
+            currentTerm_ = resp.term;
+            votedFor_ = -1;
+            persist();
+        } else if (resp.term == currentTerm_) {
+            // 快速回退：直接跳到冲突位置
+            nextIndex_[peer] = resp.conflict_index;
+            if (resp.conflict_term != -1) {
+                int firstIndex = getFirstLog().index;
+                for (int i = req.prev_log_index; i >= firstIndex; --i) {
+                    if (logs_[i - firstIndex].term == resp.conflict_term) {
+                        nextIndex_[peer] = i + 1;
+                        break;
+                    }
                 }
             }
         }
-    </pre>
-    
-
-  <div style="text-align: center; width: 100%; border: black solid 1px;">
-    <img src="./resources/raft_elec004.png" width="90%" style="display: inline-block; margin-bottom: 5%;"/>
-  </div>  
-
-  我们知道 A,B 在前面处理投票请求的时候只是重设的超时定时器，那么万一再一次超时定时器到达，会不会重新出发选举，然后陷入选举循环呢？
-
-
-  <p>
-    答案是不会的，我们前面只介绍了选举超时时间，还有一个心跳超时时间，这个超时时间比选举超市时间短，一般是选举超时时间的 1/3。也就是说在 A, B 还没到达选举超时时间之前，这个心跳超市时间会先出发，如果是 Leader 节点的话，它会给集群中其他节点发送心跳包，其他节点 (A, B) 接受到心跳包之后, 又会重设自己的选举超时定时器。也就是说，只要 Leader C 一直正常运心发送心跳包，那么 A,B 节点不可能触发选举，只有当 Leader C 挂了。A,B 节点才会开始下一轮选举。
-  </p>
-
-  <div style="text-align: center; width: 100%; border: black solid 1px;">
-    <img src="./resources/raft_elec005.png" width="90%" style="display: inline-block; margin-bottom: 5%;"/>
-  </div>  
-
-  <h3>
-    日志复制实现分析
-  </h3>
-
-  <p>
-  经过上述的选举流程，我们现在就有一个拥有主节点和多个从节点的系统了，主节点会不断的给从节点发送心跳消息。现在我们要开始考虑处理客户端请求了，如果客户端发送一个操作过来，我们这个系统是如何处理的呢？
-</p>
-<p>
-首先，Raft 规定只有 Leader 节点能处理请求写入，客户端发送请求首先会到达 Leader 节点。
-</p>
-
-<p>
-在 eraft 库中用户请求到来和 raft 交互的入口函数是 Propose，这个函数首先会查询当前节点状态，只有 Leader 节点才能处理提案（propose），之后会把用户操作的序列化之后的 []byte 调用 Append 追加到自己的日志中，之后 BroadcastAppend 将日志内容发送给集群中的 Follower 节点。
-</p>
-
- 
-    <pre>
-        //
-// Propose the interface to the appplication propose a operation
-//
-
-func (rf *Raft) Propose(payload []byte) (int, int, bool) {
-	rf.mu.Lock()
-	defer rf.mu.Unlock()
-	if rf.role != NodeRoleLeader {
-		return -1, -1, false
-	}
-	newLog := rf.Append(payload)
-	rf.BroadcastAppend()
-	return int(newLog.Index), int(newLog.Term), true
+    }
 }
-    </pre>
-  
-<div style="text-align: center; width: 100%; border: black solid 1px;">
-    <img src="./resources/log_repl001.png" width="90%" style="display: inline-block; margin-bottom: 5%;"/>
-  </div>  
+</pre>
 
-  <p>
-    如上图中，绿色的表示客户端节点，它发送 SET 5 的请求过来，A 作为当前集群中的 Leader 节点首先会把这个 SET 5 操作封装成一个日志条目写入到自己的日志存储结构中，然后在下一次给从节点发送心跳消息的时候带上这个日志发送给 Follower 节点。
-  </p>
+      <p>
+        <strong>推进 commitIndex</strong>：Leader 将 <code>matchIndex_</code> 降序排列，取第 <code>N/2+1</code> 个位置的值作为新的 commitIndex 候选（即多数派确认的日志索引），但只提交当前任期的日志（论文的安全约束）：
+      </p>
 
-  <p>
-    在 eraft 实现中，我们专门有一组 Goruntine 做日志复制相关的事情，用户提案到达 Leader 之后调用 BroadcastAppend 会唤醒做日志复制操作的 Goruntine, replicatorCond 这个信号量用来完成 Goruntine 之间的同步操作。
-  </p>
-
-   
-    <pre>
-
-func (rf *Raft) BroadcastAppend() {
-	for _, peer := range rf.peers {
-		if peer.id == uint64(rf.me_) {
-			continue
-		}
-		rf.replicatorCond[peer.id].Signal()
-	}
-}
-    </pre>
-    
-
-  <p>
-    复制操作的 Goruntine 执行的任务函数是 Replicator，当 BroadcastAppend 中通过 Signal 函数唤醒信号量，rf.replicatorCond[].Wait() 就会停止阻塞，继续往下执行，调用 replicateOneRound 进行数据复制。
-  </p>
-
-   
-    <pre>
-
-//
-// Replicator manager duplicate run
-//
-func (rf *Raft) Replicator(peer *RaftClientEnd) {
-	rf.replicatorCond[peer.id].L.Lock()
-	defer rf.replicatorCond[peer.id].L.Unlock()
-	for !rf.IsKilled() {
-		PrintDebugLog("peer id wait for replicating...")
-		for !(rf.role == NodeRoleLeader && rf.matchIdx[peer.id] < int(rf.logs.GetLast().Index)) {
-			rf.replicatorCond[peer.id].Wait()
-		}
-		rf.replicateOneRound(peer)
-	}
-}
-
-    </pre>
-    
-  replicateOneRound 就会把日志打包到一个 AppendEntriesRequest 中发送到 Follower 节点了。
-
-  <div style="text-align: center; width: 100%; border: black solid 1px;">
-    <img src="./resources/log_repl002.png" width="90%" style="display: inline-block; margin-bottom: 5%;"/>
-  </div> 
-
-  Follower 收到追加请求后会把日志条目追加到自己的日志存储结构中，然后给 Leader 发送成功追加的响应。Leader 统计到集群半数节点（包括自己）日志追加成功之后，它会把这条日志状态设置为已经提交 (committed)，然后将操作结果发送给客户端, 如下图所示，A 设置 SET 5
-
-  <div style="text-align: center; width: 100%; border: black solid 1px;">
-    <img src="./resources/log_repl003.png" width="90%" style="display: inline-block; margin-bottom: 5%;"/>
-  </div> 
-
-  <p>
-  之后这个日志提交的信息会在下一次给 Follower 发送的心跳包中带过去，Follower 收到日志也会更新自己的日志提交状态。
-</p>
-
-<p>
-日志提交之后，Apply 协程会收到通知，开始将已经提交的日志 apply 到状态机中，日志的成功 Apply 之后给客户端发送成功写入的响应包。
-</p>
-
-<p>
-对应 eraft 实现中，日志提交之后 Leader 节点会调用 advanceCommitIndexForLeader 函数。它会计算当前日志提交的索引号，然后和之前已经提交的 commitIdx 进行对比，如果更大，就会更新 commitIdx，同时调用 rf.applyCond.Signal() 唤醒做 Apply 操作的 Goruntine。Applier 函数是 Apply Goruntine 运行的任务函数，它会 Wait applyCond 这个信号量，如果被唤醒，它会拷贝初节点中已经提交的日志，打包成 ApplyMsg 发送到 applyCh 通道通知应用层，应用层拿到 apply 消息之后会更新状态机并回包给客户端。
-</p>
-
- 
-    <pre>
-
-func (rf *Raft) advanceCommitIndexForLeader() {
-	sort.Ints(rf.matchIdx)
-	n := len(rf.matchIdx)
-	newCommitIndex := rf.matchIdx[n-(n/2+1)]
-	if newCommitIndex > int(rf.commitIdx) {
-		if rf.MatchLog(rf.curTerm, int64(newCommitIndex)) {
-			PrintDebugLog(fmt.Sprintf("peer %d advance commit index %d at term %d", rf.me_, rf.commitIdx, rf.curTerm))
-			rf.commitIdx = int64(newCommitIndex)
-			rf.applyCond.Signal()
-		}
-	}
-}
-
-//
-// Applier() Write the commited message to the applyCh channel
-// and update lastApplied
-//
-func (rf *Raft) Applier() {
-	for !rf.IsKilled() {
-		rf.mu.Lock()
-		for rf.lastApplied >= rf.commitIdx {
-			PrintDebugLog("applier ...")
-			rf.applyCond.Wait()
-		}
-		firstIndex, commitIndex, lastApplied := rf.logs.GetFirst().Index, rf.commitIdx, rf.lastApplied
-		entries := make([]*pb.Entry, commitIndex-lastApplied)
-		copy(entries, rf.logs.GetRange(lastApplied+1-int64(firstIndex), commitIndex+1-int64(firstIndex)))
-		rf.mu.Unlock()
-
-		PrintDebugLog(fmt.Sprintf("%d, applies entries %d-%d in term %d", rf.me_, rf.lastApplied, commitIndex, rf.curTerm))
-
-		for _, entry := range entries {
-			rf.applyCh <- &pb.ApplyMsg{
-				CommandValid: true,
-				Command:      entry.Data,
-				CommandTerm:  int64(entry.Term),
-				CommandIndex: int64(entry.Index),
-			}
-		}
-
-		rf.mu.Lock()
-		rf.lastApplied = int64(Max(int(rf.lastApplied), int(commitIndex)))
-		rf.mu.Unlock()
-	}
-}
-    </pre>
-  
-
-
-<h3>
-    Raft 快照实现分析
-
-</h3>
-下面是日志快照的 RPC 定义
-
-
- 
-    <pre>
-        message InstallSnapshotRequest {
-            int64 term =                1;
-            int64 leader_id =           2;
-            int64 last_included_index = 3;
-            int64 last_included_term  = 4;
-            bytes data                = 5;
+<pre>
+void Raft::advanceCommitIndexForLeader() {
+    int n = static_cast&lt;int&gt;(matchIndex_.size());
+    std::vector&lt;int&gt; srt(matchIndex_);
+    insertion_sort_desc(srt);  // 降序排列
+    int newCommitIndex = srt[n - (n / 2 + 1)];
+    if (newCommitIndex > commitIndex_) {
+        // 只提交当前任期的日志（Raft 论文 Figure 8 安全性）
+        if (matchLog(currentTerm_, newCommitIndex)) {
+            commitIndex_ = newCommitIndex;
+            applyCond_.notify_all();  // 唤醒 applier 线程
         }
-        
-        message InstallSnapshotResponse {
-            int64 term = 1; 
-        }
-        
-        rpc Snapshot (InstallSnapshotRequest) returns (InstallSnapshotResponse) {}
-    </pre>
-  
-
-    <p>InstallSnapshotRequest 中 term 代表当前发送快照的 Leader 的任期，Follower 将它与自己的任期号来决定是否要接收这个快照。leader_id 是当前 leader 的 id, 这样客户端访问到 Follower 节点之后也能快速知道 Leader 信息。last_included_index 和 last_included_term 还有 data 可以参见我们第三章图中的介绍，它们记录了打完快照之后第一条日志的索引号和任期号，以及状态机序列化之后的数据。
-
-    </p>
-
-    
-    <p>什么时间点 Raft 会打快照呢?
-
-    </p>
-
-    <p>
-        我们知道日志条目过多了，我们就需要打快照。在 eraft 中就是计算当前 level 中的日志条目 s.Rf.GetLogCount() 来打快照的，打快照的入口函数是 takeSnapshot(index int), 传入了当前 applied 日志的 id, 然后将状态机的数据序列化，调用 Raft层的 Snapshot 函数。 这个函数通过 EraseBeforeWithDel 做了删除日志的操作，然后 PersisSnapshot 将快照中状态数据缓存到了存储引擎中。
-    </p>
-
-     
-        <pre>
-
-//
-// take a snapshot
-//
-func (rf *Raft) Snapshot(index int, snapshot []byte) {
-	rf.mu.Lock()
-	defer rf.mu.Unlock()
-	rf.isSnapshoting = true
-	snapshotIndex := rf.logs.GetFirstLogId()
-	if index <= int(snapshotIndex) {
-		rf.isSnapshoting = false
-		PrintDebugLog("reject snapshot, current snapshotIndex is larger in cur term")
-		return
-	}
-	rf.logs.EraseBeforeWithDel(int64(index) - int64(snapshotIndex))
-	rf.logs.SetEntFirstData([]byte{}) // 第一个操作日志号设为空
-	PrintDebugLog(fmt.Sprintf("del log entry before idx %d", index))
-	rf.isSnapshoting = false
-	rf.logs.PersisSnapshot(snapshot)
+    }
 }
-        </pre>
-      
+</pre>
 
-    <p>
-        什么时间点 Leader 会发送快照呢？
+      <p>
+        commitIndex 推进后，applier 线程被唤醒，将新提交的日志打包成 <code>ApplyMsg</code> 推送到 <code>applyCh_</code>，应用层从中取出消息应用到状态机并响应客户端。
+      </p>
 
+      <h3>Raft 快照实现分析</h3>
 
-    </p>
+      <p>
+        随着客户端操作不断写入，日志量会持续增长。日志过大会导致：访问日志耗时增加、节点重启恢复缓慢、落后的 Follower 需要追加大量的日志。Raft 论文第 7 章介绍了日志压缩方案——快照（Snapshot）。
+      </p>
 
-    <p>
-        在复制的时候我们会判断到 peer 的 prevLogIndex, 如果比当前日志的第一条索引号还小，就说明 Leader 已经把这条日志打到快照中了，这里我们就要构造 InstallSnapshotRequest 调用 Snapshot RPC 将快照数据发送给 Followr 节点，在收到成功响应之后，我们会更新 rf.matchIdx，rf.nextId 为 LastIncludedIndex 和 LastIncludedIndex + 1，更新到 Follower 节点复制进度。
+      <div style="text-align: center; width: 100%; border: black solid 1px;">
+        <img src="./resources/snapshot.png" width="80%" style="display: inline-block; margin-bottom: 5%;"/>
+      </div>
 
+      <p>
+        快照的核心思想是：将已提交的日志应用到状态机后，把状态机的当前状态序列化保存下来，然后安全地删除这些已快照的日志条目。这样日志量不会无限增长。
+      </p>
 
-    </p>
+      <p>
+        <strong>打快照</strong>：应用层负责决定何时打快照。在 KV 系统中，当 Raft 状态大小超过阈值 <code>maxRaftState</code> 时，应用层调用 <code>Snapshot()</code>：
+      </p>
 
-     
-        <pre>
+<pre>
+void Raft::Snapshot(int index, const std::vector&lt;uint8_t&gt;& snapshot) {
+    std::lock_guard&lt;std::mutex&gt; lk(mu_);
+    int snapshotIndex = getFirstLog().index;
+    if (index &lt;= snapshotIndex) return;  // 已经有更靠后的快照了
 
-if prevLogIndex < uint64(rf.logs.GetFirst().Index) {
-	firstLog := rf.logs.GetFirst()
-	snapShotReq := &pb.InstallSnapshotRequest{
-		Term:              rf.curTerm,
-		LeaderId:          int64(rf.me_),
-		LastIncludedIndex: firstLog.Index,
-		LastIncludedTerm:  int64(firstLog.Term),
-		Data:              rf.ReadSnapshot(),
-	}
-
-	rf.mu.RUnlock()
-
-	PrintDebugLog(fmt.Sprintf("send snapshot to %s with %s\n", peer.addr, snapShotReq.String()))
-
-	snapShotResp, err := (*peer.raftServiceCli).Snapshot(context.Background(), snapShotReq)
-	if err != nil {
-		PrintDebugLog(fmt.Sprintf("send snapshot to %s failed %v\n", peer.addr, err.Error()))
-	}
-
-	rf.mu.Lock()
-	PrintDebugLog(fmt.Sprintf("send snapshot to %s with resp %s\n", peer.addr, snapShotResp.String()))
-
-	if snapShotResp != nil {
-		if rf.role == NodeRoleLeader && rf.curTerm == snapShotReq.Term {
-			if snapShotResp.Term > rf.curTerm {
-				rf.SwitchRaftNodeRole(NodeRoleFollower)
-				rf.curTerm = snapShotResp.Term
-				rf.votedFor = -1
-				rf.PersistRaftState()
-			} else {
-				PrintDebugLog(fmt.Sprintf("set peer %d matchIdx %d\n", peer.id, snapShotReq.LastIncludedIndex))
-				rf.matchIdx[peer.id] = int(snapShotReq.LastIncludedIndex)
-				rf.nextIdx[peer.id] = int(snapShotReq.LastIncludedIndex) + 1
-			}
-		}
-	}
-	rf.mu.Unlock()
+    // 截断 index 之前的所有日志，保留第一条作为新的哨兵
+    logs_ = std::vector&lt;Entry&gt;(logs_.begin() + (index - snapshotIndex),
+                               logs_.end());
+    logs_[0].command.clear();  // 哨兵条目不含操作数据
+    persister_->SaveStateAndSnapshot(encodeState(), snapshot);
 }
-        </pre>
-      
+</pre>
 
-    <p>
-        Follower 这边操作就比较简单了，它会调用 HandleInstallSnapshot 处理快照数据，并把快照数据构造 pb.ApplyMsg 写到 rf.applyCh，最后负责日志 Apply 的 Goruntine 会调用 CondInstallSnapshot 安装快照，最后在 restoreSnapshot 会将快照的 data 数据解析，让后写入自己的状态机。
-    </p>
+      <p>
+        截断后，<code>logs_[0]</code> 成为新的哨兵条目，它的 index 和 term 记录了快照基准点。状态数据和 Raft 状态一起原子性地持久化到磁盘。
+      </p>
 
-    <h3>
-        Raft 如何应对脑裂
-    </h3>
+      <p>
+        <strong>发送快照</strong>：当 Leader 发现某个 Follower 的 <code>nextIndex_</code> 已落后到快照基准之前时（即 <code>prevLogIndex &lt; getFirstLog().index</code>），无法通过 AppendEntries 追赶，改为发送 InstallSnapshot RPC：
+      </p>
 
-    <p>在第三章中我们，介绍了脑裂的场景，并且分过多数派选举协议可以避免脑裂的场景，使得分布式系统在网络分区的情况下也能保持正确性。
+<pre>
+InstallSnapshotRequest Raft::genInstallSnapshotRequest() const {
+    return {currentTerm_, me_,
+            getFirstLog().index, getFirstLog().term,
+            persister_->ReadSnapshot()};
+}
+</pre>
 
-    </p>
+      <p>
+        <strong>Follower 安装快照</strong>：<code>HandleInstallSnapshot()</code> 接收快照数据，如果快照比自己已提交的日志更新，就将快照通过 <code>applyCh_</code> 推送给应用层，由应用层调用 <code>CondInstallSnapshot()</code> 安装：
+      </p>
 
-    <p>
-        Raft 是一种多数派选举的协议，现在我们就来看看它是如何应对脑裂的。
-    </p>
+<pre>
+void Raft::HandleInstallSnapshot(const InstallSnapshotRequest& req,
+                                  InstallSnapshotResponse& resp) {
+    std::lock_guard&lt;std::mutex&gt; lk(mu_);
+    resp.term = currentTerm_;
+    if (req.term &lt; currentTerm_) return;
+    if (req.term > currentTerm_) {
+        currentTerm_ = req.term;
+        votedFor_ = -1;
+        persist();
+    }
+    changeState(NodeState::Follower);
+    electionDeadline_ = std::chrono::steady_clock::now() + RandomizedElectionTimeout();
 
+    if (req.last_included_index &lt;= commitIndex_) return;
 
-  <div style="text-align: center; width: 100%; border: black solid 1px;">
-    <img src="./resources/split_net001.png" width="90%" style="display: inline-block; margin-bottom: 5%;"/>
-  </div> 
+    // 将快照推送到 applyCh_，应用层负责安装
+    ApplyMsg msg;
+    msg.snapshot_valid  = true;
+    msg.snapshot        = req.data;
+    msg.snapshot_term   = req.last_included_term;
+    msg.snapshot_index  = req.last_included_index;
+    applyCh_->push(std::move(msg));
+}
+</pre>
 
-  我们看到上图中的场景，一个五节点的系统被分成了两个区，C,D,E 为一个区，A,B 为一个区。这时候两个分区中都选出了各自的 Leader，但是注意 B 是任期 1 的 Leader，C 是任期 2 Leader。大家可能会有疑问为什么一定有一个任期更高的 Leader，这其实也是多数派选举决定的，分区后，肯定会出现一个多数节点所在的分区，如果这个分区还没有 Leader, 那么肯定会触发选举。
+      <p>
+        <code>CondInstallSnapshot()</code> 由应用层在 apply 线程中调用，它截断快照点之前的日志，更新 <code>commitIndex_</code> 和 <code>lastApplied_</code>，并将快照数据和 Raft 状态一起持久化。
+      </p>
 
-  <div style="text-align: center; width: 100%; border: black solid 1px;">
-    <img src="./resources/split_net002.png" width="90%" style="display: inline-block; margin-bottom: 5%;"/>
-  </div> 
+      <h3>持久化实现</h3>
 
-  之后如下图所示，C,D,E 所在分区被写入了 SET 8 的操作，由于 C,D,E 有三个节点，超过 5 个节点的半数以上，所以 SET 8 这个操作被提交了。然后 A,B 分区被写入 SET 3 操作，但是由于它们是少数派，只有两个节点，所以 SET 3 这个操作写入它们的日志之后并不能被提交。
+      <p>
+        Raft 的持久状态（<code>currentTerm_</code>、<code>votedFor_</code>、<code>logs_</code>）必须在节点崩溃后能恢复。<code>Persister</code> 类（<code>persister.h</code>）封装了持久化逻辑，使用自定义二进制格式序列化状态，并写入磁盘文件。
+      </p>
 
-  <div style="text-align: center; width: 100%; border: black solid 1px;">
-    <img src="./resources/split_net003.png" width="90%" style="display: inline-block; margin-bottom: 5%;"/>
-  </div> 
+<pre>
+void Raft::persist() {
+    persister_->SaveRaftState(encodeState());
+}
 
-  最后网络恢复了，B,A 收到来自 C 的更高任期的心跳会秒变 Follower 并且会将之前没有提交的日志擦除，将 Leader C 发过来的新日志（带有 SET 8 操作）写到自己的日志中，这样整个系统仍然是一致的。
+std::vector&lt;uint8_t&gt; Raft::encodeState() const {
+    std::vector&lt;uint8_t&gt; buf;
+    ser::writeInt(buf, currentTerm_);
+    ser::writeInt(buf, votedFor_);
+    ser::writeInt(buf, static_cast&lt;int&gt;(logs_.size()));
+    for (const auto& e : logs_) {
+        ser::writeInt(buf, e.index);
+        ser::writeInt(buf, e.term);
+        ser::writeBytes(buf, e.command);
+    }
+    return buf;
+}
+</pre>
 
+      <p>
+        <code>Persister</code> 支持两种保存方式：<code>SaveRaftState()</code> 只保存 Raft 状态，<code>SaveStateAndSnapshot()</code> 同时保存 Raft 状态和快照数据，确保两者原子性写入。节点重启时，<code>Raft::Make()</code> 调用 <code>readPersist()</code> 从持久化数据恢复状态。如果存在快照，还会将其推送到 <code>applyCh_</code>，让应用层恢复状态机。
+      </p>
 
-      <h3>捐赠
-      </h3>
+      <h3>Raft 如何应对脑裂</h3>
+
+      <p>
+        在第三章中，我们介绍了脑裂的场景：网络分区导致集群节点被划分为不同分区，如果处理不当，不同分区可能选出各自的 Leader 并提交不同的操作，导致数据不一致。
+      </p>
+
+      <div style="text-align: center; width: 100%; border: black solid 1px;">
+        <img src="./resources/split_net001.png" width="90%" style="display: inline-block; margin-bottom: 5%;"/>
+      </div>
+
+      <p>
+        Raft 通过多数派票决来解决这个问题。以五节点集群为例，分区后 C、D、E 三个节点构成多数派分区，可以选出 Leader 并提交日志；而 A、B 两个节点构成少数派分区，无法达到多数派，因此无法提交日志。
+      </p>
+
+      <div style="text-align: center; width: 100%; border: black solid 1px;">
+        <img src="./resources/split_net002.png" width="90%" style="display: inline-block; margin-bottom: 5%;"/>
+      </div>
+
+      <p>
+        代码层面，关键的防护在于：每次收到 RPC 请求或响应时，都会检查任期号。如果发现更高任期，立即回退为 Follower。这体现在 <code>HandleRequestVote()</code>、<code>HandleAppendEntries()</code> 和 <code>handleAppendEntriesResponse()</code> 中：
+      </p>
+
+<pre>
+// 在 handleAppendEntriesResponse 中
+if (resp.term > currentTerm_) {
+    changeState(NodeState::Follower);
+    currentTerm_ = resp.term;
+    votedFor_ = -1;
+    persist();
+}
+</pre>
+
+      <div style="text-align: center; width: 100%; border: black solid 1px;">
+        <img src="./resources/split_net003.png" width="90%" style="display: inline-block; margin-bottom: 5%;"/>
+      </div>
+
+      <p>
+        当网络恢复后，少数派分区中的 Leader（A 或 B）收到来自多数派分区 Leader（C）的更高任期心跳，会立即变为 Follower，并丢弃之前未提交的冲突日志，从新 Leader 同步正确的日志。这样整个系统最终恢复一致状态。同时，<code>advanceCommitIndexForLeader()</code> 中的"只提交当前任期日志"约束（论文 Figure 8 安全性）确保了 Leader 不会错误地提交之前任期中尚未确认的日志条目，避免了计数错误。
+      </p>
+
+      <p>
+        至此，我们完整分析了 Raft 库的核心实现：数据结构设计、线程模型、RPC 通信、Leader 选举、日志复制、快照压缩、持久化和脑裂应对。下一章，我们将基于这个 Raft 库构建一个高可用的分布式 KV 存储系统。
+      </p>
+
+      <h3>捐赠</h3>
 
       <p>
         整理这本书耗费了我们大量的时间和精力。如果你觉得有帮助，一瓶矿泉水的价格支持我们继续输出优质的分布式存储知识体系，2.99¥，感谢大家的支持。
@@ -756,23 +796,6 @@ if prevLogIndex < uint64(rf.logs.GetFirst().Index) {
       <p> 遵循MIT协议开源。</p>
       <p> 感谢 「赫蹏」 提供如此优秀的中文排版系统 </p>
 
-
-      <!-- <footer class="heti-fn">
-        <ol>
-          <li id="fn-01">
-            <a href="#ref-01" title="移至">^</a>
-            CSS Reset：指代类似Eric Meyer's Reset CSS的样式重置方案
-          </li>
-          <li id="fn-02">
-            <a href="#ref-02" title="移至">^</a>
-            《中文排版需求》：https://w3c.github.io/clreq/
-          </li>
-          <li id="fn-03">
-            <a href="#ref-03" title="移至">^</a>
-            在当下前端技术尚不能完美解决中西文混排间距的情况下，常见的输入习惯是手动在中西文间加入空格（https://github.com/vinta/pangu.js）。这样做的弊端一是间距不可控（有时显得过大），二是通过空格符来排版只能算无奈之举。好消息是在最新的macOS、iOS中，使用原生语言开发的文本区域会自动处理中西文混排的间距（无论是否加空格），期待不用手敲空格的日子早日到来。
-          </li>
-        </ol>
-      </footer> -->
       <script src="https://giscus.app/client.js"
       data-repo="eraft-io/eraft-io.github.io"
       data-repo-id="MDEwOlJlcG9zaXRvcnkzOTYyMDM3NjU="
@@ -795,9 +818,6 @@ if prevLogIndex < uint64(rf.logs.GetFirst().Index) {
     <span id="busuanzi_container_site_pv">本站总访问量<span id="busuanzi_value_site_pv"></span>次</span>
 
   </main>
-
-
-
 
   <aside class="panel">
     <ul class="panel-list panel-list--gray">
