@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>矩阵乘法 · 动画演示</title>
+<style>
+  :root{
+    --bg:#fff; --card:#fff; --card2:#f9fafb; --text:#111827; --muted:#6b7280;
+    --border:#e5e7eb; --accent:#000; --hl-row:rgba(0,0,0,.1); --hl-col:rgba(0,0,0,.06);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{font-family:"Helvetica Neue",Arial,"PingFang SC","Microsoft YaHei",sans-serif;
+       background:var(--bg); color:var(--text); line-height:1.7; -webkit-font-smoothing:antialiased;}
+  header{text-align:center; padding:40px 16px 20px;}
+  header h1{font-size:2rem; font-weight:300; letter-spacing:-.5px;}
+  header p{color:var(--muted); margin-top:8px; font-size:.95rem;}
+  main{max-width:1000px; margin:0 auto; padding:0 20px 60px;}
+  section{background:var(--card); border:1px solid var(--border); border-radius:12px;
+       padding:28px; margin:24px 0; box-shadow:0 1px 3px rgba(0,0,0,.02);}
+  h2{font-size:1.15rem; font-weight:600; margin-bottom:12px;}
+  h2 .tag{font-size:.7rem; font-weight:500; background:#000; color:#fff; border-radius:20px;
+       padding:2px 10px; margin-left:8px; vertical-align:middle;}
+
+  /* 公式区 - 纯HTML/CSS排版，杜绝乱码 */
+  .formula-box{background:var(--card2); border-left:3px solid #000; padding:14px 18px;
+       border-radius:0 6px 6px 0; margin:12px 0; font-family:"Times New Roman",Georgia,serif; font-size:1.15rem;}
+  .formula-box .math{font-style:italic;}
+  .formula-box sub{font-size:.7em; vertical-align:sub;}
+  .formula-box .sum{font-size:1.4em; vertical-align:middle; margin:0 4px; font-style:normal;}
+  .hint{color:var(--muted); font-size:.8rem; margin-top:12px; line-height:1.6;}
+
+  /* 矩阵网格 */
+  .mat-layout{display:flex; flex-wrap:wrap; gap:20px; align-items:center; justify-content:center; margin:24px 0;}
+  .matrix{display:inline-grid; gap:2px; padding:8px 10px; border:1.5px solid #000; border-radius:6px; position:relative;}
+  .matrix::before,.matrix::after{content:''; position:absolute; width:6px; height:calc(100% - 12px);
+       top:6px; border:1.5px solid #000; pointer-events:none;}
+  .matrix::before{left:-1px; border-right:none; border-radius:4px 0 0 4px;}
+  .matrix::after{right:-1px; border-left:none; border-radius:0 4px 4px 0;}
+  .cell{width:48px; height:48px; display:flex; align-items:center; justify-content:center;
+       font-family:"SF Mono",Consolas,monospace; font-size:.9rem; border:1px solid transparent;
+       transition:background .15s, color .15s, border-color .15s; user-select:none;}
+  .cell input{width:100%; height:100%; border:none; background:transparent; text-align:center;
+       font-family:inherit; font-size:inherit; color:inherit; outline:none;}
+  .cell.hl-row{background:var(--hl-row); border-color:rgba(0,0,0,.12);}
+  .cell.hl-col{background:var(--hl-col); border-color:rgba(0,0,0,.08);}
+  .cell.active{background:#000 !important; color:#fff !important; border-color:#000 !important;}
+  .cell.active input{color:#fff !important;}
+  .cell.anim-pulse{animation:pulse .4s ease;}
+  @keyframes pulse{0%{transform:scale(1)} 50%{transform:scale(1.15)} 100%{transform:scale(1)}}
+  .op{font-size:1.5rem; font-weight:300; color:var(--muted); padding:0 8px;}
+  .dim-label{position:absolute; bottom:-22px; left:50%; transform:translateX(-50%);
+       font-size:.7rem; color:var(--muted); white-space:nowrap;}
+
+  /* 计算过程展示区 */
+  .calc-stage{background:var(--card2); border:1px solid var(--border); border-radius:8px;
+       padding:18px 24px; margin-top:18px; min-height:70px; display:flex; align-items:center;
+       justify-content:center; font-family:"SF Mono",Consolas,monospace; font-size:.95rem;
+       line-height:2; flex-wrap:wrap; gap:2px;}
+  .calc-stage .term{opacity:0; transform:translateY(6px); transition:all .3s ease;}
+  .calc-stage .term.show{opacity:1; transform:translateY(0);}
+  .calc-stage .plus{color:var(--muted); margin:0 4px; opacity:0; transition:opacity .3s;}
+  .calc-stage .plus.show{opacity:1;}
+  .calc-stage .eq{color:#000; font-weight:bold; margin:0 8px; opacity:0; transition:opacity .3s;}
+  .calc-stage .eq.show{opacity:1;}
+  .calc-stage .result{font-weight:bold; color:#000; opacity:0; transform:scale(.8); transition:all .3s ease;}
+  .calc-stage .result.show{opacity:1; transform:scale(1);}
+
+  /* 控制栏 */
+  .controls{display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-top:16px;}
+  button{background:#fff; color:#000; border:1px solid var(--border); border-radius:6px;
+       padding:7px 16px; cursor:pointer; font-size:.8rem; transition:all .2s;}
+  button:hover{background:#000; color:#fff; border-color:#000;}
+  button:disabled{opacity:.4; cursor:not-allowed; background:#fff; color:#000;}
+  select{padding:7px 12px; border:1px solid var(--border); border-radius:6px; font-size:.8rem;
+       background:#fff; color:#000; outline:none; cursor:pointer;}
+  .speed-control{display:flex; align-items:center; gap:8px; font-size:.8rem; color:var(--muted);}
+  .speed-control input{width:80px; accent-color:#000;}
+
+  @media(max-width:700px){
+    .mat-layout{flex-direction:column; gap:12px;}
+    .op{transform:rotate(90deg); padding:4px 0;}
+    .cell{width:40px; height:40px; font-size:.8rem;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>矩阵乘法 · 动画演示</h1>
+  <p>C = A × B ：结果矩阵 C 的第 i 行第 j 列 = A 的第 i 行 · B 的第 j 列（点积）</p>
+</header>
+
+<main>
+
+<section>
+  <h2>定义 <span class="tag">Matrix Multiplication</span></h2>
+  <div class="formula-box">
+    <span class="math">C</span><sub><span class="math">ij</span></sub>
+    <span class="sum">=</span>
+    <span class="sum">∑</span><sub><span class="math">k</span>=1</sub><sup><span class="math">n</span></sup>
+    <span class="math"> A</span><sub><span class="math">ik</span></sub>
+    <span style="margin:0 2px;">·</span>
+    <span class="math">B</span><sub><span class="math">kj</span></sub>
+    &nbsp;&nbsp;（A 为 m×n，B 为 n×p → C 为 m×p）
+  </div>
+  <p class="hint">核心规则：A 的列数必须等于 B 的行数。点击下方「演示计算」观看逐步动画，或点击 C 中任意单元格查看该位置的详细计算。</p>
+</section>
+
+<section>
+  <h2>交互演示 <span class="tag">动画</span></h2>
+
+  <div class="controls">
+    <select id="sizeSelect">
+      <option value="2">2 × 2</option>
+      <option value="3" selected>3 × 3</option>
+      <option value="4">4 × 4</option>
+    </select>
+    <button onclick="randomize()">随机填充</button>
+    <button onclick="resetMatrices()">归零</button>
+    <button onclick="identityB()">B = I</button>
+    <div class="speed-control">
+      <span>速度</span>
+      <input type="range" id="speedRange" min="200" max="1200" step="100" value="600">
+    </div>
+  </div>
+  <div class="controls" style="margin-top:10px;">
+    <button id="btnAnimate" onclick="startAnimation()" style="background:#000;color:#fff;border-color:#000;font-weight:600;">▶ 演示计算</button>
+    <button id="btnStop" onclick="stopAnimation()" disabled>■ 停止</button>
+  </div>
+
+  <div class="mat-layout">
+    <div style="position:relative;">
+      <div id="matA" class="matrix"></div>
+      <div class="dim-label" id="dimA">3×3</div>
+    </div>
+    <div class="op">×</div>
+    <div style="position:relative;">
+      <div id="matB" class="matrix"></div>
+      <div class="dim-label" id="dimB">3×3</div>
+    </div>
+    <div class="op">=</div>
+    <div style="position:relative;">
+      <div id="matC" class="matrix"></div>
+      <div class="dim-label" id="dimC">3×3</div>
+    </div>
+  </div>
+
+  <div class="calc-stage" id="calcDisplay">
+    <span style="color:var(--muted)">点击「演示计算」或点击 C 中的单元格</span>
+  </div>
+</section>
+
+<section>
+  <h2>几何意义</h2>
+  <p style="color:var(--muted); font-size:.9rem;">
+    矩阵乘法是<b>线性变换的复合</b>。矩阵 B 先对空间做变换，矩阵 A 再做一次变换；
+    乘积 AB 等价于一个"一步到位"的复合变换。单位矩阵 I 代表恒等变换，故 AI = IA = A。
+  </p>
+</section>
+
+</main>
+
+<script>
+const $ = id => document.getElementById(id);
+let N = 3, A = [], B = [], C = [];
+let animTimer = null, animating = false;
+
+/* ========== 初始化与数据 ========== */
+function init(size){
+  stopAnimation();
+  N = size;
+  A = Array.from({length:N}, ()=>Array(N).fill(0));
+  B = Array.from({length:N}, ()=>Array(N).fill(0));
+  if(N===2){ A=[[1,2],[3,4]]; B=[[5,6],[7,8]]; }
+  else if(N===3){ A=[[1,2,3],[4,5,6],[7,8,9]]; B=[[9,8,7],[6,5,4],[3,2,1]]; }
+  else { for(let i=0;i<4;i++) for(let j=0;j<4;j++){ A[i][j]=((i*4+j+1)%7)-3; B[i][j]=((i+j*4+2)%5)-2; }}
+  renderAll();
+}
+
+function computeC(){
+  C = Array.from({length:N}, ()=>Array(N).fill(0));
+  for(let i=0;i<N;i++) for(let j=0;j<N;j++){
+    let s=0; for(let k=0;k<N;k++) s+=A[i][k]*B[k][j];
+    C[i][j] = Math.round(s*1000)/1000;
+  }
+}
+
+/* ========== 渲染 ========== */
+function renderMatrix(elId, data, editable, isC=false){
+  const el=$(elId), sz=window.innerWidth<700?40:48;
+  el.style.gridTemplateColumns=`repeat(${N},${sz}px)`;
+  el.innerHTML='';
+  for(let i=0;i<N;i++) for(let j=0;j<N;j++){
+    const cell=document.createElement('div');
+    cell.className='cell'; cell.dataset.r=i; cell.dataset.c=j;
+    if(editable){
+      const inp=document.createElement('input');
+      inp.type='number'; inp.step='any'; inp.value=data[i][j];
+      inp.addEventListener('input',e=>{
+        data[i][j]=parseFloat(e.target.value)||0;
+        computeC(); renderMatrix('matC',C,false,true);
+      });
+      cell.appendChild(inp);
+    } else {
+      cell.textContent=fmtNum(data[i][j]);
+      if(isC){
+        cell.style.cursor='pointer';
+        cell.addEventListener('click',()=>{ stopAnimation(); showCellCalc(i,j); });
+      }
+    }
+    el.appendChild(cell);
+  }
+  const dimMap={matA:'dimA',matB:'dimB',matC:'dimC'};
+  if(dimMap[elId]) $(dimMap[elId]).textContent=`${N}×${N}`;
+}
+
+function renderAll(){
+  computeC();
+  renderMatrix('matA',A,true);
+  renderMatrix('matB',B,true);
+  renderMatrix('matC',C,false,true);
+  $('calcDisplay').innerHTML='<span style="color:var(--muted)">点击「演示计算」或点击 C 中的单元格</span>';
+}
+
+function fmtNum(n){ return Number.isInteger(n)?n.toString():n.toFixed(2); }
+
+/* ========== 高亮工具 ========== */
+function clearHighlights(){
+  document.querySelectorAll('.cell').forEach(el=>el.classList.remove('hl-row','hl-col','active','anim-pulse'));
+}
+
+function highlightRow(r){
+  const cells=$('matA').children;
+  for(let k=0;k<N;k++) cells[r*N+k].classList.add('hl-row');
+}
+function highlightCol(c){
+  const cells=$('matB').children;
+  for(let k=0;k<N;k++) cells[k*N+c].classList.add('hl-col');
+}
+function activateC(r,c){
+  const cells=$('matC').children;
+  cells[r*N+c].classList.add('active');
+}
+function pulseCells(r,c,k){
+  const aCells=$('matA').children, bCells=$('matB').children;
+  aCells[r*N+k].classList.add('anim-pulse');
+  bCells[k*N+c].classList.add('anim-pulse');
+}
+
+/* ========== 静态点击显示 ========== */
+function showCellCalc(r,c){
+  clearHighlights();
+  highlightRow(r); highlightCol(c); activateC(r,c);
+  let html=`<span class="term show" style="color:var(--muted)">C[${r+1},${c+1}]</span><span class="eq show">=</span>`;
+  let sum=0;
+  for(let k=0;k<N;k++){
+    const av=A[r][k], bv=B[k][c]; sum+=av*bv;
+    if(k>0) html+='<span class="plus show">+</span>';
+    html+=`<span class="term show">(${fmtNum(av)})(${fmtNum(bv)})</span>`;
+  }
+  html+=`<span class="eq show">=</span><span class="result show">${fmtNum(Math.round(sum*1000)/1000)}</span>`;
+  $('calcDisplay').innerHTML=html;
+}
+
+/* ========== 动画演示 ========== */
+function getDelay(){ return +$('speedRange').value; }
+
+async function startAnimation(){
+  if(animating) return;
+  animating=true;
+  $('btnAnimate').disabled=true; $('btnStop').disabled=false;
+
+  // 遍历 C 的每个单元格
+  for(let r=0;r<N&&animating;r++){
+    for(let c=0;c<N&&animating;c++){
+      await animateCell(r,c);
+      if(!animating) break;
+      await sleep(getDelay()*0.4);
+    }
+  }
+  stopAnimation();
+}
+
+function stopAnimation(){
+  animating=false;
+  if(animTimer){ clearTimeout(animTimer); animTimer=null; }
+  $('btnAnimate').disabled=false; $('btnStop').disabled=true;
+}
+
+function sleep(ms){ return new Promise(res=>{ animTimer=setTimeout(res,ms); }); }
+
+async function animateCell(r,c){
+  clearHighlights();
+  highlightRow(r); highlightCol(c); activateC(r,c);
+
+  // 构建计算步骤DOM（初始隐藏）
+  const stage=$('calcDisplay');
+  stage.innerHTML='';
+  const label=document.createElement('span');
+  label.className='term'; label.style.color='var(--muted)';
+  label.textContent=`C[${r+1},${c+1}]`;
+  stage.appendChild(label);
+  const eq1=document.createElement('span'); eq1.className='eq'; eq1.textContent='=';
+  stage.appendChild(eq1);
+
+  const termEls=[], plusEls=[];
+  for(let k=0;k<N;k++){
+    if(k>0){
+      const plus=document.createElement('span'); plus.className='plus'; plus.textContent='+';
+      stage.appendChild(plus); plusEls.push(plus);
+    }
+    const term=document.createElement('span'); term.className='term';
+    term.textContent=`(${fmtNum(A[r][k])})(${fmtNum(B[k][c])})`;
+    stage.appendChild(term); termEls.push(term);
+  }
+  const eq2=document.createElement('span'); eq2.className='eq'; eq2.textContent='=';
+  stage.appendChild(eq2);
+  const resEl=document.createElement('span'); resEl.className='result';
+  stage.appendChild(resEl);
+
+  // 逐步揭示
+  await sleep(getDelay()*0.3);
+  label.classList.add('show'); eq1.classList.add('show');
+
+  let sum=0;
+  for(let k=0;k<N&&animating;k++){
+    pulseCells(r,c,k);
+    if(k>0) plusEls[k-1].classList.add('show');
+    termEls[k].classList.add('show');
+    sum+=A[r][k]*B[k][c];
+    await sleep(getDelay());
+  }
+  if(!animating) return;
+  eq2.classList.add('show');
+  resEl.textContent=fmtNum(Math.round(sum*1000)/1000);
+  resEl.classList.add('show');
+}
+
+/* ========== 按钮操作 ========== */
+function randomize(){
+  stopAnimation();
+  for(let i=0;i<N;i++) for(let j=0;j<N;j++){
+    A[i][j]=Math.floor(Math.random()*19)-9;
+    B[i][j]=Math.floor(Math.random()*19)-9;
+  }
+  renderAll();
+}
+function resetMatrices(){
+  stopAnimation();
+  for(let i=0;i<N;i++) for(let j=0;j<N;j++){ A[i][j]=0; B[i][j]=0; }
+  renderAll();
+}
+function identityB(){
+  stopAnimation();
+  for(let i=0;i<N;i++) for(let j=0;j<N;j++){ B[i][j]=i===j?1:0; }
+  renderAll();
+}
+
+$('sizeSelect').addEventListener('change',e=>init(+e.target.value));
+window.addEventListener('resize',renderAll);
+init(3);
+</script>
+</body>
+</html>

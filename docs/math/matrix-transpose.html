@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>矩阵转置 · 动画演示</title>
+<style>
+  :root{
+    --bg:#fff; --card:#fff; --card2:#f9fafb; --text:#111827; --muted:#6b7280;
+    --border:#e5e7eb; --accent:#000;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{font-family:"Helvetica Neue",Arial,"PingFang SC","Microsoft YaHei",sans-serif;
+       background:var(--bg); color:var(--text); line-height:1.7; -webkit-font-smoothing:antialiased;}
+  header{text-align:center; padding:40px 16px 20px;}
+  header h1{font-size:2rem; font-weight:300; letter-spacing:-.5px;}
+  header p{color:var(--muted); margin-top:8px; font-size:.95rem;}
+  main{max-width:900px; margin:0 auto; padding:0 20px 60px;}
+  section{background:var(--card); border:1px solid var(--border); border-radius:12px;
+       padding:28px; margin:24px 0; box-shadow:0 1px 3px rgba(0,0,0,.02);}
+  h2{font-size:1.15rem; font-weight:600; margin-bottom:12px;}
+  h2 .tag{font-size:.7rem; font-weight:500; background:#000; color:#fff; border-radius:20px;
+       padding:2px 10px; margin-left:8px; vertical-align:middle;}
+  .formula-box{background:var(--card2); border-left:3px solid #000; padding:14px 18px;
+       border-radius:0 6px 6px 0; margin:12px 0; font-family:"Times New Roman",Georgia,serif; font-size:1.15rem;}
+  .formula-box .math{font-style:italic;}
+  .formula-box sup{font-size:.7em; vertical-align:super;}
+  .hint{color:var(--muted); font-size:.8rem; margin-top:12px; line-height:1.6;}
+  .mat-stage{display:flex; flex-wrap:wrap; gap:30px; align-items:center; justify-content:center;
+       margin:30px 0; position:relative; min-height:260px;}
+  .mat-wrapper{position:relative; display:flex; flex-direction:column; align-items:center;}
+  .mat-label{font-size:.8rem; color:var(--muted); margin-bottom:8px; font-weight:500; letter-spacing:.5px;}
+  .matrix{display:inline-grid; gap:3px; padding:8px 10px; border:1.5px solid #000; border-radius:6px; position:relative;}
+  .matrix::before,.matrix::after{content:''; position:absolute; width:6px; height:calc(100% - 12px);
+       top:6px; border:1.5px solid #000; pointer-events:none;}
+  .matrix::before{left:-1px; border-right:none; border-radius:4px 0 0 4px;}
+  .matrix::after{right:-1px; border-left:none; border-radius:0 4px 4px 0;}
+  .cell{width:52px; height:52px; display:flex; align-items:center; justify-content:center;
+       font-family:"SF Mono",Consolas,monospace; font-size:.9rem; border:1px solid transparent;
+       transition:background .2s, color .2s, border-color .2s; user-select:none; position:relative;}
+  .cell input{width:100%; height:100%; border:none; background:transparent; text-align:center;
+       font-family:inherit; font-size:inherit; color:inherit; outline:none;}
+  .cell.hl-row{background:rgba(0,0,0,.08); border-color:rgba(0,0,0,.1);}
+  .cell.hl-col{background:rgba(0,0,0,.05); border-color:rgba(0,0,0,.07);}
+  .cell.active-src{background:#000 !important; color:#fff !important; border-color:#000 !important;}
+  .cell.active-dst{background:#000 !important; color:#fff !important; border-color:#000 !important;}
+  .flyer{position:fixed; width:52px; height:52px; display:flex; align-items:center; justify-content:center;
+       font-family:"SF Mono",Consolas,monospace; font-size:.9rem; background:#000; color:#fff;
+       border-radius:4px; z-index:100; pointer-events:none; transition:all .5s cubic-bezier(.4,0,.2,1);}
+  .op-arrow{font-size:1.8rem; font-weight:200; color:var(--muted); padding:0 6px; display:flex;
+       align-items:center; gap:6px;}
+  .op-arrow span{font-size:.75rem; font-weight:500; letter-spacing:.5px;}
+  .controls{display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-top:16px;}
+  button{background:#fff; color:#000; border:1px solid var(--border); border-radius:6px;
+       padding:7px 16px; cursor:pointer; font-size:.8rem; transition:all .2s;}
+  button:hover{background:#000; color:#fff; border-color:#000;}
+  button:disabled{opacity:.4; cursor:not-allowed; background:#fff; color:#000;}
+  button.primary{background:#000; color:#fff; border-color:#000; font-weight:600;}
+  select{padding:7px 12px; border:1px solid var(--border); border-radius:6px; font-size:.8rem;
+       background:#fff; color:#000; outline:none; cursor:pointer;}
+  .speed-control{display:flex; align-items:center; gap:8px; font-size:.8rem; color:var(--muted);}
+  .speed-control input{width:80px; accent-color:#000;}
+  .step-indicator{text-align:center; margin-top:14px; font-size:.85rem; color:var(--muted);
+       min-height:24px; font-family:"SF Mono",Consolas,monospace;}
+  .step-indicator b{color:#000; font-weight:600;}
+  @media(max-width:640px){
+    .mat-stage{flex-direction:column; gap:16px;}
+    .op-arrow{transform:rotate(90deg); padding:4px 0;}
+    .cell{width:44px; height:44px; font-size:.8rem;}
+    .flyer{width:44px; height:44px; font-size:.8rem;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>矩阵转置 · 动画演示</h1>
+  <p>A<sup>T</sup> 将矩阵的行变为列、列变为行：第 i 行第 j 列 → 第 j 行第 i 列</p>
+</header>
+
+<main>
+
+<section>
+  <h2>定义 <span class="tag">Transpose</span></h2>
+  <div class="formula-box">
+    (<span class="math">A</span><sup>T</sup>)<sub><span class="math">ij</span></sub>
+    = <span class="math">A</span><sub><span class="math">ji</span></sub>
+    &nbsp;&nbsp;（m×n 矩阵 → n×m 矩阵）
+  </div>
+  <p class="hint">转置的本质是关于主对角线的镜像翻转。观察动画中每个元素如何从 A[i][j] "飞"到 A<sup>T</sup>[j][i] 的位置。</p>
+</section>
+
+<section>
+  <h2>交互演示 <span class="tag">动画</span></h2>
+
+  <div class="controls">
+    <select id="sizeSelect">
+      <option value="2">2 × 2</option>
+      <option value="3" selected>3 × 3</option>
+      <option value="4">4 × 4</option>
+      <option value="2x3">2 × 3</option>
+      <option value="3x2">3 × 2</option>
+    </select>
+    <button onclick="randomize()">随机填充</button>
+    <button onclick="resetMatrix()">归零</button>
+    <div class="speed-control">
+      <span>速度</span>
+      <input type="range" id="speedRange" min="200" max="1000" step="100" value="500">
+    </div>
+  </div>
+  <div class="controls" style="margin-top:10px;">
+    <button class="primary" id="btnAnimate" onclick="startTransposeAnim()">▶ 演示转置</button>
+    <button id="btnStop" onclick="stopAnim()" disabled>■ 停止</button>
+    <button onclick="instantTranspose()">⚡ 即时转置</button>
+  </div>
+
+  <div class="mat-stage">
+    <div class="mat-wrapper">
+      <div class="mat-label" id="labelA">A（3×3）</div>
+      <div id="matA" class="matrix"></div>
+    </div>
+    <div class="op-arrow">→ <span>T</span></div>
+    <div class="mat-wrapper">
+      <div class="mat-label" id="labelAT">A<sup>T</sup>（3×3）</div>
+      <div id="matAT" class="matrix"></div>
+    </div>
+  </div>
+
+  <div class="step-indicator" id="stepInfo">点击「演示转置」观看逐元素飞行动画</div>
+</section>
+
+<section>
+  <h2>性质速查</h2>
+  <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:12px; margin-top:8px;">
+    <div class="formula-box" style="margin:0; font-size:.95rem;">(<span class="math">A</span><sup>T</sup>)<sup>T</sup> = <span class="math">A</span></div>
+    <div class="formula-box" style="margin:0; font-size:.95rem;">(<span class="math">AB</span>)<sup>T</sup> = <span class="math">B</span><sup>T</sup><span class="math">A</span><sup>T</sup></div>
+    <div class="formula-box" style="margin:0; font-size:.95rem;">(<span class="math">A</span>+<span class="math">B</span>)<sup>T</sup> = <span class="math">A</span><sup>T</sup>+<span class="math">B</span><sup>T</sup></div>
+    <div class="formula-box" style="margin:0; font-size:.95rem;">det(<span class="math">A</span><sup>T</sup>) = det(<span class="math">A</span>)</div>
+  </div>
+</section>
+
+</main>
+
+<script>
+const $ = id => document.getElementById(id);
+let rows=3, cols=3, A=[], AT=[];
+let animating=false, animTimer=null;
+
+function init(sizeKey){
+  stopAnim();
+  if(sizeKey==='2x3'){rows=2;cols=3;}
+  else if(sizeKey==='3x2'){rows=3;cols=2;}
+  else{rows=cols=+sizeKey;}
+  
+  A=Array.from({length:rows},()=>Array(cols).fill(0));
+  let v=1;
+  for(let i=0;i<rows;i++) for(let j=0;j<cols;j++) A[i][j]=v++;
+  
+  renderAll();
+}
+
+function computeAT(){
+  AT=Array.from({length:cols},()=>Array(rows).fill(0));
+  for(let i=0;i<rows;i++) for(let j=0;j<cols;j++) AT[j][i]=A[i][j];
+}
+
+function renderMat(elId, data, r, c, editable){
+  const el=$(elId), sz=window.innerWidth<640?44:52;
+  el.style.gridTemplateColumns=`repeat(${c},${sz}px)`;
+  el.innerHTML='';
+  for(let i=0;i<r;i++) for(let j=0;j<c;j++){
+    const cell=document.createElement('div');
+    cell.className='cell'; cell.dataset.r=i; cell.dataset.c=j;
+    if(editable){
+      const inp=document.createElement('input');
+      inp.type='number'; inp.step='any'; inp.value=data[i][j];
+      inp.addEventListener('input',e=>{
+        data[i][j]=parseFloat(e.target.value)||0;
+        computeAT(); renderMat('matAT',AT,cols,rows,false);
+      });
+      cell.appendChild(inp);
+    } else {
+      cell.textContent=fmtNum(data[i][j]);
+    }
+    el.appendChild(cell);
+  }
+}
+
+function renderAll(){
+  computeAT();
+  renderMat('matA',A,rows,cols,true);
+  renderMat('matAT',AT,cols,rows,false);
+  $('labelA').innerHTML=`A（${rows}×${cols}）`;
+  $('labelAT').innerHTML=`A<sup>T</sup>（${cols}×${rows}）`;
+  $('stepInfo').innerHTML='点击「演示转置」观看逐元素飞行动画';
+}
+
+function fmtNum(n){return Number.isInteger(n)?n.toString():n.toFixed(2);}
+
+function clearHL(){
+  document.querySelectorAll('.cell').forEach(el=>
+    el.classList.remove('hl-row','hl-col','active-src','active-dst'));
+}
+
+function getDelay(){return +$('speedRange').value;}
+function sleep(ms){return new Promise(res=>{animTimer=setTimeout(res,ms);});}
+
+async function startTransposeAnim(){
+  if(animating) return;
+  animating=true;
+  $('btnAnimate').disabled=true; $('btnStop').disabled=false;
+  clearHL();
+
+  const dstCells=$('matAT').children;
+  for(let k=0;k<dstCells.length;k++) dstCells[k].style.opacity='0';
+
+  let count=0;
+  const total=rows*cols;
+
+  for(let i=0;i<rows&&animating;i++){
+    for(let j=0;j<cols&&animating;j++){
+      count++;
+      $('stepInfo').innerHTML=`<b>A[${i+1},${j+1}]</b> → <b>A<sup>T</sup>[${j+1},${i+1}]</b> （${count}/${total}）`;
+
+      clearHL();
+      const srcCells=$('matA').children;
+      srcCells[i*cols+j].classList.add('active-src');
+      for(let k=0;k<cols;k++) srcCells[i*cols+k].classList.add('hl-row');
+      for(let k=0;k<rows;k++) dstCells[j*rows+k].classList.add('hl-col');
+      dstCells[j*rows+i].classList.add('active-dst');
+
+      const srcRect=srcCells[i*cols+j].getBoundingClientRect();
+      const dstRect=dstCells[j*rows+i].getBoundingClientRect();
+      const flyer=document.createElement('div');
+      flyer.className='flyer';
+      flyer.textContent=fmtNum(A[i][j]);
+      flyer.style.left=srcRect.left+'px';
+      flyer.style.top=srcRect.top+'px';
+      flyer.style.width=srcRect.width+'px';
+      flyer.style.height=srcRect.height+'px';
+      document.body.appendChild(flyer);
+
+      await sleep(30);
+      flyer.style.left=dstRect.left+'px';
+      flyer.style.top=dstRect.top+'px';
+      flyer.style.width=dstRect.width+'px';
+      flyer.style.height=dstRect.height+'px';
+
+      await sleep(getDelay());
+
+      dstCells[j*rows+i].style.opacity='1';
+      dstCells[j*rows+i].textContent=fmtNum(A[i][j]);
+      flyer.remove();
+
+      await sleep(getDelay()*0.2);
+    }
+  }
+
+  stopAnim();
+  $('stepInfo').innerHTML='✅ 转置完成！可编辑左侧矩阵重新演示';
+}
+
+function stopAnim(){
+  animating=false;
+  if(animTimer){clearTimeout(animTimer);animTimer=null;}
+  $('btnAnimate').disabled=false; $('btnStop').disabled=true;
+  document.querySelectorAll('.flyer').forEach(f=>f.remove());
+  const dstCells=$('matAT').children;
+  for(let k=0;k<dstCells.length;k++) dstCells[k].style.opacity='1';
+  clearHL();
+}
+
+function instantTranspose(){
+  stopAnim();
+  computeAT();
+  renderMat('matAT',AT,cols,rows,false);
+  $('stepInfo').innerHTML='⚡ 即时转置完成';
+}
+
+function randomize(){
+  stopAnim();
+  for(let i=0;i<rows;i++) for(let j=0;j<cols;j++) A[i][j]=Math.floor(Math.random()*19)-9;
+  renderAll();
+}
+function resetMatrix(){
+  stopAnim();
+  for(let i=0;i<rows;i++) for(let j=0;j<cols;j++) A[i][j]=0;
+  renderAll();
+}
+
+$('sizeSelect').addEventListener('change',e=>init(e.target.value));
+window.addEventListener('resize',()=>{if(!animating)renderAll();});
+init('3');
+</script>
+</body>
+</html>

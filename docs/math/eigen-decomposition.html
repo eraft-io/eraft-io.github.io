@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>特征值分解的几何本质 · 动画演示</title>
+<style>
+  :root{
+    --bg:#fff; --card:#fff; --card2:#f9fafb; --text:#111827; --muted:#6b7280;
+    --border:#e5e7eb; --accent:#000;
+    --ev1:#2563eb; --ev2:#dc2626; --circle:#059669; --grid:#e5e7eb; --axis:#374151;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{font-family:"Helvetica Neue",Arial,"PingFang SC","Microsoft YaHei",sans-serif;
+       background:var(--bg); color:var(--text); line-height:1.7; -webkit-font-smoothing:antialiased;}
+  header{text-align:center; padding:40px 16px 20px;}
+  header h1{font-size:2rem; font-weight:300; letter-spacing:-.5px;}
+  header p{color:var(--muted); margin-top:8px; font-size:.95rem;}
+  main{max-width:1140px; margin:0 auto; padding:0 20px 60px;}
+  section{background:var(--card); border:1px solid var(--border); border-radius:12px;
+       padding:22px; margin:20px 0; box-shadow:0 1px 3px rgba(0,0,0,.02);}
+  h2{font-size:1.15rem; font-weight:600; margin-bottom:12px;}
+  h2 .tag{font-size:.7rem; font-weight:500; background:#000; color:#fff; border-radius:20px;
+       padding:2px 10px; margin-left:8px; vertical-align:middle;}
+
+  /* 公式区 */
+  .formula-box{background:var(--card2); border-left:3px solid var(--accent); padding:10px 16px;
+       border-radius:0 6px 6px 0; margin:10px 0; font-family:"Times New Roman",Georgia,serif;
+       font-size:0.88rem; line-height:1.8;}
+  .formula-box .math{font-style:italic;}
+  .formula-box sub{font-size:.7em; vertical-align:sub;}
+  .formula-box sup{font-size:.7em; vertical-align:super;}
+  .formula-box .blue{color:var(--ev1); font-weight:600;}
+  .formula-box .red{color:var(--ev2); font-weight:600;}
+  .formula-box .green{color:var(--circle); font-weight:600;}
+  .hint{color:var(--muted); font-size:.8rem; margin-top:8px; line-height:1.6;}
+
+  /* 计算步骤 */
+  .calc-step{background:var(--card2); border:1px solid var(--border); border-radius:8px;
+       padding:12px 16px; margin:10px 0; transition:border-color .3s, box-shadow .3s;}
+  .calc-step.highlight{border-color:var(--ev1); box-shadow:0 0 0 2px rgba(37,99,235,.1);}
+  .calc-step .step-num{display:inline-block; width:24px; height:24px; border-radius:50%;
+       background:#000; color:#fff; font-size:.75rem; text-align:center; line-height:24px;
+       margin-right:8px; font-weight:600;}
+  .calc-step h3{font-size:.95rem; font-weight:600; display:inline; vertical-align:middle;}
+  .calc-step .detail{margin-top:8px; font-family:"SF Mono",Consolas,monospace; font-size:.82rem;
+       line-height:1.7; color:var(--text);}
+  .calc-step .detail .blue{color:var(--ev1); font-weight:600;}
+  .calc-step .detail .red{color:var(--ev2); font-weight:600;}
+
+  /* 计算步骤逐行动画 */
+  .calc-step .line{opacity:0; transform:translateX(-12px); transition:all .4s ease;
+       max-height:0; overflow:hidden;}
+  .calc-step .line.show{opacity:1; transform:translateX(0); max-height:80px; margin:3px 0;}
+  .calc-step.active{border-color:var(--ev1); box-shadow:0 0 0 3px rgba(37,99,235,.08);}
+  .calc-step.done{opacity:.5; transition:opacity .4s;}
+  .calc-controls{display:flex; gap:10px; justify-content:center; margin:12px 0; flex-wrap:wrap;}
+  .calc-layout{display:flex; gap:20px; flex-wrap:wrap; align-items:flex-start; justify-content:center;}
+  .calc-layout .steps-col{flex:1; min-width:240px; max-width:420px;}
+  .calc-layout .vis-col{flex:0 0 340px; text-align:center; max-width:100%;}
+  .calc-layout canvas{border:1px solid var(--border); border-radius:8px; background:#fafafa; max-width:100%;}
+  .calc-layout .vis-label{font-size:.78rem; color:var(--muted); margin-top:8px; min-height:40px; line-height:1.5;}
+
+  /* Canvas 区域 */
+  .canvas-wrap{display:flex; justify-content:center; margin:20px 0;}
+  canvas{border:1px solid var(--border); border-radius:8px; background:#fafafa;
+       max-width:100%; height:auto;}
+  .step-label{text-align:center; font-size:.95rem; font-weight:600; color:var(--accent);
+       margin:10px 0; min-height:24px; transition:color .3s;}
+  .matrix-display{text-align:center; font-family:"SF Mono",Consolas,monospace; font-size:.8rem;
+       color:var(--muted); margin:6px 0;}
+
+  /* 控制栏 */
+  .controls{display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-top:16px;}
+  button{background:#fff; color:#000; border:1px solid var(--border); border-radius:6px;
+       padding:7px 16px; cursor:pointer; font-size:.8rem; transition:all .2s;}
+  button:hover{background:#000; color:#fff; border-color:#000;}
+  button:disabled{opacity:.4; cursor:not-allowed; background:#fff; color:#000;}
+  button.active{background:#000; color:#fff; border-color:#000;}
+  .matrix-input{display:flex; gap:4px; justify-content:center; align-items:center;
+       flex-wrap:wrap; margin:10px 0;}
+  .matrix-input input{width:50px; text-align:center; border:1px solid var(--border);
+       border-radius:4px; padding:6px 4px; font-family:"SF Mono",Consolas,monospace;
+       font-size:.85rem; outline:none;}
+  .matrix-input input:focus{border-color:var(--accent);}
+  .matrix-input .bracket{font-size:1.6rem; color:var(--muted); font-weight:300;}
+  .speed-control{display:flex; align-items:center; gap:8px; font-size:.8rem; color:var(--muted);}
+  .speed-control input{width:80px; accent-color:#000;}
+
+  /* 图例 */
+  .legend{display:flex; gap:16px; justify-content:center; flex-wrap:wrap; margin:10px 0; font-size:.8rem;}
+  .legend-item{display:flex; align-items:center; gap:6px;}
+  .legend-dot{width:14px; height:3px; border-radius:2px;}
+
+  @media(max-width:760px){
+    .matrix-input input{width:42px;}
+    #cv{width:100% !important; height:auto !important;}
+    .calc-layout{flex-direction:column; align-items:center;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>特征值分解的几何本质</h1>
+  <p>A = QΛQᵀ ：旋转 → 缩放 → 转回，特征向量是"只缩放不旋转"的特殊方向</p>
+</header>
+
+<main>
+
+<!-- ===== 概念定义 ===== -->
+<section>
+  <h2>定义 <span class="tag">Eigenvalue Decomposition</span></h2>
+  <div class="formula-box">
+    <div>
+      <span class="math">A</span>
+      <span style="margin:0 6px;">=</span>
+      <span class="math">Q</span>
+      <span class="math">Λ</span>
+      <span class="math">Q</span><sup>T</sup>
+    </div>
+    <div style="margin-top:8px; font-size:.9em; color:var(--muted);">
+      其中 <span class="blue">Q</span> 的列是特征向量（正交），<span class="red">Λ</span> 是特征值对角阵
+    </div>
+  </div>
+  <p class="hint">
+    <b>核心直觉</b>：任何对称矩阵的作用都可以拆成三步——
+    <b>① 旋转</b>到特征向量方向（Qᵀ）、
+    <b>② 沿轴缩放</b>（Λ，特征值即缩放倍数）、
+    <b>③ 旋转回</b>（Q）。<br>
+    <b>特征向量的几何意义</b>：在矩阵变换下，<b>方向不变</b>（只被拉伸或压缩）的向量；
+    <b>特征值</b>就是沿该方向的拉伸/压缩比例。
+  </p>
+</section>
+
+<!-- ===== 计算实例（逐行动画）===== -->
+<section>
+  <h2>计算实例 <span class="tag">2×2 方阵 · 逐行动画</span></h2>
+  <p style="color:var(--muted); font-size:.85rem; margin-bottom:4px;">
+    以 <b>A = [[3, 1], [1, 3]]</b> 为例（对称矩阵，保证特征向量正交）
+  </p>
+
+  <div class="calc-controls">
+    <button id="btnCalcPlay" onclick="toggleCalcPlay()" style="background:#000;color:#fff;border-color:#000;font-weight:600;">▶ 播放计算</button>
+    <button onclick="calcStepForward()">▶ 下一步</button>
+    <button onclick="resetCalc()">↺ 重置</button>
+  </div>
+
+  <div class="calc-layout">
+    <div class="steps-col">
+      <div class="calc-step" id="cs1">
+        <span class="step-num">1</span><h3>求特征值 — det(A − λI) = 0</h3>
+        <div class="detail">
+          <div class="line">det(A − λI) = (3−λ)(3−λ) − 1×1</div>
+          <div class="line">= λ² − 6λ + 8 = 0</div>
+          <div class="line">→ 因式分解: (λ − 4)(λ − 2) = 0</div>
+          <div class="line">→ <span class="blue">λ₁ = 4</span>，<span class="red">λ₂ = 2</span></div>
+        </div>
+      </div>
+
+      <div class="calc-step" id="cs2">
+        <span class="step-num">2</span><h3>求特征向量 — (A − λI)v = 0</h3>
+        <div class="detail">
+          <div class="line"><span class="blue">λ₁ = 4：</span> A − 4I = [[−1, 1], [1, −1]]</div>
+          <div class="line">→ −v₁ + v₂ = 0 → v₁ = v₂</div>
+          <div class="line">→ <span class="blue">v₁ = [1, 1] / √2</span></div>
+          <div class="line"><span class="red">λ₂ = 2：</span> A − 2I = [[1, 1], [1, 1]]</div>
+          <div class="line">→ v₁ + v₂ = 0 → v₁ = −v₂</div>
+          <div class="line">→ <span class="red">v₂ = [1, −1] / √2</span></div>
+        </div>
+      </div>
+
+      <div class="calc-step" id="cs3">
+        <span class="step-num">3</span><h3>构造 Q 和 Λ</h3>
+        <div class="detail">
+          <div class="line">Q = [<span class="blue">v₁</span> | <span class="red">v₂</span>]</div>
+          <div class="line">= [[1/√2, 1/√2], [1/√2, −1/√2]]</div>
+          <div class="line">Λ = diag(<span class="blue">λ₁</span>, <span class="red">λ₂</span>) = [[4, 0], [0, 2]]</div>
+        </div>
+      </div>
+
+      <div class="calc-step" id="cs4">
+        <span class="step-num">4</span><h3>验证 A = QΛQᵀ</h3>
+        <div class="detail">
+          <div class="line">Qᵀ = [[1/√2, 1/√2], [1/√2, −1/√2]] （Q = Qᵀ）</div>
+          <div class="line">ΛQᵀ = [[4/√2, 4/√2], [2/√2, −2/√2]] = [[2√2, 2√2], [√2, −√2]]</div>
+          <div class="line">Q(ΛQᵀ)[1,1] = (1/√2)(2√2) + (1/√2)(√2) = 2+1 = 3 ✓</div>
+          <div class="line">Q(ΛQᵀ)[1,2] = (1/√2)(2√2) + (1/√2)(−√2) = 2−1 = 1 ✓</div>
+          <div class="line">→ QΛQᵀ = <b>[[3, 1], [1, 3]] = A ✓</b></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="vis-col">
+      <canvas id="calcCv" width="340" height="340"></canvas>
+      <div class="vis-label" id="calcVisLabel">点击「播放计算」<br>右侧画布同步展示几何含义</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 交互式动画 ===== -->
+<section>
+  <h2>交互式动画 <span class="tag">Geometric Visualization</span></h2>
+
+  <!-- 矩阵输入 -->
+  <div class="matrix-input">
+    <span class="bracket">[</span>
+    <input type="number" id="m00" value="3" step="0.5">
+    <input type="number" id="m01" value="1" step="0.5">
+    <span class="bracket" style="margin:0 2px;"></span>
+    <input type="number" id="m10" value="1" step="0.5">
+    <input type="number" id="m11" value="3" step="0.5">
+    <span class="bracket">]</span>
+  </div>
+
+  <!-- 动画模式 -->
+  <div class="controls">
+    <button class="active" id="btnDecomp" onclick="setMode('decompose')">分解步骤（旋转→缩放→转回）</button>
+    <button id="btnFull" onclick="setMode('full')">完整变换（I → A）</button>
+  </div>
+
+  <!-- 播放控制 -->
+  <div class="controls" style="margin-top:10px;">
+    <button id="btnPlay" onclick="togglePlay()" style="background:#000;color:#fff;border-color:#000;font-weight:600;">▶ 播放</button>
+    <button onclick="stepBack()">◀ 上一步</button>
+    <button onclick="stepForward()">下一步 ▶</button>
+    <button onclick="resetAnim()">↺ 重置</button>
+    <div class="speed-control">
+      <span>速度</span>
+      <input type="range" id="speedRange" min="1" max="10" step="1" value="4">
+    </div>
+  </div>
+
+  <!-- Canvas -->
+  <div class="canvas-wrap">
+    <canvas id="cv" width="640" height="640"></canvas>
+  </div>
+
+  <!-- 图例 -->
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:var(--ev1)"></div>特征向量 v₁ (λ₁)</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--ev2)"></div>特征向量 v₂ (λ₂)</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--circle)"></div>单位圆 → 椭圆</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--grid)"></div>网格</div>
+  </div>
+
+  <!-- 当前步骤说明 -->
+  <div class="step-label" id="stepLabel">准备就绪 — 点击「播放」</div>
+  <div class="matrix-display" id="matrixDisplay"></div>
+</section>
+
+<!-- ===== 几何本质 ===== -->
+<section>
+  <h2>几何本质 <span class="tag">Why It Works</span></h2>
+  <p style="color:var(--muted); font-size:.9rem; line-height:1.8;">
+    <b>为什么特征向量不旋转？</b><br>
+    因为特征向量的定义就是 <b>Av = λv</b>——矩阵 A 作用在 v 上，结果只是把 v 拉伸了 λ 倍，
+    方向完全不变（或反向，当 λ&lt;0）。这是"特征"二字的本质含义。<br><br>
+    <b>三步分解的直观含义：</b><br>
+    &nbsp;&nbsp;<b>① Qᵀ</b>（旋转）：把空间转到"特征向量坐标系"，让 v₁ 对齐 x 轴、v₂ 对齐 y 轴<br>
+    &nbsp;&nbsp;<b>② Λ</b>（缩放）：在特征坐标系中，x 方向拉伸 λ₁ 倍、y 方向拉伸 λ₂ 倍<br>
+    &nbsp;&nbsp;<b>③ Q</b>（转回）：把空间转回原来的朝向<br><br>
+    单位圆经过变换后变成<b>椭圆</b>，而特征向量恰好是椭圆的<b>主轴方向</b>，
+    特征值就是主轴的<b>半轴长度</b>。这就是特征值分解的几何全貌。
+  </p>
+</section>
+
+</main>
+
+<script>
+/* ========== 配置 ========== */
+const CV = document.getElementById('cv');
+const ctx = CV.getContext('2d');
+const CSIZE = 640;
+const CRANGE = 3.2;
+const SCALE = CSIZE / (2 * CRANGE);
+
+/* 高DPI支持 */
+function setupCanvas(){
+  const dpr = window.devicePixelRatio || 1;
+  CV.width = CSIZE * dpr;
+  CV.height = CSIZE * dpr;
+  CV.style.width = CSIZE + 'px';
+  CV.style.height = CSIZE + 'px';
+  ctx.scale(dpr, dpr);
+}
+setupCanvas();
+
+/* ========== 状态 ========== */
+let matrix = [[3,1],[1,3]];
+let eigen = null;
+let animMode = 'decompose';
+let animT = 0;
+let animPlaying = false;
+let animRAF = null;
+let lastTime = 0;
+
+/* ========== 数学函数 ========== */
+function computeEigen(a,b,c,d){
+  const tr=a+d, det=a*d-b*c, disc=tr*tr-4*det;
+  if(disc < -1e-9) return null;
+  const sd=Math.sqrt(Math.max(0,disc));
+  const l1=(tr+sd)/2, l2=(tr-sd)/2;
+  function vec(lm){
+    let v;
+    if(Math.abs(b)>1e-10) v=[b, lm-a];
+    else if(Math.abs(c)>1e-10) v=[lm-d, c];
+    else v=[Math.abs(a-lm)<1e-10?1:0, Math.abs(d-lm)<1e-10?1:0];
+    const n=Math.hypot(v[0],v[1]);
+    if(n>1e-10){v[0]/=n; v[1]/=n;}
+    return v;
+  }
+  const v1=vec(l1), v2=vec(l2);
+  const Q=[[v1[0],v2[0]],[v1[1],v2[1]]];
+  const Qt=[[v1[0],v1[1]],[v2[0],v2[1]]];
+  const Lam=[[l1,0],[0,l2]];
+  return {l1,l2,v1,v2,Q,Qt,Lambda:Lam};
+}
+
+function matMul(A,B){
+  return [[A[0][0]*B[0][0]+A[0][1]*B[1][0], A[0][0]*B[0][1]+A[0][1]*B[1][1]],
+          [A[1][0]*B[0][0]+A[1][1]*B[1][0], A[1][0]*B[0][1]+A[1][1]*B[1][1]]];
+}
+function lerpMat(M1,M2,t){
+  return [[M1[0][0]*(1-t)+M2[0][0]*t, M1[0][1]*(1-t)+M2[0][1]*t],
+          [M1[1][0]*(1-t)+M2[1][0]*t, M1[1][1]*(1-t)+M2[1][1]*t]];
+}
+function identity(){return [[1,0],[0,1]];}
+
+function getAnimMatrix(t){
+  if(animMode==='full') return lerpMat(identity(), matrix, t);
+  const {Q,Qt,Lambda}=eigen;
+  const LQt=matMul(Lambda,Qt);
+  const A=matMul(Q,LQt);
+  if(t<1/3) return lerpMat(identity(), Qt, t*3);
+  if(t<2/3) return lerpMat(Qt, LQt, (t-1/3)*3);
+  return lerpMat(LQt, A, (t-2/3)*3);
+}
+
+/* ========== 坐标转换 ========== */
+function toCanvas(x,y){
+  return [CSIZE/2 + x*SCALE, CSIZE/2 - y*SCALE];
+}
+function transformPt(pt,M){
+  return [M[0][0]*pt[0]+M[0][1]*pt[1], M[1][0]*pt[0]+M[1][1]*pt[1]];
+}
+
+/* ========== 绘图函数 ========== */
+function drawGrid(M){
+  ctx.strokeStyle='#e5e7eb';
+  ctx.lineWidth=1;
+  const steps=30;
+  for(let i=-3;i<=3;i++){
+    // 竖线 (x=i, y从-3.2到3.2)
+    ctx.beginPath();
+    for(let s=0;s<=steps;s++){
+      const y=-CRANGE + (s/steps)*2*CRANGE;
+      const [px,py]=transformPt([i,y],M);
+      const [cx,cy]=toCanvas(px,py);
+      if(s===0) ctx.moveTo(cx,cy); else ctx.lineTo(cx,cy);
+    }
+    ctx.stroke();
+    // 横线 (y=i)
+    ctx.beginPath();
+    for(let s=0;s<=steps;s++){
+      const x=-CRANGE + (s/steps)*2*CRANGE;
+      const [px,py]=transformPt([x,i],M);
+      const [cx,cy]=toCanvas(px,py);
+      if(s===0) ctx.moveTo(cx,cy); else ctx.lineTo(cx,cy);
+    }
+    ctx.stroke();
+  }
+}
+
+function drawAxes(){
+  ctx.strokeStyle='#9ca3af';
+  ctx.lineWidth=1.5;
+  const [x1,y1]=toCanvas(-CRANGE,0);
+  const [x2,y2]=toCanvas(CRANGE,0);
+  ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
+  const [x3,y3]=toCanvas(0,-CRANGE);
+  const [x4,y4]=toCanvas(0,CRANGE);
+  ctx.beginPath(); ctx.moveTo(x3,y3); ctx.lineTo(x4,y4); ctx.stroke();
+}
+
+function drawCircle(M){
+  // 填充
+  ctx.fillStyle='rgba(5,150,105,0.08)';
+  ctx.beginPath();
+  const N=80;
+  for(let i=0;i<=N;i++){
+    const a=(i/N)*2*Math.PI;
+    const [px,py]=transformPt([Math.cos(a),Math.sin(a)],M);
+    const [cx,cy]=toCanvas(px,py);
+    if(i===0) ctx.moveTo(cx,cy); else ctx.lineTo(cx,cy);
+  }
+  ctx.closePath(); ctx.fill();
+  // 描边
+  ctx.strokeStyle='#059669';
+  ctx.lineWidth=3;
+  ctx.beginPath();
+  for(let i=0;i<=N;i++){
+    const a=(i/N)*2*Math.PI;
+    const [px,py]=transformPt([Math.cos(a),Math.sin(a)],M);
+    const [cx,cy]=toCanvas(px,py);
+    if(i===0) ctx.moveTo(cx,cy); else ctx.lineTo(cx,cy);
+  }
+  ctx.closePath(); ctx.stroke();
+}
+
+function drawArrow(from,to,color,width,lw){
+  const [fx,fy]=toCanvas(from[0],from[1]);
+  const [tx,ty]=toCanvas(to[0],to[1]);
+  ctx.strokeStyle=color; ctx.fillStyle=color; ctx.lineWidth=width||3;
+  ctx.beginPath(); ctx.moveTo(fx,fy); ctx.lineTo(tx,ty); ctx.stroke();
+  const angle=Math.atan2(ty-fy,tx-fx);
+  const hl=15;
+  ctx.beginPath();
+  ctx.moveTo(tx,ty);
+  ctx.lineTo(tx-hl*Math.cos(angle-Math.PI/6), ty-hl*Math.sin(angle-Math.PI/6));
+  ctx.lineTo(tx-hl*Math.cos(angle+Math.PI/6), ty-hl*Math.sin(angle+Math.PI/6));
+  ctx.closePath(); ctx.fill();
+  // 标签
+  if(lw){
+    ctx.font='bold 15px "SF Mono",Consolas,monospace';
+    ctx.fillStyle=color;
+    const lx=tx+10*Math.cos(angle)+5, ly=ty+10*Math.sin(angle)-5;
+    ctx.fillText(lw, lx, ly);
+  }
+}
+
+function drawEigenvectors(M){
+  if(!eigen) return;
+  // 原始特征向量方向（虚线）
+  ctx.setLineDash([4,4]);
+  ctx.lineWidth=1.5;
+  ctx.strokeStyle='rgba(37,99,235,0.3)';
+  const o1=transformPt(eigen.v1, identity());
+  const [ox1,oy1]=toCanvas(o1[0]*3, o1[1]*3);
+  const [ox2,oy2]=toCanvas(-o1[0]*3,-o1[1]*3);
+  ctx.beginPath(); ctx.moveTo(ox1,oy1); ctx.lineTo(ox2,oy2); ctx.stroke();
+  ctx.strokeStyle='rgba(220,38,38,0.3)';
+  const o2=transformPt(eigen.v2, identity());
+  const [ox3,oy3]=toCanvas(o2[0]*3, o2[1]*3);
+  const [ox4,oy4]=toCanvas(-o2[0]*3,-o2[1]*3);
+  ctx.beginPath(); ctx.moveTo(ox3,oy3); ctx.lineTo(ox4,oy4); ctx.stroke();
+  ctx.setLineDash([]);
+
+  // 变换后的特征向量（粗箭头）
+  const tv1=transformPt(eigen.v1, M);
+  const tv2=transformPt(eigen.v2, M);
+  drawArrow([0,0], tv1, '#2563eb', 4, `λ₁=${fmtNum(eigen.l1)}`);
+  drawArrow([0,0], tv2, '#dc2626', 4, `λ₂=${fmtNum(eigen.l2)}`);
+}
+
+function draw(){
+  ctx.clearRect(0,0,CSIZE,CSIZE);
+  const M=getAnimMatrix(animT);
+  drawGrid(M);
+  drawAxes();
+  drawCircle(M);
+  drawEigenvectors(M);
+  updateLabels();
+}
+
+/* ========== 标签更新 ========== */
+function fmtNum(n){
+  return Number.isInteger(n) ? n.toString() : n.toFixed(2);
+}
+function fmtMat(M){
+  return `[[${fmtNum(M[0][0])}, ${fmtNum(M[0][1])}], [${fmtNum(M[1][0])}, ${fmtNum(M[1][1])}]]`;
+}
+function updateLabels(){
+  const sl=document.getElementById('stepLabel');
+  const md=document.getElementById('matrixDisplay');
+  const M=getAnimMatrix(animT);
+  if(animMode==='full'){
+    if(animT<0.02) sl.textContent='原始空间（单位矩阵 I）';
+    else if(animT<0.98) sl.textContent='变换中：I → A 的线性插值';
+    else sl.textContent='变换完成：矩阵 A 作用后的空间';
+  } else {
+    if(animT<1/3) sl.textContent=`第 1 步：旋转 Qᵀ — 将特征向量对齐到坐标轴 (${(animT*3*100).toFixed(0)}%)`;
+    else if(animT<2/3) sl.textContent=`第 2 步：缩放 Λ — 沿特征方向拉伸/压缩 (${((animT-1/3)*3*100).toFixed(0)}%)`;
+    else sl.textContent=`第 3 步：旋转 Q — 转回原始方向 = A (${((animT-2/3)*3*100).toFixed(0)}%)`;
+  }
+  md.textContent='当前变换矩阵 M = '+fmtMat(M);
+}
+
+/* ========== 动画控制 ========== */
+function getSpeed(){ return +document.getElementById('speedRange').value / 10; }
+
+function togglePlay(){
+  animPlaying=!animPlaying;
+  const btn=document.getElementById('btnPlay');
+  if(animPlaying){
+    btn.textContent='⏸ 暂停';
+    btn.style.background='#000';
+    lastTime=performance.now();
+    animLoop();
+  } else {
+    btn.textContent='▶ 播放';
+    btn.style.background='#000';
+    if(animRAF) cancelAnimationFrame(animRAF);
+  }
+}
+
+function animLoop(){
+  if(!animPlaying) return;
+  const now=performance.now();
+  const dt=(now-lastTime)/1000;
+  lastTime=now;
+  animT += dt * getSpeed();
+  if(animT >= 1){
+    animT = 1;
+    animPlaying = false;
+    document.getElementById('btnPlay').textContent='▶ 播放';
+    draw();
+    return;
+  }
+  draw();
+  animRAF=requestAnimationFrame(animLoop);
+}
+
+function stepForward(){
+  if(animMode==='decompose'){
+    const steps=[0, 1/3, 2/3, 1];
+    for(let s of steps){ if(animT < s - 0.01){ animT=s; draw(); return; } }
+    animT=1; draw();
+  } else {
+    animT=Math.min(1, animT+0.1); draw();
+  }
+}
+function stepBack(){
+  if(animMode==='decompose'){
+    const steps=[0, 1/3, 2/3, 1];
+    for(let i=steps.length-1;i>=0;i--){
+      if(animT > steps[i]+0.01){ animT=steps[i]; draw(); return; }
+    }
+    animT=0; draw();
+  } else {
+    animT=Math.max(0, animT-0.1); draw();
+  }
+}
+function resetAnim(){
+  animPlaying=false;
+  document.getElementById('btnPlay').textContent='▶ 播放';
+  animT=0; draw();
+}
+
+/* ========== 模式切换 ========== */
+function setMode(m){
+  animMode=m;
+  document.getElementById('btnDecomp').classList.toggle('active', m==='decompose');
+  document.getElementById('btnFull').classList.toggle('active', m==='full');
+  resetAnim();
+}
+
+/* ========== 矩阵输入 ========== */
+function readMatrix(){
+  const a=parseFloat(document.getElementById('m00').value)||0;
+  const b=parseFloat(document.getElementById('m01').value)||0;
+  const c=parseFloat(document.getElementById('m10').value)||0;
+  const d=parseFloat(document.getElementById('m11').value)||0;
+  matrix=[[a,b],[c,d]];
+  eigen=computeEigen(a,b,c,d);
+  // 检查是否有实特征值
+  if(!eigen){
+    document.getElementById('stepLabel').textContent='⚠ 此矩阵特征值为复数，几何可视化不适用（请使用对称矩阵）';
+    document.getElementById('stepLabel').style.color='var(--ev2)';
+  } else {
+    document.getElementById('stepLabel').style.color='var(--accent)';
+  }
+  resetAnim();
+  resetCalc();
+}
+
+/* 绑定输入事件 */
+['m00','m01','m10','m11'].forEach(id=>{
+  document.getElementById(id).addEventListener('input', readMatrix);
+});
+
+/* ========== 计算实例动画 ========== */
+const CCV=document.getElementById('calcCv');
+const cctx=CCV.getContext('2d');
+const CCSIZE=340, CCRANGE=2.5;
+const CSCALE=CCSIZE/(2*CCRANGE);
+let calcPlaying=false, calcStepIdx=0, calcLineIdx=0, calcVisLevel=0, calcTimer=null;
+
+const calcSteps=[
+  {id:'cs1', visLevel:1, label:'从特征方程解出 λ₁=4, λ₂=2<br>特征值 = 变换后的缩放倍数'},
+  {id:'cs2', visLevel:2, label:'从 (A−λI)v=0 解出正交特征向量<br>特征向量 = 只缩放不旋转的方向'},
+  {id:'cs3', visLevel:3, label:'Q 的列 = 特征向量，Λ = 特征值对角阵<br>Q 旋转对齐，Λ 沿轴缩放'},
+  {id:'cs4', visLevel:4, label:'QΛQᵀ = A ✓ 验证通过！<br>右侧 = 矩阵 A 的完整变换效果'}
+];
+
+function setupCalcCanvas(){
+  const dpr=window.devicePixelRatio||1;
+  CCV.width=CCSIZE*dpr; CCV.height=CCSIZE*dpr;
+  CCV.style.width=CCSIZE+'px'; CCV.style.height=CCSIZE+'px';
+  cctx.scale(dpr,dpr);
+}
+function cToCanvas(x,y){return [CCSIZE/2+x*CSCALE, CCSIZE/2-y*CSCALE];}
+
+function drawCalcGrid(M){
+  cctx.strokeStyle='#e5e7eb'; cctx.lineWidth=1;
+  const st=20;
+  for(let i=-2;i<=2;i++){
+    cctx.beginPath();
+    for(let s=0;s<=st;s++){const y=-CCRANGE+(s/st)*2*CCRANGE; const [px,py]=transformPt([i,y],M); const [cx,cy]=cToCanvas(px,py); if(s===0)cctx.moveTo(cx,cy); else cctx.lineTo(cx,cy);} cctx.stroke();
+    cctx.beginPath();
+    for(let s=0;s<=st;s++){const x=-CCRANGE+(s/st)*2*CCRANGE; const [px,py]=transformPt([x,i],M); const [cx,cy]=cToCanvas(px,py); if(s===0)cctx.moveTo(cx,cy); else cctx.lineTo(cx,cy);} cctx.stroke();
+  }
+}
+function drawCalcAxes(){
+  cctx.strokeStyle='#9ca3af'; cctx.lineWidth=1;
+  cctx.beginPath(); cctx.moveTo(...cToCanvas(-CCRANGE,0)); cctx.lineTo(...cToCanvas(CCRANGE,0)); cctx.stroke();
+  cctx.beginPath(); cctx.moveTo(...cToCanvas(0,-CCRANGE)); cctx.lineTo(...cToCanvas(0,CCRANGE)); cctx.stroke();
+}
+function drawCalcCircle(M){
+  cctx.fillStyle='rgba(5,150,105,0.08)'; cctx.strokeStyle='#059669'; cctx.lineWidth=2.5;
+  const N=60; cctx.beginPath();
+  for(let i=0;i<=N;i++){const a=(i/N)*2*Math.PI; const [px,py]=transformPt([Math.cos(a),Math.sin(a)],M); const [cx,cy]=cToCanvas(px,py); if(i===0)cctx.moveTo(cx,cy); else cctx.lineTo(cx,cy);}
+  cctx.closePath(); cctx.fill(); cctx.stroke();
+}
+function drawCalcArrow(from,to,color,label){
+  const [fx,fy]=cToCanvas(from[0],from[1]); const [tx,ty]=cToCanvas(to[0],to[1]);
+  cctx.strokeStyle=color; cctx.fillStyle=color; cctx.lineWidth=2.5;
+  cctx.beginPath(); cctx.moveTo(fx,fy); cctx.lineTo(tx,ty); cctx.stroke();
+  const ang=Math.atan2(ty-fy,tx-fx); const hl=10;
+  cctx.beginPath(); cctx.moveTo(tx,ty);
+  cctx.lineTo(tx-hl*Math.cos(ang-Math.PI/6),ty-hl*Math.sin(ang-Math.PI/6));
+  cctx.lineTo(tx-hl*Math.cos(ang+Math.PI/6),ty-hl*Math.sin(ang+Math.PI/6));
+  cctx.closePath(); cctx.fill();
+  if(label){cctx.font='bold 12px "SF Mono",Consolas,monospace'; cctx.fillStyle=color; cctx.fillText(label,tx+6,ty-4);}
+}
+function drawCalcCanvas(){
+  cctx.clearRect(0,0,CCSIZE,CCSIZE);
+  const M = calcVisLevel>=4 ? matrix : identity();
+  drawCalcGrid(M); drawCalcAxes(); drawCalcCircle(M);
+  if(eigen && calcVisLevel>=2){
+    const tv1=transformPt(eigen.v1,M), tv2=transformPt(eigen.v2,M);
+    drawCalcArrow([0,0],tv1,'#2563eb','λ₁='+fmtNum(eigen.l1));
+    drawCalcArrow([0,0],tv2,'#dc2626','λ₂='+fmtNum(eigen.l2));
+  }
+}
+
+function toggleCalcPlay(){
+  if(calcPlaying){calcPlaying=false; document.getElementById('btnCalcPlay').textContent='▶ 播放计算'; if(calcTimer)clearTimeout(calcTimer);}
+  else{if(calcStepIdx>=calcSteps.length)resetCalc(); calcPlaying=true; document.getElementById('btnCalcPlay').textContent='⏸ 暂停'; calcAnimLoop();}
+}
+function calcAnimLoop(){
+  if(!calcPlaying) return;
+  const step=calcSteps[calcStepIdx];
+  if(!step){calcPlaying=false; document.getElementById('btnCalcPlay').textContent='▶ 播放计算'; return;}
+  const stepEl=document.getElementById(step.id);
+  const lines=stepEl.querySelectorAll('.line');
+  stepEl.classList.add('active');
+  if(calcLineIdx<lines.length){
+    lines[calcLineIdx].classList.add('show');
+    calcLineIdx++;
+    calcTimer=setTimeout(calcAnimLoop,750);
+  } else {
+    stepEl.classList.remove('active'); stepEl.classList.add('done');
+    calcVisLevel=step.visLevel; drawCalcCanvas();
+    document.getElementById('calcVisLabel').innerHTML=step.label;
+    calcStepIdx++; calcLineIdx=0;
+    calcTimer=setTimeout(calcAnimLoop,700);
+  }
+}
+function calcStepForward(){
+  if(calcPlaying){calcPlaying=false; document.getElementById('btnCalcPlay').textContent='▶ 播放计算'; if(calcTimer)clearTimeout(calcTimer);}
+  if(calcStepIdx>=calcSteps.length) return;
+  const step=calcSteps[calcStepIdx];
+  const stepEl=document.getElementById(step.id);
+  const lines=stepEl.querySelectorAll('.line');
+  stepEl.classList.add('active');
+  if(calcLineIdx<lines.length){
+    lines[calcLineIdx].classList.add('show'); calcLineIdx++;
+  } else {
+    stepEl.classList.remove('active'); stepEl.classList.add('done');
+    calcVisLevel=step.visLevel; drawCalcCanvas();
+    document.getElementById('calcVisLabel').innerHTML=step.label;
+    calcStepIdx++; calcLineIdx=0;
+    if(calcStepIdx<calcSteps.length){document.getElementById(calcSteps[calcStepIdx].id).classList.add('active');}
+  }
+}
+function resetCalc(){
+  calcPlaying=false; if(calcTimer)clearTimeout(calcTimer);
+  calcStepIdx=0; calcLineIdx=0; calcVisLevel=0;
+  document.getElementById('btnCalcPlay').textContent='▶ 播放计算';
+  document.querySelectorAll('.calc-step .line').forEach(l=>l.classList.remove('show'));
+  document.querySelectorAll('.calc-step').forEach(s=>s.classList.remove('active','done'));
+  document.getElementById('calcVisLabel').innerHTML='点击「播放计算」<br>右侧画布同步展示几何含义';
+  drawCalcCanvas();
+}
+
+/* ========== 初始化 ========== */
+setupCalcCanvas();
+readMatrix();
+draw();
+drawCalcCanvas();
+</script>
+</body>
+</html>

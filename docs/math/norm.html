@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>向量范数 · 极简交互</title>
+<style>
+  :root{
+    --bg:#ffffff; --card:#ffffff; --card2:#f9fafb; --text:#111827; --muted:#6b7280;
+    --l1:#000000; --l2:#4b5563; --linf:#9ca3af; --vec:#000000; --accent:#111827;
+    --border:#e5e7eb;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{font-family:"Helvetica Neue",Arial,"PingFang SC","Microsoft YaHei",sans-serif;
+       background:var(--bg); color:var(--text); line-height:1.7; -webkit-font-smoothing:antialiased;}
+  header{text-align:center; padding:40px 16px 20px;}
+  header h1{font-size:2rem; font-weight:300; letter-spacing:-0.5px; color:#000;}
+  header p{color:var(--muted); margin-top:8px; font-size:.95rem;}
+  main{max-width:1000px; margin:0 auto; padding:0 20px 60px;}
+  section{background:var(--card); border:1px solid var(--border); border-radius:12px; 
+       padding:28px; margin:24px 0; box-shadow:0 1px 3px rgba(0,0,0,.02);}
+  h2{font-size:1.15rem; font-weight:600; margin-bottom:12px; color:#000; letter-spacing:-0.3px;}
+  h2 .tag{font-size:.7rem; font-weight:500; background:#000; color:#fff; border-radius:20px;
+       padding:2px 10px; margin-left:8px; vertical-align:middle;}
+  .formula{font-family:"Times New Roman",Georgia,serif; font-size:1.1rem; background:var(--card2);
+       border-left:3px solid #000; padding:12px 16px; border-radius:0 6px 6px 0; margin:12px 0;}
+  .l1c{color:#000; font-weight:bold;} .l2c{color:#4b5563; font-weight:bold;} .linfc{color:#9ca3af; font-weight:bold;}
+  .layout{display:flex; flex-wrap:wrap; gap:24px; align-items:flex-start;}
+  .canvas-wrap{flex:1 1 460px; min-width:300px;}
+  canvas{width:100%; border-radius:8px; background:#fff; border:1px solid var(--border); touch-action:none; cursor:crosshair;}
+  canvas:active{cursor:grabbing;}
+  .side{flex:1 1 280px; min-width:260px;}
+  .readout{background:var(--card2); border:1px solid var(--border); border-radius:8px; padding:16px; margin-top:16px; font-size:.9rem;}
+  .readout .row{display:flex; justify-content:space-between; padding:4px 0; font-family:"SF Mono",Consolas,monospace;}
+  .slider-row{display:flex; align-items:center; gap:12px; margin:12px 0;}
+  .slider-row label{width:80px; font-size:.85rem; color:var(--muted); font-weight:500;}
+  input[type=range]{flex:1; accent-color:#000; height:4px;}
+  .val{width:48px; text-align:right; font-family:"SF Mono",Consolas,monospace; font-size:.9rem;}
+  .checks{display:flex; gap:18px; flex-wrap:wrap; margin-top:12px; font-size:.85rem;}
+  .checks label{display:flex; align-items:center; gap:6px; cursor:pointer; color:var(--muted);}
+  .checks input{accent-color:#000;}
+  .btns{margin-top:14px; display:flex; gap:8px; flex-wrap:wrap;}
+  button{background:#fff; color:#000; border:1px solid var(--border); border-radius:6px;
+       padding:6px 14px; cursor:pointer; font-size:.8rem; transition:all .2s;}
+  button:hover{background:#000; color:#fff; border-color:#000;}
+  .step{font-family:"SF Mono",Consolas,monospace; font-size:.85rem; margin-top:8px; line-height:1.5;}
+  .hint{color:var(--muted); font-size:.8rem; margin-top:12px; line-height:1.6;}
+  .legend{display:flex; gap:18px; flex-wrap:wrap; font-size:.8rem; margin-top:12px; color:var(--muted);}
+  .dot{display:inline-block; width:12px; height:2px; margin-right:6px; vertical-align:middle;}
+  .dot.dashed{border-top:2px dashed;}
+  .dot.solid{background:currentColor; height:2px;}
+  @media (max-width:640px){ .layout{flex-direction:column;} }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>向量范数 · 几何直觉</h1>
+  <p>范数衡量向量的“大小”——拖动向量，直观感受 L1 与 L2 的几何差异</p>
+</header>
+
+<main>
+
+<!-- ========== 定义区 ========== -->
+<section>
+  <h2>定义</h2>
+  <p style="color:var(--muted); font-size:.9rem; margin-bottom:8px;">对向量 v = (x₁, x₂, …, xₙ)，不同的范数用不同方式度量它的大小：</p>
+  <div class="formula"><span class="l1c">L1 范数（曼哈顿）</span> &nbsp; ‖v‖₁ = |x₁| + |x₂| + ⋯ + |xₙ|</div>
+  <div class="formula"><span class="l2c">L2 范数（欧几里得）</span> &nbsp; ‖v‖₂ = √(x₁² + x₂² + ⋯ + xₙ²)</div>
+  <div class="formula"><span class="linfc">L∞ 范数（最大值）</span> &nbsp; ‖v‖∞ = max |xᵢ|</div>
+</section>
+
+<!-- ========== 几何画布 ========== -->
+<section>
+  <h2>几何意义 <span class="tag">交互</span></h2>
+  <div class="layout">
+    <div class="canvas-wrap">
+      <canvas id="geo" height="500"></canvas>
+      <div class="legend">
+        <span><span class="dot solid" style="background:#000"></span>向量 v</span>
+        <span><span class="dot dashed" style="border-color:#000"></span>L1 路径 / 菱形</span>
+        <span><span class="dot solid" style="background:#4b5563"></span>L2 距离 / 圆</span>
+      </div>
+    </div>
+    <div class="side">
+      <div class="slider-row">
+        <label>x</label>
+        <input type="range" id="sx" min="-5" max="5" step="0.1" value="3">
+        <span class="val" id="vx">3.0</span>
+      </div>
+      <div class="slider-row">
+        <label>y</label>
+        <input type="range" id="sy" min="-5" max="5" step="0.1" value="2">
+        <span class="val" id="vy">2.0</span>
+      </div>
+      <div class="checks">
+        <label><input type="checkbox" id="cb1" checked> 显示 L1</label>
+        <label><input type="checkbox" id="cb2" checked> 显示 L2</label>
+      </div>
+      <div class="btns">
+        <button onclick="setV(3,4)">(3, 4)</button>
+        <button onclick="setV(1,1)">(1, 1)</button>
+        <button onclick="setV(-2,3)">(-2, 3)</button>
+        <button onclick="setV(4,-1)">(4, -1)</button>
+      </div>
+      <div class="readout">
+        <div class="row"><span>v = (<span id="rx"></span>, <span id="ry"></span>)</span></div>
+        <div class="step l1c" id="calc1"></div>
+        <div class="step l2c" id="calc2"></div>
+        <div class="step linfc" id="calci"></div>
+      </div>
+      <p class="hint">💡 拖动画布中的端点。观察黑色虚线（L1）与深灰实线（L2）的长度差异——仅当向量沿坐标轴时两者相等。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 单位球 ========== -->
+<section>
+  <h2>单位球 <span class="tag">Lp 调节</span></h2>
+  <div class="layout">
+    <div class="canvas-wrap">
+      <canvas id="ball" height="420"></canvas>
+      <div class="legend">
+        <span><span class="dot dashed" style="border-color:#000"></span>L1</span>
+        <span><span class="dot solid" style="background:#4b5563"></span>L2</span>
+        <span><span class="dot dashed" style="border-color:#9ca3af"></span>L∞</span>
+        <span><span class="dot solid" style="background:#000"></span>Lp</span>
+      </div>
+    </div>
+    <div class="side">
+      <div class="formula">Lp 范数：‖v‖ₚ = ( Σ|xᵢ|ᵖ )^(1/p)</div>
+      <div class="slider-row">
+        <label>p = <span id="pv">2.0</span></label>
+        <input type="range" id="sp" min="0.5" max="8" step="0.05" value="2">
+      </div>
+      <div class="checks">
+        <label><input type="checkbox" id="b1" checked> L1</label>
+        <label><input type="checkbox" id="b2" checked> L2</label>
+        <label><input type="checkbox" id="bi"> L∞</label>
+      </div>
+      <p class="hint">拖动 p 观察形状变化：p→∞ 趋向正方形，p=2 是圆，p=1 是菱形。单位球的“尖角”解释了 L1 为何容易产生稀疏解。</p>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<script>
+const $ = id => document.getElementById(id);
+const state = {x:3, y:2, p:2, showL1:true, showL2:true};
+const C = {
+  l1:'#000000', l2:'#4b5563', linf:'#9ca3af', vec:'#000000', acc:'#111827',
+  grid:'#f3f4f6', axis:'#d1d5db', text:'#6b7280'
+};
+
+function setupCanvas(cv, h){
+  const w = cv.parentElement.clientWidth, dpr = window.devicePixelRatio||1;
+  cv.width = w*dpr; cv.height = h*dpr; cv.style.height = h+'px';
+  const ctx = cv.getContext('2d'); ctx.setTransform(dpr,0,0,dpr,0,0);
+  return {ctx, w, h};
+}
+
+const geo = $('geo');
+function drawGeo(){
+  const {ctx,w,h} = setupCanvas(geo, 500);
+  const S = Math.min(w,h)/11, cx=w/2, cy=h/2;
+  const X = u=>cx+u*S, Y=v=>cy-v*S;
+  ctx.clearRect(0,0,w,h);
+
+  // 网格
+  ctx.lineWidth=1; ctx.font='11px "SF Mono",Consolas'; ctx.fillStyle=C.text;
+  for(let i=-5;i<=5;i++){
+    ctx.strokeStyle=C.grid;
+    ctx.beginPath(); ctx.moveTo(X(i),Y(-5.5)); ctx.lineTo(X(i),Y(5.5)); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(X(-5.5),Y(i)); ctx.lineTo(X(5.5),Y(i)); ctx.stroke();
+    if(i!==0){ ctx.fillText(i, X(i)-6, cy+14); ctx.fillText(i, cx+6, Y(i)+4); }
+  }
+  // 坐标轴
+  ctx.strokeStyle=C.axis; ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.moveTo(X(-5.5),cy); ctx.lineTo(X(5.5),cy); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(cx,Y(-5.5)); ctx.lineTo(cx,Y(5.5)); ctx.stroke();
+
+  const {x,y} = state;
+  const l1 = Math.abs(x)+Math.abs(y), l2 = Math.hypot(x,y);
+
+  // L2 圆
+  if(state.showL2 && l2>0.01){
+    ctx.strokeStyle='rgba(75,85,99,.3)'; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.arc(cx,cy,l2*S,0,Math.PI*2); ctx.stroke();
+  }
+  // L1 菱形
+  if(state.showL1 && l1>0.01){
+    ctx.strokeStyle='rgba(0,0,0,.3)'; ctx.lineWidth=1; ctx.setLineDash([4,4]);
+    ctx.beginPath();
+    ctx.moveTo(X(l1),Y(0)); ctx.lineTo(X(0),Y(l1)); ctx.lineTo(X(-l1),Y(0));
+    ctx.lineTo(X(0),Y(-l1)); ctx.closePath(); ctx.stroke();
+    ctx.setLineDash([]);
+  }
+  // L1 曼哈顿路径
+  if(state.showL1){
+    ctx.strokeStyle=C.l1; ctx.lineWidth=1.5; ctx.setLineDash([6,4]);
+    ctx.beginPath(); ctx.moveTo(X(0),Y(0)); ctx.lineTo(X(x),Y(0)); ctx.lineTo(X(x),Y(y)); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle=C.l1; ctx.font='bold 12px "SF Mono",Consolas';
+    ctx.fillText('|x|', X(x/2)-8, Y(0)+(y>=0?16:-6));
+    ctx.fillText('|y|', X(x)+(x>=0?8:-24), Y(y/2));
+  }
+  // 向量 (L2)
+  drawArrow(ctx, X(0),Y(0), X(x),Y(y), state.showL2?C.l2:C.vec, state.showL2?2:2.5);
+  if(state.showL2){
+    ctx.fillStyle=C.l2; ctx.font='bold 12px "SF Mono",Consolas';
+    ctx.fillText('‖v‖₂', X(x/2)+10, Y(y/2)-8);
+  }
+  // 端点
+  ctx.fillStyle='#fff';
+  ctx.beginPath(); ctx.arc(X(x),Y(y),6,0,Math.PI*2); ctx.fill();
+  ctx.strokeStyle=C.vec; ctx.lineWidth=2.5; ctx.stroke();
+
+  geo._t = {cx,cy,S};
+}
+
+function drawArrow(ctx,x0,y0,x1,y1,color,lw){
+  const a=Math.atan2(y1-y0,x1-x0), hl=10;
+  ctx.strokeStyle=ctx.fillStyle=color; ctx.lineWidth=lw;
+  ctx.beginPath(); ctx.moveTo(x0,y0); ctx.lineTo(x1,y1); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(x1,y1);
+  ctx.lineTo(x1-hl*Math.cos(a-0.4), y1-hl*Math.sin(a-0.4));
+  ctx.lineTo(x1-hl*Math.cos(a+0.4), y1-hl*Math.sin(a+0.4));
+  ctx.closePath(); ctx.fill();
+}
+
+const ball = $('ball');
+function drawBall(){
+  const {ctx,w,h} = setupCanvas(ball, 420);
+  const S = Math.min(w,h)/3.2, cx=w/2, cy=h/2;
+  const X=u=>cx+u*S, Y=v=>cy-v*S;
+  ctx.clearRect(0,0,w,h);
+  
+  ctx.strokeStyle=C.grid; ctx.lineWidth=1;
+  for(let i=-1.5;i<=1.5;i+=0.5){
+    ctx.beginPath(); ctx.moveTo(X(i),Y(-1.6)); ctx.lineTo(X(i),Y(1.6)); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(X(-1.6),Y(i)); ctx.lineTo(X(1.6),Y(i)); ctx.stroke();
+  }
+  ctx.strokeStyle=C.axis; ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.moveTo(X(-1.6),cy); ctx.lineTo(X(1.6),cy); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(cx,Y(-1.6)); ctx.lineTo(cx,Y(1.6)); ctx.stroke();
+
+  // Lp
+  const p = state.p;
+  ctx.strokeStyle=C.acc; ctx.lineWidth=2.5; ctx.beginPath();
+  for(let i=0;i<=360;i++){
+    const t=i*Math.PI/180, c=Math.abs(Math.cos(t)), s=Math.abs(Math.sin(t));
+    const r=Math.pow(Math.pow(c,p)+Math.pow(s,p), -1/p);
+    const px=X(r*Math.cos(t)), py=Y(r*Math.sin(t));
+    i?ctx.lineTo(px,py):ctx.moveTo(px,py);
+  }
+  ctx.stroke();
+
+  if($('b1').checked){ 
+    ctx.strokeStyle=C.l1; ctx.lineWidth=1.5; ctx.setLineDash([5,4]);
+    ctx.beginPath(); ctx.moveTo(X(1),Y(0)); ctx.lineTo(X(0),Y(1));
+    ctx.lineTo(X(-1),Y(0)); ctx.lineTo(X(0),Y(-1)); ctx.closePath(); ctx.stroke();
+    ctx.setLineDash([]);
+  }
+  if($('b2').checked){ 
+    ctx.strokeStyle=C.l2; ctx.lineWidth=1.5;
+    ctx.beginPath(); ctx.arc(cx,cy,S,0,Math.PI*2); ctx.stroke();
+  }
+  if($('bi').checked){ 
+    ctx.strokeStyle=C.linf; ctx.lineWidth=1.5; ctx.setLineDash([2,3]);
+    ctx.strokeRect(X(-1),Y(1), 2*S, 2*S);
+    ctx.setLineDash([]);
+  }
+}
+
+function updateReadout(){
+  const {x,y}=state;
+  const l1=Math.abs(x)+Math.abs(y), l2=Math.hypot(x,y), li=Math.max(Math.abs(x),Math.abs(y));
+  $('vx').textContent=x.toFixed(1); $('vy').textContent=y.toFixed(1);
+  $('rx').textContent=x.toFixed(1); $('ry').textContent=y.toFixed(1);
+  $('calc1').textContent=`‖v‖₁ = |${x.toFixed(1)}| + |${y.toFixed(1)}| = ${l1.toFixed(2)}`;
+  $('calc2').textContent=`‖v‖₂ = √(${x.toFixed(1)}² + ${y.toFixed(1)}²) = ${l2.toFixed(2)}`;
+  $('calci').textContent=`‖v‖∞ = max(|x|,|y|) = ${li.toFixed(2)}`;
+}
+
+function setV(x,y){
+  state.x=Math.max(-5,Math.min(5,x)); state.y=Math.max(-5,Math.min(5,y));
+  $('sx').value=state.x; $('sy').value=state.y; refresh();
+}
+function refresh(){ drawGeo(); drawBall(); updateReadout(); }
+
+let dragging=false;
+geo.addEventListener('pointerdown', e=>{ dragging=true; geo.setPointerCapture(e.pointerId); move(e); });
+geo.addEventListener('pointermove', e=>{ if(dragging) move(e); });
+geo.addEventListener('pointerup',   ()=> dragging=false);
+function move(e){
+  const r=geo.getBoundingClientRect(), t=geo._t; if(!t) return;
+  const x=(e.clientX-r.left-t.cx)/t.S, y=(t.cy-(e.clientY-r.top))/t.S;
+  setV(Math.round(x*10)/10, Math.round(y*10)/10);
+}
+$('sx').oninput=e=>setV(+e.target.value, state.y);
+$('sy').oninput=e=>setV(state.x, +e.target.value);
+$('cb1').onchange=e=>{state.showL1=e.target.checked; refresh();};
+$('cb2').onchange=e=>{state.showL2=e.target.checked; refresh();};
+$('sp').oninput=e=>{state.p=+e.target.value; $('pv').textContent=state.p.toFixed(2); drawBall();};
+$('b1').onchange=$('b2').onchange=$('bi').onchange=drawBall;
+window.addEventListener('resize', refresh);
+
+refresh();
+</script>
+</body>
+</html>

@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>矩阵乘法：内积与外积视角 · 动画演示</title>
+<style>
+  :root{
+    --bg:#fff; --card:#fff; --card2:#f9fafb; --text:#111827; --muted:#6b7280;
+    --border:#e5e7eb; --accent:#000; --hl-row:rgba(59,130,246,.12); --hl-col:rgba(59,130,246,.08);
+    --inner:#2563eb; --outer:#dc2626; --rank:rgba(220,38,38,.1);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{font-family:"Helvetica Neue",Arial,"PingFang SC","Microsoft YaHei",sans-serif;
+       background:var(--bg); color:var(--text); line-height:1.7; -webkit-font-smoothing:antialiased;}
+  header{text-align:center; padding:40px 16px 20px;}
+  header h1{font-size:2rem; font-weight:300; letter-spacing:-.5px;}
+  header p{color:var(--muted); margin-top:8px; font-size:.95rem;}
+  main{max-width:1000px; margin:0 auto; padding:0 20px 60px;}
+  section{background:var(--card); border:1px solid var(--border); border-radius:12px;
+       padding:28px; margin:24px 0; box-shadow:0 1px 3px rgba(0,0,0,.02);}
+  h2{font-size:1.15rem; font-weight:600; margin-bottom:12px;}
+  h2 .tag{font-size:.7rem; font-weight:500; border-radius:20px; padding:2px 10px;
+       margin-left:8px; vertical-align:middle; color:#fff;}
+  .tag.inner{background:var(--inner);}
+  .tag.outer{background:var(--outer);}
+
+  /* 公式区 */
+  .formula-box{background:var(--card2); border-left:3px solid var(--accent); padding:14px 18px;
+       border-radius:0 6px 6px 0; margin:12px 0; font-family:"Times New Roman",Georgia,serif; font-size:1.1rem; line-height:2.2;}
+  .formula-box .math{font-style:italic;}
+  .formula-box sub{font-size:.7em; vertical-align:sub;}
+  .formula-box sup{font-size:.7em; vertical-align:super;}
+  .formula-box .sum{font-size:1.5em; vertical-align:middle; margin:0 2px; font-style:normal;}
+  .formula-box .blue{color:var(--inner); font-weight:600;}
+  .formula-box .red{color:var(--outer); font-weight:600;}
+  .hint{color:var(--muted); font-size:.8rem; margin-top:12px; line-height:1.6;}
+
+  /* 视角切换 */
+  .tabs{display:flex; gap:0; margin:0 0 24px; border-bottom:2px solid var(--border);}
+  .tab{flex:1; padding:12px 8px; text-align:center; cursor:pointer; font-size:.9rem; font-weight:500;
+       color:var(--muted); border-bottom:2px solid transparent; margin-bottom:-2px; transition:all .2s;}
+  .tab.active{color:var(--text); font-weight:600;}
+  .tab[data-v="inner"].active{border-color:var(--inner); color:var(--inner);}
+  .tab[data-v="outer"].active{border-color:var(--outer); color:var(--outer);}
+  .view{display:none;}
+  .view.active{display:block;}
+
+  /* 矩阵网格 */
+  .mat-layout{display:flex; flex-wrap:nowrap; gap:14px; align-items:center; justify-content:center; margin:24px 0; overflow-x:auto; overflow-y:hidden; padding:4px 0 36px; -webkit-overflow-scrolling:touch;}
+  .mat-layout::-webkit-scrollbar{height:6px;}
+  .mat-layout::-webkit-scrollbar-track{background:var(--card2); border-radius:3px;}
+  .mat-layout::-webkit-scrollbar-thumb{background:var(--border); border-radius:3px;}
+  .matrix{display:inline-grid; gap:2px; padding:8px 10px; border:1.5px solid #000; border-radius:6px; position:relative;}
+  .matrix::before,.matrix::after{content:''; position:absolute; width:6px; height:calc(100% - 12px);
+       top:6px; border:1.5px solid #000; pointer-events:none;}
+  .matrix::before{left:-1px; border-right:none; border-radius:4px 0 0 4px;}
+  .matrix::after{right:-1px; border-left:none; border-radius:0 4px 4px 0;}
+  .cell{width:46px; height:46px; display:flex; align-items:center; justify-content:center;
+       font-family:"SF Mono",Consolas,monospace; font-size:.85rem; border:1px solid transparent;
+       transition:background .15s, color .15s, border-color .15s, transform .2s; user-select:none;}
+  .cell.hl-row{background:var(--hl-row); border-color:rgba(37,99,235,.2);}
+  .cell.hl-col{background:var(--hl-col); border-color:rgba(37,99,235,.15);}
+  .cell.hl-rank{background:var(--rank); border-color:rgba(220,38,38,.25);}
+  .cell.active{background:#000 !important; color:#fff !important; border-color:#000 !important;}
+  .cell.pulse{animation:pulse .4s ease;}
+  @keyframes pulse{0%{transform:scale(1)} 50%{transform:scale(1.2)} 100%{transform:scale(1)}}
+  .op{font-size:1.5rem; font-weight:300; color:var(--muted); padding:0 8px;}
+  .op.plus{color:var(--outer); font-weight:600;}
+  .dim-label{position:absolute; bottom:-22px; left:50%; transform:translateX(-50%);
+       font-size:.7rem; color:var(--muted); white-space:nowrap;}
+
+  /* 向量标注 */
+  .vec-label{position:absolute; font-size:.65rem; font-weight:600; padding:2px 6px; border-radius:4px; color:#fff;}
+  .vec-label.row-l{top:-20px; left:8px; background:var(--inner);}
+  .vec-label.col-l{bottom:-22px; right:10px; background:var(--inner);}
+
+  /* 计算过程展示区 */
+  .calc-stage{background:var(--card2); border:1px solid var(--border); border-radius:8px;
+       padding:18px 24px; margin-top:18px; min-height:70px; display:flex; align-items:center;
+       justify-content:center; font-family:"SF Mono",Consolas,monospace; font-size:.9rem;
+       line-height:2; flex-wrap:wrap; gap:2px; transition:opacity .2s;}
+  .calc-stage .term{opacity:0; transform:translateY(6px); transition:all .3s ease;}
+  .calc-stage .term.show{opacity:1; transform:translateY(0);}
+  .calc-stage .plus{color:var(--muted); margin:0 4px; opacity:0; transition:opacity .3s;}
+  .calc-stage .plus.show{opacity:1;}
+  .calc-stage .eq{color:#000; font-weight:bold; margin:0 8px; opacity:0; transition:opacity .3s;}
+  .calc-stage .eq.show{opacity:1;}
+  .calc-stage .result{font-weight:bold; color:#000; opacity:0; transform:scale(.8); transition:all .3s ease;}
+  .calc-stage .result.show{opacity:1; transform:scale(1);}
+
+  /* 控制栏 */
+  .controls{display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-top:16px;}
+  button{background:#fff; color:#000; border:1px solid var(--border); border-radius:6px;
+       padding:7px 16px; cursor:pointer; font-size:.8rem; transition:all .2s;}
+  button:hover{background:#000; color:#fff; border-color:#000;}
+  button:disabled{opacity:.4; cursor:not-allowed; background:#fff; color:#000;}
+  select{padding:7px 12px; border:1px solid var(--border); border-radius:6px; font-size:.8rem;
+       background:#fff; color:#000; outline:none; cursor:pointer;}
+  .speed-control{display:flex; align-items:center; gap:8px; font-size:.8rem; color:var(--muted);}
+  .speed-control input{width:80px; accent-color:#000;}
+
+  /* 外积累加展示 */
+  .rank-stack{display:flex; gap:12px; align-items:center; justify-content:center; flex-wrap:wrap; margin:20px 0;}
+  .rank-item{text-align:center; opacity:0; transform:scale(.9); transition:all .4s ease;}
+  .rank-item.show{opacity:1; transform:scale(1);}
+  .rank-item .rank-label{font-size:.7rem; color:var(--outer); font-weight:600; margin-bottom:6px;}
+  .rank-item .rank-eq{font-size:1.2rem; color:var(--muted); margin:0 8px;}
+
+  @media(max-width:850px){
+    .mat-layout{flex-direction:column; gap:12px;}
+    .op{transform:rotate(90deg); padding:4px 0;}
+    .calc-stage{font-size:.78rem; padding:12px 8px;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>矩阵乘法：内积与外积视角</h1>
+  <p>同一个矩阵乘法 C = A × B，从两种截然不同的视角理解</p>
+</header>
+
+<main>
+
+<section>
+  <h2>两种视角概述</h2>
+  <div class="formula-box">
+    <div>
+      <span class="blue">内积视角：</span>
+      <span class="math">C</span><sub><span class="math">ij</span></sub>
+      <span class="sum">=</span>
+      <span class="blue">a</span><sub><span class="math">i</span></sub><sup><span class="math">T</span></sup>
+      <span class="blue">b</span><sub><span class="math">j</span></sub>
+      <span style="color:var(--muted); font-size:.85em;"> &nbsp;← A 的第 i 行 · B 的第 j 列（点积）</span>
+    </div>
+    <div style="margin-top:10px;">
+      <span class="red">外积视角：</span>
+      <span class="math">C</span>
+      <span class="sum">=</span>
+      <span class="sum">∑</span><sub><span class="math">k</span>=1</sub><sup><span class="math">n</span></sup>
+      <span class="red">a</span><sub><span class="math">k</span></sub>
+      <span class="red">b</span><sub><span class="math">k</span></sub><sup><span class="math">T</span></sup>
+      <span style="color:var(--muted); font-size:.85em;"> &nbsp;← A 各列与 B 各行的外积之和（秩1矩阵累加）</span>
+    </div>
+  </div>
+  <p class="hint">
+    <b style="color:var(--inner)">内积视角</b>：逐个元素计算。C 的每个元素 = A 的一行与 B 的一列做点积，关注"一个结果元素怎么来"。<br>
+    <b style="color:var(--outer)">外积视角</b>：逐层累加。C = 多个"秩1矩阵"之和，每个秩1矩阵由 A 的一列与 B 的一行做外积得到，关注"整个矩阵怎么拼出来"。
+  </p>
+</section>
+
+<section>
+  <div class="tabs">
+    <div class="tab active" data-v="inner" onclick="switchView('inner')">内积视角（逐元素）</div>
+    <div class="tab" data-v="outer" onclick="switchView('outer')">外积视角（逐层累加）</div>
+  </div>
+
+  <!-- 控制栏 -->
+  <div class="controls">
+    <select id="sizeSelect">
+      <option value="2">2 × 2</option>
+      <option value="3" selected>3 × 3</option>
+      <option value="4">4 × 4</option>
+    </select>
+    <button onclick="randomize()">随机填充</button>
+    <button onclick="resetMatrices()">归零</button>
+    <div class="speed-control">
+      <span>速度</span>
+      <input type="range" id="speedRange" min="200" max="1200" step="100" value="700">
+    </div>
+  </div>
+  <div class="controls" style="margin-top:10px;">
+    <button id="btnAnimate" onclick="startAnimation()" style="background:#000;color:#fff;border-color:#000;font-weight:600;">▶ 演示计算</button>
+    <button id="btnStop" onclick="stopAnimation()" disabled>■ 停止</button>
+  </div>
+
+  <!-- ============ 内积视角 ============ -->
+  <div class="view active" id="viewInner">
+    <h2>内积视角 <span class="tag inner">Inner Product</span></h2>
+    <p style="color:var(--muted); font-size:.85rem; margin-bottom:8px;">
+      C[i,j] = A 的第 i 行 · B 的第 j 列。动画逐个计算 C 的每个元素。
+    </p>
+    <div class="mat-layout">
+      <div style="position:relative;">
+        <div id="matA" class="matrix"></div>
+        <div class="dim-label" id="dimA">3×3</div>
+      </div>
+      <div class="op">×</div>
+      <div style="position:relative;">
+        <div id="matB" class="matrix"></div>
+        <div class="dim-label" id="dimB">3×3</div>
+      </div>
+      <div class="op">=</div>
+      <div style="position:relative;">
+        <div id="matC" class="matrix"></div>
+        <div class="dim-label" id="dimC">3×3</div>
+      </div>
+    </div>
+    <div class="calc-stage" id="calcInner">
+      <span style="color:var(--muted)">点击「演示计算」</span>
+    </div>
+  </div>
+
+  <!-- ============ 外积视角 ============ -->
+  <div class="view" id="viewOuter">
+    <h2>外积视角 <span class="tag outer">Outer Product</span></h2>
+    <p style="color:var(--muted); font-size:.85rem; margin-bottom:8px;">
+      C = Σ aₖbₖᵀ。每次取 A 的第 k 列与 B 的第 k 行做外积，得到一个秩1矩阵，逐层累加。
+    </div>
+    <div class="mat-layout">
+      <div style="position:relative;">
+        <div id="matA2" class="matrix"></div>
+        <div class="dim-label" id="dimA2">3×3</div>
+      </div>
+      <div class="op">×</div>
+      <div style="position:relative;">
+        <div id="matB2" class="matrix"></div>
+        <div class="dim-label" id="dimB2">3×3</div>
+      </div>
+      <div class="op">=</div>
+      <div style="position:relative;">
+        <div id="matC2" class="matrix"></div>
+        <div class="dim-label" id="dimC2">3×3</div>
+      </div>
+    </div>
+    <div class="calc-stage" id="calcOuter">
+      <span style="color:var(--muted)">点击「演示计算」</span>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>理解要点</h2>
+  <p style="color:var(--muted); font-size:.9rem;">
+    <b style="color:var(--inner)">内积视角</b>回答"结果矩阵的<b>一个元素</b>如何计算"——适合理解单个数值的来源，
+    也是编程实现最自然的循环方式（三重循环 i → j → k）。<br><br>
+    <b style="color:var(--outer)">外积视角</b>回答"结果矩阵的<b>整体结构</b>如何构成"——C 是 n 个秩1矩阵之和，
+    每个秩1矩阵由一个列向量和一个行向量外积而成。这在低秩近似、推荐系统（SVD分解）、
+    以及理解 Attention 机制中 QK^T 的分解时非常重要。
+  </p>
+</section>
+
+</main>
+
+<script>
+const $ = id => document.getElementById(id);
+let N = 3, A = [], B = [], C = [];
+let animating = false, animTimer = null;
+let currentView = 'inner';
+
+/* ========== 初始化 ========== */
+function init(size){
+  stopAnimation();
+  N = size;
+  A = Array.from({length:N}, ()=>Array(N).fill(0));
+  B = Array.from({length:N}, ()=>Array(N).fill(0));
+  if(N===2){ A=[[1,2],[3,4]]; B=[[5,6],[7,8]]; }
+  else if(N===3){ A=[[1,2,3],[4,5,6],[7,8,9]]; B=[[9,8,7],[6,5,4],[3,2,1]]; }
+  else { for(let i=0;i<4;i++) for(let j=0;j<4;j++){ A[i][j]=((i*4+j+1)%7)-3; B[i][j]=((i+j*4+2)%5)-2; }}
+  renderAll();
+}
+
+function computeC(){
+  C = Array.from({length:N}, ()=>Array(N).fill(0));
+  for(let i=0;i<N;i++) for(let j=0;j<N;j++){
+    let s=0; for(let k=0;k<N;k++) s+=A[i][k]*B[k][j];
+    C[i][j] = Math.round(s*1000)/1000;
+  }
+}
+
+/* ========== 渲染 ========== */
+function renderMatrix(elId, data, editable, isC=false){
+  const el=$(elId);
+  const isMobile=window.innerWidth<850;
+  let sz;
+  if(isMobile) sz = N<=2?40 : N===3?36 : 30;
+  else sz = N<=2?52 : N===3?44 : 36;
+  el.style.gridTemplateColumns=`repeat(${N},${sz}px)`;
+  el.innerHTML='';
+  for(let i=0;i<N;i++) for(let j=0;j<N;j++){
+    const cell=document.createElement('div');
+    cell.className='cell'; cell.dataset.r=i; cell.dataset.c=j;
+    cell.style.width=sz+'px'; cell.style.height=sz+'px';
+    cell.style.fontSize = sz<=36 ? '.75rem' : '.85rem';
+    if(editable){
+      const inp=document.createElement('input');
+      inp.type='number'; inp.step='any'; inp.value=data[i][j];
+      inp.style.cssText='width:100%;height:100%;border:none;background:transparent;text-align:center;font-family:inherit;font-size:inherit;color:inherit;outline:none;';
+      inp.addEventListener('input',e=>{
+        data[i][j]=parseFloat(e.target.value)||0;
+        computeC(); renderMatrix('matC',C,false,true); renderMatrix('matC2',C,false,true);
+      });
+      cell.appendChild(inp);
+    } else {
+      cell.textContent=fmtNum(data[i][j]);
+      if(isC){
+        cell.style.cursor='pointer';
+        cell.addEventListener('click',()=>{
+          if(currentView==='inner'){ stopAnimation(); showInnerCellCalc(i,j); }
+        });
+      }
+    }
+    el.appendChild(cell);
+  }
+}
+
+function renderAll(){
+  computeC();
+  renderMatrix('matA',A,true);
+  renderMatrix('matB',B,true);
+  renderMatrix('matC',C,false,true);
+  renderMatrix('matA2',A,false);
+  renderMatrix('matB2',B,false);
+  renderMatrix('matC2',C,false,true);
+  const dims={dimA:`${N}×${N}`,dimB:`${N}×${N}`,dimC:`${N}×${N}`,
+              dimA2:`${N}×${N}`,dimB2:`${N}×${N}`,dimC2:`${N}×${N}`};
+  for(const id in dims) if($(id)) $(id).textContent=dims[id];
+  $('calcInner').innerHTML='<span style="color:var(--muted)">点击「演示计算」</span>';
+  $('calcOuter').innerHTML='<span style="color:var(--muted)">点击「演示计算」</span>';
+}
+
+function fmtNum(n){ return Number.isInteger(n)?n.toString():n.toFixed(2); }
+
+/* ========== 视角切换 ========== */
+function switchView(v){
+  stopAnimation();
+  currentView=v;
+  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.v===v));
+  document.querySelectorAll('.view').forEach(s=>s.classList.toggle('active',s.id==='view'+v.charAt(0).toUpperCase()+v.slice(1)));
+}
+
+/* ========== 高亮工具 ========== */
+function clearHighlights(ids){
+  ids.forEach(id=>{
+    const el=$(id); if(el) el.querySelectorAll('.cell').forEach(c=>c.classList.remove('hl-row','hl-col','hl-rank','active','pulse'));
+  });
+}
+
+/* ========== 内积视角：逐元素动画 ========== */
+function showInnerCellCalc(r,c){
+  clearHighlights(['matA','matB','matC']);
+  // 高亮 A 的第 r 行
+  const aCells=$('matA').children;
+  for(let k=0;k<N;k++) aCells[r*N+k].classList.add('hl-row');
+  // 高亮 B 的第 c 列
+  const bCells=$('matB').children;
+  for(let k=0;k<N;k++) bCells[k*N+c].classList.add('hl-col');
+  // 激活 C 的目标格
+  $('matC').children[r*N+c].classList.add('active');
+
+  let html=`<span class="term show" style="color:var(--inner)">C[${r+1},${c+1}] = a<sub>${r+1}</sub>ᵀ · b<sub>${c+1}</sub></span><span class="eq show">=</span>`;
+  let sum=0;
+  for(let k=0;k<N;k++){
+    const av=A[r][k], bv=B[k][c]; sum+=av*bv;
+    if(k>0) html+='<span class="plus show">+</span>';
+    html+=`<span class="term show">(${fmtNum(av)})×(${fmtNum(bv)})</span>`;
+  }
+  html+=`<span class="eq show">=</span><span class="result show">${fmtNum(Math.round(sum*1000)/1000)}</span>`;
+  $('calcInner').innerHTML=html;
+}
+
+async function animateInner(){
+  const baseDelay=getDelay();
+  for(let r=0;r<N&&animating;r++){
+    for(let c=0;c<N&&animating;c++){
+      clearHighlights(['matA','matB','matC']);
+      const aCells=$('matA').children, bCells=$('matB').children, cCells=$('matC').children;
+      for(let k=0;k<N;k++){ aCells[r*N+k].classList.add('hl-row'); bCells[k*N+c].classList.add('hl-col'); }
+      cCells[r*N+c].classList.add('active');
+
+      const stage=$('calcInner');
+      stage.innerHTML='';
+      const label=document.createElement('span');
+      label.className='term'; label.style.color='var(--inner)';
+      label.innerHTML=`C[${r+1},${c+1}] = a<sub>${r+1}</sub>ᵀ · b<sub>${c+1}</sub>`;
+      stage.appendChild(label);
+      const eq1=document.createElement('span'); eq1.className='eq'; eq1.textContent='=';
+      stage.appendChild(eq1);
+
+      const terms=[], pluses=[];
+      for(let k=0;k<N;k++){
+        if(k>0){ const p=document.createElement('span'); p.className='plus'; p.textContent='+'; stage.appendChild(p); pluses.push(p); }
+        const t=document.createElement('span'); t.className='term';
+        t.textContent=`(${fmtNum(A[r][k])})×(${fmtNum(B[k][c])})`;
+        stage.appendChild(t); terms.push(t);
+      }
+      const eq2=document.createElement('span'); eq2.className='eq'; eq2.textContent='=';
+      stage.appendChild(eq2);
+      const res=document.createElement('span'); res.className='result';
+      stage.appendChild(res);
+
+      await sleep(baseDelay*0.3);
+      label.classList.add('show'); eq1.classList.add('show');
+
+      let sum=0;
+      for(let k=0;k<N&&animating;k++){
+        aCells[r*N+k].classList.add('pulse');
+        bCells[k*N+c].classList.add('pulse');
+        if(k>0) pluses[k-1].classList.add('show');
+        terms[k].classList.add('show');
+        sum+=A[r][k]*B[k][c];
+        await sleep(baseDelay);
+      }
+      if(!animating) return;
+      eq2.classList.add('show');
+      res.textContent=fmtNum(Math.round(sum*1000)/1000);
+      res.classList.add('show');
+      await sleep(baseDelay*0.4);
+    }
+  }
+}
+
+/* ========== 外积视角：逐层累加动画 ========== */
+async function animateOuter(){
+  const baseDelay=getDelay();
+  const aCells=$('matA2').children, bCells=$('matB2').children, cCells=$('matC2').children;
+
+  // 初始化 C2 为全0显示
+  for(let i=0;i<N;i++) for(let j=0;j<N;j++){
+    cCells[i*N+j].textContent='0';
+    cCells[i*N+j].classList.remove('active','hl-rank','pulse');
+  }
+
+  const accum = Array.from({length:N},()=>Array(N).fill(0));
+
+  for(let k=0;k<N&&animating;k++){
+    clearHighlights(['matA2','matB2','matC2']);
+    // 高亮 A 的第 k 列
+    for(let i=0;i<N;i++) aCells[i*N+k].classList.add('hl-rank');
+    // 高亮 B 的第 k 行
+    for(let j=0;j<N;j++) bCells[k*N+j].classList.add('hl-rank');
+
+    const stage=$('calcOuter');
+    stage.innerHTML='';
+    const label=document.createElement('span');
+    label.className='term'; label.style.color='var(--outer)';
+    label.innerHTML=`第 ${k+1} 层：a<sub>${k+1}</sub> · b<sub>${k+1}</sub>ᵀ（外积）`;
+    stage.appendChild(label);
+    const eq=document.createElement('span'); eq.className='eq'; eq.textContent='=';
+    stage.appendChild(eq);
+
+    // 构建外积矩阵项
+    const grid=document.createElement('span');
+    grid.style.cssText='display:inline-grid;gap:1px;margin:0 6px;vertical-align:middle;';
+    grid.style.gridTemplateColumns=`repeat(${N},auto)`;
+    for(let i=0;i<N;i++) for(let j=0;j<N;j++){
+      const s=document.createElement('span');
+      s.style.cssText='padding:1px 5px;font-size:.8rem;color:var(--outer);opacity:0;transition:opacity .2s;';
+      s.textContent=`${fmtNum(A[i][k])}×${fmtNum(B[k][j])}`;
+      grid.appendChild(s);
+    }
+    stage.appendChild(grid);
+
+    const eq2=document.createElement('span'); eq2.className='eq'; eq2.textContent='→ 累加到 C';
+    stage.appendChild(eq2);
+
+    await sleep(baseDelay*0.3);
+    label.classList.add('show'); eq.classList.add('show');
+
+    // 逐个揭示外积元素并累加
+    const gridCells=grid.children;
+    for(let i=0;i<N&&animating;i++){
+      for(let j=0;j<N&&animating;j++){
+        gridCells[i*N+j].style.opacity='1';
+        aCells[i*N+k].classList.add('pulse');
+        bCells[k*N+j].classList.add('pulse');
+        accum[i][j]+=A[i][k]*B[k][j];
+        const val=Math.round(accum[i][j]*1000)/1000;
+        cCells[i*N+j].textContent=fmtNum(val);
+        cCells[i*N+j].classList.add('active');
+        await sleep(baseDelay*0.5);
+        cCells[i*N+j].classList.remove('active');
+        cCells[i*N+j].classList.add('hl-rank');
+      }
+    }
+    if(!animating) return;
+    eq2.classList.add('show');
+    await sleep(baseDelay*0.5);
+  }
+
+  // 最终结果：全部高亮
+  for(let i=0;i<N;i++) for(let j=0;j<N;j++){
+    cCells[i*N+j].classList.add('active');
+  }
+  $('calcOuter').innerHTML=`<span class="term show" style="color:var(--outer);font-weight:600;">C = Σ aₖbₖᵀ 完成！</span><span class="eq show">=</span><span class="result show">上方结果矩阵</span>`;
+}
+
+/* ========== 动画控制 ========== */
+function getDelay(){ return +$('speedRange').value; }
+function sleep(ms){ return new Promise(res=>{ animTimer=setTimeout(res,ms); }); }
+
+async function startAnimation(){
+  if(animating) return;
+  animating=true;
+  $('btnAnimate').disabled=true; $('btnStop').disabled=false;
+  if(currentView==='inner') await animateInner();
+  else await animateOuter();
+  stopAnimation();
+}
+
+function stopAnimation(){
+  animating=false;
+  if(animTimer){ clearTimeout(animTimer); animTimer=null; }
+  $('btnAnimate').disabled=false; $('btnStop').disabled=true;
+}
+
+/* ========== 按钮操作 ========== */
+function randomize(){
+  stopAnimation();
+  for(let i=0;i<N;i++) for(let j=0;j<N;j++){
+    A[i][j]=Math.floor(Math.random()*19)-9;
+    B[i][j]=Math.floor(Math.random()*19)-9;
+  }
+  renderAll();
+}
+function resetMatrices(){
+  stopAnimation();
+  for(let i=0;i<N;i++) for(let j=0;j<N;j++){ A[i][j]=0; B[i][j]=0; }
+  renderAll();
+}
+
+$('sizeSelect').addEventListener('change',e=>init(+e.target.value));
+window.addEventListener('resize',()=>{ renderAll(); });
+init(3);
+</script>
+</body>
+</html>
